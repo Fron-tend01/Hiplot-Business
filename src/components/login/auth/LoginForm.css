@@ -1,0 +1,153 @@
+
+.loginForm {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    margin: 0 auto;
+  }
+  
+  .left {
+    width: 50%;
+    height: 100%;
+    background-color: #1F319D;
+  }
+  
+  .rigth {
+    width: 50%;
+    height: 100%;
+  
+  }
+  
+  .title__procura {
+    width: 100%;
+    margin: 20px 0;
+    font-weight: 500;
+    font-size: 1.3rem;
+  }
+  
+  .title__procura strong {
+    color: #1F319D;
+    transition: all 0.8s ease;
+  }
+  
+  
+  
+  .form {
+    display: flex;
+    width: 80%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+  }
+  
+  .container__form {
+    display: block;
+    width: 80%;
+   
+  }
+  
+  .label__form {
+    display: flex;
+    padding: 10px 0;
+  }
+  
+  .inputs__form {
+    display: block;
+   
+  }
+  
+  .container__inputs {
+    display: flex;
+    padding: 5px 10px;
+    border: 2px solid #afafaf;
+    align-items: center;
+    border-radius: 5px;
+    transition: border 0.8s ease;
+    
+  }
+  
+  .container__inputs:hover {
+    border: 2px solid #1F319D  !important;
+   
+  }
+  
+  .container__inputs .svg {
+    margin-right: 5px;
+    fill: #afafaf;
+    transition: fill 0.8s ease;
+  }
+  
+  
+  .container__inputs.focused {
+    border: 2px solid #1F319D;
+  }
+  
+  .container__inputs.focused svg {
+    fill: #1F319D;
+  }
+  
+  .error__message {
+    color: red;
+    display: none;
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  .label__form {
+    color: #1f1c17;
+  }
+  
+  .input__form {
+    display: block;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 5px 0;
+    text-indent: 10px;
+  
+  }
+  
+  
+  
+  
+  .toggle-password-btn {
+    display: flex;
+    outline: none;
+    border: none;
+    background-color: transparent;
+  }
+  
+  .toggle-password-btn .see__password {
+    fill: #afafaf;
+  }
+  
+  .container__inputs:hover svg {
+    fill: #1F319D;
+  }
+  
+  .btn__form-login {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .btn__login {
+    background-color: #1F319D;
+    color: #fff;
+    border: none;
+    padding: 5px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  
+  

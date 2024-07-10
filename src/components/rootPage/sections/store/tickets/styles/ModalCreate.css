@@ -1,0 +1,234 @@
+
+
+.conatiner__create_tickets > .row__one {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.container__checkbox_tickets {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.checkbox__tickets {
+	display: flex;
+	justify-content: center;
+  	padding: 20px;
+}
+
+.conatiner__create_tickets > .row__two {
+    display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 10px;
+    row-gap: 20px;
+    text-align: justify;
+}
+
+
+
+.conatiner__create_tickets > .conatiner__direct {
+    margin: 20px 0;
+}
+
+.conatiner__create_tickets > .conatiner__direct > .row__one  {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 100px;
+	gap: 10px;
+    align-items: end;
+    text-align: justify;
+}
+
+.conatiner__create_tickets > .conatiner__direct > .row__two  {
+    display: flex;
+    justify-content: center;
+    text-align: justify;
+    margin: 20px 0;
+}
+
+
+.conatiner__create_tickets > .conatiner__by-request > .row__one  {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 10px;
+    align-items: end;
+    text-align: justify;
+    margin: 20px 0;
+}
+
+
+
+.conatiner__create_tickets > .row__three {
+    display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 10px;
+    row-gap: 20px;
+    text-align: justify;
+    margin: 20px 0;
+}
+
+.conatiner__create_tickets > .row__three >  div {
+    display: flex;
+    color: var(--text-color);
+}
+
+
+
+.table__modal_create_tickets {
+    border-radius: 10px;
+
+    
+}
+
+.table__modal_create_tickets .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+    
+}
+
+.table__modal_create_tickets .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__modal_create_tickets .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    padding: 10px;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+	
+}
+
+.table__modal_create_tickets .table__body {
+	max-height: 300px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #bf6903; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+
+
+.table__modal_create_tickets .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+}
+  
+.table__modal_create_tickets .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+.table__modal_create_tickets .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+.table__modal_create_tickets .table__body .tbody {
+    display: flex;
+}
+
+.table__modal_create_tickets .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(8 , 1fr);
+    padding: 10px;
+    gap: 10px;
+    align-items: center;
+
+}
+
+
+
+
+
+
+
+
+.table__modal_filter_tickets {
+    border-radius: 10px;
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+
+}
+
+
+.table__modal_filter_tickets .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__modal_filter_tickets .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__modal_filter_tickets .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__modal_filter_tickets .table__body {
+	height: 100%;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__modal_filter_tickets .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+  }
+  
+.table__modal_filter_tickets .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+  }
+
+.table__modal_filter_tickets .table__body .tbody {
+    display: flex;
+}
+
+.table__modal_filter_tickets .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 150px 100px;
+    padding: 10px;
+
+}
+
+.table__modal_filter_tickets .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}

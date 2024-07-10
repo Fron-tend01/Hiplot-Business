@@ -1,0 +1,106 @@
+.article__modal_branch-offices_save_modal_container {
+	display: block;
+}
+
+.article__modal_branch-offices_save_modal_container .row__one {
+	display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+	margin: 20px 0;
+    gap: 10px;
+	align-items: end;
+}
+
+.article__modal_branch-offices_save_modal_container .row__two{
+	display: grid;
+    grid-template-columns: 1fr 150px 100px;
+	margin: 20px 0;
+    gap: 10px;
+	align-items: end;
+}
+
+
+
+
+
+
+
+
+
+.overlay__modal_branch-offices_creating_articles .table__branch-offices {
+    margin-top: 20px;
+    border-radius: 10px;
+	text-align: justify;
+}
+
+
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .table__head {
+    display: flex;
+    width: 100%;
+	background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 100px;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .table__body {
+	height: 200px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+  }
+  
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .tbody__container:nth-child(odd) {
+	background-color: var(--two-table-color);
+  }
+
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .table__body .tbody {
+    display: flex;
+}
+
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 100px;
+    padding: 10px;
+}
+
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+.overlay__modal_branch-offices_creating_articles .types-users__edit_btn {
+	background-color: var(--primary-color);
+	color: #fff;
+	border: none;
+	padding: 5px 10px;
+	border-radius: var(--border-radius-general);
+	cursor: pointer;
+  }

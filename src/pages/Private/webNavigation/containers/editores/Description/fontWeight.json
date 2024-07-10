@@ -1,0 +1,47 @@
+[
+    {
+        "id": 1,
+        "name": 100,
+        "fontWeight": "font-weight-100"
+    },
+    {
+        "id": 2,
+        "name": 200,
+        "fontWeight": "font-weight-200"
+    },
+    {
+        "id": 3,
+        "name": 300,
+        "fontWeight": "font-weight-300"
+    },
+    {
+        "id": 4,
+        "name": 400,
+        "fontWeight": "font-weight-400"
+    },
+    {
+        "id": 5,
+        "name": 500,
+        "fontWeight": "font-weight-500"
+    },
+    {
+        "id": 6,
+        "name": 600,
+        "fontWeight": "font-weight-600"
+    },
+    {
+        "id": 7,
+        "name": 700,
+        "fontWeight": "font-weight-700"
+    },
+    {
+        "id": 8,
+        "name": 800,
+        "fontWeight": "font-weight-800"
+    },
+    {
+        "id": 9,
+        "name": 900,
+        "fontWeight": "font-weight-900"
+    }
+]

@@ -1,0 +1,142 @@
+.hero {
+  background-color: var(--header-color);
+  border-bottom: 3px solid #13171f;
+}
+
+.container__hero {
+    width: 95%;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    
+}
+
+.nav__hero {
+    display: flex;
+    width: 200px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.conatiner__users {
+    position: relative;
+    background-color: #ffffff; /* Cambia el color de fondo a blanco */
+    padding: 8px 9px;
+    border-radius: 50px; /* Establece un radio de borde de 30px para redondear los bordes */
+    cursor: pointer;
+    display: inline-flex; /* Alinea los elementos en línea y los hace flexibles */
+    align-items: center; /* Centra verticalmente los elementos */
+}
+
+.container__bell {
+    position: relative;
+    cursor: pointer;
+    
+}
+
+
+.number__bell {
+    background-color: #f39f18;
+    color: #ffffff;
+    position: absolute;
+    padding: 2px 7px;
+    border-radius: 50px;
+    font-size: .6rem;
+    bottom: 18px;
+    left: 12px;
+ 
+    
+  
+    
+}
+
+
+
+.content__users {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    padding: 10px;
+    top: 40px;
+    border-radius: 5px;
+    right: 0px; /* Desplazado 20px desde el borde derecho */
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.content__users.active {
+    display: block;
+    width: 200px;
+    height: 200px;
+    opacity: 1;
+}
+
+.conatiner__users.active:hover .content__users {
+    display: block;
+    opacity: 1;
+    animation: animateheight 600ms ease forwards,
+    animateWidth 600ms ease forwards;
+}
+
+@keyframes animateWidth {
+    0% {
+        width: 0;
+        opacity: 0;
+    }
+    100% {
+        width: 200px;
+        opacity: 1;
+    }
+}
+
+@keyframes animateheight {
+    0% {
+        height: 0;
+        opacity: 0;
+    }
+    100% {
+        height: 200px;
+   
+    }
+}
+
+
+
+.setting {
+    display: flex;
+    width: 100%;
+    border-radius: 3px;
+    align-items: center;
+    padding: 5px 10px;
+    justify-content: space-between;
+}
+
+.setting:hover {
+    background-color: #F2F2F2;
+
+}
+
+
+
+.btn__configure_users {
+    color: #090d1f;
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: transparent;
+
+}
+
+
+
+
+
+
+
+
+
+
+

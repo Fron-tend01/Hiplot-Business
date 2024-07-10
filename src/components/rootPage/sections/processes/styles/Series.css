@@ -1,0 +1,216 @@
+.series {
+    height: 90vh;
+	padding: 20px;
+}
+
+.series__container {
+	display: grid;
+	grid-template-rows: auto 1fr;
+	height: 100%;
+	background-color: var(--background-sections);
+	padding: 20px ;
+	border-radius: 10px;
+    overflow: hidden;
+}
+
+
+.create__series_btn-container {
+	display: flex;
+	justify-content: center;
+}
+
+.conatiner__create_series {
+    display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+	align-items: end;
+    text-align: justify;
+}
+
+.container__series_btn_modal_container {
+    grid-column: 1 / span 4;
+	text-align: center;
+}
+
+
+ /*************************************************************
+                    Modal de actualizar sucursales
+ **************************************************************/
+
+ .overlay__series {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+}
+
+.overlay__series.active {
+	visibility: visible;
+}
+
+.popup__series {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 80%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+}
+
+.popup__series .btn-cerrar-popup__series {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__series.active {	transform: scale(1); opacity: 1; }
+
+
+
+  
+ /*************************************************************
+                    Modal de actualizar sucursales
+ **************************************************************/
+
+ .overlay__update_series {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+}
+
+.overlay__update_series.active {
+	visibility: visible;
+}
+
+.popup__update_series {
+	background: #F8F8F8;
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 80%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+}
+
+.popup__update_series .btn-cerrar-popup__update_series {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__update_series.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+
+/* Tabla de Series */
+
+.table__series {
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+	overflow: auto;
+
+}
+
+.table__series .table__head {
+	background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__series .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 100px;
+    padding: 10px;
+    font-weight: 600;
+	color: var(--text-table-color);
+}
+
+
+
+.table__series .table__body {
+	height: 100%;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+	
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__series .tbody__container:nth-child(even) {
+	background-color: var(--table-color);
+  }
+  
+.table__series .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+.table__series .table__body .tbody {
+	display: grid;
+    grid-template-columns: repeat(3, 1fr) 100px;
+    padding: 10px;
+
+}
+
+.table__series .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+
+.table__series .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+

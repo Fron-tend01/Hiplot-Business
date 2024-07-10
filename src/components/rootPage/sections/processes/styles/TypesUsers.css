@@ -1,0 +1,338 @@
+.types-users {
+    height: 90vh;
+	padding: 20px;
+    
+}
+
+.types-users__container {
+    display: grid;
+	grid-template-rows: auto 1fr;
+	height: 100%;
+	background-color: var(--background-sections);
+	padding: 20px ;
+	border-radius: 10px;
+    overflow: hidden;
+    
+}
+
+
+
+.create__types-users_btn-container {
+	display: flex;
+	justify-content: center;
+}
+
+
+.container__create_types-users {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+	gap: 10PX;
+    align-items: end;
+}
+
+.permissions__create_types-users {
+    grid-column: 1 / span 2;
+}
+
+.permissions__create_types-users .types-users__modals_title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.types-users__modals_title {
+  
+}
+
+.users-types__creater_permissions-content{
+    display: grid;
+    column-gap: 10px;
+    row-gap: 20px;
+    grid-template-columns: repeat(6, 1fr);
+}
+
+
+.users-types__creater_permissions-content .btn {
+    width: auto;
+    padding: 5px 10px;
+    border: none;
+    background-color: var(--primary-color);
+    color: var(--tertiary-color);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.create__types-users_btns-container {
+	grid-column: 1 / span 2;
+}
+
+.container__modal_permissions_types-users {
+    
+}
+
+.user-types__permission_check {
+    display: flex;
+    justify-content: center;
+}
+
+.content__permission_check_user-types {
+    display: flex;
+    padding: 5px;
+    justify-content: space-between;
+    width: 150px;
+    align-items: center;
+}
+
+.container__create_types-users .label__general {
+text-align: left;
+}
+
+
+
+
+.inputs__types-users {
+	text-align: left;
+}
+
+
+
+
+
+.overlay__types-users {
+    background: rgba(0,0,0,.3);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    visibility: hidden;
+}
+
+.overlay__types-users.active {
+    visibility: visible;
+}
+
+.popup__types-users {
+    background-color: var(--background-modal);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    width: 80%;
+    
+    transition: .3s ease all;
+    transform: scale(0.7);
+    opacity: 0;
+}
+
+.popup__types-users .btn-cerrar-popup__types-users {
+    font-size: 16px;
+    line-height: 16px;
+    display: block;
+    text-align: right;
+    transition: .3s ease all;
+    color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__types-users.active {	transform: scale(1); opacity: 1; }
+
+    
+    
+    
+
+
+
+
+
+.overlay__types-users_permissions {
+	background: rgba(0, 0, 0, 0.075);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+    z-index: 1;
+}
+
+.overlay__types-users_permissions.active {
+	visibility: visible;
+}
+
+.popup__types-users_permissions {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 30%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+}
+
+.popup__types-users_permissions .btn-cerrar-popup__types-users_permissions {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__types-users_permissions.active {	transform: scale(1); opacity: 1; }
+
+
+
+.overlay__types-users_update {
+    background: rgba(0,0,0,.3);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    visibility: hidden;
+}
+
+.overlay__types-users_update.active {
+    visibility: visible;
+}
+
+.popup__types-users_update {
+    background-color: var(--background-modal);
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    width: 80%;
+    
+    transition: .3s ease all;
+    transform: scale(0.7);
+    opacity: 0;
+}
+
+.popup__types-users_update .btn-cerrar-popup__types-users_update {
+    font-size: 16px;
+    line-height: 16px;
+    display: block;
+    text-align: right;
+    transition: .3s ease all;
+    color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__types-users_update.active {	transform: scale(1); opacity: 1; }
+
+    
+    
+    
+
+
+
+.table__typesUsers {
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+    overflow: auto;
+}
+
+
+.table__typesUsers .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__typesUsers .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__typesUsers .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) 100px;
+    padding: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+}
+
+.table__typesUsers .table__body {
+	height: 100%;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__typesUsers .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+  }
+  
+  .table__typesUsers .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+  }
+
+  .table__typesUsers .table__body .tbody {
+    display: flex;
+}
+
+.table__typesUsers .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) 100px;
+    padding: 10px;
+}
+
+.table__typesUsers .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+
+.table__typesUsers .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+

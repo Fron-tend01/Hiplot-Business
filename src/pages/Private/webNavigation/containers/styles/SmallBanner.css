@@ -1,0 +1,29 @@
+.small-banner_web {
+    width: 100%;
+    height: 300px;
+    background-position: center;
+    background-size: cover;
+
+
+}
+
+.small-banner_web .title__container {
+    display: flex;
+    align-items: center;
+    width: 90%;
+    height: 100%;
+    margin: auto;
+}
+
+.small-banner_web .title__container > div {
+    width: 100%;
+    padding: 50px;
+}
+
+
+.small-banner_web .title__container .title__content {
+    width: 100%;
+    padding-bottom: 30px;
+   
+}
+

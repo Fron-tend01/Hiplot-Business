@@ -1,0 +1,266 @@
+.tickets {
+    height: 90vh;
+	padding: 20px;
+}
+
+.tickets__container {
+    display: grid;
+	grid-template-rows: auto auto 1fr;
+	height: 100%;
+	background-color: var(--background-sections);
+	padding: 20px;
+	border-radius: 10px;
+    overflow: hidden;
+}
+
+.tickets__container > .row__one {
+    display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 10px;
+    row-gap: 20px;
+	align-items: end;
+	text-align: left;
+}
+
+.tickets__container > .row__two {
+    display: grid;
+	grid-template-columns: repeat(2, 1fr);
+    text-align: end;
+    column-gap: 10px;
+    row-gap: 20px;
+    margin-top: 20px;
+	/* align-items: end;
+	text-align: left; */
+}
+
+.btns__tickets {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+
+
+ /*************************************************************
+                    Modal de crear entradas
+ **************************************************************/
+
+  
+ .overlay__tickets {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+	z-index: 1;
+}
+
+.overlay__tickets.active {
+	visibility: visible;
+}
+
+.popup__tickets {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 70%;
+	overflow-y: auto;
+    max-height: 95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+.popup__tickets .btn-cerrar-popup__tickets {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__tickets.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+
+ /*************************************************************
+                    Modal de actualizar entradas
+ **************************************************************/
+
+  
+ .overlay__update_tickets {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+	z-index: 1;
+}
+
+.overlay__update_tickets.active {
+	visibility: visible;
+}
+
+.popup__update_tickets {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 70%;
+	overflow-y: auto;
+    max-height: 95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+.popup__update_tickets  .btn-cerrar-popup__update_tickets  {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__update_tickets.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+ /*************************************************************
+                    Tabla de Entradas
+ **************************************************************/
+
+ .table__tickets {
+    border-radius: 10px;
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+    overflow-y: auto;
+
+}
+
+
+.table__tickets .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__tickets .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__tickets .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__tickets .table__body {
+	height: 100%;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__tickets .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+  }
+  
+.table__tickets .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+  }
+
+.table__tickets .table__body .tbody {
+    display: flex;
+}
+
+.table__tickets .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    padding: 10px;
+
+}
+
+.table__tickets .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}

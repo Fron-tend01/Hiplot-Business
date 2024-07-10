@@ -1,0 +1,287 @@
+.conatiner__create_parchase-orders > .title {
+    padding: 10px 0;
+    font-weight: 600;
+    font-size: 1.2rem;
+    background-color: #252a36;
+    color: #f3f3f3;
+    margin: 20px 0;
+}
+
+
+.conatiner__direct .row__one {
+    display: grid;
+	grid-template-columns: repeat(2, 1fr) 100px; 
+	gap: 10px;
+    align-items: end;
+    text-align: justify;
+}
+
+.conatiner__direct .row__two {
+    display: flex;
+    justify-content: center;
+    text-align: justify;
+    margin: 20px 0;
+}
+
+.conatiner__by-request .row__one {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    align-items: end;
+}
+
+.conatiner__by-request .row__three {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.conatiner__by-request .row__three > div {
+    display: grid;
+    width: 50%;
+    grid-template-columns: 1fr 100px;
+    gap: 10px;
+    align-items: end;
+}
+
+
+
+
+
+
+
+
+
+
+.table__modal_filter_purchase-order {
+    border-radius: 10px;
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+
+}
+
+
+.table__modal_filter_purchase-order .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__modal_filter_purchase-order .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__modal_filter_purchase-order .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__modal_filter_purchase-order .table__body {
+	height: 100%;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__modal_filter_purchase-order .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+  }
+  
+.table__modal_filter_purchase-order .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+  }
+
+.table__modal_filter_purchase-order .table__body .tbody {
+    display: flex;
+}
+
+.table__modal_filter_purchase-order .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 150px 100px;
+    padding: 10px;
+
+}
+
+.table__modal_filter_purchase-order .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+
+
+
+.overlay__modal_concepts {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+	z-index: 1;
+  
+}
+
+.overlay__modal_concepts.active {
+	visibility: visible;
+}
+
+.popup__modal_concepts {
+	background: var(--background-modal-color);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 80%;
+    overflow-y: scroll;
+    max-height: 95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+
+
+    &::-webkit-scrollbar {
+        width: 5px;
+
+      
+    }
+  
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+  
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+.popup__modal_concepts .btn-cerrar-popup__modal_concepts {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__modal_concepts.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+
+
+
+
+
+
+.table__modal_create_parchase-orders {
+
+    border-radius: 10px;
+    grid-column: 1 / span 2;
+    
+}
+
+.table__modal_create_parchase-orders .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+    
+}
+
+.table__modal_create_parchase-orders .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__modal_create_parchase-orders .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    padding: 10px;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+	
+}
+
+.table__modal_create_parchase-orders .table__body {
+	max-height: 300px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #bf6903; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+
+
+.table__modal_create_parchase-orders .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+}
+  
+.table__modal_create_parchase-orders .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+.table__modal_create_parchase-orders .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+.table__modal_create_parchase-orders .table__body .tbody {
+    display: flex;
+}
+
+.table__modal_create_parchase-orders .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    padding: 10px;
+    gap: 10px;
+    align-items: center;
+
+}

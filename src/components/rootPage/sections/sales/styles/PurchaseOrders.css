@@ -1,0 +1,430 @@
+.purchase-order {
+    padding: 20px;
+    height: 90vh;
+  
+}
+
+.container__purchase-order {
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(3, auto) 50%;
+    background-color: var(--background-sections);
+    padding: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    
+  
+}
+
+.container__purchase-order > .row__one {
+    display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 10px;
+    align-items: end;
+}
+
+.container__purchase-order > .row__two {
+    display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 10px;
+    align-items: end;
+    margin: 20px 0;
+}
+
+
+
+.container__purchase-order > .row__three {
+    display: grid;
+	grid-template-columns: 1fr 100px 100px;
+	gap: 10px;
+    align-items: end;
+    margin: 20px 0;
+}
+
+.container__purchase-order > .row__three .container__search {
+    display: flex;
+    justify-content: center;
+}
+
+.conatiner__create_parchase-orders > .row__check {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.container__checkbox_purchas-order {
+    width: 400px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+   
+}
+
+.checkbox__purchas-order {
+	display: flex;
+	justify-content: center;
+  	padding: 5px;
+}
+
+
+
+.conatiner__create_parchase-orders > .row__one {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) 150px 150px;
+    gap: 10px;
+    align-items: end;
+    margin: 20px 0;
+    text-align: justify;
+}
+
+.conatiner__create_parchase-orders > .row__two {
+    display: grid;
+	grid-template-columns: repeat(2, 1fr) 100px auto 1fr;
+	gap: 10px;
+    align-items: end;
+    margin: 20px 0;
+    text-align: justify;
+}
+
+.conatiner__create_parchase-orders > .row__three {
+    text-align: justify;
+}
+
+.conatiner__create_parchase-orders > .row__four {
+    text-align: justify;
+    overflow-y: scroll;
+    height: 320px;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+
+      
+    }
+  
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+  
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+
+
+.container__search .svg {
+    width: 16px;
+    transform: rotate(90deg);
+    margin-left: 5px;
+    fill: #fff;
+}
+
+
+.container__search .btn__container {
+    display: flex;
+    align-items: center;
+}
+
+
+
+.container__two {
+    width: 70%;
+    display: grid;
+	grid-template-columns: 1fr 100px; 
+	gap: 10px;
+    align-items: end;
+}
+
+
+
+
+
+
+ /*************************************************************
+ 
+                    Tabla de purchase-order
+ 
+ **************************************************************/
+
+
+
+.table__purchase-order {
+    border-radius: 10px;
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+
+}
+
+
+.table__purchase-order .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__purchase-order .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__purchase-order .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__purchase-order .table__body {
+	height: 100%;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__purchase-order .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+  }
+  
+.table__purchase-order .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+  }
+
+.table__purchase-order .table__body .tbody {
+    display: flex;
+}
+
+.table__purchase-order .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    padding: 10px;
+
+}
+
+.table__purchase-order .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+
+ /*************************************************************
+                    Modal de crear orden de compra
+ **************************************************************/
+
+  
+ .overlay__purchase-orders {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+	z-index: 1;
+  
+}
+
+.overlay__purchase-orders.active {
+	visibility: visible;
+}
+
+.popup__purchase-orders {
+    background-color: var(--background-modal); 
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 80%;
+    overflow-y: scroll;
+    max-height: 95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+
+
+    &::-webkit-scrollbar {
+        width: 5px;
+
+      
+    }
+  
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+  
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+.popup__purchase-orders .btn-cerrar-popup__purchase-orders {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__purchase-orders.active {	transform: scale(1); opacity: 1; }
+
+
+
+/* ------------------------- */
+/* Tabla del Modal ordenes de compra */
+/* ------------------------- */
+
+
+.table__modal_parchase-orders {
+    margin-top: 20px;
+    border-radius: 10px;
+    grid-column: 1 / span 2;
+
+}
+
+
+.table__modal_parchase-orders .table__head {
+    display: flex;
+    width: 100%;
+    background-color: #eeecec;
+    border-radius: 5px 5px 0 0;
+}
+
+.table__modal_parchase-orders .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__modal_parchase-orders .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr) 100px;
+    padding: 10px;
+    font-weight: 600;
+	
+}
+
+.table__modal_parchase-orders .table__body {
+	max-height: 300px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__modal_parchase-orders .tbody__container:nth-child(even) {
+    background-color: #eeecec;
+  }
+  
+.table__modal_parchase-orders .tbody__container:nth-child(odd) {
+    background-color: #f9f8f8;
+  }
+
+.table__modal_parchase-orders .table__body .tbody {
+    display: flex;
+}
+
+.table__modal_parchase-orders .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr) 100px;
+    padding: 10px;
+    gap: 5px;
+    align-items: center;
+
+}
+/* 
+.table__modal_parchase-orders .table__body .tbody .td {
+    display: flex;
+    align-items: center;
+} */
+
+
+.conatiner__result_modal_purchase-order {
+    display: flex;
+    width: 80%;
+    justify-content: space-between;
+    margin: 10px auto;
+}
+
+.conatiner__result_modal_purchase-order > div {
+    display: flex;
+    margin: 5px 0;
+    align-items: center;
+
+}
+
+.conatiner__result_modal_purchase-order > div > .title {
+    padding: 5px;
+    color: #fff;
+    background-color: #bf6903;
+    margin-right: 5px;
+    border-radius: 5px;
+   
+}
+
+.conatiner__result_modal_purchase-order > div > .result {
+    color: var(--text-color);
+    
+   
+}
+
+
+
+@media screen and (max-height: 1080px) {
+    .container__purchase-order {
+        grid-template-rows: repeat(3, auto) 65%;
+    }
+}
+
+@media screen and (max-height: 720px) {
+    .container__purchase-order {
+        grid-template-rows: repeat(3, auto) 50%;
+    }
+}
+
+
+

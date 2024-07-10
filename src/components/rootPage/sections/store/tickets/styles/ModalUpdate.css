@@ -1,0 +1,39 @@
+
+.conatiner__update_tickets > .row__one {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.conatiner__update_tickets > .row__two {
+    display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 10px;
+    row-gap: 20px;
+    text-align: justify;
+}
+
+.conatiner__update_tickets > .row__two > .comments {
+    grid-column: 1 / span 3;
+}
+
+
+.conatiner__update_tickets > .row__three {
+    display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 10px;
+    row-gap: 20px;
+    text-align: justify;
+    margin: 20px 0;
+}
+
+.conatiner__update_tickets > .row__three >  div {
+    display: flex;
+    color: var(--text-color);
+}
+
+.conatiner__update_tickets > .row__four {
+    display: flex;
+    justify-content: space-between;
+}
+
+

@@ -1,0 +1,444 @@
+.suppliers {
+    height: 90vh;
+	padding: 20px;
+}
+
+.suppliers__container {
+    display: grid;
+	grid-template-rows: auto 1fr;
+	height: 100%;
+	background-color: var(--background-sections);
+	padding: 20px ;
+	border-radius: 10px;
+    overflow: hidden;
+}
+.create__families_btn-container {
+	display: flex;
+	justify-content: center;
+}
+
+.conatiner__create_suppliers {
+    display: block;
+    gap: 10px;
+	align-items: end;
+	text-align: left;
+   
+}
+
+.conatiner__create_suppliers > div {
+    margin: 20px 0;
+}
+
+.conatiner__create_suppliers > .row__one {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+	align-items: end;
+	text-align: left;
+}
+
+.conatiner__create_suppliers > .row__two {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr)) auto auto;
+    column-gap: 20px;
+    align-items: end;
+   
+}
+
+
+
+
+
+.container__add_companyin_families {
+    display: flex;
+    justify-content: end;
+}
+
+.branchoffice__edit_btn {
+	background-color: var(--primary-color);
+	color: #fff;
+	border: none;
+	padding: 5px 10px;
+	border-radius: var(--border-radius-general);
+	cursor: pointer;
+}
+
+
+.container__btns_branch-office {
+    grid-column: 1 / span 2;
+	text-align: center;
+}
+
+
+
+
+
+
+ /*************************************************************
+                    Modal de crear sucursales
+ **************************************************************/
+
+
+  
+ .overlay__suppliers {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+}
+
+.overlay__suppliers.active {
+	visibility: visible;
+}
+
+.popup__suppliers {
+    background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 75%;
+	
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+}
+
+.popup__suppliers .btn-cerrar-popup__suppliers {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__suppliers.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+
+
+
+
+
+.table__suppliers {
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+	overflow: auto;
+}
+
+
+.table__suppliers .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__suppliers .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__suppliers .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 100px;
+    padding: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+}
+
+.table__suppliers .table__body {
+	height: 100%;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__suppliers .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+    color: var(--text-table-color);
+  }
+  
+.table__suppliers .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+    color: var(--text-table-color);
+}
+
+  .table__suppliers .table__body .tbody {
+    display: flex;
+}
+
+.table__suppliers .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 100px;
+    padding: 10px;
+}
+
+.table__suppliers .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+
+.table__suppliers .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.table__modal_suppliers {
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+}
+
+
+.table__modal_suppliers .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__modal_suppliers .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__modal_suppliers .table__head .thead {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+}
+
+.table__modal_suppliers .table__body {
+	height: 100%;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__modal_suppliers .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+    color: var(--text-table-color);
+  }
+  
+.table__modal_suppliers .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+    color: var(--text-table-color);
+}
+
+  .table__modal_suppliers .table__body .tbody {
+    display: flex;
+}
+
+.table__modal_suppliers .table__body .tbody {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding: 10px;
+}
+
+.table__modal_suppliers .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+
+.table__modal_suppliers .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+
+
+  
+ /*************************************************************
+                    Modal de actualizar sucursales
+ **************************************************************/
+
+.overlay__update_suppliers {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+}
+
+.overlay__update_suppliers.active {
+	visibility: visible;
+}
+
+.popup__update_suppliers {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 80%;
+	
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+}
+
+.popup__update_suppliers .btn-cerrar-popup__update_suppliers {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__update_suppliers.active {	transform: scale(1); opacity: 1; }
+
+
+
+/* ------------------------- */
+/* Tabla del Modal */
+/* ------------------------- */
+
+
+.table__update_families {
+    margin-top: 20px;
+    border-radius: 10px;
+    grid-column: 1 / span 2;
+
+}
+
+
+.table__update_families .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__update_families .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__update_families .table__head .thead {
+    display: grid;
+    grid-template-columns: 1fr 100px;
+    padding: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+}
+
+.table__update_families .table__body {
+	max-height: 300px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+  
+    }
+}
+
+
+.table__update_families .tbody__container:nth-child(even) {
+    background-color: #eeecec;
+  }
+  
+  .table__update_families .tbody__container:nth-child(odd) {
+    background-color: #f9f8f8;
+  }
+
+  .table__update_families .table__body .tbody {
+    display: flex;
+}
+
+.table__update_families .table__body .tbody {
+    display: grid;
+    grid-template-columns: 1fr 100px;
+    padding: 10px;
+}
+
+.table__update_families .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+} 

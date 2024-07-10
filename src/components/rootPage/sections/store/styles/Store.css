@@ -1,0 +1,200 @@
+.store {
+    height: 90vh;
+	padding: 20px;
+}
+
+.store__container {
+    display: grid;
+	grid-template-rows: auto 1fr;
+	height: 100%;
+	background-color: var(--background-sections);
+	padding: 20px ;
+	border-radius: 10px;
+    overflow: hidden;
+}
+
+.selects__modal_store {
+    text-align: left;
+    display: flex;
+}
+
+
+.input__modal_store {
+    grid-column: 1 / span 4;
+}
+
+.selects__modal_store {
+    display: grid;
+    grid-column: 1 / span 4;
+    column-gap: 20px;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) 100px;
+    justify-content: space-between;
+
+}
+
+.create__store_btns-container {
+    display: flex;
+    justify-content: end;
+    align-items: end;
+}
+
+.conatiner__table_store {
+    grid-column: 1 / span 4;
+}
+
+.container__btn_create-store {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.table__store_title {
+    text-align: left;
+}
+
+
+
+
+
+
+
+ /*************************************************************
+                    Modal de crear almacen
+ **************************************************************/
+
+  
+ .overlay__store {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+	z-index: 1;
+}
+
+.overlay__store.active {
+	visibility: visible;
+}
+
+.popup__store {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 70%;
+	
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+}
+
+.popup__store .btn-cerrar-popup__store {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__store.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+ /*************************************************************
+ 
+                    Tabla de almacen
+ 
+ **************************************************************/
+
+
+
+ .table__store {
+	display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+	overflow: auto;
+}
+
+
+.table__store .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__store  .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__store  .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) 100px;
+    padding: 10px;
+    font-weight: 600;
+	color: var(--text-table-color);
+}
+
+.table__store .table__body {
+	height: 100%;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+    width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__store .tbody__container:nth-child(even) {
+	background-color: var(--table-color);
+}
+  
+.table__store .tbody__container:nth-child(odd) {
+	background-color: var(--two-table-color);
+}
+
+  .table__store .table__body .tbody {
+    display: flex;
+}
+
+.table__store .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) 100px;
+    padding: 10px;
+}
+
+.table__store .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+.table__store .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}

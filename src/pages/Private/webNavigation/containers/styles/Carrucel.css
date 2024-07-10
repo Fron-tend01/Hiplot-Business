@@ -1,0 +1,117 @@
+.carousel__web--page {
+    
+}
+
+.carousel__web--page_container {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.carousel__web--page_container > .title__families {
+    padding: 20px 0;
+    font-size: 1.25rem;
+}
+
+
+.wrapper {
+    width: 100%;
+    position: relative;
+  }
+  .wrapper .angle {
+    top: 50%;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.23);
+    transform: translateY(-50%);
+    transition: transform 0.1s linear;
+  }
+  .wrapper .angle:active{
+    transform: translateY(-50%) scale(0.85);
+  }
+  .wrapper .angle:first-child{
+    left: -22px;
+    z-index: 10;
+  }
+  .wrapper .angle:last-child{
+    right: -22px;
+  }
+  .wrapper .carousel{
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% / 4) - 12px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    border-radius: 8px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+  }
+  .carousel::-webkit-scrollbar {
+    display: none;
+  }
+  .carousel.no-transition {
+    scroll-behavior: auto;
+  }
+  .carousel.dragging {
+    scroll-snap-type: none;
+    scroll-behavior: auto;
+  }
+  .carousel.dragging .card {
+    cursor: grab;
+    user-select: none;
+  }
+  .carousel :where(.card, .img) {
+  
+  }
+  .carousel .card {
+    scroll-snap-align: start;
+    height: auto;
+    list-style: none;
+    background: #ffffff;
+    cursor: pointer;
+    padding-bottom: 15px;
+    flex-direction: column;
+    border-radius: 10px;
+  }
+  .carousel .card .img {
+    width: 100%;
+    height: 200px;
+  }
+
+  .carousel .card .title__article {
+    margin: 10px 0;
+  }
+
+  .carousel .card .description__text {
+
+  }
+
+  .card .img img {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    border-radius: 10px;
+  }
+
+  
+  
+  @media screen and (max-width: 900px) {
+    .wrapper .carousel {
+      grid-auto-columns: calc((100% / 2) - 9px);
+    }
+  }
+  
+  @media screen and (max-width: 600px) {
+    .wrapper .carousel {
+      grid-auto-columns: 100%;
+    }
+  }
+  
+  
