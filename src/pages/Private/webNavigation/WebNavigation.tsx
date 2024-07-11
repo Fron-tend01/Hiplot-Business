@@ -27,7 +27,7 @@ const WebNavigation = () => {
   let user_id = userState.id
   const { getWeb, HeaderAndFooter, headerAndFooter, updateWeb,  updateSectionWeb,
   createContenedor, getContenedor, updateContenedor, deleteContenedor, createSectionsWeb, getSectionsWeb, deleteSectionsWeb,
-  updateFooterWeb, createProductsWeb, updateProductsWeb, deleteProductsWeb, updateContenedorOrder}: any = storeWebPages();
+  createProductsWeb, updateProductsWeb, deleteProductsWeb, updateContenedorOrder}: any = storeWebPages();
   const {getFamilies}: any = FamiliesRequests()
   const [families, setFamilies] = useState<any>()
 
@@ -43,7 +43,7 @@ const WebNavigation = () => {
    
     
     const container = await getContenedor(x.id);
-    console.log(container)
+
     if (container) {
       setCopyContainer(container);
     }
@@ -124,7 +124,7 @@ const WebNavigation = () => {
   }
   
   const handleTypesFamiliesChange = (family: any) => {
-    setSelectedTypeFamily(family.id)
+    setSelectedTypeFamily(family)
     setSelectTypesFamilies(false)
   }
 
@@ -449,9 +449,9 @@ const changeSFour = () => {
   setValidateSection(4)
 }
 
-const changeSFive = () => {
-  setValidateSection(5)
-}
+// const changeSFive = () => {
+//   setValidateSection(5)
+// }
 
 
 useEffect(() => {
@@ -468,75 +468,75 @@ useEffect(() => {
   ////////////////////////////////Footer/////////////////////////////////////////
  ///////////////////////////////////////////////////////////////////////////////
 
-  const [titlesFooterOne, setTitlesFooterOne] = useState<any>([])
+  // const [titlesFooterOne, setTitlesFooterOne] = useState<any>([])
 
-  const [titlesFooterTwo, setTitlesFooterTwo] = useState<any>([])
+  // const [titlesFooterTwo, setTitlesFooterTwo] = useState<any>([])
 
-  const [titlesFooterThree, setTitlesFooterThree] = useState<any>([])
+  // const [titlesFooterThree, setTitlesFooterThree] = useState<any>([])
 
 
-  const [titlesFooterFour, setTitlesFooterFour] = useState<string>('Loremp')
+  // const [titlesFooterFour, setTitlesFooterFour] = useState<string>('Loremp')
 
-  useEffect(() => {
-    // console.log('headerAndFooter',)
-    if (headerAndFooter.texto_footer) {
-          let titlesOne = JSON.parse(headerAndFooter.texto_footer);
-          let titlesTwo = JSON.parse(headerAndFooter.texto_footer2);
-          let titlesThree = JSON.parse(headerAndFooter.texto_footer3);
-          setTitlesFooterOne(titlesOne)
-          setTitlesFooterTwo(titlesTwo)
-          setTitlesFooterThree(titlesThree)
-    } else {
-      console.log('No hay data')
-    }
+  // useEffect(() => {
+  //   // console.log('headerAndFooter',)
+  //   if (headerAndFooter.texto_footer) {
+  //         let titlesOne = JSON.parse(headerAndFooter.texto_footer);
+  //         let titlesTwo = JSON.parse(headerAndFooter.texto_footer2);
+  //         let titlesThree = JSON.parse(headerAndFooter.texto_footer3);
+  //         setTitlesFooterOne(titlesOne)
+  //         setTitlesFooterTwo(titlesTwo)
+  //         setTitlesFooterThree(titlesThree)
+  //   } else {
+  //     console.log('No hay data')
+  //   }
  
-  }, [web])
+  // }, [web])
 
 
- const updateFooter = () => {
+//  const updateFooter = () => {
 
-  let titleOne = JSON.stringify(titlesFooterOne);
-  let titleTwo = JSON.stringify(titlesFooterTwo);
-  let titleThree = JSON.stringify(titlesFooterThree);
+//   let titleOne = JSON.stringify(titlesFooterOne);
+//   let titleTwo = JSON.stringify(titlesFooterTwo);
+//   let titleThree = JSON.stringify(titlesFooterThree);
   
-  let data = {
-    id: headerAndFooter.id,
-    texto_footer: titleOne,
-    texto_footer2: titleTwo,
-    texto_footer3: titleThree,
-    icono1_footer: '',
-    icono2_footer: '',
-    icono3_footer: '',
-    color_ext: '',
-    color_ext2: ''
-  }
+//   let data = {
+//     id: headerAndFooter.id,
+//     texto_footer: titleOne,
+//     texto_footer2: titleTwo,
+//     texto_footer3: titleThree,
+//     icono1_footer: '',
+//     icono2_footer: '',
+//     icono3_footer: '',
+//     color_ext: '',
+//     color_ext2: ''
+//   }
 
 
 
-  try {
-    updateFooterWeb(data)
-  } catch {
+//   try {
+//     updateFooterWeb(data)
+//   } catch {
     
-  }
-}
+//   }
+// }
 
 
-const handleTitlesFooterOneChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-  const paragraphs = event.target.value.split('\n').map((line, index) => `<p key=${index}>${line}</p>`);
-  setTitlesFooterOne(paragraphs);
-};
+// const handleTitlesFooterOneChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+//   const paragraphs = event.target.value.split('\n').map((line, index) => `<p key=${index}>${line}</p>`);
+//   setTitlesFooterOne(paragraphs);
+// };
 
 
-const handleTitlesFooterTwoChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-  const paragraphs = event.target.value.split('\n').map((line, index) => `<p key=${index}>${line}</p>`);
-  setTitlesFooterTwo(paragraphs);
-};
+// const handleTitlesFooterTwoChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+//   const paragraphs = event.target.value.split('\n').map((line, index) => `<p key=${index}>${line}</p>`);
+//   setTitlesFooterTwo(paragraphs);
+// };
 
 
-const handleTitlesFooterThreeChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-  const paragraphs = event.target.value.split('\n').map((line, index) => `<p key=${index}>${line}</p>`);
-  setTitlesFooterThree(paragraphs);
-};
+// const handleTitlesFooterThreeChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+//   const paragraphs = event.target.value.split('\n').map((line, index) => `<p key=${index}>${line}</p>`);
+//   setTitlesFooterThree(paragraphs);
+// };
 
 
 
@@ -619,6 +619,8 @@ useEffect(() => {
     }
     console.log(data)
     await createSectionsWeb(data)
+    const sections = await getSectionsWeb(id_sucursal);
+    setSections(sections)
   }
 
 
@@ -626,13 +628,12 @@ useEffect(() => {
     setNameSection(value)
   }
 
-  const deleteSections= () => {
+  const deleteSections = async () => {
 
-    try {
-      deleteSectionsWeb(selectedTypeSection)
-    } catch (error) {
-      console.log(error)
-    }
+    await deleteSectionsWeb(selectedTypeSection)
+   
+    const sections = await getSectionsWeb(id_sucursal);
+    setSections(sections)
   }
 
  
@@ -785,6 +786,34 @@ const SaveContainer = async (e: React.FormEvent) => {
     await setData();
    
   }
+
+  const container = await getContenedor(sections[0].id);
+    if (container && Array.isArray(container)) {
+      const updatedContainer = container.map(item => {
+        const [
+          textAlign1, fontSize1, fontWeight1, color1,
+          textAlign2, fontSize2, fontWeight2, color2,
+          textAlign3, fontSize3, fontWeight3, color3,
+          textAlign4, fontSize4, fontWeight4, color4,
+          textAlign5, fontSize5, fontWeight5, color5,
+          textAlign6, fontSize6, fontWeight6, color6,
+        ] = item.imagen6.split('|');
+        
+        return {
+          ...item,
+          textAlign1: textAlign1, fontSize1: fontSize1, fontWeight1: fontWeight1, color1: color1,
+          textAlign2: textAlign2, fontSize2: fontSize2, fontWeight2: fontWeight2, color2: color2,
+          textAlign3: textAlign3, fontSize3: fontSize3, fontWeight3: fontWeight3, color3: color3,
+          textAlign4: textAlign4, fontSize4: fontSize4, fontWeight4: fontWeight4, color4: color4,
+          textAlign5: textAlign5, fontSize5: fontSize5, fontWeight5: fontWeight5, color5: color5,
+          textAlign6: textAlign6, fontSize6: fontSize6, fontWeight6: fontWeight6, color6: color6,
+          
+        };
+      });
+      
+      setCopyContainer(updatedContainer);
+    }
+  
 }
 
 
@@ -910,7 +939,7 @@ const saveContainer = async (x: any) => {
       if(x == 5) {
         let data = {
           id_seccion,
-          id_familia: selectedTypeFamily,
+          id_familia: selectedTypeFamily.id,
           tipo_contenedor,
           imagen: '',
           titulo: serviceJson.titulo,
@@ -1181,7 +1210,7 @@ const SaveUpdateContainer = async (e: React.FormEvent) => {
   let data = {
     id: copyContainer[index].id,
     id_seccion: copyContainer[index].id_seccion,
-    id_familia: copyContainer[index].id_familia = selectedTypeFamily,
+    id_familia: selectedTypeFamily ? selectedTypeFamily.id : copyContainer[index].id_familia,
     tipo_contenedor: copyContainer[index].tipo_contenedor,
     imagen: copyContainer[index].imagen,
     titulo: copyContainer[index].titulo,
@@ -1210,7 +1239,7 @@ useEffect(() => {
 }, [])
 
 
-const updateContainerOrder = (item: any, index: any) => {
+const updateContainerOrder = async (item: any, index: any) => {
   let updatedContainer = [...copyContainer];
 
   // Crea el nuevo dato con la estructura deseada
@@ -1233,8 +1262,35 @@ const updateContainerOrder = (item: any, index: any) => {
   });
 
   // Actualiza el estado con el nuevo contenedor
-  updateContenedorOrder(updatedContainer);
+  await updateContenedorOrder(updatedContainer);
+  const container = await getContenedor(sections[0].id);
+    if (container && Array.isArray(container)) {
+      const updatedContainer = container.map(item => {
+        const [
+          textAlign1, fontSize1, fontWeight1, color1,
+          textAlign2, fontSize2, fontWeight2, color2,
+          textAlign3, fontSize3, fontWeight3, color3,
+          textAlign4, fontSize4, fontWeight4, color4,
+          textAlign5, fontSize5, fontWeight5, color5,
+          textAlign6, fontSize6, fontWeight6, color6,
+        ] = item.imagen6.split('|');
+        
+        return {
+          ...item,
+          textAlign1: textAlign1, fontSize1: fontSize1, fontWeight1: fontWeight1, color1: color1,
+          textAlign2: textAlign2, fontSize2: fontSize2, fontWeight2: fontWeight2, color2: color2,
+          textAlign3: textAlign3, fontSize3: fontSize3, fontWeight3: fontWeight3, color3: color3,
+          textAlign4: textAlign4, fontSize4: fontSize4, fontWeight4: fontWeight4, color4: color4,
+          textAlign5: textAlign5, fontSize5: fontSize5, fontWeight5: fontWeight5, color5: color5,
+          textAlign6: textAlign6, fontSize6: fontSize6, fontWeight6: fontWeight6, color6: color6,
+          
+        };
+      });
+      
+      setCopyContainer(updatedContainer);
+    }
 };
+
 
 
 
@@ -1523,9 +1579,9 @@ const addLinkButtons = () => {
           <button className="item"onClick={changeSFour}>
             Productos 
           </button>
-          <button className="item"onClick={changeSFive}>
+          {/* <button className="item"onClick={changeSFive}>
             Footer 
-          </button>
+          </button> */}
         </div>
         {validateSection === 1 &&
         <div className="sidebar__web-page">
@@ -1925,7 +1981,7 @@ const addLinkButtons = () => {
                       <div>
                         <div>
                           <p>Imagen del item</p>
-                          <div className="container__change_banner_update item_web-page"  style={{ backgroundImage: `url(${copyContainer[index].imagen})` }}>
+                          <div className="container__change_banner_update item_web-page"  style={{ backgroundImage: `url(${copyContainer[index]?.imagen})` }}>
                             <label className="custom-file-upload">
                               <small> Seleccionar archivo</small>
                               <input id="file-upload1" type="file" onChange={handleImageChange}/>
@@ -2556,7 +2612,7 @@ const addLinkButtons = () => {
                           <div className='select-btn__general'>
                             <div className={`select-btn ${selectTypesFamilies ? 'active' : ''}`} onClick={openSelectFamilies}>
                               <div className='select__container_title'>
-                                <p>{selectedTypeFamily ? families && families.find((s: {id: number}) => s.id === selectedTypeFamily)?.nombre : 'Selecciona'}</p>
+                                <p>{selectedTypeFamily ? families && families.find((s: {id: number}) => s.id === selectedTypeFamily.id)?.nombre : 'Selecciona'}</p>
                               </div>
                               <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
                             </div>
@@ -3091,7 +3147,7 @@ const addLinkButtons = () => {
           </div>
         </div>
         }
-        {validateSection === 5 &&
+        {/* {validateSection === 5 &&
         <div className="sidebar__web-page">
           <div className={`links ${activeMenuIndex === 1 ? 'activeMenu' : ''}`}>
             <button className="link" style={sales} onClick={() => toggleSubMenu(1)}>
@@ -3313,7 +3369,7 @@ const addLinkButtons = () => {
          
           </div>
         </div>
-        }
+        } */}
         {web && (
           <div ref={mainWebpageRef} style={overFlow}  className={`main__webpage ${stateResponse ? 'response' : ''} `} >
             <div className="hero__web-page-edit">
@@ -3338,6 +3394,7 @@ const addLinkButtons = () => {
                 </div>
               </div>
             </div>
+  
             <div className="section__one_web">
               <div className={`whatsapp__botton`}>
                 {linkButtons && linkButtons.map((x: any) => (
@@ -3351,8 +3408,13 @@ const addLinkButtons = () => {
                   <Reorder.Item value={item} key={item.id}>
                     <div className="container__section_container">
                       {item.tipo_contenedor === 1 &&
-                      <div  className="banner_web-page-u" onClick={() => updateContainerOrder(item, index)}>
+                      <div  className="banner_web-page-u">
                         <Banner item={item}  copyContainer={copyContainer} index={index} />
+                        {index !== copyContainer[index].orden  ? 
+                        <button className="btn__general-purple btn_save_order_web" onClick={() => updateContainerOrder(item, index)}>Guardar orden</button>
+                        :
+                        ''
+                        }
                         <div className="tools_edits">
                           <div className="tools_edits_container">
                             <div>
@@ -3368,6 +3430,11 @@ const addLinkButtons = () => {
                       {item.tipo_contenedor == 2 && 
                       <div  className="banner_web-page-u">
                         <Services item={item} copyContainer={copyContainer} index={index}  editServices={editServicePadre} />
+                        {index !== copyContainer[index].orden  ? 
+                        <button className="btn__general-purple btn_save_order_web" onClick={() => updateContainerOrder(item, index)}>Guardar orden</button>
+                        :
+                        ''
+                        }
                         <div className="tools_edits">
                    
                           <div className="tools_edits_container">
@@ -3383,6 +3450,11 @@ const addLinkButtons = () => {
                       {item.tipo_contenedor === 3 &&
                       <div  className="collections_web-page-u">
                         <Description copyContainer={copyContainer} index={index}/>
+                        {index !== copyContainer[index].orden  ? 
+                        <button className="btn__general-purple btn_save_order_web" onClick={() => updateContainerOrder(item, index)}>Guardar orden</button>
+                        :
+                        ''
+                        }
                         <div className="tools_edits">
                           <div className="tools_edits_container">
                             <div>
@@ -3398,6 +3470,11 @@ const addLinkButtons = () => {
                       {item.tipo_contenedor === 4 &&
                       <div className="slider_web-page-u">
                         <Slider item={item} copyContainer={copyContainer} />
+                        {index !== copyContainer[index].orden  ? 
+                        <button className="btn__general-purple btn_save_order_web" onClick={() => updateContainerOrder(item, index)}>Guardar orden</button>
+                        :
+                        ''
+                        }
                         <div className="tools_edits">
                           <div className="tools_edits_container">
                             <div>
@@ -3412,7 +3489,12 @@ const addLinkButtons = () => {
                       }
                       {item.tipo_contenedor === 5 &&
                       <div className="carousel_web-page-u">
-                        <Carousel selectedTypeFamily={selectedTypeFamily} />
+                        <Carousel item={item} selectedTypeFamily={selectedTypeFamily} />
+                        {index !== copyContainer[index].orden  ? 
+                        <button className="btn__general-purple btn_save_order_web" onClick={() => updateContainerOrder(item, index)}>Guardar orden</button>
+                        :
+                        ''
+                        }
                         <div className="tools_edits">
                           <div className="tools_edits_container">
                             <div>
@@ -3428,6 +3510,11 @@ const addLinkButtons = () => {
                       {item.tipo_contenedor === 6 &&
                       <div className="banner_web-page-u">
                         <SmallBanner item={item} copyContainer={copyContainer} index={index} />
+                        {index !== copyContainer[index].orden  ? 
+                        <button className="btn__general-purple btn_save_order_web" onClick={() => updateContainerOrder(item, index)}>Guardar orden</button>
+                        :
+                        ''
+                        }
                         <div className="tools_edits">
                           <div className="tools_edits_container">
                             <div>
@@ -3463,7 +3550,7 @@ const addLinkButtons = () => {
             <footer className="footer-web-page">
               <div className="footer-line"></div>
               <div className="footer-wrapper">
-                  <section className="footer-top">
+                  {/* <section className="footer-top">
                       <div className="footer-headline">
                           <h3>Sign up to our newsletter</h3>
                           <p>
@@ -3497,10 +3584,10 @@ const addLinkButtons = () => {
                         ))}
                       </section>
                     
-                  </div>
+                  </div> */}
                   <div className="footer-bottom">
-                      <small>© My Company Ltd. <span id="year"></span>, All rights reserved</small>
-                      <span className='social-links'>
+                      <small>© Desarrollado por Hiplot Business. <span id="year"></span>, Todos los derechos reservados</small>
+                      {/* <span className='social-links'>
                           <a href="#" title="Instagram">
                             <svg xmlns="http://www.w3.org/2000/svg" width='20' viewBox="0 0 512 512"><path d="M512 256C512 114.6 397.4 0 256 0S0 114.6 0 256C0 376 82.7 476.8 194.2 504.5V334.2H141.4V256h52.8V222.3c0-87.1 39.4-127.5 125-127.5c16.2 0 44.2 3.2 55.7 6.4V172c-6-.6-16.5-1-29.6-1c-42 0-58.2 15.9-58.2 57.2V256h83.6l-14.4 78.2H287V510.1C413.8 494.8 512 386.9 512 256h0z"/></svg>                      
                           </a>
@@ -3510,7 +3597,7 @@ const addLinkButtons = () => {
                           <a href="#" title="Twitter">
                             <svg xmlns="http://www.w3.org/2000/svg" width='20' viewBox="0 0 512 512"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>
                           </a>
-                      </span>
+                      </span> */}
                   </div>
               </div>
             </footer>

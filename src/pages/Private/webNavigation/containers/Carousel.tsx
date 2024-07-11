@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import './styles/Carrucel.css';
 import { storeArticles } from '../../../../zustand/Articles';
 
-const Carousel: React.FC<any> = ({selectedTypeFamily}: any) => {
+const Carousel: React.FC<any> = ({selectedTypeFamily, item}: any) => {
   const {articles, getArticles }: any = storeArticles();
   const carouselRef = useRef<HTMLUListElement>(null);
   const [cardWidth] = useState(0);
@@ -13,7 +13,7 @@ const Carousel: React.FC<any> = ({selectedTypeFamily}: any) => {
     let activos = true;
     let nombre = '';
     let codigo = '';
-    let familia = selectedTypeFamily;
+    let familia = selectedTypeFamily == undefined ? item.id_familia : selectedTypeFamily.id;
     let proveedor = 0;
     let materia_prima = 0;
     let get_sucursales = false;
@@ -48,11 +48,13 @@ const Carousel: React.FC<any> = ({selectedTypeFamily}: any) => {
     }
   };
 
+  console.log(selectedTypeFamily)
+
   return (
     <div className='carousel__web--page'>
       <div className='carousel__web--page_container'>
         <div className='title__families'>
-          <p>Nombre de la familia</p>
+          <p>{selectedTypeFamily ==  undefined ? item.familia : selectedTypeFamily.nombre}</p>
         </div>
         <div className="wrapper">
           <div className='angle' onClick={() => handleScroll(cardWidth)}>

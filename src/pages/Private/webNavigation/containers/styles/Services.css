@@ -69,3 +69,8 @@
 
 
 
+.item__service .item {
+    overflow: hidden; 
+    word-wrap: break-word;
+
+}

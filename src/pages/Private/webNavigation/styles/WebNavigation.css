@@ -1267,7 +1267,11 @@
 
 
 
-
+.btn_save_order_web {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
 
 
 

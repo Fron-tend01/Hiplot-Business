@@ -113,7 +113,7 @@ export const storeWebPages = create<StoreState>((set) => ({
     updateContenedorOrder: async (data : any) => {
         try {
         const response = await APIs.updateContenedorOrder(data)
-        // Swal.fire('Contenedor actualizado exitosamente', '', 'success');
+        Swal.fire('Contenedor actualizado exitosamente', '', 'success');
         return response;
         } catch (error) {
         console.log('Error al traer la pagin',error)
