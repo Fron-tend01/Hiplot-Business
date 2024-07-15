@@ -19,14 +19,17 @@ import './styles/editor.css'
 import imagesJson from './jsons/imagesJson.json'
 import FontWeight from './jsons/fontWeight.json'
 import { FamiliesRequests } from "../../../fuctions/Families";
-
-
-
+import ban from '../../../assets/web-navigation/img/banner.png'
+import serv from '../../../assets/web-navigation/img/servicios.png'
+import desc from '../../../assets/web-navigation/img/descripcion.png'
+import sli from '../../../assets/web-navigation/img/slider.png'
+import car from '../../../assets/web-navigation/img/carrusel.png'
+import sb from '../../../assets/web-navigation/img/smallbanner.png'
 const WebNavigation = () => {
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
   const { getWeb, HeaderAndFooter, headerAndFooter, updateWeb,  updateSectionWeb,
-  createContenedor, getContenedor, updateContenedor, deleteContenedor, createSectionsWeb, getSectionsWeb, deleteSectionsWeb,
+  createContenedor, getContenedor, updateContenedor, deleteContenedor, createSectionsWeb,updateSectionsWeb, getSectionsWeb, deleteSectionsWeb,
   createProductsWeb, updateProductsWeb, deleteProductsWeb, updateContenedorOrder}: any = storeWebPages();
   const {getFamilies}: any = FamiliesRequests()
   const [families, setFamilies] = useState<any>()
@@ -59,8 +62,13 @@ const WebNavigation = () => {
 
   useEffect(() => {
     fetch()
-    
-    HeaderAndFooter(id_sucursal)
+
+    let hyf = async () => {
+      let re = await HeaderAndFooter(id_sucursal)
+      setlogoImage(re.logo)
+
+      return re
+    }
   
     const fetchData = async () => {
 
@@ -94,12 +102,15 @@ const WebNavigation = () => {
     }
   };
   fetchData()
+  hyf()
+  // console.log(hyf())
   
   }, [id_sucursal, idContainerH]);
 
+  const [logoImage, setlogoImage] = useState<any>(null)
 
   
-  const [logoImage, setlogoImage] = useState<any>(null)
+ 
 
   const [web, setWeb] = useState<any>([])
 
@@ -636,7 +647,20 @@ useEffect(() => {
     setSections(sections)
   }
 
- 
+  const updateSections = async (e: React.FormEvent) => {
+    e.preventDefault()
+    let data = {
+      id: selectedTypeSection,
+      seccion: nameSection,
+      titulo: '',
+      imagen: '',
+      imagen2: ''
+
+    }
+    await updateSectionWeb(data)
+    const sections = await getSectionsWeb(id_sucursal);
+    setSections(sections)
+  }
 
 
 
@@ -1025,8 +1049,10 @@ const containerEditor = async (item: any, index: any) => {
     fontSize2: fontSize2,
     color2: color2
   };
-
+  
   setCopyContainer(updatedCopyContainer);
+  console.log(copyContainer);
+
 };
 
 
@@ -1222,6 +1248,7 @@ const SaveUpdateContainer = async (e: React.FormEvent) => {
     titulo4: copyContainer[index].titulo4,
     imagen5: copyContainer[index].imagen5,
     titulo5: copyContainer[index].titulo5,
+    titulo6: copyContainer[index].titulo6,
     imagen6: `${copyContainer[index].textAlign1}|${copyContainer[index].fontSize1}|${copyContainer[index].fontWeight1}|${copyContainer[index].color1}|${copyContainer[index].textAlign2}|${copyContainer[index].fontSize2}|${copyContainer[index].fontWeight2}|${copyContainer[index].color2}|${copyContainer[index].textAlign3}|${copyContainer[index].fontSize3}|${copyContainer[index].fontWeight3}|${copyContainer[index].color3}|${copyContainer[index].textAlign4}|${copyContainer[index].fontSize4}|${copyContainer[index].fontWeight4}|${copyContainer[index].color4}|${copyContainer[index].textAlign5}|${copyContainer[index].fontSize5}|${copyContainer[index].fontWeight5}|${copyContainer[index].color5}|${copyContainer[index].textAlign6}|${copyContainer[index].fontSize6}|${copyContainer[index].fontWeight6}|${copyContainer[index].color6}`
   }
 
@@ -1541,8 +1568,6 @@ const addLinkButtons = () => {
   }
   setLinkButtons([...linkButtons, data])
 }
-
-
   return (
     <div className="web_page">
       <header className='hero__web' >
@@ -1618,10 +1643,10 @@ const addLinkButtons = () => {
 
                   <div className="item_web">
                   <p>Logo</p>
-                  <div className="container__change_banner">
-                    <label htmlFor="file-upload1" className="custom-file-upload">
+                  <div className="container__change_banner" style={{ backgroundImage: `url(${logoImage})`,backgroundSize: 'cover',backgroundPosition: 'center' }}>
+                    <label htmlFor="file-upload12" className="custom-file-upload">
                       <small> Seleccionar archivo</small>
-                      <input id="file-upload1" type="file" onChange={handleLogoChange}/>
+                      <input id="file-upload12" type="file" onChange={handleLogoChange}/>
                     </label>
                   </div>
                 </div>
@@ -1702,11 +1727,36 @@ const addLinkButtons = () => {
                           ))}
                         </ul>
                       </div>
+                      <div className="item_web">
+                  <label>Nombre de la seccion</label>
+                  <div className="conatiner__input_hero">
+                    <ReactQuill
+                      theme="snow"
+                      value={nameSection}
+                      onChange={handleNameSectionChange}
+                      placeholder="Nombre de la categoría"
+                      modules={{
+                        toolbar: [
+                          [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+                          [{size: []}],
+                          ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                          [{'list': 'ordered'}, {'list': 'bullet'}, 
+                          {'indent': '-1'}, {'indent': '+1'}],
+                              // [{ 'alignTextUp': alignTextUp }],
+                              // [{ 'alignTextDown': alignTextDown }], // Alineación
+                          ['align', { 'align': [] }],
+                          [{ 'color': [] }],
+                          ['clean']
+                        ],
+                      }}
+                    />
+                  </div>
+                </div>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <button className="btn__general-green-web" onClick={SaveContainer}>Guardar</button>
+                  <button className="btn__general-green-web" onClick={updateSections}>Guardar</button>
                 </div>
               </div>
             </div>
@@ -1793,7 +1843,7 @@ const addLinkButtons = () => {
                 </div>
                 <div>
                   <p>Banner</p>
-                  <div className="container__change_banner_create" onClick={() => saveContainer(1)}>
+                  <div className="container__change_banner_create" onClick={() => saveContainer(1)} style={{ backgroundImage: `url(${ban})`,backgroundSize: 'cover',backgroundPosition: 'center' }}>
                     <div >
                       <p className="file__input_text">Agregar</p>
                     </div>
@@ -1805,9 +1855,9 @@ const addLinkButtons = () => {
                 </div>
                 <div>
                   <p>Servicios</p>
-                  <div className="container__change_banner_create" onClick={() => saveContainer(2)}>
+                  <div className="container__change_banner_create" onClick={() => saveContainer(2)} style={{ backgroundImage: `url(${serv})`,backgroundSize: 'cover',backgroundPosition: 'center' }}>
                     <div >
-                      <p className="file__input_text">Agregar</p>
+                    <b><p className="file__input_text">Agregar</p></b>
                     </div>
                     {/* <label for="file-upload1" class="custom-file-upload">
                       <small> Seleccionar archivo</small>
@@ -1817,9 +1867,9 @@ const addLinkButtons = () => {
                 </div>
                 <div>
                   <p>Descripcion</p>
-                  <div className="container__change_banner_create" onClick={() => saveContainer(3)}>
+                  <div className="container__change_banner_create" onClick={() => saveContainer(3)} style={{ backgroundImage: `url(${desc})`,backgroundSize: 'cover',backgroundPosition: 'center' }}>
                     <div >
-                      <p className="file__input_text">Agregar</p>
+                    <b><p className="file__input_text">Agregar</p></b>
                     </div>
                     {/* <label for="file-upload1" class="custom-file-upload">
                       <small> Seleccionar archivo</small>
@@ -1829,9 +1879,9 @@ const addLinkButtons = () => {
                 </div>
                 <div>
                   <p>Slider</p>
-                  <div className="container__change_banner_create" onClick={() => saveContainer(4)}>
+                  <div className="container__change_banner_create" onClick={() => saveContainer(4)} style={{ backgroundImage: `url(${sli})`,backgroundSize: 'cover',backgroundPosition: 'center' }}>
                     <div >
-                      <p className="file__input_text">Agregar</p>
+                    <b><p className="file__input_text">Agregar</p></b>
                     </div>
                     {/* <label for="file-upload1" class="custom-file-upload">
                       <small> Seleccionar archivo</small>
@@ -1841,9 +1891,9 @@ const addLinkButtons = () => {
                 </div>
                 <div>
                   <p>Carrucel</p>
-                  <div className="container__change_banner_create" onClick={() => saveContainer(5)}>
+                  <div className="container__change_banner_create" onClick={() => saveContainer(5)}style={{ backgroundImage: `url(${car})`,backgroundSize: 'cover',backgroundPosition: 'center' }}>
                     <div >
-                      <p className="file__input_text">Agregar</p>
+                    <b><p className="file__input_text">Agregar</p></b>
                     </div>
                     {/* <label for="file-upload1" class="custom-file-upload">
                       <small> Seleccionar archivo</small>
@@ -1853,9 +1903,9 @@ const addLinkButtons = () => {
                 </div>
                 <div>
                   <p>Small Banner</p>
-                  <div className="container__change_banner_create" onClick={() => saveContainer(6)}>
+                  <div className="container__change_banner_create" onClick={() => saveContainer(6)}style={{ backgroundImage: `url(${sb})`,backgroundSize: 'cover',backgroundPosition: 'center' }}>
                     <div >
-                      <p className="file__input_text">Agregar</p>
+                      <b><p className="file__input_text">Agregar</p></b>
                     </div>
                     {/* <label for="file-upload1" class="custom-file-upload">
                       <small> Seleccionar archivo</small>
@@ -1893,6 +1943,7 @@ const addLinkButtons = () => {
                     <div>
                       <div className="item_web-page">
                         <p className="title__editor">Titulo del banner</p>
+                        {/* <script>console.log(dataContainer)</script> */}
                         <div className="editor-container">
                           <div className="editing__tools">
                             <div className="row__one">
@@ -1954,13 +2005,13 @@ const addLinkButtons = () => {
                             </div>                          
                           </div>
                           <div>
-                            <textarea className={`input__editor`}  onChange={handleInputTitleChange} ></textarea>
+                            <textarea className={`input__editor`}  onChange={handleInputTitleChange} value={copyContainer[index]?.titulo}></textarea>
                           </div>
                         </div>
                       </div>
                       <div className="item_web-page" >
-                        <p  className="title__editor">Titulo del banner</p>
-                        <div className="container__change_banner_update" style={{ backgroundImage: `url(${dataEdit.imagen})`}}      >
+                        <p  className="title__editor">Imagen del banner</p>
+                        <div className="container__change_banner_update" style={{ backgroundImage: `url(${copyContainer[index]?.imagen})`, backgroundSize: 'cover',backgroundPosition: 'center'}}      >
                           <label className="custom-file-upload">
                             <small> Seleccionar archivo</small>
                             <input id="file-upload1" type="file" onChange={handleImageChange}/>
@@ -2051,7 +2102,7 @@ const addLinkButtons = () => {
                               </div>                          
                             </div>
                             <div>
-                              <textarea className={`input__editor`}  onChange={handleTitleChange} ></textarea>
+                              <textarea className={`input__editor`}  onChange={handleTitleChange} value={copyContainer[index]?.titulo}></textarea>
                             </div>
                           </div>
                         </div>
@@ -2118,7 +2169,7 @@ const addLinkButtons = () => {
                               </div>                          
                             </div>
                             <div>
-                              <textarea className={`input__editor`}  onChange={handleTitle2Change} ></textarea>
+                              <textarea className={`input__editor`}  onChange={handleTitle2Change} value={copyContainer[index]?.titulo2}></textarea>
                             </div>
                           </div>
                         </div>
@@ -2130,7 +2181,7 @@ const addLinkButtons = () => {
                       <div>
                         <div>
                           <p>Imagen del item</p>
-                          <div className="container__change_banner_update item_web-page"  style={{ backgroundImage: `url(${copyContainer[index].imagen2})` }}>
+                          <div className="container__change_banner_update item_web-page"  style={{ backgroundImage: `url(${copyContainer[index]?.imagen2})` }}>
                             <label className="custom-file-upload">
                               <small> Seleccionar archivo</small>
                               <input id="file-upload1" type="file" onChange={handleImage2Change}/>
@@ -2200,7 +2251,7 @@ const addLinkButtons = () => {
                               </div>                          
                             </div>
                             <div>
-                              <textarea className={`input__editor`}  onChange={handleTitle3Change} ></textarea>
+                              <textarea className={`input__editor`}  onChange={handleTitle3Change} value={copyContainer[index]?.titulo3}></textarea>
                             </div>
                           </div>
                         </div>
@@ -2267,7 +2318,7 @@ const addLinkButtons = () => {
                               </div>                          
                             </div>
                             <div>
-                              <textarea className={`input__editor`}  onChange={handleTitle4Change} ></textarea>
+                              <textarea className={`input__editor`}  onChange={handleTitle4Change} value={copyContainer[index]?.titulo4}></textarea>
                             </div>
                           </div>
                         </div>
@@ -2279,7 +2330,7 @@ const addLinkButtons = () => {
                       <div>
                         <div>
                           <p>Imagen del item</p>
-                          <div className="container__change_banner_update item_web-page"  style={{ backgroundImage: `url(${copyContainer[index].imagen3})` }}>
+                          <div className="container__change_banner_update item_web-page"  style={{ backgroundImage: `url(${copyContainer[index]?.imagen3})` }}>
                             <label className="custom-file-upload">
                               <small> Seleccionar archivo</small>
                               <input id="file-upload1" type="file" onChange={handleImage3Change}/>
@@ -2349,7 +2400,7 @@ const addLinkButtons = () => {
                               </div>                          
                             </div>
                             <div>
-                              <textarea className={`input__editor`}  onChange={handleTitle5Change} ></textarea>
+                              <textarea className={`input__editor`}  onChange={handleTitle5Change} value={copyContainer[index]?.titulo5}></textarea>
                             </div>
                           </div>
                         </div>
@@ -2416,7 +2467,7 @@ const addLinkButtons = () => {
                               </div>                          
                             </div>
                             <div>
-                              <textarea className={`input__editor`}  onChange={handleTitle6Change} ></textarea>
+                              <textarea className={`input__editor`}  onChange={handleTitle6Change} value={copyContainer[index]?.titulo6}></textarea>
                             </div>
                           </div>
                         </div>
@@ -2431,8 +2482,8 @@ const addLinkButtons = () => {
                     {dataContainer.tipo_contenedor === 3 ?
                     <div>
                       <div>
-                        <p>Imagen del item</p>
-                        <div className="container__change_banner_update item_web-page"  style={{ backgroundImage: `url(${dataEdit.imagen})` }}>
+                        <p>Imagen del itema</p>
+                        <div className="container__change_banner_update item_web-page"  style={{ backgroundImage: `url(${copyContainer[index]?.imagen})`, backgroundSize: 'cover',backgroundPosition: 'center'}}>
                           <label className="custom-file-upload">
                             <small> Seleccionar archivo</small>
                             <input id="file-upload1" type="file" onChange={handleImageContainerChange}/>
@@ -2502,7 +2553,7 @@ const addLinkButtons = () => {
                             </div>                          
                           </div>
                           <div>
-                            <textarea className={`input__editor`}  onChange={handleInputTitleChange}></textarea>
+                            <textarea className={`input__editor`}  onChange={handleInputTitleChange} value={copyContainer[index]?.titulo}></textarea>
                           </div>
                          
                         </div>
@@ -2570,7 +2621,7 @@ const addLinkButtons = () => {
                             </div>                          
                           </div>
                           <div>
-                            <textarea className={`input__editor`}  onChange={handleDescriptionContainerChange}></textarea>
+                            <textarea className={`input__editor`}  onChange={handleDescriptionContainerChange} value={copyContainer[index]?.imagen4}></textarea>
                           </div>
                         </div>
                       </div>
@@ -2583,7 +2634,7 @@ const addLinkButtons = () => {
                     
                     <div>
                       <div>
-                      <p>Banner</p>
+                      <p>EN DESARROLLO...(Solo agrega una imagen)</p>
                       <div className="item_web-page">
                       
 
@@ -2591,7 +2642,7 @@ const addLinkButtons = () => {
                       </div>
                       <div>
                         <p>Imagen del item</p>
-                        <div className="container__change_banner_update item_web-page"  style={{ backgroundImage: `url(${dataEdit.imagen})` }}>
+                        <div className="container__change_banner_update item_web-page"  style={{ backgroundImage: `url(${copyContainer[index]?.imagen})`, backgroundSize:'cover',backgroundPosition:'center' }}>
                           <label  className="custom-file-upload">
                             <small> Seleccionar archivo</small>
                             <input id="file-upload1" type="file" onChange={handleImageContainerChange}/>
@@ -2608,7 +2659,7 @@ const addLinkButtons = () => {
                     <div>
                       <div className="item_web">
                         <div className='select__container'>
-                          <label className='label__general'>Tipo de familia</label>
+                          <label className='label__general'>Tipo de familia (EN DESARROLLO...)</label>
                           <div className='select-btn__general'>
                             <div className={`select-btn ${selectTypesFamilies ? 'active' : ''}`} onClick={openSelectFamilies}>
                               <div className='select__container_title'>
@@ -2697,7 +2748,7 @@ const addLinkButtons = () => {
                             </div>                          
                           </div>
                           <div>
-                            <textarea className={`input__editor ${textCenteringState}`}  onChange={handleInputTitleChange} ></textarea>
+                            <textarea className={`input__editor ${textCenteringState}`}  onChange={handleInputTitleChange} value={copyContainer[index]?.titulo}></textarea>
                           </div>
                         </div>
                       </div>
@@ -2764,13 +2815,13 @@ const addLinkButtons = () => {
                             </div>                          
                           </div>
                           <div>
-                            <textarea className={`input__editor ${textCenteringState}`}  onChange={handleDescriptionContainerChange} ></textarea>
+                            <textarea className={`input__editor ${textCenteringState}`}  onChange={handleDescriptionContainerChange} value={copyContainer[index]?.imagen4}></textarea>
                           </div>
                         </div>
                       </div>
                       <div className="item_web-page">
                         <p>Imagen del item</p>
-                        <div className="container__change_banner_update"  style={{ backgroundImage: `url(${dataEdit.imagen})` }}>
+                        <div className="container__change_banner_update"  style={{ backgroundImage: `url(${copyContainer[index]?.imagen})`, backgroundSize:'cover', backgroundPosition:'center'}}>
                           <label className="custom-file-upload">
                             <small> Seleccionar archivo</small>
                             <input id="file-upload1" type="file" onChange={handleImageContainerChange}/>
@@ -3374,7 +3425,7 @@ const addLinkButtons = () => {
           <div ref={mainWebpageRef} style={overFlow}  className={`main__webpage ${stateResponse ? 'response' : ''} `} >
             <div className="hero__web-page-edit">
               <div className='hero__web-page_container'>
-                <div className="logo_web-page" style={{ backgroundImage: `url(${headerAndFooter.logo})` }}>
+                <div className="logo_web-page" style={{ backgroundImage: `url(${logoImage})` }}>
                 </div>
                 <nav className='nav__hero_web-page'>
                     <ul className={`nav__links_web-page ${stateToggle ? 'active' : ''}`}>
