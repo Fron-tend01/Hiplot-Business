@@ -1,0 +1,59 @@
+.conatiner__create_requisition .row__three > .differential > .row__one {
+	display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) ;
+    column-gap: 50px;
+	align-items: end;
+	text-align: left;
+	margin: 15px 0;
+}
+
+
+.conatiner__create_requisition .row__three > .differential > .row__one > .search_suppliers {
+	display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+	align-items: end;
+	text-align: left;
+
+}
+
+.conatiner__create_requisition .row__three > .differential > .row__two {
+	display: grid;
+    grid-template-columns: 1fr auto;
+    width: 60%;
+    column-gap: 20px;
+	align-items: end;
+	text-align: left;
+    margin: 0 auto;
+}
+
+
+
+.conatiner__update_requisition .row__three > .differential > .row__one {
+	display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) ;
+    column-gap: 50px;
+	align-items: end;
+	text-align: left;
+	margin: 15px 0;
+}
+
+
+.conatiner__update_requisition .row__three > .differential > .row__one > .search_suppliers {
+	display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+	align-items: end;
+	text-align: left;
+
+}
+
+.conatiner__update_requisition .row__three > .differential > .row__two {
+	display: grid;
+    grid-template-columns: 1fr auto;
+    width: 60%;
+    column-gap: 20px;
+	align-items: end;
+	text-align: left;
+    margin: 0 auto;
+}

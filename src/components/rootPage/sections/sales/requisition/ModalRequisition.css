@@ -1,0 +1,3 @@
+.conatiner__create_requisition > .row__two > .container__textarea_general {
+    grid-column: 1 / span 4;
+}

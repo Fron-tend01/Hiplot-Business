@@ -19,7 +19,7 @@
 	gap: 10px;
 }
 
-.requisition .row__two {
+.requisition > .row__two {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	align-items: center;
@@ -73,7 +73,7 @@
   	padding: 20px;
 }
 
-.requisition .row__three {
+.container__requisition > .row__three {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr) 100px 1fr;
 	gap: 10px;
@@ -100,9 +100,9 @@
 	grid-column: 1 / 2;
 }
 
-.conatiner__create_requisition .row__two {
+.conatiner__create_requisition > .row__two {
 	display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 10px;
 	align-items: end;
 	text-align: left;
@@ -171,22 +171,22 @@
   }
 
 
-.conatiner__create_requisition .row__three {
-	display: grid;
-    grid-template-columns: repeat(2, 1fr) 100px;
-    gap: 10px;
-	align-items: end;
-	text-align: left;
-	margin: 15px 0;
-}
 
-.conatiner__create_requisition .row__four {
+
+/* .conatiner__create_requisition > .row__four {
 	display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
 	align-items: end;
 	text-align: left;
+} */
+
+.conatiner__create_requisition > .row__four {
+	display: flex;
+	justify-content: center;
+	margin-top: 20px;
 }
+
 
 .container___row_four {
 	display: flex;
@@ -449,11 +449,22 @@
     display: grid;
     grid-template-columns: repeat(6, 1fr) 100px;
     padding: 10px;
+	column-gap: 20px;
+	align-items: center;
 
 }
 
 .table__requisiciones  .table__body .tbody .td {
     color: var(--text-color);
+}
+
+.table__requisiciones  .table__body .tbody .td.delete {
+	display: flex;
+	justify-content: end;
+}
+
+.table__requisiciones  .table__body .tbody .td .inputs__general {
+   margin-top: 0;
 }
 
 .table__requisiciones .table__body .tbody:hover {
@@ -463,29 +474,3 @@
 
 
 
-
-
-
-.conatiner__update_requisition .row__one {
-	display: flex;
-	justify-content: center;
-}
-
-
-.conatiner__update_requisition .row__two {
-	display: grid;
-	grid-template-columns: repeat(4, minmax(0, 1fr)) ;
-	gap: 10px;
-}
-
-.conatiner__update_requisition .row__three {
-	display: grid;
-	grid-template-columns:  1fr;
-}
-
-
-.conatiner__update_requisition .row__five {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 10px;
-}

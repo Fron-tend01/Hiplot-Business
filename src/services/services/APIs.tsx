@@ -166,6 +166,12 @@ const APIs = {
     return ConfigurationAPIs.post(path, data)
   },
 
+  getArticlesDifferential: async (data: any, customPath?: string) => {
+    const path = customPath || `get_articulos_diferenciales/${data.id_proveedor}/${data.id_sucursal}/${data.id_usuario}`;
+    return ConfigurationAPIs.post(path, data)
+  },
+
+
   updateArticles: async (data: any, customPath?: string) => {
     const path = customPath || `update_articulo/${data.id}`;
     return ConfigurationAPIs.put(path, data)
@@ -254,20 +260,25 @@ const APIs = {
 
    //  Requisision
 
-   createRequisition: async (id_usuario_crea: number, id_sucursal: number, tipo: number, id_area: number, titulo: string, comentarios: string, conceptos: [id_articulo: number, cantidad: number, unidad: string, costo_aprox: number, comentarios: string], conceptos_elim: any[], customPath?: string) => {
+   createRequisition: async (data: any, customPath?: string) => {
     const path = customPath || 'create_requisicion';
-    return ConfigurationAPIs.post(path, {id_usuario_crea, id_sucursal, tipo, id_area, titulo, comentarios, conceptos, conceptos_elim})
+    return ConfigurationAPIs.post(path, data)
   },
 
-  getRequisition: async (folio: number, id_serie: number, id_sucursal: number, id_usuario: number, id_area: number, tipo: number, desde: Date, hasta: Date, status: number, customPath?: string) => {
+  getRequisition: async (data: any, customPath?: string) => {
     const path = customPath || 'get_requisicion';
-    return ConfigurationAPIs.post(path, {folio, id_serie, id_sucursal, id_usuario, id_area, tipo, desde, hasta, status})
+    return ConfigurationAPIs.post(path, data)
   },
 
-  updateRequisition: async (id: number, status: boolean, customPath?: string) => {
+  updateRequisition: async (data: any, customPath?: string) => {
     const path = customPath || 'updt_req_for_cancel_or_active';
-    return ConfigurationAPIs.post(path, {id, status})
+    return ConfigurationAPIs.post(path, data)
   },
+
+  // updateRequisition: async (data: any, customPath?: string) => {
+  //   const path = customPath || 'updt_req_for_cancel_or_active';
+  //   return ConfigurationAPIs.post(path, data)
+  // },
 
   pdtRequisition: async (id: number, customPath?: string) => {
     const path = customPath || `pdf_requisicion/${id}`

@@ -18,12 +18,48 @@ interface Requisitions {
 interface StoreState {
     requisitions: Requisitions[];
     pdfData: any[];
+
+    updateToRequisition: any
+    setUpdateToRequisition: (requisition: any) => void;
+
+    modalStateCreate: any
+    setModalStateCreate: (requisition: any) => void;
+
+    modalStateUpdate: any
+    setModalStateUpdate: (modal: any) => void;
+
+    selectedBranchOffice: any
+    setSelectedBranchOffice: (branch: any) => void;
+
+    concepts: any
+    setConcepts: (concept: any) => void;
 }
 
 export const storeRequisitions = create<StoreState>((set) => ({
     requisitions: [],
     pdfData: [],
+
+    //Modal
+    modalStateCreate: '',
+    setModalStateCreate: (requisition) => set({ modalStateCreate: requisition }),
+
+    //Modal
+    modalStateUpdate: '',
+    setModalStateUpdate: (modal) => set({ modalStateUpdate: modal }),
+
+    //Modal
+    updateToRequisition: [],
+    setUpdateToRequisition: (requisition) => set({ updateToRequisition: requisition }),
   
+    //Sucursals
+    selectedBranchOffice: null,
+    setSelectedBranchOffice: (branch) => set({ selectedBranchOffice: branch }),
+
+     //Sucursals
+     concepts: [],
+     setConcepts: (concept) => set({ concepts: concept }),
+
+    
   // Requisision
   createRequisition: async (id_usuario_crea: number, id_sucursal: number, tipo: number, id_area: number, titulo: string, comentarios: string, conceptos: [id_articulo: number, cantidad: number, unidad: string, costo_aprox: number, comentarios: string], conceptos_elim: any[]) => {
     try {
