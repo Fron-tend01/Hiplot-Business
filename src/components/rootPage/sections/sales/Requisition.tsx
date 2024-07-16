@@ -1,11 +1,8 @@
 import React, { useState, useEffect} from 'react';
 import { companiesRequests } from '../../../../fuctions/Companies';
 import { BranchOfficesRequests } from '../../../../fuctions/BranchOffices';
-import { storeBranchOffcies } from '../../../../zustand/BranchOffices';
-import { storeAreas } from '../../../../zustand/Areas';
 import { areasRequests } from '../../../../fuctions/Areas';
 import { storeSeries } from '../../../../zustand/Series';
-import { storeArticles } from '../../../../zustand/Articles';
 import useUserStore from '../../../../zustand/General';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -15,7 +12,6 @@ import ModalCreate from './requisition/ModalCreate';
 import ModalUpdate from './requisition/ModalUpdate';
 import { storeRequisitions } from '../../../../zustand/Requisition'
 import { RequisitionRequests } from '../../../../fuctions/Requisition';
-import { useStore } from 'zustand';
 
 
 const Requisition: React.FC = () => {
@@ -56,12 +52,10 @@ const Requisition: React.FC = () => {
 
   // Estados de advertencia para validar campos
   // Warning states to validate fields
-  const [warningName, setWarningName] = useState<boolean>(false)
+  const [warningName] = useState<boolean>(false)
  
-  const {createRequisition, pdtRequisition }: any = storeRequisitions();
 
   const { series, getSeriesXUser }: any = storeSeries(); 
-  const { getArticles }: any = storeArticles();
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
   
@@ -385,9 +379,6 @@ const handleClick = (value: any) => {
 
   /* ================================================= Modal Update ==========================================================*/
 
-  const [dataSee, setDataSee] = useState<any[]>([])
-  const [requisicion_id, setRequisicion_id] = useState<number | null>(null)
-
   const modalUpdate = (requisition: any) => {
     setModalStateUpdate('update')
     setUpdateToRequisition(requisition)
@@ -398,41 +389,10 @@ const handleClick = (value: any) => {
 
 
 
-  const generatePdf = async () => {
-      try {
-          // Supongamos que tienes el ID de la requisición
-          await pdtRequisition(requisicion_id);
-      
-          window.open(`https://bnprocura.onrender.com/pdf_requisicion/${requisicion_id}`, '_blank');
-      } catch (error) {
-          console.error('Error al generar el PDF:', error);
-      }
-  };
-  
-  
-  // Llamar a la función para generar el PDF, pasando los datos obtenidos de la consulta
-
-  
-
-  
-
- 
-
-  const closeModalUpdate = () => {
-    setModalStateUpdate(false)
-  }
-
-
-
   const styleWarningName = {
     opacity: warningName === true ? '1' : '',
     height: warningName === true ? '23px' : ''
   }
-
-  
-  const [warningMaximum] = useState<boolean>(false)
-
-
 
 
   return (

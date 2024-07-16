@@ -187,10 +187,16 @@ const RootHome: React.FC = () => {
                                 <span>Salidas</span>
                             </AnchorTag>
                         );
-                    } else if (permiso.titulo == "TRASPASO") {
+                    } else if (permiso.titulo == "PEDIDO") {
                         return (
                             <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.ORDERS}`}>
                                 <span>Pedidos</span>
+                            </AnchorTag>
+                        );
+                    } else if (permiso.titulo == "TRASPASO") {
+                        return (
+                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.ORDERS}`}>
+                                <span>Traspasos</span>
                             </AnchorTag>
                         );
                     } else {

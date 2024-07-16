@@ -24,9 +24,15 @@ export const RequisitionRequests = () => ({
 
   updateRequisition: async (data: any) => {
     try {
-      await APIs.updateRequisition(data)
+      let response: any = await APIs.updateRequisition(data)
+       if(response.error == true) {
+          Swal.fire('advertencia', response.mensaje, 'warning');
+        } {
+          Swal.fire(response.mensaje, '', 'success');
+        }
+      return response
     } catch {
-
+      Swal.fire('Error', '', 'error');
     }
   },
 

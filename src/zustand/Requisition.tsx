@@ -61,9 +61,9 @@ export const storeRequisitions = create<StoreState>((set) => ({
 
     
   // Requisision
-  createRequisition: async (id_usuario_crea: number, id_sucursal: number, tipo: number, id_area: number, titulo: string, comentarios: string, conceptos: [id_articulo: number, cantidad: number, unidad: string, costo_aprox: number, comentarios: string], conceptos_elim: any[]) => {
+  createRequisition: async (data:  any) => {
     try {
-      await APIs.createRequisition(id_usuario_crea, id_sucursal, tipo, id_area, titulo, comentarios, conceptos, conceptos_elim)
+      await APIs.createRequisition(data)
       Swal.fire('Requisision creada exitosamente', '', 'success');
     } catch (error) {
       Swal.fire('Error', 'Hubo un error al crear la requisision', 'error');
@@ -71,22 +71,22 @@ export const storeRequisitions = create<StoreState>((set) => ({
     }
   },
 
-  getRequisition: async (folio: number, id_serie: number, id_sucursal: number, id_usuario: number, id_area: number, tipo: number, desde: Date, hasta: Date, status: number) => {
+  getRequisition: async (data: any) => {
     try {
-      const response = await APIs.getRequisition(folio, id_serie, id_sucursal, id_usuario, id_area, tipo, desde, hasta, status)
+      const response = await APIs.getRequisition(data)
       set({requisitions: response as Requisitions[]})
     } catch (error) {
       console.log('error al obtener las requisiciónes', error)
     }     
   },
 
-  updateRequisition: async (id: number, status: boolean) => {
-    try {
-      await APIs.updateRequisition(id, status)
-    } catch {
+  // updateRequisition: async (id: number, status: boolean) => {
+  //   try {
+  //     await APIs.updateRequisition(id, status)
+  //   } catch {
 
-    }
-  },
+  //   }
+  // },
 
   
   pdtRequisition: async (id: number) => {

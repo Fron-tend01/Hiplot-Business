@@ -271,7 +271,7 @@ const APIs = {
   },
 
   updateRequisition: async (data: any, customPath?: string) => {
-    const path = customPath || 'updt_req_for_cancel_or_active';
+    const path = customPath || 'update_requisiciones';
     return ConfigurationAPIs.post(path, data)
   },
 

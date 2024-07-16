@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { suppliersRequests } from '../../../../../../fuctions/Suppliers'
-import { FamiliesRequests } from '../../../../../../fuctions/Families'
 import { articleRequests } from '../../../../../../fuctions/Articles'
 import useUserStore from '../../../../../../zustand/General'
 import { storeRequisitions } from '../../../../../../zustand/Requisition'
 import { useStore } from 'zustand';
 import './styles/Differential.css';
-import { Toaster, toast } from 'sonner'
+import {toast } from 'sonner'
 
 const Differential: React.FC = () => {
   const userState = useUserStore(state => state.user);
@@ -106,7 +105,6 @@ const Differential: React.FC = () => {
     
   }
 
-  const [searchX, setsearchX] = useState<any>([])
 
   const [nameBy, setNameBy] = useState<string | number>('')
   return (

@@ -6,6 +6,7 @@ import Normal from './types/Normal'
 import Differential from './types/Differential';
 import { Toaster} from 'sonner'
 import { RequisitionRequests } from '../../../../../fuctions/Requisition'
+import APIs from '../../../../../services/services/APIs';
 import Swal from 'sweetalert2';
 import './ModalUpdate.css'
 
@@ -16,11 +17,19 @@ const ModalUpdate: React.FC = () => {
   const setConcepts = storeRequisitions((state: any) => state.setConcepts);
 
   const setModalStateUpdate = storeRequisitions((state: any) => state.setModalStateUpdate);
-  const {modalStateUpdate, updateRequisition, concepts, updateToRequisition}: any = useStore(storeRequisitions);
+  const {modalStateUpdate, concepts, updateToRequisition}: any = useStore(storeRequisitions);
   const {}: any = RequisitionRequests();
 
   useEffect(() => {
     if(updateToRequisition) {
+      for(let i = 0; updateToRequisition.conceptos.lenght > i; i++ ) {
+        let maxmin = updateToRequisition.conceptos[i]
+        let filter = maxmin.max_mins.filter((x: any) => x.id_sucursal == updateToRequisition.id_sucursal)
+        if(filter) {
+          
+        }
+      }
+
       setSelectedOption(updateToRequisition.tipo)
       setComments(updateToRequisition.comentarios)
       setConcepts(updateToRequisition.conceptos)
@@ -33,10 +42,11 @@ const ModalUpdate: React.FC = () => {
   
   const modalCloseCreate = () => {
     setModalStateUpdate('')
+    setConcepts([])
   }
 
 
-
+console.log(updateToRequisition)
 
 
   const [title, setTitle] = useState<string>('')
@@ -45,15 +55,10 @@ const ModalUpdate: React.FC = () => {
 
 
 
-  const [newRequisition, setNewRequisition] = useState<any[]>([]);
-
-  const [conceptos, setConceptos] = useState<{id_proveedor: number | null, cantidad: number | null, descuento: number | null, unidad:string, precio_unitario: number | null, iva_on: any, comentarios: string, }[]>([]);
-
-
-  const deleteResult = (itemId: number) => {
-    const updatedNewRequisition = newRequisition.filter((item: any) => item !== itemId);
-    setNewRequisition(updatedNewRequisition);
-  };
+  // const deleteResult = (itemId: number) => {
+  //   const updatedNewRequisition = newRequisition.filter((item: any) => item !== itemId);
+  //   setNewRequisition(updatedNewRequisition);
+  // };
 
 
 
@@ -88,32 +93,37 @@ const handleComentariosChange = (e: React.ChangeEvent<HTMLInputElement>, index: 
   setConcepts(newArticleStates);
 };
 
+const [deleteConcepts, setDeleteConcepts] =  useState<any>([])
+console.log(deleteConcepts)
 
-  
 const handleCreateRequisition = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
   // let art_tmp = articles.filter((x:any)=>x.id == selectedResult)
 
   let data = {
     id: updateToRequisition.id,
-    id_usuario_crea: 0,
+    id_usuario_crea: user_id,
+    status: updateToRequisition.status,
+    tipo: updateToRequisition.tipo,
     titulo: title,
-    comentarios: comments, 
+    comentarios: comments,
+    // documentoAnterior: "",
+    // documentoSiguiente: "",
     conceptos: concepts,
-    conceptos_elim: []
-  };
+    conceptos_elim: deleteConcepts
+  }
+
+  
     
 
   try {
-   if(updateToRequisition) {
-
-   }
-   let result = await updateRequisition(data)
-   if(result.error == true) {
+ 
+   let result: any = await APIs.updateRequisition(data)
+    if(result.error == true) {
     Swal.fire('advertencia', result.mensaje, 'warning');
-   } {
-    Swal.fire('Requisision creada exitosamente', '', 'success');
-   }
+    } {
+    Swal.fire(result.mensaje, '', 'success');
+    }
   
   } catch {
     Swal.fire('No se pudo actualizar la requisicion', '', 'error');
@@ -121,7 +131,7 @@ const handleCreateRequisition = async (e: React.FormEvent<HTMLFormElement>) => {
 
 }
 
-const [deleteConcepts, setDeleteConcepts] =  useState<any>()
+
 
 
 const deleteConcept = (item: any) => {
@@ -296,7 +306,15 @@ const deleteConcept = (item: any) => {
                               }
                             </div>
                             <div className='td'>
-                              {article.max_min}
+                              {(() => {
+                                  let item = article.max_mins.find((x: any) => x.id_sucursal == updateToRequisition.id_sucursal);
+                                  if (item) {
+                                    return <p>{item.minimo}-{item.maximo}</p>;
+                                  } else {
+                                    return <p>N/A</p>;
+                                  }
+                                })()
+                              }
                             </div>
                             <div className='td'>
                               <div>
@@ -316,7 +334,9 @@ const deleteConcept = (item: any) => {
               </div>
             </div>
             <div className='row__four'>
+              <button className='btn__general-purple'>PDF</button>
               <button className='btn__general-purple' type='submit'>Crear nueva requisición</button>
+              <button className='btn__general-danger'>Cancelar</button>
             </div>
           </form>
         </div>

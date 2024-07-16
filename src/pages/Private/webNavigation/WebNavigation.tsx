@@ -29,7 +29,7 @@ const WebNavigation = () => {
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
   const { getWeb, HeaderAndFooter, headerAndFooter, updateWeb,  updateSectionWeb,
-  createContenedor, getContenedor, updateContenedor, deleteContenedor, createSectionsWeb,updateSectionsWeb, getSectionsWeb, deleteSectionsWeb,
+  createContenedor, getContenedor, updateContenedor, deleteContenedor, createSectionsWeb, getSectionsWeb, deleteSectionsWeb,
   createProductsWeb, updateProductsWeb, deleteProductsWeb, updateContenedorOrder}: any = storeWebPages();
   const {getFamilies}: any = FamiliesRequests()
   const [families, setFamilies] = useState<any>()

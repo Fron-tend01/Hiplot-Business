@@ -75,6 +75,7 @@ const ModalCreate: React.FC = () => {
   
   const modalCloseCreate = () => {
     setModalStateCreate('')
+    setConcepts([])
   }
 
   
@@ -143,17 +144,6 @@ const handleModalCompaniesChange = async (company: any) => {
   }
 
 
-  const [newRequisition, setNewRequisition] = useState<any[]>([]);
-
-  const [conceptos, setConceptos] = useState<{id_proveedor: number | null, cantidad: number | null, descuento: number | null, unidad:string, precio_unitario: number | null, iva_on: any, comentarios: string, }[]>([]);
-
-
-  const deleteResult = (itemId: number) => {
-    const updatedNewRequisition = newRequisition.filter((item: any) => item !== itemId);
-    setNewRequisition(updatedNewRequisition);
-  };
-
-
 
 const [selectedUnit, setSelectedUnit] = useState<string[]>([]);
 
@@ -200,7 +190,7 @@ const handleCreateRequisition = async (e: React.FormEvent<HTMLFormElement>) => {
     titulo: title,
     comentarios: comments,
     conceptos: concepts,
-    conceptos_elim: []
+
   };
 
   try {
@@ -220,13 +210,11 @@ const handleCreateRequisition = async (e: React.FormEvent<HTMLFormElement>) => {
 
 }
 
-const [deleteConcepts, setDeleteConcepts] =  useState<any>()
-
 
 const deleteConcept = (item: any) => {
   const itemDelete = concepts.filter((x: number) => x !== item);
   setConcepts(itemDelete);
-  setDeleteConcepts([...deleteConcepts, item.id])
+
 
 };
 

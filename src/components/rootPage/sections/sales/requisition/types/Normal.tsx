@@ -14,8 +14,6 @@ const Normal: React.FC = () => {
   const {getArticles}:any = articleRequests()
   const [articles, setArticles] =useState<any>()
 
-  const [amount] = useState<number | null>(null)
-  const [comentsModalCreate] = useState<string>('')
   const [selectSearch, setSelectSearch] = useState<boolean>(false)
   const [selectedSearch, setSelectedSearch] = useState<number | null>(null)
   const [nameBy, setNameBy] = useState<string | number>('')
@@ -83,7 +81,7 @@ const Normal: React.FC = () => {
   const openSelectResults = () => {
     setSelectResults(!selectResults)
   }
-  const [newRequisition, setNewRequisition] = useState<any[]>([]);
+
 
   const addRequisition = () => {
    
@@ -107,10 +105,10 @@ const Normal: React.FC = () => {
     }
   
 
-  const deleteResult = (itemId: number) => {
-    const updatedNewRequisition = newRequisition.filter((item: any) => item !== itemId);
-    setNewRequisition(updatedNewRequisition);
-  };
+  // const deleteResult = (itemId: number) => {
+  //   const updatedNewRequisition = newRequisition.filter((item: any) => item !== itemId);
+  //   setNewRequisition(updatedNewRequisition);
+  // };
 
 
 
