@@ -48,8 +48,6 @@ const Carousel: React.FC<any> = ({selectedTypeFamily, item}: any) => {
     }
   };
 
-  console.log(selectedTypeFamily)
-
   return (
     <div className='carousel__web--page'>
       <div className='carousel__web--page_container'>
