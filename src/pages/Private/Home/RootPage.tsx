@@ -253,6 +253,18 @@ const RootHome: React.FC = () => {
                                 <span>Unidades</span>
                             </AnchorTag>
                         );
+                    } else if (permiso.titulo == "CARACTERISTICAS") {
+                        return (
+                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.CHARACTERISTICS}`}>
+                                <span>Características</span>
+                            </AnchorTag>
+                        );
+                    } else if (permiso.titulo == "COMBINACIONES") {
+                        return (
+                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.COMBINATIONS}`}>
+                                <span>Combinaciones</span>
+                            </AnchorTag>
+                        );
                     } else {
                         return null;
                     }
