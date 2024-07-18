@@ -130,55 +130,52 @@ const ModalCreate: React.FC = () => {
             </a>
             <p className='title__modals'>Crear nuevo almacen</p>
             <form className='container__create_companies' onSubmit={modalCreateCompanies}>
-            <div className='input__modal_store'>
-                <div className='inputs__company'>
-                <label className='label__general'>Nombre</label>
-                <input className='inputs__general' value={nombre} onChange={(e) => setNombre(e.target.value)} type='text' placeholder='Ingresa la direccion' />
-                </div>
-            </div>
-            <div>
-            
-            </div>
-            <div className='selects__modal_store'>
-                <div className='select__container'>
-                <label className='label__general'>Empresas</label>
-                <div className='select-btn__general'>
-                    <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
-                    <div className='select__container_title'>
-                        <p>{selectedCompany ? companies.find((s: {id: number}) => s.id === selectedCompany)?.razon_social : 'Selecciona'}</p>
-                    </div>
-                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-                    </div>
-                    <div className={`content ${selectCompanies ? 'active' : ''}`} >
-                    <ul className={`options ${selectCompanies ? 'active' : ''}`} style={{ opacity: selectCompanies ? '1' : '0' }}>
-                        {companies && companies.map((company: any) => (
-                        <li key={company.id} onClick={() => handleCompaniesChange(company.id)}>
-                            {company.razon_social}
-                        </li>
-                        ))}
-                    </ul>
+                <div className='input__modal_store'>
+                    <div className='inputs__company'>
+                    <label className='label__general'>Nombre</label>
+                    <input className='inputs__general' value={nombre} onChange={(e) => setNombre(e.target.value)} type='text' placeholder='Ingresa la direccion' />
                     </div>
                 </div>
+                <div className='selects__modal_store'>
+                    <div className='select__container'>
+                        <label className='label__general'>Empresas</label>
+                        <div className='select-btn__general'>
+                            <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
+                            <div className='select__container_title'>
+                                <p>{selectedCompany ? companies.find((s: {id: number}) => s.id === selectedCompany)?.razon_social : 'Selecciona'}</p>
+                            </div>
+                            <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+                            </div>
+                            <div className={`content ${selectCompanies ? 'active' : ''}`} >
+                            <ul className={`options ${selectCompanies ? 'active' : ''}`} style={{ opacity: selectCompanies ? '1' : '0' }}>
+                                {companies && companies.map((company: any) => (
+                                <li key={company.id} onClick={() => handleCompaniesChange(company.id)}>
+                                    {company.razon_social}
+                                </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div className='select__container'>
-                <label className='label__general'>Sucursales</label>
-                <div className='select-btn__general'>
-                    <div className={`select-btn ${selectBranchOffices ? 'active' : ''}`} onClick={openSelectBranchOffices} >
-                    <div className='select__container_title'>
-                        <p>{selectedBranchOffice ? branchOffices.find((s: {id: number}) => s.id === selectedBranchOffice.id)?.nombre : 'Selecciona'}</p>
+                    <label className='label__general'>Sucursales</label>
+                    <div className='select-btn__general'>
+                        <div className={`select-btn ${selectBranchOffices ? 'active' : ''}`} onClick={openSelectBranchOffices} >
+                        <div className='select__container_title'>
+                            <p>{selectedBranchOffice ? branchOffices.find((s: {id: number}) => s.id === selectedBranchOffice.id)?.nombre : 'Selecciona'}</p>
+                        </div>
+                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+                        </div>
+                        <div className={`content ${selectBranchOffices ? 'active' : ''}`} >
+                        <ul className={`options ${selectBranchOffices ? 'active' : ''}`} style={{ opacity: selectBranchOffices ? '1' : '0' }}>
+                            {branchOffices && branchOffices.map((sucursal: any) => (
+                            <li key={sucursal.id} onClick={() => handleBranchOfficesChange(sucursal)}>
+                                {sucursal.nombre}
+                            </li>
+                            ))}
+                        </ul>
+                        </div>
                     </div>
-                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-                    </div>
-                    <div className={`content ${selectBranchOffices ? 'active' : ''}`} >
-                    <ul className={`options ${selectBranchOffices ? 'active' : ''}`} style={{ opacity: selectBranchOffices ? '1' : '0' }}>
-                        {branchOffices && branchOffices.map((sucursal: any) => (
-                        <li key={sucursal.id} onClick={() => handleBranchOfficesChange(sucursal)}>
-                            {sucursal.nombre}
-                        </li>
-                        ))}
-                    </ul>
-                    </div>
-                </div>
                 </div>
                 <div className='create__store_btns-container'>
                 <div>

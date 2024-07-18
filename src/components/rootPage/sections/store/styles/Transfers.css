@@ -1,0 +1,308 @@
+.transfer {
+    height: 90vh;
+	padding: 20px;
+}
+
+
+.transfer__container {
+    display: grid;
+	grid-template-rows: repeat(3, auto) 1fr;
+	height: 100%;
+	background-color: var(--background-sections);
+	padding: 20px;
+	border-radius: 10px;
+    overflow: hidden;
+}
+
+
+.transfer__container > .row__one {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	column-gap: 10px;
+    row-gap: 20px;
+}
+
+.transfer__container > .row__two {
+    display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	column-gap: 10px;
+  
+    margin: 20px 0;
+}
+
+.transfer__container > .row__two > :nth-child(1) {
+    text-align: right;
+}
+
+.transfer__container > .row__two > :nth-child(2) {
+    text-align: right;
+}
+
+
+
+
+
+ /*************************************************************
+                    Tabla de Entradas
+ **************************************************************/
+
+ .table__transfers {
+    border-radius: 10px;
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+
+}
+
+
+.table__transfers .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__transfers .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__transfers .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__transfers .table__body {
+	height: 100%;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__transfers .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+  }
+  
+.table__transfers .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+  }
+
+.table__transfers .table__body .tbody {
+    display: flex;
+}
+
+.table__transfers .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    padding: 10px;
+
+}
+
+.table__transfers .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+
+
+
+
+
+ /*************************************************************
+                    Modal del stock
+ **************************************************************/
+
+  
+ .overlay__transfers-concepts_see-stock {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+	z-index: 1;
+}
+
+.overlay__transfers-concepts_see-stock.active {
+	visibility: visible;
+}
+
+.popup__transfers-concepts_see-stock {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 60%;
+    max-height: 95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+.popup__transfers-concepts_see-stock  .btn-cerrar-popup__transfers-concepts_see-stock  {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__transfers-concepts_see-stock.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+
+
+
+
+
+
+ /*************************************************************
+        Tabla de stock del modal de los conceptos de traspasos
+ **************************************************************/
+
+ .table__transfers-concepts_see-stock {
+    border-radius: 10px;
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+
+}
+
+.table__transfers-concepts_see-stock > .store-warning {
+    padding: 10px;
+    width: max-content;
+    margin: 0 auto;
+    display: flex;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    color: var(--text-color);
+    background-color: #bf6903;
+}
+
+.table__transfers-concepts_see-stock .store-warning > svg {
+    margin-right: 10px;
+}
+
+
+
+.table__transfers-concepts_see-stock .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+    text-align: left;
+}
+
+.table__transfers-concepts_see-stock .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__transfers-concepts_see-stock .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__transfers-concepts_see-stock .table__body {
+	height: 100%;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__transfers-concepts_see-stock .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+  }
+  
+.table__transfers-concepts_see-stock .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+  }
+
+.table__transfers-concepts_see-stock .table__body .tbody {
+    display: flex;
+}
+
+
+.table__transfers-concepts_see-stock .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+
+.table__transfers-concepts_see-stock .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 10px;
+
+}
+
+
+.table__transfers-concepts_see-stock .table__body .tbody > .end {
+    text-align: center;
+
+}

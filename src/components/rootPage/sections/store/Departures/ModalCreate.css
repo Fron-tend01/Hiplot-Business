@@ -168,7 +168,6 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	text-align: center;
 	width: 60%;
     max-height: 95%;
 	transition: .3s ease all;
@@ -248,6 +247,8 @@
     background-color: var(--table-color);
 	color: var(--text-table-color);
     border-radius: 5px 5px 0 0;
+    text-align: left !important;
+    
 }
 
 .table__modal-concepts_see-stock .table__head .thead {

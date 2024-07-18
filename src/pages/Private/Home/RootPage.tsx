@@ -195,7 +195,7 @@ const RootHome: React.FC = () => {
                         );
                     } else if (permiso.titulo == "TRASPASO") {
                         return (
-                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.ORDERS}`}>
+                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.TRANSFERS}`}>
                                 <span>Traspasos</span>
                             </AnchorTag>
                         );
@@ -314,7 +314,7 @@ const RootHome: React.FC = () => {
                                 <span>Grupos de Us</span>
                             </AnchorTag>
                         );
-                    } else {
+                    } else { 
                         return null;
                     }
                 })}

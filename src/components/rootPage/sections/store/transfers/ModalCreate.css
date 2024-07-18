@@ -1,0 +1,390 @@
+.container__create_transfers {
+
+}
+
+.container__create_transfers > .row__one {
+    display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	column-gap: 10px;
+    row-gap: 20px;
+}
+
+.container__create_transfers > .row__two {
+    margin: 20px 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) 100px;
+    gap: 10px;
+	align-items: end;
+	text-align: left;
+	margin: 15px 0;
+}
+
+.container__create_transfers > .row__three {
+    width: 50%;
+    margin: 0 auto;
+	display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+	align-items: end;
+	text-align: left;
+    margin: 0 auto;
+}
+
+
+
+
+
+
+
+ /*************************************************************
+ 
+                    Tabla del modal de almacen
+ 
+ **************************************************************/
+
+
+
+ .table__modal_transfers {
+	display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+	overflow: auto;
+}
+
+
+.table__modal_transfers .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__modal_transfers  .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__modal_transfers  .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 80px 80px;
+    padding: 10px;
+    font-weight: 600;
+	color: var(--text-table-color);
+}
+
+
+.container__branchOffice_table-modal .tbody {
+    text-align: left;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) auto auto;
+    column-gap: 10px;
+    align-items: center;
+}
+    
+
+.container__branchOffice_table-modal .tbody:nth-child(even) {
+    text-align: left;
+	background-color: var(--table-color);
+    color: var(--text-table-color);
+  }
+  
+.container__branchOffice_table-modal .tbody:nth-child(odd) {
+	background-color: var(--two-table-color);
+    color: var(--text-table-color);
+  }
+
+.btn__delete {
+    background-color: #da4f3c;
+    padding: 5px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ /*************************************************************
+                    Modal de crear entradas
+ **************************************************************/
+
+  
+ .overlay__transfers {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+	z-index: 1;
+}
+
+.overlay__transfers.active {
+	visibility: visible;
+}
+
+.popup__transfers {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 70%;
+	overflow-y: auto;
+    height: 90%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+.popup__transfers .btn-cerrar-popup__transfers {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__transfers.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ /*************************************************************
+                    Modal del stock
+ **************************************************************/
+
+  
+ .overlay__modal_transfers-concepts_see-stock {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+	z-index: 1;
+}
+
+.overlay__modal_transfers-concepts_see-stock.active {
+	visibility: visible;
+}
+
+.popup__modal_transfers-concepts_see-stock {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 60%;
+    max-height: 95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+.popup__modal_transfers-concepts_see-stock  .btn-cerrar-popup__modal_transfers-concepts_see-stock  {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__modal_transfers-concepts_see-stock.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+
+
+
+
+ /*************************************************************
+        Tabla de stock del modal de los conceptos de traspasos
+ **************************************************************/
+
+ .table__modal_transfers-concepts_see-stock {
+    border-radius: 10px;
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+
+}
+
+.table__modal_transfers-concepts_see-stock > .store-warning {
+    padding: 10px;
+    width: max-content;
+    margin: 0 auto;
+    display: flex;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    color: var(--text-color);
+    background-color: #bf6903;
+}
+
+.table__modal_transfers-concepts_see-stock .store-warning > svg {
+    margin-right: 10px;
+}
+
+
+
+.table__modal_transfers-concepts_see-stock .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+    text-align: left;
+}
+
+.table__modal_transfers-concepts_see-stock .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__modal_transfers-concepts_see-stock .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__modal_transfers-concepts_see-stock .table__body {
+	height: 100%;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__modal_transfers-concepts_see-stock .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+  }
+  
+.table__modal_transfers-concepts_see-stock .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+  }
+
+.table__modal_transfers-concepts_see-stock .table__body .tbody {
+    display: flex;
+}
+
+
+.table__modal_transfers-concepts_see-stock .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+
+.table__modal_transfers-concepts_see-stock .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 10px;
+
+}
+
+
+.table__modal_transfers-concepts_see-stock .table__body .tbody > .end {
+    text-align: center;
+
+}
+
+
+
+
+

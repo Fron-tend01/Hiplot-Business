@@ -386,6 +386,20 @@ const APIs = {
   // },
 
 
+///////////////////////////////////////Traspasos/////////////////////////////////////////////////
+
+
+createTransfers: async (data: any, customPath?: string) => {
+  const path = customPath || 'traspaso_almacen/create';
+  return ConfigurationAPIs.post(path, data)
+},
+
+getTransfers: async (data: any, customPath?: string) => {
+  const path = customPath || 'traspaso_almacen/get';
+  return ConfigurationAPIs.post(path, data)
+},
+
+
 
 
 

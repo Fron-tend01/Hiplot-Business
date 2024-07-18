@@ -33,6 +33,7 @@ export const PublicRoutes = {
     TICKETS: 'tickets',
     DEPARTURES: 'departures',
     ORDERS: 'orders',
+    TRANSFERS: 'transfers',
 
     // Ventas//
     PURCHASEORDERS: 'purchaseorders',
