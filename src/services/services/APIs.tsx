@@ -516,7 +516,19 @@ const APIs = {
     const path = customPath || 'update_unidad';
     return ConfigurationAPIs.post(path, data)
   },
-
+  ////////////////////////////////GRAL ///////////////////////////////////////
+  CreateAny: async (data: any, ruta: string) => {
+    const path = ruta;
+    return ConfigurationAPIs.post(path, data)
+  },
+  CreateAnyPut: async (data: any, ruta: string) => {
+    const path = ruta;
+    return ConfigurationAPIs.put(path, data)
+  },
+  GetAny: async (ruta: string) => {
+    const path = ruta;
+    return ConfigurationAPIs.get(path)
+  },
 }
 
 

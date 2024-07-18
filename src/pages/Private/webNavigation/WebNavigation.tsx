@@ -28,7 +28,7 @@ import sb from '../../../assets/web-navigation/img/smallbanner.png'
 const WebNavigation = () => {
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
-  const { getWeb, HeaderAndFooter, headerAndFooter, updateWeb,  updateSectionWeb,
+  const {  HeaderAndFooter, headerAndFooter, updateWeb,  updateSectionWeb,
   createContenedor, getContenedor, updateContenedor, deleteContenedor, createSectionsWeb, getSectionsWeb, deleteSectionsWeb,
   createProductsWeb, updateProductsWeb, deleteProductsWeb, updateContenedorOrder}: any = storeWebPages();
   const {getFamilies}: any = FamiliesRequests()
@@ -112,7 +112,7 @@ const WebNavigation = () => {
   
  
 
-  const [web, setWeb] = useState<any>([])
+  const [web] = useState<any>([])
 
   const [stateResponse, setStateResponse] = useState<boolean>(false)
 
@@ -162,15 +162,11 @@ const WebNavigation = () => {
 
 
  
-  const [selectedColor] = useState<string>('#000000');
+  const [selectedColor] = useState<string>('#ffffff');
   const colorInputRef = useRef<HTMLInputElement>(null);
 
 
-  const handleIconClick = () => {
-    if (colorInputRef.current) {
-      colorInputRef.current.click();
-    }
-  };
+ 
 
  
 // useEffect(() => {
@@ -371,8 +367,8 @@ const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   const [textColor, setTextColor] = useState<string>('');
 
   const handlePrimaryColorChange = (newColor: string) => {
-    document.documentElement.style.setProperty('--color-header-web-page', newColor);
     setPrimaryColor(newColor);
+    document.documentElement.style.setProperty('--color-header-web-page', newColor);
   };
 
   const handleTextColorChange = (newColor: string) => {
@@ -381,11 +377,16 @@ const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   };
 
   useEffect(() => {
-    setPrimaryColor(headerAndFooter.color_primario)
+
+    if (headerAndFooter.color_primario != undefined) {
+      setPrimaryColor(headerAndFooter.color_primario)
+      console.log(headerAndFooter)
+      document.documentElement.style.setProperty('--color-header-web-page', primaryColor);
+
+    }
     setTextColor(headerAndFooter.color_secundario)
-    document.documentElement.style.setProperty('--color-header-web-page', primaryColor);
     document.documentElement.style.setProperty('--secondary-color-web-page', textColor);
-  }, [headerAndFooter])
+  }, [headerAndFooter, primaryColor])
 
 
   const updateGeneral = async () => {
@@ -406,23 +407,7 @@ const handleLogoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (id_sucursal !== undefined) {
-        localStorage.setItem('id', JSON.stringify(id_sucursal));
-      }
 
-      const id_suc = await localStorage.getItem('id');
-      const webData = await getWeb(id_suc);
-
-      setWeb(webData)
-
-
-     
-    };
-
-    fetchData();
-  }, [id_sucursal]);
 
 
 
@@ -706,32 +691,25 @@ useEffect(() => {
     reader.onload = () => {
       const imageUrl = reader.result; 
       if(imageUrl !== undefined && imageUrl !== null) {
-        if(dataContainer.tipo_contenedor == 3) {
-          setDataEdit({
-            ...dataEdit,
-            imagen: imageUrl,          
-          });
+        const updatedCopyContainer = [...copyContainer];
+        if(dataContainer.tipo_contenedor == 3 || dataContainer.tipo_contenedor == 6) {
+          updatedCopyContainer[index] = { ...updatedCopyContainer[index], imagen: imageUrl };
+          setCopyContainer(updatedCopyContainer);
         }
 
         if(dataContainer.tipo_contenedor == 2 ) {
           switch(dataNumberService) {
             case 1:
-              setDataEdit({
-                ...dataEdit,
-                imagen: imageUrl,          
-              });
+              updatedCopyContainer[index] = { ...updatedCopyContainer[index], imagen: imageUrl };
+              setCopyContainer(updatedCopyContainer);
               break;
             case 2:
-              setDataEdit({
-                ...dataEdit,
-                imagen2: imageUrl,          
-              });
+              updatedCopyContainer[index] = { ...updatedCopyContainer[index], imagen2: imageUrl };
+              setCopyContainer(updatedCopyContainer);
               break;
             case 3:
-              setDataEdit({
-                ...dataEdit,
-                imagen3: imageUrl,          
-              });
+              updatedCopyContainer[index] = { ...updatedCopyContainer[index], imagen3: imageUrl };
+              setCopyContainer(updatedCopyContainer);
               break;
             default:
               break;
@@ -985,21 +963,6 @@ const saveContainer = async (x: any) => {
 ///////////////EDITOR DE LOS CONTENEDORES///////////
 ////////////////////////////////////////////////////
 
-const [dataEdit, setDataEdit] = useState<any>({
-  imagen: "",
-  titulo: "",
-  titulo2: "",
-  imagen2: "",
-  titulo3: "",
-  imagen3: "",
-  titulo4: "",
-  imagen4: "",
-  titulo5: "",
-  imagen5: "",
-  titulo6: "",
-  imagen6: ""
-
-});
 
 
 
@@ -1500,11 +1463,14 @@ const changeTextColor = (value: any) => {
   const updatedCopyContainer = [...copyContainer]; 
   updatedCopyContainer[index] = { ...updatedCopyContainer[index], color1: value }; 
   setCopyContainer(updatedCopyContainer); 
+  console.log('cp',updatedCopyContainer[index]);
 
 }
 
 
 const changeTextColorDos = (value: any) => {
+  console.log('entrando al dos');
+  
   const updatedCopyContainer = [...copyContainer]; 
   updatedCopyContainer[index] = { ...updatedCopyContainer[index], color2: value }; 
   setCopyContainer(updatedCopyContainer); 
@@ -1975,22 +1941,11 @@ const addLinkButtons = () => {
                                   <div>
                                     <p>Seleciona tu color</p>
                                   </div>
-                                  <div>
-                                    <p>Colores del tema</p>
-                                    <div className="color-button" style={{ backgroundColor: 'red' }} onClick={() => changeTextColor('red')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'blue' }} onClick={() => changeTextColor('blue')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'green' }} onClick={() => changeTextColor('green')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'yellow' }} onClick={() => changeTextColor('yellow')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'orange' }} onClick={() => changeTextColor('orange')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'purple' }} onClick={() => changeTextColor('purple')}></div>
-                                  </div>
-                                  <div className="color-picker-container">
-                                    <div className="color-picker-label">
-                                      Elige tu color personalizado
-                                    </div>
-                                    <svg className="color-picker-icon" width='20' onClick={handleIconClick} style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
-                                    <input type="color" value={selectedColor} onChange={(e) => changeTextColor(e.target.value)} ref={colorInputRef} className="color-picker-input"/>
-                                  </div>
+                                  <div className="text_align-center">
+                                      <svg className="color-picker-icon" width='20' style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColor(e.target.value)} ref={colorInputRef} />
+
+                                      </div>
                                 </div>
                               </div>
                             </div>
@@ -2072,22 +2027,18 @@ const addLinkButtons = () => {
                                     <div>
                                       <p>Seleciona tu color</p>
                                     </div>
-                                    <div>
-                                      <p>Colores del tema</p>
-                                      <div className="color-button" style={{ backgroundColor: 'red' }} onClick={() => changeTextColor('red')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'blue' }} onClick={() => changeTextColor('blue')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'green' }} onClick={() => changeTextColor('green')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'yellow' }} onClick={() => changeTextColor('yellow')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'orange' }} onClick={() => changeTextColor('orange')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'purple' }} onClick={() => changeTextColor('purple')}></div>
-                                    </div>
-                                    <div className="color-picker-container">
+                                    <div className="text_align-center">
+                                      <svg className="color-picker-icon" width='20' style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColor(e.target.value)} ref={colorInputRef} />
+
+                                      </div>
+                                    {/* <div className="color-picker-container">
                                       <div className="color-picker-label">
                                         Elige tu color personalizado
                                       </div>
                                       <svg className="color-picker-icon" width='20' onClick={handleIconClick} style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
                                       <input type="color" value={selectedColor} onChange={(e) => changeTextColor(e.target.value)} ref={colorInputRef} className="color-picker-input"/>
-                                    </div>
+                                    </div> */}
                                   </div>
                                 </div>
                               </div>
@@ -2139,22 +2090,12 @@ const addLinkButtons = () => {
                                     <div>
                                       <p>Seleciona tu color</p>
                                     </div>
-                                    <div>
-                                      <p>Colores del tema</p>
-                                      <div className="color-button" style={{ backgroundColor: 'red' }} onClick={() => changeTextColorDos('red')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'blue' }} onClick={() => changeTextColorDos('blue')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'green' }} onClick={() => changeTextColorDos('green')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'yellow' }} onClick={() => changeTextColorDos('yellow')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'orange' }} onClick={() => changeTextColorDos('orange')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'purple' }} onClick={() => changeTextColorDos('purple')}></div>
-                                    </div>
-                                    <div className="color-picker-container">
-                                      <div className="color-picker-label">
-                                        Elige tu color personalizado
+                                    <div className="text_align-center">
+                                      {/* <p>Colores del tema</p> */}
+                                      <svg className="color-picker-icon" width='20' style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColorDos(e.target.value)} ref={colorInputRef} />
+
                                       </div>
-                                      <svg className="color-picker-icon" width='20' onClick={handleIconClick} style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
-                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColorDos(e.target.value)} ref={colorInputRef} className="color-picker-input"/>
-                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -2221,22 +2162,12 @@ const addLinkButtons = () => {
                                     <div>
                                       <p>Seleciona tu color</p>
                                     </div>
-                                    <div>
-                                      <p>Colores del tema</p>
-                                      <div className="color-button" style={{ backgroundColor: 'red' }} onClick={() => changeTextColorTres('red')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'blue' }} onClick={() => changeTextColorTres('blue')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'green' }} onClick={() => changeTextColorTres('green')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'yellow' }} onClick={() => changeTextColorTres('yellow')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'orange' }} onClick={() => changeTextColorTres('orange')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'purple' }} onClick={() => changeTextColorTres('purple')}></div>
-                                    </div>
-                                    <div className="color-picker-container">
-                                      <div className="color-picker-label">
-                                        Elige tu color personalizado
+                                    <div className="text_align-center">
+                                      {/* <p>Colores del tema</p> */}
+                                      <svg className="color-picker-icon" width='20' style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColorTres(e.target.value)} ref={colorInputRef} />
+
                                       </div>
-                                      <svg className="color-picker-icon" width='20' onClick={handleIconClick} style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
-                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColorTres(e.target.value)} ref={colorInputRef} className="color-picker-input"/>
-                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -2288,22 +2219,12 @@ const addLinkButtons = () => {
                                     <div>
                                       <p>Seleciona tu color</p>
                                     </div>
-                                    <div>
-                                      <p>Colores del tema</p>
-                                      <div className="color-button" style={{ backgroundColor: 'red' }} onClick={() => changeTextColorCuatro('red')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'blue' }} onClick={() => changeTextColorCuatro('blue')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'green' }} onClick={() => changeTextColorCuatro('green')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'yellow' }} onClick={() => changeTextColorCuatro('yellow')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'orange' }} onClick={() => changeTextColorCuatro('orange')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'purple' }} onClick={() => changeTextColorCuatro('purple')}></div>
-                                    </div>
-                                    <div className="color-picker-container">
-                                      <div className="color-picker-label">
-                                        Elige tu color personalizado
+                                    <div className="text_align-center">
+                                      {/* <p>Colores del tema</p> */}
+                                      <svg className="color-picker-icon" width='20' style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColorCuatro(e.target.value)} ref={colorInputRef} />
+
                                       </div>
-                                      <svg className="color-picker-icon" width='20' onClick={handleIconClick} style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
-                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColorCuatro(e.target.value)} ref={colorInputRef} className="color-picker-input"/>
-                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -2370,22 +2291,12 @@ const addLinkButtons = () => {
                                     <div>
                                       <p>Seleciona tu color</p>
                                     </div>
-                                    <div>
-                                      <p>Colores del tema</p>
-                                      <div className="color-button" style={{ backgroundColor: 'red' }} onClick={() => changeTextColorCinco('red')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'blue' }} onClick={() => changeTextColorCinco('blue')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'green' }} onClick={() => changeTextColorCinco('green')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'yellow' }} onClick={() => changeTextColorCinco('yellow')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'orange' }} onClick={() => changeTextColorCinco('orange')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'purple' }} onClick={() => changeTextColorCinco('purple')}></div>
-                                    </div>
-                                    <div className="color-picker-container">
-                                      <div className="color-picker-label">
-                                        Elige tu color personalizado
+                                    <div className="text_align-center">
+                                      {/* <p>Colores del tema</p> */}
+                                      <svg className="color-picker-icon" width='20' style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColorCinco(e.target.value)} ref={colorInputRef} />
+
                                       </div>
-                                      <svg className="color-picker-icon" width='20' onClick={handleIconClick} style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
-                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColorCinco(e.target.value)} ref={colorInputRef} className="color-picker-input"/>
-                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -2437,22 +2348,12 @@ const addLinkButtons = () => {
                                     <div>
                                       <p>Seleciona tu color</p>
                                     </div>
-                                    <div>
-                                      <p>Colores del tema</p>
-                                      <div className="color-button" style={{ backgroundColor: 'red' }} onClick={() => changeTextColorSeis('red')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'blue' }} onClick={() => changeTextColorSeis('blue')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'green' }} onClick={() => changeTextColorSeis('green')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'yellow' }} onClick={() => changeTextColorSeis('yellow')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'orange' }} onClick={() => changeTextColorSeis('orange')}></div>
-                                      <div className="color-button" style={{ backgroundColor: 'purple' }} onClick={() => changeTextColorSeis('purple')}></div>
-                                    </div>
-                                    <div className="color-picker-container">
-                                      <div className="color-picker-label">
-                                        Elige tu color personalizado
+                                    <div className="text_align-center">
+                                      {/* <p>Colores del tema</p> */}
+                                      <svg className="color-picker-icon" width='20' style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColorSeis(e.target.value)} ref={colorInputRef} />
+
                                       </div>
-                                      <svg className="color-picker-icon" width='20' onClick={handleIconClick} style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
-                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColorSeis(e.target.value)} ref={colorInputRef} className="color-picker-input"/>
-                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -2523,22 +2424,11 @@ const addLinkButtons = () => {
                                   <div>
                                     <p>Seleciona tu color</p>
                                   </div>
-                                  <div>
-                                    <p>Colores del tema</p>
-                                    <div className="color-button" style={{ backgroundColor: 'red' }} onClick={() => changeTextColor('red')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'blue' }} onClick={() => changeTextColor('blue')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'green' }} onClick={() => changeTextColor('green')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'yellow' }} onClick={() => changeTextColor('yellow')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'orange' }} onClick={() => changeTextColor('orange')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'purple' }} onClick={() => changeTextColor('purple')}></div>
-                                  </div>
-                                  <div className="color-picker-container">
-                                    <div className="color-picker-label">
-                                      Elige tu color personalizado
-                                    </div>
-                                    <svg className="color-picker-icon" width='20' onClick={handleIconClick} style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
-                                    <input type="color" value={selectedColor} onChange={(e) => changeTextColor(e.target.value)} ref={colorInputRef} className="color-picker-input"/>
-                                  </div>
+                                  <div className="text_align-center">
+                                      <svg className="color-picker-icon" width='20' style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColor(e.target.value)} ref={colorInputRef} />
+
+                                      </div>
                                 </div>
                               </div>
                             </div>
@@ -2591,22 +2481,11 @@ const addLinkButtons = () => {
                                   <div>
                                     <p>Seleciona tu color</p>
                                   </div>
-                                  <div>
-                                    <p>Colores del tema</p>
-                                    <div className="color-button" style={{ backgroundColor: 'red' }} onClick={() => changeTextColorDos('red')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'blue' }} onClick={() => changeTextColorDos('blue')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'green' }} onClick={() => changeTextColorDos('green')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'yellow' }} onClick={() => changeTextColorDos('yellow')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'orange' }} onClick={() => changeTextColorDos('orange')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'purple' }} onClick={() => changeTextColorDos('purple')}></div>
-                                  </div>
-                                  <div className="color-picker-container">
-                                    <div className="color-picker-label">
-                                      Elige tu color personalizado
-                                    </div>
-                                    <svg className="color-picker-icon" width='20' onClick={handleIconClick} style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
-                                    <input type="color" value={selectedColor} onChange={(e) => changeTextColorDos(e.target.value)} ref={colorInputRef} className="color-picker-input"/>
-                                  </div>
+                                  <div className="text_align-center">
+                                      <svg className="color-picker-icon" width='20' style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColorDos(e.target.value)} ref={colorInputRef} />
+
+                                      </div>
                                 </div>
                               </div>
                             </div>
@@ -2718,22 +2597,11 @@ const addLinkButtons = () => {
                                   <div>
                                     <p>Seleciona tu color</p>
                                   </div>
-                                  <div>
-                                    <p>Colores del tema</p>
-                                    <div className="color-button" style={{ backgroundColor: 'red' }} onClick={() => changeTextColor('red')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'blue' }} onClick={() => changeTextColor('blue')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'green' }} onClick={() => changeTextColor('green')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'yellow' }} onClick={() => changeTextColor('yellow')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'orange' }} onClick={() => changeTextColor('orange')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'purple' }} onClick={() => changeTextColor('purple')}></div>
-                                  </div>
-                                  <div className="color-picker-container">
-                                    <div className="color-picker-label">
-                                      Elige tu color personalizado
-                                    </div>
-                                    <svg className="color-picker-icon" width='20' onClick={handleIconClick} style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
-                                    <input type="color" value={selectedColor} onChange={(e) => changeTextColor(e.target.value)} ref={colorInputRef} className="color-picker-input"/>
-                                  </div>
+                                  <div className="text_align-center">
+                                      <svg className="color-picker-icon" width='20' style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColor(e.target.value)} ref={colorInputRef} />
+
+                                      </div>
                                 </div>
                               </div>
                             </div>
@@ -2785,22 +2653,11 @@ const addLinkButtons = () => {
                                   <div>
                                     <p>Seleciona tu color</p>
                                   </div>
-                                  <div>
-                                    <p>Colores del tema</p>
-                                    <div className="color-button" style={{ backgroundColor: 'red' }} onClick={() => changeTextColor('red')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'blue' }} onClick={() => changeTextColor('blue')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'green' }} onClick={() => changeTextColor('green')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'yellow' }} onClick={() => changeTextColor('yellow')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'orange' }} onClick={() => changeTextColor('orange')}></div>
-                                    <div className="color-button" style={{ backgroundColor: 'purple' }} onClick={() => changeTextColor('purple')}></div>
-                                  </div>
-                                  <div className="color-picker-container">
-                                    <div className="color-picker-label">
-                                      Elige tu color personalizado
-                                    </div>
-                                    <svg className="color-picker-icon" width='20' onClick={handleIconClick} style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
-                                    <input type="color" value={selectedColor} onChange={(e) => changeTextColorDos(e.target.value)} ref={colorInputRef} className="color-picker-input"/>
-                                  </div>
+                                  <div className="text_align-center">
+                                      <svg className="color-picker-icon" width='20' style={{ color: selectedColor }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 256c0 .9 0 1.8 0 2.7c-.4 36.5-33.6 61.3-70.1 61.3H344c-26.5 0-48 21.5-48 48c0 3.4 .4 6.7 1 9.9c2.1 10.2 6.5 20 10.8 29.9c6.1 13.8 12.1 27.5 12.1 42c0 31.8-21.6 60.7-53.4 62c-3.5 .1-7 .2-10.6 .2C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256zM128 288a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm0-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM288 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg>
+                                      <input type="color" value={selectedColor} onChange={(e) => changeTextColorDos(e.target.value)} ref={colorInputRef} />
+
+                                      </div>
                                 </div>
                               </div>
                             </div>

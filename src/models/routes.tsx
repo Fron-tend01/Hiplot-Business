@@ -28,6 +28,8 @@ export const PublicRoutes = {
     TEMPLATES: 'templates',
     RANKS: 'ranges',
     UNITS: 'units',
+    CHARACTERISTICS: 'characteristics',
+    COMBINATIONS: 'combinations',
     // Almacen//
     STORE: 'store',
     TICKETS: 'tickets',
