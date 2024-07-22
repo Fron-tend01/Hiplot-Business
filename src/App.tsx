@@ -72,7 +72,6 @@ function App() {
               </Route>
             </RoutesWithNotFonud>
           </Router>
-
       </Suspense>
     </div>
   );
