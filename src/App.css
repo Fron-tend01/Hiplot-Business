@@ -286,6 +286,14 @@ textarea {
   border-radius: var(--border-radius-general);
 }
 
+.btn__general-orange {
+  background-color: #bf6903;
+  padding: 10px 10px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-general);
+}
 .btn__general_light-danger {
   background-color: var(--danger-color);
   padding: 7px;
