@@ -26,6 +26,9 @@ interface StoreState {
     articlesFamilies: any[];
     articlesByOne: any[];
     
+    
+    subModal: any;
+    setSubModal: (modal: any) => void;
 
     modalLoading: any;
     setModalLoading: (modal: any) => void;
@@ -85,6 +88,9 @@ interface StoreState {
 export const storeArticles = create<StoreState>((set) => ({
 
     articlesInGlobal: [],
+
+    subModal: false,
+    setSubModal: (modal) => set({ subModal: modal }),
 
     modalLoading: false,
     setModalLoading: (modal) => set({ modalLoading: modal }),

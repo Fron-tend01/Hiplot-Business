@@ -230,6 +230,13 @@ const APIs = {
     return ConfigurationAPIs.get(path)
   },
 
+  
+  getTemplatesxFields: async (customPath: any) => {
+    const path = customPath || `get_campos_plantillas/get`
+    return ConfigurationAPIs.get(path)
+  },
+
+
   updateTemplates: async (id: number, data: {nombre: string, id_empresa: number}, data_nuevo: [{nombre: string, tipo: string, id_plantilla: number}], data_eliminar: any[],  customPath?: string) => {
     const path = customPath || `update_plantilla_art/${id}`
     return ConfigurationAPIs.put(path, {id, data, data_nuevo, data_eliminar})
@@ -401,6 +408,23 @@ getTransfers: async (data: any, customPath?: string) => {
 
 
 
+
+///////////////////////////// Tipo de cobro /////////////////////////////////////
+
+createTypeOfPayments: async (data: any, customPath?: string) => {
+  const path = customPath || 'tipo_cobro/create';
+  return ConfigurationAPIs.post(path, data)
+},
+
+getTypeOfPayments: async (customPath?: string) => {
+  const path = customPath || 'tipo_cobro/get';
+  return ConfigurationAPIs.get(path)
+},
+
+updateTypeOfPayment: async (data: any, customPath?: string) => {
+  const path = customPath || 'tipo_cobro/update';
+  return ConfigurationAPIs.put(path, data);
+},
 
 
 

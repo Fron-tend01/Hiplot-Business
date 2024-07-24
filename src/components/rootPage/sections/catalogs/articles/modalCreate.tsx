@@ -6,6 +6,7 @@ import BranchOffices from './modals/BranchOffices';
 import Suppliers from './modals/Suppliers';
 import MaxMin from './modals/MaxMin';
 import Units from './modals/Units';
+import Prices from './modals/Prices';
 import './modalCreate.css'
 import { useStore } from 'zustand';
 import { TemplatesRequests } from '../../../../../fuctions/Templates';
@@ -27,9 +28,11 @@ const modalCreate: React.FC = () => {
 
     const {getTemplates}: any = TemplatesRequests()
 
+    const  setSubModal = storeArticles(state => state.setSubModal)
+
        // Modales Zustand
     const { setModalStateBrnachOffices, modalStateBrnachOffices } = useStore(storeArticles);
-    const { setModalStateUnits, modalStateUnits } = useStore(storeArticles);
+    const { setModalStateUnits, modalStateUnits, subModal } = useStore(storeArticles);
 
     const { setModalStateMaxsMins, modalStateMaxsMins } = useStore(storeArticles);
     const { setModalStateSuppliers, modalStateSuppliers } = useStore(storeArticles);
@@ -329,7 +332,7 @@ const handleTemplatesChange = (template: any) => {
     const [modalStatePrice, setModalStatePrice] = useState<boolean>(false)
 
     const modalPrices = () => {
-        setModalStatePrice(!modalStatePrice)
+        setSubModal('modal-prices')
     }
 
 
@@ -629,6 +632,11 @@ const handleTemplatesChange = (template: any) => {
                 </div>
             </div>
             <div>
+                <div className={`overlay__modal_prices_creating_articles ${subModal == 'modal-prices' ? 'active' : ''}`}>
+                    <div className={`popup__modal_prices_creating_articles ${subModal == 'modal-prices' ? 'active' : ''}`}>
+                        <Prices />
+                    </div>
+                </div>
                 <div>
                     <button className='btn__general-purple' type='button' onClick={modalPrices}>Precios</button>
                 </div>

@@ -255,8 +255,8 @@ const RootHome: React.FC = () => {
                         );
                     } else if (permiso.titulo == "CARACTERISTICAS") {
                         return (
-                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.CHARACTERISTICS}`}>
-                                <span>Características</span>
+                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.TYPEOFPAYMENT}`}>
+                                <span>Tipo de cobro</span>
                             </AnchorTag>
                         );
                     } else if (permiso.titulo == "COMBINACIONES") {

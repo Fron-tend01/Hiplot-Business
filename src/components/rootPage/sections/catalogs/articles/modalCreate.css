@@ -304,7 +304,7 @@ padding: 10px;
 }
 
 .popup__modal_companies_creating_articles {
-	background: #F8F8F8;
+	background-color: var(--background-modal);  
 	border-radius: 5px;
 
 	padding: 20px;
@@ -361,9 +361,8 @@ padding: 10px;
 }
 
 .popup__modal_prices_creating_articles {
-	background: #F8F8F8;
+	background-color: var(--background-modal);  
 	border-radius: 5px;
-	font-family: 'Montserrat', sans-serif;
 	padding: 20px;
 	text-align: center;
 	width: 80%;

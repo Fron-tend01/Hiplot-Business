@@ -28,9 +28,9 @@ export const PublicRoutes = {
     TEMPLATES: 'templates',
     RANKS: 'ranges',
     UNITS: 'units',
-    CHARACTERISTICS: 'characteristics',
+    TYPEOFPAYMENT: 'typeofpayment',
     COMBINATIONS: 'combinations',
-    // Almacen//
+    // Almacen//characteristics
     STORE: 'store',
     TICKETS: 'tickets',
     DEPARTURES: 'departures',
