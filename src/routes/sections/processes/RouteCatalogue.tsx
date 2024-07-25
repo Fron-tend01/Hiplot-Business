@@ -10,6 +10,7 @@ import Ranges from "../../../components/rootPage/sections/catalogs/Ranges";
 
 import { PrivateRoutes } from "../../../models/routes";
 import Combinations from "../../../components/rootPage/sections/catalogs/Combinations";
+import Colecciones from "../../../components/rootPage/sections/catalogs/Colecciones";
 
 
 const RouteCatalogue: React.FC = () => {
@@ -23,6 +24,7 @@ const RouteCatalogue: React.FC = () => {
       <Route path={`/${PrivateRoutes.RANKS}`} element={<Ranges />}/>
       <Route path={`/${PrivateRoutes.TYPEOFPAYMENT}`} element={<TypeOfPayment />}/>
       <Route path={`/${PrivateRoutes.COMBINATIONS}`} element={<Combinations />}/>
+      <Route path={`/${PrivateRoutes.COLECCIONES}`} element={<Colecciones />}/>
 
     </Routes>
   );
