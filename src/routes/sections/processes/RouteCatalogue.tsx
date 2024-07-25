@@ -9,6 +9,7 @@ import TypeOfPayment from "../../../components/rootPage/sections/catalogs/TypeOf
 
 import { PrivateRoutes } from "../../../models/routes";
 import Combinations from "../../../components/rootPage/sections/catalogs/Combinations";
+import Colecciones from "../../../components/rootPage/sections/catalogs/Colecciones";
 
 
 const RouteCatalogue: React.FC = () => {
@@ -21,6 +22,7 @@ const RouteCatalogue: React.FC = () => {
       <Route path={`/${PrivateRoutes.UNITS}`} element={<Units />}/>
       <Route path={`/${PrivateRoutes.TYPEOFPAYMENT}`} element={<TypeOfPayment />}/>
       <Route path={`/${PrivateRoutes.COMBINATIONS}`} element={<Combinations />}/>
+      <Route path={`/${PrivateRoutes.COLECCIONES}`} element={<Colecciones />}/>
 
     </Routes>
   );

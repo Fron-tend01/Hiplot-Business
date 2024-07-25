@@ -30,6 +30,7 @@ export const PublicRoutes = {
     UNITS: 'units',
     TYPEOFPAYMENT: 'typeofpayment',
     COMBINATIONS: 'combinations',
+    COLECCIONES: 'Colecciones',
     // Almacen//characteristics
     STORE: 'store',
     TICKETS: 'tickets',

@@ -253,7 +253,7 @@ const RootHome: React.FC = () => {
                                 <span>Unidades</span>
                             </AnchorTag>
                         );
-                    } else if (permiso.titulo == "CARACTERISTICAS") {
+                    } else if (permiso.titulo == "TIPO_COBRO") {
                         return (
                             <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.TYPEOFPAYMENT}`}>
                                 <span>Tipo de cobro</span>
@@ -265,7 +265,13 @@ const RootHome: React.FC = () => {
                                 <span>Combinaciones</span>
                             </AnchorTag>
                         );
-                    } else {
+                    } else if (permiso.titulo == "COLECCIONES") {
+                        return (
+                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.COLECCIONES}`}>
+                                <span>Colecciones</span>
+                            </AnchorTag>
+                        );
+                    }else {
                         return null;
                     }
                 })}
