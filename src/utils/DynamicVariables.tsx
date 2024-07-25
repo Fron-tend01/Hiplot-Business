@@ -70,6 +70,12 @@ const DynamicVariables = {
             };
         });
     },
+
+    selects: (setFunc, key, index: number)  => {
+        setFunc((prev: any) => {
+            
+        })
+    }
 }
 
 export default DynamicVariables;

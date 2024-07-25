@@ -22,7 +22,7 @@ const Suppliers:React.FC = () => {
 
     const [dataSuppliers, setDataSuppliers] = useState<any>([])
     const [suppliersSearch, setSuppliersSearch] = useState<any>([])
-    console.log('suppliers', suppliers)
+  
     const getData = async () => {
         let data = {
             nombre: '',

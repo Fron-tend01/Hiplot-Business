@@ -1,22 +1,21 @@
+.conatiner__create_modal_ranger {
 
-.conatiner__create_modal_type-payment > .row__one {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    column-gap: 20px;
-	align-items: end;
 }
-.conatiner__create_modal_type-payment > .row__two {
+
+.conatiner__create_modal_ranger > .row__one {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    column-gap: 20px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 10px;
 }
+
+
 
 
  /*************************************************************
-                    Modal de updates sucursales
+                    Modal de rangos
  **************************************************************/
   
- .overlay__create_modal_type-payment {
+ .overlay__create_modal_ranges {
 	background: rgba(0,0,0,.3);
 	position: fixed;
 	top: 0;
@@ -29,14 +28,15 @@
 	visibility: hidden;
 }
 
-.overlay__create_modal_type-payment.active {
+.overlay__create_modal_ranges.active {
 	visibility: visible;
 }
 
-.popup__create_modal_type-payment {
+.popup__create_modal_ranges {
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
+	text-align: center;
 	width: 70%;
 	
 	transition: .3s ease all;
@@ -44,7 +44,7 @@
 	opacity: 0;
 }
 
-.popup__create_modal_type-payment .btn-cerrar-popup__create_modal_type-payment {
+.popup__create_modal_ranges .btn-cerrar-popup__create_modal_ranges {
 	font-size: 16px;
 	line-height: 16px;
 	display: block;
@@ -61,4 +61,4 @@
 /* ------------------------- */
 /* ANIMACIONES */
 /* ------------------------- */
-.popup__create_modal_type-payment.active {	transform: scale(1); opacity: 1; }
+.popup__create_modal_ranges.active {	transform: scale(1); opacity: 1; }

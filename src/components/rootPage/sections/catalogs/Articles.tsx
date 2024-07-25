@@ -122,6 +122,7 @@ console.log(warinings)
       get_proveedores: true,
       get_max_mins: true,
       get_plantilla_data: true,
+      get_precios: true,
       get_stock: true,
       get_web: false,
       get_unidades: true

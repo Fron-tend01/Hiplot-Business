@@ -6,10 +6,12 @@ import BranchOffices from './modals/BranchOffices';
 import Suppliers from './modals/Suppliers';
 import MaxMin from './modals/MaxMin';
 import Units from './modals/Units';
+import Prices from './modals/Prices';
 import { TemplatesRequests } from '../../../../../fuctions/Templates';
 import './modalCreate.css'
 import { useStore } from 'zustand';
-import ModalLoading from '../../../../loading/ModalLoading';          
+import ModalLoading from '../../../../loading/ModalLoading';
+import { storeModals } from '../../../../../zustand/Modals';        
 import typePayments from './json/typePayments.json'
 
 const modalUpdate: React.FC = () => {
@@ -21,9 +23,11 @@ const modalUpdate: React.FC = () => {
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
 
-    const { articleByOne, branchOffices, deleteBranchOffices, units, deleteUnits, maxsMins, deleteMaxsMins, suppliers, deleteSuppliers }: any = useStore(storeArticles);
+    const { articleByOne, branchOffices, deleteBranchOffices, units, deleteUnits, maxsMins, prices, deleteMaxsMins, suppliers, deleteSuppliers }: any = useStore(storeArticles);
     
-    
+    const setSubModal = storeArticles(state => state.setSubModal)
+
+    const {subModal}: any = useStore(storeArticles)
 
     // Modales Zustand
     const { setModalStateUnits, modalStateUnits } = useStore(storeArticles);
@@ -228,6 +232,7 @@ const handleTemplatesChange = (template: any) => {
         max_mins: maxsMins,
         unidades: units,
         proveedores: suppliers,
+        precios: prices,
         sucursales_elim: deleteBranchOffices,
         max_mins_elim: deleteMaxsMins,
         unidades_elim: deleteUnits,
@@ -293,11 +298,10 @@ const handleTemplatesChange = (template: any) => {
     
     // Modal de Precios del modal de crear articulos //
 
-    const [modalStatePrice, setModalStatePrice] = useState<boolean>(false)
 
 
-    const modalPrices = () => {
-        setModalStatePrice(!modalStatePrice)
+    const modalUpdate = () => {
+        setSubModal('modal_prices-update')
     }
 
     // const receivePrices = () => {
@@ -609,10 +613,13 @@ const handleTemplatesChange = (template: any) => {
                 </div>
             <div>
                 <div>
-                    <button className='btn__general-purple' type='button' onClick={modalPrices}>Precios</button>
+                    <button className='btn__general-purple' type='button' onClick={modalUpdate}>Precios</button>
                 </div>
-                {/* <Suppliers /> */}
-                
+                <div className={`overlay__modal_prices_creating_articles ${subModal == 'modal_prices-update' ? 'active' : ''}`}>
+                    <div className={`popup__modal_prices_creating_articles ${subModal == 'modal_prices-update' ? 'active' : ''}`}>
+                        <Prices />
+                    </div>
+                </div>
             </div>
             <div>
                 <div>

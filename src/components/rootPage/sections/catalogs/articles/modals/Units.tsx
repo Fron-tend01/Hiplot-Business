@@ -25,7 +25,7 @@ const Units: React.FC = () => {
   
   }, [articleByOne])
 
-  console.log(articleByOne.unidades)
+
 
 
   const [selectUnits, setSelectUnits] = useState<boolean>(false)
@@ -53,7 +53,6 @@ const Units: React.FC = () => {
     setSelectSectionsUnits(!selectSectionsUnits)
   }
 
-  console.log('units', units)
 
   const handleSectionsUnitsChange = (unit: any) => {
     setSelectedSectionUnit(unit.id)

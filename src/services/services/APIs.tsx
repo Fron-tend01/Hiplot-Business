@@ -237,6 +237,27 @@ const APIs = {
   },
 
 
+
+//////////////////////////////////Rangos//////////////////////////////////////////
+
+createRanges: async (data: any, customPath?: string) => {
+  const path = customPath || 'rangos_create';
+  return ConfigurationAPIs.post(path, data)
+},
+
+
+getRanges: async (customPath?: string) => {
+  const path = customPath || 'rangos_get'
+  return ConfigurationAPIs.get(path)
+},
+
+
+
+
+
+
+
+
   updateTemplates: async (id: number, data: {nombre: string, id_empresa: number}, data_nuevo: [{nombre: string, tipo: string, id_plantilla: number}], data_eliminar: any[],  customPath?: string) => {
     const path = customPath || `update_plantilla_art/${id}`
     return ConfigurationAPIs.put(path, {id, data, data_nuevo, data_eliminar})

@@ -24,7 +24,7 @@ interface BranchOffices {
 const modalCreate: React.FC = () => {
     const { units }: any = useStore(storeArticles);
 
-    const {branchOffices, maxsMins, suppliers }: any = useStore(storeArticles);
+    const {branchOffices, maxsMins, suppliers, prices }: any = useStore(storeArticles);
 
     const {getTemplates}: any = TemplatesRequests()
 
@@ -251,6 +251,7 @@ const handleTemplatesChange = (template: any) => {
         max_mins: maxsMins,
         proveedores: suppliers,
         unidades: units,
+        precios: prices,
         sucursales_elim: [],
         max_mins_elim: [],
         proveedores_elim: []

@@ -6,6 +6,7 @@ import Suppliers from "../../../components/rootPage/sections/catalogs/Suppliers"
 import Templates from "../../../components/rootPage/sections/catalogs/templates";
 import Units from "../../../components/rootPage/sections/catalogs/Units";
 import TypeOfPayment from "../../../components/rootPage/sections/catalogs/TypeOfPayment";
+import Ranges from "../../../components/rootPage/sections/catalogs/Ranges";
 
 import { PrivateRoutes } from "../../../models/routes";
 import Combinations from "../../../components/rootPage/sections/catalogs/Combinations";
@@ -19,6 +20,7 @@ const RouteCatalogue: React.FC = () => {
       <Route path={`/${PrivateRoutes.SUPPLIERS}`} element={<Suppliers />}/>
       <Route path={`/${PrivateRoutes.TEMPLATES}`} element={<Templates />}/>
       <Route path={`/${PrivateRoutes.UNITS}`} element={<Units />}/>
+      <Route path={`/${PrivateRoutes.RANKS}`} element={<Ranges />}/>
       <Route path={`/${PrivateRoutes.TYPEOFPAYMENT}`} element={<TypeOfPayment />}/>
       <Route path={`/${PrivateRoutes.COMBINATIONS}`} element={<Combinations />}/>
 

@@ -69,6 +69,16 @@ interface StoreState {
     modalStateMaxsMins: any
     setModalStateMaxsMins: (article: any) => void;
 
+    // Maximos y minimos 
+    prices: any;
+    setPrices: (maxmin: any) => void;
+    deletePrices: any
+    setDeletePrices: (article: any) => void;
+
+    historyPrices: any
+    setHistoryPrices: (article: any) => void;
+
+
 
     
     // Proveedores 
@@ -146,6 +156,16 @@ export const storeArticles = create<StoreState>((set) => ({
 
     modalStateSuppliers: [],
     setModalStateSuppliers: (supplier) => set({ modalStateSuppliers: supplier }),
+
+    
+    //  Precios
+    prices: [],
+    setPrices: (price) => set({ prices: price }),
+    deletePrices: [],
+    setDeletePrices: (unit) => set({ deleteUnits: unit }),
+
+    historyPrices: [],
+    setHistoryPrices: (price) => set({ historyPrices: price }),
 
 
     articleToUpdate: null,
