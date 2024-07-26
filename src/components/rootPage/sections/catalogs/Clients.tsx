@@ -6,6 +6,7 @@ import { ClientsRequests } from '../../../../fuctions/Clients'
 import useUserStore from '../../../../zustand/General'
 import { companiesRequests } from '../../../../fuctions/Companies'
 import { BranchOfficesRequests } from '../../../../fuctions/BranchOffices'
+import { storeClients } from '../../../../zustand/Clients'
 
 const Clients: React.FC = () => {
   const userState = useUserStore(state => state.user);
@@ -19,6 +20,7 @@ const Clients: React.FC = () => {
   const [name, setName] = useState<string>('')
 
   const {getClients}: any = ClientsRequests()
+  const setClientToUpdate = storeClients(state => state.setClientToUpdate)
 
   const [clients, setClients] = useState<any>([])
   
@@ -77,7 +79,11 @@ const Clients: React.FC = () => {
   
   }
 
-  
+  const updateClients = (client: any)  => {
+    setModal('update_clients')
+    setClientToUpdate(client)
+
+  }
 
   const setModal = storeModals(state => state.setModal)
 

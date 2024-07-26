@@ -15,7 +15,7 @@ const AddBranchOffices = () => {
     const setModalSub = storeModals(state => state.setModalSub)
     const setAddBranchClients = storeClients(state => state.setAddBranchClients)
 
-    const {addBranchClients}: any = useStore(storeClients)
+    const {addBranchClients, clientToUpdate}: any = useStore(storeClients)
 
     const {getCompaniesXUsers}: any = companiesRequests()
     const [companies, setCompanies] = useState<any>([])
@@ -29,11 +29,12 @@ const AddBranchOffices = () => {
      
     }
 
-  
-
 
     useEffect(() => {
         fetch()
+        setAddBranchClients(clientToUpdate.sucursales
+        )
+  
     }, [])
 
 

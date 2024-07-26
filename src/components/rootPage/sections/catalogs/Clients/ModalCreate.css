@@ -51,6 +51,7 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
+	z-index: 1;
 }
 
 .overlay__create_modal_clients.active {
