@@ -100,6 +100,7 @@ export default function Colecciones() {
   const { getBranchOfficeXCompanies, branchOfficeXCompanies }: any = storeBranchOffcies();
 
   const { getFamilies, families }: any = storeFamilies()
+  const [modoUpdate, setModoUpdate] = useState<boolean>(false)
   const [selectFamilias, setSelectFamilias] = useState<boolean>(false)
   const [selectEmpresas, setSelectEmpresas] = useState<boolean>(false)
   const [selectSucursales, setSelectSucursales] = useState<boolean>(false)
@@ -123,8 +124,28 @@ export default function Colecciones() {
     getFamilies(user_id)
     getData()
   }, [])
-  const Modal = () => {
+  const Modal = (modoUpdate:boolean, data:any) => {
     setModal(true)
+    setColeccion({...forclearColeccion})
+    if (modoUpdate) {
+      DynamicVariables.updateAnyVar(setColeccion, "id", data.id)
+      DynamicVariables.updateAnyVar(setColeccion, "nombre", data.nombre)
+      DynamicVariables.updateAnyVar(setColeccion, "status", data.status)
+      DynamicVariables.updateAnyVar(setColeccion, "img", data.img)
+      DynamicVariables.updateAnyVar(setColeccion, "id_familia", data.id_familia)
+      //LLENAR LA VARIABLE COLECCION
+      data.articulos.forEach((element:any) => {
+        DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "colecciones_art_piv", element)
+        // DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "combinaciones_sucursales", element.id)
+      });
+      data.sucursales.forEach((element:any) => {
+          DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "colecciones_suc_piv", element)
+      });
+      setModoUpdate(true)
+
+    }else {
+      setModoUpdate(false)
+    }
   }
 
   const closeModal = () => {
@@ -181,10 +202,10 @@ export default function Colecciones() {
     let proveedor = 0;
     let materia_prima = 0;
     let get_sucursales = false;
-    let get_proveedores = true;
-    let get_max_mins = true;
+    let get_proveedores = false;
+    let get_max_mins = false;
     let get_plantilla_data = false;
-    let get_stock = true;
+    let get_stock = false;
     let id_usuario = user_id;
 
     if (selectedTypeSearch === 0) {
@@ -258,18 +279,43 @@ export default function Colecciones() {
     //     DynamicVariables.updateAnyVarSetArrNoRepeat(setCombination, "combinaciones_opciones", element)
     // });
 }
+const updateColeccion = async (e: React.FormEvent)=> {
+  e.preventDefault();
+  
+  await APIs.CreateAnyPut(coleccion, "update_coleccion/update")
+  .then(async (response: any) => {
+      Swal.fire('Notificación', response.mensaje, 'success');
+      await getData()
+      setModal(false)
+  })
+  .catch((error: any) => {
+      if (error.response) {
+          if (error.response.status === 409) {
+              Swal.fire(error.mensaje, '', 'warning');
+          } else {
+              Swal.fire('Error al actualizar la combinacion', '', 'error');
+          }
+      } else {
+          Swal.fire('Error de conexión.', '', 'error');
+      }
+  })
+}
   return (
     <div className='colecciones'>
       <div className='colecciones__container'>
         <div className='btns__create_colecciones'>
-          <button className='btn__general-purple' onClick={Modal}>Crear Coleccion</button>
+          <button className='btn__general-purple' onClick={()=>Modal(false, 0)}>Crear Coleccion</button>
         </div>
         <div className={`overlay__create_modal_colecciones ${modal ? 'active' : ''}`}>
           <div className={`popup__create_modal_colecciones ${modal ? 'active' : ''}`}>
             <a href="#" className="btn-cerrar-popup__create_modal_colecciones" onClick={closeModal}>
               <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
             </a>
-            <p className='title__modals'><b>Crear nueva Colección</b></p>
+            {modoUpdate ? 
+              <p className='title__modals'><b>Actualizar Colección</b></p>
+              :
+              <p className='title__modals'><b>Crear Colección</b></p>
+            }
             <br />
             <hr />
             <br />
@@ -411,7 +457,8 @@ export default function Colecciones() {
                             <div className='td'>
                               <button className='btn__delete_users' type="button" onClick={() => {
                                 DynamicVariables.removeObjectInArrayByKey(setColeccion, "colecciones_suc_piv", index);
-                                DynamicVariables.removeObjectInArrayByKey(setColeccion, "colecciones_suc", index) // Llama a otra función
+                                DynamicVariables.removeObjectInArrayByKey(setColeccion, "colecciones_suc", index);
+                                {modoUpdate && dat.id != 0? DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "sucursales_remove", dat.id) : null}
                               }}>Eliminar</button>
                             </div>
                           </div>
@@ -516,7 +563,8 @@ export default function Colecciones() {
                             <div className='td'>
                               <button className='btn__delete_users' type="button" onClick={() => {
                                 DynamicVariables.removeObjectInArrayByKey(setColeccion, "colecciones_art_piv", index);
-                                DynamicVariables.removeObjectInArrayByKey(setColeccion, "colecciones_art", index) // Llama a otra función
+                                DynamicVariables.removeObjectInArrayByKey(setColeccion, "colecciones_art", index);
+                                {modoUpdate && dat.id != 0? DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "articulos_remove", dat.id) : null}
                               }}>Eliminar</button>
                             </div>
                           </div>
@@ -530,8 +578,15 @@ export default function Colecciones() {
               </div>
             </div>
             <br></br>
-            <input className='btn__general-purple' onClick={createColeccion} value="Crear Colección" />
+            {modoUpdate ? 
+              // <p className='title__modals'><b>Actualizar Colección</b></p>
+              <input className='btn__general-purple' onClick={updateColeccion} value="Actualizar Colección" />
 
+              :
+              // <p className='title__modals'><b>Crear Colección</b></p>
+              <input className='btn__general-purple' onClick={createColeccion} value="Crear Colección" />
+
+            }
           </div>
         </div>
 
@@ -568,7 +623,7 @@ export default function Colecciones() {
                                                 {car.status == true ? "ACTIVO" : "INACTIVO"}
                                             </div>
                                             <div className='td'>
-                                                <button className='branchoffice__edit_btn' onClick={() => ModalUpdate(car)}>Editar</button>
+                                                <button className='branchoffice__edit_btn' onClick={() => Modal(true, car)}>Editar</button>
                                             </div>
                                         </div>
                                     </div>
