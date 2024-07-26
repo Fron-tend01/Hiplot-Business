@@ -271,7 +271,13 @@ const RootHome: React.FC = () => {
                                 <span>Colecciones</span>
                             </AnchorTag>
                         );
-                    }else {
+                    } else if (permiso.titulo == "CLIENTES") {
+                        return (
+                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.CUSTOMERS}`}>
+                                <span>Clientes</span>
+                            </AnchorTag>
+                        );
+                    } else {
                         return null;
                     }
                 })}

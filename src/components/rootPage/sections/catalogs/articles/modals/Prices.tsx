@@ -15,7 +15,7 @@ const Prices: React.FC = () => {
 
   const setPrices = storeArticles(state => state.setPrices)
   const setModalSub = storeModals(state => state.setModalSub)
-  const setHistoryPrices = storeArticles(state => state.setHistoryPrices)
+  const setHistoryPrices = storeArticles  (state => state.setHistoryPrices)
 
   const { articleByOne }: any = useStore(storeArticles);
 

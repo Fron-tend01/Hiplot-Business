@@ -254,6 +254,22 @@ getRanges: async (customPath?: string) => {
 
 
 
+//////////////////////////////////Clientes//////////////////////////////////////////
+
+createClients: async (data: any, customPath?: string) => {
+  const path = customPath || 'cliente_create';
+  return ConfigurationAPIs.post(path, data)
+},
+
+
+getClients: async (data: any, customPath?: string) => {
+  const path = customPath || 'clientes_get'
+  return ConfigurationAPIs.post(path, data)
+},
+
+
+
+
 
 
 
