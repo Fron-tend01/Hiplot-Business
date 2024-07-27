@@ -32,6 +32,7 @@ export const PublicRoutes = {
     COMBINATIONS: 'combinations',
     COLECCIONES: 'Colecciones',
     CUSTOMERS: 'customers',
+    TIEMPOSENTREGA: 'TiemposEntrega',
     // Almacen//characteristics
     STORE: 'store',
     TICKETS: 'tickets',
