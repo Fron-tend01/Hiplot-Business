@@ -277,6 +277,12 @@ const RootHome: React.FC = () => {
                                 <span>Clientes</span>
                             </AnchorTag>
                         );
+                    } else if (permiso.titulo == "TIEMPOS_ENTREGA") {
+                        return (
+                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.TIEMPOSENTREGA}`}>
+                                <span>Tiempos Entrega</span>
+                            </AnchorTag>
+                        );
                     } else {
                         return null;
                     }

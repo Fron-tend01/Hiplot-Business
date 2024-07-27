@@ -85,17 +85,6 @@ export default function Colecciones() {
     articulos_remove: [],
     sucursales_remove: []
   });
-  const [forclearArt] = useState<any>({
-    tipo: 0,
-    tipo_selected: 0,
-    nombre: ''
-  })
-  const [articulo, setArticulo] = useState<any>({
-    tipo: 0,
-    tipo_selected: 0,
-    tipo_openSel: false,
-    nombre: ''
-  })
   const { getCompaniesXUsers, companiesXUsers }: any = storeCompanies();
   const { getBranchOfficeXCompanies, branchOfficeXCompanies }: any = storeBranchOffcies();
 
@@ -112,7 +101,6 @@ export default function Colecciones() {
   const [selectedModalResult, setSelectedModalResult] = useState<number | null>(null)
   const [selectedTypeSearch, setSelectedTypeSearch] = useState<number | null>(null)
   const [data, setData] = useState<any>(null)
-  const [modalUpdate, setModalUpdate] = useState<any>()
 
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
@@ -258,26 +246,6 @@ export default function Colecciones() {
   const getData = async () => {
     let result = await APIs.GetAny("get_coleccion/get")
     setData(result)
-}
-  const closeModalUpdate = () => {
-    setModalUpdate(false)
-}
-  const ModalUpdate = (car: any) => {
-    setModalUpdate(true)
-    // setId(car.id)
-    // setCombination({...forclear});
-    // setOpcion({...opcionClear})
-    // console.log(car);
-    // DynamicVariables.updateAnyVar(setCombination, "id", car.id)
-    // DynamicVariables.updateAnyVar(setCombination, "nombre", car.nombre)
-    // DynamicVariables.updateAnyVar(setCombination, "status", car.status)
-    // car.combinaciones_sucursales.forEach((element:any) => {
-    //     DynamicVariables.updateAnyVarSetArrNoRepeat(setCombination, "combinaciones_sucursales_piv", element)
-    //     DynamicVariables.updateAnyVarSetArrNoRepeat(setCombination, "combinaciones_sucursales", element.id)
-    // });
-    // car.combinaciones_opciones.forEach((element:any) => {
-    //     DynamicVariables.updateAnyVarSetArrNoRepeat(setCombination, "combinaciones_opciones", element)
-    // });
 }
 const updateColeccion = async (e: React.FormEvent)=> {
   e.preventDefault();
