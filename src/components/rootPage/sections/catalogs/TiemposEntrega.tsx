@@ -3,8 +3,6 @@ import Swal from 'sweetalert2';
 import React, { useEffect, useState } from 'react'
 import DynamicVariables from '../../../../utils/DynamicVariables';
 import '../../../../utils/DynamicVariables';
-import { storeCompanies } from '../../../../zustand/Companies';
-import { storeBranchOffcies } from '../../../../zustand/BranchOffices';
 import useUserStore from '../../../../zustand/General';
 import "./styles/TiemposEntrega.css"
 import { RangesRequests } from '../../../../fuctions/Ranges'

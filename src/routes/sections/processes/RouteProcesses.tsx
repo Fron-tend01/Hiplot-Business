@@ -8,6 +8,7 @@ import UserGroups from "../../../components/rootPage/sections/processes/UserGrou
 import TypesUsers from "../../../components/rootPage/sections/processes/TypesUsers";
 import Users from "../../../components/rootPage/sections/processes/Users";
 import { PrivateRoutes } from "../../../models/routes";
+import Urgencias from "../../../components/rootPage/sections/processes/Urgencias";
 
 
 const RouteProcesses: React.FC = () => {
@@ -20,6 +21,7 @@ const RouteProcesses: React.FC = () => {
       <Route path={`/${PrivateRoutes.GRUPOSDEUSUARIOS}`} element={<UserGroups />}/>
       <Route path={`/${PrivateRoutes.TIPOSDEUSUARIOS}`} element={<TypesUsers />}/>
       <Route path={`/${PrivateRoutes.USUARIOS}`} element={<Users />}/>
+      <Route path={`/${PrivateRoutes.URGENCIAS}`} element={<Urgencias />}/>
   
     </Routes>
   );

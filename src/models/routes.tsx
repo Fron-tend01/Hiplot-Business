@@ -22,6 +22,7 @@ export const PublicRoutes = {
     GRUPOSDEUSUARIOS: 'usergroups',
     TIPOSDEUSUARIOS: 'typesusers',
     USUARIOS: 'users',
+    URGENCIAS: 'urgencias',
     // Catalogue//
     ARTICLES: 'articles',
     FAMILIES: 'families',
