@@ -19,7 +19,7 @@ const Prices: React.FC = () => {
 
   const { articleByOne }: any = useStore(storeArticles);
 
-  const {prices}: any = useStore(storeArticles)
+  const { prices } = useStore(storeArticles);
 
   const {modalSub}: any = useStore(storeModals)
 
@@ -45,7 +45,9 @@ useEffect(() => {
       setTypeOfPayment(resultType)
       let resultUserGroups = await getUserGroups(user_id);
       setUserGroup(resultUserGroups)
-      setPrices(articleByOne.precios)
+      if(articleByOne) {
+        setPrices(articleByOne.precios)
+      }
         setSelect([
           {
             name: 'Rangos',
@@ -136,10 +138,16 @@ const addPrices = () => {
     observaciones: inputs.observations,
     id_tc: selects[1].selected,
     name_tc: selects[1].nameSelected,
-    sd: 'sd'
+
     
   }
-  setPrices([...prices, data])
+  
+  if (Array.isArray(prices)) {
+    setPrices([...prices, data])
+  } else {
+    setPrices([data])
+  }
+
 
 }
 

@@ -40,11 +40,20 @@
   --background-color: #090d1f;
   --text-color: #090d1f;
   --text-select-color: #090d1f;
-  --primary-color: #5d35b0;
+  --primary-color: #682ce0d8;
+
+  --light-purple-color: #652dd433;
+
   --secundary-color: #53539f;
   --tertiary-color: #fff;
-  --danger-color: #D0342C;
+  --danger-color: #df4941c5;
+  --orange-color: #bf6903;
   --white-color: #f5f6f7;
+
+  /* ///////// Colores de texto ////////////// */
+
+  --text-white: #f5f6f7c7;
+
 
   --primary-colorr: #2d47da;
 
@@ -281,6 +290,14 @@ textarea {
   background-color: #009708;
   padding: 10px 10px;
   color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-general);
+}
+
+.btn__general-gray {
+  background-color: #d6d6d6;
+  padding: 10px 10px;
   border: none;
   cursor: pointer;
   border-radius: var(--border-radius-general);

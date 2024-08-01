@@ -123,6 +123,8 @@ console.log(warinings)
       get_max_mins: true,
       get_plantilla_data: true,
       get_precios: true,
+      get_variaciones: true,
+      get_combinaciones: true,
       get_stock: true,
       get_web: false,
       get_unidades: true

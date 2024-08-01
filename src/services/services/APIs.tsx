@@ -573,7 +573,29 @@ updateTypeOfPayment: async (data: any, customPath?: string) => {
   },
 
 
+    //////////////////////////////// Combinaciones ///////////////////////////////////////
 
+    // createUnits: async (data: any, customPath?: string) => {
+    //   const path = customPath || 'unidad/create';
+    //   return ConfigurationAPIs.post(path, data)
+    // },
+  
+    getCombinations: async (customPath?: string) => {
+      const path = customPath || 'get_combinacion/get';
+      return ConfigurationAPIs.get(path)
+    },
+  
+    // updateUnits: async (data: any, customPath?: string) => {
+    //   const path = customPath || 'update_unidad';
+    //   return ConfigurationAPIs.post(path, data)
+    // },
+
+////////////////////////////////////// Ficha ///////////////////////////////////////////
+
+getTotalPrice: async (data: any, customPath?: string) => {
+  const path = customPath || 'get_total';
+  return ConfigurationAPIs.post(path, data)
+},
 
   ////////////////////////////////Unidades ///////////////////////////////////////
 

@@ -13,6 +13,7 @@ export const PublicRoutes = {
     CATALOGUE: 'catalogue',
     WAREHOUSES: 'warehouses',
     SALES: 'sales',
+    SHOPPING: 'shopping',
     // Processos//
     COMPANIES: 'companies',
     BRANCHOFFCIES: 'branchoffcies',
@@ -40,9 +41,13 @@ export const PublicRoutes = {
     ORDERS: 'orders',
     TRANSFERS: 'transfers',
 
-    // Ventas//
+    // Compras//
     PURCHASEORDERS: 'purchaseorders',
     REQUISITION: 'requisitions',
+
+    //Ventas 
+    QUOTATION: 'quotation',
+    
 
     // Web //
     WEB: 'web',

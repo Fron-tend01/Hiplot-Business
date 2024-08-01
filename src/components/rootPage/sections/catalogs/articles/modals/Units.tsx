@@ -164,7 +164,61 @@ const Units: React.FC = () => {
               <p className='warning__article_units'>La unidad de almacen será con el que se ingrese al almacen</p>
             </div>
             <div>
-                
+            <div className='table__units' >
+                    <div>
+                        <div>
+                            {units ? (
+                                <div>
+                                    <p className='text'>Total de unidades {units.length}</p>
+                                </div>
+                            ) : (
+                                <p className='text'>No hay empresas</p>
+                            )}
+                        </div>
+                        <div className='table__head'>
+                            <div className='thead'>
+                                <div className='th'>
+                                    <p className=''>Unidad</p>
+                                </div>
+                                <div className='th'>
+                                    <p className=''>Valor</p>
+                                </div>
+                                <div className='th'>
+                                    <p className=''>Check</p>
+                                </div>
+                                <div className='th'>
+                                </div>
+                            </div>
+                        </div>
+                        {units && units.length > 0 ? (
+                            <div className='table__body'>
+                                {units.map((item: any, index: any) => (
+                                    <div className='tbody__container' key={index}>
+                                        <div className='tbody'>
+                                            <div className='td'>
+                                              {item.nombre}
+                                            </div>
+                                            <div className='td'>
+                                              {item.equivalencia} {item.unidad_equivalencia}
+                                            </div>
+                                            <div className='td'>
+                                              <label className="radio-label">
+                                                  <input type="radio" className="radio-input" value={selectedOption}  checked={selectedOption == null ? item.unidad_almacen : selectedOption == index ? true : false} onChange={() => handleChange(index)} />
+                                                  <span className="radio-custom"></span>
+                                              </label>
+                                            </div>
+                                            <div className='td'>
+                                                <button className='btn__delete_users' type='button' onClick={() => deleteMaxMin(item)}>Eliminar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className='text'>Cargando datos...</p>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
       </div>

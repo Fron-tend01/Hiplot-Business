@@ -7,6 +7,8 @@ import Suppliers from './modals/Suppliers';
 import MaxMin from './modals/MaxMin';
 import Units from './modals/Units';
 import Prices from './modals/Prices';
+import Variations from './modals/Variations';
+import Combinations from './modals/Combinations';
 import './modalCreate.css'
 import { useStore } from 'zustand';
 import { TemplatesRequests } from '../../../../../fuctions/Templates';
@@ -24,11 +26,12 @@ interface BranchOffices {
 const modalCreate: React.FC = () => {
     const { units }: any = useStore(storeArticles);
 
-    const {branchOffices, maxsMins, suppliers, prices }: any = useStore(storeArticles);
+    const {branchOffices, maxsMins, suppliers, prices, variations, combinations }: any = useStore(storeArticles);
 
     const {getTemplates}: any = TemplatesRequests()
 
     const  setSubModal = storeArticles(state => state.setSubModal)
+    
 
        // Modales Zustand
     const { setModalStateBrnachOffices, modalStateBrnachOffices } = useStore(storeArticles);
@@ -218,8 +221,7 @@ const handleCheckboxChange = (value: number) => {
 const handleTemplatesChange = (template: any) => {
     setSelectedTemplate(template.id)
     setSelectTemplates(false)
-
-  }
+}
 
 
   const handleCreateSuppliers = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -250,6 +252,8 @@ const handleTemplatesChange = (template: any) => {
         sucursal: branchOffices,
         max_mins: maxsMins,
         proveedores: suppliers,
+        variaciones: variations,
+        combinaciones: combinations,
         unidades: units,
         precios: prices,
         sucursales_elim: [],
@@ -668,13 +672,18 @@ const handleTemplatesChange = (template: any) => {
             <div>
                 <button className='btn__general-purple' type='button' onClick={modalComponents}>Componentes</button>
             </div>
-           
         </div>
         <div>
             <div>
-                <button className='btn__general-purple' type='button' onClick={modalVariations}>Variaciones</button>
+                <button className='btn__general-purple' type='button' onClick={() => setSubModal('create_modal_variations')}>Variaciones</button>
             </div>
-        
+            <Variations />
+        </div>
+        <div>
+            <div>
+                <button className='btn__general-purple' type='button' onClick={() => setSubModal('create_modal_combinations')}>Combinaciones</button>
+            </div>
+            <Combinations />
         </div>
         <div>
             <div>

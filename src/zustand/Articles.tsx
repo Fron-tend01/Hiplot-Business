@@ -69,7 +69,7 @@ interface StoreState {
     modalStateMaxsMins: any
     setModalStateMaxsMins: (article: any) => void;
 
-    // Maximos y minimos 
+    // Precios
     prices: any;
     setPrices: (maxmin: any) => void;
     deletePrices: any
@@ -86,6 +86,21 @@ interface StoreState {
     setSuppliers: (supplier: any) => void;
     deleteSuppliers: any
     setDeleteSuppliers: (supplier: any) => void;
+
+
+   // Variaciones 
+   variations: any[]
+   setVariations: (variation: any) => void;
+   deleteVariations: any
+   setDeleteVariations: (variation: any) => void;
+
+
+  // Combinaciones 
+  combinations: any[]
+  setCombinations: (combination: any) => void;
+  deleteCombinations: any
+  setDeleteCombinations: (combination: any) => void;
+
 
     modalStateSuppliers: any
     setModalStateSuppliers: (supplier: any) => void;
@@ -156,6 +171,20 @@ export const storeArticles = create<StoreState>((set) => ({
 
     modalStateSuppliers: [],
     setModalStateSuppliers: (supplier) => set({ modalStateSuppliers: supplier }),
+
+
+    //Variaciones 
+    variations: [],
+    setVariations: (variation) => set({ variations: variation }),
+    deleteVariations: [],
+    setDeleteVariations: (variation) => set({ deleteVariations: variation }),
+
+
+    //combination 
+    combinations: [],
+    setCombinations: (combination) => set({ combinations: combination }),
+    deleteCombinations: [],
+    setDeleteCombinations: (combination) => set({ deleteCombinations: combination }),
 
     
     //  Precios

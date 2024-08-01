@@ -1,0 +1,131 @@
+/*=================================================
+ 
+  Modal de precios del modal del articulo 
+  
+=================================================*/
+
+
+.overlay__create_modal_variations {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+}
+
+.overlay__create_modal_variations.active {
+	visibility: visible;
+}
+
+.popup__create_modal_variations {
+	background-color: var(--background-modal);  
+	border-radius: 5px;
+	padding: 20px;
+	width: 80%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+}
+
+.popup__create_modal_variations .btn-cerrar-popup__create_modal_variations {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+}
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__create_modal_variations.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+
+
+
+/* ------------------------------------------------------------------------------------------------------------------------- */
+/************************************************** Tabal de Maximos y minimos********************************************** */
+/* ------------------------------------------------------------------------------------------------------------------------- */
+
+
+.conatiner__create_modal_variations .table__variations_modal {
+    margin-top: 20px;
+    border-radius: 10px;
+	text-align: justify;
+}
+
+
+.conatiner__create_modal_variations .table__variations_modal .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+    color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.conatiner__create_modal_variations .table__variations_modal .table__head .thead {
+    display: grid;
+	width: 100%;
+    grid-template-columns: repeat(2, 1fr) 100px 100px 1fr 100px;
+	
+    padding: 10px;
+    font-weight: 600;
+}
+
+.conatiner__create_modal_variations .table__variations_modal .table__body {
+	height: 200px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.conatiner__create_modal_variations .table__variations_modal .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+    color: var(--text-table-color);
+  }
+  
+  .conatiner__create_modal_variations .table__variations_modal .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+    color: var(--text-table-color);
+   
+  }
+
+  .conatiner__create_modal_variations .table__variations_modal .table__body .tbody {
+    display: flex;
+} 
+
+.conatiner__create_modal_variations .table__variations_modal .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) 100px 100px 1fr 100px;
+    padding: 10px;
+}
+
+.conatiner__create_modal_variations .table__variations_modal .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+

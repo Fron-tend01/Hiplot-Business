@@ -2,10 +2,11 @@
 import React, { useEffect } from 'react';
 import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom';
-import RouteSales from '../../../routes/sections/processes/RouteSales';
+import RoutesShopping from '../../../routes/sections/processes/RoutesShopping';
 import RouteProcesses from '../../../routes/sections/processes/RouteProcesses';
 import RouteCatalogue from '../../../routes/sections/processes/RouteCatalogue';
 import RouteWarehouses from '../../../routes/sections/processes/RouteWarehouses';
+import RouteSales from '../../../routes/sections/processes/RouteSales';
 import RouteWeb from '../../../routes/sections/processes/RouteWeb';
 import AnchorTag from '../../../components/rootPage/AnchorTag';
 import './RootPage.css'
@@ -98,27 +99,25 @@ const RootHome: React.FC = () => {
         </div>
         <ul className='nav__items'>
           <div className={`nav__item ${activeMenuIndex === 0 ? 'activeMenu' : ''}`} >
-            <AnchorTag className='nav__link' onClick={() => toggleSubMenu(0)}  to="/dashboard">
+            <AnchorTag className='nav__link' onClick={() => toggleSubMenu(0)} to={`${PrivateRoutes.SALES}`}>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 512 512"><path d="M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm320 96c0-26.9-16.5-49.9-40-59.3V88c0-13.3-10.7-24-24-24s-24 10.7-24 24V292.7c-23.5 9.5-40 32.5-40 59.3c0 35.3 28.7 64 64 64s64-28.7 64-64zM144 176a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm-16 80a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm288 32a32 32 0 1 0 0-64 32 32 0 1 0 0 64zM400 144a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>
               <span>Dashboard</span>
             </AnchorTag>
           </div>
           {permisos && permisos.COMPRA.length  > 0 ? 
-                 <div className={`nav__item ${activeMenuIndex === 1 ? 'activeMenu' : ''}`}>
-                    <AnchorTag className='nav__link' style={sales} onClick={() => toggleSubMenu(1)}  to="/sale">
+                 <div className={`nav__item ${activeMenuIndex === 1 ? 'activeMenu' : ''}`} >
+                    <AnchorTag className='nav__link' style={sales} onClick={(e) => {e.preventDefault(); toggleSubMenu(1)}}  to={`${PrivateRoutes.SALES}`}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 448 512"><path d="M0 80V229.5c0 17 6.7 33.3 18.7 45.3l176 176c25 25 65.5 25 90.5 0L418.7 317.3c25-25 25-65.5 0-90.5l-176-176c-12-12-28.3-18.7-45.3-18.7H48C21.5 32 0 53.5 0 80zm112 32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
                         <span>Ventas</span>
                         <svg className='arrow' onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z"></path></svg>
                     </AnchorTag>
                     <div className='sub__menu '>
-                    {permisos.COMPRA && permisos.COMPRA.map((permiso: any) => {
-                        if (permiso.titulo == "") {
+                    {permisos.COMPRA && permisos.COMPRA.map((permiso: any, index: any) => {
+                        if (permiso.titulo == "ORDEN_COMPRA") {
                             return (
-                                <></>
-                            );
-                        } else if (permiso.titulo == "") {
-                            return (
-                                <></>
+                                <AnchorTag key={index} className='sub__menu-link' to={`${PrivateRoutes.SALES}/${PrivateRoutes.QUOTATION}`}>
+                                    <span>Cotización</span>
+                                </AnchorTag>
                             );
                         } else {
                             return null;
@@ -131,7 +130,7 @@ const RootHome: React.FC = () => {
             }
             {permisos && permisos.COMPRA.length  > 0 ? 
             <div className={`nav__item ${activeMenuIndex === 2 ? 'activeMenu' : ''}`}>
-                <AnchorTag className='nav__link' style={shopping}  onClick={() => toggleSubMenu(2)} to={`${PrivateRoutes.SALES}`}>
+                <AnchorTag className='nav__link' style={shopping}  onClick={() => toggleSubMenu(2)} to={`${PrivateRoutes.SHOPPING}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg>
                     <span>Compras</span>
                     <svg className="arrow" onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z"></path></svg>
@@ -140,13 +139,13 @@ const RootHome: React.FC = () => {
                 {permisos.COMPRA && permisos.COMPRA.map((permiso: any, index: number) => {
                     if (permiso.titulo == "REQUISICIONES") {
                         return (
-                            <AnchorTag key={index} className='sub__menu-link' to={`${PrivateRoutes.SALES}/${PrivateRoutes.REQUISITION}`}>
+                            <AnchorTag key={index} className='sub__menu-link' to={`${PrivateRoutes.SHOPPING}/${PrivateRoutes.REQUISITION}`}>
                                 <span>Requisición</span>
                             </AnchorTag>
                         );
                     } else if (permiso.titulo == "ORDEN_COMPRA") {
                         return (
-                            <AnchorTag key={index} className='sub__menu-link' to={`${PrivateRoutes.SALES}/${PrivateRoutes.PURCHASEORDERS}`}>
+                            <AnchorTag key={index} className='sub__menu-link' to={`${PrivateRoutes.SHOPPING}/${PrivateRoutes.PURCHASEORDERS}`}>
                                 <span>Ordenes de compra</span>
                             </AnchorTag>
                         );
@@ -381,6 +380,7 @@ const RootHome: React.FC = () => {
                     <Route path={`${permisos && permisos.CONFIG.length > 0 ? PrivateRoutes.PROCESSOS : ''}/*`} element={<RouteProcesses />} />
                     <Route path={`${PrivateRoutes.CATALOGUE}/*`} element={<RouteCatalogue  />} />
                     <Route path={`${PrivateRoutes.WAREHOUSES}/*`} element={<RouteWarehouses />} />
+                    <Route path={`${PrivateRoutes.SHOPPING}/*`}  element={<RoutesShopping />} />
                     <Route path={`${PrivateRoutes.SALES}/*`}  element={<RouteSales />} />
                     <Route path={`${PrivateRoutes.WEB}/*`} element={<RouteWeb />} />
                 </Routes>

@@ -73,7 +73,7 @@
     opacity: 1;
 }
 
-.conatiner__users.active:hover .content__users {
+/* .conatiner__users.active:hover .content__users {
     display: block;
     opacity: 1;
     animation: animateheight 600ms ease forwards,
@@ -100,7 +100,7 @@
         height: 200px;
    
     }
-}
+} */
 
 
 

@@ -7,6 +7,8 @@ import Suppliers from './modals/Suppliers';
 import MaxMin from './modals/MaxMin';
 import Units from './modals/Units';
 import Prices from './modals/Prices';
+import Variations from './modals/Variations';
+import Combinations from './modals/Combinations';
 import { TemplatesRequests } from '../../../../../fuctions/Templates';
 import './modalCreate.css'
 import { useStore } from 'zustand';
@@ -23,7 +25,7 @@ const modalUpdate: React.FC = () => {
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
 
-    const { articleByOne, branchOffices, deleteBranchOffices, units, deleteUnits, maxsMins, prices, deleteMaxsMins, suppliers, deleteSuppliers }: any = useStore(storeArticles);
+    const { articleByOne, branchOffices, deleteBranchOffices, units, deleteUnits, maxsMins, prices, deleteMaxsMins, suppliers, deleteSuppliers, combinations, deleteCombinations }: any = useStore(storeArticles);
     
     const setSubModal = storeArticles(state => state.setSubModal)
 
@@ -233,6 +235,9 @@ const handleTemplatesChange = (template: any) => {
         unidades: units,
         proveedores: suppliers,
         precios: prices,
+        // variaciones: variations,
+        combinaciones: combinations,
+        combinaciones_elim: deleteCombinations,
         sucursales_elim: deleteBranchOffices,
         max_mins_elim: deleteMaxsMins,
         unidades_elim: deleteUnits,
@@ -640,6 +645,18 @@ const handleTemplatesChange = (template: any) => {
                         <Units />
                     </div>
                 </div>                      
+            </div>
+            <div>
+                <div>
+                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('update_modal_variations')}>Variaciones</button>
+                </div>
+                <Variations />
+            </div>
+            <div>
+                <div>
+                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('update_modal_combinations')}>Combinaciones</button>
+                </div>
+                <Combinations />
             </div>
             <div>
                 <div>
