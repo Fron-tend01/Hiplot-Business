@@ -343,6 +343,12 @@ const RootHome: React.FC = () => {
                                 <span>Grupos de Us</span>
                             </AnchorTag>
                         );
+                    } else if (permiso.titulo == "URGENCIA") {
+                        return (
+                            <AnchorTag className='sub__menu-link'  to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.URGENCIAS}`}>
+                                <span>Urgencias</span>
+                            </AnchorTag>
+                        );
                     } else { 
                         return null;
                     }
