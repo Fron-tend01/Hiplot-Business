@@ -15,6 +15,7 @@ import Indications from './sales-sard_modals/Indications';
 import DeliveryTimes from './sales-sard_modals/DeliveryTimes';
 import Components from './sales-sard_modals/Components';
 import APIs from '../../../../services/services/APIs';
+import { Toaster, toast } from 'sonner'
 
 
 const SalesCard: React.FC = () => {
@@ -65,7 +66,7 @@ const SalesCard: React.FC = () => {
       }
     
       // Asegúrate de que plantilla_data siga siendo un arreglo
-      result[0].plantilla_data = plantilla_data.map(item => ({
+      result[0].plantilla_data = plantilla_data.map((item: any) => ({
         ...item,
         id_plantillas_art_campos: item.id
       }));
@@ -118,49 +119,78 @@ const SalesCard: React.FC = () => {
   };
 
   const handleTemplatesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    let value = e.target.value;
+    let value = parseInt(e.target.value);
     const updatedArticle = { ...article };
     updatedArticle.plantilla_data[index].valor = value;
 
     setArticle(updatedArticle);
+    getPrices()
   };
 
   const [prices, setPrices] = useState<any>()
+  const [message, setMessage] = useState<any>()
 
   useEffect(() => {
-    // getPrices()
+   
+    
 
-  }, [])
-  console.log('prices',prices)
+  }, [prices])
+  console.log(prices)
 
+  const get = async () => {
+    let data = {
+      id_articulo: article.id,
+      id_grupo_us: selectedUserGroup,
+      id_unidad: selectedUnits,
+      cantidad: amount,
+      campos: article.plantilla_data,
+    };
+  
+    try {
+      let result: any = await APIs.getTotalPrice(data);
+      
+      // Verificar que result sea un objeto y contenga la propiedad deseada
+      if (result.error == true) {
+        
+        toast.warning(result.mensaje)
+        return
+       // Ajustar según el contenido real de result
+      }
+
+      if(result.error == false) {
+       return setPrices(result.mensaje); 
+      }
+    } catch (error) {
+      console.error('Error al obtener el precio total:', error);
+    }
+  };
+  
+  
   const getPrices = async () => {
+    if (amount > 0) {
+      article.plantilla_data.forEach((x: any) => {
+        if (x.valor > 0) {
+          get();
+        }
+      });
+    }
+  };
   
-      let data = {
-        id_articulo: article.id,
-        id_grupo_us: selectedUserGroup,
-        id_unidad: selectedUnits,
-        cantidad: amount,
-        campos: article.plantilla_data
-  
-      }
-  
-      try {
-        let result = await APIs.getTotalPrice(data)
-        setPrices(result)
-      } catch (error) {
 
-      }
-  
-  
- 
+const handleAmountChange = (e: any) => {
+  setAmount(parseInt(e.target.value))
+  if(amount > 0) {
+    getPrices()
     
   }
+}
 
-  console.log(article)
 
 
   return (
     <div className={`overlay__sale-card ${modal === 'sale-card' ? 'active' : ''}`}>
+
+      <Toaster expand={true} position="top-right" richColors  />
       <div className={`popup__sale-card ${modal === 'sale-card' ? 'active' : ''}`}>
         <a href="#" className="btn-cerrar-popup__sale-card" onClick={() => setModal('')}>
           <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
@@ -206,11 +236,11 @@ const SalesCard: React.FC = () => {
                         ))}
                       </ul>
                     </div>
-                  </div>
+                  </div> 
                 </div>
                 <div>
                   <label className='label__general'>Cantidad</label>
-                  <input className={`inputs__general`} type="number" value={amount} onChange={(e) => setAmount(parseInt(e.target.value))} placeholder='Ingresa la cantidad' />
+                  <input className={`inputs__general`} type="number" value={amount} onChange={handleAmountChange} placeholder='Ingresa la cantidad' />
                 </div>
               </div>
               <div className='row__two'>
@@ -266,13 +296,13 @@ const SalesCard: React.FC = () => {
                 </div>
                 <div className='total__price'>
                   <p>Precio total</p>
-                  <p className='result__total-price'>$ 0</p>
+                  <p className='result__total-price'>$ {prices}</p>
                 </div>
                
               </div>
               <div className='row__five'>
                 <button className='add__quotation'>Agregar a cotizacción</button>
-                <button className='add__cart' onClick={getPrices}>Agregar a carrito</button>
+                <button className='add__cart'>Agregar a carrito</button>
               </div>
             </div>
           </div>
