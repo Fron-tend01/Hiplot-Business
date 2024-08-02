@@ -8,7 +8,7 @@ import { PrivateRoutes } from "../../../models/routes";
 const RouteSales: React.FC = () => {
   return (
     <Routes>
-      <Route path={`/${PrivateRoutes.QUOTATION}`} element={<ArticleView />} />  
+      <Route path={`/${PrivateRoutes.QUOTATION}`} element={<Quotation />} />  
     </Routes>
   );
 };
