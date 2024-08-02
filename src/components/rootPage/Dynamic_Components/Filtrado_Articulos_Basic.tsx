@@ -82,7 +82,7 @@ const Filtrado_Articulos_Basic = () => {
     return (
         <div>
             <div className='row'>
-                <div className='col-4'>
+                <div className='col-4 md-col-6 sm-col-12 '>
                     <div className='select__container'>
                         <label className='label__general'>Buscar por</label>
                         <div className='select-btn__general'>
@@ -102,13 +102,13 @@ const Filtrado_Articulos_Basic = () => {
                         </div>
                     </div>
                 </div>
-                <div className='col-6'>
+                <div className='col-6 md-col-6 sm-col-12 '>
                     <div>
                         <label className='label__general'>Buscador por nombre</label>
                         <input className='inputs__general' type='text' value={nameBy} onChange={(e) => setNameBy(e.target.value)} placeholder='Ingresa el nombre' onKeyUp={searchFor}/>
                     </div>
                 </div>
-                <div className='col-2'>
+                <div className='col-2 md-col-6 sm-col-12 '>
                         <label className='label__general'>Buscar</label>
                     <button className='btn__general-purple' type='button' onClick={searchFor}>Buscar</button>
                 </div>

@@ -106,14 +106,14 @@ const Urgencias = () => {
             }
             <hr />
             <div className='row'>
-              <div className='col-8'>
+              <div className='col-8 md-col-7 sm-col-12'>
                 <Empresas_Sucursales />
               </div>
-              <div className='col-2'>
+              <div className='col-2 md-col-2 sm-col-12'>
                 <label className='label__general'>%</label>
                 <input className={`inputs__general`} value={Urgencia.porcentaje} onChange={(e) => DynamicVariables.updateAnyVar(setUrgencia, "porcentaje", parseInt(e.target.value))} type='number' placeholder='Ingresa nombre' />
               </div>
-              <div className='col-2'>
+              <div className='col-2 md-col-3 sm-col-12'>
                 <label className='label__general'>Cobro min.</label>
                 <input className={`inputs__general`} value={Urgencia.porcentaje} onChange={(e) => DynamicVariables.updateAnyVar(setUrgencia, "porcentaje", parseInt(e.target.value))} type='number' placeholder='Ingresa nombre' />
               </div>
