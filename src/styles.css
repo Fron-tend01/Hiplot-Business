@@ -1,0 +1,182 @@
+/* Display Classes */
+.d-flex {
+    display: flex;
+}
+
+.d-grid {
+    display: grid;
+}
+
+/* Flex Alignment */
+.align-items-start {
+    align-items: flex-start;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.align-items-end {
+    align-items: flex-end;
+}
+
+.align-items-baseline {
+    align-items: baseline;
+}
+
+.align-items-stretch {
+    align-items: stretch;
+}
+
+/* Flex Justification */
+.justify-content-start {
+    justify-content: flex-start;
+}
+
+.justify-content-center {
+    justify-content: center;
+}
+
+.justify-content-end {
+    justify-content: flex-end;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.justify-content-around {
+    justify-content: space-around;
+}
+
+.justify-content-evenly {
+    justify-content: space-evenly;
+}
+
+/* Grid System Base */
+.row {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr); /* Crea 12 columnas iguales */
+    gap: 10px; /* Espacio entre columnas */
+}
+
+.col-1 { grid-column: span 1; }
+.col-2 { grid-column: span 2; }
+.col-3 { grid-column: span 3; }
+.col-4 { grid-column: span 4; }
+.col-5 { grid-column: span 5; }
+.col-6 { grid-column: span 6; }
+.col-7 { grid-column: span 7; }
+.col-8 { grid-column: span 8; }
+.col-9 { grid-column: span 9; }
+.col-10 { grid-column: span 10; }
+.col-11 { grid-column: span 11; }
+.col-12 { grid-column: span 12; }
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Margins */
+.m-0 { margin: 0; }
+.m-1 { margin: 0.25rem; }
+.m-2 { margin: 0.5rem; }
+.m-3 { margin: 1rem; }
+.m-4 { margin: 1.5rem; }
+.m-5 { margin: 3rem; }
+
+/* Padding */
+.p-0 { padding: 0; }
+.p-1 { padding: 0.25rem; }
+.p-2 { padding: 0.5rem; }
+.p-3 { padding: 1rem; }
+.p-4 { padding: 1.5rem; }
+.p-5 { padding: 3rem; }
+
+/* Responsive Design for Medium Screens */
+@media (max-width: 768px) {
+
+    /* Si necesitas columnas que se adapten con clases específicas en pantallas pequeñas */
+    .md-col-1 { grid-column: span 1; }
+    .md-col-2 { grid-column: span 2; }
+    .md-col-3 { grid-column: span 3; }
+    .md-col-4 { grid-column: span 4; }
+    .md-col-5 { grid-column: span 5; }
+    .md-col-6 { grid-column: span 6; }
+    .md-col-7 { grid-column: span 7; }
+    .md-col-8 { grid-column: span 8; }
+    .md-col-9 { grid-column: span 9; }
+    .md-col-10 { grid-column: span 10; }
+    .md-col-11 { grid-column: span 11; }
+    .md-col-12 { grid-column: span 12; }
+
+    .md-mx-auto {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Margins */
+    .md-m-0 { margin: 0; }
+    .md-m-1 { margin: 0.25rem; }
+    .md-m-2 { margin: 0.5rem; }
+    .md-m-3 { margin: 1rem; }
+    .md-m-4 { margin: 1.5rem; }
+    .md-m-5 { margin: 3rem; }
+
+    /* Padding */
+    .md-p-0 { padding: 0; }
+    .md-p-1 { padding: 0.25rem; }
+    .md-p-2 { padding: 0.5rem; }
+    .md-p-3 { padding: 1rem; }
+    .md-p-4 { padding: 1.5rem; }
+    .md-p-5 { padding: 3rem; }
+}
+
+/* Responsive Design for Small Screens */
+@media (max-width: 576px) {
+
+    /* Si necesitas columnas que se adapten con clases específicas en pantallas pequeñas */
+    .md-col-1 { grid-column: span 1; }
+    .md-col-2 { grid-column: span 2; }
+    .md-col-3 { grid-column: span 3; }
+    .md-col-4 { grid-column: span 4; }
+    .md-col-5 { grid-column: span 5; }
+    .md-col-6 { grid-column: span 6; }
+    .md-col-7 { grid-column: span 7; }
+    .md-col-8 { grid-column: span 8; }
+    .md-col-9 { grid-column: span 9; }
+    .md-col-10 { grid-column: span 10; }
+    .md-col-11 { grid-column: span 11; }
+    .sm-col-12 { grid-column: span 12; }
+
+    /* Auto margin to center the element */
+    .sm-mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+    }
+
+    /* Margins */
+    .sm-m-0 { margin: 0; }
+    .sm-m-1 { margin: 0.25rem; }
+    .sm-m-2 { margin: 0.5rem; }
+    .sm-m-3 { margin: 1rem; }
+    .sm-m-4 { margin: 1.5rem; }
+    .sm-m-5 { margin: 3rem; }
+
+    /* Padding */
+    .sm-p-0 { padding: 0; }
+    .sm-p-1 { padding: 0.25rem; }
+    .sm-p-2 { padding: 0.5rem; }
+    .sm-p-3 { padding: 1rem; }
+    .sm-p-4 { padding: 1.5rem; }
+    .sm-p-5 { padding: 3rem; }
+}
+
+.w-full {
+    width: 100%;
+}

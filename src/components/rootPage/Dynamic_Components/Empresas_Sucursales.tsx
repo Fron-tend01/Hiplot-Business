@@ -43,11 +43,13 @@ const Empresas_Sucursales = () => {
     }
     return (
         <div className='row'>
-            <div className='col-6'>
+            <div className='col-6 sm-col-12'>
                 <div className='select__container'>
                     <label className='label__general'>Empresa</label>
                     <div className={`select-btn ${empresaSelectedOpen ? 'active' : ''}`} onClick={() => SetEmpresaSelectedOpen(!empresaSelectedOpen)}>
-                        <p>{empresa.id ? empresas.find((s: { id: number }) => s.id === empresa.id)?.razon_social : 'Selecciona'}</p>
+                        <div className='select__container_title'>
+                            <p>{empresa.id ? empresas.find((s: { id: number }) => s.id === empresa.id)?.razon_social : 'Selecciona'}</p>
+                        </div>
                         <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                     </div>
                     <div className={`content ${empresaSelectedOpen ? 'active' : ''}`}>
@@ -66,11 +68,13 @@ const Empresas_Sucursales = () => {
                     </div>
                 </div>
             </div>
-            <div className='col-6'>
+            <div className='col-6 sm-col-12'>
                 <div className='select__container'>
                     <label className='label__general'>Sucursal</label>
                     <div className={`select-btn ${sucursalSelectedOpen ? 'active' : ''}`} onClick={() => SetSucursalSelectedOpen(!sucursalSelectedOpen)}>
-                        <p>{sucursal.id ? sucursales.find((s: { id: number }) => s.id === sucursal.id)?.nombre : 'Selecciona'}</p>
+                        <div className='select__container_title'>
+                            <p>{sucursal.id ? sucursales.find((s: { id: number }) => s.id === sucursal.id)?.nombre : 'Selecciona'}</p>
+                        </div>
                         <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                     </div>
                     <div className={`content ${sucursalSelectedOpen ? 'active' : ''}`}>

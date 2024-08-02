@@ -104,6 +104,9 @@ textarea {
   font-family: 'Poppins', sans-serif;
 }
 
+
+
+
     /*////////////////////////////////////////
    ////////////Estilos geneales//////////////
   ////////////////////////////////////////*/
@@ -127,6 +130,18 @@ textarea {
   color: var(--text-color);
 }
 
+.text {
+  color: var(--text-color);
+}
+
+
+.text-white {
+  color: var(--text-white);
+}
+
+.text-black {
+  color: black;
+}
 
 
 .inputs__generic {

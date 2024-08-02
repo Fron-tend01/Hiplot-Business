@@ -1,0 +1,16 @@
+.quotation {
+    height: 90vh;
+	padding: 20px;
+}
+
+.container__quotation {
+	height: 100%;
+	background-color: var(--background-sections);
+	padding: 20px ;
+	border-radius: 10px;
+    overflow: hidden;
+}
+
+.dsd {
+    background-color: aqua;
+}

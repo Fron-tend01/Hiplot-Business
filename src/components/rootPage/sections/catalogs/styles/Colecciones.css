@@ -209,12 +209,11 @@
 /* ------------------------- */
 .popup__create_modal_colecciones.active {	transform: scale(1); opacity: 1; }
 
-
+/* 
 .row {
     display: grid;
-    grid-template-columns: repeat(12, 1fr); /* Crea 12 columnas iguales */
-    gap: 10px; /* Espacio entre columnas */
-}
+    grid-template-columns: repeat(12, 1fr); 
+    gap: 10px; }
 .col {
     background-color: lightgrey;
     padding: 10px;
@@ -232,27 +231,27 @@
 .col-11 { grid-column: span 11; }
 .col-12 { grid-column: span 12; }
 
- /* Responsive design */
+
  @media (max-width: 1200px) {
     .row {
-        grid-template-columns: repeat(12, 1fr); /* Ajusta el número de columnas */
+        grid-template-columns: repeat(12, 1fr);
     }
 }
 
 @media (max-width: 992px) {
     .row {
-        grid-template-columns: repeat(8, 1fr); /* Cambia a 8 columnas en pantallas medianas */
+        grid-template-columns: repeat(8, 1fr);
     }
 }
 
 @media (max-width: 768px) {
     .row {
-        grid-template-columns: repeat(4, 1fr); /* Cambia a 4 columnas en pantallas pequeñas */
+        grid-template-columns: repeat(4, 1fr); 
     }
 }
 
 @media (max-width: 576px) {
     .row {
-        grid-template-columns: 1fr; /* Una sola columna en pantallas extra pequeñas */
+        grid-template-columns: 1fr; 
     }
-}
+} */

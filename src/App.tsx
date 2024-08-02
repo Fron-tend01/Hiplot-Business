@@ -1,6 +1,7 @@
 // App.tsx
 import { BrowserRouter as Router, Route, Navigate } from 'react-router-dom';
 import './App.css'
+import './styles.css'
 
 import RoutesWithNotFonud from './utils/routes-with-not-found';
 import { PrivateRoutes, PublicRoutes } from './models/routes';
