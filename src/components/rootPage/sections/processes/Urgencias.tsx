@@ -9,11 +9,14 @@ import { RangesRequests } from '../../../../fuctions/Ranges'
 import { companiesRequests } from '../../../../fuctions/Companies';
 import { BranchOfficesRequests } from '../../../../fuctions/BranchOffices';
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales';
+import { useStore } from 'zustand';
+import { storeDv } from '../../../../zustand/Dynamic_variables';
 
 interface urgencia_i {
   id: number,
   id_sucursal: number,
   porcentaje: number,
+  cobro_min: number,
   urgencias_articulos: any[],
   urgencias_articulos_elim: any[]
 }
@@ -22,6 +25,7 @@ const Urgencias = () => {
     id: 0,
     id_sucursal: 0,
     porcentaje: 0,
+    cobro_min: 0,
     urgencias_articulos: [],
     urgencias_articulos_elim: []
   })
@@ -29,20 +33,16 @@ const Urgencias = () => {
     id: 0,
     id_sucursal: 0,
     porcentaje: 0,
+    cobro_min: 0,
     urgencias_articulos: [],
     urgencias_articulos_elim: []
   })
-  const [dataEmpresas_Sucursales, setDataEmpresas_Sucursales] = useState<any>({});
-  const obteniendoEmpresa_Sucursal = (returnedData: any) => {
-    setDataEmpresas_Sucursales(returnedData);
-  };
-  useEffect(() => {
-    console.log(dataEmpresas_Sucursales);
-  }, [dataEmpresas_Sucursales])
+
   const [modal, setModal] = useState<boolean>(false)
   const [modoUpdate, setModoUpdate] = useState<boolean>(false)
 
   const [data, setData] = useState<any>(null)
+  const { empresa, sucursal }: any = useStore(storeDv)
 
   const Modal = (modoUpdate: boolean, data: any) => {
     setModal(true)
@@ -70,6 +70,7 @@ const Urgencias = () => {
     let result = await APIs.CreateAny('', "tentrega_get")
     setData(result)
   }
+  console.log(empresa, sucursal);
 
   return (
     <div className='te'>
@@ -82,7 +83,50 @@ const Urgencias = () => {
             </div>
           </div>
         </div>
-        <Empresas_Sucursales onReturn={obteniendoEmpresa_Sucursal} />
+        {/* <div className='row'>
+          <div className='col-12'>
+            <Empresas_Sucursales />
+          </div>
+        </div> */}
+
+
+
+
+
+        {/* -------------------------------------------------------------MODALES----------------------------------------------------------------------------- */}
+        <div className={`overlay__create_modal ${modal ? 'active' : ''}`}>
+          <div className={`popup__create_modal ${modal ? 'active' : ''}`}>
+            <a href="#" className="btn-cerrar-popup__create_modal" onClick={() => setModal(false)}>
+              <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+            </a>
+            {modoUpdate ?
+              <p className='title__modals'><b>Actualizar Tiempos de Entrega</b></p>
+              :
+              <p className='title__modals'><b>Configurar Urgencias</b></p>
+            }
+            <hr />
+            <div className='row'>
+              <div className='col-8'>
+                <Empresas_Sucursales />
+              </div>
+              <div className='col-2'>
+                <label className='label__general'>%</label>
+                <input className={`inputs__general`} value={Urgencia.porcentaje} onChange={(e) => DynamicVariables.updateAnyVar(setUrgencia, "porcentaje", parseInt(e.target.value))} type='number' placeholder='Ingresa nombre' />
+              </div>
+              <div className='col-2'>
+                <label className='label__general'>Cobro min.</label>
+                <input className={`inputs__general`} value={Urgencia.porcentaje} onChange={(e) => DynamicVariables.updateAnyVar(setUrgencia, "porcentaje", parseInt(e.target.value))} type='number' placeholder='Ingresa nombre' />
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-12'>
+              <label className='label__general'>FILTRADO DE ARTICULOS</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* -------------------------------------------------------------FIN MODALES----------------------------------------------------------------------------- */}
+
       </div>
 
     </div>
