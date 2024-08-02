@@ -11,7 +11,7 @@ import { BranchOfficesRequests } from '../../../../fuctions/BranchOffices';
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales';
 import { useStore } from 'zustand';
 import { storeDv } from '../../../../zustand/Dynamic_variables';
-
+import Filtrado_Articulos_Basic from '../../Dynamic_Components/Filtrado_Articulos_Basic';
 interface urgencia_i {
   id: number,
   id_sucursal: number,
@@ -120,7 +120,9 @@ const Urgencias = () => {
             </div>
             <div className='row'>
               <div className='col-12'>
-              <label className='label__general'>FILTRADO DE ARTICULOS</label>
+                <label className='label__general'>FILTRADO DE ARTICULOS</label>
+                <Filtrado_Articulos_Basic />
+
               </div>
             </div>
           </div>
