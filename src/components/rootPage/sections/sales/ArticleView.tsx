@@ -5,12 +5,16 @@ import useUserStore from '../../../../zustand/General';
 import { storeModals } from '../../../../zustand/Modals';
 import SalesCard from './SalesCard';
 import { storeSaleCard } from '../../../../zustand/SaleCard';
+import { storeArticleView } from '../../../../zustand/ArticleView';
+
 
 const ArticleView = () => {
     const userState = useUserStore(state => state.user);
     let user_id = userState.id;
 
-    const setModal = storeModals(state => state.setModal)
+    const setModalArticleView = storeArticleView(state => state.setModalArticleView)
+
+
 
     const setIdArticle = storeSaleCard(state => state.setIdArticle)
 
@@ -59,7 +63,7 @@ const ArticleView = () => {
 
     const modal = (x: any) => {
         setIdArticle(x.id)
-        setModal('sale-card')
+        setModalArticleView('sale-card')
     }
 
     return (

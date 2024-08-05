@@ -22,10 +22,11 @@ const SalesCard: React.FC = () => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id;
 
-  const setModal = storeModals(state => state.setModal);
+  const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
+
+  const setDataQuotation = storeSaleCard(state => state.setDataQuotation);
   const setModalSub = storeModals(state => state.setModalSub)
-  const { modal, modalSub }: any = useStore(storeModals);
-  const { IdArticle }: any = useStore(storeSaleCard);
+  const { IdArticle, modalSalesCard }: any = useStore(storeSaleCard);
   const { getUserGroups }: any = UserGroupsRequests();
   const { getUnits }: any = UnitsRequests();
   const [units, setUnits] = useState<any[]>([]);
@@ -34,6 +35,10 @@ const SalesCard: React.FC = () => {
 
   const { getArticles }: any = articleRequests();
   const [article, setArticle] = useState<any>(null);
+
+  
+  const [data, setData] = useState<any>([])
+  console.log(data)
 
   const fetch = async () => {
     let data = {
@@ -90,6 +95,10 @@ const SalesCard: React.FC = () => {
     fetch();
   }, [IdArticle, user_id]);
 
+  useEffect(() => {
+
+  },[data])
+
   const handleCreateFamilies = () => {
     // Implementa la lógica de creación de familias
   };
@@ -138,7 +147,7 @@ const SalesCard: React.FC = () => {
   console.log(prices)
 
   const get = async () => {
-    let data = {
+    let dataArticle = {
       id_articulo: article.id,
       id_grupo_us: selectedUserGroup,
       id_unidad: selectedUnits,
@@ -147,7 +156,7 @@ const SalesCard: React.FC = () => {
     };
   
     try {
-      let result: any = await APIs.getTotalPrice(data);
+      let result: any = await APIs.getTotalPrice(dataArticle);
       
       // Verificar que result sea un objeto y contenga la propiedad deseada
       if (result.error == true) {
@@ -158,7 +167,19 @@ const SalesCard: React.FC = () => {
       }
 
       if(result.error == false) {
-       return setPrices(result.mensaje); 
+       setPrices(result.mensaje)
+       setData([...data, {
+        codigo: article.codigo,
+        descripcion: article.descripcion,
+        unidad: article.unidades,
+        id_articulo: article.id,
+        id_grupo_us: selectedUserGroup,
+        id_unidad: selectedUnits,
+        cantidad: amount,
+        campos: article.plantilla_data,
+        precio: result.mensaje
+       }])
+       return
       }
     } catch (error) {
       console.error('Error al obtener el precio total:', error);
@@ -177,22 +198,24 @@ const SalesCard: React.FC = () => {
   };
   
 
-const handleAmountChange = (e: any) => {
-  setAmount(parseInt(e.target.value))
-  if(amount > 0) {
-    getPrices()
-    
+  const handleAmountChange = (e: any) => {
+    setAmount(parseInt(e.target.value))
+    if(amount > 0) {
+      getPrices()
+      
+    }
   }
-}
 
+  const addQua = () => {
+    setDataQuotation(data)
+  }
 
 
   return (
-    <div className={`overlay__sale-card ${modal === 'sale-card' ? 'active' : ''}`}>
-
+    <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' ? 'active' : ''}`}>
       <Toaster expand={true} position="top-right" richColors  />
-      <div className={`popup__sale-card ${modal === 'sale-card' ? 'active' : ''}`}>
-        <a href="#" className="btn-cerrar-popup__sale-card" onClick={() => setModal('')}>
+      <div className={`popup__sale-card ${modalSalesCard === 'sale-card' ? 'active' : ''}`}>
+        <a href="#" className="btn-cerrar-popup__sale-card" onClick={() => setModalSalesCard('')}>
           <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
             <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
           </svg>
@@ -301,7 +324,7 @@ const handleAmountChange = (e: any) => {
                
               </div>
               <div className='row__five'>
-                <button className='add__quotation'>Agregar a cotizacción</button>
+                <button className='add__quotation' onClick={addQua}>Agregar a cotizacción</button>
                 <button className='add__cart'>Agregar a carrito</button>
               </div>
             </div>

@@ -46,7 +46,7 @@ function App() {
   document.documentElement.style.setProperty('--svg-color', theme === 'light' ? '' : '#f5f6f7');
   document.documentElement.style.setProperty('--sidebar-svg-color', theme === 'light' ? '' : '#f5f6f7');
   
-  document.documentElement.style.setProperty('--text-color', theme === 'light' ? '' : '  ');
+  document.documentElement.style.setProperty('--text-color', theme === 'light' ? '' : '#f5f6f7');
   document.documentElement.style.setProperty('--input-color', theme === 'light' ? '' : '#252a36');
   document.documentElement.style.setProperty('--text-select-color', theme === 'light' ? '' : '#f5f6f7');
   document.documentElement.style.setProperty('--sidebar-color', theme === 'light' ? '' : '#13171f');
