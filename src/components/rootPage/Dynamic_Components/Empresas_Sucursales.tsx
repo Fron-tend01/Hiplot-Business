@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { companiesRequests } from '../../../fuctions/Companies';
 import useUserStore from '../../../zustand/General';
 import { BranchOfficesRequests } from '../../../fuctions/BranchOffices';
@@ -6,8 +6,8 @@ import { storeDv } from '../../../zustand/Dynamic_variables';
 import { useStore } from 'zustand';
 
 
-const Empresas_Sucursales = () => {
-
+const Empresas_Sucursales = (props:any) => {
+    const {modeUpdate} = props
     const setEmpresa = storeDv(state => state.setEmpresa)
     const { empresa, sucursal }: any = useStore(storeDv)
 
@@ -33,9 +33,29 @@ const Empresas_Sucursales = () => {
         setSucursales(resultBranch)
         setSucursal(resultBranch[0])
     }
+
     useEffect(() => {
-        fetch()
+            fetch()
     }, [])
+
+    const fetch2 = async () => {
+        let resultCompanies = await getCompaniesXUsers(user_id)
+        let resultBranch = await getBranchOffices(empresa.id, user_id)
+        setEmpresas(resultCompanies)
+        // setEmpresa(resultCompanies[0])
+        setSucursales(resultBranch)
+        // setSucursal(resultBranch[0])
+    }
+    useEffect(() => {
+        if (modeUpdate) {
+            fetch2()
+            console.log('yes');
+            
+        }
+    }, [empresa, sucursal])
+
+
+    
     const selectAutomaticSuc = async (company: any) => {
         let resultBranch = await getBranchOffices(company, user_id)
         setSucursales(resultBranch)

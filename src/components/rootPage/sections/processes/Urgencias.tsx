@@ -3,11 +3,7 @@ import Swal from 'sweetalert2';
 import React, { useEffect, useState } from 'react'
 import DynamicVariables from '../../../../utils/DynamicVariables';
 import '../../../../utils/DynamicVariables';
-import useUserStore from '../../../../zustand/General';
 import "./styles/Urgencias.css"
-import { RangesRequests } from '../../../../fuctions/Ranges'
-import { companiesRequests } from '../../../../fuctions/Companies';
-import { BranchOfficesRequests } from '../../../../fuctions/BranchOffices';
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales';
 import { useStore } from 'zustand';
 import { storeDv } from '../../../../zustand/Dynamic_variables';
@@ -17,6 +13,7 @@ interface urgencia_i {
   id_sucursal: number,
   porcentaje: number,
   cobro_min: number,
+  nombre: string,
   urgencias_articulos: any[],
   urgencias_articulos_elim: any[]
 }
@@ -26,6 +23,7 @@ const Urgencias = () => {
     id_sucursal: 0,
     porcentaje: 0,
     cobro_min: 0,
+    nombre: '',
     urgencias_articulos: [],
     urgencias_articulos_elim: []
   })
@@ -34,6 +32,7 @@ const Urgencias = () => {
     id_sucursal: 0,
     porcentaje: 0,
     cobro_min: 0,
+    nombre: '',
     urgencias_articulos: [],
     urgencias_articulos_elim: []
   })
@@ -42,22 +41,28 @@ const Urgencias = () => {
   const [modoUpdate, setModoUpdate] = useState<boolean>(false)
 
   const [data, setData] = useState<any>(null)
+  const setEmpresa = storeDv(state => state.setEmpresa)
+  const setSucursal = storeDv(state => state.setSucursal)
+
   const { empresa, sucursal }: any = useStore(storeDv)
+  const setArticulos = storeDv(state => state.setArticulos)
+  const { articulos }: any = useStore(storeDv)
 
   const Modal = (modoUpdate: boolean, data: any) => {
     setModal(true)
     if (modoUpdate) {
-      // DynamicVariables.updateAnyVar(setTiempose, "id", data.id)
-      // DynamicVariables.updateAnyVar(setTiempose, "nombre", data.nombre)
-      // DynamicVariables.updateAnyVar(setTiempose, "id_empresa", data.id_empresa)
-      // selectAutomaticSuc(data.id_empresa)
-      // DynamicVariables.updateAnyVar(setTiempose, "id_sucursal", data.id_sucursal)
-      // DynamicVariables.updateAnyVar(setTiempose, "id_rango", data.id_rango)
-      // //LLENAR LA VARIABLE COLECCION
-      // data.articulos.forEach((element:any) => {
-      //   DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "colecciones_art_piv", element)
-      //   // DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "combinaciones_sucursales", element.id)
-      // });
+      DynamicVariables.updateAnyVar(setUrgencia, "id", data.id)
+      DynamicVariables.updateAnyVar(setUrgencia, "nombre", data.nombre)
+      DynamicVariables.updateAnyVar(setUrgencia, "id_sucursal", data.id_sucursal)
+      DynamicVariables.updateAnyVar(setUrgencia, "porcentaje", data.porcentaje)
+      DynamicVariables.updateAnyVar(setUrgencia, "cobro_min", data.cobro_min)
+      setEmpresa({id: data.id_empresa})
+      setSucursal({id: data.id_sucursal})
+      // //LLENAR LA VARIABLES ARRAY
+      data.articulos.forEach((element:any) => {
+        // DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "colecciones_art_piv", element)
+        // DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "combinaciones_sucursales", element.id)
+      });
       // data.sucursales.forEach((element:any) => {
       //     DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "colecciones_suc_piv", element)
       // });
@@ -67,10 +72,50 @@ const Urgencias = () => {
     }
   }
   const getData = async () => {
-    let result = await APIs.CreateAny('', "tentrega_get")
+    let result = await APIs.GetAny("urgencias/get")
     setData(result)
   }
-  console.log(empresa, sucursal);
+
+  useEffect(() => {
+    getData()
+  }, [])
+
+
+  const create = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (articulos.length == 0) {
+      Swal.fire('Notificación', 'Es necesario agregar articulos para la urgencia', 'error');
+      return
+    }
+    let updatedUrgencia = { ...Urgencia };
+
+    updatedUrgencia.id_sucursal = sucursal.id;
+
+    articulos.forEach((el: any) => {
+      if (!updatedUrgencia.urgencias_articulos.includes(el.id)) {
+        updatedUrgencia.urgencias_articulos.push(el.id);
+      }
+    });
+
+    await APIs.CreateAny(updatedUrgencia, "urgencias/create")
+      .then(async (response: any) => {
+        Swal.fire('Notificación', response.mensaje, 'success');
+        await getData()
+        setUrgencia(UrgenciaClear)
+        setModal(false)
+      })
+      .catch((error: any) => {
+        if (error.response) {
+          if (error.response.status === 409) {
+            Swal.fire(error.mensaje, '', 'warning');
+          } else {
+            Swal.fire('Error al crear la urgencia', '', 'error');
+          }
+        } else {
+          Swal.fire('Error de conexión.', '', 'error');
+        }
+      })
+  }
 
   return (
     <div className='te'>
@@ -83,12 +128,61 @@ const Urgencias = () => {
             </div>
           </div>
         </div>
-        {/* <div className='row'>
-          <div className='col-12'>
-            <Empresas_Sucursales />
-          </div>
-        </div> */}
 
+
+        <div className='table__units' >
+          <div>
+            {data ? (
+              <div>
+                <p className='text'>Tus tiempos de entrega {data.length}</p>
+              </div>
+            ) : (
+              <p>No hay tiempos de entrega</p>
+            )}
+          </div>
+          <div className='table__head'>
+            <div className='thead'>
+            <div className='th'>
+                <p className=''>Nombre</p>
+              </div>
+              <div className='th'>
+                <p className=''>Empresa</p>
+              </div>
+              <div className='th'>
+                <p>Sucursal</p>
+              </div>
+              <div className='th'>
+                <p>OPT</p>
+              </div>
+            </div>
+          </div>
+          {data ? (
+            <div className='table__body'>
+              {data.map((car: any) => {
+                return (
+                  <div className='tbody__container' key={car.id}>
+                    <div className='tbody'>
+                    <div className='td'>
+                        <p>{car.nombre}</p>
+                      </div>
+                      <div className='td'>
+                        <p>{car.empresa}</p>
+                      </div>
+                      <div className='td'>
+                        {car.sucursal}
+                      </div>
+                      <div className='td'>
+                        <button className='branchoffice__edit_btn' onClick={() => Modal(true, car)}>Editar</button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p>Cargando datos...</p>
+          )}
+        </div>
 
 
 
@@ -100,14 +194,14 @@ const Urgencias = () => {
               <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
             </a>
             {modoUpdate ?
-              <p className='title__modals'><b>Actualizar Tiempos de Entrega</b></p>
+              <p className='title__modals'><b>Actualizar Urgencia</b></p>
               :
               <p className='title__modals'><b>Configurar Urgencias</b></p>
             }
             <hr />
             <div className='row'>
               <div className='col-8 md-col-7 sm-col-12'>
-                <Empresas_Sucursales />
+                <Empresas_Sucursales modeUpdate={modoUpdate}/>
               </div>
               <div className='col-2 md-col-2 sm-col-12'>
                 <label className='label__general'>%</label>
@@ -115,15 +209,76 @@ const Urgencias = () => {
               </div>
               <div className='col-2 md-col-3 sm-col-12'>
                 <label className='label__general'>Cobro min.</label>
-                <input className={`inputs__general`} value={Urgencia.porcentaje} onChange={(e) => DynamicVariables.updateAnyVar(setUrgencia, "porcentaje", parseInt(e.target.value))} type='number' placeholder='Ingresa nombre' />
+                <input className={`inputs__general`} value={Urgencia.cobro_min} onChange={(e) => DynamicVariables.updateAnyVar(setUrgencia, "cobro_min", parseFloat(e.target.value))} type='number' placeholder='Ingresa nombre' />
               </div>
             </div>
             <div className='row'>
               <div className='col-12'>
-                <label className='label__general'>FILTRADO DE ARTICULOS</label>
-                <Filtrado_Articulos_Basic />
+                <label className='label__general'>Nombre</label>
+                <input className={`inputs__general`} value={Urgencia.nombre} onChange={(e) => DynamicVariables.updateAnyVar(setUrgencia, "nombre", e.target.value)} type='text' placeholder='Ingresa nombre' />
 
               </div>
+            </div>
+            <div className='row'>
+              <div className='col-12'>
+                <br />
+                <hr />
+                <label className='label__general'>AGREGAR ARTICULOS</label>
+                <hr />
+                <br />
+                <Filtrado_Articulos_Basic get_sucursales={false} get_proveedores={false} get_max_mins={false} get_plantilla_data={false} get_stock={false} get_unidades={false} />
+                <br />
+                <div className='table__modal '>
+                  <div>
+                    {articulos.length >= 1 ? (
+                      <div>
+                        <p className='text'>Articulos con Urgencia {articulos.length}</p>
+                      </div>
+                    ) : (
+                      <p className='text'>No hay Articulos</p>
+                    )}
+                  </div>
+                  <div className='table__head'>
+                    <div className='thead'>
+                      <div className='th'>
+                        <p className=''>Articulo</p>
+                      </div>
+                      <div className='th'>
+                        <p className=''>Familia</p>
+                      </div>
+                    </div>
+                  </div>
+                  {Array.isArray(articulos) && articulos.length > 0 ? (
+                    <div className='table__body'>
+                      {articulos.map((dat: any, index: number) => (
+
+                        <div className='tbody__container' key={index}>
+                          <div className='tbody'>
+                            <div className='td'>
+                              {dat.codigo} - {dat.descripcion}
+                            </div>
+                            <div className='td'>
+                              {dat.nombre}
+                            </div>
+                            <div className='td'>
+                              <button className='btn__delete_users' type="button" onClick={() => {
+                                DynamicVariables.removeObjectInArray(setArticulos, index); console.log(articulos)
+                              }}>Eliminar</button>
+                            </div>
+                          </div>
+
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className='text'>No hay articulos que cargar</p>
+                  )}
+                </div>
+              </div>
+            </div>
+            <br /><br /><br />
+            <div className='btns__create'>
+              <button className='btn__general-purple' onClick={(e) => create(e)}>Crear Urgencia</button>
             </div>
           </div>
         </div>

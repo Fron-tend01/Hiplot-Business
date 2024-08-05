@@ -108,6 +108,7 @@
 
 
 .table__modal {
+    
     display: grid;
     height: 100%;
     grid-template-rows: repeat(3, auto) 1fr;
@@ -171,7 +172,7 @@
 
 .table__modal .table__body .tbody {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr ;
     padding: 10px;
 }
 

@@ -10,6 +10,9 @@ interface StoreState {
 
     sucursal: any;
     setSucursal: (x: any) => void;
+
+    articulos: any[];
+    setArticulos: (updateFunc: any[] | ((prevArray: any[]) => any[])) => void;
 }
 
 export const storeDv = create<StoreState>((set) => ({
@@ -18,4 +21,9 @@ export const storeDv = create<StoreState>((set) => ({
 
     sucursal: '',
     setSucursal: (x) => set({sucursal: x}),
-}));
+
+    articulos: [],
+    setArticulos: (updateFunc) => set((state) => ({
+        articulos: typeof updateFunc === 'function' ? updateFunc(state.articulos) : updateFunc,
+      })),
+    }));
