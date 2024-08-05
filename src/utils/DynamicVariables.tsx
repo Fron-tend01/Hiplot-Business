@@ -52,9 +52,9 @@ const DynamicVariables = {
             return prevArray;
         });
     },
-    removeObjectInArray:(index:number, array:Dispatch<SetStateAction<any[]>>) => {
-        array((prevArray) => {
-            return prevArray.filter((_, i) => i !== index);
+    removeObjectInArray(setStateFunc: (updateFunc: any[] | ((prevArray: any[]) => any[])) => void, index: number): void {
+        setStateFunc((prevArray) => {
+            return Array.isArray(prevArray) ? prevArray.filter((_, i) => i !== index) : prevArray;
         });
     },
     removeObjectInArrayByKey: <T, K extends keyof T>(setStateFunc: React.Dispatch<React.SetStateAction<T>>,key: K, index: number) => {
