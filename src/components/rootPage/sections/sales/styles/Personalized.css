@@ -91,7 +91,7 @@
 
 .table__personalized .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: 100px repeat(5, 1fr);
     padding: 10px;
     font-weight: 600;
 }
@@ -132,7 +132,7 @@
 
 .table__personalized .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: 100px repeat(5, 1fr);
     padding: 10px;
 
 }
@@ -143,3 +143,51 @@
 }
 
 
+
+.table__personalized .custom-checkbox {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none; /* Evita la selección de texto al hacer clic */
+    margin: 5px;
+  }
+  
+  .table__personalized .custom-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0; /* Oculta el checkbox original */
+    cursor: pointer;
+  }
+  
+  .table__personalized  .checkmark {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-color: #ccc;
+    border-radius: 20px; /* Hace el fondo con bordes redondeados */
+    position: relative;
+    transition: background-color 0.3s;
+    outline: none;
+  }
+  
+  .table__personalized .custom-checkbox input[type="checkbox"]:checked ~ .checkmark {
+    background-color: #4caf50; /* Verde para el estado marcado */
+  }
+  
+  .table__personalized .checkmark::after {
+    content: '';
+    position: absolute;
+    display: none;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  .table__personalized .custom-checkbox input[type="checkbox"]:checked ~ .checkmark::after {
+    display: block;
+  }
+  

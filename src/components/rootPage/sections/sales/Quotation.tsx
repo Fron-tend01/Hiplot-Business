@@ -18,7 +18,7 @@ const Quotation = () => {
       <div className='container__quotation'>
         <div className='row'>
           <div className='col-9 md-col-12'>
-            <Empresas_Sucursales />
+            <Empresas_Sucursales modeUpdate={false} />
           </div>
           <ModalCreate />
           <div className='col-3 md-col-12 sm-col-12 d-flex justify-content-center align-items-end'>

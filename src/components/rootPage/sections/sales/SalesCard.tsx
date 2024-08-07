@@ -36,6 +36,7 @@ const SalesCard: React.FC = () => {
   const { getArticles }: any = articleRequests();
   const [article, setArticle] = useState<any>(null);
 
+  const [billingComment, setBillingComment] = useState<any>('')
   
   const [data, setData] = useState<any>([])
   console.log(data)
@@ -116,14 +117,14 @@ const SalesCard: React.FC = () => {
   };
 
   const [selectUnits, setSelectUnits] = useState<boolean>(false);
-  const [selectedUnits, setSelectedUnits] = useState<any>(null);
+  const [selectedUnit, setSelectedUnit] = useState<any>(null);
 
   const openSelectUnits = () => {
     setSelectUnits(!selectUnits);
   };
 
   const handleUnitsChange = (item: any) => {
-    setSelectedUnits(item.id);
+    setSelectedUnit(item.id);
     setSelectUnits(false);
   };
 
@@ -150,9 +151,10 @@ const SalesCard: React.FC = () => {
     let dataArticle = {
       id_articulo: article.id,
       id_grupo_us: selectedUserGroup,
-      id_unidad: selectedUnits,
+      id_unidad: selectedUnit,
       cantidad: amount,
       campos: article.plantilla_data,
+ 
     };
   
     try {
@@ -171,13 +173,14 @@ const SalesCard: React.FC = () => {
        setData([...data, {
         codigo: article.codigo,
         descripcion: article.descripcion,
-        unidad: article.unidades,
+        unidad: selectedUnit,
         id_articulo: article.id,
         id_grupo_us: selectedUserGroup,
-        id_unidad: selectedUnits,
+        id_unidad: selectedUnit,
         cantidad: amount,
         campos: article.plantilla_data,
-        precio: result.mensaje
+        precio_unitario: result.mensaje,
+        comentarios: billingComment
        }])
        return
       }
@@ -272,7 +275,7 @@ const SalesCard: React.FC = () => {
                   <div className={`select-btn__general`}>
                     <div className={`select-btn ${selectUnits ? 'active' : ''}`} onClick={openSelectUnits}>
                       <div className='select__container_title'>
-                        <p>{selectedUnits ? units.find((s: { id: number }) => s.id === selectedUnits)?.nombre : 'Selecciona'}</p>
+                        <p>{selectedUnit ? units.find((s: { id: number }) => s.id === selectedUnit)?.nombre : 'Selecciona'}</p>
                       </div>
                       <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
                         <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
@@ -291,7 +294,7 @@ const SalesCard: React.FC = () => {
                 </div>
                 <div>
                   <label className='label__general'>Factura</label>
-                  <input className={`inputs__general`} type="text" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder='Factura' />
+                  <input className={`inputs__general`} type="text" value={billingComment} onChange={(e) => setBillingComment(e.target.value)} placeholder='Factura' />
                 </div>
                 <div>
                   <label className='label__general'>Producción</label>
