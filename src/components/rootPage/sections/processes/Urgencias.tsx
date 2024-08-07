@@ -43,29 +43,29 @@ const Urgencias = () => {
   const [data, setData] = useState<any>(null)
   const setEmpresa = storeDv(state => state.setEmpresa)
   const setSucursal = storeDv(state => state.setSucursal)
-
-  const { empresa, sucursal }: any = useStore(storeDv)
+  const [empresaSearcher, setEmpresaSearcher] = useState<any>({})
+  const [sucursalSearcher, setSucursalSearcher] = useState<any>({})
+  const [empresaDyn, setEmpresaDyn] = useState<any>({})
+  const [sucursalDyn, setSucursalDyn] = useState<any>({})
   const setArticulos = storeDv(state => state.setArticulos)
   const { articulos }: any = useStore(storeDv)
 
   const Modal = (modoUpdate: boolean, data: any) => {
     setModal(true)
+    setUrgencia(UrgenciaClear)
+    setArticulos([])
     if (modoUpdate) {
       DynamicVariables.updateAnyVar(setUrgencia, "id", data.id)
       DynamicVariables.updateAnyVar(setUrgencia, "nombre", data.nombre)
       DynamicVariables.updateAnyVar(setUrgencia, "id_sucursal", data.id_sucursal)
       DynamicVariables.updateAnyVar(setUrgencia, "porcentaje", data.porcentaje)
       DynamicVariables.updateAnyVar(setUrgencia, "cobro_min", data.cobro_min)
-      setEmpresa({id: data.id_empresa})
-      setSucursal({id: data.id_sucursal})
+      setEmpresaDyn({id: data.id_empresa})
+      setSucursalDyn({id: data.id_sucursal})
       // //LLENAR LA VARIABLES ARRAY
-      data.articulos.forEach((element:any) => {
-        // DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "colecciones_art_piv", element)
-        // DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "combinaciones_sucursales", element.id)
+      data.urgencias_articulos.forEach((element:any) => {
+        DynamicVariables.addObjectInArrayRepeat(element, setArticulos)
       });
-      // data.sucursales.forEach((element:any) => {
-      //     DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "colecciones_suc_piv", element)
-      // });
       setModoUpdate(true)
     } else {
       setModoUpdate(false)
@@ -89,15 +89,37 @@ const Urgencias = () => {
     }
     let updatedUrgencia = { ...Urgencia };
 
-    updatedUrgencia.id_sucursal = sucursal.id;
+    updatedUrgencia.id_sucursal = sucursalDyn.id;
 
     articulos.forEach((el: any) => {
       if (!updatedUrgencia.urgencias_articulos.includes(el.id)) {
         updatedUrgencia.urgencias_articulos.push(el.id);
       }
     });
-
-    await APIs.CreateAny(updatedUrgencia, "urgencias/create")
+    
+    if (modoUpdate) {
+      console.log(updatedUrgencia);
+      
+      await APIs.CreateAnyPut(updatedUrgencia, "urgencias/update")
+      .then(async (response: any) => {
+        Swal.fire('Notificación', response.mensaje, 'success');
+        await getData()
+        setUrgencia(UrgenciaClear)
+        setModal(false)
+      })
+      .catch((error: any) => {
+        if (error.response) {
+          if (error.response.status === 409) {
+            Swal.fire(error.mensaje, '', 'warning');
+          } else {
+            Swal.fire('Error al actualizar la urgencia', '', 'error');
+          }
+        } else {
+          Swal.fire('Error de conexión.', '', 'error');
+        }
+      })
+    }else {
+      await APIs.CreateAny(updatedUrgencia, "urgencias/create")
       .then(async (response: any) => {
         Swal.fire('Notificación', response.mensaje, 'success');
         await getData()
@@ -115,6 +137,8 @@ const Urgencias = () => {
           Swal.fire('Error de conexión.', '', 'error');
         }
       })
+    }
+    
   }
 
   return (
@@ -201,7 +225,8 @@ const Urgencias = () => {
             <hr />
             <div className='row'>
               <div className='col-8 md-col-7 sm-col-12'>
-                <Empresas_Sucursales modeUpdate={modoUpdate}/>
+                <Empresas_Sucursales modeUpdate={modoUpdate} empresaDyn={empresaDyn} 
+              sucursalDyn={sucursalDyn} setEmpresaDyn={setEmpresaDyn} setSucursalDyn={setSucursalDyn}/>
               </div>
               <div className='col-2 md-col-2 sm-col-12'>
                 <label className='label__general'>%</label>
@@ -262,7 +287,8 @@ const Urgencias = () => {
                             </div>
                             <div className='td'>
                               <button className='btn__delete_users' type="button" onClick={() => {
-                                DynamicVariables.removeObjectInArray(setArticulos, index); console.log(articulos)
+                                DynamicVariables.removeObjectInArray(setArticulos, index);
+                                {modoUpdate && dat.id != 0? DynamicVariables.updateAnyVarSetArrNoRepeat(setUrgencia, "urgencias_articulos_elim", dat.id) : null}
                               }}>Eliminar</button>
                             </div>
                           </div>
@@ -278,7 +304,7 @@ const Urgencias = () => {
             </div>
             <br /><br /><br />
             <div className='btns__create'>
-              <button className='btn__general-purple' onClick={(e) => create(e)}>Crear Urgencia</button>
+              <button className='btn__general-purple' onClick={(e) => create(e)}>Guardar</button>
             </div>
           </div>
         </div>

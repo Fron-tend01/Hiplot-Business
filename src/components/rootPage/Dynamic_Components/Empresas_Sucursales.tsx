@@ -7,12 +7,12 @@ import { useStore } from 'zustand';
 
 
 const Empresas_Sucursales = (props:any) => {
-    const {modeUpdate} = props
-    const setEmpresa = storeDv(state => state.setEmpresa)
-    const { empresa, sucursal }: any = useStore(storeDv)
+    const {modeUpdate, empresaDyn, sucursalDyn, setEmpresaDyn, setSucursalDyn} = props
+    // const setEmpresa = storeDv(state => state.setEmpresa)
+    // // const { empresa, sucursal }: any = useStore(storeDv)
 
-    const setSucursal = storeDv(state => state.setSucursal)
-    // const {sucursal} = useStore(storeDv)
+    // const setSucursal = storeDv(state => state.setSucursal)
+    // // const {sucursal} = useStore(storeDv)
 
     const { getCompaniesXUsers }: any = companiesRequests()
     const [empresas, setEmpresas] = useState<any>([])
@@ -29,9 +29,9 @@ const Empresas_Sucursales = (props:any) => {
         let resultCompanies = await getCompaniesXUsers(user_id)
         let resultBranch = await getBranchOffices(resultCompanies[0].id, user_id)
         setEmpresas(resultCompanies)
-        setEmpresa(resultCompanies[0])
+        setEmpresaDyn(resultCompanies[0])
         setSucursales(resultBranch)
-        setSucursal(resultBranch[0])
+        setSucursalDyn(resultBranch[0])
     }
 
     useEffect(() => {
@@ -40,7 +40,7 @@ const Empresas_Sucursales = (props:any) => {
 
     const fetch2 = async () => {
         let resultCompanies = await getCompaniesXUsers(user_id)
-        let resultBranch = await getBranchOffices(empresa.id, user_id)
+        let resultBranch = await getBranchOffices(empresaDyn.id, user_id)
         setEmpresas(resultCompanies)
         // setEmpresa(resultCompanies[0])
         setSucursales(resultBranch)
@@ -52,14 +52,14 @@ const Empresas_Sucursales = (props:any) => {
             console.log('yes');
             
         }
-    }, [empresa, sucursal])
+    }, [empresaDyn, sucursalDyn])
 
 
     
     const selectAutomaticSuc = async (company: any) => {
         let resultBranch = await getBranchOffices(company, user_id)
         setSucursales(resultBranch)
-        setSucursal(resultBranch[0])
+        setSucursalDyn(resultBranch[0])
     }
     return (
         <div className='row'>
@@ -69,7 +69,7 @@ const Empresas_Sucursales = (props:any) => {
                     <div className='select-btn__general'>
                         <div className={`select-btn ${empresaSelectedOpen ? 'active' : ''}`} onClick={() => SetEmpresaSelectedOpen(!empresaSelectedOpen)}>
                             <div className='select__container_title'>
-                                <p>{empresa.id ? empresas.find((s: { id: number }) => s.id === empresa.id)?.razon_social : 'Selecciona'}</p>
+                                <p>{empresaDyn?.id ? empresas.find((s: { id: number }) => s.id === empresaDyn?.id)?.razon_social : 'Selecciona'}</p>
                             </div>
                             <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                         </div>
@@ -79,7 +79,7 @@ const Empresas_Sucursales = (props:any) => {
                                 <li key={fam.id} onClick={() => {
                                     SetEmpresaSelectedOpen(false);
                                     selectAutomaticSuc(fam.id);
-                                    setEmpresa(fam)
+                                    setEmpresaDyn(fam)
                                 }}>
                                     {fam.razon_social}
                                 </li>
@@ -97,7 +97,7 @@ const Empresas_Sucursales = (props:any) => {
                     <div className='select-btn__general'>
                     <div className={`select-btn ${sucursalSelectedOpen ? 'active' : ''}`} onClick={() => SetSucursalSelectedOpen(!sucursalSelectedOpen)}>
                         <div className='select__container_title'>
-                            <p>{sucursal.id ? sucursales.find((s: { id: number }) => s.id === sucursal.id)?.nombre : 'Selecciona'}</p>
+                            <p>{sucursalDyn?.id ? sucursales.find((s: { id: number }) => s.id === sucursalDyn?.id)?.nombre : 'Selecciona'}</p>
                         </div>
                         <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                     </div>
@@ -106,7 +106,7 @@ const Empresas_Sucursales = (props:any) => {
                             {sucursales && sucursales.map((fam: any) => (
                                 <li key={fam.id} onClick={() => {
                                     SetSucursalSelectedOpen(false);
-                                    setSucursal(fam)
+                                    setSucursalDyn(fam)
                                 }}>
                                     {fam.nombre}
                                 </li>
