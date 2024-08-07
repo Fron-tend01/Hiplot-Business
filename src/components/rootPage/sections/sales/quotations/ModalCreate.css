@@ -21,8 +21,8 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	width: 80%;
-	height: 80%;
+	width: 90%;
+	height: 95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
@@ -49,3 +49,87 @@
 
 
 
+ /*************************************************************
+                    Tabla de Entradas
+ **************************************************************/
+
+ .table__quotations_clients_modal {
+    border-radius: 10px;
+    display: grid;
+    max-height: 300px;
+}
+
+
+.table__quotations_clients_modal .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__quotations_clients_modal .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__quotations_clients_modal .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 100px 100px;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__quotations_clients_modal .table__body {
+	height: 100%;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+
+
+.table__quotations_clients_modal .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+}
+  
+.table__quotations_clients_modal .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+}
+
+
+
+.table__quotations_clients_modal .table__body .tbody {
+    display: flex;
+}
+
+.table__quotations_clients_modal .table__body .tbody.personalized {
+    background-color: var(--orange-color);
+}
+
+.table__quotations_clients_modal .table__body .tbody {
+    display: grid;
+	grid-template-columns: repeat(3, 1fr) 100px 100px;
+    padding: 10px;
+
+}
+
+.table__quotations_clients_modal .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}

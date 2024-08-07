@@ -7,17 +7,44 @@ import { storeSaleCard } from '../../../../zustand/SaleCard'
 
 const Personalized = () => {
     const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
+    const setDataQuotation = storeSaleCard(state => state.setDataQuotation)
     const {personalizedModal}: any = useStore(storePersonalized)
     const {dataQuotation}: any =  useStore(storeSaleCard)
     
   const [invoice, setInvoice] = useState<any>()
-  const dataSelect: any = {
+  
+  const dataSelects: any = {
     selectName: 'Unidad',
     empresas: [
       { id: 1, razon_social: 'Empresa 1' },
       { id: 2, razon_social: 'Empresa 2' },
     ],
   };
+
+
+  const [temporary, setTemporary] = useState<any>([])
+
+  const [check, setCheck] = useState<boolean>(false)
+
+  const addPersonalized = (item: any) => {
+    // Clonar el array para evitar mutaciones directas
+    setCheck(!check)
+    const updatedQuotation = dataQuotation.map((x: any) => {
+      if (x.id === item.id) {
+        // Alternar el valor de 'personalized' entre 'personalizado' y ''
+        const personalized = x.personalized === 'personalizado' ? '' : 'personalizado';
+        return {
+          ...x,
+          personalized
+        };
+      }
+      return x;
+    });
+  
+    // Actualizar el estado con el nuevo array modificado
+    setDataQuotation(updatedQuotation);
+  };
+  
 
   return (
     <div className={`overlay__personalized_modal ${personalizedModal == 'personalized_modal' ? 'active' : ''}`}>
@@ -39,30 +66,26 @@ const Personalized = () => {
             <div className='warning__general'><small >Este campo es obligatorio</small></div>
             <input className={`inputs__general`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el código' />
           </div>
-          <div  className='col-4'>
-            <Select data={dataSelect} />
+          <div className='col-4'>
+            <Select dataSelects={dataSelects} instanceId="unidad" />
           </div>
-          <div className='col-6 md-col-6 sm-col-12'>
-            <label className='label__general'>Observaciones Producción</label>
-            <div className='warning__general'><small >Este campo es obligatorio</small></div>
-            <textarea className={`textarea__general`} value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Observaciones Producción'></textarea>
-          </div>
-          <div className='col-6 md-col-6 sm-col-12'>
-            <label className='label__general'>Observaciones Facturación</label>
-            <div className='warning__general'><small >Este campo es obligatorio</small></div>
-            <textarea className={`inputs__general`} value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Observaciones Facturación'></textarea>
-          </div>
-          <div className='row col-6'>
+        </div>
+        <div className='row gap-4 my-4'>
+          <div className='row col-6 md-col-6 sm-col-12'>
             <div className='col-10'>
-              <Select data={dataSelect} />
+              <label className='label__general'>Observaciones Producción</label>
+              <div className='warning__general'><small >Este campo es obligatorio</small></div>
+              <textarea className={`textarea__general`} value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Observaciones Producción'></textarea>
             </div>
             <div className='col-2 d-flex align-items-end justify-content-end'>
               <button className='btn__general-purple'>Buscar</button>
             </div>
           </div>
-          <div className='row col-6'>
+          <div className='row col-6 md-col-6 sm-col-12'>
             <div className='col-10'>
-              <Select data={dataSelect} />
+              <label className='label__general'>Observaciones Facturación</label>
+              <div className='warning__general'><small >Este campo es obligatorio</small></div>
+              <textarea className={`inputs__general`} value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Observaciones Facturación'></textarea>
             </div>
             <div className='col-2 d-flex align-items-end justify-content-end'>
               <button className='btn__general-purple'>Buscar</button>
@@ -82,63 +105,49 @@ const Personalized = () => {
                 <div className='table__head'>
                     <div className='thead'>
                         <div className='th'>
-                            <p>Folio</p>
+       
                         </div>
                         <div className='th'>
-                            <p>Por</p>
+                            <p>Nombre del articulo</p>
                         </div>
                         <div className='th'>
-                            <p>Fecha</p>
+                            <p>Codigo</p>
                         </div>
                         <div className='th'>
                             <p>Empresa</p>
                         </div>
-                        <div className='th'>
-                            <p>Proveedor</p>
-                        </div>
-                        <div className='th'>
-                            <p>Total</p>
-                        </div>
-                        <div className='th'>
-                            <p>Comentarios</p>
-                        </div>
+                     
                     </div>
                 </div>
                 {dataQuotation ? (
                 <div className='table__body'>
                     {dataQuotation.map((quotation: any) => {
                     return (
-                        <div className='tbody__container' key={dataQuotation.id}>
+                        <div className='tbody__container' key={dataQuotation.id} onClick={() => addPersonalized(quotation)}>
                             <div className='tbody'>
                             <div className='td'>
-                                <p>{quotation.codigo}</p>
+                              <label className="custom-checkbox">
+                              <input 
+                                  type="checkbox" 
+                                  checked={check} 
+                                  onChange={addPersonalized} 
+                                />
+                                <span className="checkmark"></span>
+                              </label>
                             </div>
                             <div className='td'>
                                 <p>{quotation.descripcion}</p>
                             </div>
                             <div className='td'>
                                 <div>
-                          
+                                  <p>{quotation.codigo}</p>
                                 </div>
                             </div>
                             <div className='td'>
-                                <p>{quotation.fecha_creacion}</p>
+                                <p>{quotation.codigo}</p>
                             </div>
-                            <div className='td'>
-                                <p>{quotation.usuario_crea}</p>
-                            </div>
-                            <div className='td'>
-                                <p>{quotation.empresa}</p>
-                            </div>
-                            <div className='td'>
-                                <p>{quotation.sucursal}</p>
-                            </div>
-                            <div className='td'>
-                                <p>{quotation.area}</p>
-                            </div>
-                            <div className='td'>
-                                <p>{quotation.comentarios}</p>
-                            </div>
+                       
+                    
                             <div className='td'>
                                 <button className='branchoffice__edit_btn' onClick={() => modalUpdate(ticket)}>Editar</button>
                             </div>

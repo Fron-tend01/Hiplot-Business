@@ -6,6 +6,11 @@ const APIs = {
       return ConfigurationAPIs.post(path, { email, password });
     },
 
+    getUsersGeneral: async ( data: any, customPath?: string) => {
+      const path = customPath || 'usuario_get';
+      return ConfigurationAPIs.post(path, data);
+    },
+
   // Empresas 
 
   createCompanies: async (razon_social: string, nombre_comercial: string, id_usuario: number, customPath?: string) => {
@@ -142,10 +147,10 @@ const APIs = {
     return ConfigurationAPIs.post(path, {data_user, data_ext})
   },
 
-  getUsers: async (nombre: string, id_usuario: number, id_usuario_consulta: number, light: boolean, id_sucursal: number, customPath?: string) => { 
+  getUsers: async (data: any, customPath?: string) => { 
     const path = customPath || 'usuario_get'
     // Enviar la solicitud POST con el nombre como parámetro si está presente
-    return ConfigurationAPIs.post(path, {nombre, id_usuario, id_usuario_consulta, light, id_sucursal});
+    return ConfigurationAPIs.post(path, data);
   },
 
   putUsers: async (user_id: number, sucursal_id: number, nombre: string, email: string, password: string, tipo_us: number, sucursales_nuevas: any[], sucursales_eliminar: any[], areas_nuevas: any[], areas_eliminar: any[], subordinados_nuevos: any[], subordinados_eliminar: any[], grupos_nuevos: any[], grupos_eliminar: any[], customPath?: string) => {
@@ -461,6 +466,14 @@ getTypeOfPayments: async (customPath?: string) => {
 updateTypeOfPayment: async (data: any, customPath?: string) => {
   const path = customPath || 'tipo_cobro/update';
   return ConfigurationAPIs.put(path, data);
+},
+
+
+///////////////////////////// Cotizacion /////////////////////////////////////
+
+createQuotation: async (data: any, customPath?: string) => {
+  const path = customPath || 'cotizaciones/create';
+  return ConfigurationAPIs.post(path, data)
 },
 
 
