@@ -478,6 +478,16 @@ createQuotation: async (data: any, customPath?: string) => {
 
 
 
+///////////////////////////// Tiempos de entrega /////////////////////////////////////
+
+getDeliveryTimes: async (data: any, customPath?: string) => {
+  const path = customPath || 'tentrega_get';
+  return ConfigurationAPIs.post(path, data)
+},
+
+
+
+
 
   // Editor de pagina web
 

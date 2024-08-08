@@ -9,6 +9,8 @@ import Units from './modals/Units';
 import Prices from './modals/Prices';
 import Variations from './modals/Variations';
 import Combinations from './modals/Combinations';
+import Components from './modals/Components';
+import DeliveryTimes from './modals/DeliveryTimes';
 import './modalCreate.css'
 import { useStore } from 'zustand';
 import { TemplatesRequests } from '../../../../../fuctions/Templates';
@@ -334,8 +336,6 @@ const handleTemplatesChange = (template: any) => {
     
     // Modal de Precios del modal de crear articulos //
 
-    const [modalStatePrice, setModalStatePrice] = useState<boolean>(false)
-
     const modalPrices = () => {
         setSubModal('modal-prices')
     }
@@ -403,14 +403,6 @@ const handleTemplatesChange = (template: any) => {
   
    /*=================================================================================================================================================================================*/
 
-    // Modal de tiempos de entrega del modal de crear articulos
-   
-  // Modal de Variaciones del modal de crear articulos
-  const [modalStateDeliveryTimes, setModalStateDeliveryTimes] = useState<boolean>(false)
-
-  const modalDeliveryTimes = () => {
-   setModalStateDeliveryTimes(!modalStateDeliveryTimes)
-  }
 
   
   return (
@@ -670,8 +662,9 @@ const handleTemplatesChange = (template: any) => {
         </div>
         <div>
             <div>
-                <button className='btn__general-purple' type='button' onClick={modalComponents}>Componentes</button>
+                <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-components')}>Componentes</button>
             </div>
+            <Components />
         </div>
         <div>
             <div>
@@ -703,9 +696,9 @@ const handleTemplatesChange = (template: any) => {
         </div>
         <div>
             <div>
-                <button className='btn__general-purple' type='button' onClick={modalDeliveryTimes}>T. Entrega</button>
+                <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-delivery-times')}>T. Entrega</button>
             </div>
-        
+            <DeliveryTimes />
         </div>
     </div>
     <div className='container__btns_branch-office'>

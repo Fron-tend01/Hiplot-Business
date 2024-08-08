@@ -294,7 +294,6 @@ const seeHistory = (item: any) => {
                         <History />
                     </div>
                 </div>
-
           </div>
         </form>
     </div>

@@ -101,6 +101,12 @@ interface StoreState {
   deleteCombinations: any
   setDeleteCombinations: (combination: any) => void;
 
+  
+  // Combinaciones 
+  deliveryTimes: any[]
+  setDeliveryTimes: (x: any) => void;
+  deleteDeliveryTimes: any
+  setDeleteDeliveryTimes: (x: any) => void;
 
     modalStateSuppliers: any
     setModalStateSuppliers: (supplier: any) => void;
@@ -114,7 +120,7 @@ export const storeArticles = create<StoreState>((set) => ({
 
     articlesInGlobal: [],
 
-    subModal: false,
+    subModal: '',
     setSubModal: (modal) => set({ subModal: modal }),
 
     modalLoading: false,
@@ -192,6 +198,13 @@ export const storeArticles = create<StoreState>((set) => ({
     setPrices: (price) => set({ prices: price }),
     deletePrices: [],
     setDeletePrices: (unit) => set({ deleteUnits: unit }),
+
+
+    //  Tiempos de entrega
+    deliveryTimes: [],
+    setDeliveryTimes: (x) => set({ deliveryTimes: x }),
+    deleteDeliveryTimes: [],
+    setDeleteDeliveryTimes: (x) => set({ deleteDeliveryTimes: x }),
 
     historyPrices: [],
     setHistoryPrices: (price) => set({ historyPrices: price }),

@@ -5,16 +5,16 @@ import { storeFamilies } from '../../../zustand/Families';
 import { storeDv } from '../../../zustand/Dynamic_variables';
 
 interface FiltradoArticulosBasicProps {
-    get_sucursales: boolean;
-    get_proveedores: boolean;
-    get_max_mins: boolean;
-    get_plantilla_data: boolean;
-    get_stock: boolean;
-    get_unidades: boolean;
-  }
-  
-  const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_sucursales, get_proveedores, get_max_mins, get_plantilla_data, get_stock, get_unidades,
-  }) => {
+  get_sucursales?: boolean;
+  get_proveedores?: boolean;
+  get_max_mins?: boolean;
+  get_plantilla_data?: boolean;
+  get_stock?: boolean;
+  get_unidades?: boolean;
+  campos_ext?: any[];
+}
+  const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_sucursales = false, get_proveedores = false, get_max_mins = false, get_plantilla_data = false, get_stock = false, get_unidades = false,
+    campos_ext = []}) => {
     const { getArticles }: any = articleRequests()
     const [articles, setArticles] = useState<any>()
     const { getFamilies, families }: any = storeFamilies()
@@ -45,7 +45,7 @@ interface FiltradoArticulosBasicProps {
         {
             id: 2,
             name: 'Familia'
-        },
+        },  
     ]
     const openSelectSearch = () => {
         setSelectSearch(!selectSearch)
@@ -66,13 +66,13 @@ interface FiltradoArticulosBasicProps {
             familia: selectedSearch == 2 ? familia.id : 0,
             proveedor: 0,
             materia_prima: 0,
-            get_sucursales: get_sucursales,
-            get_proveedores: get_proveedores,
-            get_max_mins: get_max_mins,
+            get_sucursales: get_sucursales == false ? get_sucursales : true,
+            get_proveedores: get_proveedores == false ? get_proveedores : true,
+            get_max_mins: get_max_mins == false ? get_max_mins : true,
             get_plantilla_data: get_plantilla_data,
-            get_stock: get_stock,
+            get_stock: get_stock == false ? get_stock : true,
             get_web: false,
-            get_unidades: get_unidades,
+            get_unidades: get_unidades == false ? get_unidades : true,
             id_usuario: user_id
         }
         if (selectedSearch === 0) {
@@ -99,6 +99,8 @@ interface FiltradoArticulosBasicProps {
         setSelectResults(!selectResults)
     }
 
+    console.log(campos_ext)
+
     const fetch = async () => {
         let dataFam = await getFamilies(user_id)
         setFamilia(dataFam[0])
@@ -109,9 +111,35 @@ interface FiltradoArticulosBasicProps {
     }, [])
     const agregar_articulos = (all: boolean) => {
         if (!all) {
-            setArticulos([selectedResult])
+            
+            let data = { ...selectedResult }; 
+            campos_ext.forEach(element => {
+               if(element.tipo == 1) {
+                data[element.nombre] = data[element.asignacion];
+               } else  {
+                data[element.nombre] = element.tipo;
+               }
+           
+                
+            });
+            setArticulos([data])
         } else {
-            setArticulos(articles)
+            let datas: any = []
+            articles.forEach((d:any) => {
+                let data = { ...d }; 
+                campos_ext.forEach(element => {
+                   
+                    if(element.tipo == 1) {
+                        data[element.nombre] = data[element.asignacion];
+                       } else  {  
+                        data[element.nombre] = element.tipo;
+                       }
+                });
+                datas.push(data)
+   
+                
+            });
+            setArticulos(datas)
         }
     }
     return (

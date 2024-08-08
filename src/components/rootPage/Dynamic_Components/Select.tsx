@@ -17,8 +17,8 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId }) => {
     console.warn('dataSelects is undefined');
     return null; // O muestra un mensaje de error
   }
-  const [selects, setSelects] = useState<boolean>(false);
-  const selectedId = useSelectStore((state) => state.selectedIds[instanceId]);
+  const [selects, setSelects] = useState<boolean>(false); 
+  const selectedId: any = useSelectStore((state) => state.selectedIds == null ? null :  state.selectedIds[instanceId]);
   const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
   const handleSelectsChange = (famId: number) => {
@@ -38,7 +38,7 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId }) => {
           <div className='select__container_title'>
             <p>
               {selectedId 
-                ? dataSelects.dataSelect && dataSelects.dataSelect.find((s) => s.id === selectedId)?.[dataSelects.options] || 'Selecciona' 
+                ? dataSelects.dataSelect && dataSelects.dataSelect.find((s) => s.id === selectedId.id)?.[dataSelects.options] || 'Selecciona' 
                 : 'Selecciona'}
             </p>
           </div>
@@ -49,7 +49,7 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId }) => {
         <div className={`content ${selects ? 'active' : ''}`}>
           <ul className={`options ${selects ? 'active' : ''}`} style={{ opacity: selects ? '1' : '0' }}>
             {dataSelects.dataSelect && dataSelects.dataSelect.map((select) => (
-              <li key={select.id} onClick={() => handleSelectsChange(select.id)}>
+              <li key={select.id} onClick={() => handleSelectsChange(select)}>
                 {select[dataSelects.options] || 'No disponible'} 
               </li>
             ))}
