@@ -6,6 +6,7 @@ import Departures from "../../../components/rootPage/sections/store/Departures";
 import Orders from "../../../components/rootPage/sections/store/Orders";
 import Transfers from "../../../components/rootPage/sections/store/Transfers";
 import { PrivateRoutes } from "../../../models/routes";
+import PedidoFranquicias from "../../../components/rootPage/sections/store/PedidoFranquicias";
 
 
 const RouteWarehouses: React.FC = () => {
@@ -16,6 +17,7 @@ const RouteWarehouses: React.FC = () => {
       <Route path={`${PrivateRoutes.DEPARTURES}`} element={<Departures />} />
       <Route path={`${PrivateRoutes.ORDERS}`} element={<Orders />} />
       <Route path={`${PrivateRoutes.TRANSFERS}`} element={<Transfers />} />
+      <Route path={`${PrivateRoutes.PEDIDOFRANQUICIA}`} element={<PedidoFranquicias />} />
     </Routes>
   );
 };

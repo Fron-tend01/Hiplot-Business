@@ -13,6 +13,7 @@ import Combinations from "../../../components/rootPage/sections/catalogs/Combina
 import Colecciones from "../../../components/rootPage/sections/catalogs/Colecciones";
 import Clients from "../../../components/rootPage/sections/catalogs/Clients";
 import TiemposEntrega from "../../../components/rootPage/sections/catalogs/TiemposEntrega";
+import ListasFranquicias from "../../../components/rootPage/sections/catalogs/ListasFranquicias";
 
 
 const RouteCatalogue: React.FC = () => {
@@ -29,6 +30,7 @@ const RouteCatalogue: React.FC = () => {
       <Route path={`/${PrivateRoutes.COLECCIONES}`} element={<Colecciones />}/>
       <Route path={`/${PrivateRoutes.CUSTOMERS}`} element={<Clients />}/>
       <Route path={`/${PrivateRoutes.TIEMPOSENTREGA}`} element={<TiemposEntrega />}/>
+      <Route path={`/${PrivateRoutes.LISTASFRANQUICIAS}`} element={<ListasFranquicias />}/>
 
     </Routes>
   );

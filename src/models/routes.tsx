@@ -35,12 +35,14 @@ export const PublicRoutes = {
     COLECCIONES: 'Colecciones',
     CUSTOMERS: 'customers',
     TIEMPOSENTREGA: 'TiemposEntrega',
+    LISTASFRANQUICIAS: 'ListasFranquicias',
     // Almacen//characteristics
     STORE: 'store',
     TICKETS: 'tickets',
     DEPARTURES: 'departures',
     ORDERS: 'orders',
     TRANSFERS: 'transfers',
+    PEDIDOFRANQUICIA: 'PedidoFranquicia',
 
     // Compras//
     PURCHASEORDERS: 'purchaseorders',
