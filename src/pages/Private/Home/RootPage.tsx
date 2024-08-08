@@ -198,7 +198,13 @@ const RootHome: React.FC = () => {
                                 <span>Traspasos</span>
                             </AnchorTag>
                         );
-                    } else {
+                    }  else if (permiso.titulo == "PEDIDO_FRANQUICIA") {
+                        return (
+                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.TRANSFERS}`}>
+                                <span>Traspasos</span>
+                            </AnchorTag>
+                        );
+                    }else {
                         return null;
                     }
                 })}
@@ -282,7 +288,13 @@ const RootHome: React.FC = () => {
                                 <span>Tiempos Entrega</span>
                             </AnchorTag>
                         );
-                    } else {
+                    } else if (permiso.titulo == "LISTA_FRANQUICIAS") {
+                        return (
+                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.LISTASFRANQUICIAS}`}>
+                                <span>Tiempos Entrega</span>
+                            </AnchorTag>
+                        );
+                    }else {
                         return null;
                     }
                 })}
