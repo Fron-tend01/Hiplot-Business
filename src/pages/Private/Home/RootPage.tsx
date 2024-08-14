@@ -200,8 +200,8 @@ const RootHome: React.FC = () => {
                         );
                     }  else if (permiso.titulo == "PEDIDO_FRANQUICIA") {
                         return (
-                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.TRANSFERS}`}>
-                                <span>Traspasos</span>
+                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.PEDIDOFRANQUICIA}`}>
+                                <span>Pedidos Franquicia</span>
                             </AnchorTag>
                         );
                     }else {
@@ -291,7 +291,7 @@ const RootHome: React.FC = () => {
                     } else if (permiso.titulo == "LISTA_FRANQUICIAS") {
                         return (
                             <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.LISTASFRANQUICIAS}`}>
-                                <span>Tiempos Entrega</span>
+                                <span>Listas Franquicias</span>
                             </AnchorTag>
                         );
                     }else {

@@ -1,0 +1,214 @@
+.te {
+    height: 90vh;
+	padding: 20px;
+}
+
+.te__container {
+    display: grid;
+	grid-template-rows: auto auto 1fr;
+	height: 100%;
+	background-color: var(--background-sections);
+	padding: 20px ;
+	border-radius: 10px;
+    overflow: hidden;
+}
+
+.conatiner__create_modal > .row__one {
+   
+}
+.conatiner__create_modal > .row__two {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+    column-gap: 20px;
+}
+
+.fade-out{
+    opacity: 0;
+}
+
+.conatiner__create_modal > .row__three {
+
+}
+
+
+
+
+
+ /*************************************************************
+                    Modal de updates sucursales
+ **************************************************************/
+
+
+ .btns__create {
+    display: flex;
+    justify-content: center;
+}
+  
+ .overlay__create_modal {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+}
+
+.overlay__create_modal.active {
+	visibility: visible;
+}
+.card-white {
+    padding:10px;
+    border-radius: 15px;
+    background-color: #fff;
+}
+.popup__create_modal {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 100%;
+	max-height:95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+    overflow: scroll;
+}
+
+.popup__create_modal .btn-cerrar-popup__create_modal {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+
+.container__change_img {
+    display: flex;
+    align-items: center;
+    width: auto;
+    height: 100px;
+    justify-content: center;
+    background-color: #ffffff;
+    cursor: pointer;
+    border-radius: 5px;
+    outline: 2px solid var(--primary-color);
+    margin-top: 10px;
+}
+
+
+
+
+.table__modal {
+    
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(3, auto) 1fr;
+	overflow: auto;
+}
+
+
+.table__modal .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__modal .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__modal .table__head .thead {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    padding: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+	text-align: left;
+}
+
+.table__modal .table__body {
+	height: 100%;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__modal .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+  }
+  
+.table__modal .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+  }
+
+.table__modal .table__body .tbody {
+    display: flex;
+}
+
+.table__modal .table__body .tbody {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr ;
+    padding: 10px;
+}
+
+.table__modal .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+
+.table__modal .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__create_modal.active {	transform: scale(1); opacity: 1; }
+

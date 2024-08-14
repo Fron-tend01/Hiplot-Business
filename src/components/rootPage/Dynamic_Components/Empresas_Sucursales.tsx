@@ -40,6 +40,7 @@ const Empresas_Sucursales = (props:any) => {
 
     const fetch2 = async () => {
         let resultCompanies = await getCompaniesXUsers(user_id)
+        
         let resultBranch = await getBranchOffices(empresaDyn.id, user_id)
         setEmpresas(resultCompanies)
         // setEmpresa(resultCompanies[0])
