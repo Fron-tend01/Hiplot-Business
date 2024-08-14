@@ -91,7 +91,7 @@ const Clients: React.FC = () => {
     <div className='customers'>
         <div className='customers__container'>
             <div className='row__one'>
-              <div className='select__container'>
+                <div className='select__container'>
                   <label className='label__general'>Empresas</label>
                   <div className='select-btn__general'>
                       <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
@@ -110,7 +110,7 @@ const Clients: React.FC = () => {
                           </ul>
                       </div>
                   </div>
-              </div>
+                </div>
               <div className='select__container'>
                   <label className='label__general'>Sucursales</label>
                   <div className='select-btn__general'>

@@ -104,6 +104,13 @@ textarea {
   font-family: 'Poppins', sans-serif;
 }
 
+select {
+  font-family: 'Poppins', sans-serif;
+}
+
+option {
+  font-family: 'Poppins', sans-serif;
+}
 
 
 
@@ -271,6 +278,15 @@ textarea {
   fill: var(--primary-color);
 }
 
+
+.svg__close {
+  fill: var(--text-color);
+}
+
+.chevron__down {
+  fill: var(--svg-color);
+}
+
 .btn__general-purple {
   background-color: var(--primary-color);
   padding: 10px 10px;
@@ -335,20 +351,12 @@ textarea {
   border-radius: var(--border-radius-general);
 }
 
-.svg__close {
-  fill: var(--close-color);
-}
-
-.chevron__down {
-  fill: var(--svg-color);
-}
-
-
 /* modales  */
 
 .title__modals {
   color: var(--text-color);
   text-align: center;
+  padding-top: 10px;
 }
 
 
@@ -834,6 +842,8 @@ input:checked + .slider:before {
   border: none;
   outline: none;
 }
+
+
 .table__numbers {
   display: flex;
   margin: 10px 0;

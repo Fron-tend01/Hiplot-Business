@@ -1,3 +1,22 @@
+.article__modal_create_modal_price_container {
+    height: 100%;
+    padding: 5px;
+    overflow: auto;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }                    
+}
+
 
 /*=================================================
  
@@ -23,14 +42,25 @@
 	visibility: visible;
 }
 
+.header__modal {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+}
+
 .popup__modal_prices_creating_articles {
 	background-color: var(--background-modal);  
 	border-radius: 5px;
-	padding: 20px;
+	padding: 40px 20px 20px 20px;
 	width: 80%;
+    height: 95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
+    overflow: hidden;
+
 }
 
 .popup__modal_prices_creating_articles .btn-cerrar-popup__modal_prices_creating_articles {
@@ -40,6 +70,9 @@
 	text-align: right;
 	transition: .3s ease all;
 	color: #BBBBBB;
+    position: absolute;
+    right: 30px;
+    top: 10px;
 }
 
 
@@ -47,6 +80,9 @@
 /* ANIMACIONES */
 /* ------------------------- */
 .popup__modal_prices_creating_articles.active {	transform: scale(1); opacity: 1; }
+
+
+
 
 
 
@@ -69,14 +105,14 @@
 .article__modal_prices_modal_container .table__head .thead {
     display: grid;
 	width: 100%;
-    grid-template-columns: 100px repeat(5, 1fr) 100px 100px;
+    grid-template-columns: repeat(4, 1fr) 100px 100px;
 	
     padding: 10px;
     font-weight: 600;
 }
 
 .article__modal_prices_modal_container .table__body {
-	height: 200px;
+	max-height: 200px;
     overflow: hidden;
     overflow: auto;
     transition-delay: 0.0s;
@@ -113,7 +149,7 @@
 
 .article__modal_prices_modal_container .table__body .tbody {
     display: grid;
-    grid-template-columns: 100px repeat(5, 1fr) 100px 100px;
+    grid-template-columns: repeat(4, 1fr) 100px 100px;
     padding: 10px;
 }
 
@@ -121,6 +157,10 @@
     background-color: var(--secundary-color);
     color: #fff;
 }
+
+
+
+
 
 .article__modal_prices_modal_container .area__edit_btn {
 	background-color: var(--primary-color);
@@ -130,4 +170,115 @@
 	border-radius: var(--border-radius-general);
 	cursor: pointer;
   }
+
+
+  
+
+
+
+
+
+
+
+
+
+.table__modal_prices_extra_modal_container {
+    margin-top: 20px;
+    border-radius: 10px;
+	text-align: justify;
+}
+
+
+.table__modal_prices_extra_modal_container .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+    color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__modal_prices_extra_modal_container .table__head .thead {
+    display: grid;
+	width: 100%;
+    grid-template-columns: repeat(4, 1fr) 100px;
+	
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__modal_prices_extra_modal_container .table__body {
+	max-height: 200px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__modal_prices_extra_modal_container .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+    color: var(--text-table-color);
+  }
+  
+  .table__modal_prices_extra_modal_container .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+    color: var(--text-table-color);
+   
+  }
+
+  .table__modal_prices_extra_modal_container .table__body .tbody {
+    display: flex;
+} 
+
+.table__modal_prices_extra_modal_container .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 100px;
+    padding: 10px;
+}
+
+.table__modal_prices_extra_modal_container .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+.table__modal_prices_extra_modal_container .area__edit_btn {
+	background-color: var(--primary-color);
+	color: #fff;
+	border: none;
+	padding: 5px 10px;
+	border-radius: var(--border-radius-general);
+	cursor: pointer;
+  }
+
+
+
+.title__add_prices  {
+    padding: 5px;
+    background-color: var(--orange-color);
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 10px;
+    color: #f5f6f7;
+}
+
+
+
+
+
+
+
+
+
 

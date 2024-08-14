@@ -62,60 +62,60 @@ const Components: React.FC = () => {
           </div>}
         </div>
         <div className='table__units' >
+          <div>
               <div>
+              {articulos ? (
                   <div>
-                  {articulos ? (
-                      <div>
-                          <p className='text'>Total de unidades {articulos.length}</p>
-                      </div>
-                  ) : (
-                      <p className='text'>No hay empresas</p>
-                  )}
+                      <p className='text'>Total de unidades {articulos.length}</p>
                   </div>
-                  <div className='table__head'>
-                    <div className='thead'>
-                        <div className='th'>
-                            <p className=''>Unidad</p>
-                        </div>
-                        <div className='th'>
-                            <p className=''>Valor</p>
-                        </div>
-                        <div className='th'>
-                            <p className=''>Check</p>
-                        </div>
-                        <div className='th'>
-                        </div>
+              ) : (
+                  <p className='text'>No hay empresas</p>
+              )}
+              </div>
+              <div className='table__head'>
+                <div className='thead'>
+                    <div className='th'>
+                        <p className=''>Unidad</p>
                     </div>
-                  </div>
-                  {articulos && articulos.length > 0 ? (
-                  <div className='table__body'>
-                    {articulos.map((item: any, index: any) => (
-                        <div className='tbody__container' key={index}>
-                            <div className='tbody'>
-                                <div className='td'>
-                                  {item?.codigo}
-                                </div>
-                                <div className='td'>
-                                  {item?.descripcion}
-                                </div>
-                                <div className='td'>
-                                  {item?.tipo}
-                                </div>
-                                <div className='td'>
-                                  <input type="text" />
-                                </div>
-                                <div className='td'>
-                                    <button className='btn__delete_users' type='button' onClick={() => deleteMaxMin(item)}>Eliminar</button>
-                                </div>
+                    <div className='th'>
+                        <p className=''>Valor</p>
+                    </div>
+                    <div className='th'>
+                        <p className=''>Check</p>
+                    </div>
+                    <div className='th'>
+                    </div>
+                </div>
+              </div>
+              {articulos && articulos.length > 0 ? (
+              <div className='table__body'>
+                {articulos.map((item: any, index: any) => (
+                    <div className='tbody__container' key={index}>
+                        <div className='tbody'>
+                            <div className='td'>
+                              {item?.codigo}
+                            </div>
+                            <div className='td'>
+                              {item?.descripcion}
+                            </div>
+                            <div className='td'>
+                              {item?.tipo}
+                            </div>
+                            <div className='td'>
+                              <input type="text" />
+                            </div>
+                            <div className='td'>
+                                <button className='btn__delete_users' type='button' onClick={() => deleteMaxMin(item)}>Eliminar</button>
                             </div>
                         </div>
-                    ))}
-                  </div>
-                  ) : (
-                      <p className='text'>Cargando datos...</p>
-                  )}
+                    </div>
+                ))}
               </div>
-            </div>
+              ) : (
+                  <p className='text'>Cargando datos...</p>
+              )}
+          </div>
+        </div>
       </div>
     </div>
   )

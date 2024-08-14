@@ -11,6 +11,8 @@ import Variations from './modals/Variations';
 import Combinations from './modals/Combinations';
 import Components from './modals/Components';
 import DeliveryTimes from './modals/DeliveryTimes';
+import MinimalCharges from './modals/MinimalCharges';
+import AdditionalArticles from './modals/AdditionalArticles';
 import './modalCreate.css'
 import { useStore } from 'zustand';
 import { TemplatesRequests } from '../../../../../fuctions/Templates';
@@ -629,13 +631,9 @@ const handleTemplatesChange = (template: any) => {
                 </div>
             </div>
             <div>
-                <div className={`overlay__modal_prices_creating_articles ${subModal == 'modal-prices' ? 'active' : ''}`}>
-                    <div className={`popup__modal_prices_creating_articles ${subModal == 'modal-prices' ? 'active' : ''}`}>
-                        <Prices />
-                    </div>
-                </div>
+                <Prices /> 
                 <div>
-                    <button className='btn__general-purple' type='button' onClick={modalPrices}>Precios</button>
+                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-prices')}>Precios</button>
                 </div>
            
         </div>
@@ -699,6 +697,18 @@ const handleTemplatesChange = (template: any) => {
                 <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-delivery-times')}>T. Entrega</button>
             </div>
             <DeliveryTimes />
+        </div>
+        <div>
+            <div>
+                <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-minimal-charges')}>Cargos minimos</button>
+            </div>
+            <MinimalCharges />
+        </div>
+        <div>
+            <div>
+                <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-additiona-articles')}>Art. adicionales</button>
+            </div>
+            <AdditionalArticles />
         </div>
     </div>
     <div className='container__btns_branch-office'>

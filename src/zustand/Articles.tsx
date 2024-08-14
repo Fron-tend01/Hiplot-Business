@@ -108,6 +108,22 @@ interface StoreState {
   deleteDeliveryTimes: any
   setDeleteDeliveryTimes: (x: any) => void;
 
+  // Cargos Minimos 
+  minimalCharges: any[]
+  setMinimalCharges: (x: any) => void;
+  deleteMinimalCharges: any
+  setDeleteMinimalCharges: (x: any) => void;
+
+
+  // Articulos adicionales 
+  additionalArticles: any[]
+  setAdditionalArticles: (x: any) => void;
+  deleteAdditionalArticles: any
+  setDeleteAdditionalArticles: (x: any) => void;
+
+    
+  
+
     modalStateSuppliers: any
     setModalStateSuppliers: (supplier: any) => void;
 
@@ -205,6 +221,18 @@ export const storeArticles = create<StoreState>((set) => ({
     setDeliveryTimes: (x) => set({ deliveryTimes: x }),
     deleteDeliveryTimes: [],
     setDeleteDeliveryTimes: (x) => set({ deleteDeliveryTimes: x }),
+
+    //  Cargos Minimos
+    minimalCharges: [],
+    setMinimalCharges: (x) => set({ minimalCharges: x }),
+    deleteMinimalCharges: [],
+    setDeleteMinimalCharges: (x) => set({ deleteMinimalCharges: x }),
+
+    //  Cargos Minimos
+    additionalArticles: [],
+    setAdditionalArticles: (x) => set({ additionalArticles: x }),
+    deleteAdditionalArticles: [],
+    setDeleteAdditionalArticles: (x) => set({ deleteAdditionalArticles: x }),
 
     historyPrices: [],
     setHistoryPrices: (price) => set({ historyPrices: price }),

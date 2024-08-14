@@ -1,0 +1,144 @@
+
+/*=================================================
+ 
+  Modal de cargos minimos del modal del articulo 
+  
+=================================================*/
+
+
+.overlay__modal_minimal-charges_modal-articles {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+}
+
+.overlay__modal_minimal-charges_modal-articles.active {
+	visibility: visible;
+}
+
+.popup__modal_minimal-charges_modal-articles {
+	background-color: var(--background-modal);  
+	border-radius: 5px;
+    align-items: center;
+    justify-content: center;
+	padding: 20px;
+	width: 90%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+}
+
+.popup__modal_minimal-charges_modal-articles .btn-cerrar-popup__modal_minimal-charges_modal-articles {
+    position: absolute;
+    display: flex;
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    right: 15px;
+    cursor: pointer;
+
+
+}
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__modal_minimal-charges_modal-articles.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+
+
+
+.article__modal_delivery-times_table {
+    margin-top: 20px;
+    border-radius: 10px;
+	text-align: justify;
+}
+
+
+.article__modal_delivery-times_table .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+    color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.article__modal_delivery-times_table .table__head .thead {
+    display: grid;
+	width: 100%;
+    grid-template-columns: repeat(5, 1fr) 100px;
+	
+    padding: 10px;
+    font-weight: 600;
+}
+
+.article__modal_delivery-times_table .table__body {
+	height: 200px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.article__modal_delivery-times_table .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+    color: var(--text-table-color);
+  }
+  
+  .article__modal_delivery-times_table .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+    color: var(--text-table-color);
+   
+  }
+
+  .article__modal_delivery-times_table .table__body .tbody {
+    display: flex;
+} 
+
+.article__modal_delivery-times_table .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr) 100px;
+    padding: 10px;
+    gap: 20PX;
+}
+
+.article__modal_delivery-times_table .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+.article__modal_delivery-times_table .area__edit_btn {
+	background-color: var(--primary-color);
+	color: #fff;
+	border: none;
+	padding: 5px 10px;
+	border-radius: var(--border-radius-general);
+	cursor: pointer;
+  }

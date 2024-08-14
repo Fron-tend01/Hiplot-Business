@@ -145,7 +145,6 @@ const modalUpdate: React.FC = () => {
   const handleFamiliesChange = (familia: any) => {
     setSelectedFamilie(familia.id)
     setSelectFamilies(false)
-
   };
 
 
@@ -620,11 +619,11 @@ const handleTemplatesChange = (template: any) => {
                 <div>
                     <button className='btn__general-purple' type='button' onClick={modalUpdate}>Precios</button>
                 </div>
-                <div className={`overlay__modal_prices_creating_articles ${subModal == 'modal_prices-update' ? 'active' : ''}`}>
-                    <div className={`popup__modal_prices_creating_articles ${subModal == 'modal_prices-update' ? 'active' : ''}`}>
+                {/* <div className={`overlay__modal_prices_update_articles ${subModal == 'modal_prices-update' ? 'active' : ''}`}>
+                    <div className={`popup__modal_prices_update_articles ${subModal == 'modal_prices-update' ? 'active' : ''}`}>
                         <Prices />
                     </div>
-                </div>
+                </div> */}
             </div>
             <div>
                 <div>

@@ -376,16 +376,16 @@ const handleByRequestTypesChange = (type: any) => {
 
 const [seleccionesTemporales, setSeleccionesTemporales] = useState<string[]>([]);
 
-  const handleSeleccion = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-    const valorSeleccionado = event.target.value;
-    conceptos[index].unidad = valorSeleccionado;
-    // Crear una copia del arreglo de selecciones temporales
-    const nuevasSelecciones = [...seleccionesTemporales];
-    // Actualizar el valor seleccionado en la posición del índice correspondiente
-    nuevasSelecciones[index] = valorSeleccionado;
-    // Actualizar el estado con las nuevas selecciones
-    setSeleccionesTemporales(nuevasSelecciones);
-  };
+const handleSeleccion = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+  const valorSeleccionado = event.target.value;
+  conceptos[index].unidad = valorSeleccionado;
+  // Crear una copia del arreglo de selecciones temporales
+  const nuevasSelecciones = [...seleccionesTemporales];
+  // Actualizar el valor seleccionado en la posición del índice correspondiente
+  nuevasSelecciones[index] = valorSeleccionado;
+  // Actualizar el estado con las nuevas selecciones
+  setSeleccionesTemporales(nuevasSelecciones);
+};
 
 
   const [proveedores, setProveedores] = useState<number[]>([])

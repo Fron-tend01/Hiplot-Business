@@ -1,0 +1,70 @@
+/*=================================================
+ 
+  Modal de precios del modal del articulo 
+  
+=================================================*/
+
+
+.overlay__modal-concepts_additional-articles_modal_articles {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+}
+
+.overlay__modal-concepts_additional-articles_modal_articles.active {
+	visibility: visible;
+}
+
+.header__modal {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.popup__modal-concepts_additional-articles_modal_articles {
+	background-color: var(--background-modal);  
+	border-radius: 5px;
+	padding: 40px 20px 20px 20px;
+	width: 100%;
+    height: 70%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+    overflow: hidden;
+
+}
+
+.popup__modal-concepts_additional-articles_modal_articles .btn-cerrar-popup__modal-concepts_additional-articles_modal_articles {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 30px;
+    top: 10px;
+}
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__modal-concepts_additional-articles_modal_articles.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+
+
+
+

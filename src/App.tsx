@@ -37,7 +37,7 @@ function App() {
 
   // Generales
   document.documentElement.style.setProperty('--input-color', theme === 'light' ? '' : '#2d3338');
-  document.documentElement.style.setProperty('--close-color', theme === 'light' ? '' : '#f5f6f7');
+  document.documentElement.style.setProperty('--close-color#252a36', theme === 'light' ? '' : '#f5f6f7');
 
   document.documentElement.style.setProperty('--background-select-content', theme === 'light' ? '' : '#252a36');
 

@@ -14,9 +14,9 @@ const DeliveryTimes: React.FC = () => {
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
   const setSubModal = storeArticles(state => state.setSubModal)
-   const setDeliveryTimes = storeArticles(state => state.setDeliveryTimes)
-  const {subModal, deliveryTimes}: any = useStore(storeArticles)
 
+  const {subModal, deliveryTimes}: any = useStore(storeArticles)
+  const setDeliveryTimes = storeArticles(state => state.setDeliveryTimes)
   const selectedIds:any = useSelectStore((state) => state.selectedIds);
 
   const [update, setUpdate] = useState<boolean>(false)
@@ -31,10 +31,10 @@ const DeliveryTimes: React.FC = () => {
   const [deliveryTimesView, setDeliveryTimesView] = useState<any>([])
 
   useEffect(() => {
-    if(selectedIds !== null) {
-      setDeliveryTimesView([...deliveryTimesView, selectedIds.deliveryTimes])
-      setDeliveryTimes([...deliveryTimes, selectedIds.deliveryTimes.id])
-    }
+    // if(selectedIds !== null) {
+    //   setDeliveryTimesView([...deliveryTimesView, selectedIds.deliveryTimes])
+    //   setDeliveryTimes([...deliveryTimes, selectedIds.deliveryTimes.id])
+    // }
 
   }, [selectedIds])
 
