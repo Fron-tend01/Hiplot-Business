@@ -6,6 +6,16 @@ const DynamicVariables = {
             [key]: value
           }));
     },
+    updateAnyVarByIndex : (setStateFunc: Dispatch<SetStateAction<any[]>>, index: number, key: string, value: any) => {
+        setStateFunc(prevState => {
+            const updatedState = [...prevState];
+            updatedState[index] = {
+                ...updatedState[index],
+                [key]: value,
+            };
+            return updatedState;
+        });
+    },
     updateAnyVarSetArr: <T, K extends keyof T>(setStateFunc: React.Dispatch<React.SetStateAction<T>>, key: K, value: any) => {
         setStateFunc((prevState) => {
             const currentArray = prevState[key] as unknown as any[];

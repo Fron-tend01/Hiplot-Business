@@ -41,10 +41,6 @@ const Urgencias = () => {
   const [modoUpdate, setModoUpdate] = useState<boolean>(false)
 
   const [data, setData] = useState<any>(null)
-  const setEmpresa = storeDv(state => state.setEmpresa)
-  const setSucursal = storeDv(state => state.setSucursal)
-  const [empresaSearcher, setEmpresaSearcher] = useState<any>({})
-  const [sucursalSearcher, setSucursalSearcher] = useState<any>({})
   const [empresaDyn, setEmpresaDyn] = useState<any>({})
   const [sucursalDyn, setSucursalDyn] = useState<any>({})
   const setArticulos = storeDv(state => state.setArticulos)
@@ -52,6 +48,7 @@ const Urgencias = () => {
 
   const Modal = (modoUpdate: boolean, data: any) => {
     setModal(true)
+
     setUrgencia(UrgenciaClear)
     setArticulos([])
     if (modoUpdate) {
@@ -60,6 +57,8 @@ const Urgencias = () => {
       DynamicVariables.updateAnyVar(setUrgencia, "id_sucursal", data.id_sucursal)
       DynamicVariables.updateAnyVar(setUrgencia, "porcentaje", data.porcentaje)
       DynamicVariables.updateAnyVar(setUrgencia, "cobro_min", data.cobro_min)
+      console.log(data);
+
       setEmpresaDyn({id: data.id_empresa})
       setSucursalDyn({id: data.id_sucursal})
       // //LLENAR LA VARIABLES ARRAY
@@ -67,6 +66,7 @@ const Urgencias = () => {
         DynamicVariables.addObjectInArrayRepeat(element, setArticulos)
       });
       setModoUpdate(true)
+
     } else {
       setModoUpdate(false)
     }
@@ -158,10 +158,10 @@ const Urgencias = () => {
           <div>
             {data ? (
               <div>
-                <p className='text'>Tus tiempos de entrega {data.length}</p>
+                <p className='text'>Tus urgencias {data.length}</p>
               </div>
             ) : (
-              <p>No hay tiempos de entrega</p>
+              <p>No hay urgencias</p>
             )}
           </div>
           <div className='table__head'>

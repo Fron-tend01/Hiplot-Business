@@ -10,10 +10,24 @@ interface FiltradoArticulosBasicProps {
   get_max_mins?: boolean;
   get_plantilla_data?: boolean;
   get_stock?: boolean;
+  get_variaciones?: boolean;
+  get_precios?: boolean;
+  get_combinaciones?: boolean;
+  get_componentes?: boolean;
+  get_tiempos_entrega?: boolean;
+  get_areas_produccion?: boolean;
   get_unidades?: boolean;
+  get_cargos_minimos?: boolean;
+  get_adicional?: boolean;
+  get_imagenes?: boolean;
+  id_empresa_proveedor?: 0;
+  id_sucursal_franquicia?: 0;
   campos_ext?: any[];
 }
-  const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_sucursales = false, get_proveedores = false, get_max_mins = false, get_plantilla_data = false, get_stock = false, get_unidades = false,
+  const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_sucursales = false, get_proveedores = false, get_max_mins = false,
+     get_plantilla_data = false, get_stock = false, get_unidades = false,get_variaciones = false,get_precios = false,get_combinaciones = false,get_componentes = false,
+  get_tiempos_entrega = false,get_areas_produccion = false,get_cargos_minimos = false,get_adicional = false,get_imagenes = false,id_empresa_proveedor= 0,
+  id_sucursal_franquicia= 0,
     campos_ext = []}) => {
     const { getArticles }: any = articleRequests()
     const [articles, setArticles] = useState<any>()
@@ -73,6 +87,17 @@ interface FiltradoArticulosBasicProps {
             get_stock: get_stock == false ? get_stock : true,
             get_web: false,
             get_unidades: get_unidades == false ? get_unidades : true,
+            get_variaciones : get_variaciones == false ? get_variaciones : true,
+            get_precios : get_precios == false ? get_precios : true,
+            get_combinaciones : get_combinaciones == false ? get_combinaciones : true,
+            get_componentes : get_componentes == false ? get_componentes : true,
+            get_tiempos_entrega : get_tiempos_entrega == false ? get_tiempos_entrega : true,
+            get_areas_produccion : get_areas_produccion == false ? get_areas_produccion : true,
+            get_cargos_minimos : get_cargos_minimos == false ? get_cargos_minimos : true,
+            get_adicional : get_adicional == false ? get_adicional : true,
+            get_imagenes : get_imagenes == false ? get_imagenes : true,
+            id_empresa_proveedor: id_empresa_proveedor || 0,
+            id_sucursal_franquicia: id_sucursal_franquicia || 0,
             id_usuario: user_id
         }
         if (selectedSearch === 0) {
@@ -99,7 +124,6 @@ interface FiltradoArticulosBasicProps {
         setSelectResults(!selectResults)
     }
 
-    console.log(campos_ext)
 
     const fetch = async () => {
         let dataFam = await getFamilies(user_id)
@@ -122,7 +146,8 @@ interface FiltradoArticulosBasicProps {
            
                 
             });
-            setArticulos([data])
+            setArticulos(prevArticulos => [...prevArticulos, data]);
+
         } else {
             let datas: any = []
             articles.forEach((d:any) => {
@@ -139,7 +164,9 @@ interface FiltradoArticulosBasicProps {
    
                 
             });
-            setArticulos(datas)
+            datas.forEach((d:any) => {
+                setArticulos(prevArticulos => [...prevArticulos, d]);
+            });
         }
     }
     return (
