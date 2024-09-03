@@ -23,12 +23,14 @@ interface FiltradoArticulosBasicProps {
   id_empresa_proveedor?: 0;
   id_sucursal_franquicia?: 0;
   campos_ext?: any[];
+  set_article_local?:any
+  
 }
   const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_sucursales = false, get_proveedores = false, get_max_mins = false,
      get_plantilla_data = false, get_stock = false, get_unidades = false,get_variaciones = false,get_precios = false,get_combinaciones = false,get_componentes = false,
   get_tiempos_entrega = false,get_areas_produccion = false,get_cargos_minimos = false,get_adicional = false,get_imagenes = false,id_empresa_proveedor= 0,
   id_sucursal_franquicia= 0,
-    campos_ext = []}) => {
+    campos_ext = [], set_article_local = []}) => {
     const { getArticles }: any = articleRequests()
     const [articles, setArticles] = useState<any>()
     const { getFamilies, families }: any = storeFamilies()
@@ -146,7 +148,7 @@ interface FiltradoArticulosBasicProps {
            
                 
             });
-            setArticulos(prevArticulos => [...prevArticulos, data]);
+            set_article_local((prevArticulos: any) => [...prevArticulos, data]);
 
         } else {
             let datas: any = []
@@ -165,7 +167,7 @@ interface FiltradoArticulosBasicProps {
                 
             });
             datas.forEach((d:any) => {
-                setArticulos(prevArticulos => [...prevArticulos, d]);
+                set_article_local((prevArticulos: any) => [...prevArticulos, d]);
             });
         }
     }

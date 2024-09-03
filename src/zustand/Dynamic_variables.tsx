@@ -13,6 +13,9 @@ interface StoreState {
 
     articulos: any[];
     setArticulos: (updateFunc: any[] | ((prevArray: any[]) => any[])) => void;
+
+    index: any;
+    setIndex: (x: any) => void;
 }
 
 export const storeDv = create<StoreState>((set) => ({
@@ -26,4 +29,10 @@ export const storeDv = create<StoreState>((set) => ({
     setArticulos: (updateFunc) => set((state) => ({
         articulos: typeof updateFunc === 'function' ? updateFunc(state.articulos) : updateFunc,
       })),
+
+    index: null,
+    setIndex: (x) => set({index: x}),
+
     }));
+
+    

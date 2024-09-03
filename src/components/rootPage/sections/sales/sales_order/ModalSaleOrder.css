@@ -1,0 +1,135 @@
+
+.overlay__sale-order__modal_articles {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+}
+
+.overlay__sale-order__modal_articles.active {
+	visibility: visible;
+}
+
+.header__modal {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.popup__sale-order__modal_articles {
+	background-color: var(--background-modal);  
+	border-radius: 5px;
+	padding: 40px 20px 20px 20px;
+	width: 95%;
+    height: 95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+    overflow: hidden;
+
+}
+
+.popup__sale-order__modal_articles .btn-cerrar-popup__sale-order__modal_articles {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 30px;
+    top: 10px;
+}
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__sale-order__modal_articles.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+
+
+
+
+
+.popup__sale-order__modal_articles .container_dates__requisition {
+	margin-top: 0;
+}
+
+.popup__sale-order__modal_articles .title__concepts {
+	padding: 10px 5px;
+	background-color: #bf6903;
+	border-radius: 5px;
+	color: #f5f6f7;
+}
+
+.sale-order__input_container {
+	display: grid;
+	grid-template-columns: auto 1fr;
+}
+
+.sale-order__input_container  {
+	display: grid;
+	grid-template-columns: auto 1fr;
+}
+
+.sale-order__input_container .container_dates__requisition {
+	margin-left: 15px;
+}
+
+.sale-order__input_container .container_dates__requisition > .date {
+	text-align: center;
+}
+
+.sale-order__concepts .code  {
+	padding: 5px 15px;
+	border-radius: 5px;
+	background-color: var(--primary-color);
+}
+
+.total__price {
+	text-align: end;
+}
+
+.total__price > .price {
+	font-size: 1.3rem;
+	color: #bf6903;
+	font-weight: 600;
+}
+
+.discount {
+	border: solid 2px var(--danger-color);
+	color: var(--danger-color);
+	border-radius: 5px;
+	padding: 5px;
+	font-weight: 700;
+}
+
+
+.sale-order__concepts {
+	background-color: #1d212e;
+	padding: 20px;
+	border-radius: 10px;
+	color: #f5f6f7;
+}
+
+
+
+.sale-order__concepts .right .item {
+	padding: 5px;
+	color: #8d54ffd8;
+	font-weight: 500;
+	border-radius: 5px;
+	background-color: #682ce015;
+}

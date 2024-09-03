@@ -1,0 +1,13 @@
+.production {
+    height: 90vh;
+	padding: 20px;
+}
+
+
+.production__container {
+    height: 100%;
+	background-color: var(--background-sections);
+	padding: 20px ;
+	border-radius: 10px;
+    overflow: hidden;
+}

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useStore } from 'zustand';
 import { storeModals } from '../../../../zustand/Modals';
 import { storeSaleCard } from '../../../../zustand/SaleCard';
+import { storeSaleOrder } from '../../../../zustand/SalesOrder';
 import { articleRequests } from '../../../../fuctions/Articles';
 import { v4 as uuidv4 } from 'uuid';
 import { UserGroupsRequests } from '../../../../fuctions/UserGroups';
@@ -25,8 +26,12 @@ const SalesCard: React.FC = () => {
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
   const setDataQuotation = storeSaleCard(state => state.setDataQuotation);
+  const setDataSaleOrder = storeSaleOrder(state => state.setDataSaleOrder);
   const setModalSub = storeModals(state => state.setModalSub)
+
+  
   const { IdArticle, modalSalesCard }: any = useStore(storeSaleCard);
+  const {dataSaleOrder}: any = useStore(storeSaleOrder);
   const { getUserGroups }: any = UserGroupsRequests();
   const { getUnits }: any = UnitsRequests();
   const [units, setUnits] = useState<any[]>([]);
@@ -38,8 +43,8 @@ const SalesCard: React.FC = () => {
 
   const [billingComment, setBillingComment] = useState<any>('')
   
-  const [data, setData] = useState<any>([])
-  console.log(data)
+  const [data, setData] = useState<any>()
+
 
   const fetch = async () => {
     let data = {
@@ -56,6 +61,7 @@ const SalesCard: React.FC = () => {
       get_precios: true,
       get_combinaciones: true,
       get_plantilla_data: true,
+      get_areas_produccion: true,
       get_stock: true,
       get_web: true,
       get_unidades: true,
@@ -79,7 +85,7 @@ const SalesCard: React.FC = () => {
     
       setArticle(result[0]);
     }
-    
+   
 
     let resultUnits = await getUnits(data);
     if (resultUnits && resultUnits.length > 0) {
@@ -94,10 +100,11 @@ const SalesCard: React.FC = () => {
 
   useEffect(() => {
     fetch();
+    console.log(article)
   }, [IdArticle, user_id]);
 
   useEffect(() => {
-
+   
   },[data])
 
   const handleCreateFamilies = () => {
@@ -124,7 +131,7 @@ const SalesCard: React.FC = () => {
   };
 
   const handleUnitsChange = (item: any) => {
-    setSelectedUnit(item.id);
+    setSelectedUnit(item);
     setSelectUnits(false);
   };
 
@@ -141,17 +148,15 @@ const SalesCard: React.FC = () => {
   const [message, setMessage] = useState<any>()
 
   useEffect(() => {
-   
-    
 
   }, [prices])
-  console.log(prices)
 
+console.log(article)
   const get = async () => {
     let dataArticle = {
       id_articulo: article.id,
       id_grupo_us: selectedUserGroup,
-      id_unidad: selectedUnit,
+      id_unidad: selectedUnit.id,
       cantidad: amount,
       campos: article.plantilla_data,
  
@@ -168,21 +173,46 @@ const SalesCard: React.FC = () => {
        // Ajustar según el contenido real de result
       }
 
+    
+ 
+
+  
+
+ 
+
       if(result.error == false) {
        setPrices(result.mensaje)
-       setData([...data, {
+       
+       setData([{
+        
+        id_pers: 0,
+        produccion_interna: true,
+        id_articulo: article.id,
+        id_area_produccion: 0, // campo de orden de vanta
+        enviar_a_produccion: false, // campo de orden de vanta
+        status: 0,
+        cantidad: amount,
+        monto_urgencia: 0, // campo de orden de vanta
+        precio_unitario: result.mensaje,
+        id_unidad: selectedUnit.id,
+        obs_produccion: "",
+        obs_factura: "",
+        areas_produccion: article.areas_produccion,
         codigo: article.codigo,
         descripcion: article.descripcion,
+        
         unidad: selectedUnit,
-        id_articulo: article.id,
-        id_grupo_us: selectedUserGroup,
-        id_unidad: selectedUnit,
-        cantidad: amount,
-        campos: article.plantilla_data,
-        precio_unitario: result.mensaje,
-        comentarios: billingComment
+        name_unidad: selectedUnit.nombre,
+        total_price: result.mensaje,
+        campos_plantilla: article.plantilla_data.map((x: any) => ({
+          nombre_campo_plantilla: x.nombre,
+          tipo_campo_plantilla: 0,
+          valor: x.valor.toString()
+        }))
+
        }])
        return
+
       }
     } catch (error) {
       console.error('Error al obtener el precio total:', error);
@@ -212,6 +242,16 @@ const SalesCard: React.FC = () => {
   const addQua = () => {
     setDataQuotation(data)
   }
+
+  const addSaleOrder = () => {
+    if(dataSaleOrder !== undefined) {
+      setDataSaleOrder([...dataSaleOrder, data[0]])
+    } else {
+      setDataSaleOrder([data[0]])
+    }
+    
+  }
+
 
 
   return (
@@ -275,7 +315,7 @@ const SalesCard: React.FC = () => {
                   <div className={`select-btn__general`}>
                     <div className={`select-btn ${selectUnits ? 'active' : ''}`} onClick={openSelectUnits}>
                       <div className='select__container_title'>
-                        <p>{selectedUnit ? units.find((s: { id: number }) => s.id === selectedUnit)?.nombre : 'Selecciona'}</p>
+                        <p>{selectedUnit ? units.find((s: { id: number }) => s.id === selectedUnit.id)?.nombre : 'Selecciona'}</p>
                       </div>
                       <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
                         <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
@@ -328,28 +368,28 @@ const SalesCard: React.FC = () => {
               </div>
               <div className='row__five'>
                 <button className='add__quotation' onClick={addQua}>Agregar a cotizacción</button>
-                <button className='add__cart'>Agregar a carrito</button>
+                <button className='add__cart' onClick={addSaleOrder}>Agregar a orden de venta</button>
               </div>
             </div>
           </div>
           <div className='row__three'>
             <button onClick={() => setModalSub('prices_modal') } className='price'>Precios
-              <svg className="icon icon-tabler icons-tabler-outline icon-tabler-premium-rights"  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M13.867 9.75c-.246 -.48 -.708 -.769 -1.2 -.75h-1.334c-.736 0 -1.333 .67 -1.333 1.5c0 .827 .597 1.499 1.333 1.499h1.334c.736 0 1.333 .671 1.333 1.5c0 .828 -.597 1.499 -1.333 1.499h-1.334c-.492 .019 -.954 -.27 -1.2 -.75" /><path d="M12 7v2" /><path d="M12 15v2" /></svg>
+              <svg className="icon icon-tabler icons-tabler-outline icon-tabler-premium-rights"  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M13.867 9.75c-.246 -.48 -.708 -.769 -1.2 -.75h-1.334c-.736 0 -1.333 .67 -1.333 1.5c0 .827 .597 1.499 1.333 1.499h1.334c.736 0 1.333 .671 1.333 1.5c0 .828 -.597 1.499 -1.333 1.499h-1.334c-.492 .019 -.954 -.27 -1.2 -.75" /><path d="M12 7v2" /><path d="M12 15v2" /></svg>
             </button>
             <button onClick={() => setModalSub('add-qoutation_modal')} className='stock'>Agregar a cotizacion
-              <svg className="icon icon-tabler icons-tabler-outline icon-tabler-building-warehouse" xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21v-13l9 -4l9 4v13" /><path d="M13 13h4v8h-10v-6h6" /><path d="M13 21v-9a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v3" /></svg>
+              <svg className="icon icon-tabler icons-tabler-outline icon-tabler-building-warehouse" xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21v-13l9 -4l9 4v13" /><path d="M13 13h4v8h-10v-6h6" /><path d="M13 21v-9a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v3" /></svg>
             </button>
             <button onClick={() => setModalSub('to-arrive_modal')} className='arrive'>Por llegar
-              <svg className="icon icon-tabler icons-tabler-outline icon-tabler-truck-delivery"  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" /><path d="M3 9l4 0" /></svg>
+              <svg className="icon icon-tabler icons-tabler-outline icon-tabler-truck-delivery"  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" /><path d="M3 9l4 0" /></svg>
             </button>
             <button onClick={() => setModalSub('indications_modal')} className='indications'>Indicaciones
-              <svg className="icon icon-tabler icons-tabler-outline icon-tabler-directions" xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 21v-4" /><path d="M12 13v-4" /><path d="M12 5v-2" /><path d="M10 21h4" /><path d="M8 5v4h11l2 -2l-2 -2z" /><path d="M14 13v4h-8l-2 -2l2 -2z" /></svg>
+              <svg className="icon icon-tabler icons-tabler-outline icon-tabler-directions" xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 21v-4" /><path d="M12 13v-4" /><path d="M12 5v-2" /><path d="M10 21h4" /><path d="M8 5v4h11l2 -2l-2 -2z" /><path d="M14 13v4h-8l-2 -2l2 -2z" /></svg>
             </button>
             <button onClick={() => setModalSub('delivery-time_modal')} className='time'>Tiempos de entrega
-              <svg className="icon icon-tabler icons-tabler-outline icon-tabler-clock-hour-1"  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7v5" /><path d="M12 12l2 -3" /></svg>
+              <svg className="icon icon-tabler icons-tabler-outline icon-tabler-clock-hour-1"  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7v5" /><path d="M12 12l2 -3" /></svg>
             </button>
             <button onClick={() => setModalSub('components_modal')} className='components'>Componentes
-              <svg className="icon icon-tabler icons-tabler-outline icon-tabler-components" xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12l3 3l3 -3l-3 -3z" /><path d="M15 12l3 3l3 -3l-3 -3z" /><path d="M9 6l3 3l3 -3l-3 -3z" /><path d="M9 18l3 3l3 -3l-3 -3z" /></svg></button>      
+              <svg className="icon icon-tabler icons-tabler-outline icon-tabler-components" xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12l3 3l3 -3l-3 -3z" /><path d="M15 12l3 3l3 -3l-3 -3z" /><path d="M9 6l3 3l3 -3l-3 -3z" /><path d="M9 18l3 3l3 -3l-3 -3z" /></svg></button>      
           </div>
           <Prices />
           <AddQoutation />

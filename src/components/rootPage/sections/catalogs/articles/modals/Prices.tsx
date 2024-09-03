@@ -27,15 +27,13 @@ const Prices: React.FC = () => {
 
   const {modalSub}: any = useStore(storeModals)
 
-  console.log(articleByOne)
-
   const [group, setGroup] = useState<any>(false)
 
 useEffect(() => {
 
 }, [articleByOne])
 
-console.log(selectedIds)
+
 
   const { getRanges }: any = RangesRequests();
   const [ranges, setRanges] = useState<any>([])
@@ -211,7 +209,7 @@ const additionalPrices  = () => {
               <div className='row col-12'>
                 <div className='col-8'>
                   <label className='label__general'>Orden</label>
-                  <input name="price" className={`inputs__general`} value={order} onChange={(e) => setOrder(e.target.value)} placeholder='Ingresa el orden' />  
+                  <input name="number" className={`inputs__general`} value={order} onChange={(e) => setOrder(parseInt(e.target.value))} placeholder='Ingresa el orden' />  
                 </div>
                 <div className='col-2 h-full'>
                   <label className='label__general'>Agrupacion</label>

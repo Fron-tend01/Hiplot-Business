@@ -13,7 +13,7 @@ import Templates from '../../../templates'
 
 const Concepts = ({index}: any) => {
     const userState = useUserStore((state) => state.user);
-    const user_id = userState.id;
+    let user_id = userState.id;
   
     const selectedIds = useSelectStore((state) => state.selectedIds);
   
@@ -64,7 +64,7 @@ const Concepts = ({index}: any) => {
             dataSelect: resultUnits,
           });
   
-          const resultUserGroup = await getUserGroups();
+          const resultUserGroup = await getUserGroups(user_id);
           setUserGroups({
             selectName: 'Grupos de usuarios',
             options: 'nombre',

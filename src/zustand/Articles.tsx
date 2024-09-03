@@ -87,6 +87,13 @@ interface StoreState {
     deleteSuppliers: any
     setDeleteSuppliers: (supplier: any) => void;
 
+    // Components 
+   components: any[]
+   setComponents: (component: any) => void;
+   deleteComponents: any
+   setDeleteComponents: (component: any) => void;
+
+
 
    // Variaciones 
    variations: any[]
@@ -102,11 +109,17 @@ interface StoreState {
   setDeleteCombinations: (combination: any) => void;
 
   
-  // Combinaciones 
+  // Tiempos de entrega 
   deliveryTimes: any[]
   setDeliveryTimes: (x: any) => void;
   deleteDeliveryTimes: any
   setDeleteDeliveryTimes: (x: any) => void;
+
+  // Areas
+  areas: any[]
+  setAreas: (x: any) => void;
+  deleteAreas: any
+  setDeleteAreas: (x: any) => void;
 
   // Cargos Minimos 
   minimalCharges: any[]
@@ -172,8 +185,6 @@ export const storeArticles = create<StoreState>((set) => ({
     modalStateUnits: '',
     setModalStateUnits: (modal) => set({ modalStateUnits: modal }),
 
-    
-    
 
     // Maximos y minimos 
     maxsMins: [],
@@ -194,6 +205,13 @@ export const storeArticles = create<StoreState>((set) => ({
     modalStateSuppliers: [],
     setModalStateSuppliers: (supplier) => set({ modalStateSuppliers: supplier }),
 
+
+    components: [],
+    setComponents: (updateFunc) => set((state) => ({
+      components: typeof updateFunc === 'function' ? updateFunc(state.components) : updateFunc,
+    })),
+    deleteComponents: [],
+    setDeleteComponents: (x) => set({ deleteComponents: x }),
 
     //Variaciones 
     variations: [],
@@ -222,6 +240,12 @@ export const storeArticles = create<StoreState>((set) => ({
     deleteDeliveryTimes: [],
     setDeleteDeliveryTimes: (x) => set({ deleteDeliveryTimes: x }),
 
+    //  Areas
+    areas: [],
+    setAreas: (x) => set({ areas: x }),
+    deleteAreas: [],
+    setDeleteAreas: (x) => set({ deleteAreas: x }),
+
     //  Cargos Minimos
     minimalCharges: [],
     setMinimalCharges: (x) => set({ minimalCharges: x }),
@@ -230,7 +254,9 @@ export const storeArticles = create<StoreState>((set) => ({
 
     //  Cargos Minimos
     additionalArticles: [],
-    setAdditionalArticles: (x) => set({ additionalArticles: x }),
+    setAdditionalArticles: (updateFunc) => set((state) => ({
+      additionalArticles: typeof updateFunc === 'function' ? updateFunc(state.additionalArticles) : updateFunc,
+    })),
     deleteAdditionalArticles: [],
     setDeleteAdditionalArticles: (x) => set({ deleteAdditionalArticles: x }),
 

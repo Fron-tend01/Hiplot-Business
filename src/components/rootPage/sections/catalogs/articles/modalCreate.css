@@ -405,7 +405,7 @@ padding: 10px;
   Modal de areas de produccion del modal del articulo 
   
 =================================================*/
-
+/* 
 .article__modal_save_modal_production-areas_container .row__one {
 	display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -461,10 +461,8 @@ padding: 10px;
 }
 
 
-/* ------------------------- */
-/* ANIMACIONES */
-/* ------------------------- */
-.popup__modal_production-areas_creating_articles.active {	transform: scale(1); opacity: 1; }
+
+.popup__modal_production-areas_creating_articles.active {	transform: scale(1); opacity: 1; } */
 
 
 /*=================================================

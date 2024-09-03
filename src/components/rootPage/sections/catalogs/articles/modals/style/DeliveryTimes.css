@@ -81,8 +81,8 @@
 .article__modal_delivery-times_table .table__head .thead {
     display: grid;
 	width: 100%;
-    grid-template-columns: repeat(3, 1fr) 100px;
-	
+    grid-template-columns: 1fr 2fr 2fr 100px;
+    column-gap: 20px;
     padding: 10px;
     font-weight: 600;
 }
@@ -111,34 +111,36 @@
 .article__modal_delivery-times_table .tbody__container:nth-child(even) {
     background-color: var(--table-color);
     color: var(--text-table-color);
-  }
+}
   
-  .article__modal_delivery-times_table .tbody__container:nth-child(odd) {
+.article__modal_delivery-times_table .tbody__container:nth-child(odd) {
     background-color: var(--two-table-color);
     color: var(--text-table-color);
-   
-  }
 
-  .article__modal_delivery-times_table .table__body .tbody {
+}
+
+.article__modal_delivery-times_table .table__body .tbody {
     display: flex;
 } 
 
 .article__modal_delivery-times_table .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(3, 1fr) 100px;
+    grid-template-columns: 1fr 2fr 2fr 100px;
+    column-gap: 20px;
     padding: 10px;
 }
+
+.article__modal_delivery-times_table .table__body .tbody > .td > p{
+    background-color: #c578193f;
+    color: #bf6903;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+
 
 .article__modal_delivery-times_table .table__body .tbody:hover {
     background-color: var(--secundary-color);
     color: #fff;
 }
-
-.article__modal_delivery-times_table .area__edit_btn {
-	background-color: var(--primary-color);
-	color: #fff;
-	border: none;
-	padding: 5px 10px;
-	border-radius: var(--border-radius-general);
-	cursor: pointer;
-  }

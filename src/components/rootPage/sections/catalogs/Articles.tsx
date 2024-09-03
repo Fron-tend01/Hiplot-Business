@@ -5,7 +5,6 @@ import useUserStore from '../../../../zustand/General';
 import '../processes/styles/BranchOffices.css'
 import './styles/Articles.css';
 import ModalCreate from './articles/modalCreate'
-import ModalUpdate from './articles/modalUpdate';
 import { articleRequests } from '../../../../fuctions/Articles';
 import ModalLoading from '../../../loading/ModalLoading';
 import { Toaster } from 'sonner'
@@ -18,7 +17,6 @@ const Articles: React.FC = () => {
   // Modales del modal de creaer articulo
   const [code, setCode] = useState<string>('')
   const [selectedFamilie, setSelectedFamilie] = useState<number | null>(null)
-  const [modalStateUpdate, setModalStateUpdate] = useState<boolean>(false)
 
   const [modal, setModal] = useState<boolean>(false)
   
@@ -31,8 +29,8 @@ const Articles: React.FC = () => {
 
   const setArticleByOne = storeArticles((state: any) => state.setArticleByOne);
 
-   const modalLoading = storeArticles((state: any) => state.modalLoading);
-    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
+  const modalLoading = storeArticles((state: any) => state.modalLoading);
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
   
   
   //zustand 
@@ -93,23 +91,7 @@ const Articles: React.FC = () => {
   }
 
 
-  const Modal = () => {
-    setModal(!modal);
-    getFamilies(user_id)
-
-  };
-
- 
- 
-  // useEffect(() => {
-  //   if(warinings == 'maxsmins') {
-  //     toast.warning('La sucursal ya tiene un almacen agrada')
-  //   }
-  // }, [warinings])
- 
-console.log(warinings)
-
-  const modalUpdate = async (article: any) => {
+  const Modal = async (article: any) => {
     let data = {
       id: article.id,
       activos: true,
@@ -125,12 +107,16 @@ console.log(warinings)
       get_precios: true,
       get_variaciones: true,
       get_combinaciones: true,
+      get_tiempos_entrega: true,
+      get_cargos_minimos: true,
+      get_adicional: true,
       get_stock: true,
       get_web: false,
       get_unidades: true
     }
 
-    setModalStateUpdate(true)
+    setModal(!modal);
+    getFamilies(user_id)
     setArticleToUpdate(article);
     try {
       let result = await getArticles(data)
@@ -139,19 +125,12 @@ console.log(warinings)
     } finally {
       setModalLoading(false)
     }
-    
 
-  }
+  };
 
 
   const [warningSelectCompany] = useState<boolean>(false)
 
-  const closeModal = () => {
-    setModalStateUpdate(false)
-    setArticleByOne([])
-    setModalLoading(true)
-  }
-  
 
   return (
     <div className='articles'>
@@ -216,13 +195,23 @@ console.log(warinings)
             <button className='btn__general-purple' onClick={Modal}>Crear Nuevo Artículo</button>
           </div>
         </div>
+        
         <div className={`overlay__articles ${modal ? 'active' : ''}`}>
           <div className={`popup__articles ${modal ? 'active' : ''}`}>
             <a href="#" className="btn-cerrar-popup_articles" onClick={Modal}>
               <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
             </a>
             <p className='title__modals'>Crear nuevo articulo</p>
-              <ModalCreate />
+            {modalLoading == true ? (
+                <div className='loading_modal'>
+                  <p  className='text_article_loading text'>Cargando artículo</p>
+                  <ModalLoading />
+                </div>
+              ) : (
+               
+                <ModalCreate />
+              )}
+        
           </div>
         </div>
         <div className='table__articles' >
@@ -262,7 +251,7 @@ console.log(warinings)
                         <p>{article.descripcion}</p>
                       </div>
                       <div className='td'>
-                        <button className='branchoffice__edit_btn' onClick={() => modalUpdate(article)}>Editar</button>
+                        <button className='branchoffice__edit_btn' onClick={() => Modal(article)}>Editar</button>
                       </div>
                     </div>
                   </div>
@@ -272,22 +261,6 @@ console.log(warinings)
           ) : (
             <p className='text'>Cargando datos...</p>
           )}
-        </div>
-        <div className={`overlay__articles ${modalStateUpdate ? 'active' : ''}`}>
-          <div className={`popup__articles ${modalStateUpdate ? 'active' : ''}`}>
-            <a href="#" className="btn-cerrar-popup_articles" onClick={closeModal}>
-              <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
-            </a>
-            {modalLoading == true ? (
-                <div className='loading_modal'>
-                  <p  className='text_article_loading text'>Cargando artículo</p>
-                  <ModalLoading />
-                </div>
-              ) : (
-               
-                <ModalUpdate />
-              )}
-          </div>
         </div>
       </div>
     </div>

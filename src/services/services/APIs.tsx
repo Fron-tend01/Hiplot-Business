@@ -636,6 +636,61 @@ getTotalPrice: async (data: any, customPath?: string) => {
     const path = customPath || 'update_unidad';
     return ConfigurationAPIs.post(path, data)
   },
+
+
+
+
+
+  //////////////////////////////// Orden de venta ///////////////////////////////////////
+  createSaleOrder: async (data: any, customPath?: string) => {
+    const path = customPath || 'create_orden_venta';
+    return ConfigurationAPIs.post(path, data)
+  },
+
+
+  
+  getSaleOrders: async (data: any, customPath?: any) => {
+    const path = customPath || 'get_orden_venta';
+    return ConfigurationAPIs.post(path, data)
+  },
+
+
+
+  getCalculateUrgency: async (data: any, customPath?: any) => {
+    const path = customPath || 'calcular_urgencia';
+    return ConfigurationAPIs.post(path, data)
+  },
+
+
+  
+  //////////////////////////////// Orden de venta ///////////////////////////////////////
+  createProductionOrders: async (data: any, customPath?: string) => {
+    const path = customPath || 'create_orden_produccion';
+    return ConfigurationAPIs.post(path, data)
+  },
+
+
+  
+  // getSaleOrders: async (data: any, customPath?: any) => {
+  //   const path = customPath || 'get_orden_venta';
+  //   return ConfigurationAPIs.post(path, data)
+  // },
+
+  //////////////////////////////// Orden de venta ///////////////////////////////////////
+  getProoductionOrders: async (data: any, customPath?: string) => {
+    const path = customPath || 'get_orden_produccion';
+    return ConfigurationAPIs.post(path, data)
+  },
+
+
+  
+  // getSaleOrders: async (data: any, customPath?: any) => {
+  //   const path = customPath || 'get_orden_venta';
+  //   return ConfigurationAPIs.post(path, data)
+  // },
+
+
+
   ////////////////////////////////GRAL ///////////////////////////////////////
   CreateAny: async (data: any, ruta: string) => {
     const path = ruta;

@@ -31,18 +31,11 @@ const DeliveryTimes: React.FC = () => {
   const [deliveryTimesView, setDeliveryTimesView] = useState<any>([])
 
   useEffect(() => {
-    // if(selectedIds !== null) {
-    //   setDeliveryTimesView([...deliveryTimesView, selectedIds.deliveryTimes])
-    //   setDeliveryTimes([...deliveryTimes, selectedIds.deliveryTimes.id])
-    // }
-
+   
   }, [selectedIds])
 
-  console.log(deliveryTimes)
 
-  console.log(deliveryTimes)
-
-  const addDeliveryTimes = async () => {
+  const searchDeliveryTimes = async () => {
     let data = {
       nombre: name,
       id_sucursal: company.id,
@@ -56,6 +49,16 @@ const DeliveryTimes: React.FC = () => {
       dataSelect: result}
     )
   }
+
+  console.log(selectedIds?.deliveryTimes)
+
+  const addDeliveryTimes = () => {
+      setDeliveryTimesView([...deliveryTimesView, selectedIds.deliveryTimes])
+      setDeliveryTimes([...deliveryTimes, selectedIds.deliveryTimes.id])
+  }
+
+  console.log(deliveryTimesView)
+
 
 
 
@@ -81,12 +84,15 @@ const DeliveryTimes: React.FC = () => {
               <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
             </div>
             <div className='col-1 md-col-6 sm-col-12 d-flex align-items-end' >
-              <button className='btn__general-purple' type='button' onClick={addDeliveryTimes}>Buscar</button>
+              <button className='btn__general-purple' type='button' onClick={searchDeliveryTimes}>Buscar</button>
             </div>
           </div>
           <div className='row'>
-            <div className='col-12'>
+            <div className='col-10'>
               <Select dataSelects={dataSelects} instanceId="deliveryTimes" />
+            </div>
+            <div className='col-2 d-flex align-items-end justify-content-end'>
+              <button className='btn__general-purple' type='button' onClick={addDeliveryTimes}>Agregar</button>
             </div>
           </div>
           <div>
@@ -94,7 +100,7 @@ const DeliveryTimes: React.FC = () => {
               {deliveryTimesView ? (
               <div className='table__numbers'>
                   <p className='text'>Total de Ordenes</p>
-                  <div className='quantities_tables'>{deliveryTimesView.length}</div>
+                  <div className='quantities_tables'>{deliveryTimesView?.length}</div>
               </div>
               ) : (
                 <p className='text'>No hay empresas</p>
@@ -113,9 +119,9 @@ const DeliveryTimes: React.FC = () => {
                   </div>
                 </div>
               </div>
-              {deliveryTimesView && deliveryTimesView.length > 0 ? (
+              {deliveryTimesView?.length > 0 ? (
                   <div className='table__body'>
-                      {deliveryTimesView.map((item: any, index: any) => (
+                      {deliveryTimesView?.map((item: any, index: any) => (
                           <div className='tbody__container' key={index}>
                               <div className='tbody'>
                                   <div className='td'>
@@ -124,11 +130,10 @@ const DeliveryTimes: React.FC = () => {
                                   <div className='td'>
                                     {item.sucursal}
                                   </div>
-                                  
-                                  <div className='td'>
-                                      {`${item.tiempos_entrega_data[0].dia_recepcion} - ${item.tiempos_entrega_data[0].hora_inicial_recepcion} - ${item.tiempos_entrega_data[0].hora_final_recepcion} - ${item.tiempos_entrega_data[0].hora_inicial_recepcion}`}
+                                  <div className='td delivery'>
+                                    <p>{`${item.tiempos_entrega_data[0].dia_recepcion} - ${item.tiempos_entrega_data[0].hora_inicial_recepcion} - ${item.tiempos_entrega_data[0].hora_final_recepcion} - ${item.tiempos_entrega_data[0].hora_inicial_recepcion}`}</p>
                                   </div>
-                                  <div className='td'>
+                                  <div className='td btn'>
                                       <button className='btn__general-danger' type='button' onClick={() => deleteDeliveryTime(item)}>Eliminar</button>
                                   </div>
                               </div>

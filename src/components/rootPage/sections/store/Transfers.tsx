@@ -9,9 +9,9 @@ import { seriesRequests } from '../../../../fuctions/Series';
 import { storeTransfers } from '../../../../zustand/Transfers';
 import { TransfersRequests } from '../../../../fuctions/Transfers';
 import { Spanish } from 'flatpickr/dist/l10n/es.js'; // Importa la localización en español
+import Flatpickr from "react-flatpickr";
 import './styles/Departures.css'
 import { v4 as uuidv4 } from 'uuid'; // Importa la función v4 de uuid
-import Flatpickr from "react-flatpickr";
 import ModalSee from './transfers/ModalSee';
 
 
@@ -348,68 +348,7 @@ const seeConcepts = (concept: any) => {
                             <button className='branchoffice__edit_btn' onClick={() => seeConcepts(transfer, index)}>ver conceptos</button>
                         </div>
                     </div>
-                    {/* <div className={`overlay__transfers-concepts_see-stock ${modalSeeStocks[index] ? 'active' : ''}`}>
-                          <div className={`popup__transfers-concepts_see-stock ${modalSeeStocks[index] ? 'active' : ''}`}>
-                              <a href="#" className="btn-cerrar-popup__transfers-concepts_see-stock" onClick={() => closeModalSeeStocks(index)}>
-                                  <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
-                              </a>
-                              <div className='container__transfers-concepts_see-stock'>
-                             
-                                      <div className='table__transfers-concepts_see-stock'>
-                                          <div>
-                                              {transfer.conceptos ? (
-                                              <div className='table__numbers'>
-                                                  <p className='text'>Total de conceptos</p>
-                                                  <div className='quantities_tables'>{transfer.conceptos.length}</div>
-                                              </div>
-                                              ) : (
-                                              <p className='text'>No hay stock</p>
-                                              )}
-                                          </div>
-                                   
-                                          <div className='table__head'>
-                                              
-                                              <div className='thead'>
-                                              <div className='th'>
-                                                  <p className=''>Description</p>
-                                              </div>
-                                              <div className='th'>
-                                                  <p className=''>Cantidad de stocks</p>
-                                              </div>
-                                              
-                                              </div>
-                                          </div>
-                                          {transfer.conceptos.length > 0 ? (
-                                              <div className='table__body'>
-                                              {transfer.conceptos.map((x: any, index: any) => (
-                                                  <div className='tbody__container' key={index}>
-                                                  <div className='tbody'>
-                                                      <div className='td'>
-                                                          {x.cantidad}
-                                                      </div>
-                                                      <div className='td'>
-                                                          {x.stock}
-                                                      </div>
-                                                      <div className='td'>
-                                                          {x.cantidad}
-                                                      </div>
-                                                      <div className='td'>
-                                                          {x.descripcion}
-                                                      </div>
-                                                      
-                                                  </div>
-                                                  
-                                              </div>
-                                              ))}
-                                          </div>
-                                          ) : (
-                                              <p className='text'>No hay conceptos</p>
-                                          )}
-                                      </div>
-                                  </div>
-                         
-                          </div>
-                      </div> */}
+                    
                 </div>
             )
             } )}

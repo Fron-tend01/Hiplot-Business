@@ -78,11 +78,8 @@ const modalUpdate: React.FC = () => {
   
   const fechts = async () => {
     try {
-      let result = await getTemplates(user_id);
-      await setTemplates(result);
-      await getFamilies(user_id);
-      if (articleByOne) {
-        
+      
+      if (articleByOne) {  
         setArticle_id(articleByOne.id);
         setType(articleByOne.tipo);
         setCode(articleByOne.codigo);
@@ -655,7 +652,7 @@ const handleTemplatesChange = (template: any) => {
                 <div>
                     <button className='btn__general-purple' type='button' onClick={() => setSubModal('update_modal_combinations')}>Combinaciones</button>
                 </div>
-                <Combinations />
+                {/* <Combinations /> */}
             </div>
             <div>
                 <div>

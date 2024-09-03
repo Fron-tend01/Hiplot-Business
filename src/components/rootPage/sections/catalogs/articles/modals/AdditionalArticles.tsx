@@ -34,6 +34,8 @@ const AdditionalArticles: React.FC = () => {
 
   const { getArticles }: any = articleRequests()
 
+  const setArticulos = storeDv(state => state.setArticulos)
+  const setIndex = storeDv(state => state.setIndex)
   const {articulos}: any = storeDv()
 
   const selectedIds = useSelectStore((state) => state.selectedIds);
@@ -59,97 +61,86 @@ const AdditionalArticles: React.FC = () => {
 
     setExtrFields([
       {
-        nombre: 'equivalencia_por',
-        type: 0,
-        dataSelect: resutTemplates
-      },
-      {
         nombre: 'unidad',
-        type: 0,
+        tipo: 0,
         dataSelect: resutTemplates
       },
       {
         nombre: 'id_sucursal',
-        type: 0,
-        dataSelect: resutTemplates
+        tipo: 0
       },
       {
         nombre: 'aparece_por',
-        type: 0,
-        dataSelect: resutTemplates
+        tipo: 0
+      },
+      {
+        nombre: 'data_aparece_por',
+        tipo: resutTemplates
       },
       {
         nombre: 'condicion',
-        type: 0,
-        dataSelect: resutTemplates
+        tipo: 0
+      },
+      {
+        nombre: 'data_condicion',
+        tipo: [
+          {
+            id: 1,
+            name: 'Menor A'
+          },
+          {
+            id: 2,
+            name: 'Menor O igual A'
+          },
+          {
+            id: 3,
+            name: 'Mayor A'
+          },
+          {
+            id: 4,
+            name: 'Menor O igual A'
+          },
+          {
+            id: 5,
+            name: 'Igual A'
+          }
+        ]
       },
       {
         nombre: 'valor',
-        type: 0,
-        dataSelect: resutTemplates
+        tipo: 0
+      },
+      {
+        nombre: 'data_equivalencia_por',
+        tipo: resutTemplates
       },
       {
         nombre: 'equivalencia_por',
-        type: 0,
-        dataSelect: resutTemplates
+        tipo: resutTemplates
       },
       {
         nombre: 'cantidad_equivalente',
-        type: 0,
-        dataSelect: resutTemplates
+        tipo: resutTemplates
       },
       {
         nombre: 'equivalencia',
-        type: 0,
+        tipo: 0,
         dataSelect: resutTemplates
       },
       {
         nombre: 'forzar_redondeo',
-        type: false,
+        tipo: false,
         dataSelect: resutTemplates
       }   
-    ])
-
-
-    setConditions([
-      {
-        id: 1,
-        name: 'Menor A'
-      },
-      {
-        id: 2,
-        name: 'Menor O igual A'
-      },
-      {
-        id: 3,
-        name: 'Mayor A'
-      },
-      {
-        id: 4,
-        name: 'Menor O igual A'
-      },
-      {
-        id: 5,
-        name: 'Igual A'
-      }
     ])
   }        
 
   useEffect(() => {
-    setBySearch({
-      selectName: 'Buscar por',
-      options: 'name',
-      dataSelect: [
-        {
-          id: 1,
-          name: 'Nombre'
-        },
-        {
-          id: 2,
-          name: 'Codigo'
-        }
-      ]
-    })
+    fetch()
+  }, [])
+
+  useEffect(() => {
+    
   }, [])
 
   console.log(articulos)
@@ -158,63 +149,38 @@ const AdditionalArticles: React.FC = () => {
 
   const [appearsBy, setAppearsBy] = useState<any>()
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setAppearsBy(event.target.value);
+  const handleAppearsByChange = (e: React.ChangeEvent<HTMLSelectElement>, index: any) => {
+    const value = e.target.value;
+    articulos[index].aparece_por = value;
   };
 
-  const handleconditionsChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectdConditions(event.target.value);
+  const handleConditionsChange = (e: React.ChangeEvent<HTMLSelectElement>, index: any) => {
+    const value = e.target.value;
+    articulos[index].condicion = value;
   };
 
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>, index: any) => {
+    const value = e.target.value;
+    setArticulos(prevArticulos => {
+      const updatedArticulos = [...prevArticulos]; // Crea una copia del array
+      updatedArticulos[index].valor = value; // Actualiza el valor del artículo correspondiente
+      return updatedArticulos; // Devuelve el nuevo estados
+    });
+  };
 
   
 
-  const  searchArticles = async () => {
-    let data = {
-      id: 0,
-      activos: true,
-      nombre: selectedIds.bysearch.id == 1 ? search : '',
-      codigo: selectedIds.bysearch.id == 2 ? search : '',
-      familia: 0,
-      proveedor: 0,
-      materia_prima: 0,
-      get_sucursales: false,
-      get_proveedores: false,
-      get_max_mins: false,
-      get_plantilla_data: false,
-      get_stock: false,
-      get_web: false,
-      get_unidades: false,
-      id_usuario: user_id
-  }
-  
-    let result = await getArticles(data)
-    setArticles([result])
-
-    fetch()
-  }
-
-  const modalConcepts = () => {
+  const modalConcepts = (item: any, index: any) => {
+    setIndex(index)
     setModalSub('modal-additiona-articles-concepts')
   }
 
   const addAdditionalArticles = (item: any) => {
 
-    let data = {
-      unidad: 0 as number,
-      id_sucursal: branchOffices.id,
-      aparece_por: 0 as number,
-      condicion: 0 as number,
-      valor: 0 as number,
-      equivalencia_por: 0 as number,
-      cantidad_equivalente: 0 as number,
-      equivalencia: 0 as number,
-      forzar_redondeo: false as boolean
-    };
-    
-
     setAdditionalArticles([... additionalArticles, item])
   }
+
+  console.log(additionalArticles)
 
 
   return (
@@ -234,15 +200,15 @@ const AdditionalArticles: React.FC = () => {
           </div>
           <div className='row'>
             <div className='col-12'>
-              <Filtrado_Articulos_Basic campos_ext={extrFields} />
+              <Filtrado_Articulos_Basic set_article_local={setAdditionalArticles} get_unidades={true} campos_ext={extrFields} />
             </div>
           </div>
           <div className='table__modal_articles_modal_articles' >
             <div>
-              {articulos ? (
+              {additionalArticles ? (
                 <div className='table__numbers'>
                     <p className='text'>Total de artículos</p>
-                    <div className='quantities_tables'>{articulos.length}</div>
+                    <div className='quantities_tables'>{additionalArticles.length}</div>
                 </div>
                 ) : (
                     <p className='text'>No hay empresas</p>
@@ -270,9 +236,9 @@ const AdditionalArticles: React.FC = () => {
                 </div>
               </div>
             </div>
-            {articulos?.length > 0 ? (
+            {additionalArticles?.length > 0 ? (
               <div className='table__body'>
-                {articulos.map((item: any, index: any) => (
+                {additionalArticles.map((item: any, index: any) => (
                   <div className='tbody__container' key={index}>
                     <div className='tbody'>
                         <div className='td'>
@@ -282,9 +248,8 @@ const AdditionalArticles: React.FC = () => {
                           {item.descripcion}
                         </div>
                         <div className='td'>
-                          <select className='traditional__selector'  onChange={handleSelectChange}>
-                              <option value="">Seleccionar</option>
-                              {templates?.map((item: any) => (
+                          <select className='traditional__selector' onChange={(e) => handleAppearsByChange(e, index)}>
+                              {item.data_aparece_por?.map((item: any) => (
                                 <option key={item.id} value={item.nombre}>
                                   {item.nombre}
                                 </option>
@@ -292,9 +257,8 @@ const AdditionalArticles: React.FC = () => {
                             </select>
                         </div>
                         <div className='td'>
-                          <select className='traditional__selector'  onChange={handleconditionsChange}>
-                            <option value="">Seleccionar</option>
-                            {conditions?.map((item: any) => (
+                          <select className='traditional__selector'  onChange={(e) => handleConditionsChange(e, index)}>
+                            {item.data_condicion?.map((item: any) => (
                               <option key={item.id} value={item.name}>
                                 {item.name}
                               </option>
@@ -302,13 +266,13 @@ const AdditionalArticles: React.FC = () => {
                           </select>
                         </div>
                         <div className='td'>
-                          <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
+                          {/* <input className={`inputs__general`} type="text" value={articulos[index].valor || ''} onChange={(e) => handleValueChange(e, index)} placeholder='Ingresa el valor' /> */}
                         </div>
                         <div className='td'>
-                            <button className='btn__general-purple' type='button' onClick={() => modalConcepts(item)}>Campos</button>
+                            <button className='btn__general-purple' type='button' onClick={() => modalConcepts(item, index)}>Campos</button>
                         </div>
                         <div className='td'>
-                            <button className='btn__general-purple' type='button' onClick={() => addAdditionalArticles(item)}>Agregar</button>
+                            <button className='btn__general-danger' type='button' onClick={() => addAdditionalArticles(item)}>Eliminar</button>
                         </div>
                     </div>
                   </div>

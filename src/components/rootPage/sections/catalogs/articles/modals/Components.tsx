@@ -7,14 +7,14 @@ import { storeDv } from '../../../../../../zustand/Dynamic_variables'
 
 const Components: React.FC = () => {
   const setSubModal = storeArticles(state => state.setSubModal)
+  const setComponents = storeArticles(state => state.setComponents)
   const setArticulos = storeDv(state => state.setArticulos)
-   const setDeliveryTimes = storeArticles(state => state.setDeliveryTimes)
-  const {subModal}: any = useStore(storeArticles)
+  const {subModal, components}: any = useStore(storeArticles)
   const {articulos}: any = useStore(storeDv)
 
   const [articles, setArticles] =  useState<any>([])
 
-  const [camps, setCamps] =  useState<any>([
+  const [camps] =  useState<any>([
     {
       nombre: 'id_articulo',
       tipo: 1,
@@ -35,16 +35,18 @@ const Components: React.FC = () => {
     },
 ])
 
-  useEffect(() => {
-
-   
-  }, [])
-
-  console.log(articulos)
 
   useEffect(() => {
 
-  }, [articles]);
+  }, []);
+
+  
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const value = e.target.value.trim();
+    const newTem = [...components];
+    newTem[index].cantidad = value === '' ? null : parseFloat(value);
+    setComponents(newTem);
+};
 
 
   
@@ -58,15 +60,15 @@ const Components: React.FC = () => {
         <p className='title__modals'>Componentes</p>
         <div className='row'>
           {<div className='col-12'>
-            <Filtrado_Articulos_Basic campos_ext={camps}/>
+            <Filtrado_Articulos_Basic set_article_local={setComponents} campos_ext={camps}/>
           </div>}
         </div>
-        <div className='table__units' >
+        <div className='article__modal_components_modal' >
           <div>
               <div>
-              {articulos ? (
+              {components ? (
                   <div>
-                      <p className='text'>Total de unidades {articulos.length}</p>
+                      <p className='text'>Total de unidades {components.length}</p>
                   </div>
               ) : (
                   <p className='text'>No hay empresas</p>
@@ -81,15 +83,15 @@ const Components: React.FC = () => {
                         <p className=''>Valor</p>
                     </div>
                     <div className='th'>
-                        <p className=''>Check</p>
+                        <p className=''>Cantidad determinada</p>
                     </div>
                     <div className='th'>
                     </div>
                 </div>
               </div>
-              {articulos && articulos.length > 0 ? (
+              {components?.length > 0 ? (
               <div className='table__body'>
-                {articulos.map((item: any, index: any) => (
+                {components?.map((item: any, index: any) => (
                     <div className='tbody__container' key={index}>
                         <div className='tbody'>
                             <div className='td'>
@@ -102,7 +104,7 @@ const Components: React.FC = () => {
                               {item?.tipo}
                             </div>
                             <div className='td'>
-                              <input type="text" />
+                              <input className='inputs__general' value={item.cantidad} onChange={(e) => handleFormChange(e, index)} type="text" placeholder='Desde'/>
                             </div>
                             <div className='td'>
                                 <button className='btn__delete_users' type='button' onClick={() => deleteMaxMin(item)}>Eliminar</button>

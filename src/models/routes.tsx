@@ -50,6 +50,11 @@ export const PublicRoutes = {
 
     //Ventas 
     QUOTATION: 'quotation',
+    SALESORDER: 'salesorder',
+    BILLING: 'billing',
+
+    //Ventas 
+    PRODUCTION: 'production',
     
 
     // Web //

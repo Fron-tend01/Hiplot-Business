@@ -24,6 +24,10 @@ const MinimalCharges: React.FC = () => {
 
     const { getTemplates }: any = TemplatesRequests()
     const [templates, setTemplates] = useState<any>([])
+    
+    const [from, setFrom] = useState<number | null>(null)
+    const [until, setUntil] = useState<number | null>(null)
+    const [value, setValue] = useState<number | null>(null)
 
     const { getUnits }: any = UnitsRequests()
     const [units, setUnits] = useState<any>([])
@@ -47,7 +51,7 @@ const MinimalCharges: React.FC = () => {
             dataSelect: resultUnits
         })
 
-        let resultUserGroup = await getUserGroups()
+        let resultUserGroup = await getUserGroups(user_id)
         setUserGroups({
             selectName: 'Grupos de usuarios',
             options: 'nombre',
@@ -83,15 +87,15 @@ const MinimalCharges: React.FC = () => {
     const addMinimalCharges = () => {
         let data = {
             id_unidad: 0,
-            desde: 0.0,
-            hasta: 0.0,
-            monto: 0.0,
+            desde: from,
+            hasta: until,
+            monto: value,
             por: 0,
             variable_multiplicacion: 0,
             grupo_de_usuario: 0,
             tipo: 0,
             variable_descuento: 0,
-            cantidad_descuento: 0.0
+            cantidad_descuento: 0
         };
         setMinimalCharges([...minimalCharges, data])
     }
@@ -145,17 +149,17 @@ const MinimalCharges: React.FC = () => {
                     <div className='col-4 md-col-6 sm-col-12'>
                         <label className='label__general'>Desde</label>
                         <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                        <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
+                        <input className={`inputs__general`} type="number" value={from == null ? '' : from} onChange={(e) => setFrom(parseFloat(e.target.value))} placeholder='Ingresa el rango' />
                     </div>
                     <div className='col-4 md-col-6 sm-col-12'>
                         <label className='label__general'>Hasta</label>
                         <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                        <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
+                        <input className={`inputs__general`} type="number" value={until == null ? '' : until} onChange={(e) => setUntil(parseFloat(e.target.value))} placeholder='Ingresa el rango' />
                     </div>
                     <div className='col-4 md-col-6 sm-col-12'>
                         <label className='label__general'>Valor</label>
                         <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                        <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
+                        <input className={`inputs__general`} type="number" value={value == null ? '' : value} onChange={(e) => setValue(parseFloat(e.target.value))} placeholder='Ingresa el valor' />
                     </div>
                 </div>
                 <div className='row'>
@@ -175,7 +179,7 @@ const MinimalCharges: React.FC = () => {
                         <button type='button' className='btn__general-purple' onClick={addMinimalCharges}>Agregar</button>
                     </div>
                 </div>
-                <div className='article__modal_delivery-times_table' >
+                <div className='article__modal_minimal-charges_table' >
                     {minimalCharges ? (
                         <div className='table__numbers'>
                             <p className='text'>Total de Ordenes</p>
@@ -194,10 +198,10 @@ const MinimalCharges: React.FC = () => {
                                 <p className=''>Hasta</p>
                             </div>
                             <div className='th'>
-                                <p className=''>Cantidad</p>
+                                <p className=''>Valor</p>
                             </div>
                             <div className='th'>
-                                <p className=''>Valor</p>
+                                <p className=''>Cantidad</p>
                             </div>
                             <div className='th'>
 
@@ -219,11 +223,12 @@ const MinimalCharges: React.FC = () => {
                                             <input className='inputs__general' value={item.hasta} onChange={(e) => handleUntilChange(e, index)} type="text" placeholder='Hasta'/>
                                         </div>
                                         <div className='td'>
-                                            <input className='inputs__general' value={item.cantidad_descuento} onChange={(e) => handleAmountChange(e, index)} type="text" placeholder='Cantidad'/>
-                                        </div>
-                                        <div className='td'>
                                             <input className='inputs__general' value={item.monto} onChange={(e) => handleValueChange(e, index)} type="text" placeholder='Valor'/>
                                         </div>
+                                        <div className='td'>
+                                            <input className='inputs__general' value={item.cantidad_descuento} onChange={(e) => handleAmountChange(e, index)} type="text" placeholder='Cantidad'/>
+                                        </div>
+                                    
                                         <div className='td'>
                                             <button  className='btn__general-purple' type='button' onClick={() => concepts(item, index)}>Mas campos</button>
                                         </div>

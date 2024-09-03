@@ -35,6 +35,7 @@ const ArticleViewModal = () => {
             get_proveedores: false,
             get_max_mins: false,
             get_plantilla_data: false,
+            get_areas_produccion: true,
             get_stock: false,
             get_web: false,
             get_unidades: false
@@ -46,13 +47,15 @@ const ArticleViewModal = () => {
 
     useEffect(() => {
         fetch();
-        console.log(articles);
+
     }, []);
 
     const [inputs, setInputs] = useState<any>({
         code: '',
         name: ''
     });
+
+   
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -101,6 +104,7 @@ const ArticleViewModal = () => {
                         ))}
                     </div>
                 </div>
+                <SalesCard />
             </div>
         </div>
 

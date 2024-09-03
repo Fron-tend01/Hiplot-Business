@@ -13,6 +13,7 @@ import Components from './modals/Components';
 import DeliveryTimes from './modals/DeliveryTimes';
 import MinimalCharges from './modals/MinimalCharges';
 import AdditionalArticles from './modals/AdditionalArticles';
+import ProductionAreas from './modals/ProductionAreas';
 import './modalCreate.css'
 import { useStore } from 'zustand';
 import { TemplatesRequests } from '../../../../../fuctions/Templates';
@@ -28,9 +29,15 @@ interface BranchOffices {
 }
 
 const modalCreate: React.FC = () => {
-    const { units }: any = useStore(storeArticles);
 
-    const {branchOffices, maxsMins, suppliers, prices, variations, combinations }: any = useStore(storeArticles);
+    const {articleToUpdate}: any = useStore(storeArticles);
+
+///////////////////////////////////////////////////////////Variables de los modales ////////////////////////////////////////////////////////////////////////////
+    const {branchOffices, prices, maxsMins, units, components, variations, combinations, suppliers, deliveryTimes, minimalCharges, additionalArticles, areas }: any = useStore(storeArticles); 
+
+
+    const setAdditionalArticles = storeArticles(state => state.setAdditionalArticles)
+
 
     const {getTemplates}: any = TemplatesRequests()
 
@@ -48,9 +55,10 @@ const modalCreate: React.FC = () => {
   const [code, setCode] = useState<string>('')
   const [description, setDescription] = useState<string>('')
 //   const [contact, setContact] = useState<number | null>(null)
+    const [activeArticles, setActiveArticles] = useState<boolean>(false)
   const [selectedUnit,setSelectedUnit] = useState<string>('')
   const [selectedFamilie, setSelectedFamilie] = useState<number | null>(null)
-  const [activeArticles] = useState<boolean>(true)
+
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [selectedTypePayment, setSelectedTypePayment]= useState<number | null>(null)
   const [selectedTemplate, setSelectedTemplate] = useState<number | null>(null)
@@ -84,26 +92,63 @@ const modalCreate: React.FC = () => {
 
   // Modales Zustand
 
-
-
-  
-
   let user_id = userState.id
 
   const [templates, setTemplates] = useState<any>()
 
+  const [article_id, setArticle_id] = useState<number | null>(null)
+  
+  const [loading, setLoading] = useState<boolean>(true);
+
+  console.log(articleToUpdate)
+
   const fecht = async () => {
     let result = await getTemplates(user_id)
     setTemplates(result)
+
+    try {
+        if (articleToUpdate) {  
+          setArticle_id(articleToUpdate.id);
+          setType(articleToUpdate.tipo);
+          setCode(articleToUpdate.codigo);
+          setDescription(articleToUpdate.descripcion);
+          setSelectedUnit(articleToUpdate.unidad);
+          setSelectedFamilie(articleToUpdate.id_familia);
+          setActiveArticles(articleToUpdate.activo);
+          setSelectedFile(articleToUpdate.imagen);
+          setSelectedTypePayment(articleToUpdate.tipo_de_cobro);
+          setSelectedTemplate(articleToUpdate.id_plantilla);
+          setBaseMax(articleToUpdate.base_max);
+          setMaxHeight(articleToUpdate.altura_max);
+          setMultiples(articleToUpdate.multiplos_de);
+          setSatKey(articleToUpdate.clave_sat);
+          setsatUnit(articleToUpdate.unidad_sat);
+          setViewWeb(articleToUpdate.visualizacion_web)
+          setsalesInstructions(articleToUpdate.indicaciones);
+          setwebNotes(articleToUpdate.notas_web);
+          setPurchaseConditions(articleToUpdate.condiciones_compra);
+          setORequest(articleToUpdate.bajo_pedido);
+          setSellStock(articleToUpdate.vender_sin_stock);
+          setShortage(articleToUpdate.desabasto);
+          setExemptTax(articleToUpdate.iva_excento);
+          setAdditionalArticles(articleToUpdate.adicionales)
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
   }
 
   useEffect(() => {
 
     fecht()
     console.log(templates)
-  }, []);
+  }, [articleToUpdate]);
   
+useEffect(() => {
 
+}, [])
  
 // Seelect de Unidades //
 
@@ -228,6 +273,8 @@ const handleTemplatesChange = (template: any) => {
 }
 
 
+
+
   const handleCreateSuppliers = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     let data = {
@@ -253,17 +300,46 @@ const handleTemplatesChange = (template: any) => {
         vender_sin_stock: sellStock,
         desabasto: Shortage,
         iva_excento: ExemptTax,
+
+/////////////////////////////////Modales//////////////////////////////////////// 
         sucursal: branchOffices,
-        max_mins: maxsMins,
-        proveedores: suppliers,
-        variaciones: variations,
-        combinaciones: combinations,
-        unidades: units,
-        precios: prices,
         sucursales_elim: [],
+
+        max_mins: maxsMins,
         max_mins_elim: [],
-        proveedores_elim: []
+
+        precios: prices,
+        precios_elim: [],
+
+        unidades: units,
+        unidades_elim: [],
+
+        componentes: components,
+        componentes_elim: [],
+
+        variaciones: variations,
+        variaciones_elim: [],
+
+        combinaciones: combinations,
+        combinaciones_elim: [],
+
+        proveedores: suppliers,
+        proveedores_elim: [],
+
+        tiempos_entrega: deliveryTimes,
+        tiempos_entrega_elim: [],
+
+        cargos_minimos: minimalCharges,
+        cargos_minimos_elim: [],
+
+        areas_produccion: areas,
+        areas_produccion_elim: [],
+        
+        // adicional: additionalArticles,
+        // adicional_elim: []
     };
+
+    console.log('daaaaaaaaaaaaaaaaata', data)
 
     let dataArticle = {
         id: 0,
@@ -292,6 +368,9 @@ const handleTemplatesChange = (template: any) => {
 
   }
 
+  useEffect(() => {
+
+  }, [activeArticles])
   
 
   const handleInputBaseMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -405,6 +484,10 @@ const handleTemplatesChange = (template: any) => {
   
    /*=================================================================================================================================================================================*/
 
+// Checkbox de Activo //
+const handleActiveChange = () => {
+    setActiveArticles(prevState => !prevState); // Cambiar el valor booleano
+};
 
   
   return (
@@ -480,7 +563,7 @@ const handleTemplatesChange = (template: any) => {
                 <div>
                     <p className='label__general'>Activo</p>
                     <label className="switch">
-                        <input type="checkbox" checked={activeArticles} />
+                        <input type="checkbox" checked={activeArticles} onChange={handleActiveChange} />
                         <span className="slider"></span>
                     </label>
                 </div>
@@ -678,9 +761,9 @@ const handleTemplatesChange = (template: any) => {
         </div>
         <div>
             <div>
-                <button className='btn__general-purple' type='button' onClick={modalProductionAreas}>Areas de pro</button>
+                <button className='btn__general-purple' type='button' onClick={() => setSubModal('article-modal_areas-production')}>Areas de pro</button>
             </div>
-            
+            <ProductionAreas />
         </div>
         <div>
             <div>

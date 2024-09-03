@@ -57,3 +57,79 @@
 
 
 
+
+
+.article__modal_components_modal {
+    margin-top: 20px;
+    border-radius: 10px;
+	text-align: justify;
+}
+
+
+.article__modal_components_modal  .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+    border-radius: 5px 5px 0 0;
+	color: var(--text-table-color);
+}
+
+.article__modal_components_modal  .table__head .thead {
+    display: grid;
+	width: 100%;
+    grid-template-columns: repeat(4, 1fr) 100px;
+	column-gap: 20px;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.article__modal_components_modal  .table__body {
+	height: 200px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.article__modal_components_modal  .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+  }
+  
+  .article__modal_components_modal  .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+  }
+
+  .article__modal_components_modal  .table__body .tbody {
+    display: flex;
+	color: var(--text-table-color);
+} 
+
+.article__modal_components_modal  .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 100px;
+	column-gap: 20px;
+    padding: 10px;
+}
+
+.article__modal_components_modal  .table__body .tbody > .td > .inputs__general {
+    margin-top: 0;
+}
+
+
+.article__modal_components_modal  .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}

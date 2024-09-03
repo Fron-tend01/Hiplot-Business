@@ -48,8 +48,8 @@ const ModalCreate = () => {
       {
       selectName: 'Vendedor',
       options: 'nombre',
-      dataSelect: resultUsers}
-    )
+      dataSelect: resultUsers
+    })
   }
 
 
