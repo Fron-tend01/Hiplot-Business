@@ -212,3 +212,49 @@
 /* ------------------------- */
 .popup__create_modal.active {	transform: scale(1); opacity: 1; }
 
+
+@keyframes slideInFade {
+    0% {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .fade_in {
+    animation: slideInFade 1s ease-in-out;
+  }
+
+  @keyframes slideToLeft {
+    0% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .slideLeft {
+    animation: slideToLeft 1s ease-in-out;
+  }
+
+
+  @keyframes slideToRight {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .slideRight {
+    animation: slideToRight 1s ease-in-out;
+  }
