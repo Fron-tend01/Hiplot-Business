@@ -15,6 +15,13 @@ const BranchOffices: React.FC = () => {
   const [empresa_id, setEmpresa_id] = useState<number | null>(null);
   const [sucursal_id, setSucursal_id] = useState<number | null>(null)
   const [ventaf, setVentaF] = useState<boolean>(false);
+  const [lunes, setlunes] = useState<boolean>(false);
+  const [martes, setmartes] = useState<boolean>(false);
+  const [miercoles, setmiercoles] = useState<boolean>(false);
+  const [jueves, setjueves] = useState<boolean>(false);
+  const [viernes, setviernes] = useState<boolean>(false);
+  const [sabado, setsabado] = useState<boolean>(false);
+  const [domingo, setdomingo] = useState<boolean>(false);
   const [logo, setLogo] = useState<string>('');
   const [modoUpdate, setModoUpdate] = useState<boolean>(false);
 
@@ -83,6 +90,13 @@ const BranchOffices: React.FC = () => {
         empresa_id:selectedCompany,
         direccion:direccion,
         venta_franquicia:ventaf,
+        lunes:lunes,
+        martes:martes,
+        miercoles:miercoles,
+        jueves:jueves,
+        viernes:viernes,
+        sabado:sabado,
+        domingo:domingo,
         id_usuario:user_id
       }
       if (modoUpdate) {
@@ -169,6 +183,13 @@ const BranchOffices: React.FC = () => {
     setDireccion('')
     setContacto('')
     setVentaF(false)
+    setlunes(false)
+    setmartes(false)
+    setmiercoles(false)
+    setjueves(false)
+    setviernes(false)
+    setsabado(false)
+    setdomingo(false)
     setLogo('')
     if (mu) {
       setWarningSelectCompany(false)
@@ -181,6 +202,13 @@ const BranchOffices: React.FC = () => {
       setContacto(sucursal.contacto)
       setLogo(sucursal.logo)
       setVentaF(sucursal.venta_franquicia)
+      setlunes(sucursal.lunes)
+      setmartes(sucursal.martes)
+      setmiercoles(sucursal.miercoles)
+      setjueves(sucursal.jueves)
+      setviernes(sucursal.viernes)
+      setsabado(sucursal.sabado)
+      setdomingo(sucursal.domingo)
       setEmpresa_id(sucursal.empresa_id)
       setSelectedCompany(sucursal.empresa_id)
       setModoUpdate(true)
@@ -305,8 +333,93 @@ const BranchOffices: React.FC = () => {
               </div>
             </div>
 
-
-
+            <br />
+            <hr />
+            <b>DÍAS HABILES</b>
+            <hr />
+            <br />
+            <div className='row'>
+              <div className='col-1 md-col-6 sm-col-12'>
+              <label>Lunes</label><br></br>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={lunes} // Asignar el valor del estado al atributo 'checked'
+                    onChange={(e) => { setlunes(e.target.checked); }}
+                  />
+                  <span className="slider"></span>
+                </label>  
+              </div>
+              <div className='col-2 md-col-6 sm-col-12'>
+              <label>Martes</label><br></br>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={martes} // Asignar el valor del estado al atributo 'checked'
+                    onChange={(e) => { setmartes(e.target.checked); }}
+                  />
+                  <span className="slider"></span>
+                </label>  
+              </div>
+              <div className='col-2 md-col-6 sm-col-12'>
+              <label>Miercoles</label><br></br>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={miercoles} // Asignar el valor del estado al atributo 'checked'
+                    onChange={(e) => { setmiercoles(e.target.checked); }}
+                  />
+                  <span className="slider"></span>
+                </label>  
+              </div>
+              <div className='col-2 md-col-6 sm-col-12'>
+              <label>Jueves</label><br></br>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={jueves} // Asignar el valor del estado al atributo 'checked'
+                    onChange={(e) => { setjueves(e.target.checked); }}
+                  />
+                  <span className="slider"></span>
+                </label>  
+              </div>
+              <div className='col-1 md-col-6 sm-col-12'>
+              <label>Viernes</label><br></br>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={viernes} // Asignar el valor del estado al atributo 'checked'
+                    onChange={(e) => { setviernes(e.target.checked); }}
+                  />
+                  <span className="slider"></span>
+                </label>  
+              </div>
+              <div className='col-2 md-col-6 sm-col-12'>
+              <label>Sabado</label><br></br>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={sabado} // Asignar el valor del estado al atributo 'checked'
+                    onChange={(e) => { setsabado(e.target.checked); }}
+                  />
+                  <span className="slider"></span>
+                </label>  
+              </div>
+              <div className='col-2 md-col-6 sm-col-12'>
+              <label>Domingo</label><br></br>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={domingo} // Asignar el valor del estado al atributo 'checked'
+                    onChange={(e) => { setdomingo(e.target.checked); }}
+                  />
+                  <span className="slider"></span>
+                </label>  
+              </div>
+            </div>
+            
+            <br />
+            <br />
             <div className='container__branch-office_btn_modal_container'>
               {modoUpdate ?
                 <button className='btn__general-purple' onClick={handleCreateBranchOffices}>Actualizar sucursal</button>
