@@ -52,7 +52,6 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
-	z-index: 1;
 }
 
 .overlay__create_modal_clients.active {
@@ -63,13 +62,17 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	width: 90%;
-	
+	text-align: center;
+	width: 95%;
+	max-height:95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
+    overflow: scroll;
 }
-
+.align-txt-left {
+	text-align: left;
+}
 .popup__create_modal_clients .btn-cerrar-popup__create_modal_clients {
 	font-size: 16px;
 	line-height: 16px;

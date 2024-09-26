@@ -23,7 +23,8 @@ const Clients: React.FC = () => {
   const setClientToUpdate = storeClients(state => state.setClientToUpdate)
 
   const [clients, setClients] = useState<any>([])
-  
+  const setModal = storeModals(state => state.setModal)
+  const { modal }: any = storeModals()
   const fetch = async () => {
       let resultCompanies = await getCompaniesXUsers(user_id);
       setCompanies(resultCompanies)
@@ -44,12 +45,26 @@ const Clients: React.FC = () => {
       setClients(resultCLients)
    
   }
+  const searchClient = async () =>  {
+    let data = {
+        id_sucursal: selectedBranchOffice,
+        id_usuario: user_id,
+        nombre: name
+      }
 
+      let resultCLients = await getClients(data)
+      setClients(resultCLients)
+   
+  }
 
   useEffect(() => {
       fetch()
   }, [])
-
+  useEffect(() => {
+    if (!modal) {
+        fetch()
+    }
+}, [modal])
 
   
   const [selectCompanies, setSelectCompanies] = useState<boolean>(false)
@@ -64,6 +79,8 @@ const Clients: React.FC = () => {
       let resultBranchOffices = await getBranchOffices(company.id,  user_id);
       setBranchOffices(resultBranchOffices)
       setSelectCompanies(false)
+      setSelectedBranchOffice(resultBranchOffices[0].id)
+
   }
 
   const [selectBranchOffices, setSelectBranchOffices] = useState<boolean>(false)
@@ -80,12 +97,12 @@ const Clients: React.FC = () => {
   }
 
   const updateClients = (client: any)  => {
+      setClientToUpdate(client)
     setModal('update_clients')
-    setClientToUpdate(client)
 
   }
 
-  const setModal = storeModals(state => state.setModal)
+  
 
   return (
     <div className='customers'>
@@ -134,7 +151,8 @@ const Clients: React.FC = () => {
               <div className='inputs__company'>
                   <label className='label__general'>Nombre</label>
                   <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                  <input name="condiciones_pago" className='inputs__general' type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
+                  <input name="condiciones_pago" className='inputs__general' type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre y pulsa ENTER'
+                  onKeyUp={(event) => event.key === 'Enter' && searchClient()} />
               </div>
             </div>
             <div className='row__two'>
@@ -192,7 +210,7 @@ const Clients: React.FC = () => {
                                           <button className='btn__general-purple' type='button' onClick={() => updateClients(item)}>Editar</button>
                                       </div>
                                       <div className='td'>
-                                          <button className='btn__delete_users' type='button' onClick={() => deleteMaxMin(item)}>Eliminar</button>
+                                          <button className='btn__delete_users' type='button'>Eliminar</button>
                                       </div>
                                   </div>
                               </div>

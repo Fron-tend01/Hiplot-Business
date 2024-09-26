@@ -30,7 +30,7 @@
  **************************************************************/
   
  .overlay__create_modal-sub_clients {
-	background: rgba(0,0,0,.3);
+    background: rgba(0,0,0,.3);
 	position: fixed;
 	top: 0;
 	bottom: 0;
@@ -47,14 +47,16 @@
 }
 
 .popup__create_modal-sub_clients {
-	background-color: var(--background-modal);
+    background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
+	text-align: center;
 	width: 90%;
-	
+	max-height:95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
+    overflow: scroll;
 }
 
 .popup__create_modal-sub_clients .btn-cerrar-popup__create_modal-sub_clients {
@@ -93,7 +95,7 @@
 .table__modal-sub_clients {
     display: grid;
     height: 100%;
-    grid-template-rows: repeat(2, auto) 1fr;
+    grid-template-rows: repeat(5, auto) 1fr;
 	overflow: auto;
 }
 
@@ -112,7 +114,7 @@
 
 .table__modal-sub_clients .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(3, 1fr) 100px;
+    grid-template-columns: repeat(5, 1fr) 100px;
     padding: 10px;
     font-weight: 600;
     color: var(--text-table-color);
@@ -153,7 +155,7 @@
 
 .table__modal-sub_clients .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(3, 1fr) 100px;
+    grid-template-columns: repeat(5, 1fr) 100px;
     padding: 10px;
 }
 

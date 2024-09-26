@@ -77,9 +77,9 @@
                     Modal de crear sucursales
  **************************************************************/
 
-/* 
+
   
- .overlay__suppliers {
+ .overlay__families {
 	background: rgba(0,0,0,.3);
 	position: fixed;
 	top: 0;
@@ -92,23 +92,24 @@
 	visibility: hidden;
 }
 
-.overlay__suppliers.active {
+.overlay__families.active {
 	visibility: visible;
 }
 
-.popup__suppliers {
-	background: #F8F8F8;
+.popup__families {
+    background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
 	text-align: center;
-	width: 75%;
-	
+	width: 80%;
+	max-height:95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
+    overflow: scroll;
 }
 
-.popup__suppliers .btn-cerrar-popup__suppliers {
+.popup__families .btn-cerrar-popup__suppliers {
 	font-size: 16px;
 	line-height: 16px;
 	display: block;
@@ -127,7 +128,7 @@
 /* ------------------------- */
 .popup__suppliers.active {	transform: scale(1); opacity: 1; }
 
- */
+
 
 
 
@@ -220,7 +221,7 @@
  **************************************************************/
 
 .overlay__update_branch-offices {
-	background: rgba(0,0,0,.3);
+	 background: rgba(0,0,0,.3);
 	position: fixed;
 	top: 0;
 	bottom: 0;
@@ -237,15 +238,16 @@
 }
 
 .popup__update_branch-offices {
-	background: #F8F8F8;
-	border-radius: 5px;
-	padding: 20px;
-	text-align: center;
-	width: 80%;
-	
-	transition: .3s ease all;
-	transform: scale(0.7);
-	opacity: 0;
+	 background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
 }
 
 .popup__update_branch-offices .btn-cerrar-popup__update_branch-offices {

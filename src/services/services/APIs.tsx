@@ -273,7 +273,7 @@ getClients: async (data: any, customPath?: string) => {
 },
 
 updateClients: async (data: any, customPath?: string) => {
-  const path = customPath || `almacen_update/${data.id}`;
+  const path = customPath || `cliente_update`;
   return ConfigurationAPIs.put(path, data);
 },
 
