@@ -22,11 +22,11 @@ const History = () => {
             <div>
               {historyPrices.precios_ext ? (
               <div className='table__numbers'>
-                  <p className='text'>Total de Ordenes</p>
+                  <p className='text'>Total de rangos</p>
                   <div className='quantities_tables'>{historyPrices.precios_ext.length}</div>
               </div>
               ) : (
-                  <p className='text'>No hay empresas</p>
+                  <p className='text'>No hay rangos</p>
               )}
             </div>
             <div className='table__head'>
@@ -51,10 +51,10 @@ const History = () => {
                   <div className='tbody__container' key={index}>
                       <div className='tbody'>
                           <div className='td'>
-                              {item.name_ranges}
+                              {item.rango_titulo}
                           </div>
                           <div className='td'>
-                            {item.name_variable_pc}
+                            {item.pc_nombre}
                           </div>
                           <div className='td'>
                             {item.orden}
@@ -70,20 +70,16 @@ const History = () => {
                 ))}
               </div>
             ) : (
-                <p className='text'>No hay máximos y mínimos que mostrar</p>
+                <p className='text'>No hay rangos que mostrar</p>
             )}
           </div>
           {historyPrices.historico ? 
           <div className='article__modal_prices-history_modal_container' >
             <div>
-              {historyPrices ? (
               <div className='table__numbers'>
-                  <p className='text'>Total de Ordenes</p>
-                  <div className='quantities_tables'>{historyPrices.length}</div>
+                  <p className='text'>Total de historial</p>
+                  <div className='quantities_tables'>{historyPrices.historico.length}</div>
               </div>
-              ) : (
-                  <p className='text'>No hay empresas</p>
-              )}
             </div>
             <div className='table__head'>
               <div className='thead'>

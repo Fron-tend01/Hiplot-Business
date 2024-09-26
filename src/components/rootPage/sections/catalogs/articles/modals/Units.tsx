@@ -18,10 +18,6 @@ const Units: React.FC = () => {
 
   useEffect(() => {
     get()
-    if(articleByOne.unidades) {
-      setUnits(articleByOne.unidades)
-    }
-    
   
   }, [articleByOne])
 
@@ -86,6 +82,7 @@ const Units: React.FC = () => {
   
   const addUnits = () => {
     let data = {
+      
       id_unidad: selectedSectionUnit,
       id_unidad_equivalencia: selectedUnits,
       equivalencia: valueUnits,
@@ -96,8 +93,8 @@ const Units: React.FC = () => {
     setUnits([...units, data]); // Asegúrate de que esta línea esté llamando a la función correctamente
   };
 
-  const deleteMaxMin = (item: any) => {
-    setUnits(units.filter((unit: any) => unit.id !== item.id));
+  const deleteMaxMin = (item: any, i: number) => {
+    setUnits(units.filter((_: any, index: any) => index !== i));
     setDeleteUnits([...deleteUnits, item.id])
   };
   return (
@@ -208,7 +205,7 @@ const Units: React.FC = () => {
                                               </label>
                                             </div>
                                             <div className='td'>
-                                                <button className='btn__delete_users' type='button' onClick={() => deleteMaxMin(item)}>Eliminar</button>
+                                                <button className='btn__delete_users' type='button' onClick={() => deleteMaxMin(item, index)}>Eliminar</button>
                                             </div>
                                         </div>
                                     </div>

@@ -25,7 +25,10 @@ interface StoreState {
     articles: Articles[];
     articlesFamilies: any[];
     articlesByOne: any[];
-    
+
+
+    modalArticle: any;
+    setModalArticle: (modal: any) => void;
     
     subModal: any;
     setSubModal: (modal: any) => void;
@@ -149,6 +152,9 @@ export const storeArticles = create<StoreState>((set) => ({
 
     articlesInGlobal: [],
 
+    modalArticle: '',
+    setModalArticle: (modal) => set({ modalArticle: modal }),
+
     subModal: '',
     setSubModal: (modal) => set({ subModal: modal }),
 
@@ -220,6 +226,9 @@ export const storeArticles = create<StoreState>((set) => ({
     setDeleteVariations: (variation) => set({ deleteVariations: variation }),
 
 
+    
+
+
     //combination 
     combinations: [],
     setCombinations: (combination) => set({ combinations: combination }),
@@ -231,7 +240,7 @@ export const storeArticles = create<StoreState>((set) => ({
     prices: [],
     setPrices: (price) => set({ prices: price }),
     deletePrices: [],
-    setDeletePrices: (unit) => set({ deleteUnits: unit }),
+    setDeletePrices: (price) => set({ deletePrices: price }),
 
 
     //  Tiempos de entrega

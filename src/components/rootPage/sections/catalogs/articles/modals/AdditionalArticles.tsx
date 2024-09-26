@@ -14,7 +14,7 @@ import { BranchOfficesRequests } from '../../../../../../fuctions/BranchOffices'
 import Empresas_Sucursales from '../../../../Dynamic_Components/Empresas_Sucursales'
 import Filtrado_Articulos_Basic from '../../../../Dynamic_Components/Filtrado_Articulos_Basic'
 import { storeDv } from '../../../../../../zustand/Dynamic_variables'
-
+import dataConditional from './json/dataCondicion.json'
 
 
 const AdditionalArticles: React.FC = () => {
@@ -28,36 +28,29 @@ const AdditionalArticles: React.FC = () => {
   const setAdditionalArticles = storeArticles(state => state.setAdditionalArticles)
   const { subModal, additionalArticles }: any = useStore(storeArticles)
 
-  const {getTemplates} : any = TemplatesRequests()
-  const {getCompaniesXUsers} : any = companiesRequests()
-  const {getBranchOffices} : any = BranchOfficesRequests()
+  const { getTemplates, getTemplatesxFields }: any = TemplatesRequests()
 
-  const { getArticles }: any = articleRequests()
 
   const setArticulos = storeDv(state => state.setArticulos)
   const setIndex = storeDv(state => state.setIndex)
-  const {articulos}: any = storeDv()
+  const { articulos }: any = useStore(storeDv)
 
-  const selectedIds = useSelectStore((state) => state.selectedIds);
 
-  const [bySearch, setBySearch] = useState<any>()
-
-  const [search, setSearch] = useState<any>()
 
   const [companies, setCompanies] = useState<any>()
   const [branchOffices, setBranchOffices] = useState<any>()
 
-  const [conditions, setConditions] = useState<any>()
 
-  const [selectdConditions, setSelectdConditions] = useState<any>()
+
+  const [conditions, setConditions] = useState<any>()
 
   const [templates, setTemplates] = useState<any>([])
 
   const [extrFields, setExtrFields] = useState<any>()
 
   const fetch = async () => {
-    let resutTemplates = await getTemplates(user_id)
-    setTemplates(resutTemplates)
+    let resutTemplates = await getTemplatesxFields()
+  
 
     setExtrFields([
       {
@@ -67,12 +60,27 @@ const AdditionalArticles: React.FC = () => {
       },
       {
         nombre: 'id_sucursal',
-        tipo: 0
+        tipo: branchOffices?.id
+      },
+      {
+        nombre: 'nombre_sucursal',
+        tipo: branchOffices?.nombre
       },
       {
         nombre: 'aparece_por',
         tipo: 0
       },
+      {
+        nombre: 'id_articulo_adicional',
+        tipo: 1,
+        asignacion: 'id'
+      },
+      {
+        nombre: 'id',
+        tipo: 0,
+        asignacion: 'id'
+      },
+
       {
         nombre: 'data_aparece_por',
         tipo: resutTemplates
@@ -83,28 +91,7 @@ const AdditionalArticles: React.FC = () => {
       },
       {
         nombre: 'data_condicion',
-        tipo: [
-          {
-            id: 1,
-            name: 'Menor A'
-          },
-          {
-            id: 2,
-            name: 'Menor O igual A'
-          },
-          {
-            id: 3,
-            name: 'Mayor A'
-          },
-          {
-            id: 4,
-            name: 'Menor O igual A'
-          },
-          {
-            id: 5,
-            name: 'Igual A'
-          }
-        ]
+        tipo: dataConditional
       },
       {
         nombre: 'valor',
@@ -116,38 +103,27 @@ const AdditionalArticles: React.FC = () => {
       },
       {
         nombre: 'equivalencia_por',
-        tipo: resutTemplates
+        tipo: 0
       },
       {
         nombre: 'cantidad_equivalente',
-        tipo: resutTemplates
+        tipo: 0
       },
       {
         nombre: 'equivalencia',
         tipo: 0,
-        dataSelect: resutTemplates
       },
       {
         nombre: 'forzar_redondeo',
         tipo: false,
-        dataSelect: resutTemplates
-      }   
+      }
     ])
-  }        
+  }
 
   useEffect(() => {
     fetch()
-  }, [])
+  }, [branchOffices])
 
-  useEffect(() => {
-    
-  }, [])
-
-  console.log(articulos)
-
-  const [articles, setArticles] = useState<any>([])
-
-  const [appearsBy, setAppearsBy] = useState<any>()
 
   const handleAppearsByChange = (e: React.ChangeEvent<HTMLSelectElement>, index: any) => {
     const value = e.target.value;
@@ -161,26 +137,65 @@ const AdditionalArticles: React.FC = () => {
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>, index: any) => {
     const value = e.target.value;
-    setArticulos(prevArticulos => {
-      const updatedArticulos = [...prevArticulos]; // Crea una copia del array
-      updatedArticulos[index].valor = value; // Actualiza el valor del artículo correspondiente
-      return updatedArticulos; // Devuelve el nuevo estados
+    setAdditionalArticles((prevArticulos: any) => {
+      const updatedArticulos = [...prevArticulos];
+      updatedArticulos[index].valor = value;
+      return updatedArticulos;
     });
   };
 
-  
+
 
   const modalConcepts = (item: any, index: any) => {
     setIndex(index)
     setModalSub('modal-additiona-articles-concepts')
   }
 
-  const addAdditionalArticles = (item: any) => {
+  // const addAdditionalArticles = (item: any) => {
 
-    setAdditionalArticles([... additionalArticles, item])
+  //   setAdditionalArticles([... additionalArticles, item])
+  // }
+
+  const deleteAdd = () => {
+
   }
+  console.log('resutTemplates', templates)
 
-  console.log(additionalArticles)
+  const fecthTwo = async () => {
+    // Obtener los templates
+    let resutTemplates = await getTemplatesxFields();
+    setTemplates(resutTemplates)
+  
+    // Asegúrate de que additionalArticles tenga elementos
+    if (additionalArticles && additionalArticles.length > 0) {
+      setAdditionalArticles((prevArticulos: any[]) => {
+        // Iteramos sobre cada artículo existente en el estado previo
+        const updatedArticulos = prevArticulos.map((articulo: any) => {
+          // Para cada artículo, simplemente añadimos las nuevas propiedades deseadas
+          return {
+            ...articulo, // Mantener el resto de las propiedades
+            data_aparece_por: resutTemplates || [], // Agregar data_aparece_por con la data de resutTemplates
+            data_condicion: dataConditional || [],   // Agregar data_condicion con la data de dataConditional
+            data_equivalencia_por: resutTemplates || []
+             // Agregar data_equivalencia_por con la data de resutTemplates
+          };
+        });
+          
+        // Retornar el array de artículos modificado
+        return updatedArticulos;
+      });
+    } else {
+      console.error("No hay artículos adicionales para actualizar.");
+    }
+  };
+  
+  
+
+
+  useEffect(() => {
+    fecthTwo()
+  }, [])
+
 
 
   return (
@@ -188,8 +203,8 @@ const AdditionalArticles: React.FC = () => {
       <div className={`popup__modal_additional-articles_modal_articles ${subModal == 'modal-additiona-articles' ? 'active' : ''}`}>
         <div className='header__modal'>
           <a href="#" className="btn-cerrar-popup__modal_additional-articles_modal_articles" onClick={() => setSubModal('')} >
-            <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
-            </a>
+            <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+          </a>
           <p className='title__modals'>Articulos adicionales</p>
         </div>
         <form className='modal_additional-articles_modal_articles'>
@@ -207,32 +222,38 @@ const AdditionalArticles: React.FC = () => {
             <div>
               {additionalArticles ? (
                 <div className='table__numbers'>
-                    <p className='text'>Total de artículos</p>
-                    <div className='quantities_tables'>{additionalArticles.length}</div>
+                  <p className='text'>Total de artículos</p>
+                  <div className='quantities_tables'>{additionalArticles.length}</div>
                 </div>
-                ) : (
-                    <p className='text'>No hay empresas</p>
-                )}
+              ) : (
+                <p className='text'>No hay empresas</p>
+              )}
             </div>
             <div className='table__head'>
               <div className='thead'>
                 <div className='th'>
-                    <p className=''>Codigo</p>
+                  <p className=''>Codigo</p>
                 </div>
                 <div className='th'>
-                    <p className=''>Descripcion</p>
+                  <p className=''>Descripcion</p>
                 </div>
                 <div className='th'>
-                    <p className=''>Aparece por</p>
+                  <p className=''>Sucursal</p>
                 </div>
                 <div className='th'>
-                    <p className=''>Condicion</p>
+                  <p className=''>Aparece por</p>
                 </div>
                 <div className='th'>
-                   
+                  <p className=''>Condicion</p>
                 </div>
                 <div className='th'>
-                   
+                  Valor
+                </div>
+                <div className='th'>
+
+                </div>
+                <div className='th'>
+
                 </div>
               </div>
             </div>
@@ -241,39 +262,42 @@ const AdditionalArticles: React.FC = () => {
                 {additionalArticles.map((item: any, index: any) => (
                   <div className='tbody__container' key={index}>
                     <div className='tbody'>
-                        <div className='td'>
-                            {item.codigo}
-                        </div>
-                        <div className='td'>
-                          {item.descripcion}
-                        </div>
-                        <div className='td'>
-                          <select className='traditional__selector' onChange={(e) => handleAppearsByChange(e, index)}>
-                              {item.data_aparece_por?.map((item: any) => (
-                                <option key={item.id} value={item.nombre}>
-                                  {item.nombre}
-                                </option>
-                              ))}
-                            </select>
-                        </div>
-                        <div className='td'>
-                          <select className='traditional__selector'  onChange={(e) => handleConditionsChange(e, index)}>
-                            {item.data_condicion?.map((item: any) => (
-                              <option key={item.id} value={item.name}>
-                                {item.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div className='td'>
-                          {/* <input className={`inputs__general`} type="text" value={articulos[index].valor || ''} onChange={(e) => handleValueChange(e, index)} placeholder='Ingresa el valor' /> */}
-                        </div>
-                        <div className='td'>
-                            <button className='btn__general-purple' type='button' onClick={() => modalConcepts(item, index)}>Campos</button>
-                        </div>
-                        <div className='td'>
-                            <button className='btn__general-danger' type='button' onClick={() => addAdditionalArticles(item)}>Eliminar</button>
-                        </div>
+                      <div className='td'>
+                        {item.codigo}
+                      </div>
+                      <div className='td'>
+                        {item.descripcion}
+                      </div>
+                      <div>
+                        {item.nombre_sucursal}
+                      </div>
+                      <div className='td'>
+                        <select className='traditional__selector' onChange={(e) => handleAppearsByChange(e, index)}>
+                          {item.data_aparece_por?.map((item: any) => (
+                            <option key={item.id} value={item.id}>
+                              {item.nombre}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className='td'>
+                        <select className='traditional__selector' onChange={(e) => handleConditionsChange(e, index)}>
+                          {item.data_condicion?.map((item: any) => (
+                            <option key={item.id} value={item.name}>
+                              {item.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className='td'>
+                        <input className={`inputs__general`} type="number" value={item.valor} onChange={(e) => handleValueChange(e, index)} placeholder='Ingresa el valor' />
+                      </div>
+                      <div className='td'>
+                        <button className='btn__general-purple' type='button' onClick={() => modalConcepts(item, index)}>Campos</button>
+                      </div>
+                      <div className='td'>
+                        <button className='btn__general-danger' type='button' onClick={() => deleteAdd(item)}>Eliminar</button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -283,10 +307,10 @@ const AdditionalArticles: React.FC = () => {
             )}
             <Concepts />
           </div>
-          
+
         </form>
+      </div>
     </div>
-  </div>
   )
 }
 

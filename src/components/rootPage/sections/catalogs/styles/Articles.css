@@ -327,53 +327,6 @@
 
 
 
-.custom-file-upload {
-	display: inline-block;
-	position: relative;
-	overflow: hidden;
-	padding: 6px 12px;
-	background-color: var(--primary-color); /* Color de fondo azul */
-	color: #fff; /* Color del texto blanco */
-	border-radius: 5px;
-	cursor: pointer;
-  }
-  
-  .custom-file-upload input[type="file"] {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	opacity: 0;
-	width: 100%;
-	height: 100%;
-	cursor: pointer;
-  }
-  
-  .custom-file-upload span {
-	display: inline-block;
-	vertical-align: middle;
-  }
-  
-  .custom-file-upload svg {
-	width: 18px;
-	height: 18px;
-	vertical-align: middle;
-	margin-right: 5px;
-  }
-
-  .background-image {
-    width: 150px;
-    height: 100px;
-    background-size: cover;
-    background-position: center;
-
-}
-  
-
-
-
-
 
 
 

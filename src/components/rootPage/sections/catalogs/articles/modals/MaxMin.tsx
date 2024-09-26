@@ -35,8 +35,10 @@ const MaxMin: React.FC = () => {
   let user_id = userState.id
 
   const { articleByOne }: any = useStore(storeArticles);
-  const { setMaxsMins, maxsMins, setDeleteMaxsMins, deleteMaxsMins, setWarinings } = useStore(storeArticles);
+  const { setMaxsMins, maxsMins, deleteMaxsMins, setWarinings } = useStore(storeArticles);
   const { setModalStateMaxsMins } = useStore(storeArticles);
+
+  const setDeleteMaxsMins = storeArticles(state => state.setDeleteMaxsMins)
 
   useEffect(() => {
     if (user_id) {
@@ -44,10 +46,6 @@ const MaxMin: React.FC = () => {
         getBranchOfficeXCompanies(0, user_id)
         getStore(user_id);
        
-    }
-    if (articleByOne.max_mins) {
-        setMaxsMins(articleByOne.max_mins);
- 
     }
   }, [user_id, articleByOne, ]);
   
@@ -85,6 +83,7 @@ const MaxMin: React.FC = () => {
     setWarinings('')
   };
 
+  console.log(deleteMaxsMins)
 
 
   const handleMaxMinCompaniesChange = (company: any) => {

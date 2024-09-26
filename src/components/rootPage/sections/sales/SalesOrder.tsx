@@ -134,6 +134,7 @@ console.log('sdsd',selectedIds)
         setSaleOrdersToUpdate(order)
     }
 
+    
 
     return (
         <div className='sales__order'>

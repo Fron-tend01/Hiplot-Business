@@ -1,0 +1,161 @@
+
+/*=================================================
+ 
+  Modal de division del modal de facturacion
+  
+=================================================*/
+
+
+.overlay__billing__modal-division {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+}
+
+.overlay__billing__modal-division.active {
+	visibility: visible;
+}
+
+.header__modal {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.popup__billing__modal-division {
+	background-color: var(--background-modal);  
+	border-radius: 5px;
+	padding: 40px 20px 20px 20px;
+	width: 80%;
+    height: 80%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+    
+
+}
+
+.popup__billing__modal-division .btn-cerrar-popup__billing__modal-division {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 30px;
+    top: 10px;
+}
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__billing__modal-division.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+
+
+
+ /*************************************************************
+                    Tabla de ordenes de produccion
+ **************************************************************/
+
+ .table__billing_concepts_division {
+    border-radius: 10px;
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+}
+
+
+.table__billing_concepts_division .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__billing_concepts_division .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__billing_concepts_division .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 100px 100px;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__billing_concepts_division .table__body {
+	height: 100%;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__billing_concepts_division .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+  }
+  
+.table__billing_concepts_division .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+  }
+
+.table__billing_concepts_division .table__body .tbody {
+    display: flex;
+}
+
+.table__billing_concepts_division .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 100px 100px;
+    padding: 10px;
+    column-gap: 20px;
+}
+
+.table__billing_concepts_division .table__body .tbody .td .inputs__general {
+    margin-top: 0;
+}
+
+.table__billing_concepts_division .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+
+.price__billing {
+    display: flex;
+    color: var(--text-color);
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-left: 10px; 
+}

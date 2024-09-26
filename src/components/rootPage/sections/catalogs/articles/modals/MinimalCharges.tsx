@@ -8,6 +8,7 @@ import TemplatesRequests from '../../../../../../fuctions/Templates'
 import { UnitsRequests } from '../../../../../../fuctions/Units'
 import { UserGroupsRequests } from '../../../../../../fuctions/UserGroups'
 import Concepts from './minimalCharges/Concepts'
+import loadType from '../json/loadType.json'
 import './style/MinimalCharges.css'
 
 const MinimalCharges: React.FC = () => {
@@ -19,8 +20,9 @@ const MinimalCharges: React.FC = () => {
     const setModalSub = storeModals(state => state.setModalSub)
 
     const setMinimalCharges = storeArticles(state => state.setMinimalCharges)
+    const setDeleteMinimalCharges = storeArticles(state => state.setDeleteMinimalCharges)
 
-    const { subModal, deliveryTimes, minimalCharges }: any = useStore(storeArticles)
+    const { subModal, deliveryTimes, minimalCharges, deleteMinimalCharges }: any = useStore(storeArticles)
 
     const { getTemplates }: any = TemplatesRequests()
     const [templates, setTemplates] = useState<any>([])
@@ -61,20 +63,7 @@ const MinimalCharges: React.FC = () => {
         setTypeCharges({
             selectName: 'Tipo de cargo',
             options: 'name',
-            dataSelect: [
-                {
-                    id: 1,
-                    name: 'Cargo minimo de aumento'
-                },
-                {
-                    id: 2,
-                    name: 'Cargo minimo de suma'
-                },
-                {
-                    id: 3,
-                    name: 'Cargo minimo de descuento'
-                },
-            ]
+            dataSelect: loadType
         })
     }
 
@@ -137,6 +126,13 @@ const MinimalCharges: React.FC = () => {
         setMinimalCharges(newTem);
     };
 
+    const deleteMinimalCharge = (item: any) => {
+        const filter = minimalCharges.filter((x: number) => x !== item);
+        setMinimalCharges(filter);
+        setDeleteMinimalCharges([...deleteMinimalCharges, item.id])
+      };
+    
+
 
     return (
         <div className={`overlay__modal_minimal-charges_modal-articles ${subModal == 'modal-minimal-charges' ? 'active' : ''}`}>
@@ -162,7 +158,7 @@ const MinimalCharges: React.FC = () => {
                         <input className={`inputs__general`} type="number" value={value == null ? '' : value} onChange={(e) => setValue(parseFloat(e.target.value))} placeholder='Ingresa el valor' />
                     </div>
                 </div>
-                <div className='row'>
+                <div className='row my-4'>
                     <div className='col-2 md-col-6 sm-col-12'>
                         <Select dataSelects={templates} instanceId="templates" />
                     </div>
@@ -233,7 +229,7 @@ const MinimalCharges: React.FC = () => {
                                             <button  className='btn__general-purple' type='button' onClick={() => concepts(item, index)}>Mas campos</button>
                                         </div>
                                         <div className='td'>
-                                            <button className='btn__general-danger' type='button' onClick={() => deleteDeliveryTime(item)}>Eliminar</button>
+                                            <button className='btn__general-danger' type='button' onClick={() => deleteMinimalCharge(item)}>Eliminar</button>
                                         </div>
                                     </div>
                                 </div>

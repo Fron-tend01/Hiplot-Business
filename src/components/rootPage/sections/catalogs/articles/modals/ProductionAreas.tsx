@@ -6,8 +6,6 @@ import Empresas_Sucursales from '../../../../Dynamic_Components/Empresas_Sucursa
 import Select from '../../../../Dynamic_Components/Select'
 import { areasRequests } from '../../../../../../fuctions/Areas'
 import useUserStore from '../../../../../../zustand/General'
-import { companiesRequests } from '../../../../../../fuctions/Companies'
-import { BranchOfficesRequests } from '../../../../../../fuctions/BranchOffices'
 import { useSelectStore } from '../../../../../../zustand/Select'
 
 
@@ -15,10 +13,11 @@ const ProductionAreas: React.FC = () => {
   const userState = useUserStore(state => state.user);
     let user_id = userState.id
 
-
   const setSubModal = storeArticles(state => state.setSubModal)
   
   const setAreas = storeArticles(state => state.setAreas)
+
+  const setDeleteAreas = storeArticles(state => state.setDeleteAreas)
 
   const [dataAreas, setDataAreas] = useState<any>()
 
@@ -27,13 +26,9 @@ const ProductionAreas: React.FC = () => {
   const selectedIds = useSelectStore((state) => state.selectedIds);
 
   const {getAreas}: any = areasRequests()
-  const {getCompaniesXUsers}: any = companiesRequests()
   const [companiesDestination, setCompaniesDestination] = useState<any>([])
-  const {getBranchOffices}: any = BranchOfficesRequests()
 
   const [branchDestination, setBranchDestination] = useState<any>([])
-
-
 
   const fetch = async () => {
 
@@ -57,33 +52,36 @@ const ProductionAreas: React.FC = () => {
 
   const { subModal, areas }: any = useStore(storeArticles)
 
-  const [productionAreas, setProductionsAreas] = useState<any>([])
-
-
   const addAreas = () => {
 
     let data = {
       id_area: selectedIds.areas.id,
-      name_area: selectedIds.areas.nombre,
+      nombre_area: selectedIds.areas.nombre,
       id_sucursal: branchDestination.id,
-      name_sucursal: branchDestination.nombre,
+      nombre_sucursal: branchDestination.nombre,
       produccion: production,
       predeterminada: predetermined
     }
   
-      setAreas([...areas, data])
+    setAreas([...areas, data])
   
-   
   }
 
   const [production, setProduction] = useState<any>(false)
   const [predetermined, setPredetermined] = useState<any>(false)
 
+  const deleteProductionAreas = (item: {id: number}) => {
+    const filter = areas.filter((x: {id: number}) => x.id !== item.id)
+    setAreas(filter)
+    setDeleteAreas(filter)
+  }
+  
+
   return (
     <div className={`overlay__modal_production-areas_creating_articles ${subModal == 'article-modal_areas-production' ? 'active' : ''}`}>
       <div className={`popup__modal_production-areas_creating_articles ${subModal == 'article-modal_areas-production' ? 'active' : ''}`}>
         <div className='header__modal'>
-          <a href="#" className="btn-cerrar-popup__modal_production-areas_creating_articles" >
+          <a href="#" className="btn-cerrar-popup__modal_production-areas_creating_articles" onClick={() => setSubModal('')}>
             <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
           </a>
           <p className='title__modals'>Precios</p>
@@ -165,10 +163,10 @@ const ProductionAreas: React.FC = () => {
                     <div className='tbody__container' key={index}>
                         <div className='tbody'>
                             <div className='td'>
-                              {item?.name_sucursal}
+                              {item?.nombre_sucursal}
                             </div>
                             <div className='td'>
-                              {item?.name_area}
+                              {item?.nombre_area}
                             </div>
                             <div className='td'>
                               <label className="switch">
@@ -189,7 +187,7 @@ const ProductionAreas: React.FC = () => {
                               </label>
                             </div>
                             <div className='td'>
-                                <button className='btn__delete_users' type='button' onClick={() => deleteMaxMin(item)}>Eliminar</button>
+                                <button className='btn__delete_users' type='button' onClick={() => deleteProductionAreas(item)}>Eliminar</button>
                             </div>
                         </div>
                     </div>

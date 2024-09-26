@@ -66,8 +66,7 @@ padding: 10px;
 
 .row__form_articles-two {
 	display: grid;
-	margin: 20px 0;
-    grid-template-columns: 200px repeat(5, 1fr);
+    grid-template-columns: repeat(5, 1fr) auto;
     gap: 10px;
 	align-items: end;
 }
@@ -206,62 +205,68 @@ padding: 10px;
 
 
 
-
-
-
-
-
-
-/*=================================================
- 
-  Modal de sucursales del modal del articulo 
-  
-=================================================*/
-
-
-.overlay__modal_branch-offices_creating_articles {
-	background: rgba(0,0,0,.3);
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
+.custom-file-upload {
+	display: flex;
 	align-items: center;
 	justify-content: center;
-	display: flex;
-	visibility: hidden;
-}
-
-.overlay__modal_branch-offices_creating_articles.active {
-	visibility: visible;
-}
-
-.popup__modal_branch-offices_creating_articles {
-	background-color: var(--background-modal);  
+	padding: 6px 12px;
+	background-color: var(--primary-color);
+	color: #fff; /* Color del texto blanco */
 	border-radius: 5px;
-	padding: 20px;
-	text-align: center;
-	width: 70%;
-	transition: .3s ease all;
-	transform: scale(0.7);
-	opacity: 0;
+	cursor: pointer;
+	width: 150px;
+    height: 100px;
+	background-size: cover;
+    background-position: center;
 }
 
-.popup__modal_branch-offices_creating_articles .btn-cerrar-popup__modal_branch-offices_creating_articles {
-	font-size: 16px;
-	position: absolute;
-	right: 20px;
-	line-height: 16px;
+.custom-file-upload.active {
+	width: 150px;
+	background-color: transparent;
+    height: 100px;
+	background-size: cover;
+    background-position: center;
+}
+
+.custom-file-upload.active > span {
+	display: none;
+}
+
+.custom-file-upload.active:hover > span {
 	display: block;
-	text-align: right;
-	transition: .3s ease all;
-	color: #BBBBBB;
 }
 
-/* ------------------------- */
-/* ANIMACIONES */
-/* ------------------------- */
-.popup__modal_branch-offices_creating_articles.active {	transform: scale(1); opacity: 1; }
+
+
+
+  
+  .custom-file-upload input[type="file"] {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	opacity: 0;
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+  }
+  
+  .custom-file-upload span {
+	display: inline-block;
+	vertical-align: middle;
+  }
+  
+  .custom-file-upload svg {
+	width: 18px;
+	height: 18px;
+	vertical-align: middle;
+	margin-right: 5px;
+  }
+
+
+  
+
 
 
 

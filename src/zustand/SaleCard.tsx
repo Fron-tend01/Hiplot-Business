@@ -10,6 +10,10 @@ interface StoreState {
 
     dataQuotation: any;
     setDataQuotation: (x: any) => void;
+
+
+
+ 
     
     IdArticle: any;
     setIdArticle: (x: any) => void;
@@ -26,5 +30,7 @@ export const storeSaleCard = create<StoreState>((set) => ({
     setModalSalesCard: (x) => set({modalSalesCard: x}),
 
 
-}));
 
+
+
+}));

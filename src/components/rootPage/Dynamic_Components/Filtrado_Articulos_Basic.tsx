@@ -226,8 +226,7 @@ interface FiltradoArticulosBasicProps {
                     </div>
 
                 }
-                <div className='col-2 md-col-6 sm-col-12 '>
-                    <label className='label__general'>Buscar</label>
+                <div className='col-2 md-col-6 sm-col-12 d-flex align-items-end'>
                     <button className='btn__general-purple' type='button' onClick={searchFor}>Buscar</button>
                 </div>
             </div>

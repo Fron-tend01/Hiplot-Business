@@ -1,0 +1,15 @@
+[
+    {
+      "id": 1,
+      "name": "Cargo minimo de aumento"
+    },
+    {
+      "id": 2,
+      "name": "Cargo minimo de suma"
+    },
+    {
+      "id": 3,
+      "name": "Cargo minimo de descuento"
+    }
+]
+  
