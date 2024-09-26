@@ -1,3 +1,5 @@
+
+
 /*=================================================
  
   Modal de precios del modal del articulo 
@@ -16,20 +18,33 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
+    z-index: 1;
 }
 
 .overlay__create_modal_variations.active {
 	visibility: visible;
 }
 
+.header__modal {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+}
+
+
 .popup__create_modal_variations {
 	background-color: var(--background-modal);  
 	border-radius: 5px;
-	padding: 20px;
-	width: 80%;
+	padding: 40px 20px 20px 20px;
+	width: 70%;
+    height: 70%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
+    overflow: hidden;
+
 }
 
 .popup__create_modal_variations .btn-cerrar-popup__create_modal_variations {
@@ -39,6 +54,9 @@
 	text-align: right;
 	transition: .3s ease all;
 	color: #BBBBBB;
+    position: absolute;
+    right: 30px;
+    top: 10px;
 }
 
 
@@ -46,7 +64,6 @@
 /* ANIMACIONES */
 /* ------------------------- */
 .popup__create_modal_variations.active {	transform: scale(1); opacity: 1; }
-
 
 
 
@@ -76,7 +93,7 @@
 .conatiner__create_modal_variations .table__variations_modal .table__head .thead {
     display: grid;
 	width: 100%;
-    grid-template-columns: repeat(2, 1fr) 100px 100px 1fr 100px;
+    grid-template-columns: repeat(2, 1fr) 100px;
 	
     padding: 10px;
     font-weight: 600;
@@ -120,7 +137,7 @@
 
 .conatiner__create_modal_variations .table__variations_modal .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(2, 1fr) 100px 100px 1fr 100px;
+    grid-template-columns: repeat(2, 1fr) 100px;
     padding: 10px;
 }
 
@@ -129,3 +146,14 @@
     color: #fff;
 }
 
+.conatiner__create_modal_variations .row__one {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) auto;
+    column-gap: 20px;
+}
+
+.conatiner__create_modal_variations .row__two {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 20px;
+}

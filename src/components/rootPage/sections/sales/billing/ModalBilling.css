@@ -1,0 +1,259 @@
+
+/*=================================================
+ 
+  Modal de Produccion del modal del articulo 
+  
+=================================================*/
+
+
+.overlay__billing-modal {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+}
+
+.overlay__billing-modal.active {
+	visibility: visible;
+}
+
+.header__modal {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.popup__billing-modal {
+	background-color: var(--background-modal);  
+	border-radius: 5px;
+	padding: 40px 20px 20px 20px;
+	width: 95%;
+    height: 95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+    
+
+}
+
+.popup__billing-modal .btn-cerrar-popup__billing-modal {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 30px;
+    top: 10px;
+}
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__billing-modal.active {	transform: scale(1); opacity: 1; }
+
+
+
+.billing-modal{
+    height: 100%;
+    overflow: auto;
+    padding: 5px;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+ /*************************************************************
+                    Tabla de ordenes de produccion
+ **************************************************************/
+
+ .table__billing_sale-orders {
+    border-radius: 10px;
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+}
+
+
+.table__billing_sale-orders .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__billing_sale-orders .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__billing_sale-orders .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 100px 100px;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__billing_sale-orders .table__body {
+	height: 100%;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__billing_sale-orders .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+  }
+  
+.table__billing_sale-orders .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+  }
+
+.table__billing_sale-orders .table__body .tbody {
+    display: flex;
+}
+
+.table__billing_sale-orders .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 100px 100px;
+    padding: 10px;
+
+}
+
+.table__billing_sale-orders .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+
+ /*************************************************************
+                    Tabla de conceptos
+ **************************************************************/
+
+ .table__billing_concepts {
+    border-radius: 10px;
+    display: grid;
+    grid-template-rows: repeat(2, auto) 1fr;
+}
+
+.table__billing_concepts .table__numbers {
+    margin: 0;
+    align-items: center;
+}
+
+
+.table__billing_concepts .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__billing_concepts .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__billing_concepts .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__billing_concepts .table__body {
+	max-height: 300px;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__billing_concepts .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+}
+  
+.table__billing_concepts .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+}
+
+.table__billing_concepts .tbody__container.personalizado {
+    background-color: aqua;
+}
+  
+
+.table__billing_concepts .table__body .tbody {
+    display: flex;
+}
+
+.table__billing_concepts .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    padding: 10px;
+
+}
+
+.table__billing_concepts .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+
+.information_of_pay {
+    color: var(--text-color);
+    padding: 5px;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+}

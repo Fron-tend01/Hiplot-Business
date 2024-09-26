@@ -44,7 +44,6 @@ const Combinations = () => {
         setCombinationModal(x)
     }
     const addCombinations = (x: any) => {
-        // Verifica si el ID está en el arreglo de combinations
         const isInCombinations = combinations.includes(x.id)
         console.log('combinations before', combinations) // Agrega un log aquí para verificar el estado actual de combinations
 
@@ -64,7 +63,6 @@ const Combinations = () => {
     }
 
 
-    console.log('combinations', combinations)
 
 
 

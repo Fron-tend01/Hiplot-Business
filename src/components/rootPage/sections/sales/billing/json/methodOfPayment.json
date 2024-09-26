@@ -1,0 +1,17 @@
+{
+    "currencies": [
+      {
+        "id": 1,
+        "name": "Efectivo"
+      },
+      {
+        "id": 2,
+        "name": "Tarjeta de servicios"
+      },
+      {
+        "id": 3,
+        "name": "Tarjeta de debito"
+      }
+    ]
+  }
+  

@@ -1,18 +1,24 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { storePersonalized } from '../../../../zustand/Personalized'
 import { useStore } from 'zustand'
 import './styles/Personalized.css'
 import Select from '../../Dynamic_Components/Select'
 import { storeSaleCard } from '../../../../zustand/SaleCard'
+import { storeBilling } from '../../../../zustand/Billing'
 
 const Personalized = () => {
-    const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
-    const setDataQuotation = storeSaleCard(state => state.setDataQuotation)
-    const {personalizedModal}: any = useStore(storePersonalized)
-    const {dataQuotation}: any =  useStore(storeSaleCard)
-    
+  const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
+  const setDataQuotation = storeSaleCard(state => state.setDataQuotation)
+  const { personalizedModal, identifier }: any = useStore(storePersonalized)
+  const { dataQuotation }: any = useStore(storeSaleCard)
+  const { dataBillign, }: any = useStore(storeBilling)
+
+  const setConcepts = storeBilling(state => state.setConcepts)
+
+  const {concepts}: any = useStore(storeBilling)
+
   const [invoice, setInvoice] = useState<any>()
-  
+
   const dataSelects: any = {
     selectName: 'Unidad',
     empresas: [
@@ -22,14 +28,28 @@ const Personalized = () => {
   };
 
 
-  const [temporary, setTemporary] = useState<any>([])
+
+
+
+  const dataToDisplay = identifier === 'billing' ? dataBillign : dataQuotation;
+
+
+  useEffect(() => {
+    // console.log('identifier', identifier)
+    // console.log('billign', dataBillign)
+    // console.log('dataQuotation', dataQuotation)
+
+    // console.log('dataToDisplay', dataToDisplay)
+  }, [])
+
+
 
   const [check, setCheck] = useState<boolean>(false)
 
   const addPersonalized = (item: any) => {
     // Clonar el array para evitar mutaciones directas
     setCheck(!check)
-    const updatedQuotation = dataQuotation.map((x: any) => {
+    const updatedQuotation = dataToDisplay.map((x: any) => {
       if (x.id === item.id) {
         // Alternar el valor de 'personalized' entre 'personalizado' y ''
         const personalized = x.personalized === 'personalizado' ? '' : 'personalizado';
@@ -40,11 +60,22 @@ const Personalized = () => {
       }
       return x;
     });
-  
+
+    
+    
+
+    if(identifier === 'billing') {
+      setConcepts(updatedQuotation);
+      
+    } else {
+      setDataQuotation(updatedQuotation);
+    }
     // Actualizar el estado con el nuevo array modificado
-    setDataQuotation(updatedQuotation);
+   
   };
-  
+
+
+
 
   return (
     <div className={`overlay__personalized_modal ${personalizedModal == 'personalized_modal' ? 'active' : ''}`}>
@@ -93,73 +124,73 @@ const Personalized = () => {
           </div>
         </div>
         <div>
-        <div className='table__personalized'>
-                {dataQuotation ? (
-                <div className='table__numbers'>
-                    <p className='text'>Total de Ordenes</p>
-                    <div className='quantities_tables'>{dataQuotation.length}</div>
+          <div className='table__personalized'>
+            {dataToDisplay ? (
+              <div className='table__numbers'>
+                <p className='text'>Total de Ordenes</p>
+                <div className='quantities_tables'>{dataToDisplay.length}</div>
+              </div>
+            ) : (
+              <p className="text">No hay empresas que mostras</p>
+            )}
+            <div className='table__head'>
+              <div className='thead'>
+                <div className='th'>
+
                 </div>
-                ) : (
-                <p className="text">No hay empresas que mostras</p>
-                )}
-                <div className='table__head'>
-                    <div className='thead'>
-                        <div className='th'>
-       
-                        </div>
-                        <div className='th'>
-                            <p>Nombre del articulo</p>
-                        </div>
-                        <div className='th'>
-                            <p>Codigo</p>
-                        </div>
-                        <div className='th'>
-                            <p>Empresa</p>
-                        </div>
-                     
-                    </div>
+                <div className='th'>
+                  <p>Nombre del articulo</p>
                 </div>
-                {dataQuotation ? (
-                <div className='table__body'>
-                    {dataQuotation.map((quotation: any) => {
-                    return (
-                        <div className='tbody__container' key={dataQuotation.id} onClick={() => addPersonalized(quotation)}>
-                            <div className='tbody'>
-                            <div className='td'>
-                              <label className="custom-checkbox">
-                              <input 
-                                  type="checkbox" 
-                                  checked={check} 
-                                  onChange={addPersonalized} 
-                                />
-                                <span className="checkmark"></span>
-                              </label>
-                            </div>
-                            <div className='td'>
-                                <p>{quotation.descripcion}</p>
-                            </div>
-                            <div className='td'>
-                                <div>
-                                  <p>{quotation.codigo}</p>
-                                </div>
-                            </div>
-                            <div className='td'>
-                                <p>{quotation.codigo}</p>
-                            </div>
-                       
-                    
-                            <div className='td'>
-                                <button className='branchoffice__edit_btn' onClick={() => modalUpdate(ticket)}>Editar</button>
-                            </div>
-                            </div>
-                        </div>
-                    )
-                    } )}
+                <div className='th'>
+                  <p>Codigo</p>
                 </div>
-                ) : ( 
-                    <p className="text">Cargando datos...</p> 
-                )}
+                <div className='th'>
+                  <p>Empresa</p>
+                </div>
+
+              </div>
             </div>
+            {dataToDisplay ? (
+              <div className='table__body'>
+                {dataToDisplay.map((quotation: any) => {
+                  return (
+                    <div className='tbody__container' key={quotation.id} onClick={() => addPersonalized(quotation)}>
+                      <div className='tbody'>
+                        <div className='td'>
+                          <label className="custom-checkbox">
+                            <input
+                              type="checkbox"
+                              checked={check}
+                              onChange={addPersonalized}
+                            />
+                            <span className="checkmark"></span>
+                          </label>
+                        </div>
+                        <div className='td'>
+                          <p>{quotation.descripcion}</p>
+                        </div>
+                        <div className='td'>
+                          <div>
+                            <p>{quotation.codigo}</p>
+                          </div>
+                        </div>
+                        <div className='td'>
+                          <p>{quotation.codigo}</p>
+                        </div>
+
+
+                        <div className='td'>
+
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <p className="text">Cargando datos...</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

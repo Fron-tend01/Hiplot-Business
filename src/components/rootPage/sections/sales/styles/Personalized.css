@@ -35,6 +35,7 @@
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
+  z-index: 10;
 }
 
 .popup__personalized_modal .btn-cerrar-popup__personalized_modal {
@@ -115,15 +116,19 @@
     }
 }
 
+.table__personalized .tbody__container {
+  background-color: #4caf50;
+
+}
 
 .table__personalized .tbody__container:nth-child(even) {
     background-color: var(--table-color);
-	color: var(--text-table-color);
+	  color: var(--text-table-color);
   }
   
 .table__personalized .tbody__container:nth-child(odd) {
     background-color: var(--two-table-color);
-	color: var(--text-table-color);
+	  color: var(--text-table-color);
   }
 
 .table__personalized .table__body .tbody {

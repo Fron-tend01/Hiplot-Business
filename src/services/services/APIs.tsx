@@ -236,8 +236,8 @@ const APIs = {
   },
 
   
-  getTemplatesxFields: async (customPath: any) => {
-    const path = customPath || `get_campos_plantillas/get`
+  getTemplatesxFields: async () => {
+    const path = `get_campos_plantillas/get`
     return ConfigurationAPIs.get(path)
   },
 
@@ -251,9 +251,9 @@ createRanges: async (data: any, customPath?: string) => {
 },
 
 
-getRanges: async (customPath?: string) => {
+getRanges: async (data: any, customPath?: string) => {
   const path = customPath || 'rangos_get'
-  return ConfigurationAPIs.get(path)
+  return ConfigurationAPIs.post(path, data)
 },
 
 
@@ -689,6 +689,13 @@ getTotalPrice: async (data: any, customPath?: string) => {
   //   return ConfigurationAPIs.post(path, data)
   // },
 
+
+    //////////////////////////////// Facturacion ///////////////////////////////////////
+    createInvoice: async (data: any, customPath?: string) => {
+      const path = customPath || 'create_factura';
+      return ConfigurationAPIs.post(path, data)
+    },
+  
 
 
   ////////////////////////////////GRAL ///////////////////////////////////////

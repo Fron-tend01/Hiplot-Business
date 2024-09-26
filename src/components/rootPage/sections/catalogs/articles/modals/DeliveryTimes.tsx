@@ -15,9 +15,10 @@ const DeliveryTimes: React.FC = () => {
   let user_id = userState.id
   const setSubModal = storeArticles(state => state.setSubModal)
 
-  const {subModal, deliveryTimes}: any = useStore(storeArticles)
+  const {subModal, deliveryTimes, articleToUpdate}: any = useStore(storeArticles)
   const setDeliveryTimes = storeArticles(state => state.setDeliveryTimes)
-  const selectedIds:any = useSelectStore((state) => state.selectedIds);
+  const setDeleteDeliveryTimes = storeArticles(state => state.setDeleteDeliveryTimes)
+  const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
   const [update, setUpdate] = useState<boolean>(false)
 
@@ -25,48 +26,48 @@ const DeliveryTimes: React.FC = () => {
   const [branch, setBranch] = useState<any>([])
 
   const [name, setName] = useState<any>('')
-  const [dataSelects, setDataSelects] = useState<any>([])
+  const [dataSelects, setDataSelects] = useState<any>({
+    selectName: 'Tiempos de entrega',
+    options: 'nombre',
+    dataSelect: []
+  })
 
 
   const [deliveryTimesView, setDeliveryTimesView] = useState<any>([])
 
   useEffect(() => {
-   
-  }, [selectedIds])
+    setDeliveryTimesView(articleToUpdate?.tiempos_entrega)
+  }, [selectedIds, articleToUpdate])
 
 
   const searchDeliveryTimes = async () => {
     let data = {
       nombre: name,
-      id_sucursal: company.id,
+      id_sucursal: branch.id,
       id_usuario: user_id
     }
     let result = await APIs.getDeliveryTimes(data)
-    setDataSelects( 
-      {
+    setDataSelects({
       selectName: 'Tiempos de entrega',
       options: 'nombre',
-      dataSelect: result}
-    )
+      dataSelect: result
+    })
   }
 
-  console.log(selectedIds?.deliveryTimes)
+
 
   const addDeliveryTimes = () => {
-      setDeliveryTimesView([...deliveryTimesView, selectedIds.deliveryTimes])
+    setDeliveryTimesView((prevState: any) => [...prevState, ...selectedIds.deliveryTimes.tiempos_entrega_data]);
       setDeliveryTimes([...deliveryTimes, selectedIds.deliveryTimes.id])
   }
 
-  console.log(deliveryTimesView)
-
-
-
-
   const deleteDeliveryTime = (item: any) => {
-    setDeliveryTimesView((prev: any) =>
-      prev.filter((x: any) => x.id !== item.id)
-    );
+    const filter = deliveryTimesView.filter((x: any) => x.id !== item.id)
+    setDeliveryTimesView(filter);
+    setDeleteDeliveryTimes(item.id)
   };
+
+
   return (
     <div className={`overlay__modal_delivery-times_creating_articles ${subModal == 'modal-delivery-times' ? 'active' : ''}`}>
         <div className={`popup__modal_delivery-times_creating_articles ${subModal == 'modal-delivery-times' ? 'active' : ''}`}>
@@ -109,13 +110,16 @@ const DeliveryTimes: React.FC = () => {
               <div className='table__head'>
                 <div className='thead'>
                   <div className='th'>
-                      <p className=''>Rango</p>
+                      <p className=''>Nombre</p>
                   </div>
                   <div className='th'>
                       <p className=''>Sucursal</p>
                   </div>
                   <div className='th'>
                       <p className=''>Entrega</p>
+                  </div>
+                  <div className='th'>
+                      
                   </div>
                 </div>
               </div>
@@ -125,13 +129,16 @@ const DeliveryTimes: React.FC = () => {
                           <div className='tbody__container' key={index}>
                               <div className='tbody'>
                                   <div className='td'>
-                                      {item.rango}
+                                    {item.nombre}
                                   </div>
                                   <div className='td'>
                                     {item.sucursal}
                                   </div>
+                                  <div className='td'>
+                                    {item.tipo == 1 ? 'Cliente' : 'Produccion'}
+                                  </div>
                                   <div className='td delivery'>
-                                    <p>{`${item.tiempos_entrega_data[0].dia_recepcion} - ${item.tiempos_entrega_data[0].hora_inicial_recepcion} - ${item.tiempos_entrega_data[0].hora_final_recepcion} - ${item.tiempos_entrega_data[0].hora_inicial_recepcion}`}</p>
+                                    <p>{item.entrega}</p>
                                   </div>
                                   <div className='td btn'>
                                       <button className='btn__general-danger' type='button' onClick={() => deleteDeliveryTime(item)}>Eliminar</button>

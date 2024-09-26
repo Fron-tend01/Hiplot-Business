@@ -1,0 +1,17 @@
+{
+    "currencies": [
+      {
+        "id": 1,
+        "name": "Adquisición de mercancias"
+      },
+      {
+        "id": 2,
+        "name": "Devoluciones, descuentos o bonificaciones"
+      },
+      {
+        "id": 3,
+        "name": "Gastos generales"
+      }
+    ]
+  }
+  

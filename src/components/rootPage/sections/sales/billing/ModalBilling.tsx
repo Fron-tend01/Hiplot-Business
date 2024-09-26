@@ -10,7 +10,22 @@ import { seriesRequests } from '../../../../../fuctions/Series'
 import { storeSaleOrder } from '../../../../../zustand/SalesOrder'
 import { useSelectStore } from '../../../../../zustand/Select'
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
+import { storeModals } from '../../../../../zustand/Modals'
 import Flatpickr from "react-flatpickr";
+import Division from './Division'
+import './ModalBilling.css'
+import { storeBilling } from '../../../../../zustand/Billing'
+import { Toaster, toast } from 'sonner'
+import Personalized from '../Personalized'  
+import { storePersonalized } from '../../../../../zustand/Personalized'
+import divisas from './json/divisas.json'
+import condicinesPago from './json/termsOfPayment.json'
+import cfdiJson from './json/CFDI.json'
+import metodoPago from './json/paymentMethods.json'
+import formaPago from './json/methodOfPayment.json'
+import APIs from '../../../../../services/services/APIs'
+import Swal from 'sweetalert2'
+
 
 const ModalBilling: React.FC = () => {
 
@@ -18,11 +33,27 @@ const ModalBilling: React.FC = () => {
 
     const {subModal}: any = useStore(storeArticles)
 
+    const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
+
+    const setIdentifier = storePersonalized(state => state.setIdentifier)
+
+    const setConcepts = storeBilling(state => state.setConcepts)
+
+    const {concepts}: any = useStore(storeBilling)
+
+    const setModalSub = storeModals(state => state.setModalSub)
+
+    const setDivision = storeBilling(state => state.setDivision)
+
+    const setDataBillign = storeBilling(state => state.setDataBillign)
+
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
 
+    // Usuarios
     const { getUsers }: any = usersRequests()
     const [users, setUsers] = useState<any>()
+    const [usersFilter, setUsersFilter] = useState<any>()
 
     const { getSaleOrders }: any = saleOrdersRequests()
     const [saleOrders, setSaleOrders] = useState<any>([])
@@ -34,20 +65,38 @@ const ModalBilling: React.FC = () => {
     
     const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
-    const  {saleOrdersToUpdate}: any = useStore(storeSaleOrder)
-    
+    const  {dataBillign, division}: any = useStore(storeBilling)
+
+
+    // Empresas sucursales
     const [companies, setCompanies] = useState<any>([])
+    const [companiesClients, setCompaniesClients] = useState<any>([])
+    const [companiesFilter, setCompaniesFilter] = useState<any>([])
 
     const [branchOffices, setBranchOffices] = useState<any>([])
+    const [branchOfficesClients, setBranchOfficesClients] = useState<any>([])
+    const [branchOfficesFilter, setBranchOfficesFilter] = useState<any>([])
+    
     const [fol, setFol] = useState<any>(0)
 
     const selectedIds = useSelectStore((state) => state.selectedIds);
 
     const [client, setClient] = useState<any>('')
 
+    const [totals, setTotals] = useState({
+        subtotal: 0,
+        urgencia: 0,
+        descuento: 0,
+        total: 0,
+    })
+
+
       //////////////////////////
      //////// Fechas//////////
     ////////////////////////
+
+    
+    
 
     const hoy = new Date();
     const haceUnaSemana = new Date();
@@ -67,8 +116,11 @@ const ModalBilling: React.FC = () => {
     }
     };
 
-
-console.log('sdsd',selectedIds)
+    const [foreignExchange, setForeignExchange] = useState<any>()
+    const [paymentMethod, setPaymentMethod] = useState<any>()
+    const [paymentConditions, setPaymentConditions] = useState<any>()
+    const [methodPayment, setMethodPayment] = useState<any>()
+    const [cfdi, setCfdi] = useState<any>()
 
     const fetch = async () => {
         
@@ -95,8 +147,40 @@ console.log('sdsd',selectedIds)
             id_sucursal: 0
         }
 
+        setForeignExchange({
+            selectName: 'Divisas',
+            options: 'name',
+            dataSelect: divisas.currencies
+        })
+
+        setPaymentMethod({
+            selectName: 'Métodos Pagos',
+            options: 'name',
+            dataSelect: metodoPago.currencies
+        })
+        setPaymentConditions({
+            selectName: 'Condiciónes Pagos',
+            options: 'name',
+            dataSelect: condicinesPago.currencies
+        })
+        setMethodPayment({
+            selectName: 'Formas de Pago',
+            options: 'name',
+            dataSelect: formaPago.currencies
+        })
+        setCfdi({
+            selectName: 'CFDi Receptor',
+            options: 'name',
+            dataSelect: cfdiJson.currencies
+        })
+
         let resultUsers = await getUsers(data)
         setUsers({
+            selectName: 'Vendedor',
+            options: 'nombre',
+            dataSelect: resultUsers
+        })
+        setUsersFilter({
             selectName: 'Vendedores',
             options: 'nombre',
             dataSelect: resultUsers
@@ -118,8 +202,8 @@ console.log('sdsd',selectedIds)
     const search = async () => {
         let dataSaleOrders = {
             folio: fol,
-            id_sucursal: branchOffices.id,
-            id_serie: selectedIds?.series.id,
+            id_sucursal: branchOfficesFilter.id,
+            id_serie: selectedIds?.series?.id,
             id_cliente: client,
             desde: date[0],
             hasta: date[1],
@@ -130,90 +214,177 @@ console.log('sdsd',selectedIds)
 
         let result = await getSaleOrders(dataSaleOrders)
         setSaleOrders(result)
+
+        console.log(result)
     }
 
-    const modalUpdate = (order: any) => {
-        setModalSalesOrder('sale-order__modal')
-        setSaleOrdersToUpdate(order)
+        
+
+    const handleCreateInvoice = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+
+        let obs: any = [];
+
+        for (const element of concepts) {
+            let filter = obs.filter((x: any) => x === element.id_ov);
+            if (filter.length === 0) {
+                obs.push(element.id_ov);
+            }
+        }
+
+        
+
+        const data = {
+            id_sucursal: branchOffices.id,
+            id_cliente: selectedIds?.customers?.id,
+            subtotal: totals.subtotal,
+            urgencia: totals.urgencia,
+            descuento: totals.descuento,
+            total: totals.total,
+            divisa: selectedIds?.foreignExchange?.id,
+            cfdi: selectedIds?.cfdi?.id,
+            condiciones_pago: selectedIds?.paymentConditions?.id,
+            forma_pago: selectedIds?.methodPayment?.id,
+            metodo_pago: selectedIds?.paymentMethod?.id,
+            id_usuario_crea: user_id,
+            id_usuario_vendedor: selectedIds?.users?.id,
+            titulo: title,
+            conceptos: concepts,
+            ovs_enlazadas: obs,
+            conceptos_elim: [0]
+        };
+        
+        
+        
+        try {
+            let result = await APIs.createInvoice(data)
+            Swal.fire('Factura creada exitosamente', '', 'success');
+        } catch (error) {
+            Swal.fire('Almacén creado exitosamente', '', 'error');
+        }
+
     }
 
+    const [title, setTitle] = useState<any>()
 
-    const handleCreateSaleOrder = () => {
 
-    }
-
-    const data = {
-        id_sucursal: 0,
-        id_cliente: 0,
-        subtotal: 0,
-        urgencia: 0,
-        descuento: 0,
-        total: 0,
-        divisa: 0,
-        cfdi: 0,
-        condiciones_pago: 0,
-        forma_pago: 0,
-        metodo_pago: 0,
-        id_usuario_crea: 0,
-        id_usuario_vendedor: 0,
-        status: 0,
-        titulo: "",
-        conceptos: [
-          {
-            id: 0,
-            id_ov: 0,
-            id_articulo: 0,
-            produccion_interna: true,
-            id_area_produccion: 0,
-            enviar_a_produccion: 0,
-            status: 0,
-            cantidad: 0,
-            monto_urgencia: 0,
-            monto_descuento: 0,
-            precio_unitario: 0,
-            id_unidad: 0,
-            obs_produccion: "",
-            obs_factura: "",
-            id_pers: 0,
-            campos_plantilla: [
-              {
-                id: 0,
-                id_ov_conceptos: 0,
-                nombre_campo_plantilla: "string",
-                tipo_campo_plantilla: 0,
-                valor: "string"
-              }
-            ]
-          }
-        ],
-        ovs_enlazadas: [],
-        conceptos_elim: [0]
-      };
-      
     
     const [type, setType] = useState<any>()
 
     const handleCheckboxChange = (value: number) => {
-        setType(value); // Actualiza el tipo seleccionado
+        setType(value);
     };
 
 
+    const handleModalSeeChange = (order: any) => {
+
+    }
+
+    
+    const handleAddConceptsChange = (order: any) => {
+        setConcepts([...concepts, ...order.conceptos])
+        setDataBillign([...dataBillign, ...order.conceptos])
+        setIdentifier('billing')
+    }
+
+    const handleAddDivisionChange = (concept: any) => {
+        setModalSub('billing__modal-division')
+        setDivision(concept)
+    }
+
+    const [customers, setCustomers] = useState<any>({
+        selectName: 'Clientes',
+        options: 'razon_social',
+        dataSelect: []
+    })
+
+    const searchClient = async () => {
+
+        let data = {
+            id_sucursal: branchOfficesClients.id,
+            id_usuario: user_id,
+            nombre: client
+        }
+        try {
+            let result = await APIs.getClients(data)
+
+            setCustomers({
+                selectName: 'Clientes',
+                options: 'razon_social',
+                dataSelect: result
+            })
+        } catch (error) {
+            console.log(error)
+        }
+
+       
+    }
+    
+    
     return (
-        <div className={`overlay__production-modal__article-modal ${subModal == 'billing__modal' ? 'active' : ''}`}>
-            <div className={`popup__production-modal__article-modal ${subModal == 'billing__modal' ? 'active' : ''}`}>
+        <div className={`overlay__billing-modal ${subModal == 'billing__modal' ? 'active' : ''}`}>
+            <Toaster expand={true} position="top-right" richColors  />
+            <div className={`popup__billing-modal ${subModal == 'billing__modal' ? 'active' : ''}`}>
                 <div className='header__modal'>
-                    <a href="#" className="btn-cerrar-popup__production-modal__article-modal" onClick={() => setSubModal('')} >
+                    <a href="#" className="btn-cerrar-popup__billing-modal" onClick={() => setSubModal('')} >
                         <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
                     </a>
-                    <p className='title__modals'>Modal de produccion</p>
+                    <p className='title__modals'>Modal de facturacion</p>
                 </div>
-                <form onSubmit={handleCreateSaleOrder}>
+                <form className='billing-modal' onSubmit={handleCreateInvoice}>
                     <div className='row'>
+                        <div className='col-12'>
+                            <label className='label__general'>Titulo</label>
+                            <input className='inputs__general' type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el titulo' />
+                        </div>
+                    </div>
+                    <div className='row my-4'>
                         <div className='col-8'>
-                            <Empresas_Sucursales />
+                            <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
                         </div>
                         <div className='col-4'>
-                            <Select />
+                            <Select dataSelects={users} instanceId='users' />
+                        </div>
+                    </div>
+                    <div className='row my-4'>
+                        <div className='col-12 information_of_pay'>
+                            <p>Cliente</p>
+                        </div>
+                        <div className='col-8'>
+                            <Empresas_Sucursales update={false} empresaDyn={companiesClients} setEmpresaDyn={setCompaniesClients} sucursalDyn={branchOfficesClients} setSucursalDyn={setBranchOfficesClients} />
+                        </div>
+                        <div className='col-4'>
+                            <label className='label__general'>Buscr por</label>
+                            <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Folio/RFC/Razon social' />
+                        </div>
+                        <div className='col-2 d-flex align-items-end justify-content-center'>
+                            <button type='button' className='btn__general-purple' onClick={searchClient}>Buscar</button>
+                        </div>
+                        <div className='col-4'>
+                            <Select dataSelects={customers} instanceId='customers' />
+                        </div>
+                        <div className='col-2 d-flex align-items-end justify-content-end'>
+                            <button type='button' className='btn__general-purple'>ver informacion</button>
+                        </div>
+                    </div>
+                    <div className='row'>
+                        <div className='col-12 information_of_pay'>
+                            <p>Información De Pago</p>
+                        </div>
+                        <div className='col-4'>
+                            <Select dataSelects={foreignExchange} instanceId='foreignExchange'/>
+                        </div>
+                        <div className='col-4'>
+                            <Select dataSelects={paymentMethod} instanceId='paymentMethod'/>
+                        </div>
+                        <div className='col-4'>
+                            <Select dataSelects={paymentConditions} instanceId='paymentConditions'/>
+                        </div>
+                        <div className='col-4'>
+                            <Select dataSelects={methodPayment} instanceId='methodPayment'/>
+                        </div>
+                        <div className='col-4'>
+                            <Select dataSelects={cfdi} instanceId='cfdi' />
                         </div>
                     </div>
                     <div className='row'>
@@ -239,7 +410,7 @@ console.log('sdsd',selectedIds)
                     <div>
                         <div className='row'>
                             <div className='col-8'>
-                                <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                                <Empresas_Sucursales update={false} empresaDyn={companiesFilter} setEmpresaDyn={setCompaniesFilter} sucursalDyn={branchOfficesFilter} setSucursalDyn={setBranchOfficesFilter} />
                             </div>
                             <div className='col-4'>
                                 <label className='label__general'>Fechas</label>
@@ -254,8 +425,8 @@ console.log('sdsd',selectedIds)
                                 <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Folio/RFC/Razon social' />
                             </div>
                             <div className='col-3'>
-                                <Select dataSelects={users} instanceId='users' />
-                            </div>
+                                <Select dataSelects={usersFilter} instanceId='usersFilter' />
+                            </div>     
                             <div className='col-3'>
                                 <Select dataSelects={series} instanceId='series' />
                             </div>
@@ -268,12 +439,163 @@ console.log('sdsd',selectedIds)
                             <div className=''>
                                 <button type='button' className='btn__general-purple' onClick={search}>Buscar</button>
                             </div>
-                            <div>
-                                <button type='button' className='btn__general-purple' onClick={() => setModalSalesOrder('sale-order__modal')}>Crear orden de venta</button>
-                            </div>
                         </div>
                     </div>
+                    <div>
+                        <div className='table__billing_sale-orders'>
+                            {saleOrders ? (
+                            <div className='table__numbers'>
+                                <p className='text'>Total de ordenes de produccion</p>
+                                <div className='quantities_tables'>{saleOrders.length}</div>
+                            </div>
+                            ) : (
+                                <p className="text">No hay ordenes de compra que mostras</p>
+                            )}
+                            <div className='table__head'>
+                                <div className='thead'>
+                                    <div className='th'>
+                                        <p>Nombre</p>
+                                    </div>
+                                    <div className='th'>
+                                        <p>Sucursal</p>
+                                    </div>
+                                    <div className='th'>
+                                        <p>Fecha</p>
+                                    </div>
+                                    <div className='th'>
+                                        <p>Estado</p>
+                                    </div>
+                                    <div className="th">
+                                    </div>
+                                    <div className="th">
+                                    </div>
+                                </div>
+                            </div>
+                            {saleOrders ? (
+                                <div className='table__body'>
+                                    {saleOrders.map((order: any) => {
+                                        return (
+                                            <div className='tbody__container' key={order.id}>
+                                                <div className='tbody'>
+                                                    <div className='td'>
+                                                        <p>{order.descripcion}</p>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <p>{order.codigo}</p>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <p>{order.fecha_creacion}</p>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <p>{order.status}</p>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <button type='button' className='btn__general-purple' onClick={() => handleModalSeeChange(order)}>conceptos</button>
+                                                    </div>
+                                                    <div className="th">
+                                                        <button type='button' className='btn__general-purple' onClick={() => handleAddConceptsChange(order)}>Agregar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            ) : (
+                                <p className="text">Cargando datos...</p>
+                            )}
+                        </div>
+                    </div>
+                    <div className='table__billing_concepts'>
+                        {concepts ? (
+                        <div className='d-flex w-full justify-content-between my-3'>
+                            <div className='table__numbers'>
+                                <p className='text'>Total de conceptos</p>
+                                <div className='quantities_tables'>{concepts.length}</div>
+                            </div>
+                            <div className='td'>
+                                <button type='button' className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal')}>Perzonalizado</button>
+                            </div>
+                        </div>
+                        ) : (
+                            <p className="text">No hay ordenes de compra que mostras</p>
+                        )}
+                        <div className='table__head'>
+                            <div className='thead'>
+                                <div className='th'>
+                                    <p>Nombre</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Codigo</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Cantidad</p>
+                                </div>
+                                <div className='th'>
+                                    
+                                </div>
+                                <div className="th">
+                                </div>
+                                <div className="th">
+                                </div>
+                            </div>
+                        </div>
+                        {concepts ? (
+                            <div className='table__body'>
+                                {concepts.map((concept: any) => {
+                                    return (
+                                        <div className={`tbody__container ${concept.personalized == 'personalizado' ? 'personalizado' : '' }`} key={concept.id}>
+                                            <div className='tbody'>
+                                                <div className='td'>
+                                                    <p>{concept.descripcion}</p>
+                                            
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{concept.codigo}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{concept.cantidad}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <button type='button' className='btn__general-purple' onClick={() => handleAddDivisionChange(concept)}>Division</button>
+                                                </div>
+                                                
+                                                <div className='td'>
+                                                    <button type='button' className='btn__general-purple' onClick={() => handleAddConceptsChange(concept)}>Desperzonalizado</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        ) : (
+                            <p className="text">Cargando datos...</p>
+                        )}
+                    </div>
+                    <div className='text d-flex justify-content-between'>
+                        <div>
+                            <p>Subtotal</p>
+                            <p>$ 560</p>
+                        </div>
+                        <div>
+                            <p>Urgencia</p>
+                            <p>$ 560</p>
+                        </div>
+                        <div>
+                            <p>Descuento</p>
+                            <p>$ 560</p>
+                        </div>
+                        <div>
+                            <p>Total</p>
+                            <p>$ 560</p>
+                        </div>
+                    </div>
+                    <div className='d-flex justify-content-center'>
+                        <button className='btn__general-purple'>Crear factura</button>
+                    </div>
                 </form>
+                <Division />
+                <Personalized />
+                
             </div>
         </div>
     )

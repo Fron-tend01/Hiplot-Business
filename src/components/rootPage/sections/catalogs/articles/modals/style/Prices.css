@@ -7,7 +7,7 @@
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: #1F319D; 
+        background-color: var(--primary-color); 
         border-radius: 5px;
         height: 100px;
     }
@@ -36,6 +36,7 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
+    z-index: 1;
 }
 
 .overlay__modal_prices_creating_articles.active {
@@ -121,7 +122,7 @@
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: #1F319D; 
+        background-color: var(--primary-color); 
         border-radius: 5px;
         height: 100px;
     }
@@ -216,7 +217,7 @@
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: #1F319D; 
+        background-color: var(--primary-color); 
         border-radius: 5px;
         height: 100px;
     }

@@ -1,0 +1,17 @@
+{
+    "currencies": [
+      {
+        "id": 1,
+        "name": "Contado"
+      },
+      {
+        "id": 2,
+        "name": "2 Semanas"
+      },
+      {
+        "id": 3,
+        "name": "30 Dias"
+      }
+    ]
+  }
+  

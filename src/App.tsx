@@ -54,7 +54,7 @@ function App() {
 
   // tabla
 
-  document.documentElement.style.setProperty('--table-color', theme === 'light' ? '' : '#252a36');
+  document.documentElement.style.setProperty('--table-color', theme === 'light' ? '' : '#1c2232');
   document.documentElement.style.setProperty('--two-table-color', theme === 'light' ? '' : '#13171f');
   document.documentElement.style.setProperty('--text-table-color', theme === 'light' ? '' : '#f5f6f7');
   

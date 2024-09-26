@@ -11,9 +11,9 @@ export const TemplatesRequests = () => ({
     }
   },
 
-  getTemplatesxFields: async (id: number) => {
+  getTemplatesxFields: async () => {
     try {
-      const response = await APIs.getTemplatesxFields(id);
+      const response = await APIs.getTemplatesxFields();
       return response;
     } catch (error) {
       console.error('Ocurrió un error', error);

@@ -9,6 +9,7 @@ import History from './Prices/History'
 import { useStore } from 'zustand';
 import Select from '../../../../Dynamic_Components/Select'
 import { useSelectStore } from '../../../../../../zustand/Select'
+import { toast } from 'sonner'
 
 import './style/Prices.css'
 
@@ -19,9 +20,11 @@ const Prices: React.FC = () => {
   const selectedIds = useSelectStore((state) => state.selectedIds);
 
   const setPrices = storeArticles(state => state.setPrices)
+  const setDeletePrices = storeArticles(state => state.setDeletePrices)
+
   const setModalSub = storeModals(state => state.setModalSub)
   const setHistoryPrices = storeArticles  (state => state.setHistoryPrices)
-  const { articleByOne }: any = useStore(storeArticles);
+  const { articleByOne, deletePrices }: any = useStore(storeArticles);
   
   const { prices,subModal } = useStore(storeArticles);
 
@@ -33,23 +36,19 @@ useEffect(() => {
 
 }, [articleByOne])
 
-
-
   const { getRanges }: any = RangesRequests();
-  const [ranges, setRanges] = useState<any>([])
   const { getTemplates }: any = TemplatesRequests();
-  const [templates, setTemplates] = useState<any>([])
   const { getUserGroups }: any = UserGroupsRequests();
-  const [userGroup, setUserGroup] = useState<any>([])
+
 
   const fetch = async () => {
+    let data = {
+      titulo: ''
+    }
     try {
-      let resultRanges = await getRanges();
-      setRanges(resultRanges)
+      let resultRanges = await getRanges(data);
       let resultTemplates = await getTemplates(user_id);
-      setTemplates(resultTemplates)
       let resultUserGroups = await getUserGroups(user_id);
-      setUserGroup(resultUserGroups)
       if(articleByOne) {
         setPrices(articleByOne.precios)
       }
@@ -106,42 +105,20 @@ useEffect(() => {
     observations: '',
   });
 
-const handleInputs = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = event.target;
-  setInputs((prevInputs: any) => ({
-    ...prevInputs,
-    [name]: name === 'price' || name === 'roundPrice' ? Number(value) : value,
-  }));
-};
+  const handleInputs = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setInputs((prevInputs: any) => ({
+      ...prevInputs,
+      [name]: name === 'price' || name === 'roundPrice' ? Number(value) : value,
+    }));
+  };
 
-const addPrices = () => {
-  let data = {
-    id_grupo_us: selectedIds.grouspusers.id,
-    name_grupo_us: selectedIds.grouspusers.nombre,
-    precios: inputs.price,
-    precios_fyv: inputs.roundPrice,
-    observaciones: inputs.observations,
-    precios_ext: additionalsPrices,
-    precios_ext_elim: []
-    
-  }
-  
-  if (Array.isArray(prices)) {
-    setPrices([...prices, data])
-  } else {
-    setPrices([data])
-  }
-}
+
 
 const seeHistory = (item: any) => {
   setModalSub('modal_sub_prices')
   setHistoryPrices(item)
 }
-
-const deleteMaxMin = () => {
-  
-}
-
 
 
 const [additionalsPrices, setAdditionalsPrices] =  useState<any>([])
@@ -151,16 +128,57 @@ const [additionalsPrices, setAdditionalsPrices] =  useState<any>([])
 const additionalPrices  = () => {
   let data = {
     id_rangos: selectedIds.ranges.id,
-    name_ranges: selectedIds.ranges.titulo,
+    rango_titulo: selectedIds.ranges.titulo,
     id_articulos_precios: null,
     variable_pc: selectedIds.templates.id,
-    name_variable_pc: selectedIds.templates.nombre,
+    pc_nombre: selectedIds.templates.nombre,
+    comentarios: inputs.observations,
     orden: order,
     agrupar: group,
     name_group: selectedIds.templates.id,
   };
   setAdditionalsPrices([...additionalsPrices, data])
 }
+
+const deletePrice = (item: any) => {
+  const updated = additionalsPrices.filter((x: any) => x !== item);
+  setAdditionalsPrices(updated);
+};
+
+const deleteFinalPrice = (item: any) => {
+  const updated = prices.filter((x: any) => x !== item);
+  setPrices(updated);
+  setDeletePrices([...deletePrices, item.id])
+};
+
+
+const addPrices = () => {
+
+  if(selectedIds.grouspusers?.id && inputs.price && inputs.observations && inputs.roundPrice) {
+    let data = {
+      id_grupos_us: selectedIds.grouspusers.id,
+      name_group: selectedIds.grouspusers.nombre,
+      precios: inputs.price,
+      precios_fyv: inputs.roundPrice,
+      comentarios: inputs.observations,
+      precios_ext: additionalsPrices,
+      precios_ext_elim: []
+      
+    }
+    
+    if (Array.isArray(prices)) {
+      setPrices([...prices, data])
+    } else {
+      setPrices([data])
+    }
+  } else {
+    toast.warning('Por favor llena todos los campos');
+  }
+
+ 
+}
+
+
 
 
 
@@ -174,24 +192,24 @@ const additionalPrices  = () => {
           <p className='title__modals'>Precios</p>
         </div>
         <form className='article__modal_create_modal_price_container'>
-          <div className='row__one'>
-            <div>
+          <div className='row'>
+            <div className='col-4'>
               <label className='label__general'>Precio</label>
               <div className='warning__general'><small >Este campo es obligatorio</small></div>
               <input name="price" className={`inputs__general`} type="number" value={inputs.price} onChange={handleInputs} placeholder='Ingresa el precio' />
             </div>
-            <div>
+            <div className='col-4'>
               <label className='label__general'>Precio de ida y  vuelta</label>
               <div className='warning__general'><small >Este campo es obligatorio</small></div>
               <input name="roundPrice" className={`inputs__general`} type="number" value={inputs.roundPrice} onChange={handleInputs} placeholder='precio ida y vuelta' />
             </div>
-            <div>
+            <div className='col-4'>
               <Select dataSelects={dataSelects} instanceId="grouspusers"/>
             </div>
-            <div>
+            <div className='col-12'>
               <label className='label__general'>Observaciones</label>
               <div className='warning__general'><small >Este campo es obligatorio</small></div>
-              <input name="observations" className={`inputs__general`} type="text" value={inputs.observations} onChange={handleInputs} placeholder='Ingresa el nombre' />
+              <input name="observations" className={`inputs__general`} type="text" value={inputs.observations} onChange={handleInputs} placeholder='Ingresa las observaciones' />
             </div>
           
           </div>
@@ -262,7 +280,7 @@ const additionalPrices  = () => {
                     <div className='tbody__container' key={index}>
                         <div className='tbody'>
                             <div className='td'>
-                              {item?.name_ranges}
+                              {item?.rango_titulo}
                             </div>
                             <div className='td'>
                               {item?.orden}
@@ -280,7 +298,7 @@ const additionalPrices  = () => {
                               </label>
                             </div>
                             <div className='td'>
-                                <button className='btn__delete_users' type='button' onClick={() => deleteMaxMin(item)}>Eliminar</button>
+                                <button className='btn__delete_users' type='button' onClick={() => deletePrice(item)}>Eliminar</button>
                             </div>
                         </div>
                     </div>
@@ -298,7 +316,7 @@ const additionalPrices  = () => {
             <div>
               {prices ? (
                 <div className='table__numbers'>
-                    <p className='text'>Total de Ordenes</p>
+                    <p className='text'>Total de precios</p>
                     <div className='quantities_tables'>{prices.length}</div>
                 </div>
                 ) : (
@@ -327,7 +345,7 @@ const additionalPrices  = () => {
                    </div>
               </div>
             </div>
-            {prices?.length > 0 ? (
+            {prices ? (
               <div className='table__body'>
                 {prices.map((item: any, index: any) => (
                   <div className='tbody__container' key={index}>
@@ -339,16 +357,16 @@ const additionalPrices  = () => {
                           {item.precios_fyv}
                         </div>
                         <div className='td'>
-                          {item.name_grupo_us}
+                          {item.name_group}
                         </div>
                         <div className='td'>
-                          {item.observaciones}
+                          {item.comentarios}
                         </div>
                         <div className='td'>
                             <button className='btn__general-purple' type='button' onClick={() => seeHistory(item)}>Historial</button>
                         </div>
                         <div className='td'>
-                            <button className='btn__general-danger' type='button' onClick={() => deleteMaxMin(item)}>Eliminar</button>
+                            <button className='btn__general-danger' type='button' onClick={() => deleteFinalPrice(item)}>Eliminar</button>
                         </div>
                     </div>
                   </div>
