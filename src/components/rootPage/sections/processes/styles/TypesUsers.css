@@ -109,6 +109,8 @@ text-align: left;
     justify-content: center;
     display: flex;
     visibility: hidden;
+    overflow: scroll;
+
 }
 
 .overlay__types-users.active {

@@ -4,6 +4,7 @@ import { storeBranchOffcies } from '../../../../zustand/BranchOffices';
 import useUserStore from '../../../../zustand/General';
 import { storeTemplates } from '../../../../zustand/Templates';
 import './styles/templates.css'
+import DynamicVariables from '../../../../utils/DynamicVariables';
 
 
 
@@ -11,7 +12,7 @@ const Templates: React.FC = () => {
   const [name, setName] = useState<string>('')
   const [nameType, setNameType] = useState<string>('')
   const [id_template, setId_tempalte] = useState<number | null>(null)
-  
+
 
   const [selectedCompany, setSelectedCompany] = useState<number | null>(null)
 
@@ -26,11 +27,13 @@ const Templates: React.FC = () => {
 
 
   const [data_extDos, setData_extDos] = useState<any[]>([])
+  const [data_eliminar, setData_eliminar] = useState<number[]>([])
 
+  const [modoUpdate, setModoUpdate] = useState<boolean>(false)
 
-  const {getCompaniesXUsers, companiesXUsers}: any = storeCompanies();
-  const {getBranchOfficeXCompanies, branchOfficeXCompanies }: any = storeBranchOffcies();
-  const {createTemplates, templates, getTemplates, updateTemplates}: any = storeTemplates()
+  const { getCompaniesXUsers, companiesXUsers }: any = storeCompanies();
+  const { getBranchOfficeXCompanies, branchOfficeXCompanies }: any = storeBranchOffcies();
+  const { createTemplates, templates, getTemplates, updateTemplates }: any = storeTemplates()
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
 
@@ -51,74 +54,73 @@ const Templates: React.FC = () => {
       // Si data_extDos no es un array, puedes inicializarlo como un array vacío
       setData_extDos([]);
     }
-  
+
     // Crear un nuevo objeto que combine nuevaEmpresa y nuevoTipo
     const nuevoRegistro: any = {
-      id_empresa: selectedCompany,
-      nombre_empresa: companiesXUsers.find((company: any) => company.id === selectedCompany)?.razon_social,
-      id_tipo: selectedInputType,
-      nombre_tipo: [selectedInputType]
+      nombre: nameType,
+      tipo: selectedInputType,
+      id_plantilla: 0
     };
-  
+
     // Agregar el nuevo registro al estado de data_extDos
     setData_extDos([...data_extDos, nuevoRegistro]);
   };
-  
 
-  
+
+
 
   useEffect(() => {
     if (Array.isArray(data_extDos)) {
       // Verificar si el registro ya existe para evitar duplicados
       const empresaExistente = data_extDos.find(item => {
         return (item.id_empresa && item.id_empresa === selectedCompany) ||
-               (item.id_tipo && item.id_tipo === selectedInputType);
+          (item.id_tipo && item.id_tipo === selectedInputType);
       });
-  
+
       if (!empresaExistente) {
         // Resto del código...
       }
     }
   }, [data_extDos]); // Ejecutar el efecto cuando data_ext cambie
-  
+
   const deleteUser = (indexToRemove: number) => {
     // Filtrar el usuario a eliminar del arreglo data_ext
+    if (modoUpdate) {
+      let filter = data_extDos.filter((_, index) => index == indexToRemove)
+      if (filter.length > 0) {
+        if (filter[0].id !== undefined && filter[0].id !== null) {
+          setData_eliminar([...data_eliminar, filter[0].id])
+        }
+      }
+    }
     const updatedDataExt = data_extDos.filter((_, index) => index !== indexToRemove);
     setData_extDos(updatedDataExt);
   };
-  
 
 
-  const handleCreateFamilies = async (e: React.FormEvent<HTMLFormElement>) => {
+
+  const handleCreateFamilies = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
     console.log(data_extDos);
-
-    // Verificar si data_extDos es un array no vacío
     if (Array.isArray(data_extDos) && data_extDos.length > 0) {
-      // Acceder a las propiedades del primer elemento del array
-      const primerElemento = data_extDos[0];
-      const tipo = primerElemento.id_tipo;
-      const id_empresa = primerElemento.id_empresa;
-
-  
       let data = {
         nombre: name,
-        id_empresa: id_empresa
+        id_empresa: selectedCompany
       };
-  
-      let data_ext = [
-        {
-          nombre: nameType,
-          tipo: tipo,
-          id_plantilla: 0
+      if (!modoUpdate) {
+        try {
+          await createTemplates(data, data_extDos);
+          setModalState(false)
+          getTemplates(user_id)
+        } catch (error) {
+          console.error("Error al crear familias:", error);
         }
-      ];
-  
-      try {
-        await createTemplates(data, data_ext);
-      } catch (error) {
-        console.error("Error al crear familias:", error);
+      } else {
+        let filter = data_extDos.filter((x: any) => x.id == undefined || x.id == 0 || x.id == null)
+        await updateTemplates(id_template, data, filter, data_eliminar)
+        setModalState(false)
+        getTemplates(user_id)
       }
     } else {
       console.error("El array data_extDos está vacío o no es un array.");
@@ -130,8 +132,20 @@ const Templates: React.FC = () => {
     setSelectCompanies(false)
   }
 
-  const modalCreate = () => {
+  const modalCreate = (data_upd: any, mu: boolean) => {
     setModalState(!modalState)
+    setModoUpdate(mu)
+    if (mu) {
+      setName(data_upd.nombre)
+      setSelectedCompany(data_upd.id_empresa)
+      setId_tempalte(data_upd.id)
+      setData_extDos(data_upd.campos)
+    } else {
+      setName('')
+      setNameType('')
+      setSelectedCompany(null)
+      setId_tempalte(null)
+    }
   }
 
   const closeModalCreate = () => {
@@ -156,81 +170,6 @@ const Templates: React.FC = () => {
 
 
 
-  const ModalUpdate = (template_id: any) => {
-    setName(template_id.nombre)
-    setNameType(template_id.nombre)
-    setSelectedCompany(template_id.id_empresa)
-    setId_tempalte(template_id.id)
-    setModalUpdate(!modalUpdate)
-  }
-
-  const closeModalUpdate = () => {
-    setModalUpdate(false)
-    
-  }
-
-  const handleUpdateTemplates = async (e: React.FormEvent<HTMLFormElement>) => {
-
-    e.preventDefault()
-
-    console.log(data_extDos);
-
-    // Verificar si data_extDos es un array no vacío
-    if (Array.isArray(data_extDos) && data_extDos.length > 0) {
-      // Acceder a las propiedades del primer elemento del array
-      const primerElemento = data_extDos[0];
-      const tipo = primerElemento.id_tipo;
-      const id_empresa = primerElemento.id_empresa;
-  
-      console.log(tipo);
-
-    let data = {
-      nombre: name,
-      id_empresa: id_empresa
-    };
-
-
-
-    let data_nuevo = [
-      {
-        nombre: nameType,
-        tipo: tipo,
-        id_template: id_template
-      }
-    ];
-
-    let data_eliminar: any[] = [
-      
-    ]
-
-    console.log(data, data_nuevo, data_eliminar)
-
-    try {
-      await updateTemplates(user_id, data, data_nuevo, data_eliminar)
-    } catch {
-
-    }
-    // {
-    //   "data": {
-    //     "id": 0,
-    //     "nombre": "string",
-    //     "id_empresa": 0
-    //   },
-    //   "data_nuevo": [
-    //     {
-    //       "id": 0,
-    //       "nombre": "string",
-    //       "tipo": "string",
-    //       "id_plantilla": 0
-    //     }
-    //   ],
-    //   "data_eliminar": [
-    //     0
-    //   ]
-    // }
-  } }
-
-
 
   const [selectedInputType, setSelectedInputType] = useState<any>(null);
   const [selectInputTypes, setSelectInputTypes] = useState<boolean>(false);
@@ -253,57 +192,67 @@ const Templates: React.FC = () => {
 
   return (
     <div className='families'>
-       <div className='create__families_btn-container'>
-        <button className='btn__general-purple' onClick={modalCreate}>Nueva plantilla</button>
-      </div>
+       <div className=''>
+            <button className='btn__general-purple' onClick={() => modalCreate(0, false)}>Nueva plantilla</button>
+          </div>
       <div className={`overlay__families ${modalState ? 'active' : ''}`}>
         <div className={`popup__families ${modalState ? 'active' : ''}`}>
           <a href="#" className="btn-cerrar-popup__families" onClick={closeModalCreate}>
-            <svg  className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+            <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
           </a>
-      
-          <p className='title__modals'>Crear nueva plantilla</p>
-          <form className='conatiner__create_families' onSubmit={handleCreateFamilies}>
-            <div className='container__templates__form'>
-              <div>
+          {!modoUpdate ?
+            <p className='title__modals'>Crear plantilla</p>
+            :
+            <p className='title__modals'>Actualizar plantilla</p>
+
+          }
+          <br />
+          <hr />
+          <br />
+          <div className='conatiner__create_families'>
+            <div className='row'>
+              <div className='col-6 md-col-12'>
                 <label className='label__general'>Nombre</label>
                 <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
                 <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
               </div>
-              <div className='select__container'>
-                <label className='label__general'>Empresas</label>
-                <div className='warning__general' style={styleWarningSelectCompanies}><small >Este campo es obligatorio</small></div>
-                <div className={`select-btn__general ${warningSelectCompany ? 'warning' : ''}`}>
-                  <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
-                    <p>{selectedCompany ? companiesXUsers.find((s: {id: number}) => s.id === selectedCompany)?.razon_social : 'Selecciona'}</p>
-                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-                  </div>
-                  <div className={`content ${selectCompanies ? 'active' : ''}`}>
-                  <ul className={`options ${selectCompanies ? 'active' : ''}`} style={{ opacity: selectCompanies ? '1' : '0' }}>
-                    {companiesXUsers && companiesXUsers.map((company: any) => (
-                      <li key={company.id} onClick={() => handleEmpresaChange(company.id)}>
-                        {company.razon_social}
-                      </li>
-                    ))}
-                  </ul>
+              <div className='col-6 md-col-12'>
+                <div className='select__container'>
+                  <label className='label__general'>Empresas</label>
+                  <div className='warning__general' style={styleWarningSelectCompanies}><small >Este campo es obligatorio</small></div>
+                  <div className={`select-btn__general ${warningSelectCompany ? 'warning' : ''}`}>
+                    <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
+                      <p>{selectedCompany ? companiesXUsers.find((s: { id: number }) => s.id === selectedCompany)?.razon_social : 'Selecciona'}</p>
+                      <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                    </div>
+                    <div className={`content ${selectCompanies ? 'active' : ''}`}>
+                      <ul className={`options ${selectCompanies ? 'active' : ''}`} style={{ opacity: selectCompanies ? '1' : '0' }}>
+                        {companiesXUsers && companiesXUsers.map((company: any) => (
+                          <li key={company.id} onClick={() => handleEmpresaChange(company.id)}>
+                            {company.razon_social}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
+
               </div>
             </div>
             <div className='table__templates' >
-              <div className='add__components_templates  '>
-                <div>
+              <div className='row'>
+                <div className='col-6 md-col-12'>
                   <label className='label__general'>Nombre</label>
                   <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
                   <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={nameType} onChange={(e) => setNameType(e.target.value)} placeholder='Ingresa el nombre' />
                 </div>
-                <div className='add__types'>
+                <div className='col-6 md-col-12'>
                   <div className='select__container'>
                     <label className='label__general'>Tipo de Campo</label>
                     <div className={`select-btn__general ${selectInputTypes ? 'active' : ''}`} onClick={openSelectTypes}>
                       <div className={`select-btn ${selectInputTypes ? 'active' : ''}`}>
                         <p>{selectedInputType ? [selectedInputType] : 'Selecciona'}</p>
-                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                       </div>
                       <div className={`content ${selectInputTypes ? 'active' : ''}`}>
                         <ul className={`options ${selectInputTypes ? 'active' : ''}`}>
@@ -313,7 +262,7 @@ const Templates: React.FC = () => {
                         </ul>
                       </div>
                     </div>
-                  </div>  
+                  </div>
                   <div>
                     <div className='container__add_companyin_families'>
                       <button className='btn__general-purple' onClick={addCompany} type='button'>Agregar</button>
@@ -321,12 +270,11 @@ const Templates: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <p>Almacen activo en las empresas (2)</p>
               <div>
                 <div>
-                  {selectedCompanyIds ? (
+                  {data_extDos.length ? (
                     <div>
-                      <p>Tus empresas {selectedCompanyIds.length}</p>
+                      <p>Campos Agregados {data_extDos.length}</p>
                     </div>
                   ) : (
                     <p>No hay empresas</p>
@@ -335,12 +283,12 @@ const Templates: React.FC = () => {
                 <div className='table__head'>
                   <div className='thead'>
                     <div className='th'>
-                      <p className=''>Empresa</p>
+                      <p className=''>Nombre</p>
                     </div>
                     <div className='th'>
-                      <p className=''>Tipos</p>
+                      <p className=''>Tipo</p>
                     </div>
-                    
+
                   </div>
                 </div>
                 {data_extDos.length > 0 ? (
@@ -349,10 +297,10 @@ const Templates: React.FC = () => {
                       <div className='tbody__container' key={index}>
                         <div className='tbody'>
                           <div className='td'>
-                            {item.nombre_empresa}
+                            {item.nombre}
                           </div>
                           <div className='td'>
-                            {item.nombre_tipo}
+                            {item.tipo}
                           </div>
                           <div className='td'>
                             <button className='btn__delete_users' type='button' onClick={() => deleteUser(index)}>Eliminar</button>
@@ -368,19 +316,19 @@ const Templates: React.FC = () => {
               </div>
             </div>
             <div className='container__btns_branch-office'>
-              <button className='btn__general-purple' type='submit'>Crear nueva familia</button>
+              <button className='btn__general-purple' onClick={(e) => handleCreateFamilies(e)}>Guardar</button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
-      <div className='table__branch-offices' >
+      <div className='table__templates' >
         <div>
-          {branchOfficeXCompanies ? (
+          {templates ? (
             <div>
-              <p>Tus empresas {branchOfficeXCompanies.length}</p>
+              <p>Tus Plantillas {templates.length}</p>
             </div>
           ) : (
-            <p>No hay empresas</p>
+            <p>No hay Plantillas</p>
           )}
         </div>
         <div className='table__head'>
@@ -391,34 +339,22 @@ const Templates: React.FC = () => {
             <div className='th'>
               <p>Empresa</p>
             </div>
-            <div className='th'>
-              <p>Dirección</p>
-            </div>
-            <div className='th'>
-              <p>Contacto</p>
-            </div>
           </div>
         </div>
         {templates ? (
           <div className='table__body'>
-            {templates.map((sucursal: any) => {
+            {templates.map((dat: any, index: number) => {
               return (
-                <div className='tbody__container' key={sucursal.id}>
+                <div className='tbody__container' key={index}>
                   <div className='tbody'>
                     <div className='td'>
-                      <p>{sucursal.nombre}</p>
+                      <p>{dat.nombre}</p>
                     </div>
                     <div className='td'>
-                    <p>{sucursal.empresa}</p>
+                      <p>{dat.empresa}</p>
                     </div>
                     <div className='td'>
-                      
-                    </div>
-                    <div className='td'>
-                     
-                    </div>
-                    <div className='td'>
-                      <button className='branchoffice__edit_btn' onClick={() => ModalUpdate(sucursal)}>Editar</button>
+                      <button className='branchoffice__edit_btn' onClick={() => modalCreate(dat, true)}>Editar</button>
                     </div>
                   </div>
                 </div>
@@ -428,122 +364,6 @@ const Templates: React.FC = () => {
         ) : (
           <p>Cargando datos...</p>
         )}
-      </div>
-      <div className={`overlay__update_branch-offices ${modalUpdate ? 'active' : ''}`}>
-          <div className={`popup__update_branch-offices ${modalUpdate ? 'active' : ''}`}>
-            <a href="#" className="btn-cerrar-popup__update_branch-offices" onClick={closeModalUpdate}>
-              <svg xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
-            </a>
-            {/* <h3>Crear Nueva Empresa</h3> */}
-            <form className='conatiner__create_families' onSubmit={handleUpdateTemplates}>
-            <div className='container__templates__form'>
-              <div>
-                <label className='label__general'>Nombre</label>
-                <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
-                <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
-              </div>
-              <div className='select__container'>
-                <label className='label__general'>Empresas</label>
-                <div className='warning__general' style={styleWarningSelectCompanies}><small >Este campo es obligatorio</small></div>
-                <div className={`select-btn__general ${warningSelectCompany ? 'warning' : ''}`}>
-                  <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
-                    <p>{selectedCompany ? companiesXUsers.find((s: {id: number}) => s.id === selectedCompany)?.razon_social : 'Selecciona'}</p>
-                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-                  </div>
-                  <div className={`content ${selectCompanies ? 'active' : ''}`}>
-                  <ul className={`options ${selectCompanies ? 'active' : ''}`} style={{ opacity: selectCompanies ? '1' : '0' }}>
-                    {companiesXUsers && companiesXUsers.map((company: any) => (
-                      <li key={company.id} onClick={() => handleEmpresaChange(company.id)}>
-                        {company.razon_social}
-                      </li>
-                    ))}
-                  </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className='table__templates' >
-              <div className='add__components_templates  '>
-                <div>
-                  <label className='label__general'>Nombre</label>
-                  <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={nameType} onChange={(e) => setNameType(e.target.value)} placeholder='Ingresa el nombre' />
-                </div>
-                <div className='add__types'>
-                  <div className='select__container'>
-                    <label className='label__general'>Tipo de Campo</label>
-                    <div className={`select-btn__general ${selectInputTypes ? 'active' : ''}`} onClick={openSelectTypes}>
-                      <div className={`select-btn ${selectInputTypes ? 'active' : ''}`}>
-                        <p>{selectedInputType ? [selectedInputType] : 'Selecciona'}</p>
-                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-                      </div>
-                      <div className={`content ${selectInputTypes ? 'active' : ''}`}>
-                        <ul className={`options ${selectInputTypes ? 'active' : ''}`}>
-                          {Object.keys(types).map(key => (
-                            <li key={key} value={key} onClick={() => TypesChange(key)}>{[key]}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>  
-                  <div>
-                    <div className='container__add_companyin_families'>
-                      <button className='btn__general-purple' onClick={addCompany} type='button'>Agregar</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p>Almacen activo en las empresas (2)</p>
-              <div>
-                <div>
-                  {selectedCompanyIds ? (
-                    <div>
-                      <p>Tus empresas {selectedCompanyIds.length}</p>
-                    </div>
-                  ) : (
-                    <p>No hay empresas</p>
-                  )}
-                </div>
-                <div className='table__head'>
-                  <div className='thead'>
-                    <div className='th'>
-                      <p className=''>Empresa</p>
-                    </div>
-                    <div className='th'>
-                      <p className=''>Tipos</p>
-                    </div>
-                    
-                  </div>
-                </div>
-                {data_extDos.length > 0 ? (
-                  <div className='table__body'>
-                    {data_extDos.map((item, index) => (
-                      <div className='tbody__container' key={index}>
-                        <div className='tbody'>
-                          <div className='td'>
-                            {item.nombre_empresa}
-                          </div>
-                          <div className='td'>
-                            {item.nombre_tipo}
-                          </div>
-                          <div className='td'>
-                            <button className='btn__delete_users' type='button' onClick={() => deleteUser(index)}>Eliminar</button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p>Cargando datos...</p>
-                )}
-
-              </div>
-            </div>
-            <div className='container__btns_branch-office'>
-              <button className='btn__general-purple' type='submit'>Crear nueva familia</button>
-            </div>
-          </form>
-          </div>
       </div>
     </div>
   )

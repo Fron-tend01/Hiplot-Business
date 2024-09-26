@@ -134,7 +134,7 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
-
+    overflow: auto;
 }
 
 .overlay__users.active {
@@ -598,20 +598,19 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
+    overflow:auto
 }
 
 .overlay__edit_users.active {
 	visibility: visible;
 }
-
 .popup__edit_users {
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	font-family: 'Montserrat', sans-serif;
 	padding: 20px;
 	text-align: center;
-	width: 80%;
-	
+	width: 90%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;

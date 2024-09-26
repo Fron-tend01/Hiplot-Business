@@ -8,6 +8,7 @@ import "./styles/TiemposEntrega.css"
 import { RangesRequests } from '../../../../fuctions/Ranges'
 import { companiesRequests } from '../../../../fuctions/Companies';
 import { BranchOfficesRequests } from '../../../../fuctions/BranchOffices';
+import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales';
 
 interface te {
   id: number,
@@ -78,25 +79,25 @@ const TiemposEntrega = () => {
     tEntregaData_exist: [],
     tEntregaData_elim: []
   });
+  const [sucursalSel, setSucursalSel] = useState<any>({})
+  const [empresaSel, setEmpresaSel] = useState<any>({})
 
-  const {getCompaniesXUsers}: any = companiesRequests()
+  const [sucursalSelCreate, setSucursalSelCreate] = useState<any>({})
+  const [empresaSelCreate, setEmpresaSelCreate] = useState<any>({})
+
+  const { getCompaniesXUsers }: any = companiesRequests()
   const [companies, setCompanies] = useState<any>([])
 
-  const {getBranchOffices}: any = BranchOfficesRequests()
+  const { getBranchOffices }: any = BranchOfficesRequests()
 
   const [modal, setModal] = useState<boolean>(false)
   const [modoUpdate, setModoUpdate] = useState<boolean>(false)
-
-  const [selectEmpresas, setSelectEmpresas] = useState<boolean>(false)
-  const [selectSucursales, setSelectSucursales] = useState<boolean>(false)
-
   const [data, setData] = useState<any>(null)
 
   const [selectTipote, setSelectTipote] = useState<boolean>(false)
   const [selectDiaRecepcion, setSelectDiaRecepcion] = useState<boolean>(false)
   const [filteringBranchOffices, setFilteringBranchOffices] = useState<any>([])
   const userState = useUserStore(state => state.user);
-  const { getRanges }: any = RangesRequests();
   const [ranges, setRanges] = useState<any>([])
   const [selectRangos, setSelectRangos] = useState<boolean>(false)
 
@@ -110,14 +111,15 @@ const TiemposEntrega = () => {
     setCompanies(resultCompanies)
     // await selectAutomaticSuc(resultCompanies[0].id)
     // await selectAutomaticSucSearcher(resultCompanies[0].id)
-    let resultRanges = await getRanges();
+
+    let resultRanges = await APIs.CreateAny({ titulo: '' }, "rangos_get")
     setRanges(resultRanges)
 
     setSearcher({
       id: 0,
       nombre: '',
-      id_sucursal: 0,
-      id_empresa: 0,
+      id_sucursal: sucursalSel,
+      id_empresa: empresaSel,
       empresas: [...resultCompanies],
       empresasSelectOp: false,
       sucursales: [...resultBranch],
@@ -131,7 +133,7 @@ const TiemposEntrega = () => {
     fetch()
     getData()
     calcular_entrega()
-  }, [configte.dia_recepcion, configte.dias_entrega, configte.entrega ])
+  }, [configte.dia_recepcion, configte.dias_entrega, configte.entrega])
   const getData = async () => {
     let result = await APIs.CreateAny(searcher, "tentrega_get")
     setData(result)
@@ -157,18 +159,12 @@ const TiemposEntrega = () => {
   }
   const selectAutomaticSuc = async (company: any) => {
     let resultBranch = await getBranchOffices(company, user_id)
-    
+
     setFilteringBranchOffices(resultBranch)
-  }
-  const selectAutomaticSucSearcher = async (company: any) => {
-    console.log(company);
-    
-    let resultBranch = await getBranchOffices(company, user_id)
-    DynamicVariables.updateAnyVar(setSearcher, "sucursalesFiltering", resultBranch)
   }
   const Modal = (modoUpdate: boolean, data: any) => {
     setModal(true)
-    setTiempose({...forclearte})
+    setTiempose({ ...forclearte })
     if (modoUpdate) {
       DynamicVariables.updateAnyVar(setTiempose, "id", data.id)
       DynamicVariables.updateAnyVar(setTiempose, "nombre", data.nombre)
@@ -186,17 +182,33 @@ const TiemposEntrega = () => {
       // });
       setModoUpdate(true)
     } else {
+      DynamicVariables.updateAnyVar(setTiempose, "id_sucursal", sucursalSelCreate?.id)
+      DynamicVariables.updateAnyVar(setTiempose, "id_empresa", empresaSelCreate?.id)
       setModoUpdate(false)
     }
   }
   const closeModal = () => {
     setModal(false)
   }
+  useEffect(() => {
+    DynamicVariables.updateAnyVar(setTiempose, "id_sucursal", sucursalSelCreate?.id)
+    DynamicVariables.updateAnyVar(setTiempose, "id_empresa", empresaSelCreate?.id)
+  }, [sucursalSelCreate, empresaSelCreate])
+
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // console.log(tiempose);
-
+    await DynamicVariables.updateAnyVar(setTiempose, "id_sucursal", sucursalSelCreate?.id)
+    await DynamicVariables.updateAnyVar(setTiempose, "id_empresa", empresaSelCreate?.id)
+    if (tiempose.nombre.length == 0) {
+      Swal.fire("Notificacion", "Es necesario escribir un nombre para identificar el los tiempos de entrega", "warning")
+      return
+    }
+    if (tiempose.id_rango == 0) {
+      Swal.fire("Notificacion", "Es necesario seleccionar un rango para tus tiempos de entrega", "warning")
+      return
+    }
+    console.log(tiempose);
+    return
     await APIs.CreateAny(tiempose, "tentrega_create")
       .then(async (response: any) => {
         Swal.fire('Notificación', response.mensaje, 'success');
@@ -220,49 +232,8 @@ const TiemposEntrega = () => {
       <div className='te__container'>
 
         <div className='row'>
-          <div className='col-4'>
-            <div className='select__container'>
-              <label className='label__general'>Empresa</label>
-              <div className={`select-btn ${searcher.empresasSelectOp ? 'active' : ''}`} onClick={() => DynamicVariables.updateAnyVar(setSearcher, "empresasSelectOp", !searcher.empresasSelectOp)}>
-                <p>{searcher.id_empresa ? searcher.empresas.find((s: { id: number }) => s.id === searcher.id_empresa)?.razon_social : 'Selecciona'}</p>
-                <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-              </div>
-              <div className={`content ${searcher.empresasSelectOp ? 'active' : ''}`}>
-                <ul className={`options ${searcher.empresasSelectOp ? 'active' : ''}`} style={{ opacity: searcher.empresasSelectOp ? '1' : '0' }}>
-                  {searcher.empresas && searcher.empresas.map((fam: any) => (
-                    <li key={fam.id} onClick={() => {
-                      DynamicVariables.updateAnyVar(setSearcher, "id_empresa", fam.id);
-                      DynamicVariables.updateAnyVar(setSearcher, "empresasSelectOp", false); selectAutomaticSucSearcher(fam.id);
-                    }}>
-                      {fam.razon_social}
-                    </li>
-                  ))
-                  }
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className='col-4'>
-            <div className='select__container'>
-              <label className='label__general'>Sucursal</label>
-              <div className={`select-btn ${searcher.sucursalesSelectOp ? 'active' : ''}`} onClick={() => DynamicVariables.updateAnyVar(setSearcher, "sucursalesSelectOp", !searcher.sucursalesSelectOp)}>
-                <p>{searcher.id_sucursal ? searcher.sucursalesFiltering.find((s: { id: number }) => s.id === searcher.id_sucursal)?.nombre : 'Selecciona'}</p>
-                <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-              </div>
-              <div className={`content ${searcher.sucursalesSelectOp ? 'active' : ''}`}>
-                <ul className={`options ${searcher.sucursalesSelectOp ? 'active' : ''}`} style={{ opacity: searcher.sucursalesSelectOp ? '1' : '0' }}>
-                  {searcher.sucursalesFiltering && searcher.sucursalesFiltering.map((fam: any) => (
-                    <li key={fam.id} onClick={() => {
-                      DynamicVariables.updateAnyVar(setSearcher, "id_sucursal", fam.id);
-                      DynamicVariables.updateAnyVar(setSearcher, "sucursalesSelectOp", false);
-                    }}>
-                      {fam.nombre}
-                    </li>
-                  ))
-                  }
-                </ul>
-              </div>
-            </div>
+          <div className='col-8'>
+            <Empresas_Sucursales modeUpdate={false} empresaDyn={empresaSel} sucursalDyn={sucursalSel} setEmpresaDyn={setEmpresaSel} setSucursalDyn={setSucursalSel} />
           </div>
           <div className='col-3'>
             <label className='label__general'>Nombre</label>
@@ -282,60 +253,60 @@ const TiemposEntrega = () => {
           </div>
         </div>
 
-       
-            <div className='table__units' >
+
+        <div className='table__units' >
+          <div>
+            {data ? (
               <div>
-                {data ? (
-                  <div>
-                    <p className='text'>Tus tiempos de entrega {data.length}</p>
-                  </div>
-                ) : (
-                  <p>No hay tiempos de entrega</p>
-                )}
+                <p className='text'>Tus tiempos de entrega {data.length}</p>
               </div>
-              <div className='table__head'>
-                <div className='thead'>
-                  <div className='th'>
-                    <p className=''>RANGO</p>
-                  </div>
-                  <div className='th'>
-                    <p>NOMBRE</p>
-                  </div>
-                  <div className='th'>
-                    <p>SUCURSAL</p>
-                  </div>
-                  <div className='th'>
-                    <p>OPT</p>
-                  </div>
-                </div>
+            ) : (
+              <p>No hay tiempos de entrega</p>
+            )}
+          </div>
+          <div className='table__head'>
+            <div className='thead'>
+              <div className='th'>
+                <p className=''>RANGO</p>
               </div>
-              {data ? (
-                <div className='table__body'>
-                  {data.map((car: any) => {
-                    return (
-                      <div className='tbody__container' key={car.id}>
-                        <div className='tbody'>
-                          <div className='td'>
-                            <p>{car.rango}</p>
-                          </div>
-                          <div className='td'>
-                            {car.nombre}
-                          </div>
-                          <div className='td'>
-                            {car.sucursal}
-                          </div>
-                          <div className='td'>
-                            <button className='branchoffice__edit_btn' onClick={() => Modal(true, car)}>Editar</button>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <p>Cargando datos...</p>
-              )}
+              <div className='th'>
+                <p>NOMBRE</p>
+              </div>
+              <div className='th'>
+                <p>SUCURSAL</p>
+              </div>
+              <div className='th'>
+                <p>OPT</p>
+              </div>
             </div>
+          </div>
+          {data ? (
+            <div className='table__body'>
+              {data.map((car: any) => {
+                return (
+                  <div className='tbody__container' key={car.id}>
+                    <div className='tbody'>
+                      <div className='td'>
+                        <p>{car.rango}</p>
+                      </div>
+                      <div className='td'>
+                        {car.nombre}
+                      </div>
+                      <div className='td'>
+                        {car.sucursal}
+                      </div>
+                      <div className='td'>
+                        <button className='branchoffice__edit_btn' onClick={() => Modal(true, car)}>Editar</button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p>Cargando datos...</p>
+          )}
+        </div>
 
 
 
@@ -357,50 +328,10 @@ const TiemposEntrega = () => {
                 <span> <b> GENERAL</b></span>
                 <hr />
                 <div className='row'>
-                  <div className='col-4'>
-                    <div className='select__container'>
-                      <label className='label__general'>Empresa</label>
-                      <div className={`select-btn ${selectEmpresas ? 'active' : ''}`} onClick={() => setSelectEmpresas(!selectEmpresas)}>
-                        <p>{tiempose.id_empresa ? companies?.find((s: { id: number }) => s.id === tiempose.id_empresa)?.razon_social : 'Selecciona'}</p>
-                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                      </div>
-                      <div className={`content ${selectEmpresas ? 'active' : ''}`}>
-                        <ul className={`options ${selectEmpresas ? 'active' : ''}`} style={{ opacity: selectEmpresas ? '1' : '0' }}>
-                          {companies?.map((fam: any) => (
-                            <li key={fam.id} onClick={() => {
-                              DynamicVariables.updateAnyVar(setTiempose, "id_empresa", fam.id);
-                              setSelectEmpresas(false); selectAutomaticSuc(fam.id);
-                            }}>
-                              {fam.razon_social}
-                            </li>
-                          ))
-                          }
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='col-4'>
-                    <div className='select__container'>
-                      <label className='label__general'>Sucursal</label>
-                      <div className={`select-btn ${selectSucursales ? 'active' : ''}`} onClick={() => setSelectSucursales(!selectSucursales)}>
-                        <p>{tiempose.id_sucursal ? filteringBranchOffices.find((s: { id: number }) => s.id === tiempose.id_sucursal)?.nombre : 'Selecciona'}</p>
-                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                      </div>
-                      <div className={`content ${selectSucursales ? 'active' : ''}`}>
-                        <ul className={`options ${selectSucursales ? 'active' : ''}`} style={{ opacity: selectSucursales ? '1' : '0' }}>
-                          {filteringBranchOffices && filteringBranchOffices.map((fam: any) => (
-                            <li key={fam.id} onClick={() => {
-                              DynamicVariables.updateAnyVar(setTiempose, "id_sucursal", fam.id);
-                              setSelectSucursales(false);
-                            }}>
-                              {fam.nombre}
-                            </li>
-                          ))
-                          }
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
+                 <div className='col-8'>
+                  <Empresas_Sucursales modeUpdate={false} empresaDyn={empresaSelCreate} sucursalDyn={sucursalSelCreate} 
+                  setEmpresaDyn={setEmpresaSelCreate} setSucursalDyn={setSucursalSelCreate}  />
+                 </div>
                   <div className='col-4'>
                     <label className='label__general'>Nombre</label>
                     <input className={`inputs__general`} value={tiempose.nombre} onChange={(e) => DynamicVariables.updateAnyVar(setTiempose, "nombre", e.target.value)} type='text' placeholder='Ingresa nombre' />
@@ -560,12 +491,12 @@ const TiemposEntrega = () => {
                   )}
                 </div>
               </div>
-              <div className='col-6'>
+              <div className='col-12'>
                 <span><b>CLIENTES</b> </span>
 
                 <div className='table__modal'>
                   <div>
-                    {tiempose.tEntregaData_nuevos.length >= 1  ? (
+                    {tiempose.tEntregaData_nuevos.length >= 1 ? (
                       <div>
                         <p className='text'>Tus Tiempos de Clientes {tiempose.tEntregaData_nuevos.length}</p>
                       </div>
@@ -601,7 +532,6 @@ const TiemposEntrega = () => {
                             <div className='tbody'>
                               <div className='td'>
                                 <div className='select__container'>
-                                  <label className='label__general'>Día Recepción</label>
                                   <div className={`select-btn ${selectDiaRecepcion ? 'active' : ''}`} onClick={() => setSelectDiaRecepcion(!selectDiaRecepcion)}>
                                     <p>{configte.dia_recepcion ? dias.find((s: { nombre: string }) => s.nombre === configte.dia_recepcion)?.nombre : 'Selecciona'}</p>
                                     <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
