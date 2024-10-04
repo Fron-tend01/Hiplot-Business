@@ -63,6 +63,16 @@
     border-radius: 15px;
     background-color: #fff;
 }
+.card-create {
+    padding:10px;
+    border-radius: 15px;
+    background-color: #f3f3d5;
+}
+.card-attention {
+    padding:10px;
+    border-radius: 15px;
+    background-color: #c7e1f7;
+}
 .popup__create_modal {
 	background-color: var(--background-modal);
 	border-radius: 5px;
@@ -107,7 +117,7 @@
 
 
 
-.table__modal {
+.table__modal_te {
     display: grid;
     height: 100%;
     grid-template-rows: repeat(3, auto) 1fr;
@@ -115,28 +125,28 @@
 }
 
 
-.table__modal .table__head {
+.table__modal_te .table__head {
     display: flex;
     width: 100%;
     background-color: var( --table-color);
     border-radius: 5px 5px 0 0;
 }
 
-.table__modal .table__head .thead {
+.table__modal_te .table__head .thead {
    display: flex;
    width: 100%;
 }
 
-.table__modal .table__head .thead {
+.table__modal_te .table__head .thead {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(5, 1fr) 100px;
     padding: 10px;
     font-weight: 600;
     color: var(--text-table-color);
 	text-align: left;
 }
 
-.table__modal .table__body {
+.table__modal_te .table__body {
 	height: 100%;
     overflow: hidden;
     overflow: auto;
@@ -157,40 +167,67 @@
 }
 
 
-.table__modal .tbody__container:nth-child(even) {
+.table__modal_te .tbody__container:nth-child(even) {
     background-color: var(--table-color);
   }
   
-.table__modal .tbody__container:nth-child(odd) {
+.table__modal_te .tbody__container:nth-child(odd) {
     background-color: var(--two-table-color);
   }
 
-.table__modal .table__body .tbody {
+.table__modal_te .table__body .tbody {
     display: flex;
 }
 
-.table__modal .table__body .tbody {
+.table__modal_te .table__body .tbody {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(5, 1fr) 100px;
     padding: 10px;
+    text-align: left;
+
 }
 
-.table__modal .table__body .tbody .td {
+.table__modal_te .table__body .tbody .td {
     color: var(--text-color);
 }
 
 
-.table__modal .table__body .tbody:hover {
+.table__modal_te .table__body .tbody:hover {
     background-color: var(--secundary-color);
     color: #fff;
 }
 
+.btn-warning {
+    background-color: #da853c;
+    padding: 5px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+}
 
 
-
-
-
-
+.fade-blink {
+    animation: fade-blink-animation 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes fade-blink-animation {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+  
+  .btn-success {
+    background-color: #59d698;
+    padding: 5px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+}
 
 
 

@@ -6,8 +6,8 @@ import { storeDv } from '../../../zustand/Dynamic_variables';
 import { useStore } from 'zustand';
 
 
-const Empresas_Sucursales = (props:any) => {
-    const {modeUpdate, empresaDyn, sucursalDyn, setEmpresaDyn, setSucursalDyn} = props
+const Empresas_Sucursales = (props: any) => {
+    const { modeUpdate, empresaDyn, sucursalDyn, setEmpresaDyn, setSucursalDyn, all = false } = props
     // const setEmpresa = storeDv(state => state.setEmpresa)
     // // const { empresa, sucursal }: any = useStore(storeDv)
 
@@ -27,20 +27,26 @@ const Empresas_Sucursales = (props:any) => {
 
     const fetch = async () => {
         let resultCompanies = await getCompaniesXUsers(user_id)
+        if (all) {
+            resultCompanies.unshift({ razon_social: 'Todos', id: 0 });
+        }
         let resultBranch = await getBranchOffices(resultCompanies[0].id, user_id)
+        if (all) {
+            resultBranch.unshift({ nombre: 'Todos', id: 0 });
+        }
         setEmpresas(resultCompanies)
-        setEmpresaDyn(resultCompanies[0])
         setSucursales(resultBranch)
-        setSucursalDyn(resultBranch[0])
+        await setEmpresaDyn(resultCompanies[0])
+        await setSucursalDyn(resultBranch[0])
     }
 
     useEffect(() => {
-            fetch()
+        fetch()
     }, [])
 
     const fetch2 = async () => {
         let resultCompanies = await getCompaniesXUsers(user_id)
-        
+
         let resultBranch = await getBranchOffices(empresaDyn.id, user_id)
         setEmpresas(resultCompanies)
         // setEmpresa(resultCompanies[0])
@@ -51,14 +57,17 @@ const Empresas_Sucursales = (props:any) => {
         if (modeUpdate) {
             fetch2()
             console.log('yes');
-            
+
         }
     }, [empresaDyn, sucursalDyn])
 
 
-    
+
     const selectAutomaticSuc = async (company: any) => {
         let resultBranch = await getBranchOffices(company, user_id)
+        if (all) {
+            resultBranch.unshift({ nombre: 'Todos', id: 0 });
+        }
         setSucursales(resultBranch)
         setSucursalDyn(resultBranch[0])
     }
@@ -70,51 +79,52 @@ const Empresas_Sucursales = (props:any) => {
                     <div className='select-btn__general'>
                         <div className={`select-btn ${empresaSelectedOpen ? 'active' : ''}`} onClick={() => SetEmpresaSelectedOpen(!empresaSelectedOpen)}>
                             <div className='select__container_title'>
-                                <p>{empresaDyn?.id ? empresas.find((s: { id: number }) => s.id === empresaDyn?.id)?.razon_social : 'Selecciona'}</p>
+                                <p>{empresaDyn?.id ? empresas.find((s: { id: number }) => s.id === empresaDyn?.id)?.razon_social : 'Todos'}</p>
                             </div>
                             <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                         </div>
-                          <div className={`content ${empresaSelectedOpen ? 'active' : ''}`}>
-                        <ul className={`options ${empresaSelectedOpen ? 'active' : ''}`} style={{ opacity: empresaSelectedOpen ? '1' : '0' }}>
+                        <div className={`content ${empresaSelectedOpen ? 'active' : ''}`}>
+                            <ul className={`options ${empresaSelectedOpen ? 'active' : ''}`} style={{ opacity: empresaSelectedOpen ? '1' : '0' }}>
+
                                 {empresas && empresas.map((fam: any) => (
-                                <li key={fam.id} onClick={() => {
-                                    SetEmpresaSelectedOpen(false);
-                                    selectAutomaticSuc(fam.id);
-                                    setEmpresaDyn(fam)
-                                }}>
-                                    {fam.razon_social}
-                                </li>
-                            ))
-                            }
-                                </ul>
-                            </div>
+                                    <li key={fam.id} onClick={() => {
+                                        SetEmpresaSelectedOpen(false);
+                                        selectAutomaticSuc(fam.id);
+                                        setEmpresaDyn(fam)
+                                    }}>
+                                        {fam.razon_social}
+                                    </li>
+                                ))
+                                }
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
             <div className='col-6 sm-col-12'>
                 <div className='select__container'>
                     <label className='label__general'>Sucursal</label>
-                    
+
                     <div className='select-btn__general'>
-                    <div className={`select-btn ${sucursalSelectedOpen ? 'active' : ''}`} onClick={() => SetSucursalSelectedOpen(!sucursalSelectedOpen)}>
-                        <div className='select__container_title'>
-                            <p>{sucursalDyn?.id ? sucursales.find((s: { id: number }) => s.id === sucursalDyn?.id)?.nombre : 'Selecciona'}</p>
+                        <div className={`select-btn ${sucursalSelectedOpen ? 'active' : ''}`} onClick={() => SetSucursalSelectedOpen(!sucursalSelectedOpen)}>
+                            <div className='select__container_title'>
+                                <p>{sucursalDyn?.id ? sucursales.find((s: { id: number }) => s.id === sucursalDyn?.id)?.nombre : 'Todos'}</p>
+                            </div>
+                            <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                         </div>
-                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                    </div>
-                    <div className={`content ${sucursalSelectedOpen ? 'active' : ''}`}>
-                        <ul className={`options ${sucursalSelectedOpen ? 'active' : ''}`} style={{ opacity: sucursalSelectedOpen ? '1' : '0' }}>
-                            {sucursales && sucursales.map((fam: any) => (
-                                <li key={fam.id} onClick={() => {
-                                    SetSucursalSelectedOpen(false);
-                                    setSucursalDyn(fam)
-                                }}>
-                                    {fam.nombre}
-                                </li>
-                            ))
-                            }
-                        </ul>
-                    </div>
+                        <div className={`content ${sucursalSelectedOpen ? 'active' : ''}`}>
+                            <ul className={`options ${sucursalSelectedOpen ? 'active' : ''}`} style={{ opacity: sucursalSelectedOpen ? '1' : '0' }}>
+                                {sucursales && sucursales.map((fam: any) => (
+                                    <li key={fam.id} onClick={() => {
+                                        SetSucursalSelectedOpen(false);
+                                        setSucursalDyn(fam)
+                                    }}>
+                                        {fam.nombre}
+                                    </li>
+                                ))
+                                }
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
