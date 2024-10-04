@@ -1,6 +1,6 @@
 import APIs from '../../../../services/services/APIs'
 import Swal from 'sweetalert2';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import DynamicVariables from '../../../../utils/DynamicVariables';
 import '../../../../utils/DynamicVariables';
 import useUserStore from '../../../../zustand/General';
@@ -49,6 +49,7 @@ const TiemposEntrega = () => {
     }
   ]
   const [configte, setConfigte] = useState({
+    i: 0,
     id: 0,
     dia_recepcion: '',
     hora_inicial_recepcion: '',
@@ -57,7 +58,21 @@ const TiemposEntrega = () => {
     tipo: 0,
     tipoSel: 0,
     hora_entrega: '',
-    entrega: ''
+    entrega: '',
+    edit: false
+  })
+  const [configtec, setConfigtec] = useState({
+    i: 0,
+    id: 0,
+    dia_recepcion: '',
+    hora_inicial_recepcion: '',
+    hora_final_recepcion: '',
+    dias_entrega: 0,
+    tipo: 0,
+    tipoSel: 0,
+    hora_entrega: '',
+    entrega: '',
+    edit: false
   })
   const [tiempose, setTiempose] = useState<te>({
     id: 0,
@@ -85,8 +100,6 @@ const TiemposEntrega = () => {
   const [sucursalSelCreate, setSucursalSelCreate] = useState<any>({})
   const [empresaSelCreate, setEmpresaSelCreate] = useState<any>({})
 
-  const { getCompaniesXUsers }: any = companiesRequests()
-  const [companies, setCompanies] = useState<any>([])
 
   const { getBranchOffices }: any = BranchOfficesRequests()
 
@@ -100,34 +113,33 @@ const TiemposEntrega = () => {
   const userState = useUserStore(state => state.user);
   const [ranges, setRanges] = useState<any>([])
   const [selectRangos, setSelectRangos] = useState<boolean>(false)
-
   let user_id = userState.id
-
-  const [searcher, setSearcher] = useState<any>({})
+  const forSlide = useRef<HTMLDivElement>(null);
+  const handleScroll = () => {
+    if (forSlide.current) {
+      forSlide.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  const [searcher, setSearcher] = useState<any>({
+    id: 0,
+    nombre: '',
+    id_sucursal: 0,
+    id_usuario: 0
+  })
   const fetch = async () => {
-    let resultCompanies = await getCompaniesXUsers(user_id)
-    let resultBranch = await getBranchOffices(resultCompanies[0].id, user_id)
-
-    setCompanies(resultCompanies)
-    // await selectAutomaticSuc(resultCompanies[0].id)
-    // await selectAutomaticSucSearcher(resultCompanies[0].id)
 
     let resultRanges = await APIs.CreateAny({ titulo: '' }, "rangos_get")
     setRanges(resultRanges)
-
     setSearcher({
       id: 0,
       nombre: '',
-      id_sucursal: sucursalSel,
-      id_empresa: empresaSel,
-      empresas: [...resultCompanies],
-      empresasSelectOp: false,
-      sucursales: [...resultBranch],
-      sucursalesFiltering: [],
-      sucursalesSelectOp: false,
+      id_sucursal: sucursalSel?.id,
       id_usuario: user_id
     })
   }
+  useEffect(() => {
+    DynamicVariables.updateAnyVar(setSearcher, "id_sucursal", sucursalSel?.id)
+  }, [sucursalSel])
 
   useEffect(() => {
     fetch()
@@ -135,6 +147,9 @@ const TiemposEntrega = () => {
     calcular_entrega()
   }, [configte.dia_recepcion, configte.dias_entrega, configte.entrega])
   const getData = async () => {
+    // if (searcher.id_sucursal?.id==undefined) {
+    //   DynamicVariables.updateAnyVar(setSearcher, "id_sucursal", {nombre:'Todos', id:0})
+    // }
     let result = await APIs.CreateAny(searcher, "tentrega_get")
     setData(result)
   }
@@ -165,6 +180,7 @@ const TiemposEntrega = () => {
   const Modal = (modoUpdate: boolean, data: any) => {
     setModal(true)
     setTiempose({ ...forclearte })
+    setConfigte(configtec)
     if (modoUpdate) {
       DynamicVariables.updateAnyVar(setTiempose, "id", data.id)
       DynamicVariables.updateAnyVar(setTiempose, "nombre", data.nombre)
@@ -173,10 +189,21 @@ const TiemposEntrega = () => {
       DynamicVariables.updateAnyVar(setTiempose, "id_sucursal", data.id_sucursal)
       DynamicVariables.updateAnyVar(setTiempose, "id_rango", data.id_rango)
       // //LLENAR LA VARIABLE COLECCION
-      // data.articulos.forEach((element:any) => {
-      //   DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "colecciones_art_piv", element)
-      //   // DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "combinaciones_sucursales", element.id)
-      // });
+      data.tiempos_entrega_data.forEach((dat: any) => {
+        let obj = {
+          id: dat.id,
+          dia_recepcion: dat.dia_recepcion,
+          hora_inicial_recepcion: dat.hora_inicial_recepcion,
+          hora_final_recepcion: dat.hora_final_recepcion,
+          dias_entrega: dat.dias_entrega,
+          tipo: dat.tipo,
+          tipoSel: 0,
+          hora_entrega: dat.hora_entrega,
+          entrega: dat.entrega,
+          edit: false
+        }
+        DynamicVariables.updateAnyVarSetArrNoRepeat(setTiempose, "tEntregaData_nuevos", obj)
+      });
       // data.sucursales.forEach((element:any) => {
       //     DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "colecciones_suc_piv", element)
       // });
@@ -190,6 +217,7 @@ const TiemposEntrega = () => {
   const closeModal = () => {
     setModal(false)
   }
+
   useEffect(() => {
     DynamicVariables.updateAnyVar(setTiempose, "id_sucursal", sucursalSelCreate?.id)
     DynamicVariables.updateAnyVar(setTiempose, "id_empresa", empresaSelCreate?.id)
@@ -207,25 +235,81 @@ const TiemposEntrega = () => {
       Swal.fire("Notificacion", "Es necesario seleccionar un rango para tus tiempos de entrega", "warning")
       return
     }
-    console.log(tiempose);
-    return
-    await APIs.CreateAny(tiempose, "tentrega_create")
-      .then(async (response: any) => {
-        Swal.fire('Notificación', response.mensaje, 'success');
-        // await getData()
-        setModal(false)
-      })
-      .catch((error: any) => {
-        if (error.response) {
-          if (error.response.status === 409) {
-            Swal.fire(error.mensaje, '', 'warning');
+    if (!modoUpdate) {
+      await APIs.CreateAny(tiempose, "tentrega_create")
+        .then(async (response: any) => {
+          Swal.fire('Notificación', response.mensaje, 'success');
+          await getData()
+          setModal(false)
+        })
+        .catch((error: any) => {
+          if (error.response) {
+            if (error.response.status === 409) {
+              Swal.fire(error.mensaje, '', 'warning');
+            } else {
+              Swal.fire('Error al crear el tiempo de entrega', '', 'error');
+            }
           } else {
-            Swal.fire('Error al crear el tiempo de entrega', '', 'error');
+            Swal.fire('Error de conexión.', '', 'error');
           }
-        } else {
-          Swal.fire('Error de conexión.', '', 'error');
-        }
-      })
+        })
+    } else {
+      await APIs.CreateAny(tiempose, "tentrega_update")
+        .then(async (response: any) => {
+          Swal.fire('Notificación', response.mensaje, 'success');
+          await getData()
+          setModal(false)
+        })
+        .catch((error: any) => {
+          if (error.response) {
+            if (error.response.status === 409) {
+              Swal.fire(error.mensaje, '', 'warning');
+            } else {
+              Swal.fire('Error al actualizar el tiempo de entrega', '', 'error');
+            }
+          } else {
+            Swal.fire('Error de conexión.', '', 'error');
+          }
+        })
+    }
+
+  }
+  const editarTiempo = (dat: any, index: number) => {
+    let obj = {
+      i: index,
+      id: dat.id,
+      dia_recepcion: dat.dia_recepcion,
+      hora_inicial_recepcion: dat.hora_inicial_recepcion,
+      hora_final_recepcion: dat.hora_final_recepcion,
+      dias_entrega: dat.dias_entrega,
+      tipo: dat.tipo,
+      tipoSel: 0,
+      hora_entrega: dat.hora_entrega,
+      entrega: dat.entrega,
+      edit: true
+    }
+    setConfigte(obj)
+  }
+  const actualizarUnTe = () => {
+    let index = configte.i
+    let newData = configte
+    setTiempose((prevState) => {
+      // Hacemos una copia del estado anterior
+      const updatedTEntregaDataNuevos = [...prevState.tEntregaData_nuevos];
+
+      // Actualizamos el índice específico con los nuevos datos
+      updatedTEntregaDataNuevos[index] = newData;
+      Swal.fire("Notificacion", "Tiempo Actualizado Correctamente", "success")
+      setConfigte(configtec)
+      // Retornamos un nuevo estado actualizado
+      return {
+        ...prevState,
+        tEntregaData_nuevos: updatedTEntregaDataNuevos
+      };
+    });
+  };
+  const addToElim = (number:number) => {
+    setTiempose((prevState:any) => ({...prevState,tEntregaData_elim: [...prevState.tEntregaData_elim, number] }))
   }
   return (
     <div className='te'>
@@ -233,11 +317,11 @@ const TiemposEntrega = () => {
 
         <div className='row'>
           <div className='col-8'>
-            <Empresas_Sucursales modeUpdate={false} empresaDyn={empresaSel} sucursalDyn={sucursalSel} setEmpresaDyn={setEmpresaSel} setSucursalDyn={setSucursalSel} />
+            <Empresas_Sucursales modeUpdate={false} empresaDyn={empresaSel} sucursalDyn={sucursalSel} setEmpresaDyn={setEmpresaSel} setSucursalDyn={setSucursalSel} all={true} />
           </div>
           <div className='col-3'>
             <label className='label__general'>Nombre</label>
-            <input className={`inputs__general`} value={tiempose.nombre} onChange={(e) => DynamicVariables.updateAnyVar(setTiempose, "nombre", e.target.value)} type='text' placeholder='Ingresa nombre' />
+            <input className={`inputs__general`} value={tiempose.nombre} onChange={(e) => DynamicVariables.updateAnyVar(setSearcher, "nombre", e.target.value)} type='text' placeholder='Ingresa nombre' />
           </div>
           <div className='col-1'>
             <label className='label__general'>Search</label>
@@ -328,10 +412,10 @@ const TiemposEntrega = () => {
                 <span> <b> GENERAL</b></span>
                 <hr />
                 <div className='row'>
-                 <div className='col-8'>
-                  <Empresas_Sucursales modeUpdate={false} empresaDyn={empresaSelCreate} sucursalDyn={sucursalSelCreate} 
-                  setEmpresaDyn={setEmpresaSelCreate} setSucursalDyn={setSucursalSelCreate}  />
-                 </div>
+                  <div className='col-8'>
+                    <Empresas_Sucursales modeUpdate={false} empresaDyn={empresaSelCreate} sucursalDyn={sucursalSelCreate}
+                      setEmpresaDyn={setEmpresaSelCreate} setSucursalDyn={setSucursalSelCreate} />
+                  </div>
                   <div className='col-4'>
                     <label className='label__general'>Nombre</label>
                     <input className={`inputs__general`} value={tiempose.nombre} onChange={(e) => DynamicVariables.updateAnyVar(setTiempose, "nombre", e.target.value)} type='text' placeholder='Ingresa nombre' />
@@ -362,91 +446,102 @@ const TiemposEntrega = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div >
             <br />
             <hr />
-            <b>CONFIGURAR TIEMPOS DE ENTREGA</b>
+            <b ref={forSlide} className={`${configte.edit ? 'fade-blink ' : ''}`}>CONFIGURAR TIEMPOS DE ENTREGA</b>
             <hr />
             <br />
-            <span>Recepción:</span>
-            <br />
-            <div className='row '>
-              <div className='col-3'>
-                <div className='select__container'>
-                  <label className='label__general'>Tipo</label>
-                  <div className={`select-btn ${selectTipote ? 'active' : ''}`} onClick={() => setSelectTipote(!selectTipote)}>
-                    <p>{configte.tipo ? typeTe.find((s: { id: number }) => s.id === configte.tipo)?.nombre : 'Selecciona'}</p>
-                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                  </div>
-                  <div className={`content ${selectTipote ? 'active' : ''}`}>
-                    <ul className={`options ${selectTipote ? 'active' : ''}`} style={{ opacity: selectTipote ? '1' : '0' }}>
-                      {typeTe && typeTe.map((fam: any) => (
-                        <li key={fam.id} onClick={() => { DynamicVariables.updateAnyVar(setConfigte, "tipo", fam.id); setSelectTipote(false); }}>
-                          {fam.nombre}
-                        </li>
-                      ))
-                      }
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div className='col-3'>
-                <div className='select__container'>
-                  <label className='label__general'>Día Recepción</label>
-                  <div className={`select-btn ${selectDiaRecepcion ? 'active' : ''}`} onClick={() => setSelectDiaRecepcion(!selectDiaRecepcion)}>
-                    <p>{configte.dia_recepcion ? dias.find((s: { nombre: string }) => s.nombre === configte.dia_recepcion)?.nombre : 'Selecciona'}</p>
-                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                  </div>
-                  <div className={`content ${selectDiaRecepcion ? 'active' : ''}`}>
-                    <ul className={`options ${selectDiaRecepcion ? 'active' : ''}`} style={{ opacity: selectDiaRecepcion ? '1' : '0' }}>
-                      {dias && dias.map((fam: any) => (
-                        <li key={fam.id} onClick={() => { DynamicVariables.updateAnyVar(setConfigte, "dia_recepcion", fam.nombre); setSelectDiaRecepcion(false); }}>
-                          {fam.nombre}
-                        </li>
-                      ))
-                      }
-                    </ul>
+            <div className={`${configte.edit ? 'card-attention ' : 'card-create'}`}>
+              <span>Recepción:</span>
+              <br />
+              <div className='row '>
+                <div className='col-3'>
+                  <div className='select__container'>
+                    <label className='label__general'>Tipo</label>
+                    <div className={`select-btn ${selectTipote ? 'active' : ''}`} onClick={() => setSelectTipote(!selectTipote)}>
+                      <p>{configte.tipo ? typeTe.find((s: { id: number }) => s.id === configte.tipo)?.nombre : 'Selecciona'}</p>
+                      <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                    </div>
+                    <div className={`content ${selectTipote ? 'active' : ''}`}>
+                      <ul className={`options ${selectTipote ? 'active' : ''}`} style={{ opacity: selectTipote ? '1' : '0' }}>
+                        {typeTe && typeTe.map((fam: any) => (
+                          <li key={fam.id} onClick={() => { DynamicVariables.updateAnyVar(setConfigte, "tipo", fam.id); setSelectTipote(false); }}>
+                            {fam.nombre}
+                          </li>
+                        ))
+                        }
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className='col-3'>
-                <label className='label__general'>HORA INICIAL</label>
-                <input className={`inputs__general`} value={configte.hora_inicial_recepcion} type={'time'} onChange={(e) => DynamicVariables.updateAnyVar(setConfigte, "hora_inicial_recepcion", e.target.value)} placeholder='Ingresa nombre' />
-              </div>
-              <div className='col-3'>
-                <label className='label__general'>HORA FINAL</label>
-                <input className={`inputs__general`} value={configte.hora_final_recepcion} type={'time'} onChange={(e) => DynamicVariables.updateAnyVar(setConfigte, "hora_final_recepcion", e.target.value)} placeholder='Ingresa nombre' />
-              </div>
+                <div className='col-3'>
+                  <div className='select__container'>
+                    <label className='label__general'>Día Recepción</label>
+                    <div className={`select-btn ${selectDiaRecepcion ? 'active' : ''}`} onClick={() => setSelectDiaRecepcion(!selectDiaRecepcion)}>
+                      <p>{configte.dia_recepcion ? dias.find((s: { nombre: string }) => s.nombre === configte.dia_recepcion)?.nombre : 'Selecciona'}</p>
+                      <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                    </div>
+                    <div className={`content ${selectDiaRecepcion ? 'active' : ''}`}>
+                      <ul className={`options ${selectDiaRecepcion ? 'active' : ''}`} style={{ opacity: selectDiaRecepcion ? '1' : '0' }}>
+                        {dias && dias.map((fam: any) => (
+                          <li key={fam.id} onClick={() => { DynamicVariables.updateAnyVar(setConfigte, "dia_recepcion", fam.nombre); setSelectDiaRecepcion(false); }}>
+                            {fam.nombre}
+                          </li>
+                        ))
+                        }
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div className='col-3'>
+                  <label className='label__general'>HORA INICIAL</label>
+                  <input className={`inputs__general`} value={configte.hora_inicial_recepcion} type={'time'} onChange={(e) => DynamicVariables.updateAnyVar(setConfigte, "hora_inicial_recepcion", e.target.value)} placeholder='Ingresa nombre' />
+                </div>
+                <div className='col-3'>
+                  <label className='label__general'>HORA FINAL</label>
+                  <input className={`inputs__general`} value={configte.hora_final_recepcion} type={'time'} onChange={(e) => DynamicVariables.updateAnyVar(setConfigte, "hora_final_recepcion", e.target.value)} placeholder='Ingresa nombre' />
+                </div>
 
 
-            </div>
-            <br />
-            <span>Entrega:</span>
-            <br />
-            <div className='row'>
-              <div className='col-5'>
-                <label className='label__general'>DÍAS DESPUES DE LA RECEPCIÓN</label>
-                <input className={`inputs__general`} value={configte.dias_entrega} type={'number'} onChange={(e) => { DynamicVariables.updateAnyVar(setConfigte, "dias_entrega", e.target.value); }} placeholder='Ingresa Dias' />
+              </div>
+              <br />
+              <span>Entrega:</span>
+              <br />
+              <div className='row'>
+                <div className='col-5'>
+                  <label className='label__general'>DÍAS DESPUES DE LA RECEPCIÓN</label>
+                  <input className={`inputs__general`} value={configte.dias_entrega} type={'number'} onChange={(e) => { DynamicVariables.updateAnyVar(setConfigte, "dias_entrega", e.target.value); }} placeholder='Ingresa Dias' />
+
+                </div>
+                <div className='col-3'>
+                  <label className='label__general'>HORA ENTREGA</label>
+                  <input className={`inputs__general`} value={configte.hora_entrega} type={'time'} onChange={(e) => DynamicVariables.updateAnyVar(setConfigte, "hora_entrega", e.target.value)} />
+                </div>
+                <div className='col-3'>
+                  <label className='label__general'>ENTREGA:</label>
+                  <span style={{ color: 'red' }}> <b> {configte.entrega} a las {configte.hora_entrega}</b></span>
+                </div>
+                {configte.edit ?
+                  <div className='col-1 '>
+                    <button className='btn-success fade-blink' type='button' onClick={(e) => actualizarUnTe()}>Guardar</button>
+                    <button className='btn__delete_users' type='button' onClick={(e) => setConfigte(configtec)}>Cancelar</button>
+                  </div>
+                  :
+                  <div className='col-1'>
+                    <label className='label__general'>Agregar</label>
+                    <button className='btn__general-orange' type='button' onClick={(e) => DynamicVariables.updateAnyVarSetArrNoRepeat(setTiempose, "tEntregaData_nuevos", configte)}>+Add</button>
+                  </div>
+                }
 
               </div>
-              <div className='col-3'>
-                <label className='label__general'>HORA ENTREGA</label>
-                <input className={`inputs__general`} value={configte.hora_entrega} type={'time'} onChange={(e) => DynamicVariables.updateAnyVar(setConfigte, "hora_entrega", e.target.value)} />
-              </div>
-              <div className='col-3'>
-                <label className='label__general'>ENTREGA:</label>
-                <span style={{ color: 'red' }}> <b> {configte.entrega} a las {configte.hora_entrega}</b></span>
-              </div>
-              <div className='col-1'>
-                <label className='label__general'>Agregar</label>
-                <button className='btn__general-orange' type='button' onClick={(e) => DynamicVariables.updateAnyVarSetArrNoRepeat(setTiempose, "tEntregaData_nuevos", configte)}>+Add</button>
-              </div>
+
             </div>
             <br />
             <div className='row  card-white'>
-              <div className='col-6'>
+              <div className='col-12'>
                 <span><b>PRODUCCION</b></span>
-                <div className='table__modal_combinations'>
+                <div className='table__modal_te'>
                   <div>
                     {tiempose.tEntregaData_nuevos.length >= 1 ? (
                       <div>
@@ -457,9 +552,21 @@ const TiemposEntrega = () => {
                     )}
                   </div>
                   <div className='table__head'>
-                    <div className='thead'>
+                    <div className='thead' >
                       <div className='th'>
-                        <p className=''>Tiempo de entrega</p>
+                        <p className='' title='Recepción'>Rec.</p>
+                      </div>
+                      <div className='th'>
+                        <p className='' title='Hora Inicial Recepción'>HI</p>
+                      </div>
+                      <div className='th'>
+                        <p className='' title='Hora Final Recepción'>HF.</p>
+                      </div>
+                      <div className='th'>
+                        <p className='' title='Días Despues de la Recepción'>DDR.</p>
+                      </div>
+                      <div className='th'>
+                        <p className='' title='Hora entrega'>HE</p>
                       </div>
                     </div>
                   </div>
@@ -474,9 +581,24 @@ const TiemposEntrega = () => {
                                 {dat.dia_recepcion}
                               </div>
                               <div className='td'>
+                                {dat.hora_inicial_recepcion}
+                              </div>
+                              <div className='td'>
+                                {dat.hora_final_recepcion}
+                              </div>
+                              <div className='td'>
+                                {dat.dias_entrega}
+                              </div>
+                              <div className='td'>
+                                {dat.entrega} a las {dat.hora_entrega}
+                              </div>
+                              <div className='td'>
+                                <button className='btn-warning m-2' type="button" onClick={() => { editarTiempo(dat, index); handleScroll() }}>Editar</button>
                                 <button className='btn__delete_users' type="button" onClick={() => {
-                                  DynamicVariables.removeObjectInArrayByKey(setTiempose, "tEntregaData_nuevos", index);
-                                }}>Eliminar</button>
+                                  {modoUpdate && dat.id != 0? addToElim(dat.id) : null}
+                                  ; DynamicVariables.removeObjectInArrayByKey(setTiempose, "tEntregaData_nuevos", index);
+                                }}>Del</button>
+
                               </div>
                             </div>
                             : ''
@@ -494,7 +616,7 @@ const TiemposEntrega = () => {
               <div className='col-12'>
                 <span><b>CLIENTES</b> </span>
 
-                <div className='table__modal'>
+                <div className='table__modal_te'>
                   <div>
                     {tiempose.tEntregaData_nuevos.length >= 1 ? (
                       <div>
@@ -531,35 +653,27 @@ const TiemposEntrega = () => {
                           {dat.tipo == 2 ?
                             <div className='tbody'>
                               <div className='td'>
-                                <div className='select__container'>
-                                  <div className={`select-btn ${selectDiaRecepcion ? 'active' : ''}`} onClick={() => setSelectDiaRecepcion(!selectDiaRecepcion)}>
-                                    <p>{configte.dia_recepcion ? dias.find((s: { nombre: string }) => s.nombre === configte.dia_recepcion)?.nombre : 'Selecciona'}</p>
-                                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                                  </div>
-                                  <div className={`content ${selectDiaRecepcion ? 'active' : ''}`}>
-                                    <ul className={`options ${selectDiaRecepcion ? 'active' : ''}`} style={{ opacity: selectDiaRecepcion ? '1' : '0' }}>
-                                      {dias && dias.map((fam: any) => (
-                                        <li key={fam.id} onClick={() => { DynamicVariables.updateAnyVar(setConfigte, "dia_recepcion", fam.nombre); setSelectDiaRecepcion(false); }}>
-                                          {fam.nombre}
-                                        </li>
-                                      ))
-                                      }
-                                    </ul>
-                                  </div>
-                                </div>
+                                {dat.dia_recepcion}
                               </div>
                               <div className='td'>
+                                {dat.hora_inicial_recepcion}
                               </div>
                               <div className='td'>
+                                {dat.hora_final_recepcion}
                               </div>
                               <div className='td'>
+                                {dat.dias_entrega}
                               </div>
                               <div className='td'>
+                                {dat.entrega} a las {dat.hora_entrega}
                               </div>
                               <div className='td'>
+                                <button className='btn-warning m-2' type="button" onClick={() => { editarTiempo(dat, index); handleScroll() }}>Editar</button>
                                 <button className='btn__delete_users' type="button" onClick={() => {
+                                   {modoUpdate && dat.id != 0? addToElim(dat.id) : null};
                                   DynamicVariables.removeObjectInArrayByKey(setTiempose, "tEntregaData_nuevos", index);
-                                }}>Eliminar</button>
+                                }}>Del</button>
+
                               </div>
                             </div>
                             : ''

@@ -39,7 +39,7 @@ const BranchOffices: React.FC = () => {
   const [warningAddress, setWarningAddress] = useState<boolean>(false)
   const [warningContact, setWarningContact] = useState<boolean>(false)
 
-  const { branchOfficeXCompanies, getBranchOfficeXCompanies,  }: any = storeBranchOffcies();
+  const { branchOfficeXCompanies, getBranchOfficeXCompanies, }: any = storeBranchOffcies();
   const { companiesXUsers, getCompaniesXUsers }: any = storeCompanies();
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
@@ -54,7 +54,7 @@ const BranchOffices: React.FC = () => {
   const handleCreateBranchOffices = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      
+
       if (empresa_id === null) {
         setWarningSelectCompany(true)
       } else {
@@ -83,60 +83,60 @@ const BranchOffices: React.FC = () => {
         return;
       }
       let data = {
-        id:sucursal_id,
-        nombre:nombre,
-        logo:logo,
-        contacto:contacto,
-        empresa_id:selectedCompany,
-        direccion:direccion,
-        venta_franquicia:ventaf,
-        lunes:lunes,
-        martes:martes,
-        miercoles:miercoles,
-        jueves:jueves,
-        viernes:viernes,
-        sabado:sabado,
-        domingo:domingo,
-        id_usuario:user_id
+        id: sucursal_id,
+        nombre: nombre,
+        logo: logo,
+        contacto: contacto,
+        empresa_id: selectedCompany,
+        direccion: direccion,
+        venta_franquicia: ventaf,
+        lunes: lunes,
+        martes: martes,
+        miercoles: miercoles,
+        jueves: jueves,
+        viernes: viernes,
+        sabado: sabado,
+        domingo: domingo,
+        id_usuario: user_id
       }
       if (modoUpdate) {
-        await APIs.CreateAnyPut(data, "sucursal_update/"+sucursal_id)
-        .then(async (response: any) => {
+        await APIs.CreateAnyPut(data, "sucursal_update/" + sucursal_id)
+          .then(async (response: any) => {
             Swal.fire('Notificación', response.mensaje, 'success');
             await getBranchOfficeXCompanies(0, user_id)
             setModal(false)
-        })
-        .catch((error: any) => {
+          })
+          .catch((error: any) => {
             if (error.response) {
-                if (error.response.status === 409) {
-                    Swal.fire(error.mensaje, '', 'warning');
-                } else {
-                    Swal.fire('Error al actualizar la combinacion', '', 'error');
-                }
+              if (error.response.status === 409) {
+                Swal.fire(error.mensaje, '', 'warning');
+              } else {
+                Swal.fire('Error al actualizar la combinacion', '', 'error');
+              }
             } else {
-                Swal.fire('Error de conexión.', '', 'error');
+              Swal.fire('Error de conexión.', '', 'error');
             }
-        })
-      }else {
+          })
+      } else {
         await APIs.CreateAny(data, "sucursal_create")
-        .then(async (response: any) => {
+          .then(async (response: any) => {
             Swal.fire('Notificación', response.mensaje, 'success');
             await getBranchOfficeXCompanies(0, user_id)
             setModal(false)
-        })
-        .catch((error: any) => {
+          })
+          .catch((error: any) => {
             if (error.response) {
-                if (error.response.status === 409) {
-                    Swal.fire(error.mensaje, '', 'warning');
-                } else {
-                    Swal.fire('Error al actualizar la combinacion', '', 'error');
-                }
+              if (error.response.status === 409) {
+                Swal.fire(error.mensaje, '', 'warning');
+              } else {
+                Swal.fire('Error al actualizar la combinacion', '', 'error');
+              }
             } else {
-                Swal.fire('Error de conexión.', '', 'error');
+              Swal.fire('Error de conexión.', '', 'error');
             }
-        })
+          })
       }
-      
+
 
     } catch (error) {
       console.error('Error al crear la sucursal:', error);
@@ -265,10 +265,10 @@ const BranchOffices: React.FC = () => {
               <div className='col-4'>
                 <label className='label__general'>Logo</label>
 
-                <div className="container__change_img" style={{ backgroundImage: `url(${logo})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                  <label className="custom-file-upload">
+                <div className="container__change_img2" style={{ backgroundImage: `url(${logo})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                  <label className="custom-file-upload2">
                     <small> Seleccionar archivo</small>
-                    <input id="file-upload1" type="file" onChange={changeImg} />
+                    <input id="custom-file-upload2" type="file" onChange={changeImg} />
                   </label>
                 </div>
               </div>
@@ -321,7 +321,7 @@ const BranchOffices: React.FC = () => {
                 </div>
               </div>
               <div className='col-2 md-col-4 sm-col-12'>
-              <label>Venta a Franquicias</label><br></br>
+                <label>Venta a Franquicias</label><br></br>
                 <label className="switch">
                   <input
                     type="checkbox"
@@ -340,7 +340,7 @@ const BranchOffices: React.FC = () => {
             <br />
             <div className='row'>
               <div className='col-1 md-col-6 sm-col-12'>
-              <label>Lunes</label><br></br>
+                <label>Lunes</label><br></br>
                 <label className="switch">
                   <input
                     type="checkbox"
@@ -348,10 +348,10 @@ const BranchOffices: React.FC = () => {
                     onChange={(e) => { setlunes(e.target.checked); }}
                   />
                   <span className="slider"></span>
-                </label>  
+                </label>
               </div>
               <div className='col-2 md-col-6 sm-col-12'>
-              <label>Martes</label><br></br>
+                <label>Martes</label><br></br>
                 <label className="switch">
                   <input
                     type="checkbox"
@@ -359,10 +359,10 @@ const BranchOffices: React.FC = () => {
                     onChange={(e) => { setmartes(e.target.checked); }}
                   />
                   <span className="slider"></span>
-                </label>  
+                </label>
               </div>
               <div className='col-2 md-col-6 sm-col-12'>
-              <label>Miercoles</label><br></br>
+                <label>Miercoles</label><br></br>
                 <label className="switch">
                   <input
                     type="checkbox"
@@ -370,10 +370,10 @@ const BranchOffices: React.FC = () => {
                     onChange={(e) => { setmiercoles(e.target.checked); }}
                   />
                   <span className="slider"></span>
-                </label>  
+                </label>
               </div>
               <div className='col-2 md-col-6 sm-col-12'>
-              <label>Jueves</label><br></br>
+                <label>Jueves</label><br></br>
                 <label className="switch">
                   <input
                     type="checkbox"
@@ -381,10 +381,10 @@ const BranchOffices: React.FC = () => {
                     onChange={(e) => { setjueves(e.target.checked); }}
                   />
                   <span className="slider"></span>
-                </label>  
+                </label>
               </div>
               <div className='col-1 md-col-6 sm-col-12'>
-              <label>Viernes</label><br></br>
+                <label>Viernes</label><br></br>
                 <label className="switch">
                   <input
                     type="checkbox"
@@ -392,10 +392,10 @@ const BranchOffices: React.FC = () => {
                     onChange={(e) => { setviernes(e.target.checked); }}
                   />
                   <span className="slider"></span>
-                </label>  
+                </label>
               </div>
               <div className='col-2 md-col-6 sm-col-12'>
-              <label>Sabado</label><br></br>
+                <label>Sabado</label><br></br>
                 <label className="switch">
                   <input
                     type="checkbox"
@@ -403,10 +403,10 @@ const BranchOffices: React.FC = () => {
                     onChange={(e) => { setsabado(e.target.checked); }}
                   />
                   <span className="slider"></span>
-                </label>  
+                </label>
               </div>
               <div className='col-2 md-col-6 sm-col-12'>
-              <label>Domingo</label><br></br>
+                <label>Domingo</label><br></br>
                 <label className="switch">
                   <input
                     type="checkbox"
@@ -414,10 +414,10 @@ const BranchOffices: React.FC = () => {
                     onChange={(e) => { setdomingo(e.target.checked); }}
                   />
                   <span className="slider"></span>
-                </label>  
+                </label>
               </div>
             </div>
-            
+
             <br />
             <br />
             <div className='container__branch-office_btn_modal_container'>
