@@ -74,8 +74,8 @@ const APIs = {
 
   // Series
 
-  getSeriesXUser: async (id: number, customPath?: string) => {
-    const path = customPath ||  `series_get/${id}`;
+  getSeriesXUser: async (data: any, customPath?: string) => {
+    const path = customPath ||  `series_get/${data.id}/${data.tipo_ducumento}`;
     return ConfigurationAPIs.get(path)
   },
 
@@ -307,7 +307,7 @@ updateClients: async (data: any, customPath?: string) => {
 
   // VENTAS 
 
-   //  Requisision
+   //  Requisicion
 
    createRequisition: async (data: any, customPath?: string) => {
     const path = customPath || 'create_requisicion';
@@ -324,30 +324,41 @@ updateClients: async (data: any, customPath?: string) => {
     return ConfigurationAPIs.post(path, data)
   },
 
-  // updateRequisition: async (data: any, customPath?: string) => {
-  //   const path = customPath || 'updt_req_for_cancel_or_active';
-  //   return ConfigurationAPIs.post(path, data)
-  // },
+  updateStatusRequisition: async (data: any, customPath?: string) => {
+    const path = customPath || 'updt_req_for_cancel_or_active';
+    return ConfigurationAPIs.post(path, data)
+  },
 
   pdtRequisition: async (id: number, customPath?: string) => {
     const path = customPath || `pdf_requisicion/${id}`
     return ConfigurationAPIs.get(path)
   },
 
+
   // Orden de compra
-  createPurchaseOrders: async (id_usuario_crea: number, id_usuario_autoriza: number, id_sucursal: number, fecha_creacion: Date,  fecha_llegada: Date,  status: number, tipo: number,  cotizacion: string, factura: string, comentarios: string, id_proveedor_flete: number, costo_flete: number, comentarios_flete: string, sumar_flete: boolean, documento_anterior: string, documento_siguiente: string,  conceptos: any[], customPath?: string) => {
+  createPurchaseOrders: async (data: any, customPath?: string) => {
     const path = customPath || 'create_orden_compra'
-    return ConfigurationAPIs.post(path, {id_usuario_crea, id_usuario_autoriza, id_sucursal, fecha_creacion, fecha_llegada, status, tipo, cotizacion, factura, comentarios, id_proveedor_flete, costo_flete, comentarios_flete, sumar_flete, documento_anterior, documento_siguiente, conceptos})
+    return ConfigurationAPIs.post(path, data)
   },
 
-  getPurchaseOrders: async (folio: number, id_serie: number, id_sucursal: number, id_usuario: number, id_area: number, tipo: number, desde: Date, hasta: Date, status: number, customPath?: string) => {
+  getPurchaseOrders: async (data: any, customPath?: string) => {
     const path = customPath || 'get_orden_compra'
-    return ConfigurationAPIs.post(path, {folio, id_serie, id_sucursal, id_usuario, id_area, tipo, desde, hasta, status})
+    return ConfigurationAPIs.post(path, data)
   },
 
-  updatePurchaseOrders: async (id: number, id_usuario_crea: number, id_usuario_autoriza: number, id_sucursal: number, fecha_creacion: Date, fecha_llegada: Date,  status: number, tipo: number,  cotizacion: string, factura: string, comentarios: string, id_proveedor_flete: number, costo_flete: number, comentarios_flete: string, sumar_flete: boolean,  conceptos: any[], conceptos_elim: any[], customPath?: string) => {
+  updatePurchaseOrders: async (data: any, customPath?: string) => {
     const path = customPath || 'update_orden_compra'
-    return ConfigurationAPIs.post(path, {id, id_usuario_crea, id_usuario_autoriza, id_sucursal, fecha_creacion, fecha_llegada, status, tipo, cotizacion, factura, comentarios, id_proveedor_flete, costo_flete, comentarios_flete, sumar_flete, conceptos, conceptos_elim})
+    return ConfigurationAPIs.post(path, data)
+  },
+
+  getPdfPurchaseOrders: async (id: number, customPath?: string) => {
+    const path = customPath || `pdf_oc/${id}`
+    return ConfigurationAPIs.get(path)
+  },
+
+  updateStatusPurchaseOrder: async (data: any, customPath?: string) => {
+    const path = customPath || 'update_orden_compra_status'
+    return ConfigurationAPIs.post(path, data)
   },
 
 

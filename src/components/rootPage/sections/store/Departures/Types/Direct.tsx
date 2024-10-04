@@ -65,8 +65,8 @@ const Direct: React.FC = () => {
     let data = {
         id: 0,
         activos: true,
-        nombre: selectedSearchBy == 1 ? inputSearch : '',
-        codigo: selectedSearchBy == 2 ? inputSearch : '',
+        nombre: selectedSearchBy == 0 ? inputSearch : '',
+        codigo: selectedSearchBy == 1 ? inputSearch : '',
         familia: 0,
         proveedor: 0,
         materia_prima: 0,
@@ -131,7 +131,7 @@ const { selectedStore } = useStore(storeWarehouseExit);
         }
   
         setConcepts([...concepts, {
-          id_articulo: selectedResult.id_unidad,
+          id_articulo: selectedResult.id,
           nameArticle: selectedResult.nombre,
           cantidad: null,
           comentarios: '',

@@ -39,15 +39,6 @@
     justify-content: end;
 }
 
-.branchoffice__edit_btn {
-	background-color: var(--primary-color);
-	color: #fff;
-	border: none;
-	padding: 5px 10px;
-	border-radius: var(--border-radius-general);
-	cursor: pointer;
-}
-
 
 .container__btns_branch-office {
     grid-column: 1 / span 2;

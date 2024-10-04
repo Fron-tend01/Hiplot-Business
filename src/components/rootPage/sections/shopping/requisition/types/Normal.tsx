@@ -27,9 +27,6 @@ const Normal: React.FC = () => {
       id: 1,
       name: 'Nombre'
     },
-
-
-
   ]
 
   const openSelectSearch = () => {
@@ -40,6 +37,8 @@ const Normal: React.FC = () => {
     setSelectedSearch(search.id)
     setSelectSearch(false)
   }
+
+
 
   
   const searchFor = async () => {
@@ -100,8 +99,9 @@ const Normal: React.FC = () => {
       let codigo = selectedResult.codigo
       let descripcion = selectedResult.descripcion
       let unidades = selectedResult.unidades
+      let unidad = selectedResult.unidades[0].id_unidad
       let max_min = max
-      setConcepts([...concepts, {codigo, descripcion, max_min, id_articulo, cantidad: null, unidad: '', unidades, comentarios: '' }]);
+      setConcepts([...concepts, {codigo, descripcion, max_min, id_articulo, cantidad: null, unidad, unidades, comentarios: '' }]);
     }
   
 

@@ -15,6 +15,7 @@ const Articles: React.FC = () => {
   const effectRan = useRef(false)
 
   const setModalArticle = storeArticles(state => state.setModalArticle)
+  const setImagesArticles = storeArticles(state => state.setImagesArticles)
 
 
   // Modales del modal de creaer articulo
@@ -125,13 +126,26 @@ const Articles: React.FC = () => {
       get_unidades: true
     }
 
+    let data2 = {
+      id: article.id,
+      activos: true,
+      nombre: '',
+      codigo: '',
+      familia: 0,
+      proveedor: 0,
+      materia_prima: 0,
+      get_imagenes: true
+    }
+
     setModalArticle('articles-modal')
     getFamilies(user_id)
 
     try {
       let result = await getArticles(data)
+      let resultImagenes = await getArticles(data2)
       await setArticleByOne(result[0])
       setArticleToUpdate(result[0]);
+      setImagesArticles(resultImagenes[0].imagenes)
       // setModalLoading(false)
     } catch (error) {
     } finally {

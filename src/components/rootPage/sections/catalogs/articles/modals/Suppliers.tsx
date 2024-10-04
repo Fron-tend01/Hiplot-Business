@@ -4,18 +4,20 @@ import useUserStore from '../../../../../../zustand/General';
 import { storeArticles } from '../../../../../../zustand/Articles';
 import { useStore } from 'zustand';
 import './style/Suppliers.css'
+import DynamicVariables from '../../../../../../utils/DynamicVariables';
 
 const Suppliers:React.FC = () => {
 
     const [searchValue, setSearchValue] = useState<string>('')
     const [selectPriorities, setselectPriorities] = useState<boolean>(false)
-    const [selectedPriority, setSelectedPriority] = useState<boolean>(false)
+    const [selectedPriority, setSelectedPriority] = useState<any>(null)
     const [selectSuppliers, setSlectSuppliers] = useState<boolean>(false)
     const [selectedSupplier, setSelectedSupplier] = useState<any>(null)
 
-    const { articleByOne }: any = useStore(storeArticles);
+    const { articleByOne, deleteSuppliers }: any = useStore(storeArticles);
     const { setModalStateSuppliers, setSuppliers, suppliers } = useStore(storeArticles);
 
+    const setDeleteSuppliers = storeArticles(state => state.setDeleteSuppliers)
     
 
     const {getSuppliers}: any = storeSuppliers()
@@ -26,7 +28,7 @@ const Suppliers:React.FC = () => {
     const getData = async () => {
         let data = {
             nombre: '',
-            is_flete: true,
+            is_flete: false,
             id_usuario: user_id
         }
         let result = await getSuppliers(data);
@@ -51,12 +53,6 @@ const Suppliers:React.FC = () => {
     let user_id = userState.id
     const [containerSearch, setContainerSearch] = useState<any>('')
 
-    const handleSearchEngineChange = async (value: string) => {
-      let result = await getSuppliers(value, true, user_id);
-      await setSuppliersSearch(result)
-      setContainerSearch(value)
-      setSearchValue(value)
-    };
 
     const priority = [
         {
@@ -70,7 +66,6 @@ const Suppliers:React.FC = () => {
        
     ]
 
-    const [priorityName, setPriorityName] = useState<any>()
 
     const handleSearchEngineValueChange = (item: any) => {
       setSearchValue(item.razon_social)
@@ -81,8 +76,8 @@ const Suppliers:React.FC = () => {
       let dataSuppliers = {
         id_proveedor: selectedSupplier.id,
         nombre_alterno: selectedCommercialName,
-        prioridad: selectedPriority,
-        priorityName: priorityName,
+        prioridad: selectedPriority.id,
+        priorityName: selectedPriority.name,
         proveedor: selectedSupplier.nombre_comercial
       }
       setSuppliers([...suppliers, dataSuppliers])
@@ -90,9 +85,10 @@ const Suppliers:React.FC = () => {
 
    
 
-    const deleteSuppliers = (suplier: number) => {
-        const updatedDeleteSuppliers = suppliers.filter((item: any) => item !== suplier);
+    const deleteSupplier = (suplier: any) => {
+        const updatedDeleteSuppliers = suppliers.filter((item: any) => item.id !== suplier.id);
         setSuppliers(updatedDeleteSuppliers);
+        setDeleteSuppliers([...deleteSuppliers, suplier.id])
     };
 
     
@@ -124,10 +120,20 @@ const Suppliers:React.FC = () => {
     }
 
     const handlePriorityChange = (priority: any) => {
-        setSelectedPriority(priority.id)
-        setPriorityName(priority.name)
+        setSelectedPriority(priority)
         setselectPriorities(false)
     }
+
+    const [searcher, setSearcher] = useState<any>({
+        nombre: '',
+        is_flete: false,
+        id_usuario: user_id
+    })
+
+    const search = async () => {
+        let result = await getSuppliers(searcher)
+        setDataSuppliers(result)
+      }
 
 
 
@@ -141,11 +147,15 @@ const Suppliers:React.FC = () => {
                 <div className='row__one'>
                     <div className='container__inputs_general'>
                         <label className='label__general'>Nombre</label>
-                        <div className='inputs__general_icons' id="search-icon" >
-                            <svg className='serch' xmlns="http://www.w3.org/2000/svg" width='20' viewBox="0 0 512 512">
+                        <div className='inputs__general_icons-not' id="search-icon" >
+                            {/* <svg className='serch' xmlns="http://www.w3.org/2000/svg" width='20' viewBox="0 0 512 512">
                                 <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
-                            </svg>
-                            <input className='inputs__generic' type="text" value={searchValue}  onChange={(e) => handleSearchEngineChange(e.target.value)} placeholder='Ingresa el máximo' />
+                            </svg> */}
+                            <div className='col-8 md-col-6 sm-col-12'>
+                                <input placeholder="Buscador" type="text" className='inputs__general'
+                                value={searcher.nombre} onChange={(e) => DynamicVariables.updateAnyVar(setSearcher, "nombre", e.target.value)}
+                                onKeyUp={(event) => event.key === 'Enter' && search()} />
+                            </div>
                         </div>
                         <div className={`search-result ${containerSearch.length > 0 ? 'active' : ''}`}>
                             <ul className={`options ${containerSearch.length > 0 ? 'active' : ''}`} style={{ opacity: containerSearch.length > 0 ? '1' : '0' }}>
@@ -179,7 +189,7 @@ const Suppliers:React.FC = () => {
                         <label className='label__general'>Prioridad</label>
                         <div className='select-btn__general'>
                             <div className={`select-btn ${selectPriorities ? 'active' : ''}`} onClick={openSelectPriority}>
-                                <p>{selectedPriority ? priority.find((s: {id: any}) => s.id === selectedPriority)?.name : 'Selecciona'}</p>
+                                <p>{selectedPriority ? priority.find((s: {id: any}) => s.id === selectedPriority.id)?.name : 'Selecciona'}</p>
                                 <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
                             </div>
                             <div className={`content ${selectPriorities ? 'active' : ''}`} >
@@ -213,7 +223,7 @@ const Suppliers:React.FC = () => {
                             <div className='table__head'>
                                 <div className='thead'>
                                     <div className='th'>
-                                        <p className=''>Empresa</p>
+                                        <p className=''>Nombre</p>
                                     </div>
                                     <div className='th'>
                                         <p className=''>Prioridad</p>
@@ -229,10 +239,10 @@ const Suppliers:React.FC = () => {
                                                     {item.proveedor}
                                                 </div>
                                                 <div className='td'>
-                                                    {item.prioridad}
+                                                    {priority.find((x) => x.id === item.prioridad)?.name}
                                                 </div>
                                                 <div className='td'>
-                                                    <button className='btn__delete_users' type='button' onClick={() => deleteSuppliers(item)}>Eliminar</button>
+                                                    <button className='btn__delete_users' type='button' onClick={() => deleteSupplier(item)}>Eliminar</button>
                                                 </div>
                                             </div>
                                         </div>

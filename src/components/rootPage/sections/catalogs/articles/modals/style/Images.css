@@ -1,0 +1,173 @@
+
+/*=================================================
+ 
+  Modal de precios del modal del articulo 
+  
+=================================================*/
+
+
+.overlay__modal_images_articles {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+    z-index: 1;
+}
+
+.overlay__modal_images_articles.active {
+	visibility: visible;
+}
+
+.header__modal {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.popup__modal_images_articles {
+	background-color: var(--background-modal);  
+	border-radius: 5px;
+	padding: 40px 20px 20px 20px;
+	width: 80%;
+    height: 95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+    overflow: hidden;
+
+}
+
+.popup__modal_images_articles .btn-cerrar-popup__modal_images_articles {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 30px;
+    top: 10px;
+}
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__modal_images_articles.active {	transform: scale(1); opacity: 1; }
+
+
+
+.article__modal_images_container {
+    display: grid;
+    height: 100%;
+    align-items: end;
+}
+
+
+
+.custom-file-upload-image {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 6px 12px;
+	background-color: var(--primary-color);
+	color: #fff; /* Color del texto blanco */
+	border-radius: 5px;
+	cursor: pointer;
+	width: auto;
+    height: 35px;
+	background-size: cover;
+    background-position: center;
+}
+
+.custom-file-upload-image.active {
+	width: 150px;
+	background-color: transparent;
+    height: 100px;
+	background-size: cover;
+    background-position: center;
+}
+
+.custom-file-upload-image.active > span {
+	display: none;
+}
+
+.custom-file-upload-image.active:hover > span {
+	display: block;
+}
+
+
+
+
+  
+  .custom-file-upload-image input[type="file"] {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	opacity: 0;
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+  }
+  
+  .custom-file-upload-image span {
+	display: inline-block;
+	vertical-align: middle;
+  }
+  
+  .custom-file-upload-image svg {
+	width: 18px;
+	height: 18px;
+	vertical-align: middle;
+	margin-right: 5px;
+  }
+
+  .images-modal-articles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    
+  
+  }  
+
+  .image-container {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: background-color 0.5s ease, background-image 0.5s ease;
+    background-color: transparent;
+    border-radius: 10px;
+    height: 200px;
+}
+
+.image-container > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    border-radius: 10px;
+    background-color: rgba(255, 0, 0, 0.205);
+    clip-path: circle(0% at 50% 50%); /* Inicia con un círculo muy pequeño en el centro */
+    transition: clip-path 0.8s ease;
+    cursor: pointer; /* Transición suave para la expansión */
+}
+
+.image-container:hover > div {
+    clip-path: circle(100% at 50% 50%);
+     /* Expande el círculo al tamaño completo del contenedor */
+}
+
+.image-container > div .title__delete {
+    color: var(--text-white);
+    font-weight: 500;
+}

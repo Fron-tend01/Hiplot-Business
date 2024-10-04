@@ -137,15 +137,16 @@ interface StoreState {
   deleteAdditionalArticles: any
   setDeleteAdditionalArticles: (x: any) => void;
 
-    
+  imagesArticles: any
+  setImagesArticles: (x: any) => void;
   
 
-    modalStateSuppliers: any
-    setModalStateSuppliers: (supplier: any) => void;
+  modalStateSuppliers: any
+  setModalStateSuppliers: (supplier: any) => void;
 
 
-    articleToUpdate: any;
-    setArticleToUpdate: (article: any) => void;
+  articleToUpdate: any;
+  setArticleToUpdate: (article: any) => void;
 }
 
 export const storeArticles = create<StoreState>((set) => ({
@@ -272,6 +273,9 @@ export const storeArticles = create<StoreState>((set) => ({
     historyPrices: [],
     setHistoryPrices: (price) => set({ historyPrices: price }),
 
+
+    imagesArticles: [],
+    setImagesArticles: (x) => set({ imagesArticles: x }),
 
     articleToUpdate: null,
     setArticleToUpdate: (article) => set({ articleToUpdate: article }),

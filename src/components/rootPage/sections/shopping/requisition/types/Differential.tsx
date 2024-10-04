@@ -38,7 +38,7 @@ const Differential: React.FC = () => {
     
     let data = {
       nombre: inputSuppliers,
-      is_flete: true,
+      is_flete: false,
       id_usuario: user_id
     }
 

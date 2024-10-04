@@ -8,15 +8,21 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/l10n/es.js'; // Importar el idioma español
 import './styles/Requisition.css'
-import ModalCreate from './requisition/ModalCreate';
-import ModalUpdate from './requisition/ModalUpdate';
+import ModalRequisition from './requisition/ModalRequisition';
+// import ModalUpdate from './requisition/ModalUpdate';
 import { storeRequisitions } from '../../../../zustand/Requisition'
 import { RequisitionRequests } from '../../../../fuctions/Requisition';
+import { useStore } from 'zustand';
 
 
 const Requisition: React.FC = () => {
 
   const setModalStateCreate = storeRequisitions((state: any) => state.setModalStateCreate);
+
+  const setConcepts = storeRequisitions((state: any) => state.setConcepts);
+
+  const setDataGet = storeRequisitions((state: any) => state.setDataGet);
+  const setRequisitions = storeRequisitions((state: any) => state.setRequisitions);
   
   const setModalStateUpdate = storeRequisitions((state: any) => state.setModalStateUpdate);
   const setUpdateToRequisition = storeRequisitions((state: any) => state.setUpdateToRequisition);
@@ -45,10 +51,10 @@ const Requisition: React.FC = () => {
 
   
   const {getRequisition}: any = RequisitionRequests();
-  const [requisitions, setRequisitions] =  useState<any>([])
 
+  const {requisitions}: any = useStore(storeRequisitions);
   
-
+  
 
   // Estados de advertencia para validar campos
   // Warning states to validate fields
@@ -85,6 +91,7 @@ const Requisition: React.FC = () => {
         hasta: selectedEndDate?.toISOString().split('T')[0],
         status: 0
       };
+      setDataGet(data)
       let resultRequisition = await getRequisition(data)
       setRequisitions(resultRequisition)
     }
@@ -380,11 +387,9 @@ const handleClick = (value: any) => {
   /* ================================================= Modal Update ==========================================================*/
 
   const modalUpdate = (requisition: any) => {
-    setModalStateUpdate('update')
+    setModalStateCreate('create')
     setUpdateToRequisition(requisition)
-    
-    
-   
+    setConcepts(requisition.conceptos)
   }
 
 
@@ -545,8 +550,8 @@ const handleClick = (value: any) => {
           </div>
         </div>
       </div>
-      <ModalCreate />
-      <ModalUpdate />
+      <ModalRequisition />
+      {/* <ModalUpdate /> */}
                 
       <div className='table__requisicion'>
         <div>
@@ -602,17 +607,8 @@ const handleClick = (value: any) => {
                       <p>{requisition.tipo == 0 ? 'Normal' : 'Diferencial'}</p>
                     </div>
                     <div className='td'>
-                      <div>
-                        {requisition.status === 0 ? (
-                          <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green' }}></div>
-                        ) : requisition.status === 1 ? (
-                          <span role="img" aria-label="Tacha">❌</span>
-                        ) : requisition.status === 2 ? (  
-                          <span role="img" aria-label="Palomita">&#x2705;</span>
-                        ) : (
-                          <span>No válido</span>
-                        )}
-                      </div>
+                      <p>{requisition.status == 0 ?  <div className='active-status'><p>Activo</p></div> : ''}</p>
+                      <p>{requisition.status == 1 ?  <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
                     </div>
                     <div className='td'>
                       <p>{requisition.fecha_creacion}</p>

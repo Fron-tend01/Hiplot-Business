@@ -38,7 +38,7 @@ const Variations: React.FC = () => {
   ]
 
   const openSelectSearch = () => {
-    setSelectSearch(!selectSearch)
+    setSelectSearch(!selectSearch) 
   }
 
   const handleSearchChange = (search: any) => {
@@ -47,7 +47,9 @@ const Variations: React.FC = () => {
   }
 
   useEffect(() => {
-    setViewVariations(articleToUpdate?.variaciones)
+    if(articleToUpdate) {
+      setViewVariations(articleToUpdate.variaciones)
+    }
   }, [articleToUpdate])
 
   const searchFor = async () => {
@@ -111,6 +113,7 @@ const Variations: React.FC = () => {
     setVariations([...variations, selectedResult.id]);
   }
 
+  console.log(viewVariations)
 
 
   const handleCreateTypeOfPayments = () => {

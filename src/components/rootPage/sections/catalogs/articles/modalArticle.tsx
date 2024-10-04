@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { storeFamilies } from '../../../../../zustand/Families';
 import { storeArticles } from '../../../../../zustand/Articles';
 import useUserStore from '../../../../../zustand/General';
+import Images from './modals/Images';
 import BranchOffices from './modals/BranchOffices';
 import Suppliers from './modals/Suppliers';
 import MaxMin from './modals/MaxMin';
@@ -22,6 +23,8 @@ import unit from './json/units.json'
 import typePayments from './json/typePayments.json'
 import { articleRequests } from '../../../../../fuctions/Articles';
 import { useSelectStore } from '../../../../../zustand/Select';
+import APIs from '../../../../../services/services/APIs';
+import Swal from 'sweetalert2';
 
 import Select from '../../../Dynamic_Components/Select';
 
@@ -39,12 +42,13 @@ const modalArticle: React.FC = () => {
     const setComponents = storeArticles(state => state.setComponents)
     const setAreas = storeArticles(state => state.setAreas)
     const setMinimalCharges = storeArticles(state => state.setMinimalCharges)
+    
 
 
     const selectedIds = useSelectStore((state) => state.selectedIds);
 
     ///////////////////////////////////////////////////////////Variables de los modales ////////////////////////////////////////////////////////////////////////////
-    const { branchOffices, deleteBranchOffices, prices, deletePrices, maxsMins, deleteMaxsMins, units, deleteUnits, components, deleteComponents, variations, deleteVariations, combinations, deleteCombinations, suppliers, deliveryTimes, deleteDeliveryTimes, minimalCharges, deleteMinimalCharges, additionalArticles, areas, deleteAreas }: any = useStore(storeArticles);
+    const { imagesArticles, branchOffices, deleteBranchOffices, prices, deletePrices, maxsMins, deleteMaxsMins, units, deleteUnits, components, deleteComponents, variations, deleteVariations, combinations, deleteCombinations, suppliers, deleteSuppliers, deliveryTimes, deleteDeliveryTimes, minimalCharges, deleteMinimalCharges, additionalArticles, deleteAdditionalArticles, areas, deleteAreas }: any = useStore(storeArticles);
 
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
@@ -205,6 +209,8 @@ const modalArticle: React.FC = () => {
 
     const handleCreateSuppliers = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        setStateLoading(true)
+
         let data = {
             id: articleToUpdate ? articleToUpdate.id : 0,
             tipo: type,
@@ -213,7 +219,7 @@ const modalArticle: React.FC = () => {
             unidad: selectedUnit,
             id_familia: selectedIds.selectFamilies.id,
             activo: activeArticles,
-            imagen: selectedFile,
+            imagen: '',
             tipo_de_cobro: selectedIds.selectTypePayment.id,
             id_plantilla: selectedIds.selectTemplates.id,
             base_max: baseMax,
@@ -253,7 +259,7 @@ const modalArticle: React.FC = () => {
             combinaciones_elim: deleteCombinations,
 
             proveedores: suppliers,
-            proveedores_elim: [],
+            proveedores_elim: deleteSuppliers,
 
             tiempos_entrega: deliveryTimes,
             tiempos_entrega_elim: deleteDeliveryTimes,
@@ -265,7 +271,9 @@ const modalArticle: React.FC = () => {
             areas_produccion_elim: deleteAreas,
 
             adicional: additionalArticles,
-            adicional_elim: []
+            adicional_elim: deleteAdditionalArticles,
+
+            imagenes: imagesArticles
         };
 
         let dataArticle = {
@@ -286,19 +294,24 @@ const modalArticle: React.FC = () => {
         };
 
         try {
-            if(articleToUpdate) {
-                await updateArticles(data);
+            if (articleToUpdate) {
+                await APIs.updateArticles(data);
                 await getArticlesInGlobal(dataArticle);
+                Swal.fire('Artículo creado exitosamente', '', 'success');
+                setStateLoading(false);
                 setModalArticle('');
+                
             } else {
-                await createArticles(data);
+                await APIs.createArticles(data);
                 await getArticlesInGlobal(dataArticle);
+                Swal.fire('Artículo actualizado exitosamente', '', 'success');
+                setStateLoading(false);
                 setModalArticle('');
             }
-          
-
-        } catch {
-
+        } catch (error) {
+            console.error('Ocurrió un error al crear/actualizar el artículo', error);
+            Swal.fire('Ocurrió un error al crear el artículo', '', 'error'); // Mensaje en caso de error
+            setStateLoading(false);
         }
         
 
@@ -366,6 +379,8 @@ const modalArticle: React.FC = () => {
         setActiveArticles(prevState => !prevState); // Cambiar el valor booleano
     };
 
+    const [stateLoading, setStateLoading] = useState<boolean>(false)
+
     const modalLoading = storeArticles((state: any) => state.modalLoading);
     return (
         <>
@@ -413,17 +428,18 @@ const modalArticle: React.FC = () => {
                         </div>
                     </div>
                     <div className='row__form_articles-two my-4'>
-                        <div className="container__upload_photo">
-                            <label htmlFor="file-upload" className={`custom-file-upload ${selectedFile ? 'active' : ''}`} style={{ backgroundImage: `url(${selectedFile})` }}>
+                        <div className="container__upload_photo" onClick={() => setSubModal('modal-images')}>
+                            <label htmlFor="file-upload" className={`custom-file-upload`} style={{ backgroundImage: `url(${selectedFile})` }}>
                                 <span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill='#fff' viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM385 231c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-71-71V376c0 13.3-10.7 24-24 24s-24-10.7-24-24V193.9l-71 71c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9L239 119c9.4-9.4 24.6-9.4 33.9 0L385 231z" /></svg>
+                                    {/* <svg xmlns="http://www.w3.org/2000/svg" fill='#fff' viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM385 231c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-71-71V376c0 13.3-10.7 24-24 24s-24-10.7-24-24V193.9l-71 71c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9L239 119c9.4-9.4 24.6-9.4 33.9 0L385 231z" /></svg> */}
                                     {' '}
-                                    Tomar foto
+                                    Ver mas
                                 </span>
                             </label>
-                            <input id="file-upload" type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} />
-
+                            {/* <input id="file-upload" type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} /> */}
+                            
                         </div>
+                        <Images />
                         <div>
                             <Select dataSelects={selectTemplates} instanceId='selectTemplates' />
                         </div>
@@ -592,8 +608,11 @@ const modalArticle: React.FC = () => {
                             <AdditionalArticles />
                         </div>
                     </div>
-                    <div className='container__btns_branch-office'>
-                        <button className='btn__general-purple' type='submit'>Guardar articulo</button>
+                    <div className='d-flex justify-content-center'>
+                        <button className='btn__general-purple d-flex align-items-center' type='submit'>
+                            {articleToUpdate ? `${stateLoading ? 'Actualizando articulo' : 'Actualizar articulo' }` : `${stateLoading ? 'Creando articulo' : 'Crear articulo'}`}
+                            {stateLoading ? <span className="loader-two"></span> : ''}
+                        </button>
                     </div>
                 </form>
             )}

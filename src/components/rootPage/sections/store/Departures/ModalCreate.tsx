@@ -27,7 +27,7 @@ const ModalCreate: React.FC = () => {
   const [companies, setCompanies] = useState<any>()
 
   const {getBranchOffices}: any = BranchOfficesRequests()
-  const [setBranchOffices] = useState<any>()
+  const [branchOffices ,setBranchOffices] = useState<any>()
 
   const {getStore}: any =StoreRequests()
   const [store, setStore] = useState<any>()
@@ -56,17 +56,12 @@ const ModalCreate: React.FC = () => {
     setSelectCompanies(false)
     let branchOffices = await getBranchOffices(company.id, user_id)
     setBranchOffices(branchOffices)
-    const filter = branchOffices.filter((x: any) => x.empresa_id === company.id)
-    setFilteredBranchOffices(filter)
-    setSelectedBranchOffice(filter.length > 0 ? filter[0].id : null);
 
   }
 
 
 
   ////////////////////////////////////////////////Select de empresas /////////////////////////////////////////////////////////
-  const [filteredBranchOffices, setFilteredBranchOffices] = useState<any[]>([])
-
   const [selectBranchOffices, setSelectBranchOffices] = useState<boolean>(false)
   const [selectedBranchOffice, setSelectedBranchOffice] = useState<number | null>(null)
   
@@ -76,7 +71,7 @@ const ModalCreate: React.FC = () => {
   }
 
   const handleBranchOfficesChange = (sucursal: any) => {
-    console.log(sucursal)
+    setSelectedBranchOffice(sucursal.id)
   }
 
   const [selectedOption, setSelectedOption] = useState<any>('direct')
@@ -226,13 +221,13 @@ const closeModalSeeStocks = (index: any) => {
                 <div className='select-btn__general'>
                     <div className={`select-btn ${selectBranchOffices ? 'active' : ''}`} onClick={openSelectBranchOffices} >
                         <div className='select__container_title'>
-                            <p>{selectedBranchOffice ? filteredBranchOffices.find((s: {id: number}) => s.id === selectedBranchOffice)?.nombre : 'Selecciona'}</p>
+                            <p>{selectedBranchOffice ? branchOffices?.find((s: {id: number}) => s.id === selectedBranchOffice)?.nombre : 'Selecciona'}</p>
                         </div>
                         <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
                     </div>
                     <div className={`content ${selectBranchOffices ? 'active' : ''}`} >
                         <ul className={`options ${selectBranchOffices ? 'active' : ''}`} style={{ opacity: selectBranchOffices ? '1' : '0' }}>
-                        {filteredBranchOffices.map((sucursal: any) => (
+                        {branchOffices?.map((sucursal: any) => (
                             <li key={sucursal.id} onClick={() => handleBranchOfficesChange(sucursal)}>
                             {sucursal.nombre}
                             </li>
@@ -246,7 +241,7 @@ const closeModalSeeStocks = (index: any) => {
                 <div className='select-btn__general'>
                     <div className={`select-btn ${selectStore ? 'active' : ''}`} onClick={openselectStore} >
                         <div className='select__container_title'>
-                            <p>{selectedStore ? store.find((s: {id: number}) => s.id === selectedStore)?.nombre : 'Selecciona'}</p>
+                            <p>{selectedStore ? store?.find((s: {id: number}) => s.id === selectedStore)?.nombre : 'Selecciona'}</p>
                         </div>
                         <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
                     </div>

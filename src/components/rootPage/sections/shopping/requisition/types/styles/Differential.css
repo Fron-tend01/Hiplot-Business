@@ -1,4 +1,42 @@
-.conatiner__create_requisition .row__three > .differential > .row__one {
+.requisition-modal_container > .row__four {
+	display: flex;
+	justify-content: center;
+	margin-top: 20px;
+}
+
+
+.container___row_four {
+	display: flex;
+	align-items: end;
+}
+
+.container___row_four .container__btn_modal_create-requisition {
+	margin-left: 20px;
+}
+
+.number__companies {
+	text-align: justify;
+}
+
+.requisition-modal_container .row__five {
+	display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+	align-items: end;
+	text-align: left;
+}
+
+.requisition-modal_container .row__five .right {
+	display: flex;
+	justify-content: end;
+}
+
+.container__modal_Update_btn_update {
+	display: flex;
+	justify-content: center;
+	grid-column: 1 / 3;
+}
+ .row__three > .differential > .row__one {
 	display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr)) ;
     column-gap: 50px;
@@ -8,7 +46,46 @@
 }
 
 
-.conatiner__create_requisition .row__three > .differential > .row__one > .search_suppliers {
+.
+.requisition-modal_container > .row__four {
+	display: flex;
+	justify-content: center;
+	margin-top: 20px;
+}
+
+
+.container___row_four {
+	display: flex;
+	align-items: end;
+}
+
+.container___row_four .container__btn_modal_create-requisition {
+	margin-left: 20px;
+}
+
+.number__companies {
+	text-align: justify;
+}
+
+.requisition-modal_container .row__five {
+	display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+	align-items: end;
+	text-align: left;
+}
+
+.requisition-modal_container .row__five .right {
+	display: flex;
+	justify-content: end;
+}
+
+.container__modal_Update_btn_update {
+	display: flex;
+	justify-content: center;
+	grid-column: 1 / 3;
+}
+ .row__three > .differential > .row__one > .search_suppliers {
 	display: grid;
     grid-template-columns: 1fr auto;
     gap: 10px;
@@ -17,7 +94,46 @@
 
 }
 
-.conatiner__create_requisition .row__three > .differential > .row__two {
+.
+.requisition-modal_container > .row__four {
+	display: flex;
+	justify-content: center;
+	margin-top: 20px;
+}
+
+
+.container___row_four {
+	display: flex;
+	align-items: end;
+}
+
+.container___row_four .container__btn_modal_create-requisition {
+	margin-left: 20px;
+}
+
+.number__companies {
+	text-align: justify;
+}
+
+.requisition-modal_container .row__five {
+	display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+	align-items: end;
+	text-align: left;
+}
+
+.requisition-modal_container .row__five .right {
+	display: flex;
+	justify-content: end;
+}
+
+.container__modal_Update_btn_update {
+	display: flex;
+	justify-content: center;
+	grid-column: 1 / 3;
+}
+ .row__three > .differential > .row__two {
 	display: grid;
     grid-template-columns: 1fr auto;
     width: 60%;

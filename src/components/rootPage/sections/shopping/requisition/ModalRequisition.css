@@ -1,3 +1,51 @@
-.conatiner__create_requisition > .row__two > .container__textarea_general {
+
+
+.requisition-modal {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    height: 100%;
+    
+    
+}
+
+
+.requisition-modal_container {
+    padding: 5px;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+.requisition-modal_container .row__one {
+	display: flex;
+	justify-content: center;
+	grid-column: 1 / 2;
+}
+
+.requisition-modal_container > .row__two {
+	display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+	align-items: end;
+	text-align: left;
+}
+
+.requisition-modal_container > .row__two > .container__textarea_general {
     grid-column: 1 / span 4;
 }
+
+
+
+

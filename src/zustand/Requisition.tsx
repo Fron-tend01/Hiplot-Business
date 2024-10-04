@@ -2,25 +2,11 @@ import { create } from "zustand";
 import APIs from "../services/services/APIs";
 import Swal from 'sweetalert2';
 
-
-interface Requisitions {
-    folio: number
-    id_serie: number,
-    id_sucursal: number,
-    id_usuario: number,
-    id_area: number,
-    tipo: number,
-    desde: Date,
-    hasta: Date,
-    status: number
-  }
-  
 interface StoreState {
-    requisitions: Requisitions[];
     pdfData: any[];
 
     updateToRequisition: any
-    setUpdateToRequisition: (requisition: any) => void;
+    setUpdateToRequisition: (x: any) => void;
 
     modalStateCreate: any
     setModalStateCreate: (requisition: any) => void;
@@ -33,10 +19,16 @@ interface StoreState {
 
     concepts: any
     setConcepts: (concept: any) => void;
+
+    dataGet: any
+    setDataGet: (x: any) => void;
+
+    requisitions: any
+    setRequisitions: (concept: any) => void;
 }
 
 export const storeRequisitions = create<StoreState>((set) => ({
-    requisitions: [],
+
     pdfData: [],
 
     //Modal
@@ -48,8 +40,8 @@ export const storeRequisitions = create<StoreState>((set) => ({
     setModalStateUpdate: (modal) => set({ modalStateUpdate: modal }),
 
     //Modal
-    updateToRequisition: [],
-    setUpdateToRequisition: (requisition) => set({ updateToRequisition: requisition }),
+    updateToRequisition: null,
+    setUpdateToRequisition: (x) => set({ updateToRequisition: x }),
   
     //Sucursals
     selectedBranchOffice: null,
@@ -58,6 +50,24 @@ export const storeRequisitions = create<StoreState>((set) => ({
      //Sucursals
      concepts: [],
      setConcepts: (concept) => set({ concepts: concept }),
+
+
+
+    dataGet: {
+      id_sucursal: null,
+      id_usuario: null,
+      id_area: null,
+      tipo: 0,
+      desde: null,
+      hasta: null,
+      status: 0
+    },
+    setDataGet: (x) => set({ dataGet: x }),
+
+    requisitions: [],
+    setRequisitions: (x) => set({ requisitions: x }),
+
+
 
     
   // Requisision
@@ -74,7 +84,7 @@ export const storeRequisitions = create<StoreState>((set) => ({
   getRequisition: async (data: any) => {
     try {
       const response = await APIs.getRequisition(data)
-      set({requisitions: response as Requisitions[]})
+
     } catch (error) {
       console.log('error al obtener las requisiciónes', error)
     }     

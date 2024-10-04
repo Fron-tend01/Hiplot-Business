@@ -5,12 +5,8 @@ import { useStore } from 'zustand'
 import { storeModals } from '../../../../../../zustand/Modals'
 import Select from '../../../../Dynamic_Components/Select'
 import './style/AdditionalArticles.css'
-import { useSelectStore } from '../../../../../../zustand/Select'
-import { articleRequests } from '../../../../../../fuctions/Articles'
 import TemplatesRequests from '../../../../../../fuctions/Templates'
 import Concepts from './additional-articles/Concepts'
-import { companiesRequests } from '../../../../../../fuctions/Companies'
-import { BranchOfficesRequests } from '../../../../../../fuctions/BranchOffices'
 import Empresas_Sucursales from '../../../../Dynamic_Components/Empresas_Sucursales'
 import Filtrado_Articulos_Basic from '../../../../Dynamic_Components/Filtrado_Articulos_Basic'
 import { storeDv } from '../../../../../../zustand/Dynamic_variables'
@@ -23,10 +19,12 @@ const AdditionalArticles: React.FC = () => {
 
   const setSubModal = storeArticles(state => state.setSubModal)
 
+  const setDeleteAdditionalArticles = storeArticles(state => state.setDeleteAdditionalArticles)
+
   const setModalSub = storeModals(state => state.setModalSub)
 
   const setAdditionalArticles = storeArticles(state => state.setAdditionalArticles)
-  const { subModal, additionalArticles }: any = useStore(storeArticles)
+  const { subModal, additionalArticles, deleteAdditionalArticles }: any = useStore(storeArticles)
 
   const { getTemplates, getTemplatesxFields }: any = TemplatesRequests()
 
@@ -151,15 +149,12 @@ const AdditionalArticles: React.FC = () => {
     setModalSub('modal-additiona-articles-concepts')
   }
 
-  // const addAdditionalArticles = (item: any) => {
-
-  //   setAdditionalArticles([... additionalArticles, item])
-  // }
-
-  const deleteAdd = () => {
-
+  const deleteAdditionalArticle = (item: any) => {
+    let filter = additionalArticles.filter((x: {id: any}) => x.id !== item.id)
+    setAdditionalArticles(filter)
+    setDeleteAdditionalArticles([...deleteAdditionalArticles, item.id])
   }
-  console.log('resutTemplates', templates)
+
 
   const fecthTwo = async () => {
     // Obtener los templates
@@ -169,15 +164,13 @@ const AdditionalArticles: React.FC = () => {
     // Asegúrate de que additionalArticles tenga elementos
     if (additionalArticles && additionalArticles.length > 0) {
       setAdditionalArticles((prevArticulos: any[]) => {
-        // Iteramos sobre cada artículo existente en el estado previo
         const updatedArticulos = prevArticulos.map((articulo: any) => {
-          // Para cada artículo, simplemente añadimos las nuevas propiedades deseadas
+
           return {
-            ...articulo, // Mantener el resto de las propiedades
-            data_aparece_por: resutTemplates || [], // Agregar data_aparece_por con la data de resutTemplates
-            data_condicion: dataConditional || [],   // Agregar data_condicion con la data de dataConditional
+            ...articulo,
+            data_aparece_por: resutTemplates || [],
+            data_condicion: dataConditional || [],
             data_equivalencia_por: resutTemplates || []
-             // Agregar data_equivalencia_por con la data de resutTemplates
           };
         });
           
@@ -296,7 +289,7 @@ const AdditionalArticles: React.FC = () => {
                         <button className='btn__general-purple' type='button' onClick={() => modalConcepts(item, index)}>Campos</button>
                       </div>
                       <div className='td'>
-                        <button className='btn__general-danger' type='button' onClick={() => deleteAdd(item)}>Eliminar</button>
+                        <button className='btn__general-danger' type='button' onClick={() => deleteAdditionalArticle(item)}>Eliminar</button>
                       </div>
                     </div>
                   </div>

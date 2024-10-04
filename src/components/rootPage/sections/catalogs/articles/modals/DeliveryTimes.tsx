@@ -36,7 +36,10 @@ const DeliveryTimes: React.FC = () => {
   const [deliveryTimesView, setDeliveryTimesView] = useState<any>([])
 
   useEffect(() => {
-    setDeliveryTimesView(articleToUpdate?.tiempos_entrega)
+    if(articleToUpdate) {
+      setDeliveryTimesView(articleToUpdate?.tiempos_entrega)
+    }
+
   }, [selectedIds, articleToUpdate])
 
 

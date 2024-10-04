@@ -55,7 +55,7 @@
   --text-white: #f5f6f7c7;
 
 
-  --primary-colorr: #2d47da;
+  /* --primary-color: #2d47da; */
 
   --sidebar-color: #fff;
 
@@ -172,8 +172,6 @@ option {
   padding: 10px 0;
   border-radius: 3px;
   text-indent: 15px;
-  
-
 }
 
 .inputs__general_icons {
@@ -483,7 +481,35 @@ option {
     color: var(--text-color);
   }
 
-  
+
+  .active-status {
+    display: flex;
+  }
+
+  .active-status > p  {
+    padding: 5px 10px;
+    background-color: #0097083a;
+    border-radius: 5px;
+    color: #009708;
+    font-weight: 600;
+  }
+
+  .canceled-status {
+    display: flex;
+  }
+
+  .canceled-status > p  {
+    padding: 5px 10px;
+    background-color: #df49413d;
+    border-radius: 5px;
+    color: #df4941c5;
+    font-weight: 600;
+  }
+
+
+
+
+
 
 
 /* STYLES OF SELECT */
