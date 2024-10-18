@@ -25,7 +25,7 @@
 	visibility: visible;
 }
 
-.header__modal {
+.overlay__create_modal_variations .header__modal {
     position: absolute;
     width: 100%;
     top: 0;

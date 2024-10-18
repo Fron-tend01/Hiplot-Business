@@ -32,7 +32,7 @@ function App() {
   document.documentElement.style.setProperty('--background-sections', theme === 'light' ? '' : '#0e1119');
 
   //Modales
-  document.documentElement.style.setProperty('--background-modal', theme === 'light' ? '' : '#13171f');
+  document.documentElement.style.setProperty('--background-modal', theme === 'light' ? '' : '#0e1119');
 
 
   // Generales

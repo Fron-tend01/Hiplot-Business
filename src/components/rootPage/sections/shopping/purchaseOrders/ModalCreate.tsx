@@ -122,6 +122,7 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
 
   const handleCheckboxClick = (value: number) => {
     setType(value);
+    console.log(value)
   };
 
 
@@ -487,13 +488,7 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
     conceptos.forEach((article: any) => {
       let total_cantidad = article.cantidad || 1; // Si no hay cantidad definida, se asume 1
       let iva_x_precio = 0;
-
-      if (article.iva_on) {
-        let iva = article.precio_unitario * 0.16 || 0;
-        iva_x_precio = article.precio_unitario + iva;
-      } else {
-        iva_x_precio = article.precio_unitario || 0;
-      }
+ 
 
       subtotalValue += iva_x_precio * total_cantidad; // Multiplicar por la cantidad
 
@@ -1015,7 +1010,7 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
             </div>
             <p className='title'>Articulos en Requisicion</p>
             <div className='row__four'>
-              {type === 0 ? (
+              {typeModal == 0 ?
                 <div className='conatiner__direct'>
                   <div className='row__one'>
                     <div className='select__container'>
@@ -1075,7 +1070,7 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
                     </div>
                   </div>
                 </div>
-              ) : (
+                :
                 <div className='conatiner__by-request'>
                   <div className='row__one'>
                     <div className='select__container'>
@@ -1301,7 +1296,8 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
                     </div>
                   </div>
                 </div>
-              )}
+              }
+              
               <div className=''>
                 <div className='table__modal_create_parchase-orders ' >
                   <div>

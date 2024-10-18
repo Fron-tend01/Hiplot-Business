@@ -47,7 +47,7 @@
 
 .overlay__modal_branch-offices_creating_articles .table__branch-offices .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(3, 1fr) 100px;
+    grid-template-columns: repeat(4, 1fr) 100px;
     padding: 10px;
     font-weight: 600;
 }
@@ -87,7 +87,7 @@
 
 .overlay__modal_branch-offices_creating_articles .table__branch-offices .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(3, 1fr) 100px;
+    grid-template-columns: repeat(4, 1fr) 100px;
     padding: 10px;
 }
 

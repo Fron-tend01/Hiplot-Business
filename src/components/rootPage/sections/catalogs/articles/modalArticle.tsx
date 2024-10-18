@@ -19,7 +19,6 @@ import './modalCreate.css'
 import { useStore } from 'zustand';
 import { TemplatesRequests } from '../../../../../fuctions/Templates';
 import ModalLoading from '../../../../loading/ModalLoading';
-import unit from './json/units.json'
 import typePayments from './json/typePayments.json'
 import { articleRequests } from '../../../../../fuctions/Articles';
 import { useSelectStore } from '../../../../../zustand/Select';
@@ -32,7 +31,9 @@ const modalArticle: React.FC = () => {
     //////////////////////////// Data del articulo /////////////////////////////////////
     const { articleToUpdate }: any = useStore(storeArticles);
 
-    const {updateArticles} = articleRequests()
+    const { updateArticles } = articleRequests()
+
+    const setArticleToUpdate = storeArticles(state => state.setArticleToUpdate)
 
     const setModalArticle = storeArticles(state => state.setModalArticle)
 
@@ -42,13 +43,16 @@ const modalArticle: React.FC = () => {
     const setComponents = storeArticles(state => state.setComponents)
     const setAreas = storeArticles(state => state.setAreas)
     const setMinimalCharges = storeArticles(state => state.setMinimalCharges)
-    
 
 
-    const selectedIds = useSelectStore((state) => state.selectedIds);
+
+    // const selectedIds = useSelectStore((state) => state.selectedIds);
+
+
+    const { selectedIds } = useStore(useSelectStore);
 
     ///////////////////////////////////////////////////////////Variables de los modales ////////////////////////////////////////////////////////////////////////////
-    const { imagesArticles, branchOffices, deleteBranchOffices, prices, deletePrices, maxsMins, deleteMaxsMins, units, deleteUnits, components, deleteComponents, variations, deleteVariations, combinations, deleteCombinations, suppliers, deleteSuppliers, deliveryTimes, deleteDeliveryTimes, minimalCharges, deleteMinimalCharges, additionalArticles, deleteAdditionalArticles, areas, deleteAreas }: any = useStore(storeArticles);
+    const { modalArticle, imagesArticles, branchOffices, deleteBranchOffices, prices, deletePrices, maxsMins, deleteMaxsMins, units, deleteUnits, components, deleteComponents, variations, deleteVariations, combinations, deleteCombinations, suppliers, deleteSuppliers, deliveryTimes, deleteDeliveryTimes, minimalCharges, deleteMinimalCharges, additionalArticles, deleteAdditionalArticles, areas, deleteAreas }: any = useStore(storeArticles);
 
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
@@ -104,6 +108,8 @@ const modalArticle: React.FC = () => {
 
     const [article_id, setArticle_id] = useState<number | null>(null)
 
+    const setSelectedId = useSelectStore((state) => state.setSelectedId);
+
     ////////// Selects //////////////
     const [selectFamilies, setSelectFamilies] = useState<any>()
     const [selectTypePayment, setSelectTypePayment] = useState<any>()
@@ -125,7 +131,7 @@ const modalArticle: React.FC = () => {
             dataSelect: typePayments
         })
 
-     
+
 
         setSelectFamilies({
             selectName: 'Familias',
@@ -134,6 +140,7 @@ const modalArticle: React.FC = () => {
         })
 
         if (articleToUpdate) {
+
             setModalLoading(false)
             setArticle_id(articleToUpdate.id);
             setType(articleToUpdate.tipo);
@@ -158,7 +165,10 @@ const modalArticle: React.FC = () => {
             setSellStock(articleToUpdate.vender_sin_stock);
             setShortage(articleToUpdate.desabasto);
             setExemptTax(articleToUpdate.iva_excento);
-            
+
+            setSelectedId('selectFamilies', articleToUpdate.id_familia);
+            setSelectedId('selectTypePayment', articleToUpdate.tipo_de_cobro);
+            setSelectedId('selectTemplates', articleToUpdate.id_plantilla);
 
             setBranchOffices(articleToUpdate.sucursales)
             setMaxsMins(articleToUpdate.max_mins);
@@ -173,14 +183,22 @@ const modalArticle: React.FC = () => {
 
     useEffect(() => {
         fecht()
+
+
     }, [articleToUpdate]);
 
-    console.log(articleToUpdate)
+
+
+    useEffect(() => {
+
+    }, [selectedIds])
+
 
     // Checkbox de Activo //
 
     const handleCheckboxChange = (value: number) => {
         setType(value); // Actualiza el tipo seleccionado
+
     };
 
 
@@ -190,7 +208,7 @@ const modalArticle: React.FC = () => {
         setViewWeb(e.target.checked);
     };
 
-  
+
     // Subir foto o tomar foto //
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const fileList = event.target.files;
@@ -217,11 +235,11 @@ const modalArticle: React.FC = () => {
             codigo: code,
             descripcion: description,
             unidad: selectedUnit,
-            id_familia: selectedIds.selectFamilies.id,
+            id_familia: selectedIds.selectFamilies,
             activo: activeArticles,
             imagen: '',
-            tipo_de_cobro: selectedIds.selectTypePayment.id,
-            id_plantilla: selectedIds.selectTemplates.id,
+            tipo_de_cobro: selectedIds.selectTypePayment,
+            id_plantilla: selectedIds.selectTemplates,
             base_max: baseMax,
             altura_max: maxHeight,
             multiplos_de: multiples,
@@ -300,7 +318,7 @@ const modalArticle: React.FC = () => {
                 Swal.fire('Artículo creado exitosamente', '', 'success');
                 setStateLoading(false);
                 setModalArticle('');
-                
+
             } else {
                 await APIs.createArticles(data);
                 await getArticlesInGlobal(dataArticle);
@@ -313,7 +331,7 @@ const modalArticle: React.FC = () => {
             Swal.fire('Ocurrió un error al crear el artículo', '', 'error'); // Mensaje en caso de error
             setStateLoading(false);
         }
-        
+
 
     }
 
@@ -382,241 +400,329 @@ const modalArticle: React.FC = () => {
     const [stateLoading, setStateLoading] = useState<boolean>(false)
 
     const modalLoading = storeArticles((state: any) => state.modalLoading);
+
+
+    const clonArticle = async () => {
+
+
+        let data = {
+            id_articulo: articleToUpdate.id,
+            id_usuario: user_id
+        }
+        try {
+            let result: any = await APIs.cloneArticles(data)
+            let dataArticle = {
+                id: result.id_articulo,
+                activos: true,
+                nombre: '',
+                codigo: '',
+                familia: 0,
+                proveedor: 0,
+                materia_prima: 0,
+                get_sucursales: true,
+                get_proveedores: true,
+                get_max_mins: true,
+                get_plantilla_data: true,
+                get_precios: true,
+                get_variaciones: true,
+                get_combinaciones: true,
+                get_tiempos_entrega: true,
+                get_areas_produccion: true,
+                get_componentes: true,
+                get_cargos_minimos: true,
+                get_adicional: true,
+                get_stock: true,
+                get_web: false,
+                get_unidades: true
+            };
+            Swal.fire(result.mensaje, '', 'success');
+            let resultArticle: any = await APIs.getArticles(dataArticle);
+            setArticleToUpdate(resultArticle[0])
+
+        } catch (error) {
+            Swal.fire('Hubo un error', '', 'error');
+        }
+    }
+
+    const closeModal = () => {
+        setModalArticle('')
+        if(modalArticle == 'articles-modal-update') {
+            setArticleToUpdate(null)
+            setCode('')
+            setDescription('')
+            setsalesInstructions('')
+            setwebNotes('')
+            setPurchaseConditions('')
+            setBaseMax(null)
+            setMaxHeight(null)
+            setMultiples(null)
+            setViewWeb(false)
+            setORequest(false)
+            setSellStock(false)
+            setShortage(false)
+            setExemptTax(false)
+
+            
+            setBranchOffices([])
+            setMaxsMins([]);
+            setPrices([]);
+            setUnits([]);
+            setComponents([]);
+            setAreas([]);
+            setMinimalCharges([]);
+            setAdditionalArticles([])
+        }
+
+    } 
+
+
     return (
-        <>
-            {modalLoading == true ? (
-                <ModalLoading />
-            ) : (
-                <form className='conatiner__create_articles' onSubmit={handleCreateSuppliers}>
-                    <div className='row__form_articles-radios'>
-                        <div className='container__form_articles-radios'>
-                            <div className='checkbox__modal_articles'>
-                                <label className="checkbox__container_general">
-                                    <input value={0} className='checkbox' type="checkbox" checked={type === 0} onChange={() => handleCheckboxChange(0)} />
-                                    <span className="checkmark__general"></span>
-                                </label>
-                                <p className='text'>Materia prima</p>
-                            </div>
-                            <div className='checkbox__modal_articles'>
-                                <label className="checkbox__container_general">
-                                    <input value={1} className='checkbox' type="checkbox" checked={type === 1} onChange={() => handleCheckboxChange(1)} />
-                                    <span className="checkmark__general"></span>
-                                </label>
-                                <p className='text'>Servicio</p>
-                            </div>
-                        </div>
+        <div className={`overlay__articles ${modalArticle == 'articles-modal-create' || modalArticle == 'articles-modal-update' ? 'active' : ''}`}>
+            <div className={`popup__articles ${modalArticle == 'articles-modal-create' || modalArticle == 'articles-modal-update' ? 'active' : ''}`}>
+                <div className='header__modal'>
+                    <a href="#" className="btn-cerrar-popup__articles" onClick={closeModal}>
+                        <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+                    </a>
+                    <p className='title__modals'>Artículo</p>
+                </div>
+                {modalLoading == true ? (
+                    <div className='loading__container'>
+                        <ModalLoading />
                     </div>
-                    <div className='row__form_articles-one'>
-                        <div>
-                            <label className='label__general'>Código</label>
-                            <input className='inputs__general' type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder='Ingresa el código' />
+
+                ) : (
+                    <form className='conatiner__articles-modal' onSubmit={handleCreateSuppliers}>
+                        <div className='row__form_articles-radios'>
+                            <div className='container__form_articles-radios'>
+                                <div className='checkbox__modal_articles'>
+                                    <label className="checkbox__container_general">
+                                        <input value={0} className='checkbox' type="checkbox" checked={type === 0} onChange={() => handleCheckboxChange(0)} />
+                                        <span className="checkmark__general"></span>
+                                    </label>
+                                    <p className='text'>Materia prima</p>
+                                </div>
+                                <div className='checkbox__modal_articles'>
+                                    <label className="checkbox__container_general">
+                                        <input value={1} className='checkbox' type="checkbox" checked={type === 1} onChange={() => handleCheckboxChange(1)} />
+                                        <span className="checkmark__general"></span>
+                                    </label>
+                                    <p className='text'>Servicio</p>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label className='label__general'>Descripción</label>
-                            <input className='inputs__general' type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder='Ingresa la descripción' />
-                        </div>
-                        <Select dataSelects={selectFamilies} instanceId='selectFamilies' />
-                        <Select dataSelects={selectTypePayment} instanceId='selectTypePayment' />
-                        <div>
+                        <div className='row__form_articles-one'>
                             <div>
-                                <p className='label__general'>Activo</p>
+                                <label className='label__general'>Código</label>
+                                <input className='inputs__general' type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder='Ingresa el código' />
+                            </div>
+                            <div>
+                                <label className='label__general'>Descripción</label>
+                                <input className='inputs__general' type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder='Ingresa la descripción' />
+                            </div>
+                            <Select dataSelects={selectFamilies} instanceId='selectFamilies' nameSelect={'Familias'} />
+                            <Select dataSelects={selectTypePayment} instanceId='selectTypePayment' nameSelect={'Tipo de cobro'} />
+                            <div>
+                                <div>
+                                    <p className='label__general'>Activo</p>
+                                    <label className="switch">
+                                        <input type="checkbox" checked={activeArticles} onChange={handleActiveChange} />
+                                        <span className="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='row__form_articles-two my-4'>
+                            <div className="container__upload_photo" onClick={() => setSubModal('modal-images')}>
+                                <label htmlFor="file-upload" className={`custom-file-upload`} style={{ backgroundImage: `url(${selectedFile})` }}>
+                                    <span>
+                                        {/* <svg xmlns="http://www.w3.org/2000/svg" fill='#fff' viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM385 231c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-71-71V376c0 13.3-10.7 24-24 24s-24-10.7-24-24V193.9l-71 71c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9L239 119c9.4-9.4 24.6-9.4 33.9 0L385 231z" /></svg> */}
+                                        {' '}
+                                        Ver mas
+                                    </span>
+                                </label>
+                                {/* <input id="file-upload" type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} /> */}
+
+                            </div>
+                            <Images />
+                            <div>
+                                <Select dataSelects={selectTemplates} instanceId='selectTemplates' nameSelect={'Plantillas'} />
+                            </div>
+                            <div>
+                                <label className='label__general'>Base Max</label>
+                                <input className='inputs__general' type="number" value={baseMax === null ? '' : baseMax} onChange={handleInputBaseMaxChange} placeholder='Ingresa la base máxima' />
+                            </div>
+                            <div>
+                                <label className='label__general'>Altura Max</label>
+                                <input className='inputs__general' type="number" value={maxHeight === null ? '' : maxHeight} onChange={handleInputMaxHeightChange} placeholder='Ingresa la altura máxima' />
+                            </div>
+                            <div>
+                                <label className='label__general'>Múltiplos</label>
+                                <input className='inputs__general' type="number" value={multiples === null ? '' : multiples} onChange={handleInputMultiplesChange} placeholder='Ingresa los múltiplos' />
+                            </div>
+                            <div className=' '>
+
+                                <p className='label__general'>Vista web</p>
                                 <label className="switch">
-                                    <input type="checkbox" checked={activeArticles} onChange={handleActiveChange} />
+                                    <input type="checkbox" checked={viewWeb} onChange={handleViewWebChange} />
                                     <span className="slider"></span>
                                 </label>
+
                             </div>
                         </div>
-                    </div>
-                    <div className='row__form_articles-two my-4'>
-                        <div className="container__upload_photo" onClick={() => setSubModal('modal-images')}>
-                            <label htmlFor="file-upload" className={`custom-file-upload`} style={{ backgroundImage: `url(${selectedFile})` }}>
-                                <span>
-                                    {/* <svg xmlns="http://www.w3.org/2000/svg" fill='#fff' viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM385 231c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-71-71V376c0 13.3-10.7 24-24 24s-24-10.7-24-24V193.9l-71 71c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9L239 119c9.4-9.4 24.6-9.4 33.9 0L385 231z" /></svg> */}
-                                    {' '}
-                                    Ver mas
-                                </span>
-                            </label>
-                            {/* <input id="file-upload" type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} /> */}
-                            
-                        </div>
-                        <Images />
-                        <div>
-                            <Select dataSelects={selectTemplates} instanceId='selectTemplates' />
-                        </div>
-                        <div>
-                            <label className='label__general'>Base Max</label>
-                            <input className='inputs__general' type="number" value={baseMax === null ? '' : baseMax} onChange={handleInputBaseMaxChange} placeholder='Ingresa la dirección' />
-                        </div>
-                        <div>
-                            <label className='label__general'>Altura Max</label>
-                            <input className='inputs__general' type="number" value={maxHeight === null ? '' : maxHeight} onChange={handleInputMaxHeightChange} placeholder='Ingresa el contacto' />
-                        </div>
-                        <div>
-                            <label className='label__general'>Multiplos</label>
-                            <input className='inputs__general' type="number" value={multiples === null ? '' : multiples} onChange={handleInputMultiplesChange} placeholder='Ingresa el contacto' />
-                        </div>
-                        <div className=' '>
-
-                            <p className='label__general'>Vista web</p>
-                            <label className="switch">
-                                <input type="checkbox" checked={viewWeb} onChange={handleViewWebChange} />
-                                <span className="slider"></span>
-                            </label>
-
-                        </div>
-                    </div>
-                    {/* <div className='row__form_articles-three'>
+                        {/* <div className='row__form_articles-three'>
                         
                     </div> */}
-                    <div className='row__form_articles-four'>
-                        <div>
-                            <label className='label__general'>Indicaciones de Ventas</label>
-                            <input className='inputs__general' type="text" value={salesInstructions} onChange={(e) => setsalesInstructions(e.target.value)} placeholder='Ingresa la dirección' />
-                        </div>
-                        <div>
-                            <label className='label__general'>Notas web</label>
-                            <input className='inputs__general' type="text" value={webNotes} onChange={(e) => setwebNotes(e.target.value)} placeholder='Ingresa el contacto' />
-                        </div>
-                        <div>
-                            <label className='label__general'>Condiciones de compra</label>
-                            <input className='inputs__general' type="text" value={purchaseConditions} onChange={(e) => setPurchaseConditions(e.target.value)} placeholder='Ingresa el contacto' />
-                        </div>
-                    </div>
-                    <div className='row__form_articles-five'>
-                        <div>
+                        <div className='row__form_articles-four'>  
                             <div>
-                                <p className='label__general'>Bajo Pedido</p>
-                                <label className="switch">
-                                    <input type="checkbox" checked={oRequest} onChange={handleORequestChange} />
-                                    <span className="slider"></span>
-                                </label>
+                                <label className='label__general'>Indicaciones de Ventas</label>
+                                <input className='inputs__general' type="text" value={salesInstructions} onChange={(e) => setsalesInstructions(e.target.value)} placeholder='Indicaciones de Ventas' />
+                            </div>
+                            <div>
+                                <label className='label__general'>Notas web</label>
+                                <input className='inputs__general' type="text" value={webNotes} onChange={(e) => setwebNotes(e.target.value)} placeholder='Notas web' />
+                            </div>
+                            <div>
+                                <label className='label__general'>Condiciones de compra</label>
+                                <input className='inputs__general' type="text" value={purchaseConditions} onChange={(e) => setPurchaseConditions(e.target.value)} placeholder='Condiciones de compra' />
                             </div>
                         </div>
-                        <div>
+                        <div className='row__form_articles-five'>
                             <div>
-                                <p className='label__general'>Vender sin stock</p>
-                                <label className="switch">
-                                    <input type="checkbox" checked={sellStock} onChange={handleSellStockChange} />
-                                    <span className="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div>
-                            <div>
-                                <p className='label__general'>Desabasto</p>
-                                <label className="switch">
-                                    <input type="checkbox" checked={Shortage} onChange={handleShortageChange} />
-                                    <span className="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div>
-                            <div>
-                                <p className='label__general'>IVA Excento</p>
-                                <label className="switch">
-                                    <input type="checkbox" checked={ExemptTax} onChange={handleExemptTaxChange} />
-                                    <span className="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='row__form_articles-six'>
-                        <div>
-                            <div>
-                                <button className='btn__general-purple' type='button' onClick={() => setSubModal('branch-office__modal')}>Sucursales</button>
-                            </div>
-                            <BranchOffices />
-                        </div>
-                        <div>
-                            <Prices />
-                            <div>
-                                <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-prices')}>Precios</button>
-                            </div>
-
-                        </div>
-                        <div>
-                            <div>
-                                <button className='btn__general-purple' type='button' onClick={modalMaxMin}>Max-Min</button>
-                            </div>
-                            <div className={`overlay__modal_maxmin_creating_articles ${modalStateMaxsMins == 'create' ? 'active' : ''}`}>
-                                <div className={`popup__modal_maxmin_creating_articles ${modalStateMaxsMins == 'create' ? 'active' : ''}`}>
-                                    <MaxMin />
+                                <div>
+                                    <p className='label__general'>Bajo Pedido</p>
+                                    <label className="switch">
+                                        <input type="checkbox" checked={oRequest} onChange={handleORequestChange} />
+                                        <span className="slider"></span>
+                                    </label>
                                 </div>
                             </div>
-
-                        </div>
-                        <div>
                             <div>
-                                <button className='btn__general-purple' type='button' onClick={modalUnits}>Unidades</button>
+                                <div>
+                                    <p className='label__general'>Vender sin stock</p>
+                                    <label className="switch">
+                                        <input type="checkbox" checked={sellStock} onChange={handleSellStockChange} />
+                                        <span className="slider"></span>
+                                    </label>
+                                </div>
                             </div>
-                            <div className={`overlay__modal_units_creating_articles ${modalStateUnits == 'create' ? 'active' : ''}`}>
-                                <div className={`popup__modal_units_creating_articles ${modalStateUnits == 'create' ? 'active' : ''}`} >
-                                    <Units />
+                            <div>
+                                <div>
+                                    <p className='label__general'>Desabasto</p>
+                                    <label className="switch">
+                                        <input type="checkbox" checked={Shortage} onChange={handleShortageChange} />
+                                        <span className="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <p className='label__general'>IVA Excento</p>
+                                    <label className="switch">
+                                        <input type="checkbox" checked={ExemptTax} onChange={handleExemptTaxChange} />
+                                        <span className="slider"></span>
+                                    </label>
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div className='row__form_articles-six'>
                             <div>
-                                <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-components')}>Componentes</button>
+                                <div>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('branch-office__modal')}>Sucursales</button>
+                                </div>
+                                <BranchOffices />
                             </div>
-                            <Components />
-                        </div>
-                        <div>
                             <div>
-                                <button className='btn__general-purple' type='button' onClick={() => setSubModal('create_modal_variations')}>Variaciones</button>
-                            </div>
-                            <Variations />
-                        </div>
-                        <div>
-                            <div>
-                                <button className='btn__general-purple' type='button' onClick={() => setSubModal('create_modal_combinations')}>Combinaciones</button>
-                            </div>
-                            <Combinations />
-                        </div>
-                        <div>
-                            <div>
-                                <button className='btn__general-purple' type='button' onClick={() => setSubModal('article-modal_areas-production')}>Areas de pro</button>
-                            </div>
-                            <ProductionAreas />
-                        </div>
-                        <div>
-                            <div>
-                                <button className='btn__general-purple' type='button' onClick={modalSuppliers}>Proveedores</button>
-                            </div>
-                            <div className={`overlay__modal_suppliers_creating_articles ${modalStateSuppliers == 'create' ? 'active' : ''}`}>
-                                <div className={`popup__modal_suppliers_creating_articles ${modalStateSuppliers == 'create' ? 'active' : ''}`}>
-                                    <Suppliers />
+                                <Prices />
+                                <div>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-prices')}>Precios</button>
                                 </div>
                             </div>
-                        </div>
-                        <div>
                             <div>
-                                <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-delivery-times')}>T. Entrega</button>
+                                <div>
+                                    <button className='btn__general-purple' type='button' onClick={modalMaxMin}>Max-Min</button>
+                                </div>
+                                <div className={`overlay__modal_maxmin_creating_articles ${modalStateMaxsMins == 'create' ? 'active' : ''}`}>
+                                    <div className={`popup__modal_maxmin_creating_articles ${modalStateMaxsMins == 'create' ? 'active' : ''}`}>
+                                        <MaxMin />
+                                    </div>
+                                </div>
                             </div>
-                            <DeliveryTimes />
-                        </div>
-                        <div>
                             <div>
-                                <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-minimal-charges')}>Cargos minimos</button>
+                                <div>
+                                    <button className='btn__general-purple' type='button' onClick={modalUnits}>Unidades</button>
+                                </div>
+                                <div className={`overlay__modal_units_creating_articles ${modalStateUnits == 'create' ? 'active' : ''}`}>
+                                    <div className={`popup__modal_units_creating_articles ${modalStateUnits == 'create' ? 'active' : ''}`} >
+                                        <Units />
+                                    </div>
+                                </div>
                             </div>
-                            <MinimalCharges />
-                        </div>
-                        <div>
                             <div>
-                                <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-additiona-articles')}>Art. adicionales</button>
+                                <div>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-components')}>Componentes</button>
+                                </div>
+                                <Components />
                             </div>
-                            <AdditionalArticles />
+                            <div>
+                                <div>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('create_modal_variations')}>Variaciones</button>
+                                </div>
+                                <Variations />
+                            </div>
+                            <div>
+                                <div>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('create_modal_combinations')}>Combinaciones</button>
+                                </div>
+                                <Combinations />
+                            </div>
+                            <div>
+                                <div>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('article-modal_areas-production')}>Areas de pro</button>
+                                </div>
+                                <ProductionAreas />
+                            </div>
+                            <div>
+                                <div>
+                                    <button className='btn__general-purple' type='button' onClick={modalSuppliers}>Proveedores</button>
+                                </div>
+                                <div className={`overlay__modal_suppliers_creating_articles ${modalStateSuppliers == 'create' ? 'active' : ''}`}>
+                                    <div className={`popup__modal_suppliers_creating_articles ${modalStateSuppliers == 'create' ? 'active' : ''}`}>
+                                        <Suppliers />
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-delivery-times')}>T. Entrega</button>
+                                </div>
+                                <DeliveryTimes />
+                            </div>
+                            <div>
+                                <div>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-minimal-charges')}>Cargos minimos</button>
+                                </div>
+                                <MinimalCharges />
+                            </div>
+                            <div>
+                                <div>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-additiona-articles')}>Art. adicionales</button>
+                                </div>
+                                <AdditionalArticles />
+                            </div>
                         </div>
-                    </div>
-                    <div className='d-flex justify-content-center'>
-                        <button className='btn__general-purple d-flex align-items-center' type='submit'>
-                            {articleToUpdate ? `${stateLoading ? 'Actualizando articulo' : 'Actualizar articulo' }` : `${stateLoading ? 'Creando articulo' : 'Crear articulo'}`}
-                            {stateLoading ? <span className="loader-two"></span> : ''}
-                        </button>
-                    </div>
-                </form>
-            )}
-        </>
+                        <div className='d-flex justify-content-center'>
+                            <button className='btn__general-purple d-flex align-items-center' type='submit'>
+                                {articleToUpdate ? `${stateLoading ? 'Actualizando articulo' : 'Actualizar articulo'}` : `${stateLoading ? 'Creando articulo' : 'Crear articulo'}`}
+                                {stateLoading ? <span className="loader-two"></span> : ''}
+                            </button>
+                            <div className='btp__clone'>
+                                <button className='btn__general-orange' type='button' onClick={clonArticle}>Clonar artículo</button>
+                            </div>
+                        </div>
+                    </form>
+                )}
+            </div>
+        </div>
     )
 }
 

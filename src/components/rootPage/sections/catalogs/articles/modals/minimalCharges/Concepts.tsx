@@ -115,7 +115,7 @@ const Concepts = ({index}: any) => {
   
 
 
-    console.log('minimalCharges', minimalCharges)
+
 
     return (
         <div className={`overlay__modal-sub_minimal-charges_modal-articles ${modalSub == 'modal-sub-minimal-charges' ? 'active' : ''}`}>

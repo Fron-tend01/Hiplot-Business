@@ -84,7 +84,7 @@ const ProductionAreas: React.FC = () => {
           <a href="#" className="btn-cerrar-popup__modal_production-areas_creating_articles" onClick={() => setSubModal('')}>
             <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
           </a>
-          <p className='title__modals'>Precios</p>
+          <p className='title__modals'>Área de producción</p>
         </div>
         <form className='article__modal_save_modal_production-areas_container'>
           <div className='row'>
@@ -93,7 +93,7 @@ const ProductionAreas: React.FC = () => {
             </div>
             <div className='col-3 d-flex justify-content-around'>
               <div>
-                <label className='text'>Produccion</label><br></br>
+                <label className='text'>Producción</label><br></br>
                 <label className="switch">
                   <input
                     type="checkbox"
@@ -132,7 +132,7 @@ const ProductionAreas: React.FC = () => {
               <div>
               {areas ? (
                 <div className='table__numbers'>
-                  <p className='text'>Total de precios</p>
+                  <p className='text'>Total de movimientos</p>
                   <div className='quantities_tables'>{areas.length}</div>
                 </div>
               ) : (
@@ -145,13 +145,13 @@ const ProductionAreas: React.FC = () => {
                         <p className=''>Sucursal</p>
                     </div>
                     <div className='th'>
-                        <p className=''>Area</p>
+                        <p className=''>Área</p>
                     </div>
                     <div className='th'>
                         <p className=''>Orden</p>
                     </div>
                     <div className='th'>
-                        <p className=''>Agrupacion</p>
+                        <p className=''>Agrupación</p>
                     </div>
                     <div className='th'>
                     </div>

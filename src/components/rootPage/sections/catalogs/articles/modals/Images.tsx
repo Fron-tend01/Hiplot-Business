@@ -31,13 +31,10 @@ const Images: React.FC = () => {
         }
     };
 
-    const deleteImages = (image: any, i: number) => {
+    const deleteImages = (_: any, i: number) => {
         let filter = imagesArticles.filter((_: any, index: number) => index !== i)
         setImagesArticles(filter)
     }
-
-    console.log(imagesArticles)
-
 
 
     return (

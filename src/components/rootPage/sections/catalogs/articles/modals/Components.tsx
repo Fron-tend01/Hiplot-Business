@@ -15,7 +15,7 @@ const Components: React.FC = () => {
   const [camps] = useState<any>([
     {
       nombre: 'id_articulo',
-      tipo: 1,  
+      tipo: 1,
       asignacion: 'id'
     },
     {
@@ -74,8 +74,9 @@ const Components: React.FC = () => {
           <div>
             <div>
               {components ? (
-                <div>
-                  <p className='text'>Total de unidades {components.length}</p>
+                <div className='table__numbers'>
+                  <p className='text'>Total de Componentes</p>
+                  <div className='quantities_tables'>{components.length}</div>
                 </div>
               ) : (
                 <p className='text'>No hay empresas</p>
@@ -90,14 +91,13 @@ const Components: React.FC = () => {
                   <p className=''>Descripción</p>
                 </div>
                 <div className='th'>
-                  <p className=''>Cantidad determinada</p>
+                  <p className=''>Cantidad indeterminada</p>
                 </div>
                 <div className='th'>
                   Cantidad
                 </div>
                 <div className='th'>
                 </div>
-
               </div>
             </div>
             {components?.length > 0 ? (
