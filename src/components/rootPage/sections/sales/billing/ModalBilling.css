@@ -23,7 +23,7 @@
 	visibility: visible;
 }
 
-.header__modal {
+.overlay__billing-modal .header__modal {
     position: absolute;
     width: 100%;
     top: 0;

@@ -33,6 +33,8 @@
     background-color: #252a36;
     color: #f3f3f3;
     margin: 20px 0;
+    text-align: center;
+    border-radius: 5px;
 }
 
 
@@ -422,7 +424,7 @@
 	visibility: visible;
 }
 
-.header__modal {
+.overlay__purchase-orders .header__modal {
     position: absolute;
     width: 100%;
     top: 0;

@@ -23,15 +23,6 @@ const Concepts = () => {
     const { additionalArticles }: any = useStore(storeArticles)
 
 
-
-    useEffect(() => {
-
-    }, [])
-
-
-    console.log(additionalArticles)
-
-
     const { modalSub }: any = useStore(storeModals)
 
 

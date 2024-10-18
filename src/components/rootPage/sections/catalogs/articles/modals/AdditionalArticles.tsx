@@ -198,7 +198,7 @@ const AdditionalArticles: React.FC = () => {
           <a href="#" className="btn-cerrar-popup__modal_additional-articles_modal_articles" onClick={() => setSubModal('')} >
             <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
           </a>
-          <p className='title__modals'>Articulos adicionales</p>
+          <p className='title__modals'>Artículos adicionales</p>
         </div>
         <form className='modal_additional-articles_modal_articles'>
           <div className='row'>
@@ -225,10 +225,10 @@ const AdditionalArticles: React.FC = () => {
             <div className='table__head'>
               <div className='thead'>
                 <div className='th'>
-                  <p className=''>Codigo</p>
+                  <p className=''>Código</p>
                 </div>
                 <div className='th'>
-                  <p className=''>Descripcion</p>
+                  <p className=''>Descripción</p>
                 </div>
                 <div className='th'>
                   <p className=''>Sucursal</p>
@@ -237,13 +237,13 @@ const AdditionalArticles: React.FC = () => {
                   <p className=''>Aparece por</p>
                 </div>
                 <div className='th'>
-                  <p className=''>Condicion</p>
+                  <p className=''>Condición</p>
                 </div>
                 <div className='th'>
                   Valor
                 </div>
                 <div className='th'>
-
+                  
                 </div>
                 <div className='th'>
 

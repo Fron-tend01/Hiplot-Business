@@ -195,10 +195,9 @@ interface FiltradoArticulosBasicProps {
                     </div>
                 </div>
                 {selectedSearch != 2 ?
-
                     <div className='col-6 md-col-6 sm-col-12 '>
                         <div>
-                            <label className='label__general'>Escribe el {selectedSearch==0?'Codigo':'Nombre'}</label>
+                            <label className='label__general'>Escribe el {selectedSearch==0?'Código':'Nombre'}</label>
                             <input className='inputs__general' type='text' value={nameBy} onChange={(e) => setNameBy(e.target.value)} placeholder='Ingresa el nombre' onKeyUp={searchFor} />
                         </div>
                     </div>

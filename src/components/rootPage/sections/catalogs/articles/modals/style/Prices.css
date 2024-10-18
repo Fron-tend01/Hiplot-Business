@@ -43,7 +43,7 @@
 	visibility: visible;
 }
 
-.header__modal {
+.overlay__modal_prices_creating_articles .header__modal {
     position: absolute;
     width: 100%;
     top: 0;
@@ -55,7 +55,7 @@
 	background-color: var(--background-modal);  
 	border-radius: 5px;
 	padding: 40px 20px 20px 20px;
-	width: 80%;
+	width: 100%;
     height: 95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
@@ -77,6 +77,7 @@
 }
 
 
+
 /* ------------------------- */
 /* ANIMACIONES */
 /* ------------------------- */
@@ -84,6 +85,11 @@
 
 
 
+
+
+.article__modal_create_modal_price_container .select__container .inputs__general {
+   outline: 2px solid var(--primary-color);
+}
 
 
 
@@ -106,16 +112,15 @@
 .article__modal_prices_modal_container .table__head .thead {
     display: grid;
 	width: 100%;
-    grid-template-columns: repeat(4, 1fr) 100px 100px;
-	
+    grid-template-columns: repeat(4, 1fr) repeat(3, 100px);
+	column-gap: 20px;
     padding: 10px;
     font-weight: 600;
 }
 
 .article__modal_prices_modal_container .table__body {
 	max-height: 200px;
-    overflow: hidden;
-    overflow: auto;
+    overflow: visible;
     transition-delay: 0.0s;
     &::-webkit-scrollbar {
         width: 5px;
@@ -150,9 +155,47 @@
 
 .article__modal_prices_modal_container .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(4, 1fr) 100px 100px;
+    grid-template-columns: repeat(4, 1fr) repeat(3, 100px);
+    column-gap: 20px;
     padding: 10px;
 }
+.article__modal_prices_modal_container .table__body .tbody .td {
+    position: relative;
+}
+
+.article__modal_prices_modal_container .table__body .tbody .td select {
+    margin-top: 0;
+    width: 100%;
+}
+
+.article__modal_prices_modal_container .table__body .tbody .td .inputs__general {
+    margin-top: 0;
+}
+
+
+
+
+.article__modal_prices_modal_container .tbody__container .table_drop-down {
+    height: 0;  /* Deja que el contenedor tenga su altura automática */
+    clip-path: inset(0 0 100% 0); /* Oculta todo el contenido */
+    transition: all 0.5s ease-in-out; /* Transición suave */
+}
+
+.article__modal_prices_modal_container .tbody__container .table_drop-down.active {
+    clip-path: inset(0 0 0 0); /* Muestra todo el contenido */
+    height: 300px; 
+}
+
+
+.article__modal_prices_modal_container .table__body .tbody .td .select__container {
+    position: absolute;
+}
+
+/* 
+.article__modal_prices_modal_container .table__body .tbody .td .select__container .inputs__general {
+    background-color: #BBBBBB !important;
+} */
+
 
 .article__modal_prices_modal_container .table__body .tbody:hover {
     background-color: var(--secundary-color);
@@ -161,21 +204,13 @@
 
 
 
-
-
-.article__modal_prices_modal_container .area__edit_btn {
-	background-color: var(--primary-color);
-	color: #fff;
-	border: none;
-	padding: 5px 10px;
-	border-radius: var(--border-radius-general);
-	cursor: pointer;
-  }
-
-
   
 
-
+.ranges__prices_container {
+    background-color: #2f3747;
+    padding: 10px;
+    border-radius: 10px;
+}
 
 
 
@@ -202,7 +237,7 @@
     display: grid;
 	width: 100%;
     grid-template-columns: repeat(4, 1fr) 100px;
-	
+	column-gap: 20px;
     padding: 10px;
     font-weight: 600;
 }
@@ -246,6 +281,7 @@
 .table__modal_prices_extra_modal_container .table__body .tbody {
     display: grid;
     grid-template-columns: repeat(4, 1fr) 100px;
+    column-gap: 20px;
     padding: 10px;
 }
 
@@ -253,6 +289,8 @@
     background-color: var(--secundary-color);
     color: #fff;
 }
+
+
 
 .table__modal_prices_extra_modal_container .area__edit_btn {
 	background-color: var(--primary-color);

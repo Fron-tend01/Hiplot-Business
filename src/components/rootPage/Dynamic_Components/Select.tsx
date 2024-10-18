@@ -4,41 +4,36 @@ import { useSelectStore } from '../../../zustand/Select'; // Asegúrate de que l
 interface SelectData {
   selectName: string;
   dataSelect: any[];
-  options: string; // El nombre de la propiedad que quieres mostrar
+  options: string;
 }
 
 interface SelectProps {
   dataSelects: SelectData;
-  instanceId: string; // Identificador único para cada instancia
+  instanceId: string;
+  nameSelect?: String;
 }
 
-const Select: React.FC<SelectProps> = ({ dataSelects, instanceId }) => {
-  if (!dataSelects) {
-    console.warn('dataSelects is undefined');
-    return null; // O muestra un mensaje de error
-  }
-  const [selects, setSelects] = useState<boolean>(false); 
-  const selectedId: any = useSelectStore((state) => state.selectedIds == null ? null :  state.selectedIds[instanceId]);
+const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }) => {
+
+
+  const [selects, setSelects] = useState<boolean>(false);
+  const selectedId: any = useSelectStore((state) => state.selectedIds == null ? null : state.selectedIds[instanceId]);
   const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
   const handleSelectsChange = (famId: number) => {
-    setSelectedId(instanceId, famId); // Usar el instanceId para actualizar el estado correcto
+    setSelectedId(instanceId, famId);
     setSelects(false);
   };
 
-
-
-
-
   return (
     <div className='select__container'>
-      <label className='label__general'>{dataSelects && dataSelects.selectName}</label>
+      <label className='label__general'>{nameSelect}</label>
       <div className={`select-btn__general`}>
         <div className={`select-btn ${selects ? 'active' : ''}`} onClick={() => setSelects(!selects)}>
           <div className='select__container_title'>
             <p>
-              {selectedId 
-                ? dataSelects.dataSelect && dataSelects.dataSelect.find((s) => s.id === selectedId.id)?.[dataSelects.options] || 'Selecciona' 
+              {selectedId
+                ? dataSelects?.dataSelect.find((s) => s.id === selectedId)?.[dataSelects?.options] || 'Selecciona'
                 : 'Selecciona'}
             </p>
           </div>
@@ -48,9 +43,9 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId }) => {
         </div>
         <div className={`content ${selects ? 'active' : ''}`}>
           <ul className={`options ${selects ? 'active' : ''}`} style={{ opacity: selects ? '1' : '0' }}>
-            {dataSelects.dataSelect && dataSelects.dataSelect.map((select) => (
-              <li key={select.id} onClick={() => handleSelectsChange(select)}>
-                {select[dataSelects.options] || 'No disponible'} 
+            {dataSelects?.dataSelect?.map((select) => (
+              <li key={select.id} onClick={() => handleSelectsChange(select.id)}>
+                {select[dataSelects?.options] || 'No disponible'}
               </li>
             ))}
           </ul>
@@ -59,5 +54,6 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId }) => {
     </div>
   );
 };
+
 
 export default Select;

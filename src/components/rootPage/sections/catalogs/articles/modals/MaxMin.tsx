@@ -83,7 +83,6 @@ const MaxMin: React.FC = () => {
     setWarinings('')
   };
 
-  console.log(deleteMaxsMins)
 
 
   const handleMaxMinCompaniesChange = (company: any) => {
@@ -298,7 +297,7 @@ const MaxMin: React.FC = () => {
                 </div>
             </div>
             <div>
-                <div className='table__maxmin' >
+                <div className='table__maxmin'>
                     <div>
                         <div>
                             {maxsMins ? (

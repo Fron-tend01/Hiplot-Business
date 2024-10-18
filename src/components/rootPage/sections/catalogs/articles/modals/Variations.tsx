@@ -113,8 +113,6 @@ const Variations: React.FC = () => {
     setVariations([...variations, selectedResult.id]);
   }
 
-  console.log(viewVariations)
-
 
   const handleCreateTypeOfPayments = () => {
 
@@ -134,7 +132,7 @@ const Variations: React.FC = () => {
           <a href="#" className="btn-cerrar-popup__create_modal_variations" onClick={() => setSubModal('')} >
             <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
           </a>
-          <p className='title__modals'>Precios</p>
+          <p className='title__modals'>Variación</p>
         </div>
         <div className='conatiner__create_modal_variations' onSubmit={handleCreateTypeOfPayments}>
           <div className='row__one'>
@@ -174,7 +172,7 @@ const Variations: React.FC = () => {
                 </div>
                 <div className={`content ${selectResults ? 'active' : ''}`} >
                   <ul className={`options ${selectResults ? 'active' : ''}`} style={{ opacity: selectResults ? '1' : '0' }}>
-                    {articles && articles.map((result: any) => (
+                    {articles?.map((result: any) => (
                       <li key={result.id} onClick={() => handleResultsChange(result)}>
                         {result.nombre}
                       </li>
@@ -213,7 +211,7 @@ const Variations: React.FC = () => {
               </div>
               {viewVariations?.length > 0 ? (
                 <div className='table__body'>
-                  {viewVariations.map((item: any, index: any) => (
+                  {viewVariations?.map((item: any, index: any) => (
                     <div className='tbody__container' key={index}>
                       <div className='tbody'>
                         <div className='td'>

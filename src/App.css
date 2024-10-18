@@ -85,6 +85,8 @@ input[type=number]::-webkit-outer-spin-button {
 input {
   font-family: 'Poppins', sans-serif;
   /* font-size: 1rem; */
+
+
 }
 
 button {
@@ -507,7 +509,29 @@ option {
   }
 
 
+.available {
+  display: flex;
+}
 
+.available p {
+  padding: 8px 10px;
+  background-color: #0097082c;
+  font-weight: 600;
+  color: #009708;
+  border-radius: 5px;
+}
+
+.not-available {
+  display: flex;
+}
+.not-available p {
+  padding: 8px 10px;
+  background-color: #d0342c38;
+  font-weight: 600;
+  color: #D0342C;
+  border-radius: 5px;
+
+}
 
 
 
@@ -601,7 +625,7 @@ option {
     transform: rotate(-180deg);
   }
 
-  .select__container .content{
+  .select__container .content {
     position: absolute;
     /* top: 70px; */
     width: 100%;
@@ -613,6 +637,17 @@ option {
     padding: 0 10px 0 10px;
   
 
+  }
+
+  .select__container .content .inputs__general {
+    display: none;
+
+
+  }
+
+  .select__container .content.active .inputs__general {
+    display: block;
+ 
   }
 
   .select__container .content.active{
@@ -874,6 +909,11 @@ input:checked + .slider:before {
   display: flex;
   margin: 10px 0;
 }
+
+.table__numbers .quantities_tables {
+  color: var(--text-white);
+}
+
 
 .quantities_tables {
   display: flex;

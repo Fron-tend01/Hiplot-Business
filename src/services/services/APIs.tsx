@@ -177,9 +177,19 @@ const APIs = {
   },
 
 
-  updateArticles: async (data: any, customPath?: string) => {
-    const path = customPath || `update_articulo/${data.id}`;
+  updateArticles: async (data: any) => {
+    const path = `update_articulo/${data.id}`;
     return ConfigurationAPIs.put(path, data)
+  },
+
+  cloneArticles: async (data: any) => {
+    const path = `clonar_articulo`;
+    return ConfigurationAPIs.post(path, data)
+  },
+
+  cloneArticlesPrice: async (data: any) => {
+    const path = `clonar_precios`;
+    return ConfigurationAPIs.post(path, data)
   },
 
 

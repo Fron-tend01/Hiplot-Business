@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { storeBranchOffcies } from '../../../../../../zustand/BranchOffices';
 import { storeStore } from '../../../../../../zustand/Store';
 import useUserStore from '../../../../../../zustand/General';
 import { useStore } from 'zustand';
 import { storeArticles } from '../../../../../../zustand/Articles';
-import { companiesRequests } from '../../../../../../fuctions/Companies';
 import './style/BranchOffices.css'
 import {Toaster, toast } from 'sonner'
 import Empresas_Sucursales from '../../../../Dynamic_Components/Empresas_Sucursales';
@@ -137,7 +135,7 @@ const BranchOffices: React.FC = () => {
                                             <div className='quantities_tables'>{branchOffices.length}</div>
                                         </div>
                                     ) : (
-                                        <p>No hay empresas</p>
+                                        <p>No hay sucursales</p>
                                     )}
                                 </div>
                                 <div className='table__head'>
@@ -150,6 +148,9 @@ const BranchOffices: React.FC = () => {
                                         </div>
                                         <div className='th'>
                                             <p className=''>Almacén</p>
+                                        </div>
+                                        <div className='th'>
+                                            <p className=''>Disp. Venta</p>
                                         </div>
                                     </div>
                                 </div>
@@ -167,7 +168,18 @@ const BranchOffices: React.FC = () => {
                                                     {store.find((store: any) => store.id === item.id_almacen_pred)?.nombre}
                                                 </div>
                                                 <div className='td'>
-                                                    <button className='btn__delete_users' type='button' onClick={() => deleteUser(item)}>Eliminar</button>
+                                                    {item.disponible == true ?
+                                                    <div className='available'>
+                                                        <p>Disponible</p>
+                                                    </div>
+                                                    :
+                                                    <div className='not-available'>
+                                                        <p>No disponible</p>
+                                                    </div>
+                                                    }
+                                                </div>
+                                                <div className='td'>
+                                                    <button className='btn__general-danger' type='button' onClick={() => deleteUser(item)}>Eliminar</button>
                                                 </div>
                                             </div>
                                         </div>

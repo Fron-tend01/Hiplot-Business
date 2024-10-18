@@ -6,7 +6,6 @@ import '../processes/styles/BranchOffices.css'
 import './styles/Articles.css';
 import ModalArticle from './articles/modalArticle'
 import { articleRequests } from '../../../../fuctions/Articles';
-import ModalLoading from '../../../loading/ModalLoading';
 import { Toaster } from 'sonner'
 
 import { useStore } from 'zustand';
@@ -22,33 +21,35 @@ const Articles: React.FC = () => {
   const [code, setCode] = useState<string>('')
   const [selectedFamilie, setSelectedFamilie] = useState<number | null>(null)
 
-  const [modal, setModal] = useState<boolean>(false)
-  
   //Selects
   const [selectFamilies, setSelectFamilies] = useState<boolean>(false)
-  const {families, getFamilies}: any = storeFamilies()
+  const { families, getFamilies }: any = storeFamilies()
 
 
   const { getArticles }: any = articleRequests()
+  
 
   const setArticleByOne = storeArticles((state: any) => state.setArticleByOne);
 
-  const modalLoading = storeArticles((state: any) => state.modalLoading);
+  // const modalLoading = storeArticles((state: any) => state.modalLoading);
   const setModalLoading = storeArticles((state: any) => state.setModalLoading);
-  
-  
+
+
   //zustand 
 
-  const {setArticleToUpdate, warinings, getArticlesInGlobal, articlesInGlobal, modalArticle}: any = useStore(storeArticles);
+  const { setArticleToUpdate, warinings, getArticlesInGlobal, articlesInGlobal, modalArticle }: any = useStore(storeArticles);
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
-  
+
+  const [descripcion, setDescripcion] = useState<string>('')
+
 
 
   const fuctionGetArticles = async () => {
     let data = {
       id: 0,
       activos: true,
+      page: 1,
       nombre: '',
       codigo: '',
       familia: 0,
@@ -68,23 +69,17 @@ const Articles: React.FC = () => {
     } catch (error) {
       console.log('Error')
     } finally {
-   
     }
   }
 
+  useEffect(() => {
 
-   
-  useEffect(() => { 
- 
     !effectRan.current && fuctionGetArticles()
     return () => {
       effectRan.current = true
     }
   }, []);
 
-
-  console.log(modalLoading)
-  
 
   const openSelectFamilies = () => {
     setSelectFamilies(!selectFamilies)
@@ -137,7 +132,7 @@ const Articles: React.FC = () => {
       get_imagenes: true
     }
 
-    setModalArticle('articles-modal')
+    setModalArticle('articles-modal-update')
     getFamilies(user_id)
 
     try {
@@ -149,98 +144,192 @@ const Articles: React.FC = () => {
       // setModalLoading(false)
     } catch (error) {
     } finally {
-    //  setModalLoading(false) 
+      //  setModalLoading(false) 
     }
 
   };
 
+  const [typeServive, setTypeService] = useState<any>(0)
+  const [typeActive, setTypeActive] = useState<any>(1)
 
   const [warningSelectCompany] = useState<boolean>(false)
 
-  console.log(modalArticle)
 
+  const handleTypeArticleChange = async (value: number) => {
+    let data = {
+      id: 0,
+      activos: typeActive,
+      nombre: '',
+      codigo: '',
+      familia: 0,
+      proveedor: 0,
+      materia_prima: value,
+      get_sucursales: false,
+      get_proveedores: false,
+      get_max_mins: false,
+      get_plantilla_data: false,
+      get_stock: false,
+      get_web: false,
+      get_unidades: false
+    };
+    setTypeService(value)
+
+    try {
+      await getArticlesInGlobal(data);
+    } catch (error) {
+      console.log('Error')
+    }
+
+  }
+
+
+  const handleActivesArticleChange = async (value: number) => {
+    let data = {
+      id: 0,
+      activos: value,
+      nombre: '',
+      codigo: '',
+      familia: 0,
+      proveedor: 0,
+      materia_prima: typeServive,
+      get_sucursales: false,
+      get_proveedores: false,
+      get_max_mins: false,
+      get_plantilla_data: false,
+      get_stock: false,
+      get_web: false,
+      get_unidades: false
+    };
+    setTypeActive(value)
+
+    try {
+      await getArticlesInGlobal(data);
+    } catch (error) {
+      console.log('Error')
+    }
+
+  }
+
+  const searchArticle = async () => {
+    let data = {
+      id: 0,
+      activos: typeActive,
+      nombre: descripcion == '' ? '' : descripcion,
+      codigo: code == '' ? '' : code,
+      familia: 0,
+      proveedor: 0,
+      materia_prima: typeServive,
+      get_sucursales: false,
+      get_proveedores: false,
+      get_max_mins: false,
+      get_plantilla_data: false,
+      get_stock: false,
+      get_web: false,
+      get_unidades: false
+    };
+
+    try {
+      await getArticlesInGlobal(data);
+    } catch (error) {
+      console.log('Error')
+    }
+  }
+
+  useEffect(() => {
+    if (code.length === 0 && descripcion.length === 0) {
+      searchArticle();
+    } else if (code.length > 3 || descripcion.length > 3) {
+      searchArticle();
+    }
+  }, [code, descripcion]);
+  
   return (
     <div className='articles'>
-       <Toaster expand={true} position="top-right" richColors  />
+      <Toaster expand={true} position="top-right" richColors />
       <div className='container__articles'>
         <div className='row__one'>
           <div>
-              <label className='label__general'>Código</label>
-              <input className='inputs__general' type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder='Ingresa el código' />
-            </div>
+            <label className='label__general'>Código</label>
+            <input className='inputs__general' type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder='Ingresa el código' />
+          </div>
           <div>
             <label className='label__general'>Descripción</label>
-            <input className='inputs__general' type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder='Ingresa el código' />
+            <input className='inputs__general' type="text" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} placeholder='Ingresa la descripción' />
           </div>
           <div className='select__container'>
             <label className='label__general'>Familias</label>
             {/* <div className='warning__general' style={styleWarningSelectCompanies}><small >Este campo es obligatorio</small></div> */}
             <div className={`select-btn__general ${warningSelectCompany ? 'warning' : ''}`}>
               <div className={`select-btn ${selectFamilies ? 'active' : ''}`} onClick={openSelectFamilies}>
-                <p>{selectedFamilie ? families.find((s: {id: number}) => s.id === selectedFamilie)?.nombre : 'Selecciona'}</p>
-                <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+                <p>{selectedFamilie ? families.find((s: { id: number }) => s.id === selectedFamilie)?.nombre : 'Selecciona'}</p>
+                <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
               </div>
               <div className={`content ${selectFamilies ? 'active' : ''}`}>
-              <ul className={`options ${selectFamilies ? 'active' : ''}`} style={{ opacity: selectFamilies ? '1' : '0' }}>
-                {families && families.map((familia: any) => (
-                  <li key={familia.id} onClick={() => handleFamiliesChange(familia)}>
-                    {familia.nombre}
-                  </li>
-                ))}
-              </ul>
+                <ul className={`options ${selectFamilies ? 'active' : ''}`} style={{ opacity: selectFamilies ? '1' : '0' }}>
+                  {families && families.map((familia: any) => (
+                    <li key={familia.id} onClick={() => handleFamiliesChange(familia)}>
+                      {familia.nombre}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
         </div>
-        <div className='row__two'>
+        <div className='d-flex justify-content-around my-4'>
           <div className='container__checkbox_articles'>
             <div className='checkbox__articles'>
               <label className="checkbox__container_general">
-                <input className='checkbox' type="checkbox"/>
+                <input className='checkbox' type="checkbox" checked={typeServive == 0 ? true : false} onChange={() => handleTypeArticleChange(0)} />
                 <span className="checkmark__general"></span>
               </label>
               <p className='text'>Servicio</p>
             </div>
             <div className='checkbox__articles'>
               <label className="checkbox__container_general">
-                <input className='checkbox' type="checkbox" />
+                <input className='checkbox' type="checkbox" checked={typeServive == 1 ? true : false} onChange={() => handleTypeArticleChange(1)} />
                 <span className="checkmark__general"></span>
               </label>
-              <p className='text'>Servicio</p>
+              <p className='text'>Materia</p>
+            </div>
+
+          </div>
+          <div className='container__checkbox_articles'>
+            <div className='checkbox__articles'>
+              <label className="checkbox__container_general">
+                <input className='checkbox' type="checkbox" checked={typeActive == 1 ? true : false} onChange={() => handleActivesArticleChange(1)} />
+                <span className="checkmark__general"></span>
+              </label>
+              <p className='text'>Activos</p>
             </div>
             <div className='checkbox__articles'>
               <label className="checkbox__container_general">
-                <input className='checkbox' type="checkbox"/>
+                <input className='checkbox' type="checkbox" checked={typeActive == 0 ? true : false} onChange={() => handleActivesArticleChange(0)} />
                 <span className="checkmark__general"></span>
               </label>
-              <p className='text'>Servicio</p>
+              <p className='text'>Desactivados</p>
             </div>
           </div>
         </div>
         <div className='row__three'>
           <div className='create__articles_btn-container'>
-            <button className='btn__general-purple' onClick={() => setModalArticle('articles-modal')}>Crear Nuevo Artículo</button>
+            <button className='btn__general-purple' onClick={() => setModalArticle('articles-modal-create')}>Crear Nuevo Artículo</button>
           </div>
         </div>
-        
-        <div className={`overlay__articles ${modalArticle == 'articles-modal' ? 'active' : ''}`}>
-          <div className={`popup__articles ${modalArticle == 'articles-modal' ? 'active' : ''}`}>
-            <a href="#" className="btn-cerrar-popup_articles" onClick={() => setModalArticle('')}>
-              <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
-            </a>
-            <p className='title__modals'>Crear nuevo articulo</p>
-              <ModalArticle />
-          </div>
-        </div>
+
+
+        <ModalArticle />
+
         <div className='table__articles' >
           <div>
             {articlesInGlobal ? (
-              <div>
-                <p className='text'>Tus articulos {articlesInGlobal.length}</p>
+              <div className='table__numbers'>
+                <p className='text'>Total de artículos</p>
+                <div className='quantities_tables'>{articlesInGlobal.length}</div>
               </div>
             ) : (
               <p className='text'>No hay empresas</p>
-            )}
+          )}
           </div>
           <div className='table__head'>
             <div className='thead'>
@@ -251,7 +340,7 @@ const Articles: React.FC = () => {
                 <p>Descripción</p>
               </div>
               <div className='th'>
-              
+
               </div>
             </div>
           </div>
@@ -279,6 +368,14 @@ const Articles: React.FC = () => {
           ) : (
             <p className='text'>Cargando datos...</p>
           )}
+        </div>
+        <div className='d-flex justify-content-between mt-4'>
+          <div>
+            <button className='btn__general-purple'>Anterior</button>
+          </div>
+          <div>
+            <button className='btn__general-purple'>Siguente</button>
+          </div>
         </div>
       </div>
     </div>

@@ -214,7 +214,7 @@ const Suppliers:React.FC = () => {
                                 {suppliers ? (
                                     <div className='table__numbers'>
                                         <p className='text'>Total de proveedores</p>
-                                        <div className='quantities_tables'>{suppliers.length}</div>
+                                        <div className='quantities_tables'>{suppliers?.length}</div>
                                     </div>
                                 ) : (
                                     <p>No hay empresas</p>
@@ -230,7 +230,7 @@ const Suppliers:React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            {suppliers && suppliers.length > 0 ? (
+                            {suppliers?.length > 0 ? (
                                 <div className='table__body'>
                                     {suppliers.map((item: any) => (
                                         <div className='tbody__container' key={item}>

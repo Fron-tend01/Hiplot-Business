@@ -265,7 +265,10 @@ padding: 10px;
   }
 
 
-  
+  .btp__clone {
+	position: absolute;
+	right: 20px;
+  }
 
 
 
@@ -564,3 +567,104 @@ padding: 10px;
 
 
 
+ .article__modal_create_modal_price_container {
+    height: 100%;
+    padding: 5px;
+    overflow: auto;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }                    
+}
+
+
+/*=================================================
+ 
+  Modal de precios del modal del articulo 
+  
+=================================================*/
+
+
+.overlay__articles {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+    z-index: 1;
+}
+
+.overlay__articles.active {
+	visibility: visible;
+}
+
+.overlay__articles .header__modal {
+	position: relative;
+    width: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+	align-items: center;
+}
+
+.popup__articles {
+	background-color: var(--background-modal);  
+	border-radius: 5px;
+	width: 95%;
+    max-height: 95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+	padding: 10px;
+    overflow: hidden;
+
+}
+
+.popup__articles .btn-cerrar-popup__articles {
+	position: absolute;
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    right: 30px;
+    top: 10px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__articles.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+.conatiner__articles-modal {
+	padding: 20px;
+}
+
+
+
+
+.loading__container {
+	display: flex;
+	justify-content: center;
+	margin-top: 20px;
+}
