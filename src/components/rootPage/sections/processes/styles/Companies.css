@@ -65,10 +65,12 @@
 	border-radius: 5px;
 	padding: 20px;
 	text-align: center;
-	width: 70%;
+	width: 90%;
+	height:95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
+	overflow:auto;
 }
 
 .popup__companies .btn-cerrar-popup__companies {

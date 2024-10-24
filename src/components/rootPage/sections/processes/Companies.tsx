@@ -22,6 +22,9 @@ const Companies: React.FC = () => {
     bd_compaqi: '',
     modulo_cobrofranquicia_compaqi: 0,
     id_usuario: user_id,
+    id_usuario_req: 0,
+    id_sucursal_req: 0,
+    id_almacen_req: 0,
     empresas_franquicias: [],
     empresas_franquicias_remove: []
   })
@@ -32,6 +35,9 @@ const Companies: React.FC = () => {
     bd_compaqi: '',
     modulo_cobrofranquicia_compaqi: 0,
     id_usuario: user_id,
+    id_usuario_req: 0,
+    id_sucursal_req: 0,
+    id_almacen_req: 0,
     empresas_franquicias: [],
     empresas_franquicias_remove: []
   })
@@ -54,7 +60,7 @@ const Companies: React.FC = () => {
 
   const [modalState, setModalState] = useState<boolean>(false)
   const [modoUpdate, setModoUpdate] = useState<boolean>(false)
-  const [selectedCompany, ] = useState<number | null>(null);
+  const [selectedCompany,] = useState<number | null>(null);
 
 
 
@@ -65,9 +71,11 @@ const Companies: React.FC = () => {
 
   const { getCompaniesXUsers, companiesXUsers }: any = storeCompanies()
   const { getViews, views }: any = storeViews()
- 
 
 
+  const [users, setUsers] = useState<any>([])
+  const [sucursales, setSucursales] = useState<any>([])
+  const [almacenes, setAlmacenes] = useState<any>([])
 
   const fetch = async () => {
     let data = await getCompaniesXUsers(user_id);
@@ -76,8 +84,30 @@ const Companies: React.FC = () => {
       dataSelect: data,
       options: 'razon_social'
     })
-
+    getUsers()
+    getSucursales()
+    getAlmacenes()
     getViews(user_id, 'EMPRESAS')
+  }
+  const getUsers = async () => {
+    let data = {
+      nombre: '',
+      id_usuario: user_id,
+      id_usuario_consulta: user_id,
+      light: true,
+      id_sucursal: 0
+    }
+    await APIs.CreateAny(data, "usuario_get").then(async (response: any) => {
+      setUsers(response)
+    })
+  }
+  const getSucursales = async () => {
+    let result = await APIs.GetAny(`get_sucursal_x_empresa/0/${user_id}`)
+    setSucursales(result)
+  }
+  const getAlmacenes = async () => {
+    let result = await APIs.GetAny(`almacen_get/${user_id}`)
+    setAlmacenes(result)
   }
   useEffect(() => {
     fetch()
@@ -89,7 +119,7 @@ const Companies: React.FC = () => {
     DynamicVariables.updateAnyVar(setFormEf, "razon_social", selectData?.franquiciaSelect.razon_social)
   }, [selectData?.franquiciaSelect]);
   // Modal del pop
-  const modalCreate = (data: any, modoUpdate:boolean) => {
+  const modalCreate = (data: any, modoUpdate: boolean) => {
     setModalState(true)
     setModoUpdate(modoUpdate)
     setModel(modelClear)
@@ -98,7 +128,7 @@ const Companies: React.FC = () => {
       data.empresas_franquicias_remove = []
       data.id_usuario = user_id
       setModel(data)
-      
+
     }
   }
 
@@ -185,7 +215,7 @@ const Companies: React.FC = () => {
         {views.find((x: any) => x.titulo === 'crear') ?
           <div className='create__company_btn-container'>
             <div>
-              <button className='btn__general-purple' onClick={() => { modalCreate(0,false)}}>Nueva Empresa </button>
+              <button className='btn__general-purple' onClick={() => { modalCreate(0, false) }}>Nueva Empresa </button>
             </div>
           </div>
           :
@@ -216,15 +246,49 @@ const Companies: React.FC = () => {
               <div className='col-6' title='Modulo dentro de la base de datos a donde se irán los CFDI de cobro a franquicias'>
                 <label className='label__general'>Modulo de cobro a franquicias</label>
                 <input className={`inputs__general`} value={model.modulo_cobro_franquicia_compaqi} onChange={(e) => DynamicVariables.updateAnyVar(setModel, "modulo_cobrofranquicia_compaqi", e.target.value)} type='text' />
-
+              </div>
+              <div className='col-4' title='Determina la sucursal de las requisiciones automaticas generadas por maxmin y bp'>
+                <label className='label__general'>Sucursal Req. Auto</label>
+                <select className={`inputs__general`} value={model.id_sucursal_req}
+                  onChange={(e) => { DynamicVariables.updateAnyVar(setModel, "id_sucursal_req", e.target.value) }}>
+                  {sucursales.map((option: any, i: number) => (
+                    <option key={i} value={option.id}>
+                      {option.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className='col-4' title='Determina el almacen de las requisiciones automaticas generadas por maxmin y bp'>
+                <label className='label__general'>Almacen Req. Auto</label>
+                <select className={`inputs__general`} value={model.id_almacen_req}
+                  onChange={(e) => { DynamicVariables.updateAnyVar(setModel, "id_almacen_req", e.target.value) }}>
+                  {almacenes.map((option: any, i: number) => (
+                    <option key={i} value={option.id}>
+                      {option.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className='col-4' title='Determina el usuario al que saldrán las requisiciones automaticas generadas por maxmin y bp'>
+                <label className='label__general'>Usuario Req. Auto</label>
+                <select className={`inputs__general`} value={model.id_usuario_req}
+                  onChange={(e) => { DynamicVariables.updateAnyVar(setModel, "id_usuario_req", e.target.value) }}>
+                  {users.map((option: any, i: number) => (
+                    <option key={i} value={option.id}>
+                      {option.nombre}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
             <br />
             <hr />
             <b className='label__general'>AGREGAR FRANQUICIA PARA COBRO</b>
             <hr />
+            <br />
             <div className='row'>
               <div className='col-6'>
+                <label className='label__general'>Franquicia</label>
                 <Select dataSelects={dataEmpresas} instanceId='franquiciaSelect' ></Select>
               </div>
               <div className='col-4' title='Este debe ser el ID de cliente de la base de datos agregada con anterioridad'>
@@ -242,9 +306,9 @@ const Companies: React.FC = () => {
               <div className='col-12'>
                 <div className='table__companies'>
                   <div>
-                      <div>
-                        <p className='text'>Tus franquicias-clientes <strong className='number__elemnts'>({model.empresas_franquicias.length})</strong></p>
-                      </div>
+                    <div>
+                      <p className='text'>Tus franquicias-clientes <strong className='number__elemnts'>({model.empresas_franquicias.length})</strong></p>
+                    </div>
                   </div>
                   <div className='table__head'>
                     <div className='thead'>
@@ -255,13 +319,13 @@ const Companies: React.FC = () => {
                         <p>ID comercial</p>
                       </div>
                       <div className='th'>
-                          <p className=''>OPT</p>
-                        </div>
+                        <p className=''>OPT</p>
+                      </div>
                     </div>
                   </div>
                   {model.empresas_franquicias ? (
                     <div className='table__body'>
-                      {model.empresas_franquicias.map((company: any, i:number) => (
+                      {model.empresas_franquicias.map((company: any, i: number) => (
                         <div className='tbody__container' key={i}>
                           <div className='tbody'>
                             <div className='td'>
@@ -271,11 +335,11 @@ const Companies: React.FC = () => {
                               <p>{company.businessEntityID}</p>
                             </div>
                             <div className='td'>
-                                <button className='btn__delete_users' type="button" onClick={() => {
-                                  DynamicVariables.removeObjectInArrayByKey(setModel,"empresas_franquicias", i);
-                                  { modoUpdate && company.id != 0 ? DynamicVariables.updateAnyVarSetArrNoRepeat(setModel, "empresas_franquicias_remove", company.id) : null }
-                                }}>Eliminar</button>
-                              </div>
+                              <button className='btn__delete_users' type="button" onClick={() => {
+                                DynamicVariables.removeObjectInArrayByKey(setModel, "empresas_franquicias", i);
+                                { modoUpdate && company.id != 0 ? DynamicVariables.updateAnyVarSetArrNoRepeat(setModel, "empresas_franquicias_remove", company.id) : null }
+                              }}>Eliminar</button>
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -325,7 +389,7 @@ const Companies: React.FC = () => {
                       <p>{company.nombre_comercial}</p>
                     </div>
                     <div className='td'>
-                      <button className='general__edit_button' onClick={() => {modalCreate(company, true)}}>Editar</button>
+                      <button className='general__edit_button' onClick={() => { modalCreate(company, true) }}>Editar</button>
                     </div>
                   </div>
                 </div>

@@ -13,6 +13,13 @@ const TypesUsers: React.FC = () => {
   const [selectedCompany, setSelectedCompany] = useState<number | null>(null);
   const [select, setSelect] = useState<boolean>(false);
   const [permisos, setPermisos] = useState<any[]>([]);
+  const [notfy_maxmin, setnotfy_maxmin] = useState<boolean>(false);
+  const [notfy_bp, setnotfy_bp] = useState<boolean>(false);
+  const [notfy_desabasto, setnotfy_desabasto] = useState<boolean>(false);
+  const [notfy_ingresomatxbp, setnotfy_ingresomatxbp] = useState<boolean>(false);
+  const [notfy_updt_op, setnotfy_updt_op] = useState<boolean>(false);
+  const [notfy_updt_ov, setnotfy_updt_ov] = useState<boolean>(false);
+  const [notfy_articulo_inactivo, setnotfy_articulo_inactivo] = useState<boolean>(false);
 
   // Hooks de validaciones
   const [warningNombre, setWarningNombre] = useState<boolean>(false)
@@ -58,7 +65,14 @@ const TypesUsers: React.FC = () => {
       const data = {
         nombre,
         id_empresa,
-        id_usuario
+        id_usuario,
+        notfy_maxmin,
+        notfy_bp,
+        notfy_desabasto,
+        notfy_ingresomatxbp,
+        notfy_updt_op,
+        notfy_updt_ov,
+        notfy_articulo_inactivo,
       }
 
 
@@ -79,7 +93,13 @@ const TypesUsers: React.FC = () => {
   const modalCreateTypesUsers = () => {
     setModalCreate(true)
     setNombre('')
-
+    setnotfy_maxmin(false);
+    setnotfy_ingresomatxbp(false);
+    setnotfy_bp(false);
+    setnotfy_desabasto(false);
+    setnotfy_updt_op(false);
+    setnotfy_updt_ov(false);
+    setnotfy_articulo_inactivo(false);
   }
 
   const closeModalCreateTypeUsers = () => {
@@ -157,6 +177,13 @@ const TypesUsers: React.FC = () => {
     setNombre(item.nombre);
     setSelectedCompany(item.id_empresa);
     setTypeUser_id(item.id);
+    setnotfy_maxmin(item.notfy_maxmin);
+    setnotfy_ingresomatxbp(item.notfy_ingresomatxbp);
+    setnotfy_bp(item.notfy_bp);
+    setnotfy_desabasto(item.notfy_desabasto);
+    setnotfy_updt_op(item.notfy_updt_op);
+    setnotfy_updt_ov(item.notfy_updt_ov);
+    setnotfy_articulo_inactivo(item.notfy_articulo_inactivo);
     item.permisos.forEach((x: any) => {
       setPermisosNuevos(prevPermisos => [...prevPermisos, x.id_componente]);
 
@@ -182,8 +209,16 @@ const TypesUsers: React.FC = () => {
     let data = {
       nombre,
       id_empresa,
-      id_usuario
+      id_usuario,
+      notfy_maxmin,
+      notfy_bp,
+      notfy_desabasto,
+      notfy_ingresomatxbp,
+      notfy_updt_op,
+      notfy_updt_ov,
+      notfy_articulo_inactivo,
     }
+
 
     let permisos = {
       arr1_nuevas: permisosNuevos,
@@ -305,6 +340,91 @@ const TypesUsers: React.FC = () => {
                   ))}
                 </div>
               </div>
+              <br />
+              <hr />
+              <b>Configuración de Notificaciones por correo y por sistema</b>
+              <hr />
+              <br />
+              <div className='row'>
+                <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando la condición de Maximos y Minimos se Active en cualquier articulo'>
+                  <label >Maximos y Minimos</label><br></br>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={notfy_maxmin} // Asignar el valor del estado al atributo 'checked'
+                      onChange={(e) => { setnotfy_maxmin(e.target.checked); }}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+                <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando se levante una requisición bajo pedido por una orden de venta / SIEMPRE NOTIFICA AL CREADOR DE LA OV'>
+                  <label>Bajo Pedido</label><br></br>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={notfy_bp} // Asignar el valor del estado al atributo 'checked'
+                      onChange={(e) => { setnotfy_bp(e.target.checked); }}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+                <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando un articulo cambie a desabasto'>
+                  <label>Desabasto</label><br></br>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={notfy_desabasto} // Asignar el valor del estado al atributo 'checked'
+                      onChange={(e) => { setnotfy_desabasto(e.target.checked); }}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+                <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando se realice el ingreso de material por bajo pedido / SIEMPRE NOTIFICA AL CREADOR DE LA OV'>
+                  <label>Ingreso de Material por BP</label><br></br>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={notfy_ingresomatxbp} // Asignar el valor del estado al atributo 'checked'
+                      onChange={(e) => { setnotfy_ingresomatxbp(e.target.checked); }}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+                <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando se realice alguna actualización en alguna OP / SIEMPRE NOTIFICA AL CREADOR DE LA OP'>
+                  <label>Actualización de OP</label><br></br>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={notfy_updt_op} // Asignar el valor del estado al atributo 'checked'
+                      onChange={(e) => { setnotfy_updt_op(e.target.checked); }}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+                <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando se realice alguna actualización en alguna OV / SIEMPRE NOTIFICA AL CREADOR DE LA OV'>
+                  <label>Actualización de OV</label><br></br>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={notfy_updt_ov} // Asignar el valor del estado al atributo 'checked'
+                      onChange={(e) => { setnotfy_updt_ov(e.target.checked); }}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+                <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando algún articulo cambie entre activo e inactivo'>
+                  <label>Articulo Inactivo/activo</label><br></br>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={notfy_articulo_inactivo} // Asignar el valor del estado al atributo 'checked'
+                      onChange={(e) => { setnotfy_articulo_inactivo(e.target.checked); }}
+                    />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+              </div>
+
               <div className='create__types-users_btns-container'>
                 <div>
                   <input className='btn__general-purple' type='submit' value="Crear tipo de usuario" />
@@ -415,6 +535,89 @@ const TypesUsers: React.FC = () => {
                   </div>
                 </div>
                 <br />
+                <hr />
+                <b>Configuración de Notificaciones por correo y por sistema</b>
+                <hr />
+                <br />
+                <div className='row'>
+                  <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando la condición de Maximos y Minimos se Active en cualquier articulo'>
+                    <label >Maximos y Minimos</label><br></br>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={notfy_maxmin} // Asignar el valor del estado al atributo 'checked'
+                        onChange={(e) => { setnotfy_maxmin(e.target.checked); }}
+                      />
+                      <span className="slider"></span>
+                    </label>
+                  </div>
+                  <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando se levante una requisición bajo pedido por una orden de venta / SIEMPRE NOTIFICA AL CREADOR DE LA OV'>
+                    <label>Bajo Pedido</label><br></br>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={notfy_bp} // Asignar el valor del estado al atributo 'checked'
+                        onChange={(e) => { setnotfy_bp(e.target.checked); }}
+                      />
+                      <span className="slider"></span>
+                    </label>
+                  </div>
+                  <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando un articulo cambie a desabasto'>
+                    <label>Desabasto</label><br></br>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={notfy_desabasto} // Asignar el valor del estado al atributo 'checked'
+                        onChange={(e) => { setnotfy_desabasto(e.target.checked); }}
+                      />
+                      <span className="slider"></span>
+                    </label>
+                  </div>
+                  <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando se realice el ingreso de material por bajo pedido / SIEMPRE NOTIFICA AL CREADOR DE LA OV'>
+                    <label>Ingreso de Material por BP</label><br></br>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={notfy_ingresomatxbp} // Asignar el valor del estado al atributo 'checked'
+                        onChange={(e) => { setnotfy_ingresomatxbp(e.target.checked); }}
+                      />
+                      <span className="slider"></span>
+                    </label>
+                  </div>
+                  <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando se realice alguna actualización en alguna OP / SIEMPRE NOTIFICA AL CREADOR DE LA OP'>
+                    <label>Actualización de OP</label><br></br>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={notfy_updt_op} // Asignar el valor del estado al atributo 'checked'
+                        onChange={(e) => { setnotfy_updt_op(e.target.checked); }}
+                      />
+                      <span className="slider"></span>
+                    </label>
+                  </div>
+                  <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando se realice alguna actualización en alguna OV / SIEMPRE NOTIFICA AL CREADOR DE LA OV'>
+                    <label>Actualización de OV</label><br></br>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={notfy_updt_ov} // Asignar el valor del estado al atributo 'checked'
+                        onChange={(e) => { setnotfy_updt_ov(e.target.checked); }}
+                      />
+                      <span className="slider"></span>
+                    </label>
+                  </div>
+                  <div className='col-2 md-col-6 sm-col-12' title='Te notificará cuando algún articulo cambie entre activo e inactivo'>
+                    <label>Articulo Inactivo/activo</label><br></br>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={notfy_articulo_inactivo} // Asignar el valor del estado al atributo 'checked'
+                        onChange={(e) => { setnotfy_articulo_inactivo(e.target.checked); }}
+                      />
+                      <span className="slider"></span>
+                    </label>
+                  </div>
+                </div>
                 <div className='create__types-users_btns-container'>
                   <div>
                     <input className='btn__general-purple' type='submit' value="Crear tipo de usuario" />
