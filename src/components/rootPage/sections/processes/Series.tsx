@@ -36,7 +36,7 @@ const Series: React.FC = () => {
   const [modalStateUpdate, setModalStateUpdate] = useState<boolean>(false)
 
   useEffect(() => {
-    getSeriesXUser(user_id)
+    getSeriesXUser({id:user_id, tipo_ducumento:0})
     getCompaniesXUsers(user_id)
     getBranchOfficeXCompanies(0, user_id)
   }, [])
