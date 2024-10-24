@@ -12,9 +12,10 @@ interface Store {
   
 interface StoreState {
     store: Store[];
+    setStore: (modal: any) => void;
     //Sucursals
-    modalStateCreate: any;
-    setModalStateCreate: (modal: any) => void;
+    modalState: any;
+    setModalState: (modal: any) => void;
 
     
     storeToUpdate: any;
@@ -28,10 +29,10 @@ interface StoreState {
 
 export const storeStore = create<StoreState>((set) => ({
     store: [],
-    
+    setStore: (modal) => set({ store: modal }),
 
-    modalStateCreate: false,
-    setModalStateCreate: (modal) => set({ modalStateCreate: modal }),
+    modalState: '',
+    setModalState: (modal) => set({ modalState: modal }),
 
     storeToUpdate: false,
     setStoreToUpdate: (store) => set({ storeToUpdate: store }),
@@ -56,7 +57,7 @@ export const storeStore = create<StoreState>((set) => ({
       getStore: async (id: number) => {
         try {
           const response = await  APIs.getStore(id);
-          set({store: response as Store[]})
+          return response
     
         } catch {
     

@@ -2,8 +2,7 @@ import React, { useEffect } from 'react'
 import { storeBranchOffcies } from '../../../../zustand/BranchOffices';
 import { storeStore } from '../../../../zustand/Store';
 import useUserStore from '../../../../zustand/General';
-import ModalCreate from './Store/ModalCreate';
-import ModalUpdate from './Store/ModalUpdate';
+import ModalStore from './Store/ModalStore';
 import './styles/Store.css'
 
 const Store: React.FC = () => {
@@ -11,10 +10,12 @@ const Store: React.FC = () => {
   let user_id = userState.id
 
   const {branchOfficeXCompanies }: any = storeBranchOffcies();
-  const {setModalStateCreate, setModalStateUpdate, setStoreToUpdate, getStore, store}: any = storeStore()
+  const setStore = storeStore(state => state.setStore)
+  const {setModalState, setStoreToUpdate, getStore, store}: any = storeStore();
 
   const fetch = async () => {
-    await getStore(user_id)
+    let result = await getStore(user_id)
+    setStore(result)
     
   }
 
@@ -26,11 +27,11 @@ const Store: React.FC = () => {
 
 
   const modal = () => {
-    setModalStateCreate(true);
+    setModalState('modal-create_store');
   };
 
   const modalUpdate = (store: any) => {
-    setModalStateUpdate(true)
+    setModalState('modal-update_store');
     setStoreToUpdate(store)
     console.log(store)
   }
@@ -39,12 +40,11 @@ const Store: React.FC = () => {
   return (
     <div>
       <div className='store'>
-        <div className='container__store'>
+        <div className='store__container'>
           <div className='create__company_btn-container'>
             <button className='btn__general-purple' onClick={modal}>Nuevo Almacen</button>
           </div>
-          <ModalCreate />
-          <ModalUpdate />
+          <ModalStore />
           <div className='table__store'>
             <div>
             {store ? (
@@ -62,7 +62,7 @@ const Store: React.FC = () => {
                   <p className=''>Nombre</p>
                 </div>
                 <div className='th'>
-                  <p>Sucursales</p>
+               
                 </div>
               </div>
             </div>
@@ -74,9 +74,6 @@ const Store: React.FC = () => {
                   return (
                     <div className='tbody__container' key={store.id}>
                       <div className='tbody'>
-                        <div className='td'>
-                          <p>{store.nombre}</p>
-                        </div>
                         <div className='td'>
                           <p>{store.nombre}</p>
                         </div>

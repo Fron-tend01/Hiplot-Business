@@ -21,11 +21,34 @@ interface Tickets {
   
 interface StoreState {
     // store: Store[];
+    modalTickets: any;
+    setModalTickets: (modal: any) => void;
+
+    dates: any;
+    setDates: (modal: any) => void;
+
+    purchaseOrders: any;
+    setPurchaseOrders: (modal: any) => void;
+
+    conceptos: any;
+    setConceptos: (modal: any) => void;
+
 }
 
 export const storeTickets = create<StoreState>((set) => ({
     store: [],
 
+    modalTickets: [],
+    setModalTickets: (modal) => set({ modalTickets: modal }),
+
+    dates: [],
+    setDates: (x) => set({ dates: x }),
+
+    purchaseOrders: [],
+    setPurchaseOrders: (x) => set({ purchaseOrders: x }),
+
+    conceptos: [],
+    setConceptos: (x) => set({ conceptos: x }),
 
     // Almacen
  
@@ -52,10 +75,11 @@ export const storeTickets = create<StoreState>((set) => ({
         }
       },
     
-      getTickets: async (id_usuario: number, id_sucursal: number, desde: Date, hasta: Date, id_serie: number, status: number, folio: number) => {
+      getTickets: async (data: any) => {
         try {
-          const response = await  APIs.getTickets(id_usuario, id_sucursal, desde, hasta, id_serie, status, folio);
+          const response = await  APIs.getTickets(data);
           set({tickets: response as Tickets[]})
+          return response
     
         } catch {
     

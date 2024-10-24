@@ -5,10 +5,10 @@
 
 .store__container {
     display: grid;
-	grid-template-rows: auto 1fr;
+	grid-template-rows: auto auto 1fr;
 	height: 100%;
 	background-color: var(--background-sections);
-	padding: 20px ;
+	padding: 20px;
 	border-radius: 10px;
     overflow: hidden;
 }
@@ -145,7 +145,7 @@
 
 .table__store  .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(2, 1fr) 100px;
+    grid-template-columns: repeat(1, 1fr) 100px;
     padding: 10px;
     font-weight: 600;
 	color: var(--text-table-color);
@@ -186,7 +186,7 @@
 
 .table__store .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(2, 1fr) 100px;
+    grid-template-columns: repeat(1, 1fr) 100px;
     padding: 10px;
 }
 

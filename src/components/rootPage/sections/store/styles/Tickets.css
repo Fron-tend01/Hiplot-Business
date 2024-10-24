@@ -40,78 +40,6 @@
 
 
 
- /*************************************************************
-                    Modal de crear entradas
- **************************************************************/
-
-  
- .overlay__tickets {
-	background: rgba(0,0,0,.3);
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	align-items: center;
-	justify-content: center;
-	display: flex;
-	visibility: hidden;
-	z-index: 1;
-}
-
-.overlay__tickets.active {
-	visibility: visible;
-}
-
-.popup__tickets {
-	background-color: var(--background-modal);
-	border-radius: 5px;
-	padding: 20px;
-	text-align: center;
-	width: 70%;
-	overflow-y: auto;
-    max-height: 95%;
-	transition: .3s ease all;
-	transform: scale(0.7);
-	opacity: 0;
-
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-color: #1F319D; 
-        border-radius: 5px;
-        height: 100px;
-    }
-
-    &::-webkit-scrollbar-track {
-    /* Para modificar el background */
-    }
-}
-
-.popup__tickets .btn-cerrar-popup__tickets {
-	font-size: 16px;
-	line-height: 16px;
-	display: block;
-	text-align: right;
-	transition: .3s ease all;
-	color: #BBBBBB;
-    position: absolute;
-    right: 15px;
-    top: 15px;
-}
-
-
-
-/* ------------------------- */
-/* ANIMACIONES */
-/* ------------------------- */
-.popup__tickets.active {	transform: scale(1); opacity: 1; }
-
-
-
-
 
  /*************************************************************
                     Modal de actualizar entradas
@@ -140,7 +68,6 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	text-align: center;
 	width: 70%;
 	overflow-y: auto;
     max-height: 95%;

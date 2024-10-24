@@ -391,9 +391,9 @@ updateClients: async (data: any, customPath?: string) => {
     return ConfigurationAPIs.post(path, {id_sucursal, id_usuario_crea, comentarios, conceptos})
   },
 
-  getTickets: async (id_usuario: number, id_sucursal: number, desde: Date, hasta: Date, id_serie: number, status: number, folio: number, customPath?: string) => {
+  getTickets: async (data: any, customPath?: string) => {
     const path = customPath || 'entrada_almacen/get'
-    return ConfigurationAPIs.post(path, {id_usuario, id_sucursal, desde, hasta, id_serie, status, folio})
+    return ConfigurationAPIs.post(path, data)
   },
 
   getPDFTickets: async (id: number, customPath?: string) => {

@@ -1,5 +1,102 @@
 
 
+ /*************************************************************
+                    Modal de crear entradas
+ **************************************************************/
+
+  
+ .overlay__tickets {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+	z-index: 1;
+}
+
+.overlay__tickets.active {
+	visibility: visible;
+}
+
+.popup__tickets {
+    display: grid;
+    grid-template-rows: auto 1fr;
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 90%;
+    max-height: 95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+    overflow: hidden;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+.popup__tickets .btn-cerrar-popup__tickets {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__tickets.active {	transform: scale(1); opacity: 1; }
+
+.conatiner__create_tickets {
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    overflow: hidden;
+    padding: 10px;
+
+}
+
+.conatiner__create_tickets-main {
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
 .conatiner__create_tickets > .row__one {
     width: 50%;
     margin: 0 auto;
@@ -69,10 +166,52 @@
 
 .conatiner__create_tickets > .row__three >  div {
     display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
     color: var(--text-color);
+    font-weight: 600; 
+    
+}
+
+.conatiner__create_tickets > .row__three > .subtotal {
+    width: auto;
+    color: var(--text-color);
+    /* background-color: #d6ad5c; */
+    border: 2px solid #d6ad5c;
+}
+
+.conatiner__create_tickets > .row__three > .discount {
+    width: auto;
+    color: var(--text-color);
+    /* background-color: #d45a8e; */
+    border: 2px solid #d45a8e;   
+}
+
+.conatiner__create_tickets > .row__three > .iva {
+    width: auto;
+    color: var(--text-color);
+    /* background-color: #5d6bdb; */
+    border: 2px solid #5d6bdb;
+    
+}
+
+.conatiner__create_tickets > .row__three > .total {
+    width: auto;
+    color: var(--text-color);
+    /* background-color: #5cadd6; */
+    border: 2px solid #5cadd6;   
 }
 
 
+
+
+.conatiner__create_tickets > .row__three >  div > .title {
+    /* background-color: var(--orange-color);
+    padding: 10px;
+    border-radius: 10px; */
+    margin-right: 10px;
+}
 
 .table__modal_create_tickets {
     border-radius: 10px;
@@ -95,11 +234,11 @@
 
 .table__modal_create_tickets .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(8, minmax(0, 1fr)) 100px;
     padding: 10px;
-    gap: 10px;
     font-weight: 600;
     color: var(--text-table-color);
+    text-align: left;
 	
 }
 
@@ -144,9 +283,8 @@
 
 .table__modal_create_tickets .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(8 , 1fr);
+    grid-template-columns: repeat(8, minmax(0, 1fr)) 100px;
     padding: 10px;
-    gap: 10px;
     align-items: center;
 
 }
@@ -232,3 +370,7 @@
     background-color: var(--secundary-color);
     color: #fff;
 }
+
+
+
+

@@ -1,0 +1,90 @@
+
+
+ /*************************************************************
+ 
+                    Tabla de almacen
+ 
+ **************************************************************/
+
+
+
+ .table__modal_store {
+	display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+	overflow: auto;
+}
+
+
+.table__modal_store .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__modal_store  .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__modal_store  .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) 100px;
+    padding: 10px;
+    font-weight: 600;
+	color: var(--text-table-color);
+}
+
+.table__modal_store .table__body {
+	max-height: 300px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__modal_store .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+  }
+  
+.table__modal_store .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+  }
+
+.table__modal_store .table__body .tbody {
+    display: flex;
+}
+
+.table__modal_store .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) 100px;
+    padding: 10px;
+    gap: 5px;
+    align-items: center;
+
+}
+
+
+
+
+
+
+
+
+

@@ -22,7 +22,8 @@ export const storeSeries = create<StoreState>((set) => ({
   getSeriesXUser: async (id: number) => {
     try {
       const response = await APIs.getSeriesXUser(id);
-      set({ series: response as Series[] }); // Asegúrate de convertir el tipo
+      set({ series: response as Series[] });
+      return response
     } catch (error) {
       console.error('Error fetching Series', error);
     }

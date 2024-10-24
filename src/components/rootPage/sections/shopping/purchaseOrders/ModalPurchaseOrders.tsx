@@ -14,7 +14,7 @@ import typeSearchs from './json/typeSearchs.json'
 import types from './json/types.json'
 // Importar el idioma español
 import '../styles/PurchaseOrders.css'
-import './styles//modalCreate.css'
+import './styles/ModalPurchaseOrders.css'
 import Swal from 'sweetalert2';
 // Ensure the Spanish locale is loaded
 
@@ -25,11 +25,11 @@ import 'flatpickr/dist/flatpickr.css';
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
 
 
-const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
+const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
   const { requisitions, getRequisition, }: any = storeRequisitions();
 
-  console.log(purchaseOrderToUpdate)
+  
 
   const { updatePurchaseOrders }: any = storePurchaseOrders();
 
@@ -482,15 +482,29 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
 
   const [total, setTotal] = useState<number>(0);
 
+  const [ivaTotal, setIvaTotal] = useState<any>(0)
+
   useEffect(() => {
     let subtotalValue = 0;
+    let priceSubtotalTotal = 0;
     let totalDiscount = 0;
+    let ivaTotal = 0
     conceptos.forEach((article: any) => {
       let total_cantidad = article.cantidad || 1; // Si no hay cantidad definida, se asume 1
       let iva_x_precio = 0;
- 
 
-      subtotalValue += iva_x_precio * total_cantidad; // Multiplicar por la cantidad
+      if (article.iva_on) {
+        let iva = article.precio_unitario * 0.16 || 0;
+        iva_x_precio = article.precio_unitario + iva;
+        ivaTotal += iva
+
+      } else {
+        iva_x_precio = article.precio_unitario || 0;
+      }
+
+      priceSubtotalTotal += total_cantidad * article.precio_unitario
+
+      subtotalValue += iva_x_precio * total_cantidad;
 
       totalDiscount += article.descuento || 0;
     });
@@ -503,8 +517,9 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
       setTotal(totalValue);
     }
 
-    setSubtotal(subtotalValue);
+    setSubtotal(priceSubtotalTotal);
     setDiscount(totalDiscount);
+    setIvaTotal(ivaTotal)
   }, [conceptos, freightCostActive, freightCost]);
 
   const addArticles = () => {
@@ -763,10 +778,10 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
       status: type,
     };
     try {
-      let result = await APIs.updateStatusPurchaseOrder(data)
+      let result: any = await APIs.updateStatusPurchaseOrder(data)
       let resultGet = await APIs.getPurchaseOrders(dataGet);
       setPurchaseOrders(resultGet)
-      Swal.fire('Status actualizado', '', 'success');
+      Swal.fire('Status actualizado', result.mensaje, 'success');
       setModal('')
     } catch (error) {
 
@@ -785,8 +800,8 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
   }
 
   return (
-    <div className={`overlay__purchase-orders ${modal == 'modal-purchase-orders' ? 'active' : ''}`}>
-      <div className={`popup__purchase-orders ${modal == 'modal-purchase-orders' ? 'active' : ''}`}>
+    <div className={`overlay__purchase-orders ${modal == 'modal-purchase-orders-create' || modal == 'modal-purchase-orders-update' ? 'active' : ''}`}>
+      <div className={`popup__purchase-orders ${modal == 'modal-purchase-orders-create' || modal == 'modal-purchase-orders-update' ? 'active' : ''}`}>
         <div className='header__modal'>
           <a href="#" className="btn-cerrar-popup__purchase-orders" onClick={() => setModal('')} >
             <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
@@ -795,6 +810,14 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
         </div>
         <form className='parchase-orders-modal' onSubmit={hanledCreateOC}>
           <div className='row__check'>
+            {modal == 'modal-purchase-orders-update' ?
+              <div className='code-type-orden'>
+                <p>{`${purchaseOrderToUpdate.serie}-${purchaseOrderToUpdate.folio}-${purchaseOrderToUpdate.anio}`}</p>
+                <p>{purchaseOrderToUpdate.usuario_crea}</p>
+              </div>
+              :
+              ''
+            }
             <div className='container__checkbox_purchas-order'>
               <div className='checkbox__purchas-order'>
                 <label className="checkbox__container_general">
@@ -828,36 +851,6 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
           </div>
           <div className='parchase-orders-modal_container'>
             <div className='row'>
-              {purchaseOrderToUpdate ?
-                <div className='row col-12 w-full my-2'>
-                  <div className='select__container col-3'>
-                    <label className='label__general'>Usuario</label>
-                    <div className='container__text_result'>
-                      <p className='text__result' >{purchaseOrderToUpdate.usuario_crea}</p>
-                    </div>
-                  </div>
-                  <div className='select__container col-3'>
-                    <label className='label__general'>Serie</label>
-                    <div className='container__text_result'>
-                      <p className='text__result' >{purchaseOrderToUpdate.serie}</p>
-                    </div>
-                  </div>
-                  <div className='select__container col-3'>
-                    <label className='label__general'>Folio</label>
-                    <div className='container__text_result'>
-                      <p className='text__result' >{purchaseOrderToUpdate.folio}</p>
-                    </div>
-                  </div>
-                  <div className='select__container col-3'>
-                    <label className='label__general'>año</label>
-                    <div className='container__text_result'>
-                      <p className='text__result' >{purchaseOrderToUpdate.anio}</p>
-                    </div>
-                  </div>
-                </div>
-                :
-                ''
-              }
               {purchaseOrderToUpdate ?
                 <div className='select__container col-3'>
                   <label className='label__general'>Empresas</label>
@@ -1297,7 +1290,7 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
                   </div>
                 </div>
               }
-              
+
               <div className=''>
                 <div className='table__modal_create_parchase-orders ' >
                   <div>
@@ -1431,7 +1424,7 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
               <div>
                 <p className='title'>IVA</p>
                 {/* Si applyExtraDiscount es true, mostrar 16%, de lo contrario, mostrar el valor calculado */}
-                <p className='result'>{applyExtraDiscount ? '16%' : (iva * 0.16).toFixed(2)}</p>
+                <p className='result'>{ivaTotal.toFixed(2)}</p>
               </div>
               <div>
                 <p className='title'>Total</p>
@@ -1439,13 +1432,13 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
                 <p className='result'>$ {total.toFixed(2)}</p>
               </div>
             </div>
-            <div className='d-flex justify-content-between'>
-              <button className='btn__general-orange' type='button' onClick={getPDFRequisition}>PDF</button>
+            <div className={`d-flex  ${modal == 'modal-purchase-orders-update' ? 'justify-content-between' : 'justify-content-center'}`}>
+              {modal == 'modal-purchase-orders-update' ? <button className='btn__general-orange' type='button' onClick={getPDFRequisition}>PDF</button> : ''}
               <button className='btn__general-purple d-flex align-items-center' type='submit'>
-                {purchaseOrderToUpdate ? `${stateLoading ? 'Actualizando orden de compra' : 'Actualizar orden de compra'}` : `${stateLoading ? 'Creando orden de compra' : 'Crear orden de compra'}`}
+                {modal == 'modal-purchase-orders-create' ? `${stateLoading ? 'Creando orden de compra' : 'Crear orden de compra'}` : `${stateLoading ? 'Actualizando orden de compra' : 'Actualizar orden de compra'}`}
                 {stateLoading ? <span className="loader-two"></span> : ''}
               </button>
-              {purchaseOrderToUpdate ?
+              {modal == 'modal-purchase-orders-update' ?
                 <div>
                   {purchaseOrderToUpdate.status == 0 ? <button className='btn__general-danger' type='button' onClick={updateStatus}>Deshabilitar</button> : ''}
                   {purchaseOrderToUpdate.status == 1 ? <button className='btn__general-success' type='button' onClick={updateStatus}>Activar</button> : ''}
@@ -1461,4 +1454,4 @@ const ModalCreate = ({ purchaseOrderToUpdate }: any) => {
   )
 }
 
-export default ModalCreate
+export default ModalPurchaseOrders

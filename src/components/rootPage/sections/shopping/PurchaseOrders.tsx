@@ -10,7 +10,7 @@ import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/l10n/es.js'; // Importar el idioma español
 import './styles/PurchaseOrders.css'
-import ModalCreate from './purchaseOrders/ModalCreate';
+import ModalPurchaseOrders from './purchaseOrders/ModalPurchaseOrders';
 import APIs from '../../../../services/services/APIs';
 
 const PurchaseOrders: React.FC = () => {
@@ -165,7 +165,7 @@ const PurchaseOrders: React.FC = () => {
 
 
   const openModal = () => {
-    setModal('modal-purchase-orders')
+    setModal('modal-purchase-orders-create')
 
   }
 
@@ -199,7 +199,7 @@ const PurchaseOrders: React.FC = () => {
   const [suppliersUpdate, setSuppliersUpdate] = useState<any>([])
 
   const modalUpdate = (purchaseOrder: any) => {
-    setModal('modal-purchase-orders')
+    setModal('modal-purchase-orders-update')
     setPurchaseOrderToUpdate(purchaseOrder)
 
 
@@ -330,7 +330,7 @@ const PurchaseOrders: React.FC = () => {
             <button className='btn__general-purple' onClick={openModal}>Nueva OC</button>
           </div>
         </div>
-        <ModalCreate purchaseOrderToUpdate={purchaseOrderToUpdate} />
+        <ModalPurchaseOrders purchaseOrderToUpdate={purchaseOrderToUpdate} />
         {/* <div className={`overlay__purchase-orders ${modalStateUpdte ? 'active' : ''}`}>
           <div className={`popup__purchase-orders ${modalStateUpdte ? 'active' : ''}`}>
             <a href="#" className="btn-cerrar-popup__purchase-orders" onClick={closeModalUpdatetwo}>

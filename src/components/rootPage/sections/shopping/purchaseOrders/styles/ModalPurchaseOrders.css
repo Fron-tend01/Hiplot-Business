@@ -79,7 +79,31 @@
 .parchase-orders-modal > .row__check {
     display: flex;
     justify-content: center;
+    position: relative;
+    margin-bottom: 20px;
 }
+
+.parchase-orders-modal > .row__check .code-type-orden {
+    position: absolute;
+    display: flex;
+    left: 0;
+}
+
+.parchase-orders-modal > .row__check .code-type-orden > p:first-of-type {
+    background-color: var(--primary-color);
+    color: var(--text-white);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.parchase-orders-modal > .row__check .code-type-orden > p:nth-of-type(2) {
+    background-color: var(--orange-color);
+    color: var(--text-white);
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-left: 40px;
+}
+
 
 .parchase-orders-modal_container > .row__one {
     display: grid;
