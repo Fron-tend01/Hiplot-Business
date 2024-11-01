@@ -25,6 +25,16 @@ export const storeBranchOffcies = create<StoreState>((set) => ({
     branchOfficeXCompanies: [],
 
   // Sucursales
+  // getBranchOffices: async () => {
+  //   try {
+  //     const response = await APIs.getBranchOfficesXCompanies(0, user_id);
+  //     set({ branchOfficeXCompanies: response as BranchOfficeXCompanies[] });
+  //   } catch (error) {
+  //     console.error('Error fetching branch office:', error);
+  //   }
+  // },
+
+  
 
   getBranchOfficeXCompanies: async (empresa_id : number, id_usuario : number,) => {
     try {

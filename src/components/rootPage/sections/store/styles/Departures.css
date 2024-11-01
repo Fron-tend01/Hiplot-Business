@@ -42,80 +42,6 @@
 
 
 
-
- /*************************************************************
-                    Modal de crear entradas
- **************************************************************/
-
-  
- .overlay__departures {
-	background: rgba(0,0,0,.3);
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	align-items: center;
-	justify-content: center;
-	display: flex;
-	visibility: hidden;
-	z-index: 1;
-}
-
-.overlay__departures.active {
-	visibility: visible;
-}
-
-.popup__departures {
-	background-color: var(--background-modal);
-	border-radius: 5px;
-	padding: 20px;
-	text-align: center;
-	width: 70%;
-	overflow-y: auto;
-    max-height: 95%;
-	transition: .3s ease all;
-	transform: scale(0.7);
-	opacity: 0;
-
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-color: var(--primary-color); 
-        border-radius: 5px;
-        height: 100px;
-    }
-
-    &::-webkit-scrollbar-track {
-    /* Para modificar el background */
-    }
-}
-
-.popup__departures .btn-cerrar-popup__departures {
-	font-size: 16px;
-	line-height: 16px;
-	display: block;
-	text-align: right;
-	transition: .3s ease all;
-	color: #BBBBBB;
-    position: absolute;
-    right: 15px;
-    top: 15px;
-}
-
-
-
-/* ------------------------- */
-/* ANIMACIONES */
-/* ------------------------- */
-.popup__departures.active {	transform: scale(1); opacity: 1; }
-
-
-
-
-
  /*************************************************************
                     Modal de actualizar entradas
  **************************************************************/
@@ -144,7 +70,7 @@
 	border-radius: 5px;
 	padding: 20px;
 	text-align: center;
-	width: 60%;
+	width: 80%;
     max-height: 95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
@@ -196,6 +122,7 @@
     display: grid;
     height: 100%;
     grid-template-rows: repeat(2, auto) 1fr;
+    overflow: hidden;
 
 }
 
@@ -215,7 +142,7 @@
 
 .table__departures .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     padding: 10px;
     font-weight: 600;
 }
@@ -224,6 +151,8 @@
 	height: 100%;
     overflow-y: auto;
     transition-delay: 0.0s;
+
+   
     &::-webkit-scrollbar {
         width: 5px;
     }
@@ -263,10 +192,31 @@
 
 .table__departures .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     padding: 10px;
-
 }
+
+.table__departures .table__body .tbody .td {
+    display: flex;
+    align-items: center;
+}
+
+.table__departures .table__body .tbody .td.salida > div {
+    display: flex;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    padding: 10px;
+    color: var(--white-color);
+}
+
+.table__departures .table__body .tbody .td.date > div {
+    background-color: #bf6a031f;
+    border-radius: 10px;
+    padding: 10px;
+    color: var(--orange-color);
+    font-weight: 500;
+}
+
 
 
 .table__departures .table__body .tbody > .end {

@@ -1,4 +1,29 @@
+.conatiner__create_warehouse-exit {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100%;
+    overflow: hidden;
+}
 
+.conatiner__create_warehouse-exit-main {
+    overflow: auto;
+
+    padding: 5px;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
 
 .conatiner__create_warehouse-exit > .row__one {
     width: max-content;
@@ -121,6 +146,69 @@
 
 
 
+/*=================================================
+ 
+  Modal de precios del modal del articulo 
+  
+=================================================*/
+
+
+.overlay__departures {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+    z-index: 1;
+}
+
+.overlay__departures.active {
+	visibility: visible;
+}
+
+.overlay__departures .header__modal {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.popup__departures {      
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 40px 20px 20px 20px;
+	width: 95%;
+    height: 95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+    overflow: hidden;
+
+}
+
+.popup__departures .btn-cerrar-popup__departures {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 30px;
+    top: 10px;
+}
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__departures.active {	transform: scale(1); opacity: 1; }
 
 
 

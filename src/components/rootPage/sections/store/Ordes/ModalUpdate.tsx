@@ -52,7 +52,7 @@ const ModalUpdate = ({oderUpdate, orderConceptsUpdate}: any, ) => {
       try {
         // Supongamos que tienes el ID de la requisición
         await getPdfOrders(id);
-        window.open(`https://bnprocura.onrender.com/pdf_entrada/${oderUpdate.id}`, '_blank');
+        window.open(`https://hiplotbusiness.com/api_dev/pdf_entrada/${oderUpdate.id}`, '_blank');
       } catch (error) {
         console.error('Error al generar el PDF:', error);
       }
@@ -163,10 +163,10 @@ const ModalUpdate = ({oderUpdate, orderConceptsUpdate}: any, ) => {
                             <p className=''>OP</p>
                         </div>
                         <div className='th'>
-                            <p className=''>Cantidad</p>
+                            <p className=''>Unidad</p>
                         </div>
                         <div className='th'>
-                            <p className=''>Unidad</p>
+                            <p className=''>Cantidad</p>
                         </div>
                         <div className='th'>
                             <p className=''>Comentarios</p>
@@ -188,7 +188,7 @@ const ModalUpdate = ({oderUpdate, orderConceptsUpdate}: any, ) => {
                             </div>
                             <div className='td'>
                                 <div>
-                                  <p>{order.cantidad}</p>
+                                  <p>{order.unidad}</p>
                                 </div>
                             </div>
                             <div className='td'>
@@ -198,7 +198,7 @@ const ModalUpdate = ({oderUpdate, orderConceptsUpdate}: any, ) => {
                               </div>
                             <div className='td'>
                                 <div>
-                                  <p>{order.cantidad}</p>
+                                  <p>{order.comentarios}</p>
                                 </div>
                             </div>
                             <div className='td'>

@@ -88,6 +88,7 @@ const Tickets = () => {
     const modalUpdate = (ticket: any) => {
         setModalStateUpdate(true)
         setUpdateTickets(ticket)
+        console.log(ticket)
     }
 
 

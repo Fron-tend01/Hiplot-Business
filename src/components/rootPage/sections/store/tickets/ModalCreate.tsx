@@ -15,14 +15,12 @@ const ModalCreate = () => {
     const setModalTickets = storeTickets(state => state.setModalTickets)
     const setConceptos = storeTickets(state => state.setConceptos)
 
-    const { articles }: any = storeArticles();
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
     const { createTickets, modalTickets, conceptos }: any = storeTickets();
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
 
-    const [selectedBranchOffice, setSelectedBranchOffice] = useState<number | null>(null);
 
     const [comments, setComments] = useState<any>('')
 
@@ -134,31 +132,32 @@ const ModalCreate = () => {
     const [total, setTotal] = useState<number>(0);
 
 
-
-
-
     useEffect(() => {
         let totalSub = 0;
         let totalDiscount = 0;
         let iva = 0;
+        console.log(iva)
         let costo_flete = 0;
+    
+        let ids: any = [];
 
-        const filter_flete = conceptos.filter((x: any, index: number, self: any[]) => {
-            const isFirstOccurrence = index === self.findIndex((y: any) => y.id_orden_compra === x.id_orden_compra);
-            if (isFirstOccurrence) {
-                costo_flete += x.costo_flete;
+        conceptos.forEach((concept: any) => {
+            const exists = ids.some((x: any) => x === concept.id_orden_compra);
+            if (exists) {
+                console.log('Ya existe');
+            } else {
+                ids.push(concept.id_orden_compra);
+                costo_flete += concept.costo_flete;
             }
-            return isFirstOccurrence;
         });
-
+        
 
         conceptos.forEach((x: any) => {
             totalSub += x.cantidad * x.precio_unitario;
             totalDiscount += x.descuento;
-
             if (x.iva_on) {
-                let iva = (x.cantidad * x.precio_unitario) - x.descuento
-                iva += iva * .16
+                let temp_iva = (x.cantidad * x.precio_unitario) - x.descuento
+                iva += temp_iva * .16
             }
 
         });
@@ -175,10 +174,10 @@ const ModalCreate = () => {
         <div className={`overlay__tickets ${modalTickets == 'modal-create_ticket' ? 'active' : ''}`}>
             <div className={`popup__tickets ${modalTickets == 'modal-create_ticket' ? 'active' : ''}`}>
                 <div>
-                <a href="#" className="btn-cerrar-popup__tickets" onClick={() => setModalTickets('')}>
-                    <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
-                </a>
-                <p className='title__modals'>Crear nueva área</p>
+                    <a href="#" className="btn-cerrar-popup__tickets" onClick={() => setModalTickets('')}>
+                        <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+                    </a>
+                    <p className='title__modals'>Crear nueva área</p>
                 </div>
                 <form className='conatiner__create_tickets' onSubmit={handleCreateAreas}>
                     <div className="row__one">
@@ -202,7 +201,7 @@ const ModalCreate = () => {
                     <div className="conatiner__create_tickets-main">
                         <div className="row">
                             <div className="col-8">
-                                <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices}  modeUpdate={false}/>
+                                <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
                             </div>
                             <div className="col-4 comments">
                                 <label className='label__general'>Comentarios</label>
@@ -269,7 +268,7 @@ const ModalCreate = () => {
                                                             </div>
                                                         </div>
                                                         <div className="td">
-                                                            {concept.sumar_flete == 0 ?
+                                                            {concept.sumar_flete == 1 ?
                                                                 <p>{concept.costo_flete}</p>
                                                                 :
                                                                 <p>No aplica</p>
@@ -288,7 +287,12 @@ const ModalCreate = () => {
                                                             </div>
                                                         </div>
                                                         <div className='td'>
-                                                            <p>N/A</p>
+                                                            {concept.oc ?
+                                                                <p>{concept?.oc}</p>
+                                                                :
+                                                                <p>N/A</p>
+                                                            }
+
                                                         </div>
                                                         <div className='td'>
                                                             <select className='traditional__selector' onChange={(event) => handleProveedorChange(event, index)} value={selectedSupplier[index]} >
@@ -340,7 +344,7 @@ const ModalCreate = () => {
                             <div className="iva">
                                 <p className='title'>IVA</p>
                                 {/* Si applyExtraDiscount es true, mostrar 16%, de lo contrario, mostrar el valor calculado */}
-                                <p className='result'>$ {IVA}</p>
+                                <p className='result'>$ {IVA.toFixed(2)}</p>
                             </div>
                             <div className="total">
                                 <p className='title'>Total</p>

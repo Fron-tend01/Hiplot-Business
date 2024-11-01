@@ -32,7 +32,7 @@ const Units: React.FC = () => {
   }
 
   const handleUnitsChange = (unit: any) => {
-    setSelectedUnits(unit.id_unidad)
+    setSelectedUnits(unit)
     setSelectUnits(false)
   }
 
@@ -84,7 +84,7 @@ const Units: React.FC = () => {
     let data = {
 
       id_unidad: selectedSectionUnit,
-      id_unidad_equivalencia: selectedUnits,
+      id_unidad_equivalencia: selectedUnits.id_unidad,
       equivalencia: valueUnits,
       unidad_almacen: false,
       unidad: unitName,
@@ -95,8 +95,11 @@ const Units: React.FC = () => {
 
   const deleteMaxMin = (item: any, i: number) => {
     setUnits(units.filter((_: any, index: any) => index !== i));
-    setDeleteUnits([...deleteUnits, item.id])
+    if(item) {
+      setDeleteUnits([...deleteUnits, item.id])
+    }
   };
+  
   return (
     <div>
       <a href="#" className="btn-cerrar-popup__modal_units_creating_articles" onClick={closeModal}>
@@ -135,7 +138,7 @@ const Units: React.FC = () => {
               <div className='select-btn__general'>
                 <div className={`select-btn ${selectUnits ? 'active' : ''}`} onClick={openSelectUnits}>
                   <div className='select__container_title'>
-                    <p>{selectedUnits ? units.find((s: { id: number }) => s.id === selectedUnits)?.nombre : 'Selecciona'}</p>
+                    <p>{selectedUnits ? units.find((s: { id: number }) => s.id === selectedUnits?.id)?.nombre : 'Selecciona'}</p>
                   </div>
                   <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                 </div>

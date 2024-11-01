@@ -3,10 +3,7 @@ import Empresas_Sucursales from '../../../../Dynamic_Components/Empresas_Sucursa
 import Flatpickr from "react-flatpickr";
 import 'flatpickr/dist/flatpickr.min.css';
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
-import types from './json/types.json'
 import Select from '../../../../Dynamic_Components/Select';
-import typeSearch from './json/typeSearchs.json'
-import Series from '../../../processes/Series';
 import { storeTickets } from '../../../../../../zustand/Tickets';
 import { useStore } from 'zustand';
 import { storeSeries } from '../../../../../../zustand/Series';
@@ -86,16 +83,13 @@ const ByOC: React.FC = () => {
         }
     }
 
-
-
-    const [suppliersModal, setSuppliersModal] = useState<any>()
-
-    // setSuppliersModal()
     const addArticlesByRequest = async (x: any) => {
+        console.log(x)
         for (const xx of x.conceptos) {
             xx.id_orden_compra_concepto = xx.id;
-            if(x.sumar_flete == 0) {
-                xx.sumar_flete = x.sumar_flete
+            xx.oc = `${x.serie}-${x.folio}-${x.anio}`
+            if(x.sumar_flete == 1) {
+                xx.sumar_flete = x.sumar_flete 
                 xx.costo_flete = x.costo_flete
             }
         }

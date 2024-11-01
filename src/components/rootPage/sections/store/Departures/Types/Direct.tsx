@@ -5,6 +5,7 @@ import useUserStore from '../../../../../../zustand/General'
 import { storeWarehouseExit } from '../../../../../../zustand/WarehouseExit'
 import { useStore } from 'zustand';
 import { toast } from 'sonner'
+import { useSelectStore } from '../../../../../../zustand/Select'
 
 
 const Direct: React.FC = () => {
@@ -15,6 +16,8 @@ const Direct: React.FC = () => {
 
   const {getArticles}: any = articleRequests()
   const { concepts, setConcepts } = useStore(storeWarehouseExit);
+
+  const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
   const [selectSearchBy, setSelectSearchBy] = useState<boolean>()
   const [selectedSearchBy, setSelectedSearchBy] = useState<any>()
@@ -99,28 +102,14 @@ const Direct: React.FC = () => {
 
 //     }]);
 
-//   }
-
-const { selectedStore } = useStore(storeWarehouseExit);
+//}
 
   const addResult = async () => {
-
-    // const units = [
-    //   { unidad: 'PZA', nombre: 'PZA', equivalencia: 1 },
-    //   { unidad: 'CAJA', nombre: 'CAJA', equivalencia: 20 },
-    //   { unidad: 'PAQUETE', nombre: 'PAQUETE', equivalencia: 50 },
-    // ];
-
-    // let result = await pz('CAJA', 3, units)
-    // console.log(result)
-
     let warning;
 
-    console.log(selectedResult)
-
-    if(selectedStore) {
+    if(selectedIds.store) {
       if(selectedResult) {
-        const filter = selectedResult.stock?.filter((x: any) => x.id == selectedStore);
+        const filter = selectedResult.stock?.filter((x: any) => x.id == selectedIds.store);
         if(filter.length <= 0) {
           toast.warning('El articulo que agregaste no tiene alamcen')
           warning = true
@@ -129,15 +118,22 @@ const { selectedStore } = useStore(storeWarehouseExit);
           warning = false
           console.log('Si esta')
         }
+      
+        // selectedResult.id_articulo = selectedResult.id
+        // selectedResult.cantidad = null
+        // selectedResult.comentarios = ''
+        // selectedResult.unidad = null
+        // selectedResult.pedido_almacen_concepto_id = null
+        // selectedResult.storeWarning = warning
   
         setConcepts([...concepts, {
           id_articulo: selectedResult.id,
-          nameArticle: selectedResult.nombre,
+          nameArticle: `${selectedResult.codigo}-${selectedResult.descripcion}`,
           cantidad: null,
           comentarios: '',
           unidad: null,
           unidades: selectedResult.unidades,
-          stocks: selectedResult.stock,
+          stock: selectedResult.stock,
           pedido_almacen_concepto_id: null,
           storeWarning: warning
         }

@@ -1,40 +1,44 @@
 import React, { useEffect, useState } from 'react'
 import useUserStore from '../../../../../../zustand/General'
 import { companiesRequests } from '../../../../../../fuctions/Companies'
-import { BranchOfficesRequests } from '../../../../../../fuctions/BranchOffices'
+import Flatpickr from "react-flatpickr";
+import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import { seriesRequests } from '../../../../../../fuctions/Series'
 import { ordersRequests } from '../../../../../../fuctions/Orders'
 import { storeWarehouseExit } from '../../../../../../zustand/WarehouseExit'
 import { articleRequests } from '../../../../../../fuctions/Articles'
 import { useStore } from 'zustand'
 import './styles/ByOrder.css'
-import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/l10n/es.js'
-import { UnitConverter } from '../../../../../../utils/UnitConverter'
+import Empresas_Sucursales from '../../../../Dynamic_Components/Empresas_Sucursales'
+import { useSelectStore } from '../../../../../../zustand/Select';
+import { toast } from 'sonner'
+
 
 const ByOrder: React.FC = () => {
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
 
-  const {concepts, setConcepts } = useStore(storeWarehouseExit);
+  const { concepts, setConcepts } = useStore(storeWarehouseExit);
 
   const [invoice, setInvoice] = useState<string>('')
-  const { pz }: any = UnitConverter()
 
   const { getCompaniesXUsers }: any = companiesRequests()
-  const [companies, setCompanies] = useState<any>()
 
-  const {getBranchOffices}: any = BranchOfficesRequests()
-  const [setBranchOffices] = useState<any>()
 
-  const {getSeriesXUser}: any = seriesRequests();
+  const selectedIds: any = useSelectStore((state) => state.selectedIds);
+
+  const { getSeriesXUser }: any = seriesRequests();
   const [series, setSeries] = useState<any>()
 
-  const {getOrdedrs}: any = ordersRequests()
+  const { getOrdedrs }: any = ordersRequests()
   const [orders, setOrders] = useState<any>()
 
-  const {getArticles}: any = articleRequests()
+  const { getArticles }: any = articleRequests()
+
+  const [companies, setCompanies] = useState<any>()
+  const [branchOffices, setBranchOffices] = useState<any>()
 
   const fecht = async () => {
     let companies = await getCompaniesXUsers(user_id)
@@ -47,115 +51,30 @@ const ByOrder: React.FC = () => {
     fecht()
   }, [])
 
-  const [selectCompanies, setSelectCompanies] = useState<boolean>(false)
-  const [selectedCompany, setSelectedCompany] = useState<number | null>(null)
-  
-  const openSelectCompanies = () => {
-    setSelectCompanies(!selectCompanies)
-  }
 
-  const [filteredBranchOffices, setFilteredBranchOffices] = useState<any[]>([])
-  const handleCompaniesChange = async (company: any) => {
-    setSelectedCompany(company.id)
-    setSelectCompanies(false)
-    let branchOffices = await getBranchOffices(company.id, user_id)
-    setBranchOffices(branchOffices)
-    const filter = branchOffices.filter((x: any) => x.empresa_id === company.id)
-    setFilteredBranchOffices(filter)
-    setSelectedBranchOffice(filter.length > 0 ? filter[0].id : null);
+  ////////////////////////
+  /// Fechas
+  ////////////////////////
 
+  const [dates, setDates] = useState<any>()
 
-  }
-  
-
-  const [selectBranchOffices, setSelectBranchOffices] = useState<boolean>(false)
-  const [selectedBranchOffice, setSelectedBranchOffice] = useState<number | null>(null)
-  
-
-  const openSelectBranchOffices = () => {
-    setSelectBranchOffices(!selectBranchOffices)
-  }
-
-  const handleBranchOfficesChange = (sucursal: any) => {
-    setSelectBranchOffices(false)
-    setSelectedBranchOffice(sucursal)
-  }
-
-
-
-
-  
-////////////////////////
-/// Fechas
-////////////////////////
-
-// Estado para almacenar las fechas seleccionadas
-const [selectedStartDate, setSelectedStartDate] = useState<any>(null);
-const [selectedEndDate, setSelectedEndDate] = useState<any>(null);
-
-// Función para obtener solo la fecha en formato YYYY-MM-DD
-const getFormattedDate = (date: Date) => {
-  return date.toISOString().substring(0, 10);
-};
-
-  // Método para inicializar Flatpickr
-const initFlatpickr = () => {
-  const storedStartDate = localStorage.getItem('selectedStartDate');
-  const storedEndDate = localStorage.getItem('selectedEndDate');
-
-  const defaultStartDate = storedStartDate ? new Date(storedStartDate) : new Date();
-  defaultStartDate.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00.000
-
-  const defaultEndDate = storedEndDate ? new Date(storedEndDate) : new Date();
-  defaultEndDate.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00.000
-
-  const currentDate = new Date(); // Obtener la fecha actual
-  currentDate.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00.000
-
-  const oneWeekAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000); // Fecha de hace una semana
-
-  setSelectedStartDate(getFormattedDate(oneWeekAgo));
-  setSelectedEndDate(getFormattedDate(currentDate)); // endDate siempre debe ser el día actual
-
-  const startDateString = getFormattedDate(oneWeekAgo);
-  const endDateString = getFormattedDate(currentDate);
-
-  flatpickr('#dateRangePicker', {
-    mode: 'range',
-    dateFormat: 'Y-m-d',
-    locale: 'es', // Establecer el idioma en español
-    defaultDate: [startDateString, endDateString], // Establecer las fechas predeterminadas aquí
-    onChange: (selectedDates) => {
-      if (selectedDates.length === 2) {
-        const formattedStartDate = getFormattedDate(selectedDates[0]);
-        const formattedEndDate = getFormattedDate(selectedDates[1]);
-        
-        setSelectedStartDate(formattedStartDate);
-        setSelectedEndDate(formattedEndDate);
-
-        // Almacena las fechas seleccionadas en localStorage
-        localStorage.setItem('selectedStartDate', formattedStartDate);
-        localStorage.setItem('selectedEndDate', formattedEndDate);
-
-        // getRequisition(0, 0, 0, user_id, 0, 0, formattedStartDate, formattedEndDate, 0);
-      }
-      }
-    });
+  const handleDateChange = (fechasSeleccionadas: any) => {
+    if (fechasSeleccionadas.length === 2) {
+      setDates(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
+    } else {
+      setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
+    }
   };
 
-  // Llamada a initFlatpickr después de que se renderiza el componente
-  useEffect(() => {
-    initFlatpickr();
-  }, []);
 
 
 
   const filterSeveral = async () => {
     let data = {
       id_usuario: user_id,
-      id_sucursal: selectedBranchOffice,
-      desde: selectedStartDate,
-      hasta: selectedEndDate,
+      id_sucursal: branchOffices.id,
+      desde: dates[0],
+      hasta: dates[1],
       status: 0,
     }
     let result = await getOrdedrs(data)
@@ -180,19 +99,19 @@ const initFlatpickr = () => {
 
   const [modalUpdatePermissions, setModalUpdatePermissions] = useState<any>(false);
 
-const seeConcepts = (order: number) => {
+  const seeConcepts = (order: number) => {
     setModalUpdatePermissions((prevState: any) => ({
       ...prevState,
       [order]: !prevState[order]
     }));
   };
 
-   const closeModalUpdatePermissions = () => {
+  const closeModalUpdatePermissions = () => {
     setModalUpdatePermissions(false)
   };
 
 
-  const addOrders = async (concept: any) => {
+  const addOrders = async (concept: any, order: any) => {
     let data = {
       id: concept.id_articulo,
       activos: true,
@@ -212,89 +131,60 @@ const seeConcepts = (order: number) => {
     };
 
     let result = await getArticles(data)
-    if(result) {
+    if (result) {
 
-      // let filterStore = result[0].stock.filter((x: any) => x.id == selectedBranchOffice)
+      let warning;
 
-      const units = result[0].unidades
+      if(selectedIds?.store) {
+        if(result) {
+          const filter = result[0].stock?.filter((x: any) => x.id == selectedIds.store);
+          if(filter.length <= 0) {
+            toast.warning('El articulo que agregaste no tiene alamcen')
+            warning = true
+            console.log('No esta')
+          } else {
+            warning = false
+            console.log('Si esta')
+          }
+    
+          console.log(concept)
 
-      pz('cj', 56, units)
-
-
-
-      await setConcepts([...concepts, {
-
-        id_articulo: result[0].id,
-        nameArticle: result[0].nombre,
-        ped: `${concept.folio}|${concept.anio}`,
-        cantidad: null,
-        comentarios: '',
-        unidad: null,
-        unidades: result[0].unidades,
-        stocks: result[0].stock,
-        pedido_almacen_concepto_id: concept.id
-      
+          await setConcepts([...concepts, {
+            id_articulo: result[0].id,
+            nameArticle: `${result[0].codigo}-${result[0].descripcion}`,
+            ped: `${order.serie}-${order.folio}-${order.anio}`,
+            cantidad: concept.cantidad,
+            comentarios: concept.comentarios,
+            id_unidad: concept.id_unidad,
+            unidad: concept.unidad,
+            unidades: result[0].unidades,
+            stock: result[0].stock,
+            almacen_predeterminado: result[0].almacen_predeterminado,
+            pedido_almacen_concepto_id: concept.id
+          }]);
         }
-      ]);
-
-
-     
+      } else {
+        toast.warning('Seleciona un almacen para agregar')
+      }
     }
-
-   
   }
+
+
 
 
   return (
     <div className='by-order__warehouse-exit'>
-      <div className='row__one'>
-        <div className='select__container'>
-          <label className='label__general'>Empresas</label>
-          <div className='select-btn__general'>
-            <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
-                <div className='select__container_title'>
-                    <p>{selectedCompany ? companies.find((s: {id: number}) => s.id === selectedCompany)?.razon_social : 'Selecciona'}</p>
-                </div>
-                <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-            </div>
-            <div className={`content ${selectCompanies ? 'active' : ''}`} >
-                <ul className={`options ${selectCompanies ? 'active' : ''}`} style={{ opacity: selectCompanies ? '1' : '0' }}>
-                {companies && companies.map((x: any) => (
-                    <li key={x.id} onClick={() => handleCompaniesChange(x)}>
-                        {x.razon_social}
-                    </li>
-                ))}
-                </ul>
-            </div>
-          </div>
+      <div className='row'>
+        <div className="col-8">
+          <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
         </div>
-        <div className='select__container'>
-          <label className='label__general'>Sucursales</label>
-          <div className='select-btn__general'>
-              <div className={`select-btn ${selectBranchOffices ? 'active' : ''}`} onClick={openSelectBranchOffices} >
-                  <div className='select__container_title'>
-                      <p>{selectedBranchOffice ? filteredBranchOffices.find((s: {id: number}) => s.id === selectedBranchOffice)?.nombre : 'Selecciona'}</p>
-                  </div>
-                  <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-              </div>
-              <div className={`content ${selectBranchOffices ? 'active' : ''}`} >
-                  <ul className={`options ${selectBranchOffices ? 'active' : ''}`} style={{ opacity: selectBranchOffices ? '1' : '0' }}>
-                  {filteredBranchOffices.map((sucursal: any) => (
-                      <li key={sucursal.id} onClick={() => handleBranchOfficesChange(sucursal)}>
-                      {sucursal.nombre}
-                      </li>
-                  ))}
-                  </ul>
-              </div>
-          </div>
-        </div>
-        <div className='dates__requisition'>
+        <div className='col-3'>
           <label className='label__general'>Fechas</label>
           <div className='container_dates__requisition'>
-              <input className='date' id="dateRangePicker" type="text" placeholder="Seleccionar rango de fechas" />
+            <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
           </div>
         </div>
-        <div>
+        <div className='col-1 d-flex align-items-end'>
           <button className='btn__general-purple' type='button' onClick={filterSeveral}>Filtran</button>
         </div>
       </div>
@@ -302,27 +192,27 @@ const seeConcepts = (order: number) => {
         <div className='select__container'>
           <label className='label__general'>Series</label>
           <div className='select-btn__general'>
-              <div className={`select-btn ${selectSeries ? 'active' : ''}`} onClick={openSelectSeries} >
-                  <div className='select__container_title'>
-                      <p>{selectedSerie ? series.find((s: {id: number}) => s.id === selectedSerie)?.nombre : 'Selecciona'}</p>
-                  </div>
-                  <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
+            <div className={`select-btn ${selectSeries ? 'active' : ''}`} onClick={openSelectSeries} >
+              <div className='select__container_title'>
+                <p>{selectedSerie ? series.find((s: { id: number }) => s.id === selectedSerie)?.nombre : 'Selecciona'}</p>
               </div>
-              <div className={`content ${selectSeries ? 'active' : ''}`} >
-                  <ul className={`options ${selectSeries ? 'active' : ''}`} style={{ opacity: selectSeries ? '1' : '0' }}>
-                  {series && series.map((serie: any) => (
-                      <li key={serie.id} onClick={() => handleSeriesChange(serie)}>
-                      {serie.nombre}
-                      </li>
-                  ))}
-                  </ul>
-              </div>
+              <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+            </div>
+            <div className={`content ${selectSeries ? 'active' : ''}`} >
+              <ul className={`options ${selectSeries ? 'active' : ''}`} style={{ opacity: selectSeries ? '1' : '0' }}>
+                {series && series.map((serie: any) => (
+                  <li key={serie.id} onClick={() => handleSeriesChange(serie)}>
+                    {serie.nombre}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
         <div>
-            <label className='label__general'>Folio</label>
-            <div className='warning__general'><small >Este campo es obligatorio</small></div>
-            <input className={`inputs__general`} type="text" value={invoice} onChange={(e) =>setInvoice(e.target.value)} placeholder='Ingresa el folio' />
+          <label className='label__general'>Folio</label>
+          <div className='warning__general'><small >Este campo es obligatorio</small></div>
+          <input className={`inputs__general`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
         </div>
         <button className='btn__general-purple'>Filtran</button>
       </div>
@@ -330,11 +220,11 @@ const seeConcepts = (order: number) => {
         <div className='table__modal_filter_orders'>
           <div>
             <div>
-                <div className='table__numbers'>
-                  <p className='text'>Total de pedidos</p>
-                  <div className='quantities_tables'>{concepts.length}
-                  </div>
+              <div className='table__numbers'>
+                <p className='text'>Total de pedidos</p>
+                <div className='quantities_tables'>{concepts.length}
                 </div>
+              </div>
             </div>
             <div className='table__head'>
               <div className='thead'>
@@ -350,7 +240,7 @@ const seeConcepts = (order: number) => {
                 <div className='th'>
                 </div>
                 <div className='th'>
-                 
+
                 </div>
               </div>
             </div>
@@ -375,9 +265,9 @@ const seeConcepts = (order: number) => {
                       </div>
                     </div>
                     <div className={`overlay__modal-filter_concepts_departures ${modalUpdatePermissions[order.id] ? 'active' : ''}`}>
-                        <div className={`popup__modal-filter_concepts_departures ${modalUpdatePermissions[order.id] ? 'active' : ''}`}>
+                      <div className={`popup__modal-filter_concepts_departures ${modalUpdatePermissions[order.id] ? 'active' : ''}`}>
                         <a href="#" className="btn-cerrar-popup__modal-filter_concepts_departures" onClick={closeModalUpdatePermissions}>
-                            <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                          <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
                         </a>
                         <div className='container__modal-filter_concepts_departures'>
                           <div className='table__modal_filter-stocks_tickets'>
@@ -407,7 +297,7 @@ const seeConcepts = (order: number) => {
                                     <p className=''>Comentarios</p>
                                   </div>
                                   <div className='th'>
-                          
+
                                   </div>
                                 </div>
                               </div>
@@ -429,24 +319,24 @@ const seeConcepts = (order: number) => {
                                           {concept.descripcion}
                                         </div>
                                         <div className='td'>
-                                          <button className='btn__general-purple' type='button' onClick={() => addOrders(concept)}>Agregar</button>
+                                          <button className='btn__general-purple' type='button' onClick={() => addOrders(concept, order)}>Agregar</button>
                                         </div>
                                       </div>
-                                      
-                                  </div>
-                                ))}
-                              </div>
+
+                                    </div>
+                                  ))}
+                                </div>
                               ) : (
                                 <p className='text'>No hay conceptos</p>
                               )}
                             </div>
                           </div>
-                          </div>
                         </div>
+                      </div>
                     </div>
-                </div>
-              ))}
-            </div>
+                  </div>
+                ))}
+              </div>
             ) : (
               <p className='text'>No hay pedidos filtrados</p>
             )}

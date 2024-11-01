@@ -32,7 +32,7 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }) 
         <div className={`select-btn ${selects ? 'active' : ''}`} onClick={() => setSelects(!selects)}>
           <div className='select__container_title'>
             <p>
-              {selectedId
+              {selectedId != null 
                 ? dataSelects?.dataSelect.find((s) => s.id === selectedId)?.[dataSelects?.options] || 'Selecciona'
                 : 'Selecciona'}
             </p>

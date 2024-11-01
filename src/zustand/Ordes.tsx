@@ -5,11 +5,16 @@ import Swal from 'sweetalert2';
   
 interface StoreState {
     orders: any[];
+
+    concepts: any;
+    setConcepts: (x: any) => void;
 }
 
 export const storeOrdes = create<StoreState>((set) => ({
     orders: [],
 
+    concepts: [],
+    setConcepts: (x) => set({concepts: x}),
 
     // Almacen
  

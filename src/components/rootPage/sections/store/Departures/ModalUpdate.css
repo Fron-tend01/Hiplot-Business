@@ -1,0 +1,14 @@
+.salida__container {
+    padding: 10px;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-radius: 5px;
+}
+
+.user {
+    padding: 10px;
+    background-color: var(--orange-color);
+    color: var(--white-color);
+    border-radius: 5px;
+    margin-left: 20px;
+}

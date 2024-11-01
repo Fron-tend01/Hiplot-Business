@@ -235,7 +235,7 @@
 
 .table__orders .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr) 100px;
     padding: 10px;
     font-weight: 600;
 }
@@ -276,9 +276,20 @@
 
 .table__orders .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr) 100px;
     padding: 10px;
+}
 
+.table__orders .table__body .tbody .td.order > div {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    padding: 10px;
+    color: var(--white-color);
+    font-weight: 500;
+}
+
+.table__orders .table__body .tbody .td {
+    display: flex;
 }
 
 .table__orders .table__body .tbody:hover {

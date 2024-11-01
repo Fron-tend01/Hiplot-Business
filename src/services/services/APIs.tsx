@@ -313,6 +313,10 @@ updateClients: async (data: any, customPath?: string) => {
     return ConfigurationAPIs.put(path, { data, data_ext });
   },
 
+  getStorePDF: async (data: any) => {
+    const path = `pdf_traspaso/${data.id}`;
+    return ConfigurationAPIs.get(path);
+  },
 
 
   // VENTAS 

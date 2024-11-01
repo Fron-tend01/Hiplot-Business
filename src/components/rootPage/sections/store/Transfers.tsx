@@ -13,6 +13,8 @@ import Flatpickr from "react-flatpickr";
 import './styles/Departures.css'
 import { v4 as uuidv4 } from 'uuid'; // Importa la función v4 de uuid
 import ModalSee from './transfers/ModalSee';
+import Select from '../../Dynamic_Components/Select';
+import { useSelectStore } from '../../../../zustand/Select';
 
 
 const Transfers: React.FC = () => {
@@ -24,53 +26,136 @@ const Transfers: React.FC = () => {
   const setDataTransfer = storeTransfers((state: any) => state.setDataTransfer);
 
 
-  const {getCompaniesXUsers}: any = companiesRequests();
-  const {getBranchOffices}: any = BranchOfficesRequests();
-  const {getStore}: any = StoreRequests();
-  const {getSeriesXUser}: any = seriesRequests();
-  const {getTransfers}: any = TransfersRequests();
-  
+  const selectedIds = useSelectStore((state) => state.selectedIds);
+  const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
-  const [selectCompanies, setSelectCompanies] = useState<boolean>(false);
-  const [selectedCompany, setSelectedCompany] = useState<number | null>(null);
+  const { getCompaniesXUsers }: any = companiesRequests();
+  const { getStore }: any = StoreRequests();
+  const { getSeriesXUser }: any = seriesRequests();
+  const { getTransfers }: any = TransfersRequests();
 
-  const [selectBranchOffices, setSelectBranchOffices] = useState<boolean>(false);
-  const [selectedBranchOffice, setSelectedBranchOffice] = useState<any>(null);
 
-  
-  const [selectStore, setSelectStore] = useState<boolean>(false);
   const [selectedStore, setSelectedStore] = useState<any>(null);
 
-  const [companies, setCompanies] = useState<any>()
-  const [store, setStore] =  useState<any>()
+  const [companiesDesde, setCompaniesDesde] = useState<any>()
+  const [companiesHasta, setCompaniesHasta] = useState<any>()
+
+  const [storeDesde, setStoreDesde] = useState<any>()
+  const [storeHasta, setStoreHasta] = useState<any>()
   const [series, setSeries] = useState<any>()
 
-  const [transfer, setTransfers] =  useState<any>([])
+  const [transfer, setTransfers] = useState<any>([])
 
   const fetch = async () => {
     let resultCompanies = await getCompaniesXUsers(user_id)
-    setCompanies(resultCompanies)
-    setSelectedCompany(resultCompanies[0].id)
+    resultCompanies.unshift({ id: 0, razon_social: 'Todas' })
+    setCompaniesDesde({
+      selectName: 'Empresas desde',
+      options: 'razon_social',
+      dataSelect: [...resultCompanies]
+    })
 
-    let resultBranch = await getBranchOffices(resultCompanies[0].id, user_id)
-    await setBranchOffices(resultBranch)
-    await setSelectedBranchOffice(resultBranch[0])
+    setCompaniesHasta({
+      selectName: 'Empresas hasta',
+      options: 'razon_social',
+      dataSelect: [...resultCompanies]
+    })
+
+
+
 
     let resultStore = await getStore(user_id)
-    setStore(resultStore)
-    setSelectedStore(resultStore[0])
+    resultStore.unshift({ id: 0, nombre: 'Todos' })
+    setStoreDesde({
+      selectName: 'Almacen desde',
+      options: 'nombre',
+      dataSelect: [...resultStore]
+    })
+    setStoreHasta({
+      selectName: 'Almacen hasta',
+      options: 'nombre',
+      dataSelect: [...resultStore]
+    })
+
 
     let resultSerie = await getSeriesXUser(user_id)
-    setSeries(resultSerie)
+    setSeries({
+      selectName: 'Series',
+      options: 'nombre',
+      dataSelect: [...resultSerie]
+    })
 
     let data = {
       id_usuario: user_id,
       id_almacen: selectedStore.id,
-      id_sucursal: resultBranch[0].id,
+      id_sucursal: 0,
       status: 0,
       desde: date[0],
       hasta: date[1],
-    
+
+    }
+
+  
+
+    let result = await getTransfers(data)
+    setTransfers(result)
+
+  }
+
+  useEffect(() => {
+    fetch()
+    setSelectedId('company_desde', 0)
+    setSelectedId('store_desde', 0)
+    setSelectedId('company_hasta', 0)
+    setSelectedId('store_hasta', 0)
+  }, []);
+
+
+  let modalCreate = () => {
+    setModalStateCreate('create')
+  }
+
+
+  ////////////////////////
+  /// Fechas
+  ////////////////////////
+
+
+  const hoy = new Date();
+  const haceUnaSemana = new Date();
+  haceUnaSemana.setDate(hoy.getDate() - 7);
+
+  // Inicializa el estado con las fechas formateadas
+  const [date, setDate] = useState([
+    haceUnaSemana.toISOString().split('T')[0],
+    hoy.toISOString().split('T')[0]
+  ]);
+
+  const handleDateChange = (fechasSeleccionadas: any) => {
+    if (fechasSeleccionadas.length === 2) {
+      setDate(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
+    } else {
+      setDate([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
+    }
+  };
+
+
+
+  const [invoice, setInvoice] = useState<any>(0)
+
+  const searchTransfers = async () => {
+    let data = {
+      id_usuario: user_id,
+      id_empresa_origen: selectedIds.company_desde,
+      id_empresa_destino: selectedIds.company_hasta,
+      id_almacen_origen: selectedIds.store_desde,
+      id_almacen_destino: selectedIds.store_hasta,
+      desde: date[0],
+      hasta: date[1],
+      id_serie: selectedIds.serie,
+      status: type,
+      folio: invoice,
+      page: 0
     }
 
     let result = await getTransfers(data)
@@ -78,209 +163,77 @@ const Transfers: React.FC = () => {
     setTransfers(result)
   }
 
-  useEffect(() => {
-    fetch()
-  }, []);
 
-  
-  const openSelectCompanies = () => {
-    setSelectCompanies(!selectCompanies);
+  const seeConcepts = (concept: any) => {
+    setDataTransfer(concept)
+    setModalStateSee('see')
   };
 
-  const [branchOffices, setBranchOffices] = useState<any>()
+  const [type, setType] = useState<number>(0)
 
-  const handleCompaniesChange = async (company: any) => {
-      setSelectedCompany(company);
-      setSelectCompanies(false);
-      let resultBranch = await getBranchOffices(company, user_id)
-      await setBranchOffices(resultBranch)
-      await setSelectedBranchOffice(resultBranch[0])
-      console.log(selectedBranchOffice)
-      console.log(branchOffices)
+  const handleClick = (value: any) => {
+    setType(value)
   };
 
-
-  const openSelectBranchOffices = () => {
-    setSelectBranchOffices(!selectBranchOffices);
-  };
-  const handleBranchOfficesChange = (sucursal: any) => {
-    setSelectedBranchOffice(sucursal);
-    // Cerrar el select de sucursales
-    setSelectBranchOffices(false);
-  };
-
-  const openSelectStore = () => {
-    setSelectStore(!selectStore);
-  };
-  
-  const handleStoreChange = (sucursal: any) => {
-    setSelectedStore(sucursal);
-    // Cerrar el select de sucursales
-    setSelectStore(false);
-  };
-
-  let modalCreate = () => {
-    setModalStateCreate('create')
-  }
-  
-
-////////////////////////
-/// Fechas
-////////////////////////
-
-
-const hoy = new Date();
-const haceUnaSemana = new Date();
-haceUnaSemana.setDate(hoy.getDate() - 7);
-
-// Inicializa el estado con las fechas formateadas
-const [date, setDate] = useState([
-  haceUnaSemana.toISOString().split('T')[0],
-  hoy.toISOString().split('T')[0]
-]);
-
-const handleDateChange = (fechasSeleccionadas: any) => {
-  if (fechasSeleccionadas.length === 2) {
-    setDate(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
-  } else {
-    setDate([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
-  }
-};
-
-
-const [selectedSerie, setSelectedSerie] = useState<number | null>(null)
-const [selectSeries, setSelectSeries] = useState<boolean>(false)
-
-
-const openSelectSeries = () => {
-  setSelectSeries(!selectSeries)
-}
-
-const handleSeriesChange = (serie: any) => {
-  setSelectedSerie(serie.id)
-  setSelectSeries(false)
-}
-
-const [invoice, setInvoice] = useState<any>('')
-
-const searchTransfers = async () => {
-  let data = {
-    id_usuario: user_id,
-    id_almacen: selectedStore.id,
-    id_sucursal: selectedBranchOffice.id,
-    status: 0,
-    desde: date[0],
-    hasta: date[1],
-  }
-
-  let result = await getTransfers(data)
-  console.log(result)
-  setTransfers(result)
-}
-
-
-const seeConcepts = (concept: any) => {
-  setDataTransfer(concept)
-  setModalStateSee('see')
-};
-
-
+console.log(transfer)
 
   return (
     <div className='transfer'>
       <div className='transfer__container'>
-        <div className='row__one'>
-          <div className='select__container'>
-            <label className='label__general'>Empresas</label>
-            <div className='select-btn__general'>
-                <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
-                  <div className='select__container_title'>
-                      <p>{selectedCompany ? companies.find((s: {id: number}) => s.id === selectedCompany)?.razon_social : 'Selecciona'}</p>
-                  </div>
-                  <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-                </div>
-                <div className={`content ${selectCompanies ? 'active' : ''}`} >
-                  <ul className={`options ${selectCompanies ? 'active' : ''}`} style={{ opacity: selectCompanies ? '1' : '0' }}>
-                      {companies && companies.map((company: any) => (
-                      <li key={company.id} onClick={() => handleCompaniesChange(company.id)}>
-                          {company.razon_social}
-                      </li>
-                      ))}
-                  </ul>
-                </div>
+        <div className='row'>
+          <div className='col-3'>
+            <Select dataSelects={companiesDesde} instanceId='company_desde' nameSelect={'Empresas desde'} />
+          </div>
+          <div className='col-3'>
+            <Select dataSelects={storeDesde} instanceId='store_desde' nameSelect={'Almacen desde'} />
+          </div>
+          <div className='col-3'>
+            <Select dataSelects={companiesHasta} instanceId='company_hasta' nameSelect={'Empresas hasta'} />
+          </div>
+          <div className='col-3'>
+            <Select dataSelects={storeHasta} instanceId='store_hasta' nameSelect={'Almacen hasta'} />
+          </div>
+        </div>
+        <div className='row'>
+          <div className='col-8 row'>
+            <div className='dates__requisition col-4'>
+              <label className='label__general'>Fechas</label>
+              <div className='container_dates__requisition'>
+                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
+              </div>
+            </div>
+            <div className='col-4'>
+              <Select dataSelects={series} instanceId='serie' nameSelect={'Series'} />
+            </div>
+            <div className='col-4'>
+              <label className='label__general'>Folio</label>
+              <div className='warning__general'><small >Este campo es obligatorio</small></div>
+              <input className={`inputs__general`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
             </div>
           </div>
-          <div className='select__container'>
-            <label className='label__general'>Sucursales</label>
-            <div className='select-btn__general'>
-              <div className={`select-btn ${selectBranchOffices ? 'active' : ''}`} onClick={openSelectBranchOffices} >
-              <div className='select__container_title'>
-                  <p>{selectedBranchOffice ? branchOffices.find((s: {id: number}) => s.id === selectedBranchOffice.id)?.nombre : 'Selecciona'}</p>
-              </div>
-              <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-              </div>
-              <div className={`content ${selectBranchOffices ? 'active' : ''}`} >
-              <ul className={`options ${selectBranchOffices ? 'active' : ''}`} style={{ opacity: selectBranchOffices ? '1' : '0' }}>
-                  {branchOffices && branchOffices.map((sucursal: any) => (
-                  <li key={sucursal.id} onClick={() => handleBranchOfficesChange(sucursal)}>
-                      {sucursal.nombre}
-                  </li>
-                  ))}
-              </ul>
-              </div>
+          <div className='container__checkbox_orders col-4'>
+            <div className='checkbox__orders'>
+              <label className="checkbox__container_general">
+                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 1} value={type} onChange={() => handleClick(1)} />
+                <span className="checkmark__general"></span>
+              </label>
+              <p className='title__checkbox text'>Pend</p>
+            </div>
+            <div className='checkbox__orders'>
+              <label className="checkbox__container_general">
+                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 0} value={type} onChange={() => handleClick(0)} />
+                <span className="checkmark__general"></span>
+              </label>
+              <p className='title__checkbox text'>Termi</p>
+            </div>
+            <div className='checkbox__orders'>
+              <label className="checkbox__container_general">
+                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 2} value={type} onChange={() => handleClick(2)} />
+                <span className="checkmark__general"></span>
+              </label>
+              <p className='title__checkbox text'>Cancel</p>
             </div>
           </div>
-          <div className='select__container'>
-            <label className='label__general'>Almacen</label>
-            <div className='select-btn__general'>
-              <div className={`select-btn ${selectStore ? 'active' : ''}`} onClick={openSelectStore} >
-              <div className='select__container_title'>
-                  <p>{selectedStore ? store.find((s: {id: number}) => s.id === selectedStore.id)?.nombre : 'Selecciona'}</p>
-              </div>
-              <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-              </div>
-              <div className={`content ${selectStore ? 'active' : ''}`} >
-                <ul className={`options ${selectStore ? 'active' : ''}`} style={{ opacity: selectStore ? '1' : '0' }}>
-                    {store && store.map((sucursal: any) => (
-                      <li key={sucursal.id} onClick={() => handleStoreChange(sucursal)}>
-                          {sucursal.nombre}
-                      </li>
-                    ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className='dates__requisition'>
-            <label className='label__general'>Fechas</label>
-            <div className='container_dates__requisition'>
-              <Flatpickr className='date' options={{locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
-            </div>
-            </div>
-            <div className='select__container'>
-                <label className='label__general'>Series</label>
-                <div className='select-btn__general'>
-                    <div className={`select-btn ${selectSeries ? 'active' : ''}`} onClick={openSelectSeries} >
-                        <div className='select__container_title'>
-                            <p>{selectedSerie ? series.find((s: {id: number}) => s.id === selectedSerie)?.nombre : 'Selecciona'}</p>
-                        </div>
-                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-                    </div>
-                    <div className={`content ${selectSeries ? 'active' : ''}`} >
-                        <ul className={`options ${selectSeries ? 'active' : ''}`} style={{ opacity: selectSeries ? '1' : '0' }}>
-                        {series?.map((serie: any) => (
-                            <li key={serie.id} onClick={() => handleSeriesChange(serie)}>
-                            {serie.nombre}
-                            </li>
-                        ))}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <label className='label__general'>Folio</label>
-                <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                <input className={`inputs__general`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
-            </div> 
         </div>
         <ModalCreate />
         <ModalSee />
@@ -293,72 +246,76 @@ const seeConcepts = (concept: any) => {
           </div>
         </div>
         <div className='table__transfers'>
-        {transfer ? (
-        <div className='table__numbers'>
-            <p className='text'>Total de Ordenes</p>
-            <div className='quantities_tables'>{transfer.length}</div>
-        </div>
-        ) : (
-        <p className="text">No hay empresas que mostras</p>
-        )}
-        <div className='table__head'>
-            <div className='thead'>
-                <div className='th'>
-                    <p>Folio</p>
-                </div>
-                <div className='th'>
-                    <p>Por</p>
-                </div>
-                <div className='th'>
-                    <p>Fecha</p>
-                </div>
-                <div className='th'>
-                    <p>Empresa</p>
-                </div>
-                <div className='th'>
-                    <p>Comentarios</p>
-                </div>
-                <div className="th">
-
-                </div>
+          {transfer ? (
+            <div className='table__numbers'>
+              <p className='text'>Total de traspasos</p>
+              <div className='quantities_tables'>{transfer.length}</div>
             </div>
-        </div>
-        {transfer && transfer ? (
-        <div className='table__body'>
-            {transfer.map((transfer: any, index:  any) => {
-            return (
-                <div className='tbody__container' key={uuidv4()}>
+          ) : (
+            <p className="text">No hay empresas que mostras</p>
+          )}
+          <div className='table__head'>
+            <div className='thead'>
+              <div className='th'>
+                <p>Traspaso</p>
+              </div>
+              <div className='th'>
+                <p>Status</p>
+              </div>
+              <div className='th'>
+                <p>Empresas</p>
+              </div>
+              <div className='th'>
+                <p>Sucursal</p>
+              </div>
+              <div className='th'>
+                <p>Fecha</p>
+              </div>
+
+              <div className="th">
+
+              </div>
+            </div>
+          </div>
+          {transfer && transfer ? (
+            <div className='table__body'>
+              {transfer.map((transfer: any, index: any) => {
+                return (
+                  <div className='tbody__container' key={uuidv4()}>
                     <div className='tbody'>
-                        <div className='td'>
-                            <p>{transfer.folio}</p>
+                      <div className='td transfers'>
+                        <div>
+                          <p>{`${transfer.serie}-${transfer.folio}-${transfer.anio}`}</p>
                         </div>
-                        <div className='td'>
-                            <p>{transfer.usuario_crea}</p>
-                        </div>
-                        <div className='td'>
-                            <p>{transfer.fecha_creacion}</p>
-                        </div>
-                        <div className='td'>
-                            <p>{transfer.empresa}</p>
-                        </div>
-                        <div className='td'>
-                            <p>{transfer.sucursal}</p>
-                        </div>
-                        <div className='td'>
-                            <button className='branchoffice__edit_btn' onClick={() => seeConcepts(transfer, index)}>ver conceptos</button>
-                        </div>
+                      </div>
+                      <div className='td'>
+                        <div className='active-status'><p>Terminado</p></div>
+                        {/* <p>{transfer.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p> */}
+                      </div>
+                      <div className='td'>
+                        <p>{transfer.empresa}</p>
+                      </div>
+                      <div className='td'>
+                        <p>{transfer.sucursal}</p>
+                      </div>
+                      <div className='td'>
+                        <p>{transfer.fecha_creacion}</p>
+                      </div>
+                      <div className='td'>
+                        <button className='branchoffice__edit_btn' onClick={() => seeConcepts(transfer, index)}>ver conceptos</button>
+                      </div>
                     </div>
-                    
-                </div>
-            )
-            } )}
+
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <p className="text">Cargando datos...</p>
+          )}
         </div>
-        ) : ( 
-            <p className="text">Cargando datos...</p> 
-        )}
       </div>
-      </div>
-      
+
     </div>
   )
 }

@@ -1,20 +1,28 @@
 import React, { useState } from 'react'
 import Select from '../../../../Dynamic_Components/Select'
 import { storeTickets } from '../../../../../../zustand/Tickets';
+import { storeOrdes } from '../../../../../../zustand/Ordes';
 import typeSearch from './json/typeSearchs.json'
 import APIs from '../../../../../../services/services/APIs';
 import { useSelectStore } from '../../../../../../zustand/Select';
 import { useStore } from 'zustand';
+import useUserStore from '../../../../../../zustand/General';
 
 
 const Direct: React.FC = () => {
+
+    const userState = useUserStore(state => state.user);
+    let user_id = userState.id
+
 //////////////////////////////////Directa////////////////////////////////////////////////
 
-    const setConceptos = storeTickets(state => state.setConceptos)
-    const {conceptos}: any = useStore(storeTickets)
+    const setConcepts = storeOrdes(state => state.setConcepts)
+    const {concepts}: any = useStore(storeOrdes)
     const [selectModalResults, setSelectModalResults] = useState<boolean>(false)
     const [selectedModalResult, setSelectedModalResult] = useState<any>(null)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
+
+    
 
     const [articles, setArticles] = useState<any>()
 
@@ -40,10 +48,10 @@ const Direct: React.FC = () => {
             get_proveedores: true,
             get_max_mins: false,
             get_plantilla_data: false,
-            get_stock: false,
+            get_stock: true,
             get_web: false,
             get_unidades: true,
-            id_usuario: 0
+            id_usuario: user_id
         };
         
         try {
@@ -65,12 +73,11 @@ const Direct: React.FC = () => {
         setSelectModalResults(false)
     }
 
-    console.log(conceptos)
 
     const addArticles = () => {
         selectedModalResult.id_articulo = selectedModalResult.id
 
-        setConceptos([...conceptos, selectedModalResult]);
+        setConcepts([...concepts, selectedModalResult]);
 
     };
 

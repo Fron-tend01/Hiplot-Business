@@ -153,11 +153,6 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
 
 
-  // select de empresas
-  const [filteredModalBranchOffices, setFilteredModalBranchOffices] = useState<any[]>([])
-
-
-
   const openSelectModalCompanies = () => {
     setSelectModalCompanies(!selectModalCompanies)
   }
@@ -998,7 +993,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
               <div>
                 <label className='label__general'>Comentarios de OC</label>
                 {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
-                <input className={`inputs__general ${warningInvoice}  ? 'warning' : ''}`} type="text" value={OComments} onChange={(e) => setOComments(e.target.value)} placeholder='Comentarios de la orden de compra' />
+                <textarea className={`textarea__general ${warningInvoice}  ? 'warning' : ''}`} type="text" value={OComments} onChange={(e) => setOComments(e.target.value)} placeholder='Comentarios de la orden de compra'></textarea>
               </div>
             </div>
             <p className='title'>Articulos en Requisicion</p>
