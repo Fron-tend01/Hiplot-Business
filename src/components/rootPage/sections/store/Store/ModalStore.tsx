@@ -37,6 +37,8 @@ const ModalCreate: React.FC = () => {
 
     const setStore = storeStore(state => state.setStore)
 
+    const [predeterminada, setPredeterminada] = useState<boolean>(false);
+
     const fetch = async () => {
         let resultCompanies = await getCompaniesXUsers(user_id)
         setCompanies(resultCompanies)
@@ -76,10 +78,9 @@ const ModalCreate: React.FC = () => {
             nombre: nombre
         };
 
-        let filter = sucursales_nuevas.map((x: any) => x.id || x.id_almacen);
 
         let data_ext = {
-            sucursales_nuevas: filter,
+            sucursales_nuevas: sucursales_nuevas,
             sucursales_eliminar
         };
 
@@ -87,7 +88,7 @@ const ModalCreate: React.FC = () => {
 
         if (modalState == 'modal-create_store') {
             try {
-            
+
                 let result: any = await APIs.createStore(data, data_ext);
                 await getStore(user_id)
                 let resultStore = await getStore(user_id)
@@ -129,12 +130,14 @@ const ModalCreate: React.FC = () => {
 
         let data = {
             id: selectedBranchOffice.id,
+            predeterminado_empresa: predeterminada,
             sucursal: selectedBranchOffice.nombre,
             empresa: filter[0].razon_social
         }
 
         // Actualiza el estado 'data_ext' con el nuevo valor
         setSucursales_nuevas([...sucursales_nuevas, data]);
+        setPredeterminada(false)
     }
 
     console.log(sucursales_eliminar)
@@ -147,7 +150,7 @@ const ModalCreate: React.FC = () => {
         setSucursales_nuevas(updatedSucursales);
         setSucursales_eliminar([...sucursales_eliminar, sucursal.id])
         toast.success('Sucursal eliminada exitosamente');
-    
+
 
     }
 
@@ -169,7 +172,14 @@ const ModalCreate: React.FC = () => {
             setNombre('')
         }
     }
-
+    const selectPredeterminada = (ChangeEvent:any) => {
+        let exist = sucursales_nuevas.filter((x:any) => x.predeterminado_empresa==true)
+        if (exist.length > 0) {
+            Swal.fire('Notificacion', 'Ya existe una empresa predeterminada para este almacen: ' + exist[0].empresa, 'info')
+            return
+        }
+        setPredeterminada(ChangeEvent)
+    }
 
 
     return (
@@ -180,14 +190,16 @@ const ModalCreate: React.FC = () => {
                     <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
                 </a>
                 <p className='title__modals'>{modalState == 'modal-create_store' ? 'Crear nuevo almacén' : 'Actualizar almacén'}</p>
-                <form className='container__create_companies' onSubmit={modalCreateCompanies}>
-                    <div className='input__modal_store'>
+                <hr />
+                <br />
+                <form className='row' onSubmit={modalCreateCompanies}>
+                    <div className='col-12'>
                         <div className='inputs__company'>
                             <label className='label__general'>Nombre</label>
                             <input className='inputs__general' value={nombre} onChange={(e) => setNombre(e.target.value)} type='text' placeholder='Ingresa el nombre' />
                         </div>
                     </div>
-                    <div className='selects__modal_store'>
+                    <div className='col-4 md-col-12'>
                         <div className='select__container'>
                             <label className='label__general'>Empresas</label>
                             <div className='select-btn__general'>
@@ -208,6 +220,9 @@ const ModalCreate: React.FC = () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div className='col-4 md-col-12'>
+
                         <div className='select__container'>
                             <label className='label__general'>Sucursales</label>
                             <div className='select-btn__general'>
@@ -228,13 +243,26 @@ const ModalCreate: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className='create__store_btns-container'>
-                            <div>
-                                <button className='btn__general-purple' type='button' onClick={addBranchOfice} >Agregar</button>
-                            </div>
+                    </div>
+                    <div className='col-2 md-col-12'>
+
+                        <div className='select__container' title='Almacen predeterminado para la empresa seleccionada // Al marcar uno solo de cualquier sucursal, se considerará la empresa como predeterminada, si se marcan 2 o más de la misma empresa, no pasa nada, se respeta siempre el primer registro creado'>
+                            <label>Predeterminado</label><br></br>
+                            <label className="switch">
+                                <input
+                                    type="checkbox"
+                                    checked={predeterminada} // Asignar el valor del estado al atributo 'checked'
+                                    onChange={(e) => { selectPredeterminada(e.target.checked); }}
+                                />
+                                <span className="slider"></span>
+                            </label>
                         </div>
                     </div>
-                    <div className='conatiner__table_store'>
+                    <div className='col-2 md-col-12 d-flex justify-content-center align-items-center'>
+                        <button className='btn__general-purple' type='button' onClick={addBranchOfice} >Agregar</button>
+                    </div>
+
+                    <div className='col-12'>
                         <div className='table__modal_store'>
                             <div className='table__numbers'>
                                 <p className='text'>Total de sucursales</p>
@@ -259,7 +287,7 @@ const ModalCreate: React.FC = () => {
                                         <div className='tbody__container' key={index}>
                                             <div className='tbody'>
                                                 <div className='td'>
-                                                    {sucursal.empresa}
+                                                    {sucursal.empresa} {sucursal.predeterminado_empresa == true ? <span style={{ color: 'blue' }} title='Esta empresa es la considerada predeterminada para este almacen'>[PREDETERMINADO]</span> : ''}
                                                 </div>
                                                 <div className='td'>
                                                     {sucursal.sucursal}
@@ -277,10 +305,11 @@ const ModalCreate: React.FC = () => {
                             )}
 
                         </div>
-                        <div className='container__btn_create-store'>
-                            <button className='btn__general-purple' type='submit'>{modalState == 'modal-create_store' ? 'Crear nuevo almacén' : 'Actualizar almacén'}</button>
-                        </div>
                     </div>
+                    <br />
+                            <div className='col-12'>
+                                <button className='btn__general-purple' type='submit'>{modalState == 'modal-create_store' ? 'Crear nuevo almacén' : 'Actualizar almacén'}</button>
+                            </div>
                 </form>
             </div>
         </div>
