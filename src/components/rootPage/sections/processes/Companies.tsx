@@ -24,7 +24,7 @@ const Companies: React.FC = () => {
     id_usuario: user_id,
     id_usuario_req: 0,
     id_sucursal_req: 0,
-    id_almacen_req: 0,
+    id_area_req: 0,
     empresas_franquicias: [],
     empresas_franquicias_remove: []
   })
@@ -37,7 +37,7 @@ const Companies: React.FC = () => {
     id_usuario: user_id,
     id_usuario_req: 0,
     id_sucursal_req: 0,
-    id_almacen_req: 0,
+    id_area_req: 0,
     empresas_franquicias: [],
     empresas_franquicias_remove: []
   })
@@ -75,7 +75,7 @@ const Companies: React.FC = () => {
 
   const [users, setUsers] = useState<any>([])
   const [sucursales, setSucursales] = useState<any>([])
-  const [almacenes, setAlmacenes] = useState<any>([])
+  const [areas, setAreas] = useState<any>([])
 
   const fetch = async () => {
     let data = await getCompaniesXUsers(user_id);
@@ -86,7 +86,7 @@ const Companies: React.FC = () => {
     })
     getUsers()
     getSucursales()
-    getAlmacenes()
+    getAreas()
     getViews(user_id, 'EMPRESAS')
   }
   const getUsers = async () => {
@@ -98,16 +98,17 @@ const Companies: React.FC = () => {
       id_sucursal: 0
     }
     await APIs.CreateAny(data, "usuario_get").then(async (response: any) => {
-      setUsers(response)
+      await setUsers(response)
+      DynamicVariables.updateAnyVar(setModel, 'id_usuario_req', users[0]?.id)
     })
   }
   const getSucursales = async () => {
-    let result = await APIs.GetAny(`get_sucursal_x_empresa/0/${user_id}`)
-    setSucursales(result)
+    let result:any = await APIs.GetAny(`get_sucursal_x_empresa/0/${user_id}`)
+    await setSucursales(result)
   }
-  const getAlmacenes = async () => {
-    let result = await APIs.GetAny(`almacen_get/${user_id}`)
-    setAlmacenes(result)
+  const getAreas = async () => {
+    let result = await APIs.GetAny(`get_area_x_sucursal/${model.id_sucursal_req}/${user_id}`)
+    setAreas(result)
   }
   useEffect(() => {
     fetch()
@@ -208,6 +209,10 @@ const Companies: React.FC = () => {
     opacity: warningNombreComercial === true ? '1' : '',
     height: warningNombreComercial === true ? '23px' : ''
   }
+  // useEffect(() => {
+  //   getAreas()
+
+  // }, [model.id_sucursal_req]);
 
   return (
     <div className='companies'>
@@ -250,7 +255,7 @@ const Companies: React.FC = () => {
               <div className='col-4' title='Determina la sucursal de las requisiciones automaticas generadas por maxmin y bp'>
                 <label className='label__general'>Sucursal Req. Auto</label>
                 <select className={`inputs__general`} value={model.id_sucursal_req}
-                  onChange={(e) => { DynamicVariables.updateAnyVar(setModel, "id_sucursal_req", e.target.value) }}>
+                  onChange={(e) => { DynamicVariables.updateAnyVar(setModel, "id_sucursal_req", e.target.value);}}>
                   {sucursales.map((option: any, i: number) => (
                     <option key={i} value={option.id}>
                       {option.nombre}
@@ -258,11 +263,11 @@ const Companies: React.FC = () => {
                   ))}
                 </select>
               </div>
-              <div className='col-4' title='Determina el almacen de las requisiciones automaticas generadas por maxmin y bp'>
-                <label className='label__general'>Almacen Req. Auto</label>
-                <select className={`inputs__general`} value={model.id_almacen_req}
-                  onChange={(e) => { DynamicVariables.updateAnyVar(setModel, "id_almacen_req", e.target.value) }}>
-                  {almacenes.map((option: any, i: number) => (
+              <div className='col-4' title='Determina el area de las requisiciones automaticas generadas por maxmin y bp'>
+                <label className='label__general'>Area Req. Auto</label>
+                <select className={`inputs__general`} value={model.id_area_req}
+                  onChange={(e) => { DynamicVariables.updateAnyVar(setModel, "id_area_req", e.target.value) }}>
+                  {areas.map((option: any, i: number) => (
                     <option key={i} value={option.id}>
                       {option.nombre}
                     </option>
