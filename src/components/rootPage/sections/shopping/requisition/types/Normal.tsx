@@ -147,14 +147,14 @@ const Normal: React.FC = () => {
           <label className='label__general'>Resultado</label>
           <div className='select-btn__general'>
             <div className={`select-btn ${selectResults  ? 'active' : ''}`} onClick={openSelectResults} >
-              <p>{selectedResult ? articles.find((s: {id: number}) => s.id === selectedResult.id)?.nombre : 'Selecciona'}</p>
+              <p>{selectedResult ? articles.find((s: {id: number}) => s.id === selectedResult.id)?.descripcion : 'Selecciona'}</p>
               <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
             </div>
             <div className={`content ${selectResults ? 'active' : ''}`} >
               <ul className={`options ${selectResults ? 'active' : ''}`} style={{ opacity: selectResults ? '1' : '0' }}>
                 {articles && articles.map((result: any) => (
                   <li key={result.id} onClick={() => handleResultsChange(result)}>
-                    {result.nombre}
+                    ({result.codigo}) {result.descripcion}
                   </li>
                 ))}
               </ul>

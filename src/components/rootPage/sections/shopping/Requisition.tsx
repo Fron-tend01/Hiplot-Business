@@ -13,7 +13,8 @@ import ModalRequisition from './requisition/ModalRequisition';
 import { storeRequisitions } from '../../../../zustand/Requisition'
 import { RequisitionRequests } from '../../../../fuctions/Requisition';
 import { useStore } from 'zustand';
-
+import Select from '../../Dynamic_Components/Select';
+import { useSelectStore } from '../../../../zustand/Select';
 
 const Requisition: React.FC = () => {
 
@@ -24,7 +25,6 @@ const Requisition: React.FC = () => {
   const setDataGet = storeRequisitions((state: any) => state.setDataGet);
   const setRequisitions = storeRequisitions((state: any) => state.setRequisitions);
   
-  const setModalStateUpdate = storeRequisitions((state: any) => state.setModalStateUpdate);
   const setUpdateToRequisition = storeRequisitions((state: any) => state.setUpdateToRequisition);
 
   // Selects
@@ -53,7 +53,10 @@ const Requisition: React.FC = () => {
   const {getRequisition}: any = RequisitionRequests();
 
   const {requisitions}: any = useStore(storeRequisitions);
+  //----------------------------------------------------ESTRUCTURA ACTUAL BORRAR TODO LO QUE NO SE USE APARTIR DE ESTE PUNTO
   
+  const selectedIds = useSelectStore((state) => state.selectedIds);
+  const setSelectedId = useSelectStore((state) => state.setSelectedId);
   
 
   // Estados de advertencia para validar campos
@@ -66,20 +69,35 @@ const Requisition: React.FC = () => {
   let user_id = userState.id
   
   const fetch = async () => {
- 
-    setStatus('0')
-
     
     let resultCompanies = await getCompaniesXUsers(user_id)
-    setCompaniesXUsers(resultCompanies)
-    setSelectedCompany(resultCompanies[0].id)
-    let resultBrnach = await getBranchOffices(selectedCompany, user_id)
-    setBranchOfficeXCompanies(resultBrnach)
-    setSelectedBranchOffice(resultBrnach[0].id)
+    resultCompanies.unshift({id:0, razon_social:'Todos'})
+    setCompaniesXUsers({
+      selectName: 'Empresa',
+      options: 'razon_social',
+      dataSelect: [...resultCompanies]
+    })
+    setSelectedId('empresa', 0)
+
+    let resultBrnach = await getBranchOffices(resultCompanies[0].id, user_id)
+    await resultBrnach.unshift({id:0, nombre:'Todos'})
+
+    setBranchOfficeXCompanies({
+      selectName: 'Sucursal',
+      options: 'nombre',
+      dataSelect: [...resultBrnach]
+    })
+    setSelectedId('sucursal', 0)
 
     let resultAreas = await getAreas(resultBrnach[0].id, user_id)
-    setAreasXBranchOfficesXUsers(resultAreas)
-    setSelectedArea(resultAreas[0].id)
+    resultAreas.unshift({id:0, nombre:'Todos'})
+
+    setAreasXBranchOfficesXUsers({
+      selectName: 'Area',
+      options: 'nombre',
+      dataSelect: [...resultAreas]
+    })
+    setSelectedId('area', 0)
 
     if(selectedStartDate && selectedEndDate) {
       let data = {
@@ -95,16 +113,12 @@ const Requisition: React.FC = () => {
       let resultRequisition = await getRequisition(data)
       setRequisitions(resultRequisition)
     }
-    
-   
-
-
-    getSeriesXUser(user_id)
+    getSeriesXUser({id:user_id, tipo_ducumento:0})
   }
 
   useEffect(() => {
     fetch()
-  }, [selectedCompany])
+  }, [])
 
   //Modales
   const modalCreate = () => {
@@ -143,67 +157,52 @@ const Requisition: React.FC = () => {
  /// Select de Empresas
 ////////////////////////
 
+const fecht = async () => {
+  let resultBrnach = await getBranchOffices(selectedIds.empresa, user_id)
+  resultBrnach.unshift({id:0, nombre:'Todos'})
 
-  const handleCompaniesChange = async (company: any) => {
-    setSelectedCompany(company.id)
-    setSelectCompanies(false);
-    if (selectedStartDate && selectedEndDate) {
-      const startDateString = selectedStartDate.toISOString().split('T')[0];
-      const endDateString = selectedEndDate.toISOString().split('T')[0];
-      getRequisition(0, 0, 0, user_id, 0, 0, startDateString, endDateString, 0);
-    }
+ setBranchOfficeXCompanies({
+   selectName: 'Sucursal',
+   options: 'nombre',
+   dataSelect: [...resultBrnach]
+ })
+ setSelectedId('sucursal', 0)
+
+ let resultAreas = await getAreas(resultBrnach[0].id, user_id)
+ resultAreas.unshift({id:0, nombre:'Todos'})
+
+ setAreasXBranchOfficesXUsers({
+   selectName: 'Area',
+   options: 'nombre',
+   dataSelect: [...resultAreas]
+ })
+ setSelectedId('area', 0)
+}
+
+useEffect(() => {
+  if (selectedIds != null){
+
+    fecht()
   }
+}, [selectedIds?.empresa]);
 
+const fecht2 = async () => {
+ let resultAreas = await getAreas(selectedIds.sucursal, user_id)
+ resultAreas.unshift({id:0, nombre:'Todos'})
 
+ setAreasXBranchOfficesXUsers({
+   selectName: 'Area',
+   options: 'nombre',
+   dataSelect: [...resultAreas]
+ })
+ setSelectedId('area', 0)
+}
+useEffect(() => {
+  if (selectedIds != null){
 
-  ////////////////////////
- /// Select de Sucursales
-////////////////////////
-  const handleBranchOfficesChange = (branchOffice: any) => {
-    setSelectedBranchOffice(branchOffice.id);
-    setSelectBranchOffices(false)
-    if (selectedStartDate && selectedEndDate) {
-      const startDateString = selectedStartDate.toISOString().split('T')[0];
-      const endDateString = selectedEndDate.toISOString().split('T')[0];
-      getRequisition(0, 0, branchOffice.id, user_id, 0, 0, startDateString, endDateString, 0)
-    }
-    
-  
-    
- 
+    fecht2()
   }
-
-
-
-  useEffect(() => {
-
-  }, [selectedBranchOffice, branchOfficeXCompanies]);
-  
-
-  ////////////////////////
- /// Select de areas
-////////////////////////
-
-  const handleAreasChange = (area: any) => {
-    setSelectedArea(area.id)
-    setSelectAreas(false)
-    if (selectedStartDate && selectedEndDate) {
-      const startDateString = selectedStartDate.toISOString().split('T')[0];
-      const endDateString = selectedEndDate.toISOString().split('T')[0];
-      getRequisition(0, 0, 0, user_id, area.id, 0, startDateString, endDateString, 0)
-    }
-  }
-
-
-  const openSelectAreas = () => {
-    setSelectAreas(!selectAreas)
-    
-  }
-
-////////////////////////
-/// Fechas
-////////////////////////
-
+}, [selectedIds?.sucursal]);
 // Estado para almacenar las fechas seleccionadas
 const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
 const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
@@ -260,7 +259,7 @@ useEffect(() => {
 useEffect(() => {
   const startDateString = selectedStartDate?.toISOString().split('T')[0];
   const endDateString = selectedEndDate?.toISOString().split('T')[0];
-  getRequisition(0, 0, 0, user_id, 0, 0, startDateString, endDateString, 0);
+  // getRequisition(0, 0, 0, user_id, 0, 0, startDateString, endDateString, 0);
 }, [selectedStartDate, selectedEndDate]);
 
 
@@ -297,7 +296,7 @@ useEffect(() => {
 ////////////////////////
 
 
-const [status, setStatus] = useState<any>()
+const [status, setStatus] = useState<number>(0)
 
 
 const handleClick = (value: any) => {
@@ -355,13 +354,13 @@ const handleClick = (value: any) => {
     if (selectedStartDate && selectedEndDate) {
       let data = {
 
-        id_sucursal: selectedBranchOffice,
+        id_sucursal: selectedIds.sucursal,
         id_usuario: user_id,
-        id_area: selectedArea,
+        id_area: selectedIds.area,
         tipo: 0,
         desde: selectedStartDate?.toISOString().split('T')[0],
         hasta: selectedEndDate?.toISOString().split('T')[0],
-        status: parseInt(status, 10)
+        status: status
       };
       let resultRequisition = await getRequisition(data)
       setRequisitions(resultRequisition)
@@ -369,18 +368,6 @@ const handleClick = (value: any) => {
   }
 
 
-  // Funciones de seleccionar
-  // Select functions 
-
-  const openSelectCompanies = () => {
-    setSelectCompanies(!selectCompanies)
-  }
-
-  const openSelectBranchOffices = () => {
-    setSelectBranchOffices(!selectBranchOffices)
-
-  }
-  
   /* ================================================= Modal Create ==========================================================*/
   
 
@@ -405,64 +392,16 @@ const handleClick = (value: any) => {
       <div className='container__requisition'>  
       <div className='row__one'>
         <div className='select__container'>
-          <label className='label__general'>Empresas</label>
-          <div className='select-btn__general'>
-            <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
-              <div className='select__container_title'>
-                <p>{selectedCompany ? companiesXUsers.find((s: {id: number}) => s.id === selectedCompany)?.razon_social : 'Selecciona'}</p>
-              </div>
-              <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-            </div>
-            <div className={`content ${selectCompanies ? 'active' : ''}`}>
-              <ul className={`options ${selectCompanies ? 'active' : ''}`} style={{ opacity: selectCompanies ? '1' : '0' }}>
-                {companiesXUsers && companiesXUsers.map((company: any) => (
-                  <li key={company.id} onClick={() => handleCompaniesChange(company)}>
-                    {company.razon_social}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <Select dataSelects={companiesXUsers} instanceId='empresa' nameSelect={'Empresa'} />
+
         </div>
         <div className='select__container'>
-          <label className='label__general'>Sucursales</label>
-          <div className='select-btn__general'>
-            <div className={`select-btn ${selectBranchOffices ? 'active' : ''}`} onClick={openSelectBranchOffices} >
-                <div className='select__container_title'>
-                  <p>{selectedBranchOffice ? branchOfficeXCompanies.find((s: {id: number}) => s.id === selectedBranchOffice)?.nombre : 'Selecciona'}</p>
-                </div>
-                <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-              </div>
-              <div className={`content ${selectBranchOffices ? 'active' : ''}`} >
-                <ul className={`options ${selectBranchOffices ? 'active' : ''}`} style={{ opacity: selectBranchOffices ? '1' : '0' }}>
-                  {branchOfficeXCompanies?.map((branchOffice: any) => (
-                    <li key={branchOffice.id} onClick={() => handleBranchOfficesChange(branchOffice)}>
-                      {branchOffice.nombre}
-                    </li>
-                  ))}
-                </ul>
-            </div>
-          </div>
+          <Select dataSelects={branchOfficeXCompanies} instanceId='sucursal' nameSelect={'Sucursal'} />
+
         </div>
         <div className='select__container'>
-          <label className='label__general'>Areas  </label>
-          <div className='select-btn__general'>
-            <div className={`select-btn ${selectAreas ? 'active' : ''}`} onClick={openSelectAreas} >
-                <div className='select__container_title'>
-                  <p>{selectedArea ? areasXBranchOfficesXUsers.find((s: {id: number}) => s.id === selectedArea)?.nombre : 'Selecciona'}</p>
-                </div>
-                <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg"  height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-              </div>
-              <div className={`content ${selectAreas ? 'active' : ''}`} >
-              <ul className={`options ${selectAreas ? 'active' : ''}`} style={{ opacity: selectAreas ? '1' : '0' }}>
-                {areasXBranchOfficesXUsers?.map((area: any) => (
-                  <li key={area.id} onClick={() => handleAreasChange(area)}>
-                    {area.nombre}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+        <Select dataSelects={areasXBranchOfficesXUsers} instanceId='area' nameSelect={'Area'} />
+
         </div>
         <div className='select__container'>
           <label className='label__general'>Tipo</label>
@@ -493,21 +432,21 @@ const handleClick = (value: any) => {
           <div className='container__checkbox_requisition'>
             <div className='checkbox__requisition'>
               <label className="checkbox__container_general">
-                <input className='checkbox' type="checkbox" checked={status == '0' ? true : false} onClick={() => handleClick('0')}/>
+                <input className='checkbox' type="checkbox" checked={status == 0 ? true : false} onClick={() => handleClick('0')}/>
                 <span className="checkmark__general"></span>
               </label>
               <p className='text'>Activo</p>
             </div>
             <div className='checkbox__requisition'>
               <label className="checkbox__container_general">
-                <input className='checkbox' type="checkbox" checked={status == '1' ? true : false} onClick={() => handleClick('1')}/>
+                <input className='checkbox' type="checkbox" checked={status == 1 ? true : false} onClick={() => handleClick('1')}/>
                 <span className="checkmark__general"></span>
               </label>
               <p className='text'>Cancelados</p>
             </div>
             <div className='checkbox__requisition'>
               <label className="checkbox__container_general">
-                <input className='checkbox' type="checkbox" checked={status == '2' ? true : false} onClick={() => handleClick('2')}/>
+                <input className='checkbox' type="checkbox" checked={status == 2 ? true : false} onClick={() => handleClick('2')}/>
                 <span className="checkmark__general"></span>
               </label>
               <p className='text'>Terminados</p>

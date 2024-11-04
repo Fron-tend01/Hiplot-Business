@@ -43,15 +43,20 @@ const Tickets = () => {
 
     const [series, setSeries] = useState<any>([])
     const [suppliers, setSuppliers] = useState<any>([])
-
+    const setSelectedId = useSelectStore((state) => state.setSelectedId);
     const fecth = async () => {
         let resultSeries = await getSeriesXUser({id: user_id, tipo_ducumento: 2})
         let resultSuppliers = await getSuppliers('', false, user_id)
+        resultSeries.unshift({ id: 0, nombre: 'Todos' })
+
         setSeries({
             selectName: 'Series',
             options: 'nombre',
             dataSelect: resultSeries
         })
+        setSelectedId('series', 0)
+
+        // resultSuppliers.unshift({ id: 0, nombre: 'Todos' })
 
         setSuppliers({
             selectName: 'Proveedores',
@@ -72,15 +77,24 @@ const Tickets = () => {
     }, [])
 
 
+    const hoy = new Date();
+  const haceUnaSemana = new Date();
+  haceUnaSemana.setDate(hoy.getDate() - 7);
 
-    const handleDateChange = (fechasSeleccionadas: any) => {
-        if (fechasSeleccionadas.length === 2) {
-          setDates(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
-        } else {
-          setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
-        }
-    };
-    
+  // Inicializa el estado con las fechas formateadas
+  const [date, setDate] = useState([
+    haceUnaSemana.toISOString().split('T')[0],
+    hoy.toISOString().split('T')[0]
+  ]);
+
+  const handleDateChange = (fechasSeleccionadas: any) => {
+    if (fechasSeleccionadas.length === 2) {
+      setDate(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
+    } else {
+      setDate([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
+    }
+  };
+
     
 
     const [updateTickets, setUpdateTickets] = useState<any>([])
@@ -125,53 +139,43 @@ const Tickets = () => {
 
         let data  = {
             id_usuario: user_id,
+            id_empresa: companies.id,
             id_sucursal: branchOffices.id,
-            desde: dates[0],
-            hasta: dates[1],
+            desde: date[0],
+            hasta: date[1],
             id_serie: selectedIds?.series,
             status: 0,
             folio: 0
         }  
         getTickets(data)
     }
-  
-
+   
     return (
         <div className="tickets">
             <div className="tickets__container">
                 <div className="row">
-                    <div className="col-8">
-                        <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices}  modeUpdate={false}/>
+                    <div className="col-8 md-col-12">
+                        <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices}  modeUpdate={false} all={true}/>
                     </div>
-                    <div className='col-4'>
+                    <div className='col-4 md-col-12'>
                         <label className='label__general'>Fechas</label>
                         <div className='container_dates__requisition'>
-                            <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                            <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
                         </div>
                     </div>
-                    <div className="col-4">
+                    <div className="col-4 md-col-6 sm-col-12">
                         <Select dataSelects={series} instanceId="series" nameSelect={'series'} />
                     </div>
-                    <div className="col-4">
+                    <div className="col-4 md-col-6 sm-col-12">
                         <label className='label__general'>Folio</label>
                         <div className='warning__general'><small >Este campo es obligatorio</small></div>
                         <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
                     </div>
-                    <div className="col-4">
-                        <Select dataSelects={suppliers} instanceId="proveedores"  nameSelect={'Proveedores'}/>
-                    </div>
-                </div>
-                <div className="row__two">
-                    <div>
-                        <button className="btn__general-purple" onClick={searchTicket}>Buscar</button>
-                    </div>
-                    <div className="btns__tickets">
-                        <div>
-                            <button className="btn__general-purple" onClick={excel}>Excel</button>
-                        </div>
-                        <div>
-                            <button className="btn__general-purple" onClick={() => setModalTickets('modal-create_ticket')}>Nueva entrada</button>
-                        </div>
+                    <div className="col-4 md-col-12 d-flex justify-content-center align-items-end">
+                        <button className="btn__general-gray" onClick={searchTicket}>Buscar</button>
+                        <button className="btn__general-success mx-3" onClick={excel}>Excel</button>
+                        <button className="btn__general-orange" onClick={() => setModalTickets('modal-create_ticket')}>Nueva entrada</button>
+                        {/* <Select dataSelects={suppliers} instanceId="proveedores"  nameSelect={'Proveedores'}/> */}
                     </div>
                 </div>
                 <ModalCreate />
@@ -221,7 +225,7 @@ const Tickets = () => {
                                     <div className='tbody__container' key={ticket.id}>
                                         <div className='tbody'>
                                             <div className='td'>
-                                                <p>{ticket.folio}</p>
+                                                <p>{ticket.serie}-{ticket.folio}-{ticket.anio}</p>
                                             </div>
                                             <div className='td'>
                                                 <p>{ticket.status}</p>
