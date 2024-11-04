@@ -44,7 +44,7 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }) 
         <div className={`content ${selects ? 'active' : ''}`}>
           <ul className={`options ${selects ? 'active' : ''}`} style={{ opacity: selects ? '1' : '0' }}>
             {dataSelects?.dataSelect?.map((select) => (
-              <li key={select.id} onClick={() => handleSelectsChange(select.id)}>
+              <li key={select.id} onClick={() => handleSelectsChange(select)}>
                 {select[dataSelects?.options] || 'No disponible'}
               </li>
             ))}

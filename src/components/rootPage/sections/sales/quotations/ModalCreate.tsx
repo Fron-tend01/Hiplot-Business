@@ -217,9 +217,12 @@ const ModalCreate = () => {
         </div>
         <div>
           <p className='text'>Artuculos</p>
-          <div className='row'>
-            <div className='col-12 d-flex justify-content-end'>
+          <div className='d-flex justify-content-end'>
+            <div className='mr-4'>
               <button className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal')}>Crear personalizados</button>
+            </div>
+            <div>
+              <button className='btn__general-purple' onClick={() => setModalArticleView('article-view__modal')}>Catalogo</button>
             </div>
           </div>
           <div className='table__quotations_clients_modal'>
@@ -271,7 +274,6 @@ const ModalCreate = () => {
                               <button className='btn__general-purple' onClick={() => seeClient(article)}>ver mas</button>
                               </div>
                               <div className='td'>
-                                <button className='btn__general-purple' onClick={() => setModalArticleView('article-view__modal')}>Catalogo</button>
                               </div>
                             </div>
                           :

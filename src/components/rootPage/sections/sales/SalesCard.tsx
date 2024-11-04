@@ -25,12 +25,14 @@ const SalesCard: React.FC = () => {
 
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
+  const setArticle = storeSaleCard(state => state.setArticle);
+
   const setDataQuotation = storeSaleCard(state => state.setDataQuotation);
   const setDataSaleOrder = storeSaleOrder(state => state.setDataSaleOrder);
   const setModalSub = storeModals(state => state.setModalSub)
 
   
-  const { IdArticle, modalSalesCard }: any = useStore(storeSaleCard);
+  const { IdArticle, modalSalesCard, article}: any = useStore(storeSaleCard);
   const {dataSaleOrder}: any = useStore(storeSaleOrder);
   const { getUserGroups }: any = UserGroupsRequests();
   const { getUnits }: any = UnitsRequests();
@@ -39,7 +41,6 @@ const SalesCard: React.FC = () => {
   const [amount, setAmount] = useState<number>(0);
 
   const { getArticles }: any = articleRequests();
-  const [article, setArticle] = useState<any>(null);
 
   const [billingComment, setBillingComment] = useState<any>('')
   
@@ -64,6 +65,7 @@ const SalesCard: React.FC = () => {
       get_areas_produccion: true,
       get_stock: true,
       get_web: true,
+      for_ventas: true,
       get_unidades: true,
     };
 

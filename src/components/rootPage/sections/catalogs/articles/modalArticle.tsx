@@ -110,6 +110,8 @@ const modalArticle: React.FC = () => {
 
     const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
+
+
     ////////// Selects //////////////
     const [selectFamilies, setSelectFamilies] = useState<any>()
     const [selectTypePayment, setSelectTypePayment] = useState<any>()
@@ -117,6 +119,7 @@ const modalArticle: React.FC = () => {
 
     const fecht = async () => {
         let resultTemplates = await getTemplates(user_id)
+        let resultType = await APIs.getTypeOfPayments()
 
         let resultFamilies = await getFamilies(user_id)
         setSelectTemplates({
@@ -127,8 +130,8 @@ const modalArticle: React.FC = () => {
 
         setSelectTypePayment({
             selectName: 'Tipo de cobro',
-            options: 'name',
-            dataSelect: typePayments
+            options: 'nombre',
+            dataSelect: resultType
         })
 
 
@@ -223,14 +226,15 @@ const modalArticle: React.FC = () => {
         }
     };
 
+    console.log(articleToUpdate)
 
 
-    const handleCreateSuppliers = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleCreateArticles = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setStateLoading(true)
 
         let data = {
-            id: articleToUpdate ? articleToUpdate.id : 0,
+            id: modalArticle == 'articles-modal-update' ? articleToUpdate.id : 0,
             tipo: type,
             codigo: code,
             descripcion: description,
@@ -491,7 +495,7 @@ const modalArticle: React.FC = () => {
                     </div>
 
                 ) : (
-                    <form className='conatiner__articles-modal' onSubmit={handleCreateSuppliers}>
+                    <form className='conatiner__articles-modal' onSubmit={handleCreateArticles}>
                         <div className='row__form_articles-radios'>
                             <div className='container__form_articles-radios'>
                                 <div className='checkbox__modal_articles'>

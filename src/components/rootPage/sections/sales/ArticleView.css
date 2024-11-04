@@ -9,7 +9,7 @@
 
 .article__view_container > .row__one {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr) auto auto;
     gap: 10px;
 	align-items: end;
 }

@@ -190,9 +190,12 @@ const Prices: React.FC = () => {
   const deleteFinalPrice = (item: any) => {
     const updated = prices.filter((x: any) => x !== item);
     setPrices(updated);
-    setDeletePrices([...deletePrices, item.id])
+    if(item.id !== null  ) {
+      setDeletePrices([...deletePrices, item.id])
+    }
   };
 
+  console.log(selectedIds)
 
   const addPrices = () => {
 
