@@ -19,7 +19,7 @@ const BranchOffices: React.FC = () => {
     const [selectedStore, setSelectedStore] = useState<number | null>(null);
     const [availability, setAvailability] = useState<boolean>(false);
 
-    const { store, getStore }: any = storeStore()
+    const { store, getStore, setStore }: any = storeStore()
  
     const setSubModal = storeArticles(state => state.setSubModal)
 
@@ -27,10 +27,12 @@ const BranchOffices: React.FC = () => {
     const [companies, setCompanies] = useState<any>()
 
 
-
     useEffect(() => {
         if (user_id) {
-            getStore(user_id);
+            getStore(user_id).then((data:any) => {
+                setStore(data);
+            });
+            
         }
 
     }, [user_id, articleByOne]);
@@ -107,7 +109,7 @@ const BranchOffices: React.FC = () => {
                                     <ul className={`options ${selectWarehouses ? 'active' : ''}`} style={{ opacity: selectWarehouses ? '1' : '0' }}>
                                         {store.map((warehouse: any) => (
                                             <li key={warehouse.id} onClick={() => handleStoreChange(warehouse.id)}>
-                                                {warehouse.nombre}
+                                                {warehouse.nombre} 
                                             </li>
                                         ))}
                                     </ul>

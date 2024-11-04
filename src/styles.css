@@ -182,6 +182,14 @@
 .my-4 { margin: 1.5rem auto; }
 .my-5 { margin: 3rem auto; }
 
+.mx-0 { margin: 0 0; }
+.mx-1 { margin: 0 0.25rem; }
+.mx-2 { margin: 0 0.5rem; }
+.mx-3 { margin: 0 1rem; }
+.mx-4 { margin: 0 1.5rem; }
+.mx-5 { margin: 0 3rem; }
+
+
 /* Margins */
 .mt-0 { margin-top: 0; }
 .mt-1 { margin-top: 0.25rem; }

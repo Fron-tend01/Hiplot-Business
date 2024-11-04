@@ -289,10 +289,10 @@ const updateColeccion = async (e: React.FormEvent)=> {
             <br />
             <div className='row'>
               <div className='col-3'>
-                <div className="container__change_img" style={{ backgroundImage: `url(${coleccion.img})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                  <label className="custom-file-upload">
+                <div className="container__change_img2" style={{ backgroundImage: `url(${coleccion.img})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                  <label className="custom-file-upload2">
                     <small> Seleccionar archivo</small>
-                    <input id="file-upload1" type="file" onChange={changeImg} />
+                    <input id="custom-file-upload2" type="file" onChange={changeImg} />
                   </label>
                 </div>
               </div>

@@ -89,7 +89,15 @@
 }
 
 
-
+.custom-file-upload {
+    border: none;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: #fff;
+}
 
 .container__change_img {
     display: flex;
@@ -104,7 +112,32 @@
     margin-top: 10px;
 }
 
+.container__change_img2 {
+    display: flex;
+    align-items: center;
+    width: auto;
+    height: 100px;
+    justify-content: center;
+    background-color: #ffffff;
+    cursor: pointer;
+    border-radius: 5px;
+    outline: 2px solid var(--primary-color);
+    margin-top: 10px;
+}
 
+.custom-file-upload2 {
+    border: none;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.custom-file-upload2 input[type="file"] {
+    display: none;
+}
 
 
 .table__modal_colecciones {
