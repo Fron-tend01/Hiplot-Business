@@ -15,15 +15,18 @@ interface SelectProps {
 
 const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }) => {
 
+  // console.log(dataSelects)
+
 
   const [selects, setSelects] = useState<boolean>(false);
   const selectedId: any = useSelectStore((state) => state.selectedIds == null ? null : state.selectedIds[instanceId]);
   const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
-  const handleSelectsChange = (famId: number) => {
+  const handleSelectsChange = (famId: any) => {
     setSelectedId(instanceId, famId);
     setSelects(false);
   };
+
 
   return (
     <div className='select__container'>
@@ -33,7 +36,7 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }) 
           <div className='select__container_title'>
             <p>
               {selectedId != null 
-                ? dataSelects?.dataSelect.find((s) => s.id === selectedId)?.[dataSelects?.options] || 'Selecciona'
+                ? dataSelects?.dataSelect.find((s) => s.id === selectedId.id || s.id === selectedId )?.[dataSelects?.options] || 'Selecciona'
                 : 'Selecciona'}
             </p>
           </div>

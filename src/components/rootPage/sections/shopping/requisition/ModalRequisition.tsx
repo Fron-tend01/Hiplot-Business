@@ -36,7 +36,7 @@ const ModalRequisition: React.FC = () => {
 
   const { modalStateCreate, selectedBranchOffice, concepts, updateToRequisition }: any = useStore(storeRequisitions);
   const { createRequisition }: any = RequisitionRequests();
-  console.log('updateToRequisition', updateToRequisition)
+  // console.log('updateToRequisition', updateToRequisition)
 
   const { getCompaniesXUsers }: any = companiesRequests()
   const [companies, setCompanies] = useState<any>()
@@ -119,6 +119,7 @@ const ModalRequisition: React.FC = () => {
   };
 
 
+  console.log(concepts);
 
 
 
@@ -255,7 +256,7 @@ const ModalRequisition: React.FC = () => {
 
   };
 
-  console.log('updateToRequisition', updateToRequisition)
+  // console.log('updateToRequisition', updateToRequisition)
 
   const updateStatus = async () => {
 
@@ -287,7 +288,6 @@ const ModalRequisition: React.FC = () => {
       console.log(error);
     }
   }
-
   return (
     <div className={`overlay__requisition ${modalStateCreate == 'create' ? 'active' : ''}`}>
       <Toaster expand={true} position="top-right" richColors />
@@ -296,111 +296,149 @@ const ModalRequisition: React.FC = () => {
           <a href="#" className="btn-cerrar-popup__requisition" onClick={modalCloseCreate} >
             <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
           </a>
-          <p className='title__modals'>Precios</p>
+          {updateToRequisition != null ?
+            <p className='title__modals'>Actualizar Requisición</p>
+            :
+            <p className='title__modals'>Crear Requisición</p>
+          }
         </div>
         <form className='requisition-modal' onSubmit={handleCreateRequisition}>
           <div className='requisition-modal_container'>
-            <div className='row__one'>
-              <div className='container__checkbox_requisition'>
-                <div className='checkbox__requisition'>
-                  <label className="checkbox__container_general">
-                    <input
-                      className='checkbox'
-                      type="radio"
-                      value="normal"
-                      checked={selectedOption == 0}
-                      onChange={handleOptionChange}
-                    />
-                    <span className="checkmark__general"></span>
-                  </label>
-                  <p className='text'>Normal</p>
+            {updateToRequisition == null ?
+              <><div className='row__one'>
+                <div className='container__checkbox_requisition'>
+                  <div className='checkbox__requisition'>
+                    <label className="checkbox__container_general">
+                      <input
+                        className='checkbox'
+                        type="radio"
+                        value="normal"
+                        checked={selectedOption == 0}
+                        onChange={handleOptionChange} />
+                      <span className="checkmark__general"></span>
+                    </label>
+                    <p className='text'>Normal</p>
+                  </div>
+                  <div className='checkbox__requisition'>
+                    <label className="checkbox__container_general">
+                      <input
+                        className='checkbox'
+                        type="radio"
+                        value="diferencial"
+                        checked={selectedOption == 1}
+                        onChange={handleOptionChange} />
+                      <span className="checkmark__general"></span>
+                    </label>
+                    <p className='text'>Diferencial</p>
+                  </div>
                 </div>
-                <div className='checkbox__requisition'>
-                  <label className="checkbox__container_general">
-                    <input
-                      className='checkbox'
-                      type="radio"
-                      value="diferencial"
-                      checked={selectedOption == 1}
-                      onChange={handleOptionChange}
-                    />
-                    <span className="checkmark__general"></span>
-                  </label>
-                  <p className='text'>Diferencial</p>
-                </div>
-              </div>
-            </div>
-            <div className='row__two'>
-              <div className='select__container'>
-                <label className='label__general'>Empresas</label>
-                <div className='select-btn__general'>
-                  <div className={`select-btn ${selectModalCompanies ? 'active' : ''}`} onClick={openSelectModalCompanies}>
-                    <div className='select__container_title'>
-                      <p>{selectedModalCompany ? companies.find((s: { id: number }) => s.id === selectedModalCompany)?.razon_social : 'Selecciona'}</p>
+              </div><div className='row__two'>
+                  <div className='select__container'>
+                    <label className='label__general'>Empresas</label>
+                    <div className='select-btn__general'>
+                      <div className={`select-btn ${selectModalCompanies ? 'active' : ''}`} onClick={openSelectModalCompanies}>
+                        <div className='select__container_title'>
+                          <p>{selectedModalCompany ? companies.find((s: { id: number }) => s.id === selectedModalCompany)?.razon_social : 'Selecciona'}</p>
+                        </div>
+                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                      </div>
+                      <div className={`content ${selectModalCompanies ? 'active' : ''}`}>
+                        <ul className={`options ${selectModalCompanies ? 'active' : ''}`} style={{ opacity: selectModalCompanies ? '1' : '0' }}>
+                          {companies && companies.map((company: any) => (
+                            <li key={company.id} onClick={() => handleModalCompaniesChange(company)}>
+                              {company.razon_social}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                   </div>
-                  <div className={`content ${selectModalCompanies ? 'active' : ''}`} >
-                    <ul className={`options ${selectModalCompanies ? 'active' : ''}`} style={{ opacity: selectModalCompanies ? '1' : '0' }}>
-                      {companies && companies.map((company: any) => (
-                        <li key={company.id} onClick={() => handleModalCompaniesChange(company)}>
-                          {company.razon_social}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div className='select__container'>
-                <label className='label__general'>Sucursales</label>
-                <div className='select-btn__general'>
-                  <div className={`select-btn ${selectModalBranchOffices ? 'active' : ''}`} onClick={openSelectModalBranchOffices} >
-                    <div className='select__container_title'>
-                      <p>{selectedBranchOffice ? branchOffices?.find((s: { id: number }) => s.id == selectedBranchOffice)?.nombre : 'Selecciona'}</p>
+                  <div className='select__container'>
+                    <label className='label__general'>Sucursales</label>
+                    <div className='select-btn__general'>
+                      <div className={`select-btn ${selectModalBranchOffices ? 'active' : ''}`} onClick={openSelectModalBranchOffices}>
+                        <div className='select__container_title'>
+                          <p>{selectedBranchOffice ? branchOffices?.find((s: { id: number }) => s.id == selectedBranchOffice)?.nombre : 'Selecciona'}</p>
+                        </div>
+                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                      </div>
+                      <div className={`content ${selectModalBranchOffices ? 'active' : ''}`}>
+                        <ul className={`options ${selectModalBranchOffices ? 'active' : ''}`} style={{ opacity: selectModalBranchOffices ? '1' : '0' }}>
+                          {branchOffices?.map((sucursal: any) => (
+                            <li key={sucursal.id} onClick={() => handleModalBranchOfficesChange(sucursal)}>
+                              {sucursal.nombre}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                   </div>
-                  <div className={`content ${selectModalBranchOffices ? 'active' : ''}`} >
-                    <ul className={`options ${selectModalBranchOffices ? 'active' : ''}`} style={{ opacity: selectModalBranchOffices ? '1' : '0' }}>
-                      {branchOffices?.map((sucursal: any) => (
-                        <li key={sucursal.id} onClick={() => handleModalBranchOfficesChange(sucursal)}>
-                          {sucursal.nombre}
-                        </li>
-                      ))}
-                    </ul>
+                  <div className='select__container'>
+                    <label className='label__general'>Areas</label>
+                    <div className='select-btn__general'>
+                      <div className={`select-btn ${selectModalAreas ? 'active' : ''}`} onClick={openSelectModalAreas}>
+                        <p>{selectedModalArea ? areas.find((s: { id: number }) => s.id === selectedModalArea)?.nombre : 'Selecciona'}</p>
+                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                      </div>
+                      <div className={`content ${selectModalAreas ? 'active' : ''}`}>
+                        <ul className={`options ${selectModalAreas ? 'active' : ''}`} style={{ opacity: selectModalAreas ? '1' : '0' }}>
+                          {areas?.map((area: any) => (
+                            <li key={area.id} onClick={() => handleModalAreas(area)}>
+                              {area.nombre}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label className='label__general'>Título</label>
+                    <input className='inputs__general' type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el título' />
+                  </div>
+                  <div className='container__textarea_general'>
+                    <div className='textarea__container'>
+                      <label className='label__general'>Comentario</label>
+                      {/* <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div> */}
+                      <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios' />
+                    </div>
+                  </div>
+                </div></>
+              :
+              <div className="card ">
+                <div className="card-body bg-standar">
+                  <h3 className="text">{updateToRequisition.serie}-{updateToRequisition.folio}-{updateToRequisition.anio}</h3>
+                  <hr />
+                  <div className='row'>
+                    <div className='col-6 md-col-12'>
+                      <span className='text'>Creado por: <b>{updateToRequisition.usuario_crea}</b></span><br />
+                      <span className='text'>Fecha de Creación: <b>{updateToRequisition.fecha_creacion}</b></span><br />
+                      <span className='text'>Titulo: <b>{updateToRequisition.titulo}</b> </span>
+                        {updateToRequisition.status === 0 ? (
+                          <span className="active-status">Activo</span>
+                        ) : updateToRequisition.status === 1 ? (
+                          <span className="canceled-status">Cancelada</span>
+                        ) : (
+                          ""
+                        )}
+
+                    </div>
+                    <div className='col-6 md-col-12'>
+                      <span className='text'>Empresa: <b>{updateToRequisition.empresa}</b></span><br />
+                      <span className='text'>Sucursal: <b>{updateToRequisition.sucursal}</b></span><br />
+                      <span className='text'>Area: <b>{updateToRequisition.area}</b></span>
+                    </div>
+                  </div>
+                  <div className='row'>
+                    <div className='col-12'>
+                      <span className='text'>Comentarios: {updateToRequisition.comentarios}</span>
+
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className='select__container'>
-                <label className='label__general'>Araes</label>
-                <div className='select-btn__general'>
-                  <div className={`select-btn ${selectModalAreas ? 'active' : ''}`} onClick={openSelectModalAreas} >
-                    <p>{selectedModalArea ? areas.find((s: { id: number }) => s.id === selectedModalArea)?.nombre : 'Selecciona'}</p>
-                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                  </div>
-                  <div className={`content ${selectModalAreas ? 'active' : ''}`} >
-                    <ul className={`options ${selectModalAreas ? 'active' : ''}`} style={{ opacity: selectModalAreas ? '1' : '0' }}>
-                      {areas?.map((area: any) => (
-                        <li key={area.id} onClick={() => handleModalAreas(area)}>
-                          {area.nombre}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label className='label__general'>Título</label>
-                <input className='inputs__general' type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el título' />
-              </div>
-              <div className='container__textarea_general'>
-                <div className='textarea__container'>
-                  <label className='label__general'>Comentario</label>
-                  {/* <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div> */}
-                  <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios' />
-                </div>
-              </div>
-            </div>
+            }
+
+
             <div className='row__three'>
               {selectedOption == 0 ?
                 <Normal />
@@ -413,11 +451,11 @@ const ModalRequisition: React.FC = () => {
                 <div>
                   {concepts ? (
                     <div className='table__numbers'>
-                      <p className='text'>Tus ordenes de compras</p>
+                      <p className='text'>Estos son tus conceptos :)</p>
                       <div className='quantities_tables'>{concepts?.length}</div>
                     </div>
                   ) : (
-                    <p className='text'>No hay empresas</p>
+                    <p className='text'>No hay conceptos</p>
                   )}
                 </div>
                 <div className='table__head'>
@@ -509,8 +547,8 @@ const ModalRequisition: React.FC = () => {
           </div>
 
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }
 

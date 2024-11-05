@@ -115,7 +115,6 @@ const Companies: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(selectData?.franquiciaSelect);
     DynamicVariables.updateAnyVar(setFormEf, "id_franquicia", selectData?.franquiciaSelect.id)
     DynamicVariables.updateAnyVar(setFormEf, "razon_social", selectData?.franquiciaSelect.razon_social)
   }, [selectData?.franquiciaSelect]);

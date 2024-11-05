@@ -175,7 +175,17 @@ option {
   border-radius: 3px;
   text-indent: 15px;
 }
-
+.bg-standar {
+  width: 100%;
+  background-color: var(--input-color);
+  color: var(--text-color);
+  margin-top: 10px;
+  border: none;
+  outline: none;
+  padding: 10px 0;
+  border-radius: 3px;
+  /* text-indent: 15px; */
+}
 .inputs__general_icons {
   display: flex;
   width: 100%;
