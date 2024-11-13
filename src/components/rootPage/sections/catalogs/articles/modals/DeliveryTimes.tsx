@@ -15,7 +15,7 @@ const DeliveryTimes: React.FC = () => {
   let user_id = userState.id
   const setSubModal = storeArticles(state => state.setSubModal)
 
-  const {subModal, deliveryTimes, articleToUpdate}: any = useStore(storeArticles)
+  const {subModal, deliveryTimes, articleToUpdate, deleteDeliveryTimes}: any = useStore(storeArticles)
   const setDeliveryTimes = storeArticles(state => state.setDeliveryTimes)
   const setDeleteDeliveryTimes = storeArticles(state => state.setDeleteDeliveryTimes)
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
@@ -26,11 +26,7 @@ const DeliveryTimes: React.FC = () => {
   const [branch, setBranch] = useState<any>([])
 
   const [name, setName] = useState<any>('')
-  const [dataSelects, setDataSelects] = useState<any>({
-    selectName: 'Tiempos de entrega',
-    options: 'nombre',
-    dataSelect: []
-  })
+  const [dataSelects, setDataSelects] = useState<any>()
 
 
   const [deliveryTimesView, setDeliveryTimesView] = useState<any>([])
@@ -40,7 +36,7 @@ const DeliveryTimes: React.FC = () => {
       setDeliveryTimesView(articleToUpdate?.tiempos_entrega)
     }
 
-  }, [selectedIds, articleToUpdate])
+  }, [articleToUpdate])
 
 
   const searchDeliveryTimes = async () => {
@@ -55,19 +51,28 @@ const DeliveryTimes: React.FC = () => {
       options: 'nombre',
       dataSelect: result
     })
+
+    console.log(selectedIds)
   }
 
 
 
-  const addDeliveryTimes = () => {
-    setDeliveryTimesView((prevState: any) => [...prevState, ...selectedIds.deliveryTimes.tiempos_entrega_data]);
-      setDeliveryTimes([...deliveryTimes, selectedIds.deliveryTimes.id])
+  const addDeliveryTimes = async () => {
+      setDeliveryTimesView((prevState: any) => [...prevState, ...selectedIds.deliveryTimes.tiempos_entrega_data]);
+      let filter = await selectedIds.deliveryTimes.tiempos_entrega_data
+      .filter((x: any) => x.id)    // Filtramos solo los elementos que tienen `id`
+      .map((x: any) => x.id); 
+      setDeliveryTimes([...deliveryTimes, ...filter])
+      console.log('sdsdsdsdsdsdsd', filter)
   }
+  
 
   const deleteDeliveryTime = (item: any) => {
     const filter = deliveryTimesView.filter((x: any) => x.id !== item.id)
     setDeliveryTimesView(filter);
-    setDeleteDeliveryTimes(item.id)
+    if(item){
+      setDeleteDeliveryTimes([...deleteDeliveryTimes, item.id])
+    }
   };
 
 

@@ -720,6 +720,13 @@ getTotalPrice: async (data: any, customPath?: string) => {
       const path = customPath || 'create_factura';
       return ConfigurationAPIs.post(path, data)
     },
+
+ 
+   //////////////////////////////// General ///////////////////////////////////////
+   getKeySat: async (data: any) => {
+    const path =  'getClavesProdServ';
+    return ConfigurationAPIs.post(path, data)
+  },
   
 
 

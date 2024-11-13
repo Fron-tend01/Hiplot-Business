@@ -6,6 +6,8 @@
 .conatiner__create_sale-card > .row__one {
     display: flex;
     margin: 20px 0;
+    align-items: center;
+    gap: 20px;
     
 }
 
@@ -310,5 +312,53 @@
 
 
 
+.conatiner__create_sale-card .combinaciones {
+    display: flex;
+    gap: 20px;
+    position: relative;
+}
 
+.conatiner__create_sale-card .combinaciones .option {
+    background-color: var(--orange-color);
+    padding: 10px;
+    border-radius: 5px;
+    color: var(--text-white);
+    cursor: pointer;
+
+}
+
+
+.conatiner__create_sale-card > .row__one  .option {
+    background-color: var(--orange-color);
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: var(--text-white);
+
+}
+
+
+
+.conatiner__create_sale-card .combination_options {
+    position: absolute;
+    padding: 10px;
+    border-radius: 5px;
+    min-height: 100px;
+    min-width: 400px;
+    max-width: 800px;
+    background-color: var(--background-select-content);
+    z-index: 2;
+    margin-top: 10px;
+}
+
+.conatiner__create_sale-card .combination_options > div {
+    display: flex;
+}
+
+
+.conatiner__create_sale-card .combination_options  p {
+    padding: 10px;
+    border-radius: 5px;
+    color: var(--text-white);
+    background-color: var(--primary-color);
+}
 

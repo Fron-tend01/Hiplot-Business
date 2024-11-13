@@ -24,12 +24,18 @@ const ModalCreate = () => {
   let user_id = userState.id
   const setModalArticleView = storeArticleView((state) => state.setModalArticleView);
   const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
+  const setDataQuotation = storeSaleCard(state => state.setDataQuotation)
+  const setDataUpdate = storePersonalized((state) => state.setDataUpdate);
   const setModal = storeModals((state) => state.setModal);
-  const {modal}: any =  useStore(storeModals)
+  const { modal }: any = useStore(storeModals)
   const setClientsModal = storeQuotation((state) => state.setClientsModal);
   const setClient = storeQuotation((state) => state.setClient);
-  const {dataQuotation}: any =  useStore(storeSaleCard)
-    const {getClients}: any =  ClientsRequests()
+  const { dataUpdate }: any = useStore(storePersonalized)
+  const { dataQuotation, dataPersonalized }: any = useStore(storeSaleCard)
+  const { getClients }: any = ClientsRequests()
+
+  const setDataPersonalized = storeSaleCard(state => state.setDataPersonalized);
+  
 
   const [name, setName] = useState<any>()
   const [comments, setComments] = useState<any>()
@@ -37,19 +43,19 @@ const ModalCreate = () => {
   const [dataSelects, setDataSelects] = useState<any>([])
   let dataUsers = {
     nombre: '',
-    id_usuario: user_id, 
-    id_usuario_consulta: user_id, 
-    light: true, 
+    id_usuario: user_id,
+    id_usuario_consulta: user_id,
+    light: true,
     id_sucursal: 0
   }
   const fetch = async () => {
     let resultUsers = await APIs.getUsers(dataUsers)
-    setDataSelects( 
+    setDataSelects(
       {
-      selectName: 'Vendedor',
-      options: 'nombre',
-      dataSelect: resultUsers
-    })
+        selectName: 'Vendedor',
+        options: 'nombre',
+        dataSelect: resultUsers
+      })
   }
 
 
@@ -58,13 +64,12 @@ const ModalCreate = () => {
   }, [])
 
   const selectedIds = useSelectStore((state) => state.selectedIds);
-  console.log(selectedIds)
 
   const [clients, setClients] = useState<any>()
 
   const [invoice, setInvoice] = useState<any>()
 
-  
+
   const searchUsers = async () => {
     let data = {
       id_sucursal: selectedIds.select1,
@@ -80,29 +85,23 @@ const ModalCreate = () => {
 
   }, [selectedIds])
 
-  
-  console.log('dataQuotation', dataQuotation)
-
   const seeClient = (client: any) => {
     setClient(client)
     setClientsModal('clients_modal')
   }
 
-  const deleteArticle = () => {
-
-  }
+ 
 
   const createQuotation = async () => {
     const data = {
       id_sucursal: 3,
       id_cliente: selectedIds.select1,
-      id_usuario_crea:  user_id,
+      id_usuario_crea: user_id,
       comentarios: comments,
       conceptos: dataQuotation,
       conceptos_elim: []
     };
 
-    console.log(dataQuotation)
 
     try {
       let result = await APIs.createQuotation(data)
@@ -110,9 +109,35 @@ const ModalCreate = () => {
     } catch (error) {
       Swal.fire('Error', 'Hubo un error al crear la cotizacion', 'error');
     }
-    
+
   }
 
+
+  const [permisoDescount] = useState<boolean>(true)
+
+  const modalSeeConcepts = (article: any) => {
+    setPersonalizedModal('personalized_modal-update')
+    setDataUpdate(article)
+
+  }
+
+  const undoConcepts = (article: any, i: number) => {
+      let filter = dataQuotation.filter((_: any, index: number) => index !== i)
+      let data = [...filter, ...article.conceptos]
+      setDataQuotation(data)
+      setDataPersonalized([...dataPersonalized, ...article.conceptos])
+  }
+
+  const deleteArticle = (_: any, i: number) => {
+    let filter = dataQuotation.filter((_: any, index: number) => index !== i)
+    setDataQuotation(filter)
+    setDataPersonalized(filter);
+  }
+
+
+  useEffect(() => {
+
+  },[dataUpdate])
 
   return (
     <div className={`overlay__quotations__modal ${modal === 'create-modal__qoutation' ? 'active' : ''}`}>
@@ -123,191 +148,168 @@ const ModalCreate = () => {
           </svg>
         </a>
         <p className='title__modals'>Crea nueva cotización</p>
-        <div className='row'>
-          <div className='row col-12 md-col-12'>
-            <div className='col-8 md-col-12'>
-              <Empresas_Sucursales modeUpdate={false} />
-            </div>
-            <div className='col-4  md-col-6 sm-col-12'>
-              <Select dataSelects={dataSelects} instanceId="select1" />
-            </div>
-          </div>
-        </div>
-        <div className='row'>
-          <div className='col-12'>
-            <label className='label__general'>Comentarios</label>
-            <div className='warning__general'><small >Este campo es obligatorio</small></div>
-            <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios'></textarea>
-          </div>
-        </div>
-        <div className='row'>
-          <div className='col-5 md-col-6 sm-col-12'>
-            <label className='label__general'>Nombre</label>
-            <div className='warning__general'><small >Este campo es obligatorio</small></div>
-            <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
-          </div>
-          <div className='col-5 md-col-6 sm-col-12'>
-            <label className='label__general'>RFC</label>
-            <div className='warning__general'><small >Este campo es obligatorio</small></div>
-            <input className={`inputs__general`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el RFC' />
-          </div>
-          <div  className='col-2 md-col-12 d-flex align-items-end justify-content-center'>
-            <button type='button' className='btn__general-purple' onClick={searchUsers}>Buscar</button>
-          </div>
-        </div>
-        <div className='table__quotations_clients_modal'>
-          {clients ? (
-          <div className='table__numbers'>
-              <p className='text'>Total de clientes</p>
-              <div className='quantities_tables'>{clients.length}</div>
-          </div>
-          ) : (
-          <p className="text">No hay empresas que mostras</p>
-          )}
-          <div className='table__head'>
-              <div className='thead'>
-                  <div className='th'>
-                      <p>Nombre del contacto</p>
-                  </div>
-                  <div className='th'>
-                      <p>Razon social</p>
-                  </div>
-                  <div className='th'>
-                      <p>RFC</p>
-                  </div>
-                  <div className='th'>
-                      
-                  </div>
-                  <div className='th'>
-                    
-                  </div>
-                
+        <div className='quotations__modal'>
+          <div className='row'>
+            <div className='row col-12 md-col-12'>
+              <div className='col-8 md-col-12'>
+                <Empresas_Sucursales modeUpdate={false} />
               </div>
+              <div className='col-4  md-col-6 sm-col-12'>
+                <Select dataSelects={dataSelects} instanceId="select1" nameSelect={'Vendedor'} />
+              </div>
+            </div>
           </div>
-          {clients ? (
-          <div className='table__body'>
-              {clients.map((client: any) => {
-              return (
-                  <div className='tbody__container' key={client.id}>
-                      <div className='tbody'>
-                      <div className='td'>
-                          <p>{client.nombre_contacto}</p>
-                      </div>
-                      <div className='td'>
-                          <p>{client.razon_social}</p>
-                      </div>
-                      <div className='td'>
-                          <p>{client.rfc}</p>
-                      </div>
-                      <div className='td'>
-                        <button className='btn__general-purple' onClick={() => seeClient(client)}>ver mas</button>
-                      </div>
-                      <div className='td'>
-                          <button className='btn__general-purple' onClick={() => setModalArticleView('article-view__modal')}>Catalogo</button>
-                      </div>
-                      
-                    </div>
-                  </div>
-              )
-              } )}
+          <div className='row my-4 w-full'>
+            <div className='col-12'>
+              <label className='label__general'>Comentarios</label>
+              <div className='warning__general'><small >Este campo es obligatorio</small></div>
+              <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios'></textarea>
+            </div>
           </div>
-          ) : ( 
-              <p className="text">Cargando datos...</p> 
-          )}
-        </div>
-        <div>
-          <p className='text'>Artuculos</p>
-          <div className='d-flex justify-content-end'>
-            <div className='mr-4'>
+          <div className='row__three my-4 w-full'>
+            <div className=''>
+              <label className='label__general'>Nombre</label>
+              <div className='warning__general'><small >Este campo es obligatorio</small></div>
+              <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
+            </div>
+            <div className=''>
+              <label className='label__general'>RFC</label>
+              <div className='warning__general'><small >Este campo es obligatorio</small></div>
+              <input className={`inputs__general`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el RFC' />
+            </div>
+            <div className='d-flex align-items-end justify-content-center'>
+              <button type='button' className='btn__general-purple' onClick={searchUsers}>Buscar</button>
+            </div>
+            <div className=''>
+              <Select nameSelect={'Resultado'} />
+            </div>
+            <div className='d-flex align-items-end'>
+              <button className='btn__general-purple' onClick={seeClient}>ver cliente</button>
+            </div>
+            <div className='d-flex align-items-end'>
               <button className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal')}>Crear personalizados</button>
             </div>
-            <div>
+            <div className='d-flex align-items-end'>
               <button className='btn__general-purple' onClick={() => setModalArticleView('article-view__modal')}>Catalogo</button>
             </div>
           </div>
           <div className='table__quotations_clients_modal'>
-                {dataQuotation ? (
-                <div className='table__numbers'>
-                    <p className='text'>Total de articulos</p>
-                    <div className='quantities_tables'>{dataQuotation.length}</div>
+            {dataQuotation ? (
+              <div className='table__numbers'>
+                <p className='text'>Total de articulos</p>
+                <div className='quantities_tables'>{dataQuotation.length}</div>
+              </div>
+            ) : (
+              <p className="text">No hay empresas que mostras</p>
+            )}
+            <div className='table__head'>
+              <div className='thead'>
+                <div className='th'>
+                  <p>Artículo</p>
                 </div>
-                ) : (
-                <p className="text">No hay empresas que mostras</p>
-                )}
-                <div className='table__head'>
-                    <div className='thead'>
-                        <div className='th'>
-                            <p>Nombre del articulo</p>
+                <div className='th'>
+                  <p>Cantidad</p>
+                </div>
+                <div className='th'>
+                  <p>Unidad</p>
+                </div>
+                <div className='th'>
+                  <p>Desc. monto</p>
+                </div>
+                <div>
+                  <p>Total</p>
+                </div>
+              </div>
+            </div>
+            {dataQuotation ? (
+              <div className='table__body'>
+                {dataQuotation?.map((article: any, index: number) => {
+                  return (
+                    <div className='tbody__container' key={article.id}>
+                      {article.personalized ?
+                        <div className='concept__personalized'>
+                          <p>Concepto Perzonalizado</p>
                         </div>
-                        <div className='th'>
-                            <p>Codigo</p>
+                        :
+                        ''
+                      }
+                      {article.personalized ?
+                        <div className='tbody personalized'>
+                          <div className='td'>
+                            <p>{article.codigo}-{article.nombre}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{article.cantidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{article.unidad}</p>
+                          </div>
+                          <div className='td'>
+                            {permisoDescount ?
+                              <div>
+                                <input className='inputs__general' type="text" placeholder='Descuento' />
+                              </div>
+                              :
+                              <p>No permitido</p>
+                            }
+                          </div>
+                          <div className='td'>
+                            <p>$ {article.total_price}</p>
+                          </div>
+                          <div className='td'>
+                            <button className='btn__general-purple' onClick={() => modalSeeConcepts(article)}>Conceptos</button>
+                          </div>
+                          <div className='td'>
+                            <button className='btn__general-orange' onClick={() => undoConcepts(article, index)}>Deshacer</button>
+                          </div>
                         </div>
-                        <div className='th'>
-                            <p>Codigo</p>
+                        :
+                        <div className='tbody'>
+                          <div className='td'>
+                            <p>{article.codigo}-{article.descripcion}</p>
+                          </div>
+                          <div className='td'>
+                            <p>$ {article.cantidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{article.unidad}</p>
+                          </div>
+                          <div className='td'>
+                            {permisoDescount ?
+                              <div>
+                                <input className='inputs__general' type="text" placeholder='Descuento' />
+                              </div>
+                              :
+                              <p>No permitido</p>
+                            }
+                          </div>
+                          <div className='td'>
+                            <p>$ {article.total_price}</p>
+                          </div>
+                          <div className='td'>
+                            <button className='add_urgency'>Agregar Urgencia</button>
+                          </div>
+                          <div className='td'>
+                            <button className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-update')}>Conceptos</button>
+                          </div>
+                          <div className='td'>
+                            <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
+                          </div>
                         </div>
-                        <div className='th'>
-                            
-                        </div>
-                        <div className='th'>
-                         
-                        </div>
-                      
+                      }
                     </div>
-                </div>
-                {dataQuotation ? (
-                <div className='table__body'>
-                    {dataQuotation.map((article: any) => {
-                    return (
-                        <div className='tbody__container' key={article.id}>
-                          {article.personalized ? 
-                            <div className='tbody personalized'>
-                              <div className='td'>
-                                  <p>{article.descripcion}</p>
-                              </div>
-                              <div className='td'>
-                                  <p>{article.codigo}</p>
-                              </div>
-                              <div className='td'>
-                                  <p>{article.rfc}</p>
-                              </div>
-                              <div className='td'>
-                              <button className='btn__general-purple' onClick={() => seeClient(article)}>ver mas</button>
-                              </div>
-                              <div className='td'>
-                              </div>
-                            </div>
-                          :
-                            <div className='tbody'>
-                              <div className='td'>
-                           
-                                  <p>{article.descripcion}</p>
-                              </div>
-                              <div className='td'>
-                                  <p>{article.codigo}</p>
-                              </div>
-                              <div className='td'>
-                                  <p>{article.rfc}</p>
-                              </div>
-                              <div className='td'>
-                              <button className='btn__general-purple' onClick={() => seeClient(article)}>ver mas</button>
-                              </div>
-                              <div className='td'>
-                                <button className='btn__general-danger' onClick={() => deleteArticle()}>Eliminar</button>
-                              </div>
-                            </div>
-                          }
-                        </div>
-                    )
-                    } )}
-                </div>
-                ) : ( 
-                    <p className="text">Cargando datos...</p> 
-                )}
+                  )
+                })}
+              </div>
+            ) : (
+              <p className="text">Cargando datos...</p>
+            )}
           </div>
-        </div>
-        <div className='row'>
-          <div className='col-12 d-flex justify-content-center'>
-            <button className='btn__general-purple' onClick={createQuotation}>Crear contizacion</button>
+
+          <div className='row'>
+            <div className='col-12 d-flex justify-content-center'>
+              <button className='btn__general-purple' onClick={createQuotation}>Crear contizacion</button>
+            </div>
           </div>
         </div>
       </div>

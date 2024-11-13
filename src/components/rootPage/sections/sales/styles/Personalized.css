@@ -1,4 +1,8 @@
-
+.personalized_modal {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  height: 100%;
+}
 
 
 
@@ -70,9 +74,9 @@
  .table__personalized {
     border-radius: 10px;
     display: grid;
-    height: 100%;
     grid-template-rows: repeat(2, auto) 1fr;
-    overflow-y: auto;
+    height: 100%;
+    overflow: hidden  
 
 }
 
@@ -97,8 +101,13 @@
     font-weight: 600;
 }
 
+.table__personalized .table__head .thead.active {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+
 .table__personalized .table__body {
-	height: 100%;
+
     overflow-y: auto;
     transition-delay: 0.0s;
     &::-webkit-scrollbar {
@@ -139,7 +148,10 @@
     display: grid;
     grid-template-columns: 100px repeat(5, 1fr);
     padding: 10px;
+}
 
+.table__personalized .table__body .tbody.active {
+  grid-template-columns: repeat(5, 1fr);
 }
 
 .table__personalized .table__body .tbody:hover {

@@ -1,0 +1,235 @@
+
+
+.conatiner___delivery-times-sale-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+}
+
+
+
+
+.table__delivery-times-sale-card-client {
+    margin-top: 20px;
+    border-radius: 10px;
+	text-align: justify;
+}
+
+
+.table__delivery-times-sale-card-client .table__head {
+    display: flex;
+    width: 100%;
+	background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__delivery-times-sale-card-client .table__head .thead {  background-color: var(--table-color);
+    color: var(--text-table-color);
+   display: flex;
+   width: 100%;
+   column-gap: 20px;
+}
+
+.table__delivery-times-sale-card-client .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__delivery-times-sale-card-client .table__body {
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__delivery-times-sale-card-client .tbody__container:nth-child(even) {
+  	color: var(--text-table-color);
+  }
+  
+.table__delivery-times-sale-card-client .tbody__container:nth-child(odd) {
+	background-color: var(--two-table-color);
+    color: var(--text-table-color);
+  }
+
+.table__delivery-times-sale-card-client .table__body .tbody {
+    display: flex;
+}
+
+.table__delivery-times-sale-card-client .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 10px;
+	column-gap: 20px;
+}
+
+.table__delivery-times-sale-card-client .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+.types-users__edit_btn {
+	background-color: var(--primary-color);
+	color: #fff;
+	border: none;
+	padding: 5px 10px;
+	border-radius: var(--border-radius-general);
+	cursor: pointer;
+  }
+
+
+
+  
+.table__delivery-times-sale-card-produc {
+    margin-top: 20px;
+    border-radius: 10px;
+	text-align: justify;
+}
+
+
+.table__delivery-times-sale-card-produc .table__head {
+    display: flex;
+    width: 100%;
+	background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__delivery-times-sale-card-produc .table__head .thead {  background-color: var(--table-color);
+    color: var(--text-table-color);
+   display: flex;
+   width: 100%;
+   column-gap: 20px;
+}
+
+.table__delivery-times-sale-card-produc .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__delivery-times-sale-card-produc .table__body {
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__delivery-times-sale-card-produc .tbody__container:nth-child(even) {
+  	color: var(--text-table-color);
+  }
+  
+.table__delivery-times-sale-card-produc .tbody__container:nth-child(odd) {
+	background-color: var(--two-table-color);
+    color: var(--text-table-color);
+  }
+
+.table__delivery-times-sale-card-produc .table__body .tbody {
+    display: flex;
+}
+
+.table__delivery-times-sale-card-produc .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 10px;
+	column-gap: 20px;
+}
+
+.table__delivery-times-sale-card-produc .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+.types-users__edit_btn {
+	background-color: var(--primary-color);
+	color: #fff;
+	border: none;
+	padding: 5px 10px;
+	border-radius: var(--border-radius-general);
+	cursor: pointer;
+  }
+
+
+
+
+
+  
+ /*************************************************************
+                    Modal de crear sucursales
+ **************************************************************/
+
+
+  
+ .overlay__delivery-times_modal-sale-card {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+}
+
+.overlay__delivery-times_modal-sale-card.active {
+	visibility: visible;
+}
+
+.popup__delivery-times_modal-sale-card {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	width: 100%;
+	height: 100%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+}
+
+.popup__delivery-times_modal-sale-card .btn-cerrar-popup__delivery-times_modal-sale-card {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__delivery-times_modal-sale-card.active {	transform: scale(1); opacity: 1; }

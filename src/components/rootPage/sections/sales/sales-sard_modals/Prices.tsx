@@ -8,9 +8,7 @@ const Prices = () => {
 
   const setModalSub = storeModals(state => state.setModalSub)
   const { modalSub }: any = useStore(storeModals)
-  const { article }: any = useStore(storeSaleCard);
-
-  console.log(article?.precios)
+  const { article }: any = useStore(storeSaleCard)
 
   return (
     <div className={`overlay__sale-card_modal ${modalSub === 'prices_modal' ? 'active' : ''}`}>
@@ -65,11 +63,10 @@ const Prices = () => {
                     <div className='td'>
                     {item.fecha}
                     </div>
-                  </div>d
+                  </div>
                 </div>
               ))}
             </div>
-
           </div>
         </div>
       </div>

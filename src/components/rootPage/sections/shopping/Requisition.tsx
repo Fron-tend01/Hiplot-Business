@@ -393,7 +393,6 @@ const handleClick = (value: any) => {
       <div className='row__one'>
         <div className='select__container'>
           <Select dataSelects={companiesXUsers} instanceId='empresa' nameSelect={'Empresa'} />
-
         </div>
         <div className='select__container'>
           <Select dataSelects={branchOfficeXCompanies} instanceId='sucursal' nameSelect={'Sucursal'} />

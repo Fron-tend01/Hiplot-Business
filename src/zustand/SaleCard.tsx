@@ -9,7 +9,8 @@ interface StoreState {
     dataQuotation: any;
     setDataQuotation: (x: any) => void;
 
-
+    dataPersonalized: any;
+    setDataPersonalized: (x: any) => void;
 
  
     
@@ -24,8 +25,11 @@ export const storeSaleCard = create<StoreState>((set) => ({
     IdArticle: {},
     setIdArticle: (x) => set({IdArticle: x}),
 
-    dataQuotation: null,       
+    dataQuotation: [],       
     setDataQuotation: (x) => set({dataQuotation: x}),
+
+    dataPersonalized: [],       
+    setDataPersonalized: (x) => set({dataPersonalized: x}),
 
     article: null,       
     setArticle: (x) => set({article: x}),
