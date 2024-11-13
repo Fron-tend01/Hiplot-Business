@@ -2,7 +2,7 @@ import create from 'zustand';
 
 interface SelectStore {
   selectedIds: any; // Mapa de IDs seleccionados por instancia
-  setSelectedId: (instanceId: string, id: number) => void;
+  setSelectedId: (instanceId: any, id: any) => void;
 }
 
 export const useSelectStore = create<SelectStore>((set) => ({

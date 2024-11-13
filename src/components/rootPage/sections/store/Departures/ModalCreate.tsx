@@ -88,7 +88,7 @@ const ModalCreate: React.FC = () => {
         let stocks = concepts[index].stock;
         let almacen_predeterminado = concepts[index].almacen_predeterminado;
 
-        console.log(stocks)
+        console.log(concepts[index])
 
         let filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id);
 
@@ -118,13 +118,13 @@ const ModalCreate: React.FC = () => {
         concepts[index].unidad = value;
     };
 
-    const handleCreateWarehouseExit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleCreateWarehouseExit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
         let data = {
             id_usuario_crea: user_id,
             id_sucursal: branchOffices.id,
-            id_almacen: selectedIds.store,
+            id_almacen: selectedIds.store.id,
             comentarios: comments,
             conceptos: concepts
         };
@@ -138,7 +138,10 @@ const ModalCreate: React.FC = () => {
             id_serie: 0,
             folio: null,
         }
-
+        if (concepts.length == 0 || concepts == null) {
+            Swal.fire('Notificacion', 'Ingresa al menos un articulo para generar su salida', 'warning')
+            return
+        }
         try {
             let result: any = await APIs.createWarehouseExit(data)
             Swal.fire(result.mensaje, '', 'success');
@@ -151,8 +154,6 @@ const ModalCreate: React.FC = () => {
         }
 
     }
-
-    console.log(concepts)
 
     const [modalSeeStocks, setModalSeeStocks] = useState<boolean[]>([]);
 
@@ -182,7 +183,14 @@ const ModalCreate: React.FC = () => {
     const modalCloseCreate = () => {
         setModal('')
     }
+    useEffect(() => {
+        if (selectedIds != null) {
+            if (selectedIds.store) {
 
+                setConcepts([])
+            }
+        }
+    }, [selectedIds])
 
     return (
         <div className={`overlay__departures ${modal == 'modal-create__departures' ? 'active' : ''}`}>
@@ -193,7 +201,7 @@ const ModalCreate: React.FC = () => {
                     </a>
                     <p className='title__modals'>Crear nueva salida</p>
                 </div>
-                <form className='conatiner__create_warehouse-exit' onSubmit={handleCreateWarehouseExit}>
+                <div className='conatiner__create_warehouse-exit' >
                     <div className="row__one">
                         <div className='container__checkbox_tickets'>
                             <div className='checkbox__tickets'>
@@ -389,9 +397,9 @@ const ModalCreate: React.FC = () => {
                         </div>
                     </div>
                     <div className='d-flex justify-content-center'>
-                        <button className='btn__general-purple' type='submit'>Crear salida</button>
+                        <button className='btn__general-purple' onClick={(e) => handleCreateWarehouseExit(e)}>Crear salida</button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     )

@@ -92,7 +92,7 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	text-align: center;
+	/* text-align: center; */
 	width: 70%;
 	overflow-y: auto;
     max-height: 95%;

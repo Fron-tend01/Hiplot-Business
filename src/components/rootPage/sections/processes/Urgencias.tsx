@@ -17,6 +17,7 @@ interface urgencia_i {
   urgencias_articulos: any[],
   urgencias_articulos_elim: any[]
 }
+// ------------------------------------------------PENDIENTE ESTE MODULO, NO ELIMINA DE FORMA CORRECTA Y AGREGA ARTICULOS DEMÁS, FALTA REVISAR
 const Urgencias = () => {
   const [Urgencia, setUrgencia] = useState<urgencia_i>({
     id: 0,
@@ -66,7 +67,8 @@ const Urgencias = () => {
         DynamicVariables.addObjectInArrayRepeat(element, setArticulos)
       });
       setModoUpdate(true)
-
+      console.log('arts', data);
+      
     } else {
       setModoUpdate(false)
     }
@@ -251,7 +253,8 @@ const Urgencias = () => {
                 <label className='label__general'>AGREGAR ARTICULOS</label>
                 <hr />
                 <br />
-                <Filtrado_Articulos_Basic get_sucursales={false} get_proveedores={false} get_max_mins={false} get_plantilla_data={false} get_stock={false} get_unidades={false} />
+                <Filtrado_Articulos_Basic get_sucursales={false} get_proveedores={false} get_max_mins={false} get_plantilla_data={false} get_stock={false} get_unidades={false} 
+                set_article_local={setArticulos}/>
                 <br />
                 <div className='table__modal '>
                   <div>

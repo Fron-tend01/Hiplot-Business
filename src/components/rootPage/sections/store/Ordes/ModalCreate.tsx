@@ -12,6 +12,7 @@ import Swal from 'sweetalert2';
 import Empresas_Sucursales from "../../../Dynamic_Components/Empresas_Sucursales";
 import { useSelectStore } from "../../../../../zustand/Select";
 import { useStore } from "zustand";
+import { storeModals } from "../../../../../zustand/Modals";
 
 
 const ModalCreate = () => {
@@ -28,6 +29,7 @@ const ModalCreate = () => {
     ]
 
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
+    const setSelectedIds = useSelectStore((state) => state.setSelectedId);
     const setConcepts = storeOrdes(state => state.setConcepts)
     const { concepts } = useStore(storeOrdes)
 
@@ -37,7 +39,7 @@ const ModalCreate = () => {
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
 
-  
+    const setModal = storeModals(state => state.setModal)
 
 
     const [selectedOption, setSelectedOption] = useState<number | null>(null);
@@ -62,21 +64,21 @@ const ModalCreate = () => {
 
     const fecth = async () => {
 
-        let resultAreas =  await getAreas(0, user_id)
+        let resultAreas = await getAreas(0, user_id)
         setAreas({
             selectName: 'Areas',
             options: 'nombre',
             dataSelect: resultAreas
         })
+        setSelectedIds('id_area', areas[0].id)
+
     }
 
     useEffect(() => {
         fecth()
         setSelectedOption(0);
-       
+
     }, [])
-
-
     const [OPcomments, setOPcomments] = useState<string>('')
 
 
@@ -85,61 +87,83 @@ const ModalCreate = () => {
     const [seleccionesTemporales, setSeleccionesTemporales] = useState<string[]>([]);
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const value = e.target.value.trim();
-        let stocks = concepts[index].stock;
-        let almacen_predeterminado = concepts[index].almacen_predeterminado;
-        let filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id);
+        const value = e.target.value.trim();  // Obtener el valor ingresado sin espacios
 
-        if (filter) {
-            if (value > filter[0].stock) {
+        // Obtener los valores relevantes de `concepts`
+        const stocks = concepts[index].stock;
+        const almacenPredeterminado = concepts[index].almacen_predeterminado;
+
+        // Filtrar el stock para obtener el almacen correspondiente
+        const filter = stocks.filter((x: any) => x.id === almacenPredeterminado.id);
+
+        // Verificar si el almacen existe y tiene stock disponible
+        if (filter.length > 0) {
+            const availableStock = filter[0].stock;
+
+            // Verificar si la cantidad ingresada excede el stock disponible
+            if (value !== '' && parseFloat(value) > availableStock) {
                 Swal.fire({
                     icon: "warning",
                     title: "Oops...",
                     text: 'La cantidad ingresada supera el stock disponible'
                 });
             } else {
+                // Si no excede el stock, actualizamos el estado de `concepts`
                 const newArticleStates = [...concepts];
-                newArticleStates[index].cantidad = value === '' ? null : parseFloat(value);
-                setConceptos(newArticleStates);
+                newArticleStates[index] = {
+                    ...newArticleStates[index],  // Copiar el objeto en ese índice
+                    cantidad: value === '' ? null : parseFloat(value)   // Actualizar solo el campo 'unidad'
+                };
+                setConcepts(newArticleStates);
+                
             }
-            return
+        } else {
+            // Si no se encuentra el almacen correspondiente
+            console.log('El almacen no existe o no tiene stock');
         }
-        console.log('El almacen no existe')
     };
+
 
     const handleComentariosChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value;
-        const newArticleStates = [...conceptos];
+        const newArticleStates = [...concepts];
         newArticleStates[index].comentarios = value;
-        setConceptos(newArticleStates);
+        setConcepts(newArticleStates);
 
     }
 
     const handleSeleccion = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
         const valorSeleccionado = event.target.value;
-        conceptos[index].unidad = valorSeleccionado;
-        // Crear una copia del arreglo de selecciones temporales
+
+        // Copiar el concepto en el índice correspondiente y actualizar la unidad
+        const nuevosConceptos = [...concepts];  // Crear una copia del array de conceptos
+        nuevosConceptos[index] = {
+            ...nuevosConceptos[index],  // Copiar el objeto en ese índice
+            unidad: valorSeleccionado   // Actualizar solo el campo 'unidad'
+        };
+
+        // Actualizar el estado de 'conceptos' con la nueva lista
+        setConcepts(nuevosConceptos);
+
+        // Actualizar las selecciones temporales (nuevasSelecciones)
         const nuevasSelecciones = [...seleccionesTemporales];
-        // Actualizar el valor seleccionado en la posición del índice correspondiente
         nuevasSelecciones[index] = valorSeleccionado;
-        // Actualizar el estado con las nuevas selecciones
         setSeleccionesTemporales(nuevasSelecciones);
     };
 
 
 
+
     const handleCreateOrders = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        let id_area = selectedIds.id_area
+        let id_area = selectedIds.id_area.id
         let id_sucursal = branchOffices.id;
         let id_usuario_crea = user_id;
         let status = selectedOption
         let comentarios = OPcomments;
-        let conceptos = concepts;
-
         try {
-            await createOrders({ id_area, id_sucursal, id_usuario_crea, status, comentarios, conceptos })
-
+            await createOrders({ id_area, id_sucursal, id_usuario_crea, status, comentarios, conceptos:concepts })
+            setModal('')
         } catch (error) {
             console.log(error)
         }
@@ -178,9 +202,9 @@ const ModalCreate = () => {
                         </label>
                         <p className='text'>Directa</p>
                     </div>
-                    <div className='checkbox__tickets'>
+                    <div className='checkbox__tickets' onClick={() => Swal.fire('Notificacion', 'Opción en desarrollo...', 'info')}>
                         <label className="checkbox__container_general">
-                            <input className='checkbox' type="radio" value="PorOC" checked={selectedOption === 1} onChange={handleOptionChange} />
+                            <input className='checkbox' type="radio" disabled={true} value="PorOC" checked={selectedOption === 1} onChange={handleOptionChange} />
                             <span className="checkmark__general"></span>
                         </label>
                         <p className='text'>Por OP</p>
@@ -192,7 +216,7 @@ const ModalCreate = () => {
                     <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
                 </div>
                 <div className="col-4">
-                    <Select dataSelects={areas} instanceId="id_area"  nameSelect={'Areas'} />
+                    <Select dataSelects={areas} instanceId="id_area" nameSelect={'Areas'} />
                 </div>
             </div>
             <div className="row__three">
@@ -264,7 +288,6 @@ const ModalCreate = () => {
                                         <div className='td'>
                                             <div>
                                                 <select className='traditional__selector' onChange={(event) => handleSeleccion(event, index)} value={seleccionesTemporales[index] || ''}>
-                                                    <option value="">Seleccionar</option>
                                                     {concept?.unidades.map((item: any) => (
                                                         <option key={item.id} value={item.id_unidad}>
                                                             {item.nombre}
@@ -346,7 +369,7 @@ const ModalCreate = () => {
                 </div>
             </div>
             <div>
-                <button className='btn__general-purple' type='submit'>Crear nueva entrada</button>
+                <button className='btn__general-purple' type='submit'>Crear Pedido</button>
             </div>
         </form>
     )

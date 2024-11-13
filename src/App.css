@@ -175,7 +175,17 @@ option {
   border-radius: 3px;
   text-indent: 15px;
 }
-
+.bg-standar {
+  width: 100%;
+  background-color: var(--input-color);
+  color: var(--text-color);
+  margin-top: 10px;
+  border: none;
+  outline: none;
+  padding: 10px 0;
+  border-radius: 3px;
+  /* text-indent: 15px; */
+}
 .inputs__general_icons {
   display: flex;
   width: 100%;
@@ -483,6 +493,12 @@ option {
     color: var(--text-color);
   }
 
+  .end-status {
+    display: flex;
+    border-radius: 5px;
+    color: #2150d6;
+    font-weight: 600;
+  }
 
   .active-status {
     display: flex;
@@ -925,4 +941,16 @@ input:checked + .slider:before {
   border-radius: 20px;
   margin-left: 10px;
   color: var(--text-color);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
 }

@@ -42,7 +42,7 @@ const ListasFranquicias = () => {
     articulos: [],
     articulos_elim: [],
   })
-  const [proveedor, setProveedor] = useState<any>({})
+  const [proveedor, setProveedor] = useState<any>()
   const [franquicia, setFranquicia] = useState<any>({})
   const [sucursalF, setSucursalF] = useState<any>({})
   const [campos_ext] = useState<any>([{ nombre: 'compra_adelantada', tipo: false }, { nombre: 'id_articulo', tipo: 1, asignacion: 'id' }])
@@ -90,12 +90,14 @@ const ListasFranquicias = () => {
   }
   const getEmpresas = async () => {
     let resultCompanies = await getCompaniesXUsers(user_id)
+    console.log(resultCompanies)
     setProveedor({
       selectName: 'Proveedor',
-      dataSelect: resultCompanies,
-      options: 'razon_social'
+      options: 'razon_social',
+      dataSelect: resultCompanies
     })
   }
+
 
   const fetch = async () => {
     await getEmpresas()
@@ -255,7 +257,7 @@ const ListasFranquicias = () => {
                 setEmpresaDyn={setFranquicia} setSucursalDyn={setSucursalF}></Empresas_Sucursales>
               </div>
               <div className='col-4 md-col-4 sm-col-12'>
-                <Select dataSelects={proveedor} instanceId='proveedor' ></Select>
+                <Select dataSelects={proveedor} instanceId='proveedor' nameSelect={'Proveedor'}></Select>
               </div>
               
               <div className='col-12 md-col-12 sm-col-12'>

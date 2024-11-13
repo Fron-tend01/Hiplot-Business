@@ -51,7 +51,7 @@ const Normal: React.FC = () => {
       proveedor: 0,
       materia_prima: 0,
       get_sucursales: false,
-      get_proveedores: true,
+      get_proveedores: false,
       get_max_mins: true,
       get_plantilla_data: false,
       get_stock: false,
@@ -101,7 +101,7 @@ const Normal: React.FC = () => {
       let unidades = selectedResult.unidades
       let unidad = selectedResult.unidades[0].id_unidad
       let max_min = max
-      setConcepts([...concepts, {codigo, descripcion, max_min, id_articulo, cantidad: null, unidad, unidades, comentarios: '' }]);
+      setConcepts([...concepts, {codigo, descripcion, max_min, id_articulo, cantidad: null, unidad, unidades, comentarios: '' , max_mins:selectedResult.max_mins}]);
     }
   
 

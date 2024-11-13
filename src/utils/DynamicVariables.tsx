@@ -8,14 +8,25 @@ const DynamicVariables = {
     },
     updateAnyVarByIndex : (setStateFunc: Dispatch<SetStateAction<any[]>>, index: number, key: string, value: any) => {
         setStateFunc(prevState => {
+            // Verificamos que prevState sea un arreglo
+            if (!Array.isArray(prevState)) {
+                console.error("El estado 'conceptos' no es un arreglo, no se puede actualizar.");
+                return prevState;  // Si no es un arreglo, devolvemos el estado anterior sin cambios
+            }
+    
+            // Creamos una copia inmutable de `prevState`
             const updatedState = [...prevState];
+    
+            // Actualizamos solo el objeto en el índice indicado
             updatedState[index] = {
                 ...updatedState[index],
                 [key]: value,
             };
+    
             return updatedState;
         });
-    },
+    }
+    ,
     updateAnyVarSetArr: <T, K extends keyof T>(setStateFunc: React.Dispatch<React.SetStateAction<T>>, key: K, value: any) => {
         setStateFunc((prevState) => {
             const currentArray = prevState[key] as unknown as any[];

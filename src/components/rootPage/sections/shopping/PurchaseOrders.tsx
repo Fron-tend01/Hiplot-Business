@@ -12,6 +12,7 @@ import 'flatpickr/dist/l10n/es.js'; // Importar el idioma español
 import './styles/PurchaseOrders.css'
 import ModalPurchaseOrders from './purchaseOrders/ModalPurchaseOrders';
 import APIs from '../../../../services/services/APIs';
+import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales';
 
 const PurchaseOrders: React.FC = () => {
 
@@ -22,7 +23,6 @@ const PurchaseOrders: React.FC = () => {
   const setPurchaseOrders = storePurchaseOrders(state => state.setPurchaseOrders)
 
 
-  const { getCompaniesXUsers, companiesXUsers }: any = storeCompanies();
   const [companies, setCompanies] = useState<any>([])
   const { getBranchOffices }: any = storeBranchOffcies();
   const [branchOffices, setBranchOffices] = useState<any>([])
@@ -43,89 +43,51 @@ const PurchaseOrders: React.FC = () => {
   const [invoice, setInvoice] = useState<any>(null)
   const [warningInvoice] = useState<boolean>(false)
 
-  const fecth = async () => {
-    // Obtener las compañías
-    let resultCompanies = await getCompaniesXUsers(user_id);
-    if (resultCompanies.length > 0) {
-      setCompanies(resultCompanies);
-      setSelectedCompany(resultCompanies[0].id);
-    }
+  const hoy = new Date();
+  const haceUnaSemana = new Date();
+  haceUnaSemana.setDate(hoy.getDate() - 7);
 
-    // Obtener sucursales
-    let resultBranch: any = await APIs.getAreasXBranchOfficesXUsers(0, user_id);
-    if (resultBranch.length > 0) {
-      setBranchOffices(resultBranch);
-      setSelectedBranchOffice(resultBranch[0].id);
-    }
+  const fecth = async () => {
 
     let dataS = {
       id: user_id,
       tipo_ducumento: 1
     }
-
+  
     let resultSeries = await APIs.getSeriesXUser(dataS)
     setSeries(resultSeries)
-  
-
- 
-
-  
-
-
-    const hoy = new Date();
-    const haceUnaSemana = new Date();
-    haceUnaSemana.setDate(hoy.getDate() - 7);
+    
+    setDates([
+      hoy.toISOString().split('T')[0], haceUnaSemana.toISOString().split('T')[0]
+    ])
+   
 
     let data = {
       id: 0,
       folio: 0,
       id_serie: 0,
-      id_sucursal: selectedBranchOffice,
+      id_sucursal: selectedBranchOffice == null ? 0: selectedBranchOffice?.id,
       id_usuario: user_id,
       tipo: type,
-      desde: dates[0],
-      hasta: dates[1],
+      desde: haceUnaSemana.toISOString().split('T')[0],
+      hasta: hoy.toISOString().split('T')[0],
       status: 0
     }
 
-    setDates([
-      haceUnaSemana.toISOString().split('T')[0],
-      hoy.toISOString().split('T')[0]
-    ])
+    console.log(hoy)
 
-    
+ 
+
+
     let result = await APIs.getPurchaseOrders(data);
     setPurchaseOrders(result)
 
   }
 
-  console.log('dates', dates)
 
   useEffect(() => {
     fecth()
   }, [])
-
-  const openSelectCompanies = () => {
-    setSelectCompanies(!selectCompanies)
-  }
-
-  const handleCompaniesChange = async (company: any) => {
-    setSelectedCompany(company.id)
-    setSelectCompanies(false)
-    let resultBranch = await APIs.getAreasXBranchOfficesXUsers(0, user_id)
-    setBranchOffices(resultBranch)
-
-  }
-
-
-  const openSelectBranchOffices = () => {
-    setSelectBranchOffices(!selectBranchOffices)
-  }
-
-  const handleBranchOfficesChange = (branchOffice: any) => {
-    setSelectedBranchOffice(branchOffice.id)
-    setSelectBranchOffices(false)
-  }
 
   ////////////////////////
   /// Fechas
@@ -165,6 +127,8 @@ const PurchaseOrders: React.FC = () => {
 
 
   const openModal = () => {
+    setPurchaseOrderToUpdate(null)
+
     setModal('modal-purchase-orders-create')
 
   }
@@ -174,12 +138,12 @@ const PurchaseOrders: React.FC = () => {
     const data = {
       folio: invoice,
       id_serie: selectedSerie,
-      id_sucursal: selectedCompany,
+      id_sucursal: selectedBranchOffice.id,
       id_usuario: user_id,
       id_area: 0,
       // tipo: tipo,
-      desde: dates[0],
-      hasta: dates[1],
+      desde: dates[1],
+      hasta: dates[0],
       status: type,
     };
 
@@ -223,47 +187,17 @@ const PurchaseOrders: React.FC = () => {
   return (
     <div className='purchase-order'>
       <div className='container__purchase-order'>
-        <div className='row__one'>
-          <div className='select__container'>
-            <label className='label__general'>Empresas</label>
-            <div className='select-btn__general'>
-              <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
-                <p>{selectedCompany ? companies?.find((s: { id: number }) => s.id === selectedCompany)?.razon_social : 'Selecciona'}</p>
-                <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-              </div>
-              <div className={`content ${selectCompanies ? 'active' : ''}`}>
-                <ul className={`options ${selectCompanies ? 'active' : ''}`} style={{ opacity: selectCompanies ? '1' : '0' }}>
-                  {companies?.map((company: any) => (
-                    <li key={company.id} onClick={() => handleCompaniesChange(company)}>
-                      {company.razon_social}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+        <div className='row'>
+          <div className='col-8 md-col-12'>
+          <Empresas_Sucursales modeUpdate={false} empresaDyn={selectedCompany} sucursalDyn={selectedBranchOffice}
+                        setEmpresaDyn={setSelectedCompany} setSucursalDyn={setSelectedBranchOffice} all={true} />
           </div>
-          <div className='select__container'>
-            <label className='label__general'>Sucursales</label>
-            <div className='select-btn__general'>
-              <div className={`select-btn ${selectBranchOffices ? 'active' : ''}`} onClick={openSelectBranchOffices} >
-                <p>{selectedBranchOffice ? branchOffices?.find((s: { id: number }) => s.id === selectedBranchOffice)?.nombre : 'Selecciona'}</p>
-                <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+          <div className='col-4 md-col-12'>
+            <div className='dates__requisition'>
+              <label className='label__general'>Fechas</label>
+              <div className='container_dates__requisition'>
+                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
               </div>
-              <div className={`content ${selectBranchOffices ? 'active' : ''}`} >
-                <ul className={`options ${selectBranchOffices ? 'active' : ''}`} style={{ opacity: selectBranchOffices ? '1' : '0' }}>
-                  {branchOffices?.map((branchOffice: any) => (
-                    <li key={branchOffice.id} onClick={() => handleBranchOfficesChange(branchOffice)}>
-                      {branchOffice.nombre}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className='dates__requisition'>
-            <label className='label__general'>Fechas</label>
-            <div className='container_dates__requisition'>
-              <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
             </div>
           </div>
         </div>
@@ -340,11 +274,49 @@ const PurchaseOrders: React.FC = () => {
             <ModalUpdate purchaseOrder={purchaseOrderToUpdate} conceptss={conceptss} suppliersUpdate={suppliersUpdate} />
           </div>
         </div> */}
-        <div className='table__purchase-order'>
-          {companiesXUsers ? (
+        <div className="table__requisicion" title='Haz click en un registro para ver su información'>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead className="table__head">
+              <tr className="thead">
+                <th>Folio</th>
+                <th>Status</th>
+                <th>Fecha</th>
+                <th>Por</th>
+                <th>Empresas</th>
+                <th>Sucursal</th>
+              </tr>
+            </thead>
+            <tbody className="table__body">
+              {purchaseOrders && purchaseOrders.length > 0 ? (
+                purchaseOrders.map((requisition:any, index:number) => (
+                  <tr className="tbody__container" key={index}  onClick={() => modalUpdate(requisition)}>
+                    <td>{requisition.serie}-{requisition.folio}-{requisition.anio}</td>
+                    <td>
+                    <p>{requisition.status == 0 ? <div className='active-status'><p>Activa</p></div> : ''}</p>
+                        <p>{requisition.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
+                        <p>{requisition.status == 12 ? <div className='active-status'><p>Terminada</p></div> : ''}</p>
+                    </td>
+                    <td>{requisition.fecha_creacion}</td>
+                    <td>{requisition.usuario_crea}</td>
+                    <td>{requisition.empresa}</td>
+                    <td>{requisition.sucursal}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={10} style={{ textAlign: "center" }}>
+                    No hay requisiciones disponibles
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        {/* <div className='table__purchase-order'>
+          {purchaseOrders ? (
             <div className='table__numbers'>
               <p className='text'>Total de Ordenes</p>
-              <div className='quantities_tables'>{conceptss.length}</div>
+              <div className='quantities_tables'>{purchaseOrders.length}</div>
             </div>
           ) : (
             <p></p>
@@ -353,9 +325,6 @@ const PurchaseOrders: React.FC = () => {
             <div className='thead'>
               <div className='th'>
                 <p>Folio</p>
-              </div>
-              <div className='th'>
-                <p>Tipo</p>
               </div>
               <div className='th'>
                 <p>Status</p>
@@ -372,12 +341,6 @@ const PurchaseOrders: React.FC = () => {
               <div className='th'>
                 <p>Sucursal</p>
               </div>
-              <div className='th'>
-                <p>Areas</p>
-              </div>
-              <div className='th'>
-                <p>Comentarios</p>
-              </div>
             </div>
           </div>
           {purchaseOrders ? (
@@ -387,14 +350,12 @@ const PurchaseOrders: React.FC = () => {
                   <div className='tbody__container' key={requisition.id}>
                     <div className='tbody'>
                       <div className='td'>
-                        <p>{requisition.folio}</p>
+                        <p>{requisition.serie}-{requisition.folio}-{requisition.anio}</p>
                       </div>
                       <div className='td'>
-                        <p>{requisition.status}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{requisition.status == 0 ?  <div className='active-status'><p>Activa</p></div> : ''}</p>
-                        <p>{requisition.status == 1 ?  <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
+                        <p>{requisition.status == 0 ? <div className='active-status'><p>Activa</p></div> : ''}</p>
+                        <p>{requisition.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
+                        <p>{requisition.status == 12 ? <div className='active-status'><p>Terminada</p></div> : ''}</p>
                       </div>
                       <div className='td'>
                         <p>{requisition.fecha_creacion}</p>
@@ -425,7 +386,7 @@ const PurchaseOrders: React.FC = () => {
           ) : (
             <p>Cargando datos...</p>
           )}
-        </div>
+        </div> */}
       </div>
     </div>
   )
