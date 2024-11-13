@@ -57,9 +57,6 @@ const ModalUpdate = ({oderUpdate, orderConceptsUpdate}: any, ) => {
         console.error('Error al generar el PDF:', error);
       }
     }
-    
-    console.log(orderConceptsUpdate)
-
 
   return (
     <form className='conatiner__update_orders'>
@@ -81,67 +78,42 @@ const ModalUpdate = ({oderUpdate, orderConceptsUpdate}: any, ) => {
                 </div>
             </div>
         </div>
-        <div className='row__two'>
-            <div className='select__container'>
-                <label className='label__general'>Usuario</label>
-                <div className='container__text_result'>
-                  <p className='text__result' >{oderUpdate.usuario_crea}</p>
+        <div className="card ">
+                <div className="card-body bg-standar">
+                  <h3 className="text">{oderUpdate.serie}-{oderUpdate.folio}-{oderUpdate.anio}</h3>
+                  <hr />
+                  <div className='row'>
+                    <div className='col-6 md-col-12'>
+                      <span className='text'>Creado por: <b>{oderUpdate.usuario_crea}</b></span><br />
+                      <span className='text'>Fecha de Creación: <b>{oderUpdate.fecha_creacion}</b></span><br />
+                      <span className='text'>Titulo: <b>{oderUpdate.titulo}</b> </span>
+                        {oderUpdate.status === 0 ? (
+                          <span className="active-status">Activo</span>
+                        ) : oderUpdate.status === 1 ? (
+                          <span className="canceled-status">Cancelada</span>
+                        ) : (
+                          oderUpdate.status === 2 ? (
+                            <span className="end-status">Terminado</span>
+                          ) : (
+                            ""
+                          )
+                        )}
+
+                    </div>
+                    <div className='col-6 md-col-12'>
+                      <span className='text'>Empresa: <b>{oderUpdate.empresa}</b></span><br />
+                      <span className='text'>Sucursal: <b>{oderUpdate.sucursal}</b></span><br />
+                      <span className='text'>Area: <b>{oderUpdate.area}</b></span>
+                    </div>
+                  </div>
+                  <div className='row'>
+                    <div className='col-12'>
+                      <span className='text'>Comentarios: {oderUpdate.comentarios}</span>
+
+                    </div>
+                  </div>
                 </div>
-            </div>
-            <div className='select__container'>
-                <label className='label__general'>Serie</label>
-                <div className='container__text_result'>
-                  <p className='text__result' >{oderUpdate.serie}</p>
-                </div>
-            </div>
-            <div className='select__container'>
-                <label className='label__general'>Folio</label>
-                <div className='container__text_result'>
-                  <p className='text__result' >{oderUpdate.folio}</p>
-                </div>
-            </div>
-            <div className='select__container'>
-                <label className='label__general'>Año</label>
-                <div className='container__text_result'>
-                  <p className='text__result' >{oderUpdate.anio}</p>
-                </div>
-            </div>
-            <div className='select__container'>
-                <label className='label__general'>Status</label>
-                <div className='container__text_result'>
-                  <p className='text__result' >{oderUpdate.status}</p>
-                </div>
-            </div>
-           
-        </div>
-        <div className="row__three">
-          <div className='select__container'>
-                <label className='label__general'>Empresa</label>
-                <div className='container__text_result'>
-                  <p className='text__result' >{oderUpdate.empresa}</p>
-                </div>
-            </div>
-            <div className='select__container'>
-                <label className='label__general'>Sucursal</label>
-                <div className='container__text_result'>
-                  <p className='text__result' >{oderUpdate.empresa}</p>
-                </div>
-            </div>
-            <div className='select__container'>
-                <label className='label__general'>Sucursal</label>
-                <div className='container__text_result'>
-                  <p className='text__result' >{oderUpdate.sucursal}</p>
-                </div>
-            </div>
-        </div>
-        <div className="row__five">
-            <div>
-                <label className='label__general'>Comentarios de OC</label>
-                <div className='container__text_result'>
-                  <p className='text__result' >{oderUpdate.comentarios}</p>
-                </div>
-            </div>
-        </div>
+              </div>
         <div className='table__modal_update_orders' >
             <div>
                 <div>

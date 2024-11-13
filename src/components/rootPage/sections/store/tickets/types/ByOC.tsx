@@ -10,31 +10,33 @@ import { storeSeries } from '../../../../../../zustand/Series';
 import useUserStore from '../../../../../../zustand/General';
 import APIs from '../../../../../../services/services/APIs';
 import './styles/ByOC.css'
+import { storePurchaseOrders } from '../../../../../../zustand/PurchaseOrders';
+import ModalPurchaseOrders from '../../../shopping/purchaseOrders/ModalPurchaseOrders';
 
 
 const ByOC: React.FC = () => {
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
 
-     /////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////ByOCa///////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        
+
     const setConceptos = storeTickets(state => state.setConceptos)
-    const {conceptos}: any = useStore(storeTickets)
- 
+    const { conceptos }: any = useStore(storeTickets)
+
 
     const [purchaseOrders, setPurchaseOrders] = useState<any>([])
 
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
-    const {getSeriesXUser }: any = storeSeries();
+    const { getSeriesXUser }: any = storeSeries();
 
     const [series, setSeries] = useState<any>([])
 
     const fecth = async () => {
-        let resultSeries = await getSeriesXUser({id: user_id, tipo_ducumento: 2})
+        let resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 2 })
         setSeries({
             selectName: 'Series',
             options: 'nombre',
@@ -61,7 +63,7 @@ const ByOC: React.FC = () => {
         }
     };
 
-    
+
 
     const filterByRequest = async () => {
         let data = {
@@ -78,7 +80,7 @@ const ByOC: React.FC = () => {
         try {
             let result = await APIs.getPurchaseOrders(data);
             setPurchaseOrders(result)
-        } catch (error) {  
+        } catch (error) {
             console.error("Error fetching requisitions:", error);
         }
     }
@@ -86,16 +88,16 @@ const ByOC: React.FC = () => {
     const addArticlesByRequest = async (x: any) => {
         console.log(x)
         for (const xx of x.conceptos) {
-            xx.id_orden_compra_concepto = xx.id;
+            xx.id_orden_compra_concepto = xx.id_orden_compra;
             xx.oc = `${x.serie}-${x.folio}-${x.anio}`
-            if(x.sumar_flete == 1) {
-                xx.sumar_flete = x.sumar_flete 
+            if (x.sumar_flete == 1) {
+                xx.sumar_flete = x.sumar_flete
                 xx.costo_flete = x.costo_flete
             }
         }
         setConceptos([...conceptos, ...x.conceptos]);
     }
-    
+
 
 
 
@@ -117,7 +119,7 @@ const ByOC: React.FC = () => {
                 precio_unitario: element.precio_unitario,
                 proveedor: element.proveedor,
                 unidad: element.unidad,
-              
+
             }]));
         });
 
@@ -134,12 +136,29 @@ const ByOC: React.FC = () => {
         setModalStateConcepts(false)
     }
 
+    const [purchaseOrderToUpdate, setPurchaseOrderToUpdate] = useState<any>(null);
 
+    const setModal = storePurchaseOrders(state => state.setModal)
+    const verOc = async (data: any) => {
+        console.log(data);
+
+        setPurchaseOrderToUpdate(data)
+        setModal('modal-purchase-orders-update')
+    }
     return (
         <div className='conatiner__by-request'>
+            <ModalPurchaseOrders purchaseOrderToUpdate={purchaseOrderToUpdate} />
+
+            <br />
+            <div className='row'>
+                <div className='col-12'>
+                    <b>Filtrar Ordenes de Compra</b>
+                </div>
+            </div>
+            <br />
             <div className='row'>
                 <div className='col-8'>
-                    <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices}  modeUpdate={false}/>
+                    <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
                 </div>
                 <div className='col-3'>
                     <label className='label__general'>Fechas</label>
@@ -230,17 +249,17 @@ const ByOC: React.FC = () => {
                                     <div className='tbody__container' key={index}>
                                         <div className='tbody'>
                                             <div className='td'>
-                                                {x.empresa}
+                                                {x.serie}-{x.folio}-{x.anio}
                                             </div>
                                             <div className='td'>
-                                                ({x.sucursal})
+                                                {x.empresa} ({x.sucursal})
                                             </div>
                                             <div className='td'>
                                                 {x.fecha_creacion}
                                             </div>
                                             <div className='td'>
                                                 <div>
-                                                    <button onClick={() => openModalConcepts(x)} type='button' className='btn__general-purple'>Ver conceptos</button>
+                                                    <button onClick={() => verOc(x)} type='button' className='btn__general-purple'>Ver detalle</button>
                                                 </div>
                                             </div>
                                             <div className='td'>
@@ -254,7 +273,10 @@ const ByOC: React.FC = () => {
                             </div>
                         </div>
                     ) : (
-                        <p className='text'>No hay ordes de compras que mostrar</p>
+                        <>
+                            <br />
+                            <p className='text'>No hay ordes de compras que mostrar</p>
+                        </>
                     )}
                 </div>
             </div>

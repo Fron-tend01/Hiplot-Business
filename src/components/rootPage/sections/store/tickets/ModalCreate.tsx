@@ -9,6 +9,7 @@ import APIs from "../../../../../services/services/APIs";
 import Empresas_Sucursales from "../../../Dynamic_Components/Empresas_Sucursales";
 import ByOC from "./types/ByOC";
 import Direct from "./types/Direct";
+import DynamicVariables from "../../../../../utils/DynamicVariables";
 
 
 const ModalCreate = () => {
@@ -53,18 +54,24 @@ const ModalCreate = () => {
     const [selectedSupplier, setSelectedSupplier] = useState<any>([])
     const [selectedStore, setSelectedStore] = useState<any>([])
 
-
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value.trim();
+        const parsedValue = value === '' ? null : parseFloat(value);
         const newArticleStates = [...conceptos];
-        newArticleStates[index].cantidad = value === '' ? null : parseFloat(value);
+        newArticleStates[index] = {
+            ...newArticleStates[index],
+            cantidad: parsedValue,
+        };
         setConceptos(newArticleStates);
     };
 
     const handleComentariosChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value;
         const newArticleStates = [...conceptos];
-        newArticleStates[index].comentarios = value;
+        newArticleStates[index] = {
+            ...newArticleStates[index],  
+            comentarios: value, 
+        };
         setConceptos(newArticleStates);
 
     }
@@ -101,7 +108,7 @@ const ModalCreate = () => {
 
 
 
-    const handleCreateAreas = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleCreateAreas = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         let id_sucursal = branchOffices.id;
         let id_usuario_crea = user_id;
@@ -117,9 +124,9 @@ const ModalCreate = () => {
 
     }
 
-    useEffect(() => {
+    // useEffect(() => {
 
-    }, [conceptos])
+    // }, [conceptos])
 
     const deleteTicket = (ticket: any, indexTicket: any) => {
         let filter = conceptos.filter((x: any, index: any) => index !== indexTicket)
@@ -138,10 +145,10 @@ const ModalCreate = () => {
         let iva = 0;
         console.log(iva)
         let costo_flete = 0;
-    
+
         let ids: any = [];
 
-        conceptos.forEach((concept: any) => {
+        conceptos.forEach((concept: any, index: number) => {
             const exists = ids.some((x: any) => x === concept.id_orden_compra);
             if (exists) {
                 console.log('Ya existe');
@@ -149,8 +156,10 @@ const ModalCreate = () => {
                 ids.push(concept.id_orden_compra);
                 costo_flete += concept.costo_flete;
             }
+            concept.id_almacen = store[0].id
+
         });
-        
+
 
         conceptos.forEach((x: any) => {
             totalSub += x.cantidad * x.precio_unitario;
@@ -177,9 +186,9 @@ const ModalCreate = () => {
                     <a href="#" className="btn-cerrar-popup__tickets" onClick={() => setModalTickets('')}>
                         <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
                     </a>
-                    <p className='title__modals'>Crear nueva área</p>
+                    <p className='title__modals'>Generar Entrada</p>
                 </div>
-                <form className='conatiner__create_tickets' onSubmit={handleCreateAreas}>
+                <div className='conatiner__create_tickets'>
                     <div className="row__one">
                         <div className='container__checkbox_tickets'>
                             <div className='checkbox__tickets'>
@@ -264,7 +273,8 @@ const ModalCreate = () => {
                                                         </div>
                                                         <div className='td'>
                                                             <div>
-                                                                <input className='inputs__general' value={concept.cantidad === null ? '' : concept.cantidad} onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' />
+                                                                <input className='inputs__general' value={concept.cantidad === null ? '' : concept.cantidad}
+                                                                    onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' />
                                                             </div>
                                                         </div>
                                                         <div className="td">
@@ -356,9 +366,9 @@ const ModalCreate = () => {
                         ''
                     }
                     <div className="mt-4">
-                        <button className='btn__general-purple' type='submit'>Crear nueva entrada</button>
+                        <button className='btn__general-purple' onClick={(e) => handleCreateAreas(e)}>Guardar</button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     )

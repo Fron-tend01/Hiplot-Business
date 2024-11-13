@@ -16,6 +16,7 @@ import types from './json/types.json'
 import '../styles/PurchaseOrders.css'
 import './styles/ModalPurchaseOrders.css'
 import Swal from 'sweetalert2';
+import { Link } from 'react-router-dom';
 // Ensure the Spanish locale is loaded
 
 
@@ -23,15 +24,17 @@ import Swal from 'sweetalert2';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
+import Empresas_Sucursales from '../../../Dynamic_Components/Empresas_Sucursales';
+import { PrivateRoutes } from '../../../../../models/routes';
+import ModalRequisition from '../requisition/ModalRequisition';
 
 
 const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
-  const { requisitions, getRequisition, }: any = storeRequisitions();
+  const { getRequisition, getRequisition2 }: any = storeRequisitions();
 
-  
+  const [requisitions, setRequisitions] = useState<any[]>([])
 
-  const { updatePurchaseOrders }: any = storePurchaseOrders();
 
   const [stateLoading, setStateLoading] = useState<boolean>(false)
 
@@ -42,7 +45,6 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   const setModal = storePurchaseOrders(state => state.setModal)
   const { createPurchaseOrders, getPurchaseOrders, modal, selectedBranchOffice, type, dates }: any = storePurchaseOrders();
 
-  const { companiesXUsers }: any = storeCompanies();
   const { branchOfficeXCompanies }: any = storeBranchOffcies();
   const { series, getSeriesXUser }: any = storeSeries();
   const { areasXBranchOfficesXUsers, getAreasXBranchOfficesXUsers }: any = storeAreas();
@@ -52,24 +54,25 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   let user_id = userState.id
 
   const [suppliers, setSuppliers] = useState<any>()
+  const [conceptosElim, setConceptosElim] = useState<any[]>([])
 
-  const [selectModalCompanies, setSelectModalCompanies] = useState<boolean>(false)
-  const [selectedModalCompany, setSelectedModalCompany] = useState<number | null>(null)
+  const [selectedModalCompany, setSelectedModalCompany] = useState<any>({})
 
-  const [selectModalBranchOffices, setSelectModalBranchOffices] = useState<boolean>(false)
-  const [selectedModalBranchOffice, setSelectedModalBranchOffice] = useState<number | null>(null)
-  const [branchOffices, setBranchOffices] = useState<any>([])
+  const [selectedModalBranchOffice, setSelectedModalBranchOffice] = useState<any>({})
 
   const [arrivalDate, setArrivalDate] = useState<any>('');
   const [quoteComments, setQuoteComments] = useState<string>('')
   const [bill, setBill] = useState<string>('')
 
+  const [modoUpdate, setModoUpdate] = useState<boolean>(false)
+
   const setDates = async () => {
-    let resultB = await APIs.getBranchOfficesXCompanies(purchaseOrderToUpdate.id_empresa, user_id)
-    setBranchOffices(resultB)
-    setSelectedModalCompany(purchaseOrderToUpdate.id_empresa)
+    // let resultB = await APIs.getBranchOfficesXCompanies(purchaseOrderToUpdate.id_empresa, user_id)
+    setSelectModalTypes(purchaseOrderToUpdate.tipo)
+    setSelectedModalCompany({ id: purchaseOrderToUpdate?.id_empresa })
+    setSelectedModalBranchOffice({ id: purchaseOrderToUpdate?.id_sucursal })
+    // setBranchOffices(resultB)
     setArrivalDate(purchaseOrderToUpdate.fecha_llegada)
-    setSelectedModalBranchOffice(purchaseOrderToUpdate.id_sucursal)
     setQuoteComments(purchaseOrderToUpdate.cotizacion)
     setBill(purchaseOrderToUpdate.factura)
     setOComments(purchaseOrderToUpdate.comentarios)
@@ -78,20 +81,17 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     setFreightCost(purchaseOrderToUpdate.costo_flete)
     setFreightCostActive(purchaseOrderToUpdate.sumar_flete)
     setFreightComments(purchaseOrderToUpdate.comentarios_flete)
-    setConceptos(purchaseOrderToUpdate.conceptos)
+    setSelectedModalType(purchaseOrderToUpdate.tipo)
+    await setConceptos(purchaseOrderToUpdate.conceptos)
+    console.log('conceptosordencompra',purchaseOrderToUpdate.conceptos);
   }
 
   useEffect(() => {
+
     if (purchaseOrderToUpdate) {
       setDates()
-
     }
   }, [purchaseOrderToUpdate])
-
-
-  console.log(purchaseOrderToUpdate)
-
-
 
   const fetch = async () => {
     let data = {
@@ -99,10 +99,10 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
       is_flete: true,
       id_usuario: user_id
     }
-    let result = await APIs.getSuppliers(data)
+    let result: any = await APIs.getSuppliers(data)
+    result.unshift({ id: 0, nombre_comercial: 'Ninguno' })
     setSuppliers(result)
   }
-
 
   useEffect(() => {
     fetch()
@@ -110,10 +110,50 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     getAreasXBranchOfficesXUsers(0, 12)
     setType(0)
 
+    const hoy = new Date();
+    const haceUnaSemana = new Date();
+    haceUnaSemana.setDate(hoy.getDate() - 7);
+    const masUnaSemana = new Date();
+    masUnaSemana.setDate(hoy.getDate() + 7);
+    setArrivalDate(masUnaSemana.toISOString().split('T')[0])
+    setDateForReq([
+      haceUnaSemana.toISOString().split('T')[0],
+      hoy.toISOString().split('T')[0]
+    ])
+
+    setSelectedModalCompany(0)
+    setSelectedModalBranchOffice(0)
+    setQuoteComments('')
+    setBill('')
+    setOComments('')
+    setSelectedModalType(0)
+    setSelectedModalfreightProvider(0)
+    setFreightCost(0)
+    setFreightCostActive(false)
+    setFreightComments('')
+    setConceptos([])
+    setSelectedModalType(0)
+
+
+
   }, [])
 
-  // Modal de crear orden de compra
-  // Inicializar el estado como un número
+  useEffect(() => {
+    if (modal == 'modal-purchase-orders-update') {
+      setModoUpdate(true)
+    }
+    if (modal == 'modal-purchase-orders-create') {
+      setModoUpdate(false)
+    }
+  }, [modal])
+  useEffect(() => {
+    setConceptosElim([])
+    if (modal == 'modal-purchase-orders-create') {
+      setSelectedModalCompany(null)
+      setConceptos([])
+    }
+
+  }, [modoUpdate])
   const [typeModal, setType] = useState<number | null>(null);
   const handleModalType = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedValue = parseInt(e.target.value); // Convertir el valor a un número
@@ -122,22 +162,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
   const handleCheckboxClick = (value: number) => {
     setType(value);
-    console.log(value)
   };
-
-
-
-  // const hoy = new Date();
-  // const haceUnaSemana = new Date();
-  // haceUnaSemana.setDate(hoy.getDate() - 7);
-
-  // Inicializa el estado con las fechas formateadas
-  // const [date, setDate] = useState([
-  // haceUnaSemana.toISOString().split('T')[0],
-  // hoy.toISOString().split('T')[0]
-  // ]);
-
-
   const handleDateChange = (fechasSeleccionadas: any) => {
     // Asegúrate de que se seleccione una fecha antes de intentar acceder a ella
     if (fechasSeleccionadas && fechasSeleccionadas.length > 0) {
@@ -149,42 +174,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     }
   };
 
-  console.log(arrivalDate)
-
-
-
-  const openSelectModalCompanies = () => {
-    setSelectModalCompanies(!selectModalCompanies)
-  }
-
-
-
-  const handleModalCompaniesChange = async (company: any) => {
-    setSelectedModalCompany(company.id)
-    setSelectModalCompanies(false)
-    let resultB: any = await APIs.getBranchOfficesXCompanies(company.id, user_id)
-    console.log(resultB)
-    setBranchOffices(resultB)
-  }
-
-
-  const openSelectModalBranchOffices = () => {
-    setSelectModalBranchOffices(!selectModalBranchOffices)
-
-  }
-
-  const handleModalBranchOfficesChange = (branchOffice: any) => {
-    setSelectedModalBranchOffice(branchOffice.id)
-    setSelectModalBranchOffices(false)
-
-  }
-
-
-
-  // Select tipos de compra
   const [selectModalTypes, setSelectModalTypes] = useState<boolean>(false)
   const [selectedModalType, setSelectedModalType] = useState<number | null>(null)
-
 
   const openSelectModalTypes = () => {
     setSelectModalTypes(!selectModalTypes)
@@ -234,7 +225,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   /////////////////////////////Directa////////////////////////////////////////////////
 
   const [selectTypeSearch, setSelectTypeSearch] = useState<boolean>(false)
-  const [selectedTypeSearch, setSelectedTypeSearch] = useState<number | null>(null)
+  const [selectedTypeSearch, setSelectedTypeSearch] = useState<number>(0)
 
   const openSelectModalTypeSearch = () => {
     setSelectTypeSearch(!selectTypeSearch)
@@ -303,93 +294,9 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
 
 
+  const [selectedByRequestBranchOffice, setSelectedByRequestBranchOffice] = useState<any>()
 
-  const [selectByRequestCompanies, setSelectByRequestCompanies] = useState<boolean>(false)
-  const [selectedByRequestCompany, setSelectedByRequestCompany] = useState<number | null>(null)
-  const [selectByRequestBranchOffices, setSelectByRequestBranchOffices] = useState<boolean>(false)
-  const [selectedByRequestBranchOffice, setSelectedByRequestBranchOffice] = useState<number | null>(null)
-
-  const openSelectByRequestCompanies = () => {
-    setSelectByRequestCompanies(!selectByRequestCompanies)
-  }
-
-  const openSelectByRequestBranchOffices = () => {
-    setSelectByRequestBranchOffices(!selectByRequestBranchOffices)
-  }
-
-  const [filterByRequestBranchOffice, setFilterByRequestBranchOffice] = useState<any[]>([])
-
-  const handleByRequestCompaniesChange = (company: any) => {
-    setSelectedByRequestCompany(company.id)
-    setSelectByRequestCompanies(false)
-    automaticSelector(company.id)
-
-  }
-
-  const automaticSelector = (comapny_id: any) => {
-    const filter = branchOfficeXCompanies.filter((x: any) => x.empresa_id === comapny_id)
-    setFilterByRequestBranchOffice(filter)
-    setSelectedByRequestBranchOffice(filter.length > 0 ? filter[0].id : null);
-  }
-
-  const handleByRequestBranchOfficesChange = (branchOffice: any) => {
-    setSelectedByRequestBranchOffice(branchOffice.id)
-    setSelectByRequestBranchOffices(false)
-    automaticAreaSelector(branchOffice.id)
-  }
-
-  const [areaFiltering, setAreaFiltering] = useState<any[]>([])
-
-  const automaticAreaSelector = (branchOffice_id: any) => {
-    const filter = areasXBranchOfficesXUsers.filter((x: any) => x.sucursal_id === branchOffice_id)
-    console.log(filter)
-    setAreaFiltering(filter)
-    setSelectedByRequestArea(filter.length > 0 ? filter[0].id : null);
-  }
-
-
-
-  const [selectModalSeries, setSelectModalSeries] = useState<boolean>(false)
   const [selectedModalSerie, setSelectedModalSerie] = useState<number | null>(null)
-
-  const openSelectModalSeries = () => {
-    setSelectModalSeries(!selectModalSeries)
-  }
-
-  const handleModalSeriesChange = (serie: any) => {
-    setSelectedModalSerie(serie.id)
-    setSelectModalSeries(false)
-  }
-
-
-  const [selectByRequestAreas, setSelectByRequestAreas] = useState<boolean>(false)
-  const [selectedByRequestArea, setSelectedByRequestArea] = useState<number | null>(null)
-
-  const openSelectByRequestAreas = () => {
-    setSelectByRequestAreas(!selectByRequestAreas)
-  }
-
-  const handleByRequestAreasChange = (area: any) => {
-    setSelectedByRequestArea(area.id)
-    setSelectByRequestAreas(false)
-
-  }
-
-
-
-  const [selectByRequestTypes, setSelectByRequestTypes] = useState<boolean>(false)
-  const [selectedByRequestType, setSelectedByRequestType] = useState<number | null>(null)
-
-
-  const openSelectByRequestTypes = () => {
-    setSelectByRequestTypes(!selectByRequestTypes)
-  }
-
-  const handleByRequestTypesChange = (type: any) => {
-    setSelectedByRequestType(type.id)
-    setSelectByRequestTypes(false)
-  }
-
 
 
 
@@ -469,7 +376,6 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     setFreightCostActive(e.target.checked);
   };
 
-  console.log('conceptos', conceptos)
 
   const [subtotal, setSubtotal] = useState<number>(0); // Assuming you have declared `setSubtotal` elsewhere
 
@@ -525,7 +431,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     let unidad = articleResult.unidades[0].id_unidad
     let id_proveedor = articleResult.proveedores[0].id_proveedor
 
-    setConceptos((prevArticleStates: any) => [...prevArticleStates, { id_proveedor, proveedores, id_articulo, descripcion, cantidad: null, descuento: null, unidad, unidades, precio_unitario: null, comentarios: '' }]);
+    setConceptos((prevArticleStates: any) => [...prevArticleStates, { id_proveedor, proveedores, id_articulo, descripcion, cantidad: 0, descuento: 0, unidad, unidades, precio_unitario: 0, comentarios: '' }]);
   };
 
 
@@ -593,22 +499,15 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
 
   const filterByRequest = async () => {
-    // let id = 0;
-    // let folio = 0;
-    // let id_serie = selectedModalSerie;
-    // let id_sucursal = selectedByRequestBranchOffice;
-    // let id_usuario = 12;
-    // let id_area = 0;
-    // let status = 0;
-    // let desde = selectedStartDate;
-    // let hasta = selectedEndDate;
-    // let tipo = 0;
-    // Llamada a la función asincrónica y esperar el resultado
-    await getRequisition(0, 0, 0, user_id, 0, 0, '2024-03-19', '2024-04-21', 0)
-
-
-
-
+    let data = {
+      id_sucursal: selectedModalBranchOffice == null ? 0 : selectedModalBranchOffice.id,
+      id_usuario: user_id,
+      desde: dateForReq[0],
+      hasta: dateForReq[1],
+      status: 0
+    }
+    let res = await getRequisition2(data)
+    setRequisitions(res)
   }
 
 
@@ -647,9 +546,10 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
         comentarios: element.comentarios,
         descripcion: element.descripcion,
         iva_on: element.iva_on,
-        precio_unitario: element.precio_unitario,
+        precio_unitario: element.precio_unitario == null ? 0 : element.precio_unitario,
         proveedor: element.proveedor,
-        unidad: element.unidades[0].id_unidad,
+        unidad: (element.unidades.find((unidad: any) => unidad.id_unidad === element.unidad) || { id_unidad: 0 }).id_unidad,
+        nombre_unidad: (element.unidades.find((unidad: any) => unidad.id_unidad === element.unidad) || { nombre: 'n/a' }).nombre,
         id_proveedor: element.proveedores[0].id_proveedor
       }]));
     });
@@ -664,35 +564,54 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   }
 
 
+  const addArticlesByRequest = (req: any) => {
+    const updatedConceptos = req.conceptos.map((concepto: any) => ({
+      id_proveedor: concepto.proveedores[0].id_proveedor,
+      proveedores: concepto.proveedores,
+      id_articulo: concepto.id_articulo,
+      codigo: concepto.codigo,
+      descripcion: concepto.descripcion,
+      cantidad: concepto.cantidad,
+      descuento: 0,
+      unidad: concepto.unidad,
+      unidades: concepto.unidades,
+      precio_unitario: 0,
+      iva_on: false,
+      comentarios: concepto.comentarios,
+      id_requisicion: concepto.id_requisicion,
+      folio_req: req.serie + '-' + req.folio + '-' + req.anio
 
-  const addArticlesByRequest = () => {
-    let id_articulo = requisitions.id
-    // let proveedores = articleResult.proveedores
-    // let unidades = articleResult.unidades
-    setConceptos((prevArticleStates: any) => [...prevArticleStates, { id_proveedor: null, id_articulo, cantidad: null, descuento: null, unidad: '', precio_unitario: null, comentarios: '' }]);
+    }));
+
+    // Actualizar el estado de conceptos con los datos mapeados
+    setConceptos((prevArticleStates: any) => [
+      ...prevArticleStates,
+      ...updatedConceptos,  // Agregar los conceptos transformados
+    ]);
   }
 
 
-  const hanledCreateOC = async (e: React.FormEvent<HTMLFormElement>) => {
+  const hanledCreateOC = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
     setStateLoading(true);
     let data = {
       id: purchaseOrderToUpdate ? purchaseOrderToUpdate.id : null,
       id_usuario_crea: user_id,
       id_usuario_autoriza: 0,
-      id_sucursal: selectedModalBranchOffice,
+      id_sucursal: selectedModalBranchOffice == null ? 0 : selectedModalBranchOffice.id,
       fecha_creacion: '',
-      fecha_llegada: '2024-04-02',
+      fecha_llegada: arrivalDate,
       status: 0,
-      tipo: type,
+      tipo: type == null ? 0 : type,
       cotizacion: quoteComments,
       factura: bill,
       comentarios: OComments,
-      id_proveedor_flete: selectedModalfreightProvider,
-      costo_flete: freightCost,
+      id_proveedor_flete: selectedModalfreightProvider == null ? 0 : selectedModalfreightProvider,
+      costo_flete: freightCost == '' ? 0 : freightCost,
       comentarios_flete: freightComments,
       sumar_flete: freightCostActive,
       conceptos,
+      conceptos_elim: conceptosElim,
       documento_anterior: '',
       documento_siguiente: ''
     };
@@ -700,7 +619,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     let dataGet = {
       folio: 0,
       id_serie: 0,
-      id_sucursal: selectedBranchOffice,
+      id_sucursal: selectedBranchOffice == null ? 0 : selectedBranchOffice.id,
       id_usuario: user_id,
       id_area: 0,
       // tipo: tipo,
@@ -714,6 +633,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
         let resultCreate = await APIs.updatePurchaseOrders(data);
         let resultGet = await APIs.getPurchaseOrders(dataGet);
         setPurchaseOrders(resultGet)
+        setConceptosElim([])
+        setConceptos([])
         Swal.fire('Orden de compra creada exitosamente', '', 'success');
         setStateLoading(false);
         setModal('')
@@ -721,6 +642,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
         let result = await APIs.createPurchaseOrders(data);
         let resultGet = await APIs.getPurchaseOrders(dataGet);
         setPurchaseOrders(resultGet)
+        setConceptosElim([])
+        setConceptos([])
         Swal.fire('Orden de compra actualizada exitosamente', '', 'success');
         setStateLoading(false);
         setModal('')
@@ -751,6 +674,11 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   }
 
   const deleteOrders = (item: any, i: number) => {
+    if (modoUpdate) {
+      if (conceptos[i].id != undefined) {
+        setConceptosElim([...conceptosElim, conceptos[i].id])
+      }
+    }
     let filter = conceptos.filter((_: any, index: number) => index !== i)
     setConceptos(filter)
   }
@@ -782,18 +710,39 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
     }
   }
+  const setModalStateCreate = storeRequisitions((state: any) => state.setModalStateCreate);
+  const setUpdateToRequisition = storeRequisitions((state: any) => state.setUpdateToRequisition);
+  const setConceptos_req = storeRequisitions((state: any) => state.setConcepts);
 
+  const reqxid = async (id:number) => {
+    let hoy = new Date()
+    let fecha = hoy.toISOString().split('T')[0]
+      let resultRequisition = await getRequisition2({id:id, id_sucursal:0,id_usuario:user_id,desde:fecha,hasta:fecha})
+      return resultRequisition
+  }
+  const modalReq = async (art:any) => {
+    let req = await reqxid(art.id_requisicion || art.requisicion.id)
+    setModalStateCreate('create')
+    setUpdateToRequisition(req[0])
+    setConceptos_req(req[0].conceptos)
+  }
   const getPDFRequisition = async () => {
     try {
       await APIs.getPdfPurchaseOrders(purchaseOrderToUpdate.id);
       // Abrimos el PDF en una nueva pestaña
       window.open(`https://hiplotbusiness.com/api_dev/pdf_oc/${purchaseOrderToUpdate.id}`, '_blank');
-      setModal('');
     } catch (error) {
       console.log(error);
     }
   }
-
+  const [dateForReq, setDateForReq] = useState<any>()
+  const handleDateChange2 = (fechasSeleccionadas: any) => {
+    if (fechasSeleccionadas.length === 2) {
+      setDateForReq(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
+    } else {
+      setDateForReq([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
+    }
+  };
   return (
     <div className={`overlay__purchase-orders ${modal == 'modal-purchase-orders-create' || modal == 'modal-purchase-orders-update' ? 'active' : ''}`}>
       <div className={`popup__purchase-orders ${modal == 'modal-purchase-orders-create' || modal == 'modal-purchase-orders-update' ? 'active' : ''}`}>
@@ -801,18 +750,55 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
           <a href="#" className="btn-cerrar-popup__purchase-orders" onClick={() => setModal('')} >
             <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
           </a>
-          <p className='title__modals'>Precios</p>
+          {modoUpdate ?
+            <p className='title__modals'>Actualizar Orden de Compra</p>
+
+            :
+            <p className='title__modals'>Crear Orden de Compra</p>
+
+          }
         </div>
-        <form className='parchase-orders-modal' onSubmit={hanledCreateOC}>
-          <div className='row__check'>
-            {modal == 'modal-purchase-orders-update' ?
-              <div className='code-type-orden'>
-                <p>{`${purchaseOrderToUpdate.serie}-${purchaseOrderToUpdate.folio}-${purchaseOrderToUpdate.anio}`}</p>
-                <p>{purchaseOrderToUpdate.usuario_crea}</p>
+        <div className='parchase-orders-modal'>
+          {modoUpdate ?
+            <div className='row'>
+              <div className='col-12'>
+                <div className="card ">
+                  <div className="card-body bg-standar">
+                    <h3 className="text">{purchaseOrderToUpdate?.serie}-{purchaseOrderToUpdate?.folio}-{purchaseOrderToUpdate?.anio}</h3>
+                    <hr />
+                    <div className='row'>
+                      <div className='col-6 md-col-12'>
+                        <span className='text'>Creado por: <b>{purchaseOrderToUpdate?.usuario_crea}</b></span><br />
+                        <span className='text'>Fecha de Creación: <b>{purchaseOrderToUpdate?.fecha_creacion}</b></span><br />
+                        {purchaseOrderToUpdate?.status === 0 ? (
+                          <span className="active-status">Activo</span>
+                        ) : purchaseOrderToUpdate?.status === 1 ? (
+                          <span className="canceled-status">Cancelada</span>
+                        ) : (
+                          ""
+                        )}
+
+                      </div>
+                      <div className='col-6 md-col-12'>
+                        <span className='text'>Empresa: <b>{purchaseOrderToUpdate?.empresa}</b></span><br />
+                        <span className='text'>Sucursal: <b>{purchaseOrderToUpdate?.sucursal}</b></span><br />
+                      </div>
+                    </div>
+                    <div className='row'>
+                      <div className='col-12'>
+                        <span className='text'>Comentarios: {purchaseOrderToUpdate?.comentarios}</span>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              :
-              ''
-            }
+            </div>
+            :
+            ''
+          }
+
+          <div className='row__check'>
             <div className='container__checkbox_purchas-order'>
               <div className='checkbox__purchas-order'>
                 <label className="checkbox__container_general">
@@ -846,64 +832,12 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
           </div>
           <div className='parchase-orders-modal_container'>
             <div className='row'>
-              {purchaseOrderToUpdate ?
-                <div className='select__container col-3'>
-                  <label className='label__general'>Empresas</label>
-                  <div className='container__text_result'>
-                    <p className='text__result' >{purchaseOrderToUpdate.empresa}</p>
-                  </div>
-                </div>
-                :
-                <div className='select__container col-3'>
-                  <label className='label__general'>Empresas</label>
-                  <div className='select-btn__general'>
-                    <div className={`select-btn ${selectModalCompanies ? 'active' : ''}`} onClick={openSelectModalCompanies}>
-                      <div className='select__container_title'>
-                        <p>{selectedModalCompany ? companiesXUsers.find((s: { id: number }) => s.id === selectedModalCompany)?.razon_social : 'Selecciona'}</p>
-                      </div>
-                      <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                    </div>
-                    <div className={`content ${selectModalCompanies ? 'active' : ''}`}>
-                      <ul className={`options ${selectModalCompanies ? 'active' : ''}`} style={{ opacity: selectModalCompanies ? '1' : '0' }}>
-                        {companiesXUsers && companiesXUsers.map((company: any) => (
-                          <li key={company.id} onClick={() => handleModalCompaniesChange(company)}>
-                            {company.razon_social}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              }
-              {purchaseOrderToUpdate ?
-                <div className='select__container col-3'>
-                  <label className='label__general'>Sucursales</label>
-                  <div className='container__text_result'>
-                    <p className='text__result'>{purchaseOrderToUpdate.sucursal}</p>
-                  </div>
-                </div>
-                :
-                <div className='select__container col-3'>
-                  <label className='label__general'>Sucursales</label>
-                  <div className='select-btn__general'>
-                    <div className={`select-btn ${selectModalBranchOffices ? 'active' : ''}`} onClick={openSelectModalBranchOffices} >
-                      <div className='select__container_title'>
-                        <p>{selectedModalBranchOffice ? branchOffices?.find((s: { id: number }) => s.id === selectedModalBranchOffice)?.nombre : 'Selecciona'}</p>
-                      </div>
-                      <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                    </div>
-                    <div className={`content ${selectModalBranchOffices ? 'active' : ''}`} >
-                      <ul className={`options ${selectModalBranchOffices ? 'active' : ''}`} style={{ opacity: selectModalBranchOffices ? '1' : '0' }}>
-                        {branchOffices?.map((branchOffice: any) => (
-                          <li key={branchOffice.id} onClick={() => handleModalBranchOfficesChange(branchOffice)}>
-                            {branchOffice.nombre}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              }
+              <div className='col-6'>
+                <Empresas_Sucursales modeUpdate={modoUpdate} empresaDyn={selectedModalCompany} sucursalDyn={selectedModalBranchOffice}
+                  setEmpresaDyn={setSelectedModalCompany} setSucursalDyn={setSelectedModalBranchOffice} all={false} blocked={modoUpdate ? true : undefined} />
+              </div>
+
+
               <div className='dates__requisition col-2'>
                 <label className='label__general'>Fecha de llegada</label>
                 <div className='container_dates__requisition'>
@@ -973,9 +907,10 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
               <div>
                 <label className='label__general'>Costo flete</label>
                 {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
-                <input className={`inputs__general ${warningInvoice}  ? 'warning' : ''}`} type="number" value={freightCost} onChange={handleInputFreightCostChange} placeholder='Costo' />
+                <input className={`inputs__general ${warningInvoice}  ? 'warning' : ''}`} type="number" value={freightCost == '' ? 0 : freightCost} onChange={handleInputFreightCostChange} placeholder='Costo' />
               </div>
               <div>
+                <label className='label__general'>Sumar</label>
                 <div>
                   <label className="switch">
                     <input type="checkbox" checked={freightCostActive} onChange={checkFreightCost} />
@@ -996,7 +931,11 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                 <textarea className={`textarea__general ${warningInvoice}  ? 'warning' : ''}`} type="text" value={OComments} onChange={(e) => setOComments(e.target.value)} placeholder='Comentarios de la orden de compra'></textarea>
               </div>
             </div>
-            <p className='title'>Articulos en Requisicion</p>
+            {typeModal ?
+              <p className='title'>Buscar Requisiciones</p>
+              :
+              <p className='title'>Articulos en Requisicion</p>
+            }
             <div className='row__four'>
               {typeModal == 0 ?
                 <div className='conatiner__direct'>
@@ -1038,14 +977,14 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                         <label className='label__general'>Resultados</label>
                         <div className='select-btn__general'>
                           <div className={`select-btn ${selectModalResults ? 'active' : ''}`} onClick={openSelectModalResults}>
-                            <p>{selectedModalResult ? `${articleResult.codigo} ${articleResult.nombre}` : 'Selecciona'}</p>
+                            <p>{selectedModalResult ? `${articleResult.codigo}-${articleResult.descripcion}` : 'Selecciona'}</p>
                             <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                           </div>
                           <div className={`content ${selectModalResults ? 'active' : ''}`}>
                             <ul className={`options ${selectModalResults ? 'active' : ''}`} style={{ opacity: selectModalResults ? '1' : '0' }}>
                               {resultModalOC && resultModalOC.map((item: any) => (
                                 <li key={item.id} onClick={() => handleModalResultsChange(item)}>
-                                  {`${item.codigo} ${item.nombre}`}
+                                  {`${item.codigo} ${item.descripcion}`}
                                 </li>
                               ))}
                             </ul>
@@ -1059,232 +998,82 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                   </div>
                 </div>
                 :
-                <div className='conatiner__by-request'>
-                  <div className='row__one'>
-                    <div className='select__container'>
-                      <label className='label__general'>Empresas</label>
-                      <div className='select-btn__general'>
-                        <div className={`select-btn ${selectByRequestCompanies ? 'active' : ''}`} onClick={openSelectByRequestCompanies}>
-                          <p>{selectedByRequestCompany ? companiesXUsers.find((s: { id: number }) => s.id === selectedByRequestCompany)?.razon_social : 'Selecciona'}</p>
-                          <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                        </div>
-                        <div className={`content ${selectByRequestCompanies ? 'active' : ''}`}>
-                          <ul className={`options ${selectByRequestCompanies ? 'active' : ''}`} style={{ opacity: selectByRequestCompanies ? '1' : '0' }}>
-                            {companiesXUsers && companiesXUsers.map((company: any) => (
-                              <li key={company.id} onClick={() => handleByRequestCompaniesChange(company)}>
-                                {company.razon_social}
-                              </li>
-                            ))}
-                          </ul>
+                <>
+
+                  <div className='row'>
+                    <div className='col-10'>
+                      <div className='dates__requisition'>
+                        <label className='label__general'>Fechas</label>
+                        <div className='container_dates__requisition'>
+                          <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange2} placeholder='seleciona las fechas' />
                         </div>
                       </div>
                     </div>
-                    <div className='select__container'>
-                      <label className='label__general'>Sucursales</label>
-                      <div className='select-btn__general'>
-                        <div className={`select-btn ${selectByRequestBranchOffices ? 'active' : ''}`} onClick={openSelectByRequestBranchOffices} >
-                          <p>{selectedByRequestBranchOffice ? filterByRequestBranchOffice.find((s: { id: number }) => s.id === selectedByRequestBranchOffice)?.nombre : 'Selecciona'}</p>
-                          <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                        </div>
-                        <div className={`content ${selectByRequestBranchOffices ? 'active' : ''}`} >
-                          <ul className={`options ${selectByRequestBranchOffices ? 'active' : ''}`} style={{ opacity: selectByRequestBranchOffices ? '1' : '0' }}>
-                            {filterByRequestBranchOffice.map((branchOffice: any) => (
-                              <li key={branchOffice.id} onClick={() => handleByRequestBranchOfficesChange(branchOffice)}>
-                                {branchOffice.nombre}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                    <div className='select__container'>
-                      <label className='label__general'>Areas</label>
-                      <div className='select-btn__general'>
-                        <div className={`select-btn ${selectByRequestAreas ? 'active' : ''}`} onClick={openSelectByRequestAreas} >
-                          <p>{selectedByRequestArea ? areaFiltering.find((s: { id: number }) => s.id === selectedByRequestArea)?.nombre : 'Selecciona'}</p>
-                          <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                        </div>
-                        <div className={`content ${selectByRequestAreas ? 'active' : ''}`} >
-                          <ul className={`options ${selectByRequestAreas ? 'active' : ''}`} style={{ opacity: selectByRequestAreas ? '1' : '0' }}>
-                            {areaFiltering.map((area: any) => (
-                              <li key={area.id} onClick={() => handleByRequestAreasChange(area)}>
-                                {area.nombre}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                    <div className='dates__requisition'>
-                      <label className='label__general'>Fechas</label>
-                      <div className='container_dates__requisition'>
-                        <input className='date' id="dateRangePicker" type="text" placeholder="Seleccionar rango de fechas" />
-                      </div>
+                    <div className='col-2'>
+                      <button className='btn__general-purple' type='button' onClick={filterByRequest}>Filtrar</button>
                     </div>
                   </div>
-                  <div className='row__three'>
-                    <div>
-                      <div className='select__container'>
-                        <label className='label__general'>Tipo</label>
-                        <div className='select-btn__general'>
-                          <div className={`select-btn ${selectByRequestTypes ? 'active' : ''}`} onClick={openSelectByRequestTypes} >
-                            <p>{selectedByRequestType !== null ? types.find((s: { id: number }) => s.id === selectedByRequestType)?.name : 'Selecciona'}</p>
-                            <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                          </div>
-                          <div className={`content ${selectByRequestTypes ? 'active' : ''}`} >
-                            <ul className={`options ${selectByRequestTypes ? 'active' : ''}`} style={{ opacity: selectByRequestTypes ? '1' : '0' }}>
-                              {types.map((branchOffice: any) => (
-                                <li key={branchOffice.id} onClick={() => handleByRequestTypesChange(branchOffice)}>
-                                  {branchOffice.name}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
+
+                  <div className='conatiner__by-request'>
+
+                    <div className='row__two'>
                       <div>
-                        <button className='btn__general-purple' type='button' onClick={filterByRequest}>Filtrar</button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='row__four'>
-                    <div className='select__container'>
-                      <label className='label__general'>Serie</label>
-                      <div className='select-btn__general'>
-                        <div className={`select-btn ${selectModalSeries ? 'active' : ''}`} onClick={openSelectModalSeries} >
-                          <p>{selectedModalSerie ? series.find((s: { id: number }) => s.id === selectedModalSerie)?.nombre : 'Selecciona'}</p>
-                          <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                        </div>
-                        <div className={`content ${selectModalSeries ? 'active' : ''}`} >
-                          <ul className={`options ${selectModalSeries ? 'active' : ''}`} style={{ opacity: selectModalSeries ? '1' : '0' }}>
-                            {series.map((serie: any) => (
-                              <li key={serie.id} onClick={() => handleModalSeriesChange(serie)}>
-                                {serie.nombre}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <label className='label__general'>Folio</label>
-                      {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
-                      <input className={`inputs__general ${warningInvoice}  ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
-                    </div>
-                    <div className='container__search'>
-                      <button className='btn__general-purple btn__container' type='button' onClick={searchByRequest}>
-                        Buscar
-                        <svg className='svg' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg>
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <div className={`overlay__modal_concepts ${modalStateConcepts ? 'active' : ''}`}>
-                      <div className={`popup__modal_concepts ${modalStateConcepts ? 'active' : ''}`}>
-                        <a href="#" className="btn-cerrar-popup__modal_concepts" onClick={closeModalConcepts}>
-                          <svg className='close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
-                        </a>
-                        <p className='title__modals'>Detalles de conceptos</p>
-                        <div className='conatiner__concepts'>
-                          {concepts.map((concepto: any, index: any) => (
-                            <div className='row__one' key={index}>
-                              <div>
-                                <p className='text'>cantidad</p>
-                                <p className='text'>{concepto.cantidad}</p>
-                              </div>
-                              <div>
-                                <p className='text'>codigo</p>
-                                <p className='text'>{concepto.codigo}</p>
-                              </div>
-                              <div>
-                                <p className='text'>comentarios</p>
-                                <p className='text'>{concepto.comentarios}</p>
-                              </div>
-                              <div>
-                                <p className='text'>descripcion</p>
-                                <p className='text'>{concepto.descripcion}</p>
-                              </div>
-                              <div>
-                                <p className='text'>iva</p>
-                                <p className='text'>{concepto.iva_on}</p>
-                              </div>
-                              <div>
-                                <p className='text'>precio_unitario</p>
-                                <p className='text'>{concepto.precio_unitario}</p>
-                              </div>
-                              <div>
-                                <p className='text'>proveedor</p>
-                                <p className='text'>{concepto.proveedor}</p>
-                              </div>
-                              <div>
-                                <p className='text'>unidad</p>
-                                <p className='text'>{concepto.unidad}</p>
-                              </div>
-                            </div>
-                          ))}
-                          <div className='row__two'>
-
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='row__two'>
-                    <div>
-                      <div className='table__modal_filter_purchase-order' >
-                        <div>
+                        <div className='table__modal_filter_purchase-order' >
                           <div>
-                            {requisitions ? (
-                              <div className='table__numbers'>
-                                <p className='text'>Tus ordenes de compras</p>
-                                <div className='quantities_tables'>{requisitions.length}</div>
-                              </div>
-                            ) : (
-                              <p className='text'>No hay empresas</p>
-                            )}
-                          </div>
-                          <div className='table__head'>
-                            <div className='thead'>
-
+                            <div>
+                              {requisitions ? (
+                                <div className='table__numbers'>
+                                  <p className='text'>Requisiciones Encontradas :)</p>
+                                  <div className='quantities_tables'>{requisitions.length}</div>
+                                </div>
+                              ) : (
+                                <p className='text'>No hay empresas</p>
+                              )}
                             </div>
-                          </div>
-                          {requisitions.length > 0 ? (
-                            <div className='table__body'>
-                              {requisitions.map((requisition: any, index: any) => (
-                                <div className='tbody__container' key={index}>
-                                  <div className='tbody'>
-                                    <div className='td'>
-                                      {requisition.empresa}
-                                    </div>
-                                    <div className='td'>
-                                      ({requisition.sucursal})
-                                    </div>
-                                    <div className='td'>
-                                      {requisition.fecha_creacion}
-                                    </div>
-                                    <div className='td'>
-                                      <div>
-                                        <button onClick={() => openModalConcepts(requisition)} type='button' className='btn__general-purple'>Ver conceptos</button>
+                            <div className='table__head'>
+                              <div className='thead'>
+
+                              </div>
+                            </div>
+                            {requisitions != undefined && requisitions.length > 0 ? (
+                              <div className='table__body'>
+                                {requisitions.map((requisition: any, index: any) => (
+                                  <div className='tbody__container' key={index}>
+                                    <div className='tbody'>
+                                      <div className='td'>
+                                        {requisition.serie}-{requisition.folio}-{requisition.anio}
                                       </div>
-                                    </div>
-                                    <div className='td'>
-                                      <div>
-                                        <button className='btn__general-purple' type='button' onClick={addArticlesByRequest}>Agregar</button>
+                                      <div className='td'>
+                                      {requisition.empresa}-({requisition.sucursal})
+                                      </div>
+                                      <div className='td'>
+                                        {requisition.fecha_creacion}
+                                      </div>
+                                      <div className='td'>
+                                        <div>
+                                          <button onClick={() => openModalConcepts(requisition)} type='button' className='btn__general-purple'>Ver conceptos</button>
+                                        </div>
+                                      </div>
+                                      <div className='td'>
+                                        <div>
+                                          <button className='btn__general-purple' type='button' onClick={() => addArticlesByRequest(requisition)}>Agregar</button>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <p>Cargando datos...</p>
-                          )}
+                                ))}
+                              </div>
+                            ) : (
+                              <p>Cargando datos...</p>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </>
               }
+          <ModalRequisition />
 
               <div className=''>
                 <div className='table__modal_create_parchase-orders ' >
@@ -1337,7 +1126,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                           <div className='tbody__container' key={index}>
                             <div className='tbody'>
                               <div className='td'>
-                                {article.descripcion}
+                                {article.codigo} - {article.descripcion}
                               </div>
                               <div className='td'>
                                 <div>
@@ -1357,7 +1146,18 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                                 </div>
                               </div>
                               <div className='td'>
-                                <p>N/A</p>
+                                    
+                                  {article.id_requisicion != undefined && article.id_requisicion != 0 ?
+                                     <button className='btn__general-gray' onClick={()=>modalReq(article)}><p>{article.folio_req || article?.requisicion?.folio}</p></button>
+                                    :
+                                    <p>N/A</p>
+                                  }
+                                {/* <Link to={`/${PrivateRoutes.PRIVATE}/Home/${PrivateRoutes.SHOPPING}/${PrivateRoutes.REQUISITION}`}>
+                                  {article.id_requisicion != undefined && article.id_requisicion != 0 ?
+                                    <p>{article.folio_req || article?.requisicion?.folio}</p>
+                                    :
+                                    <p>N/A</p>
+                                  }</Link> */}
                               </div>
                               <div className='td'>
                                 <div>
@@ -1381,7 +1181,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                               <div className='td'>
                                 <div>
                                   <label className="switch">
-                                    <input type="checkbox" onChange={(e) => handleExtraDiscountChange(e, index)} />
+                                    <input type="checkbox" checked={article.iva_on} onChange={(e) => handleExtraDiscountChange(e, index)} />
                                     <span className="slider"></span>
                                   </label>
                                 </div>
@@ -1429,7 +1229,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
             </div>
             <div className={`d-flex  ${modal == 'modal-purchase-orders-update' ? 'justify-content-between' : 'justify-content-center'}`}>
               {modal == 'modal-purchase-orders-update' ? <button className='btn__general-orange' type='button' onClick={getPDFRequisition}>PDF</button> : ''}
-              <button className='btn__general-purple d-flex align-items-center' type='submit'>
+              <button className='btn__general-purple d-flex align-items-center' onClick={hanledCreateOC}>
                 {modal == 'modal-purchase-orders-create' ? `${stateLoading ? 'Creando orden de compra' : 'Crear orden de compra'}` : `${stateLoading ? 'Actualizando orden de compra' : 'Actualizar orden de compra'}`}
                 {stateLoading ? <span className="loader-two"></span> : ''}
               </button>
@@ -1443,8 +1243,42 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
               }
             </div>
           </div>
-        </form>
+        </div>
       </div >
+      <div className={`overlay__modal_concepts ${modalStateConcepts ? 'active' : ''}`}>
+        <div className={`popup__modal_concepts ${modalStateConcepts ? 'active' : ''}`}>
+          <a href="#" className="btn-cerrar-popup__modal_concepts" onClick={closeModalConcepts}>
+            <svg className='close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+          </a>
+          <b>CONCEPTOS DENTRO DE LA ORDEN</b>
+          <div className='container__concepts'>
+            <table className='concepts-table'>
+              <thead>
+                <tr className='table-header'>
+                  <th className='table-cell'>Articulo</th>
+                  <th className='table-cell'>Cantidad</th>
+                  <th className='table-cell'>Unidad</th>
+                  <th className='table-cell'>Comentarios</th>
+                </tr>
+              </thead>
+              <tbody>
+                {concepts.map((concepto: any, index: any) => (
+                  <tr className='table-row' key={index}>
+                    <td className='table-cell'>{concepto.codigo} - {concepto.descripcion}</td>
+                    <td className='table-cell'>{concepto.cantidad}</td>
+                    <td className='table-cell'>{concepto.nombre_unidad}</td>
+                    <td className='table-cell'>{concepto.comentarios}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className='row__two'>
+              {/* Aquí puedes agregar más elementos o lógica si es necesario */}
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div >
   )
 }

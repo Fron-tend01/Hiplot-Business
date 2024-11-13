@@ -92,6 +92,8 @@ const ModalRequisition: React.FC = () => {
 
     }
     fetch()
+    console.log('LLEGANDO A MODAL REQ',updateToRequisition);
+    
   }, [updateToRequisition])
 
 
@@ -197,7 +199,7 @@ const ModalRequisition: React.FC = () => {
 
 
 
-  const handleCreateRequisition = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCreateRequisition = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     setStateLoading(true)
     // let art_tmp = articles.filter((x:any)=>x.id == selectedResult)
@@ -302,7 +304,7 @@ const ModalRequisition: React.FC = () => {
             <p className='title__modals'>Crear Requisición</p>
           }
         </div>
-        <form className='requisition-modal' onSubmit={handleCreateRequisition}>
+        <div className='requisition-modal' >
           <div className='requisition-modal_container'>
             {updateToRequisition == null ?
               <><div className='row__one'>
@@ -418,7 +420,11 @@ const ModalRequisition: React.FC = () => {
                         ) : updateToRequisition.status === 1 ? (
                           <span className="canceled-status">Cancelada</span>
                         ) : (
-                          ""
+                          updateToRequisition.status === 2 ? (
+                            <span className="end-status">Terminado</span>
+                          ) : (
+                            ""
+                          )
                         )}
 
                     </div>
@@ -537,7 +543,7 @@ const ModalRequisition: React.FC = () => {
             <div>
               <button className='btn__general-orange' type='button' onClick={getPDFRequisition}>PDF</button>
             </div>
-            <button className='btn__general-purple d-flex align-items-center' type='submit'>
+            <button className='btn__general-purple d-flex align-items-center' onClick={handleCreateRequisition} disabled={updateToRequisition && updateToRequisition.status == 2}>
               {updateToRequisition ? `${stateLoading ? 'Actualizando requisición' : 'Actualizar requisición'}` : `${stateLoading ? 'Creando requisición' : 'Crear requisición'}`}
               {stateLoading ? <span className="loader-two"></span> : ''}
             </button>
@@ -546,7 +552,7 @@ const ModalRequisition: React.FC = () => {
             </div>
           </div>
 
-        </form>
+        </div>
       </div >
     </div >
   )

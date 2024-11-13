@@ -68,9 +68,9 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	width: 70%;
+	width: 95%;
 	overflow-y: auto;
-    max-height: 95%;
+    height: 90%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;

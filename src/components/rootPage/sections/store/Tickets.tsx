@@ -21,9 +21,9 @@ const Tickets = () => {
 
     const { getCompaniesXUsers }: any = storeCompanies();
     const { getBranchOfficeXCompanies }: any = storeBranchOffcies();
-    const {getSeriesXUser }: any = storeSeries();
-    const {getSuppliers }: any = storeSuppliers();
-    const { getTickets, tickets, getExcelTickets, dates}: any = storeTickets();
+    const { getSeriesXUser }: any = storeSeries();
+    const { getSuppliers }: any = storeSuppliers();
+    const { getTickets, tickets, getExcelTickets, dates }: any = storeTickets();
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
     const [warningName] = useState<boolean>(false)
@@ -32,7 +32,7 @@ const Tickets = () => {
     const [branchOffices, setBranchOffices] = useState<any>([])
 
     const [modalStateUpdate, setModalStateUpdate] = useState<boolean>(false)
-    const [invoice, setInvoice] = useState<string>('')
+    const [invoice, setInvoice] = useState<number>(0)
 
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
@@ -45,7 +45,7 @@ const Tickets = () => {
     const [suppliers, setSuppliers] = useState<any>([])
     const setSelectedId = useSelectStore((state) => state.setSelectedId);
     const fecth = async () => {
-        let resultSeries = await getSeriesXUser({id: user_id, tipo_ducumento: 2})
+        let resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 2 })
         let resultSuppliers = await getSuppliers('', false, user_id)
         resultSeries.unshift({ id: 0, nombre: 'Todos' })
 
@@ -71,31 +71,31 @@ const Tickets = () => {
 
         getCompaniesXUsers(user_id)
         getBranchOfficeXCompanies(0, user_id)
-    
 
-     
+
+
     }, [])
 
 
     const hoy = new Date();
-  const haceUnaSemana = new Date();
-  haceUnaSemana.setDate(hoy.getDate() - 7);
+    const haceUnaSemana = new Date();
+    haceUnaSemana.setDate(hoy.getDate() - 7);
 
-  // Inicializa el estado con las fechas formateadas
-  const [date, setDate] = useState([
-    haceUnaSemana.toISOString().split('T')[0],
-    hoy.toISOString().split('T')[0]
-  ]);
+    // Inicializa el estado con las fechas formateadas
+    const [date, setDate] = useState([
+        haceUnaSemana.toISOString().split('T')[0],
+        hoy.toISOString().split('T')[0]
+    ]);
 
-  const handleDateChange = (fechasSeleccionadas: any) => {
-    if (fechasSeleccionadas.length === 2) {
-      setDate(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
-    } else {
-      setDate([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
-    }
-  };
+    const handleDateChange = (fechasSeleccionadas: any) => {
+        if (fechasSeleccionadas.length === 2) {
+            setDate(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
+        } else {
+            setDate([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
+        }
+    };
 
-    
+
 
     const [updateTickets, setUpdateTickets] = useState<any>([])
 
@@ -137,25 +137,25 @@ const Tickets = () => {
 
     const searchTicket = () => {
 
-        let data  = {
+        let data = {
             id_usuario: user_id,
             id_empresa: companies.id,
             id_sucursal: branchOffices.id,
             desde: date[0],
             hasta: date[1],
-            id_serie: selectedIds?.series,
+            id_serie: selectedIds?.series.id,
             status: 0,
-            folio: 0
-        }  
+            folio: invoice || 0
+        }
         getTickets(data)
     }
-   
+
     return (
         <div className="tickets">
             <div className="tickets__container">
                 <div className="row">
                     <div className="col-8 md-col-12">
-                        <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices}  modeUpdate={false} all={true}/>
+                        <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} all={true} />
                     </div>
                     <div className='col-4 md-col-12'>
                         <label className='label__general'>Fechas</label>
@@ -169,7 +169,7 @@ const Tickets = () => {
                     <div className="col-4 md-col-6 sm-col-12">
                         <label className='label__general'>Folio</label>
                         <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                        <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
+                        <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(parseInt(e.target.value))} placeholder='Ingresa el folio' />
                     </div>
                     <div className="col-4 md-col-12 d-flex justify-content-center align-items-end">
                         <button className="btn__general-gray" onClick={searchTicket}>Buscar</button>
@@ -184,94 +184,45 @@ const Tickets = () => {
                         <a href="#" className="btn-cerrar-popup__update_tickets" onClick={modalCloseUpdate}>
                             <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
                         </a>
-                        <p className='title__modals'>Crear nueva área</p>
+                        <p className='title__modals'>Información de Entrada</p>
                         <ModalUpdate updateTickets={updateTickets} />
                     </div>
                 </div>
-                <div className='table__tickets'>
+                <div className='' title='Haz click en un registro para ver su información'>
                     <div className='table__numbers'>
                         <p className='text'>Total de Entradas</p>
                         <div className='quantities_tables'>{tickets?.length || 0}</div>
                     </div>
-                    <div className='table__head'>
-                        <div className='thead'>
-                            <div className='th'>
-                                <p>Folio</p>
-                            </div>
-                            <div className='th'>
-                                <p>Por</p>
-                            </div>
-                            <div className='th'>
-                                <p>Fecha</p>
-                            </div>
-                            <div className='th'>
-                                <p>Empresa</p>
-                            </div>
-                            <div className='th'>
-                                <p>Proveedor</p>
-                            </div>
-                            <div className='th'>
-                                <p>Total</p>
-                            </div>
-                            <div className='th'>
-                                <p>Comentarios</p>
-                            </div>
-                        </div>
-                    </div>
-                    {tickets ? (
-                        <div className='table__body'>
-                            {tickets.map((ticket: any) => {
-                                return (
-                                    <div className='tbody__container' key={ticket.id}>
-                                        <div className='tbody'>
-                                            <div className='td'>
-                                                <p>{ticket.serie}-{ticket.folio}-{ticket.anio}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{ticket.status}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <div>
-                                                    {ticket.status === 0 ? (
-                                                        <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green' }}></div>
-                                                    ) : ticket.status === 1 ? (
-                                                        <span role="img" aria-label="Tacha">❌</span>
-                                                    ) : ticket.status === 2 ? (
-                                                        <span role="img" aria-label="Palomita">&#x2705;</span>
-                                                    ) : (
-                                                        <span>No válido</span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{ticket.fecha_creacion}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{ticket.usuario_crea}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{ticket.empresa}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{ticket.sucursal}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{ticket.area}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{ticket.comentarios}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <button className='branchoffice__edit_btn' onClick={() => modalUpdate(ticket)}>Editar</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    ) : (
-                        <p className="text mt-3">No hay entradas que mostrar</p>
-                    )}
+                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                        <thead className="table__head">
+                            <tr className="thead">
+                                <th>Folio</th>
+                                <th>Fecha</th>
+                                <th>Por</th>
+                                <th>Empresas</th>
+                                <th>Sucursal</th>
+                            </tr>
+                        </thead>
+                        <tbody className="table__body">
+                            {tickets && tickets.length > 0 ? (
+                                tickets.map((ent: any, index: number) => (
+                                    <tr className="tbody__container" key={index} onClick={() => modalUpdate(ent)}>
+                                        <td>{ent.serie}-{ent.folio}-{ent.anio}</td>
+                                        <td>{ent.fecha_creacion}</td>
+                                        <td>{ent.usuario_crea}</td>
+                                        <td>{ent.empresa}</td>
+                                        <td>{ent.sucursal}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={10} style={{ textAlign: "center" }}>
+                                        No hay requisiciones disponibles
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

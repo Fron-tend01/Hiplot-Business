@@ -483,6 +483,7 @@ const Requisition: React.FC = () => {
               {requisitions && requisitions.length > 0 ? (
                 requisitions.map((requisition:any, index:number) => (
                   <tr className="tbody__container" key={index}  onClick={() => modalUpdate(requisition)}>
+                    
                     <td>{requisition.serie}-{requisition.folio}-{requisition.anio}</td>
                     <td>{requisition.tipo === 0 ? 'Normal' : 'Diferencial'}</td>
                     <td>
@@ -491,7 +492,11 @@ const Requisition: React.FC = () => {
                       ) : requisition.status === 1 ? (
                         <span className="canceled-status">Cancelada</span>
                       ) : (
-                        ""
+                        requisition.status === 2 ? (
+                          <span className="end-status">Terminado</span>
+                        ) : (
+                          ""
+                        )
                       )}
                     </td>
                     <td>{requisition.fecha_creacion}</td>

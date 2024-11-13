@@ -7,7 +7,8 @@ import { useStore } from 'zustand';
 
 
 const Empresas_Sucursales = (props: any) => {
-    const { modeUpdate, empresaDyn, sucursalDyn, setEmpresaDyn, setSucursalDyn, all = false } = props
+    const { modeUpdate, empresaDyn, sucursalDyn, setEmpresaDyn, setSucursalDyn, all = false, blocked} = props
+
     // const setEmpresa = storeDv(state => state.setEmpresa)
     // // const { empresa, sucursal }: any = useStore(storeDv)
 
@@ -77,7 +78,7 @@ const Empresas_Sucursales = (props: any) => {
                 <div className='select__container'>
                     <label className='label__general'>Empresa</label>
                     <div className='select-btn__general'>
-                        <div className={`select-btn ${empresaSelectedOpen ? 'active' : ''}`} onClick={() => SetEmpresaSelectedOpen(!empresaSelectedOpen)}>
+                        <div className={`select-btn ${empresaSelectedOpen ? 'active' : ''}`} onClick={() =>{blocked == undefined ? SetEmpresaSelectedOpen(!empresaSelectedOpen):null}}>
                             <div className='select__container_title'>
                                 <p>{empresaDyn?.id ? empresas.find((s: { id: number }) => s.id === empresaDyn?.id)?.razon_social : 'Todos'}</p>
                             </div>
@@ -106,7 +107,7 @@ const Empresas_Sucursales = (props: any) => {
                     <label className='label__general'>Sucursal</label>
 
                     <div className='select-btn__general'>
-                        <div className={`select-btn ${sucursalSelectedOpen ? 'active' : ''}`} onClick={() => SetSucursalSelectedOpen(!sucursalSelectedOpen)}>
+                        <div className={`select-btn ${sucursalSelectedOpen ? 'active' : ''}`} onClick={() => {blocked == undefined ?SetSucursalSelectedOpen(!sucursalSelectedOpen):null}}>
                             <div className='select__container_title'>
                                 <p>{sucursalDyn?.id ? sucursales.find((s: { id: number }) => s.id === sucursalDyn?.id)?.nombre : 'Todos'}</p>
                             </div>

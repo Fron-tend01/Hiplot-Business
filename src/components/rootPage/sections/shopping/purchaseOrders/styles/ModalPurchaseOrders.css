@@ -281,7 +281,7 @@
 }
 
 .popup__modal_concepts {
-	background: var(--background-modal-color);
+    background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
 	text-align: center;
@@ -331,7 +331,10 @@
 
 
 
-
+.conatiner__concepts > .row__one {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
 
 
 
@@ -489,3 +492,44 @@
 
 
 
+/* Estilos de la tabla */
+.concepts-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+  
+  .table-header {
+    background-color: #f4f4f4;
+  }
+  
+  .table-cell {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  .table-row:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .table-row:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .table-header .table-cell {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Ajuste de márgenes */
+  .container__concepts {
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 20px;
+  }
+  
+  .row__two {
+    /* Puedes agregar más elementos o lógica aquí si es necesario */
+  }
+  
