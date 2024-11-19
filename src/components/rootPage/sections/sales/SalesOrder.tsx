@@ -156,10 +156,10 @@ console.log('sdsd',selectedIds)
                         <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Folio/RFC/Razon social' />
                     </div>
                     <div className='col-3'>
-                        <Select dataSelects={users} instanceId='users' />
+                        <Select dataSelects={users} nameSelect={'Usuarios'} instanceId='users' />
                     </div>
                     <div className='col-3'>
-                        <Select dataSelects={series} instanceId='series' />
+                        <Select dataSelects={series} nameSelect={'Series'} instanceId='series' />
                     </div>
                     <div className='col-3'>
                         <label className='label__general'>Folio</label>

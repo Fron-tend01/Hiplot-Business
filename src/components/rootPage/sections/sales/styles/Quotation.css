@@ -13,3 +13,196 @@
 
 
 
+
+ /*************************************************************
+ 
+                    Tabla de Areas
+ 
+ **************************************************************/
+
+
+
+ .table__requisicion {
+	border-radius: 10px;
+	overflow: hidden;
+	overflow-x: auto;
+
+  }
+  
+  .table__requisicion table {
+	width: 100%;
+	border-collapse: collapse;
+  }
+  
+  .table__head {
+	background-color: var(--table-color);
+	color: var(--text-table-color);
+	font-weight: 600;
+  }
+  
+  .thead th {
+	padding: 10px;
+	text-align: left;
+  }
+  
+  .table__body {
+	max-height: 400px; /* Ajusta según necesites */
+	overflow-y: auto;
+  }
+  
+  .table__body .tbody__container {
+	background-color: var(--table-color);
+	color: var(--text-table-color);
+	transition: background-color 0.3s;
+  }
+  
+  .table__body .tbody__container:nth-child(even) {
+	background-color: var(--two-table-color);
+  }
+  
+  .table__body .tbody__container:hover {
+	background-color: var(--secundary-color);
+	color: #fff;
+  }
+  
+  .active-status {
+	color: green;
+	font-weight: bold;
+  }
+  
+  .canceled-status {
+	color: red;
+	font-weight: bold;
+  }
+  
+  .branchoffice__edit_btn {
+	padding: 5px 10px;
+	color: #fff;
+	background-color: var(--primary-color);
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+  }
+  
+  .branchoffice__edit_btn:hover {
+	background-color: var(--primary-color-hover);
+  }
+  
+
+.area__edit_btn {
+	background-color: var(--primary-color);
+	color: #fff;
+	border: none;
+	padding: 5px 10px;
+	border-radius: var(--border-radius-general);
+	cursor: pointer;
+  }
+
+
+
+
+
+ /*************************************************************
+                    Tabla dl modal de crear requisiciones
+ **************************************************************/
+
+  
+
+
+/* ------------------------- */
+/* Tabla del Modal */
+/* ------------------------- */
+
+
+.table__quotations {
+    margin-top: 20px;
+    border-radius: 10px;
+    grid-column: 1 / span 2;
+
+}
+
+
+.table__quotations .table__head {
+    display: flex;
+    width: 100%;
+	background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__quotations .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__quotations .table__head .thead {
+    display: grid;
+    grid-template-columns: 1fr 100px repeat(4, minmax(0, 1fr));
+    padding: 10px;
+	column-gap: 20px;
+    font-weight: 600;
+	color: var(--text-table-color);
+	
+}
+
+.table__quotations .table__body {
+	max-height: 300px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__quotations .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+}
+  
+.table__quotations .tbody__container:nth-child(odd) {
+	background-color: var(--two-table-color);
+}
+
+.table__quotations .table__body .tbody {
+    display: flex;
+}
+
+.table__quotations .table__body .tbody {
+    display: grid;
+    grid-template-columns: 1fr 100px repeat(4, minmax(0, 1fr));
+    padding: 10px;
+	column-gap: 20px;
+	align-items: center;
+
+}
+
+.table__quotations  .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+.table__quotations  .table__body .tbody .td.delete {
+	display: flex;
+	justify-content: end;
+}
+
+.table__quotations  .table__body .tbody .td .inputs__general {
+   margin-top: 0;
+}
+
+.table__quotations .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+
+

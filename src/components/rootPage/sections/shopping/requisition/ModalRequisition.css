@@ -4,9 +4,9 @@
     display: grid;
     grid-template-rows: 1fr auto;
     height: 100%;
-    
-    
 }
+
+
 
 
 .requisition-modal_container {
@@ -49,60 +49,33 @@
 
 
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa; /* Color de fondo */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Altura de la ventana */
-}
-
 .card {
-    background-color: #f5f6f7; /* Fondo blanco de la tarjeta */
-    border-radius: 0.5rem; /* Esquinas redondeadas */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
-    width: 100%; /* Ancho de la tarjeta */
-    margin: 20px; /* Espaciado alrededor de la tarjeta */
-    transition: transform 0.2s; /* Transición suave */
+    border-radius: 10px; 
+    width: 100%;
+    transition: transform 0.2s;
 }
 
-.card:hover {
-    transform: translateY(-5px); /* Levanta la tarjeta al pasar el ratón */
-}
 
 .card-img-top {
-    border-top-left-radius: 0.5rem; /* Esquinas redondeadas de la parte superior */
-    border-top-right-radius: 0.5rem; /* Esquinas redondeadas de la parte superior */
-    width: 100%; /* Ancho completo de la tarjeta */
-    height: auto; /* Altura automática */
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    width: 100%;
+    height: auto;
 }
 
 .card-body {
-    padding: 1.25rem; /* Espaciado interno */
+    padding: 1.25rem;
 }
 
 .card-title {
-    margin-bottom: 0.75rem; /* Espaciado inferior */
-    font-size: 1.25rem; /* Tamaño de fuente del título */
-    color: #333; /* Color del texto del título */
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+    color: #333;
 }
 
 .card-text {
-    margin-bottom: 1rem; /* Espaciado inferior */
-    color: #666; /* Color del texto de descripción */
+    margin-bottom: 1rem;
+    color: #666;
 }
 
-.btn {
-    display: inline-block; /* Para asegurarse de que el botón tenga un contenedor */
-    padding: 0.5rem 1rem; /* Espaciado interno */
-    background-color: #007bff; /* Color de fondo del botón */
-    color: white; /* Color del texto del botón */
-    text-decoration: none; /* Sin subrayado */
-    border-radius: 0.25rem; /* Esquinas redondeadas del botón */
-    transition: background-color 0.2s; /* Transición para el color de fondo */
-}
 
-.btn:hover {
-    background-color: #0056b3; /* Color de fondo del botón al pasar el ratón */
-}

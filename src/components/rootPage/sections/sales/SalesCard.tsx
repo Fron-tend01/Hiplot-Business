@@ -17,6 +17,7 @@ import DeliveryTimes from './sales-sard_modals/DeliveryTimes';
 import Components from './sales-sard_modals/Components';
 import APIs from '../../../../services/services/APIs';
 import { Toaster, toast } from 'sonner'
+import { storePersonalized } from '../../../../zustand/Personalized';
 
 
 const SalesCard: React.FC = () => {
@@ -25,15 +26,20 @@ const SalesCard: React.FC = () => {
 
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
+  const setNormalConcepts = storePersonalized(state => state.setNormalConcepts);
+  const setCustomConcepts = storePersonalized(state => state.setCustomConcepts);
+  const setCustomData = storePersonalized(state => state.setCustomData);
+  const { normalConcepts, customConcepts, customData }: any = useStore(storePersonalized);
+
   const setArticle = storeSaleCard(state => state.setArticle);
 
-  const setDataQuotation = storeSaleCard(state => state.setDataQuotation);
+
   const setDataPersonalized = storeSaleCard(state => state.setDataPersonalized);
   const setDataSaleOrder = storeSaleOrder(state => state.setDataSaleOrder);
   const setModalSub = storeModals(state => state.setModalSub)
 
 
-  const { IdArticle, modalSalesCard, article, dataQuotation }: any = useStore(storeSaleCard);
+  const { IdArticle, modalSalesCard, article }: any = useStore(storeSaleCard);
   const { dataSaleOrder }: any = useStore(storeSaleOrder);
   const { getUserGroups }: any = UserGroupsRequests();
   const { getUnits }: any = UnitsRequests();
@@ -191,11 +197,12 @@ const SalesCard: React.FC = () => {
           id_articulo: article.id,
           id_area_produccion: 0,
           enviar_a_produccion: false,
+          personalized: false,
           status: 0,
           cantidad: amount,
           monto_urgencia: 0,
           precio_unitario: result.mensaje,
-          id_unidad: selectedUnit.id,
+          unidad: selectedUnit.id,
           obs_produccion: "",
           obs_factura: "",
           urgencia_monto: 0,
@@ -203,8 +210,8 @@ const SalesCard: React.FC = () => {
           areas_produccion: article.areas_produccion,
           codigo: article.codigo,
           descripcion: article.descripcion,
-          unidad: selectedUnit.nombre,
-          total_price: result.mensaje,
+          name_unidad: selectedUnit.nombre,
+          precio_total: result.mensaje,
           campos_plantilla: article.plantilla_data.map((x: any) => ({
             nombre_campo_plantilla: x.nombre,
             tipo_campo_plantilla: 0,
@@ -250,8 +257,9 @@ const SalesCard: React.FC = () => {
   setIdentifier(identifier + 1);
 
   
-    setDataQuotation([...dataQuotation, newData])
-    setDataPersonalized([...dataQuotation, newData])
+    setNormalConcepts([...normalConcepts, newData])
+    setCustomData([...customData, newData])
+
   };
   const addSaleOrder = () => {
     if (dataSaleOrder !== undefined) {

@@ -457,7 +457,7 @@ const ModalRequisition: React.FC = () => {
                 <div>
                   {concepts ? (
                     <div className='table__numbers'>
-                      <p className='text'>Estos son tus conceptos :)</p>
+                      <p className='text'>Estos son tus conceptos</p>
                       <div className='quantities_tables'>{concepts?.length}</div>
                     </div>
                   ) : (

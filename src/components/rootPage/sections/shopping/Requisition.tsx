@@ -464,148 +464,88 @@ const Requisition: React.FC = () => {
           </div>
         </div>
         <ModalRequisition />
-        {/* <ModalUpdate /> */}
-        <div className="table__requisicion" title='Haz click en un registro para ver su información'>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead className="table__head">
-              <tr className="thead">
-                <th>Folio</th>
-                <th>Tipo</th>
-                <th>Status</th>
-                <th>Fecha</th>
-                <th>Por</th>
-                <th>Empresas</th>
-                <th>Sucursal</th>
-                <th>Areas</th>
-              </tr>
-            </thead>
-            <tbody className="table__body">
-              {requisitions && requisitions.length > 0 ? (
-                requisitions.map((requisition:any, index:number) => (
-                  <tr className="tbody__container" key={index}  onClick={() => modalUpdate(requisition)}>
-                    
-                    <td>{requisition.serie}-{requisition.folio}-{requisition.anio}</td>
-                    <td>{requisition.tipo === 0 ? 'Normal' : 'Diferencial'}</td>
-                    <td>
-                      {requisition.status === 0 ? (
-                        <span className="active-status">Activo</span>
-                      ) : requisition.status === 1 ? (
-                        <span className="canceled-status">Cancelada</span>
-                      ) : (
-                        requisition.status === 2 ? (
-                          <span className="end-status">Terminado</span>
-                        ) : (
-                          ""
-                        )
-                      )}
-                    </td>
-                    <td>{requisition.fecha_creacion}</td>
-                    <td>{requisition.usuario_crea}</td>
-                    <td>{requisition.empresa}</td>
-                    <td>{requisition.sucursal}</td>
-                    <td>{requisition.area}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={10} style={{ textAlign: "center" }}>
-                    No hay requisiciones disponibles
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* <div className='table__requisicion'>
-          <div>
-            {requisitions ? (
+        <div className='row'>
+          <div className='col-12'>
+            <div className='table__requisiciones'>
               <div>
-                <p>Tus requisiciónes {requisitions.length}</p>
-              </div>
-            ) : (
-              <p></p>
-            )}
-          </div>
-        
-          <div className='table__head'>
-            <div className='thead'>
-              <div className='th'>
-                <p>Folio</p>
-              </div>
-              <div className='th'>
-                <p>Tipo</p>
-              </div>
-              <div className='th'>
-                <p>Status</p>
-              </div>
-              <div className='th'>
-                <p>Fecha</p>
-              </div>
-              <div className='th'>
-                <p>Por</p>
-              </div>
-              <div className='th'>
-                <p>Empresas</p>
-              </div>
-              <div className='th'>
-                <p>Sucursal</p>
-              </div>
-              <div className='th'>
-                <p>Areas</p>
-              </div>
-              <div className='th'>
-                <p>Comentarios</p>
-              </div>
-            </div>
-          </div>
-          {requisitions ? (
-            <div className='table__body'>
-              {requisitions.map((requisition: any, index: number) => {
-                return (
-                  <div className='tbody__container' key={index}>
-                    <div className='tbody'>
-                      <div className='td'>
-                        <p>{requisition.serie}-{requisition.folio}-{requisition.anio}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{requisition.tipo == 0 ? 'Normal' : 'Diferencial'}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{requisition.status == 0 ? <div className='active-status'><p>Activo</p></div> : ''}</p>
-                        <p>{requisition.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{requisition.fecha_creacion}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{requisition.usuario_crea}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{requisition.empresa}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{requisition.sucursal}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{requisition.area}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{requisition.comentarios}</p>
-                      </div>
-                      <div className='td'>
-                        <button className='branchoffice__edit_btn' onClick={() => modalUpdate(requisition)}>Editar</button>
-                      </div>
-                    </div>
+                {requisitions ? (
+                  <div>
+                    <p>Tus requisiciónes {requisitions.length}</p>
                   </div>
-                )
-              })}
+                ) : (
+                  <p></p>
+                )}
+              </div>
+              <div className='table__head'>
+                <div className='thead'>
+                  <div className='th'>
+                    <p>Folio</p>
+                  </div>
+                  <div className='th'>
+                    <p>Tipo</p>
+                  </div>
+                  <div className='th'>
+                    <p>Status</p>
+                  </div>
+                  <div className='th'>
+                    <p>Fecha</p>
+                  </div>
+                  <div className='th'>
+                    <p>Por</p>
+                  </div>
+                  <div className='th'>
+                    <p>Empresas</p>
+                  </div>
+                  <div className='th'>
+                    <p>Sucursal</p>
+                  </div>
+                  <div className='th'>
+                    <p>Areas</p>
+                  </div>
+                </div>
+              </div>
+              {requisitions ? (
+                <div className='table__body'>
+                  {requisitions.map((requisition: any, index: number) => {
+                    return (
+                      <div className='tbody__container' key={index} onClick={() => modalUpdate(requisition)}>
+                        <div className='tbody'>
+                          <div className='td code'>
+                            <p>{requisition.serie}-{requisition.folio}-{requisition.anio}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{requisition.tipo === 0 ? 'Normal' : 'Diferencial'}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{requisition.status == 0 ? <div className='active-status'><p>Activo</p></div> : ''}</p>
+                            <p>{requisition.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
+                          </div>
+                          <div className='td date'>
+                            <p>{requisition.fecha_creacion.split('T')[0]}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{requisition.usuario_crea}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{requisition.empresa}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{requisition.sucursal}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{requisition.area}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p>Cargando datos...</p>
+              )}
             </div>
-          ) : (
-            <p>Cargando datos...</p>
-          )}
-        </div> */}
-
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -8,21 +8,27 @@ import { storeBilling } from '../../../../zustand/Billing'
 import DynamicVariables from '../../../../utils/DynamicVariables'
 import APIs from '../../../../services/services/APIs'
 import { v4 as uuidv4 } from 'uuid';
+import { useSelectStore } from '../../../../zustand/Select'
 
 const Personalized = () => {
   const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
   const setDataQuotation = storeSaleCard(state => state.setDataQuotation)
-  const { personalizedModal, dataUpdate }: any = useStore(storePersonalized)
-  const { dataQuotation, dataPersonalized }: any = useStore(storeSaleCard)
+  const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+  const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
+
+  const setPersonalized = storePersonalized(state => state.setPersonalized)
+  const setCustomData = storePersonalized(state => state.setCustomData)
+  const { personalizedModal, dataUpdate, customData, normalConcepts, customConcepts, personalized }: any = useStore(storePersonalized)
+  const { dataQuotation, dataPersonalized, conceptsPersonalized, }: any = useStore(storeSaleCard)
   const { dataBillign, }: any = useStore(storeBilling)
 
-  const setConcepts = storeBilling(state => state.setConcepts)
-  const setDataPersonalized = storeSaleCard(state => state.setDataPersonalized);
 
+  const setDataPersonalized = storeSaleCard(state => state.setDataPersonalized);
 
   const { concepts }: any = useStore(storeBilling)
 
- 
+
+  const selectedIds = useSelectStore((state) => state.selectedIds);
 
   const [units, setUnits] = useState<any>()
 
@@ -33,12 +39,13 @@ const Personalized = () => {
       options: 'nombre',
       dataSelect: result
     })
-    
+
   }
 
   useEffect(() => {
     fetch()
-  
+
+
   }, [])
 
   useEffect(() => {
@@ -55,45 +62,53 @@ const Personalized = () => {
 
   const [filterPersonalized, setFilterPersonalized] = useState<any>([])
 
-  console.log('filterPersonalized', filterPersonalized)
+  const [concetps, setConcepts] = useState<any>([])
+
 
   const addPersonalized = (item: any, index: number) => {
 
-    const newData = [...dataPersonalized];
+    const newData = [...customData];
     newData[index] = { ...newData[index], check: !newData[index].check };
+    setCustomData(newData)
 
-    
-
-    let exist = dataQuotation.some((x: any) => x.id_identifier == item.id_identifier)
+    let exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
 
     console.log(exist)
 
     if (exist) {
-      let deleteFilter = dataQuotation.filter((xx: any) => xx.id_identifier !== item.id_identifier)
-      let filterT = dataPersonalized.find((xx: any) => xx.id_identifier == item.id_identifier)
-      setFilterPersonalized([...filterPersonalized, filterT])
-   
-      setDataQuotation(deleteFilter);
-      setArticlesPersonalized([...articlesPersonalized, item])
-      setDataPersonalized(newData);
+      ////////////////////////////////////// Se agrega ///////////////////////
+      let findItem = customData.find((xx: any) => xx.id_identifier == item.id_identifier)
+      setCustomConcepts([...customConcepts, findItem]);
+
+      let deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+      setNormalConcepts(deleteFilter)
+      
+
+      
       return
     } else {
-      let filter = dataPersonalized.filter((xx: any) => xx.id_identifier == item.id_identifier)
-      // let filterT = filterPersonalized.filter((x: any) => x.id_identifier == item.id_identifier)
-      // setFilterPersonalized([...filterPersonalized, filterT])
-      setDataQuotation([...dataQuotation, ...filter]);
-      setDataPersonalized(newData);
-      return
+      let find = customConcepts.find((xx: any) => xx.id_identifier == item.id_identifier)
+      setNormalConcepts([...normalConcepts, find])
+
+      let deleteFilter = customConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+      setCustomConcepts(deleteFilter)
+
     }
   };
 
-  console.log('dataQuotation', dataQuotation)
-  // if (identifier === 'billing') {
-  //   setConcepts(updatedQuotation);
-  // } else {
 
-  // }
+  const [selectsSatKey, setSelectsSatKey] = useState<any>()
+  const [selectedSatKey, setSelectedSatKey] = useState<any>()
 
+  const [modal, setModal] = useState<Boolean>(false)
+
+  useEffect(() => {
+    if (personalizedModal !== '') {
+      setModal(true)
+    } else {
+      setModal(false)
+    }
+  })
 
   const createPersonalized = async () => {
 
@@ -103,51 +118,94 @@ const Personalized = () => {
     });
 
 
-    let data = {
-      nombre: inpust.descripcion,
-      personalized: true,
-      codigo: inpust.codigo,
-      unidad: inpust.unidad,
-      precio_total: inpust.precio_total,
-      comentarios_p: inpust.comentarios_p,
-      comentarios_f: inpust.comentarios_f,
-      conceptos: articlesPersonalized
+    console.log( 'selectedSatKey.Clave',selectedSatKey.Clave)
+
+
+    if (personalizedModal == 'personalized_modal-quotation') {
+      let data = {
+        descripcion: inpust.descripcion,
+        personalized: true,
+        codigo: inpust.codigo,
+        cantidad: inpust.cantidad,
+        unidad: selectedIds?.units?.id,
+        name_unidad: selectedIds?.units?.nombre,
+        clave_sat: parseInt(selectedSatKey.Clave),
+        codigo_unidad_sat: 0,
+        precio_total: inpust.precio_total,
+        comentarios_produccion: inpust.comentarios_produccion,
+        comentarios_factura: inpust.comentarios_factura,
+        conceptos: customConcepts
+      }
+
+      setCustomData(normalConcepts)
+      setNormalConcepts([...normalConcepts, data])
+      setPersonalized([...personalized, data])
+
+
     }
-    setDataQuotation([...dataQuotation, data])
-    
+
+    if (personalizedModal == 'personalized_modal-sale') {
+      console.log('selectedSatKey', selectedSatKey)
+      let data = {
+        descripcion: inpust.descripcion,
+        personalized: true,
+        codigo: inpust.codigo,
+        cantidad: inpust.cantidad,
+        unidad: selectedIds.id_unidad,
+        name_unidad: selectedIds.units.nombre,
+        clave_sat: selectedSatKey.Clave,
+        codigo_unidad_sat: 0,
+        precio_total: inpust.precio_total,
+        comentarios_produccion: inpust.comentarios_produccion,
+        comentarios_factura: inpust.comentarios_factura,
+        conceptos: articlesPersonalized
+      }
+
+      setConceptsPersonalized([...conceptsPersonalized, data])
+      // setDataSales([...dataSales, data])
+    }
+
+
+
+    if (personalizedModal == 'personalized_modal-billing') {
+
+    }
+
+
     setPersonalizedModal('')
 
     const identifiersToFilter = filterPersonalized.map((x: any) => x.id_identifier);
-    
+
     // Luego, filtra dataPersonalized para obtener solo los elementos cuyos id_identifier no están en identifiersToFilter
     const filteredData = dataPersonalized.filter(
       (item: any) => !identifiersToFilter.includes(item.id_identifier)
     );
-    
-    // Finalmente, actualiza el estado con los elementos filtrados
+
+
     await setDataPersonalized(filteredData);
     setFilterPersonalized([])
     setArticlesPersonalized([])
 
+
   }
 
-  console.log('dataPersonalized', dataPersonalized)
+
+  console.log('customConcepts', customConcepts)
+  console.log('custom data', customData)
 
   const [inpust, setInputs] = useState<any>({
     descripcion: '',
     codigo: '',
-    unidad: '',
+    cantidad: '',
     precio_total: '',
-    clave_sat: '',
     codigo_unidad_sat: '',
-    comentarios_p: '',
-    comentarios_f: ''
+    comentarios_produccion: '',
+    comentarios_factura: ''
 
   })
 
 
-  const [selectsSatKey, setSelectsSatKey] = useState<any>()
-  const [selectedSatKey, setSelectedSatKey] = useState<any>()
+
 
 
 
@@ -155,6 +213,8 @@ const Personalized = () => {
     setSelectsSatKey(!selectsSatKey)
 
   }
+
+  // console.log('selectedIds.units', selectedIds.units)
 
   const handleKetSatChange = (key: any) => {
     setSelectsSatKey(false)
@@ -167,18 +227,20 @@ const Personalized = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (satKeyTerm.length >= 3) { 
-        const result = await APIs.getKeySat({nombre: satKeyTerm});
+      if (satKeyTerm.length >= 3) {
+        const result = await APIs.getKeySat({ nombre: satKeyTerm });
         setSatKey(result);
       }
     };
 
     fetchData();
-  }, [satKeyTerm]); 
+  }, [satKeyTerm]);
+
+
 
   return (
-    <div className={`overlay__personalized_modal ${(personalizedModal === 'personalized_modal' || personalizedModal === 'personalized_modal-update') ? 'active' : ''}`}>
-      <div className={`popup__personalized_modal ${(personalizedModal === 'personalized_modal' || personalizedModal === 'personalized_modal-update') ? 'active' : ''}`}>
+    <div className={`overlay__personalized_modal ${modal ? 'active' : ''}`}>
+      <div className={`popup__personalized_modal ${modal ? 'active' : ''}`}>
         <a href="#" className="btn-cerrar-popup__personalized_modal" onClick={() => setPersonalizedModal('')}>
           <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
             <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
@@ -189,7 +251,7 @@ const Personalized = () => {
           <div className='row'>
             <div className='col-3 md-col-6 sm-col-12'>
               <label className='label__general'>Nombre del concepto</label>
-              <input className={`inputs__general`} type="text" value={inpust.descripcion} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'nombre', e.target.value)} placeholder='Nombre de concepto' />
+              <input className={`inputs__general`} type="text" value={inpust.descripcion} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'descripcion', e.target.value)} placeholder='Nombre de concepto' />
             </div>
             <div className='col-2 md-col-6 sm-col-12'>
               <label className='label__general'>Código</label>
@@ -200,23 +262,23 @@ const Personalized = () => {
             </div>
             <div className='col-2 md-col-6 sm-col-12'>
               <label className='label__general'>Cantidad</label>
-              <input className={`inputs__general`} value={inpust.cantidad} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_p', e.target.value)} placeholder='Cantidad' />
+              <input className={`inputs__general`} value={inpust.cantidad} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'cantidad', e.target.value)} placeholder='Cantidad' />
             </div>
             <div className='col-2 md-col-6 sm-col-12'>
               <label className='label__general'>Precio real</label>
-              <input className={`inputs__general`} value={inpust.precio_total} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_p', e.target.value)} placeholder='Precio real' />
+              <input className={`inputs__general`} value={inpust.precio_total} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'precio_total', e.target.value)} placeholder='Precio real' />
             </div>
           </div>
           <div className='row gap-4 my-4 w-full'>
             <div className='col-3 md-col-6 sm-col-12'>
               <label className='label__general'>Observaciones Producción</label>
               <div className='warning__general'><small >Este campo es obligatorio</small></div>
-              <textarea className={`textarea__general`} value={inpust.comentarios_p} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_p', e.target.value)} placeholder='Observaciones Producción'></textarea>
+              <textarea className={`textarea__general`} value={inpust.comentarios_produccion} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_produccion', e.target.value)} placeholder='Observaciones Producción'></textarea>
             </div>
             <div className=' col-3 md-col-6 sm-col-12'>
               <label className='label__general'>Observaciones Facturación</label>
               <div className='warning__general'><small >Este campo es obligatorio</small></div>
-              <textarea className={`inputs__general`} value={inpust.comentarios_f} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_f', e.target.value)} placeholder='Observaciones Facturación'></textarea>
+              <textarea className={`inputs__general`} value={inpust.comentarios_factura} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_factura', e.target.value)} placeholder='Observaciones Facturación'></textarea>
             </div>
             <div className='select__container col-6'>
               <label className='label__general'>Claves SAT</label>
@@ -248,10 +310,10 @@ const Personalized = () => {
           </div>
 
           <div className='table__personalized'>
-            {dataPersonalized ? (
+            {customData ? (
               <div className='table__numbers'>
                 <p className='text'>Total de Ordenes</p>
-                <div className='quantities_tables'>{dataPersonalized.length}</div>
+                <div className='quantities_tables'>{customData.length}</div>
               </div>
             ) : (
               <p className="text">No hay empresas que mostras</p>
@@ -277,9 +339,9 @@ const Personalized = () => {
 
               </div>
             </div>
-            {dataPersonalized ? (
+            {customData ? (
               <div className='table__body'>
-                {dataPersonalized.map((quotation: any, index: number) => {
+                {customData.map((quotation: any, index: number) => {
                   return (
                     <div className='tbody__container'>
                       <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={quotation.id}>
@@ -291,7 +353,7 @@ const Personalized = () => {
                               <label className="custom-checkbox">
                                 <input
                                   type="checkbox"
-                                  checked={dataPersonalized[index]?.check || false}
+                                  checked={customData[index]?.check || false}
                                   onChange={() => addPersonalized(quotation, index)}
                                 />
                                 <span className="checkmark"></span>

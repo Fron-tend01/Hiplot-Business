@@ -11,13 +11,15 @@ import APIs from '../../../../../services/services/APIs'
 import useUserStore from '../../../../../zustand/General'
 import { ClientsRequests } from '../../../../../fuctions/Clients'
 import { useSelectStore } from '../../../../../zustand/Select'
+import Personalized from '../Personalized'
+import { storePersonalized } from '../../../../../zustand/Personalized'
 import Swal from 'sweetalert2';
 
 const ModalSalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
 
-
+    const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
@@ -65,7 +67,7 @@ const ModalSalesOrder: React.FC = () => {
     ////////////////////////
     /// Fechas
     ////////////////////////
-    
+
 
 
     // Inicializa el estado con la fecha y hora formateadas
@@ -180,8 +182,7 @@ const ModalSalesOrder: React.FC = () => {
         setCheckSendToProduction(event.target.checked)
     };
 
-    console.log(dataSaleOrder)
-    console.log(saleOrdersToUpdate)
+
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' ? 'active' : ''}`}>
             <div className={`popup__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' ? 'active' : ''}`}>
@@ -203,7 +204,7 @@ const ModalSalesOrder: React.FC = () => {
                             <input className='inputs__general' type="text" value={searCustomer} onChange={(e) => setSearchCustomer(e.target.value)} placeholder='Ingresa el contacto' />
                         </div>
                         <div className='col-4'>
-                            <Select dataSelects={clients} instanceId='clients' />
+                            <Select dataSelects={clients} instanceId='clients' nameSelect={'Clientes'} />
                         </div>
                         <div className='col-2 d-flex align-items-end'>
                             <div>
@@ -232,8 +233,13 @@ const ModalSalesOrder: React.FC = () => {
                     <div className='row'>
                         <div className='col-12 d-flex align-items-center justify-content-between'>
                             <p className='title__concepts'>Conceptos</p>
-                            <div>
-                                <button type='button' className='btn__general-purple' onClick={() => setModalArticleView('article-view__modal')}>Buscar articulos</button>
+                            <div className='d-flex align-items-center'>
+                                <div className='mx-4'>
+                                    <button type='button' className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-sale')}>Personalizados</button>
+                                </div>
+                                <div>
+                                    <button type='button' className='btn__general-purple' onClick={() => setModalArticleView('article-view__modal')}>Buscar articulos</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -350,6 +356,7 @@ const ModalSalesOrder: React.FC = () => {
                     </div>
                 </form>
                 <ArticleViewModal />
+                <Personalized />
             </div>
         </div>
     )

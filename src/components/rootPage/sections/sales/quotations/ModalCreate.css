@@ -58,7 +58,7 @@
 
 .popup__quotations__modal .row__three {
     display: grid;
-    grid-template-columns: repeat(2, 1fr) auto 1fr auto auto auto;
+    grid-template-columns: 1fr auto 1fr auto auto auto;
     column-gap: 20px;
 
 }

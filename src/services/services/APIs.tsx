@@ -502,6 +502,14 @@ createQuotation: async (data: any, customPath?: string) => {
 },
 
 
+getQuotation: async (data: any, customPath?: string) => {
+  const path = customPath || 'cotizaciones/get';
+  return ConfigurationAPIs.post(path, data)
+},
+
+
+
+
 
 ///////////////////////////// Tiempos de entrega /////////////////////////////////////
 
