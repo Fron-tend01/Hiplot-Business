@@ -211,7 +211,7 @@
 
   
  .overlay__modal_transfers-concepts_see-stock {
-	background: rgba(0,0,0,.3);
+    background: rgba(0,0,0,.3);
 	position: fixed;
 	top: 0;
 	bottom: 0;
@@ -229,12 +229,13 @@
 }
 
 .popup__modal_transfers-concepts_see-stock {
-	background-color: var(--background-modal);
+    background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	text-align: center;
-	width: 60%;
-    max-height: 95%;
+	/* text-align: center; */
+	width: 70%;
+	overflow-y: auto;
+    height: 90%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;

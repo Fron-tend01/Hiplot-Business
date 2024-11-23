@@ -115,6 +115,7 @@ const Articles: React.FC = () => {
       get_areas_produccion: true,
       get_componentes: true,
       get_cargos_minimos: true,
+      get_cobros_franquicia: true,
       get_adicional: true,
       get_stock: true,
       get_web: false,

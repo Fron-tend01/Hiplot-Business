@@ -65,9 +65,12 @@ export const storeUsers = create<StoreState>((set) => ({
         }
     },
   
-    putUsers: async (user_id : number, sucursal_id: number, nombre: string, email: string, password: string, tipo_us: number, sucursales_nuevas: any[], sucursales_eliminar: any[], areas_nuevas: any[], areas_eliminar: any[], subordinados_nuevos: any[], subordinados_eliminar: any[], grupos_nuevos: any[], grupos_eliminar: any[]) => {
+    putUsers: async (user_id : number, sucursal_id: number, nombre: string, email: string, password: string, tipo_us: number, 
+        sucursales_nuevas: any[], sucursales_eliminar: any[], areas_nuevas: any[], areas_eliminar: any[], subordinados_nuevos: any[], subordinados_eliminar: any[]
+        , grupos_nuevos: any[], grupos_eliminar: any[],usuarios_comercial: any[], usuarios_comercial_eliminar: any[]) => {
         try {
-        await APIs.putUsers(user_id , sucursal_id, nombre, email, password, tipo_us, sucursales_nuevas, sucursales_eliminar, areas_nuevas, areas_eliminar, subordinados_nuevos, subordinados_eliminar, grupos_nuevos, grupos_eliminar)
+        await APIs.putUsers(user_id , sucursal_id, nombre, email, password, tipo_us, sucursales_nuevas, 
+            sucursales_eliminar, areas_nuevas, areas_eliminar, subordinados_nuevos, subordinados_eliminar, grupos_nuevos, grupos_eliminar,usuarios_comercial,usuarios_comercial_eliminar)
         Swal.fire('Usuario actualizada exitosamente', '', 'success');
         } catch (error) {
         console.log('Error al actualizar el usuario',error)

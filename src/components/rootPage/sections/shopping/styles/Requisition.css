@@ -248,33 +248,33 @@
 	border-collapse: collapse;
   }
   
-  .table__head {
+  .table__requisicion .table__head {
 	background-color: var(--table-color);
 	color: var(--text-table-color);
 	font-weight: 600;
   }
   
-  .thead th {
+  .table__requisicion .thead th {
 	padding: 10px;
 	text-align: left;
   }
   
-  .table__body {
+  .table__requisicion .table__body {
 	max-height: 400px; /* Ajusta según necesites */
 	overflow-y: auto;
   }
   
-  .table__body .tbody__container {
+  .table__requisicion .table__body .tbody__container {
 	background-color: var(--table-color);
 	color: var(--text-table-color);
 	transition: background-color 0.3s;
   }
   
-  .table__body .tbody__container:nth-child(even) {
+  .table__requisicion .table__body .tbody__container:nth-child(even) {
 	background-color: var(--two-table-color);
   }
   
-  .table__body .tbody__container:hover {
+  .table__requisicion .table__body .tbody__container:hover {
 	background-color: var(--secundary-color);
 	color: #fff;
   }

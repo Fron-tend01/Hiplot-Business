@@ -15,6 +15,8 @@ import DynamicVariables from '../../../../utils/DynamicVariables';
 
 
 import './styles/Users.css'
+import { useSelectStore } from '../../../../zustand/Select';
+import Select from '../../Dynamic_Components/Select';
 
 
 const Users: React.FC = () => {
@@ -83,15 +85,40 @@ const Users: React.FC = () => {
     id_sucursal: 0
   })
   const [usuarios, setUsuarios] = useState<any>([])
-  useEffect(() => {
-    getCompaniesXUsers(user_id)
+  const [usuariosComercial, setUsuariosComercial] = useState<any>([]);
+  const [UsuarioCSelected, setUsuarioCSelected] = useState<any>({})
+  const selectedIds = useSelectStore((state) => state.selectedIds);
+  const setSelectedIds = useSelectStore((state) => state.setSelectedId);
+  const [companiesLocal, setCompaniesLocal] = useState<any>([])
+  const fetch = async () => {
+    let res = await getCompaniesXUsers(user_id)
+    setCompaniesLocal({
+      selectName: 'Empresa',
+      dataSelect: res,
+      options: 'razon_social'
+    })
     getBranchOfficeXCompanies(0, user_id)
     getTypesUsers(user_id)
     getUserGroups(user_id)
     // getUsers('', user_id, user_id, false, 0)
     getUsuarios()
+  }
+  useEffect(() => {
+    fetch()
   }, []);
+  useEffect(() => {
+    if (selectedIds?.empresas_comercial) {
+      console.log(selectedIds?.empresas_comercial);
+      APIs.GetAny("get_users_comercial/" + selectedIds?.empresas_comercial.id).then(async (response: any) => {
+        if (response?.error) {
+          setUsuariosComercial([])
 
+        } else {
+          setUsuariosComercial(response)
+        }
+      })
+    }
+  }, [selectedIds?.empresas_comercial]);
   const getUsuarios = async () => {
     await APIs.CreateAny(searcher, "usuario_get")
       .then(async (response: any) => {
@@ -152,6 +179,8 @@ const Users: React.FC = () => {
   const [grupos_eliminar, setGrupos_eliminar] = useState<any[]>([])
 
   const addUserGroups = () => {
+    console.log('ug',selectedUserGroup);
+    
     if (selectedUserGroup != null) {
       if (!grupos_nuevos.includes(selectedUserGroup)) {
         setGruposNuevos([...grupos_nuevos, selectedUserGroup]);
@@ -170,10 +199,11 @@ const Users: React.FC = () => {
   };
 
   const addUsers = () => {
+    console.log(selectUser);
+    
     if (selectUser !== null) {
       if (!subordinados_nuevos.includes(selectUser)) {
         setSubordinadosNuevos([...subordinados_nuevos, selectUser]);
-      } else {
       }
     } else {
       // Manejar el caso cuando no hay usuario seleccionado
@@ -210,9 +240,6 @@ const Users: React.FC = () => {
 
   const handleCreateUsers = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-
-
     let tipo_us = selectedTypeUser
     let id_usuario_crea = user_id
     let sucursal_id = selectedBranchOffice
@@ -234,8 +261,9 @@ const Users: React.FC = () => {
       subordinados_eliminar,
       subordinados_nuevos,
       areas_nuevas,
-      grupos_eliminar
-
+      grupos_eliminar,
+      usuarios_comercial: addUsuariosComercial,
+      usuarios_comercial_eliminar: UsuariosComercialElim
     }
     try {
       if (nombre === '') {
@@ -281,13 +309,15 @@ const Users: React.FC = () => {
       }
 
 
-      if (data_ext.sucursales_nuevas.length === 0 || data_ext.areas_nuevas.length === 0) {
+      if (data_ext.sucursales_nuevas.length === 0 ) {
         setWarningSelectBranchOffices(true);
       } else {
         setWarningSelectBranchOffices(false);
       }
-
-      if (nombre === '' || email === '' || password === '' || selectedCompany === null || selectedBranchOffice === null || selectedTypeUser === null || data_ext.grupos_nuevos.length === 0 || data_ext.sucursales_nuevas.length === 0 || data_ext.areas_nuevas.length === 0) {
+      console.log(data_ext);
+      
+      if (nombre === '' || email === '' || password === '' || selectedCompany === null || selectedBranchOffice === null || 
+        selectedTypeUser === null || data_ext.grupos_nuevos.length === 0 || data_ext.sucursales_nuevas.length === 0) {
         return;
       }
 
@@ -312,6 +342,8 @@ const Users: React.FC = () => {
       setSubordinados_eliminar([])
 
       setGrupos_eliminar([])
+      setaddUsuariosComercial([])
+      UsuariosComercialElim([])
 
 
 
@@ -392,15 +424,13 @@ const Users: React.FC = () => {
 
 
 
-  const toggleModal = (sucursal_id: any) => {
+  const toggleModal = async (sucursal: any) => {
 
     setModalStates((prevState: any) => ({
       ...prevState,
-      [sucursal_id]: !prevState[sucursal_id]
+      [sucursal]: !prevState[sucursal],
     }));
     getAreasXBranchOfficesXUsers(0, user_id)
-
-
   };
 
 
@@ -453,7 +483,7 @@ const Users: React.FC = () => {
     setUpdateAreasPermissions(user.areas_exist)
     setUsersGroupsExist(user.grupos_exist)
     setUsersExis(user.subordinados_exist)
-
+    setaddUsuariosComercial(user.usuarios_comercial)
 
 
 
@@ -528,17 +558,6 @@ const Users: React.FC = () => {
 
 
   }
-
-  // console.log('Usarios', users)   
-  // console.log('Grupos nuevos', grupos_nuevos)
-
-  // console.log('Grupos de usuarios', userGroups)
-  // userGroups.forEach((x: any) => {
-
-  //   console.log('id de Grupos de usuarios', x.id)
-
-  // });
-
 
 
 
@@ -627,7 +646,7 @@ const Users: React.FC = () => {
 
     // Si todos los campos están llenos, crear usuarios y obtener datos
     await putUsers(user, selectedBranchOffice, nombre, email, password, tipo_us, sucursalesNewTmp,
-      sucursales_eliminar, areasNewTmp, areas_eliminar, subordinados_nuevos, subordinados_eliminar, grupos_nuevos, grupos_eliminar);
+      sucursales_eliminar, areasNewTmp, areas_eliminar, subordinados_nuevos, subordinados_eliminar, grupos_nuevos, grupos_eliminar, addUsuariosComercial,UsuariosComercialElim);
     await getUsuarios()
     setGrupos_eliminar([])
     setSubordinadosNuevos([])
@@ -716,9 +735,33 @@ const Users: React.FC = () => {
     height: warningPassword === true ? '23px' : ''
   };
 
+  const [addUsuariosComercial, setaddUsuariosComercial] = useState<any>([])
+  const [UsuariosComercialElim, setUsuariosComercialElim] = useState<any>([])
 
-
-
+  const agregarUsuariosParaComercial = () => {
+    let filter_us = usuariosComercial.filter((x:any)=> x.ContactID==UsuarioCSelected)[0]
+    let data = {
+      id_empresa: selectedIds?.empresas_comercial?.id,
+      empresa: selectedIds?.empresas_comercial?.razon_social,
+      id_usuario: UsuarioCSelected,
+      usuario: filter_us.FirstName + ' ' + filter_us.LastNameFather + ' ' + filter_us.LastNameMother
+    }
+    let exist = addUsuariosComercial.filter((x:any)=>x.id_empresa==selectedIds?.empresas_comercial?.id)
+    if (exist.length >= 1) {
+      Swal.fire('Notificacion', 'Cada empresa solo puede tener un usuario de comercial enlazado', 'warning')
+      return
+    }
+    setaddUsuariosComercial((prev: any) => {
+      return [...prev, data];
+    });
+  }
+  const deleteUsuariosComercial = (item: any) => {
+    const filter = addUsuariosComercial.filter((x: number) => x !== item);
+    setaddUsuariosComercial(filter);
+    if (item.id != undefined) {
+      setUsuariosComercialElim([...UsuariosComercialElim, item.id]);
+    }
+  };
   return (
     <div className='users'>
       <div className='users__users'>
@@ -938,9 +981,9 @@ const Users: React.FC = () => {
                             </div>
                           </div>
                         </div>
-                        {usersExist.length > 0 ? (
+                        {subordinados_nuevos.length > 0 ? (
                           <div className='tbody__container_users_right'>
-                            {usersExist.map((user: any, index: number) => (
+                            {subordinados_nuevos.map((user: any, index: number) => (
                               <div className='tbody__users_right' key={index}>
                                 <div className='td'>
                                   <li className='text'>
@@ -1025,8 +1068,53 @@ const Users: React.FC = () => {
                   ))}
                 </div>
               </div>
+
+              <br />
+              <b>Agregar Usuario de Compaqi Comercial (Estos usuarios se agregan por empresa)</b>
+              <br />
+              <br />
+              <div className='row'>
+                <div className='col-6'>
+                  <Select dataSelects={companiesLocal} instanceId='empresas_comercial' nameSelect={'Empresas'}></Select>
+                </div>
+                <div className='col-5'>
+                <label className='label__general'>Usuario Comercial</label>
+                  <select className={`inputs__general`}
+                    onChange={(e) => setUsuarioCSelected(e.target.value)}>
+                      <option key={0}>Ninguno</option>
+                    {usuariosComercial?.map((option: any, i: number) => (
+                      <option key={i} value={option.ContactID}>
+                        {option.FirstName} {option.LastNameFather} {option.LastNameMother}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className='col-1'><button className='btn__general-purple' type='button' onClick={agregarUsuariosParaComercial}>Agregar</button></div>
+              </div>
+              <br />
+              <div className='row'>
+
+                <div className='col-12'>
+                  {addUsuariosComercial.length > 0 ? (
+                    <div className='tbody__container_user-groups-left'>
+                      <div className='tbody__user-groups-left'>
+                        {addUsuariosComercial.map((dat: any, index: number) => (
+                          <div className='td' key={index}>
+                            <li className='text'>
+                                {dat.empresa} - {dat.usuario}
+                            </li>
+                            <button className='btn__delete_users' onClick={() => deleteUsuariosComercial(dat)}>Eliminar</button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className='text'>No hay Usuario de comercial</p>
+                  )}
+                </div>
+              </div>
               <div className='container__btns_usergroups'>
-                <button className='btn__general-purple' type='submit'>Guardar articulo</button>
+                <button className='btn__general-purple' type='submit'>Guardar Usuario</button>
               </div>
             </form>
           </div>
@@ -1062,7 +1150,7 @@ const Users: React.FC = () => {
           </div>
           {usuarios ? (
             <div className='table__body'>
-              {usuarios.map((user: any, index:number) => (
+              {usuarios.map((user: any, index: number) => (
                 <div className='tbody__container' key={index}>
                   <div className='tbody'>
                     <div className='td'>
@@ -1094,7 +1182,7 @@ const Users: React.FC = () => {
             <a href="#" className="btn-cerrar-popup__edit_users" onClick={closeModalUpdate}>
               <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
             </a>
-            <h3 className='title__modals'>Actualizar tipo de usuario</h3>
+            <h3 className='title__modals'>Actualizar usuario</h3>
             <form className='conatiner__create_users' onSubmit={handleUpdateUsers}>
               <div className='row'>
                 <div className='col-4 md-col-6 sm-col-12'>
@@ -1363,6 +1451,50 @@ const Users: React.FC = () => {
                       </div>
                     </div>
                   ))}
+                </div>
+              </div>
+              <br />
+              <b>Agregar Usuario de Compaqi Comercial (Estos usuarios se agregan por empresa)</b>
+              <br />
+              <br />
+              <div className='row'>
+                <div className='col-6'>
+                  <Select dataSelects={companiesLocal} instanceId='empresas_comercial' nameSelect={'Empresas'}></Select>
+                </div>
+                <div className='col-5'>
+                <label className='label__general'>Usuario Comercial</label>
+                  <select className={`inputs__general`}
+                    onChange={(e) => setUsuarioCSelected(e.target.value)}>
+                      <option key={0}>Ninguno</option>
+                    {usuariosComercial?.map((option: any, i: number) => (
+                      <option key={i} value={option.ContactID}>
+                        {option.FirstName} {option.LastNameFather} {option.LastNameMother}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className='col-1'><button className='btn__general-purple' type='button' onClick={agregarUsuariosParaComercial}>Agregar</button></div>
+              </div>
+              <br />
+              <div className='row'>
+
+                <div className='col-12'>
+                  {addUsuariosComercial.length > 0 ? (
+                    <div className='tbody__container_user-groups-left'>
+                      <div className='tbody__user-groups-left'>
+                        {addUsuariosComercial.map((dat: any, index: number) => (
+                          <div className='td' key={index}>
+                            <li className='text'>
+                                {dat.empresa} - {dat.usuario}
+                            </li>
+                            <button className='btn__delete_users' onClick={() => deleteUsuariosComercial(dat)}>Eliminar</button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className='text'>No hay grupos de usuarios seleccionados</p>
+                  )}
                 </div>
               </div>
               <div className='container__btns_usergroups'>

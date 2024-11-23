@@ -15,23 +15,24 @@ import useUserStore from '../../../../zustand/General';
 import Flatpickr from "react-flatpickr";
 import { Spanish } from 'flatpickr/dist/l10n/es.js'; // Importa la localización en español
 import { seriesRequests } from '../../../../fuctions/Series';
+import { storeSeries } from '../../../../zustand/Series';
 
 interface pedido {
   id: number,
   id_sucursal: number,
   id_empresa_proveedor: number,
   id_usuario_crea: number,
-  status: true,
+  status: number,
   conceptos: any[]
 }
 interface searcher {
   id: number,
   id_usuario: number,
   id_sucursal: number,
-  desde: Date,
-  hasta: Date,
+  desde: String,
+  hasta: String,
   id_serie: number,
-  status: number ,
+  status: number,
   folio: number
 }
 const PedidoFranquicias = () => {
@@ -40,7 +41,7 @@ const PedidoFranquicias = () => {
     id_sucursal: 0,
     id_empresa_proveedor: 0,
     id_usuario_crea: 0,
-    status: true,
+    status: 0,
     conceptos: []
   })
   const [pfClear] = useState<pedido>({
@@ -48,17 +49,28 @@ const PedidoFranquicias = () => {
     id_sucursal: 0,
     id_empresa_proveedor: 0,
     id_usuario_crea: 0,
-    status: true,
+    status: 0,
     conceptos: []
   })
+  const [pfMu, setPfMu] = useState<any>({})
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
+
+  const hoy = new Date();
+  const haceUnaSemana = new Date();
+  haceUnaSemana.setDate(hoy.getDate() - 7);
+
+  // Inicializa el estado con las fechas formateadas
+  const [date, setDate] = useState([
+    haceUnaSemana.toISOString().split('T')[0],
+    hoy.toISOString().split('T')[0]
+  ]);
   const [searcher, setSearcher] = useState<searcher>({
     id: 0,
     id_usuario: user_id,
     id_sucursal: 0,
-    desde: new Date(),
-    hasta: new Date(),
+    desde: date[0],
+    hasta: date[1],
     id_serie: 0,
     status: 0,
     folio: 0
@@ -71,7 +83,7 @@ const PedidoFranquicias = () => {
   const [franquicia, setFranquicia] = useState<any>({})
   const [sucursalF, setSucursalF] = useState<any>({})
   const [campos_ext] = useState<any>([{ nombre: 'cantidad', tipo: 0 }, { nombre: 'id_articulo', tipo: 1, asignacion: 'id' }, { nombre: 'unidad', tipo: 0 },
-  { nombre: 'comentarios', tipo: '' }, { nombre: 'unidad_bool', tipo: false }, { nombre: 'unidad_sel', tipo: 0 }])
+  { nombre: 'comentarios', tipo: '' }, { nombre: 'unidad_bool', tipo: false }, { nombre: 'unidad_sel', tipo: 0 }, { nombre: 'precio_unitario', tipo: 0 }, { nombre: 'total', tipo: 0 }])
 
   const selectData = useSelectStore(state => state.selectedIds)
 
@@ -81,22 +93,13 @@ const PedidoFranquicias = () => {
 
   const [series, setSeries] = useState<any>({})
 
-  const { getSeriesXUser }: any = seriesRequests();
+  const { getSeriesXUser }: any = storeSeries();
 
   const [data, setData] = useState<any>(null)
-  const setArticulos = storeDv(state => state.setArticulos)
-  const { articulos }: any = useStore(storeDv)
+  const [articulos, setArticulos] = useState<any[]>([])
   const { getCompaniesXUsers }: any = companiesRequests()
 
-  const hoy = new Date();
-  const haceUnaSemana = new Date();
-  haceUnaSemana.setDate(hoy.getDate() - 7);
 
-  // Inicializa el estado con las fechas formateadas
-  const [date, setDate] = useState([
-    haceUnaSemana.toISOString().split('T')[0],
-    hoy.toISOString().split('T')[0]
-  ]);
 
   const handleDateChange = (fechasSeleccionadas: any) => {
     if (fechasSeleccionadas.length === 2) {
@@ -111,15 +114,9 @@ const PedidoFranquicias = () => {
     setPf(pfClear)
     setArticulos([])
     if (modoUpdate) {
-      // DynamicVariables.updateAnyVar(setLf, "id", data.id)
-      // DynamicVariables.updateAnyVar(setLf, "nombre", data.nombre)
-      // DynamicVariables.updateAnyVar(setLf, "id_empresa", data.id_empresa)
-      // DynamicVariables.updateAnyVar(setLf, "id_empresa_franquicia", data.id_empresa_franquicia)
-      // selectDataID("proveedor", {id:data.id_empresa})
-      // console.log(data);
+      setPfMu(data)
+      console.log(pfMu);
 
-      // setFranquicia({id: data.id_empresa_franquicia})
-      // setSucursalF({id: data.id_sucursal_franquicia})
       // // // //LLENAR LA VARIABLES ARRAY
       // data.articulos.forEach((element: any) => {
       //   DynamicVariables.addObjectInArrayRepeat(element, setArticulos)
@@ -131,8 +128,8 @@ const PedidoFranquicias = () => {
   }
   const getData = async () => {
     console.log(searcher);
-    searcher.id_sucursal= sucursalFSearcher.id
-    searcher.id_serie= selectData.serieSearcher.id
+    searcher.id_sucursal = sucursalFSearcher.id
+    searcher.id_serie = selectData?.serieSearcher?.id
     let result = await APIs.CreateAny(searcher, "pedido_franquicia/get")
     setData(result)
   }
@@ -153,9 +150,9 @@ const PedidoFranquicias = () => {
   const fetch = async () => {
     await getEmpresas()
     // await getData()
-    let resultSerie = await getSeriesXUser(user_id)
+    let resultSerie = await getSeriesXUser({ tipo_ducumento: 10, id: user_id })
     setSeries({
-      selectName: 'Serie',
+      selectName: 'serieSearcher',
       dataSelect: resultSerie,
       options: 'nombre'
     })
@@ -170,6 +167,7 @@ const PedidoFranquicias = () => {
   const traer_alm_pred_prov = async (index: any) => {
     let data = {
       id_empresa: selectData?.proveedor?.id,
+      id_empresa_franquicia: franquicia?.id,
       id_articulo: articulos[index]?.id
     }
     await APIs.CreateAny(data, "obtener_alm_vtaf")
@@ -183,6 +181,7 @@ const PedidoFranquicias = () => {
           setFlag(null);
         } else {
           DynamicVariables.updateAnyVarByIndex(setArticulos, index, 'alm_pred', response.data)
+          DynamicVariables.updateAnyVarByIndex(setArticulos, index, 'precios', response.precios)
           if (articulos[index].unidad_sel == 0) {
             DynamicVariables.updateAnyVarByIndex(setArticulos, index, 'unidad_sel', articulos[index].unidades[0].id_unidad)
           }
@@ -223,7 +222,7 @@ const PedidoFranquicias = () => {
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
     if (articulos.length == 0) {
-      Swal.fire('Notificación', 'Es necesario agregar articulos para la lista de franquicia', 'error');
+      Swal.fire('Notificación', 'Es necesario agregar articulos para el pedido de franquicia', 'error');
       return
     }
     setPf(pfClear)
@@ -273,57 +272,30 @@ const PedidoFranquicias = () => {
       let c = {
         "id_articulo": el.id,
         "cantidad": parseFloat(el.cantidad),
+        "precio_unitario": parseFloat(el.precio_unitario),
+        "total": parseFloat(el.total),
         "unidad": el.unidad_sel,
-        "comentarios": el.comentarios
+        "comentarios": el.comentarios,
+        "id_alm_pred": el.alm_pred.id_almacen_pred
       }
       createObjLf.conceptos.push(c);
 
     });
 
     if (modoUpdate) {
-      console.log(createObjLf);
 
-      await APIs.CreateAnyPut(createObjLf, "listas_venta_franquicia/update")
-        .then(async (response: any) => {
-          Swal.fire('Notificación', response.mensaje, 'success');
-          await getData()
-          setPf(pfClear)
-          setModal(false)
-        })
-        .catch((error: any) => {
-          if (error.response) {
-            if (error.response.status === 409) {
-              Swal.fire(error.mensaje, '', 'warning');
-            } else {
-              Swal.fire('Error al actualizar la urgencia', '', 'error');
-            }
-          } else {
-            Swal.fire('Error de conexión.', '', 'error');
-          }
-        })
     } else {
       await APIs.CreateAny(createObjLf, "pedido_franquicia/create")
         .then(async (response: any) => {
           if (!response.error) {
+            setModal(false)
             Swal.fire('Notificación', response.mensaje, 'success');
             await getData()
             setPf(pfClear)
-            setModal(false)
 
           } else {
             Swal.fire('Notificación', response.mensaje, 'warning');
             return
-          }
-        })
-        .catch((error: any) => {
-          if (error.response) {
-            if (error.response.status === 409) {
-              Swal.fire(error.mensaje, '', 'warning');
-            } else {
-              Swal.fire('Error al crear la urgencia', '', 'error');
-            }
-          } else {
-            Swal.fire('Error de conexión.', '', 'error');
           }
         })
     }
@@ -373,12 +345,183 @@ const PedidoFranquicias = () => {
       confirmButtonAriaLabel: "Thumbs up, great!",
     });
   }
+  const mostrar_Precios = (art: any) => {
+    // Define los encabezados de la tabla
+    const tableHeaders = `
+      <tr>
+        <th>Rango</th>
+        <th>Precio</th>
+      </tr>
+    `;
 
-  const handleClick = (val:any) => {
+    // Mapea los datos para crear las filas de la tabla
+    const tableRows = art.precios
+      .map((precioObj: any) => {
+        // Para cada objeto en precios, accede a precios_ext
+        return precioObj.precios_ext.map((rangoObj: any, index: number) => `
+          <tr key=${index}>
+            <td>${rangoObj.rango}</td>
+            <td>$ ${precioObj.precios}</td>
+          </tr>
+        `).join('');
+      })
+      .join('');
+
+    // Construye el HTML completo de la tabla
+    const tableHtml = `
+      <table border="1" style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>${tableHeaders}</thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+    `;
+
+    // Muestra la alerta con la tabla generada
+    Swal.fire({
+      title: "Precios del Artículo",
+      html: tableHtml,
+      showCloseButton: true,
+      showCancelButton: true,
+      focusConfirm: false,
+      confirmButtonText: `
+        <i class="fa fa-thumbs-up"></i> ¡Entendido!
+      `,
+      confirmButtonAriaLabel: "Ok!",
+    });
+  };
+
+  const handleClick = (val: any) => {
     DynamicVariables.updateAnyVar(setSearcher, "status", val)
   };
 
-  console.log("searcher", searcher)
+  const handleCantidad = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    let value = Number.isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value);
+
+    const newArticleStates = [...articulos];
+    newArticleStates[index].cantidad = value;
+
+    let stocks = articulos[index].stock;
+    let almacen_predeterminado = newArticleStates[index].alm_pred;
+
+    let filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id_almacen_pred);
+    if (filter) {
+      let equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == newArticleStates[index].unidad_sel)
+      console.log(equivalencias);
+      console.log(filter[0].equivalencias);
+
+      if (value > equivalencias[0].cantidad) {
+        const newArticleStates = [...articulos];
+        newArticleStates[index].cantidad = 0;
+        setArticulos(newArticleStates);
+        Swal.fire({
+          icon: "warning",
+          title: "Oops...",
+          text: 'La cantidad ingresada supera el stock disponible'
+        });
+      } else {
+        const newArticleStates = [...articulos];
+        newArticleStates[index].cantidad = value;
+        setArticulos(newArticleStates);
+
+        //-----------------------------------------------INVOCAR PARA OBTENER EL PRECIO Y CALCULAR EL IMPORTE Y EL PRECIO UNITARIO
+        let precio = obtenerPrecioPorCantidadYUnidad(articulos[index], newArticleStates[index].cantidad, newArticleStates[index].unidad_sel)
+        if (precio != null) {
+          const newArticleStates = [...articulos];
+          newArticleStates[index].precio_unitario = precio;
+          newArticleStates[index].total = precio * value;
+          setArticulos(newArticleStates);
+        } else {
+          Swal.fire({
+            icon: "warning",
+            title: "Oops...",
+            text: 'No se encontro precio configurado para la cantidad y unidad ingresada'
+          });
+
+          const newArticleStates = [...articulos];
+          newArticleStates[index].cantidad = 0;
+          newArticleStates[index].precio_unitario = 0;
+          newArticleStates[index].total = 0;
+          setArticulos(newArticleStates);
+        }
+
+
+      }
+      return
+    } else {
+      console.log('El almacen no existe')
+    }
+
+
+  };
+  useEffect(() => {
+    if (selectData != null) {
+      if (selectData.almacen_origin) {
+
+        articulos.forEach((el: any, index: number) => {
+          const newArticleStates = [...articulos];
+          newArticleStates[index].cantidad = 0;
+          setArticulos(newArticleStates);
+        });
+      }
+    }
+  }, [selectData])
+
+  const handleUnits = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+    const value = parseInt(event.target.value, 10);
+    const newArticleStates = [...articulos];
+    newArticleStates[index].cantidad = 0;
+    newArticleStates[index].unidad_sel = value;
+    setArticulos(newArticleStates);
+  };
+
+  const cancelarPf = async (e: React.FormEvent) => {
+    e.preventDefault();
+    Swal.fire({
+      title: "Seguro que deseas cancelar el Pedido de Franquicia?",
+      text: "Se desapartará el material apartado, está acción no se puede deshacer",
+      showCancelButton: true,
+      confirmButtonText: "Aceptar",
+      denyButtonText: `Cancelar`
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await APIs.GetAny("cancelar_pedido_franquicia/" + pfMu.id)
+          .then(async (response: any) => {
+            Swal.fire('Notificación', response.mensaje, 'success');
+            await getData()
+            setPf(pfClear)
+            setModal(false)
+          })
+          .catch((error: any) => {
+            if (error.response) {
+              if (error.response.status === 409) {
+                Swal.fire(error.mensaje, '', 'warning');
+              } else {
+                Swal.fire('Error al actualizar la urgencia', '', 'error');
+              }
+            } else {
+              Swal.fire('Error de conexión.', '', 'error');
+            }
+          })
+      }
+    });
+
+  }
+
+  const getPDF = async () => {
+    window.open('https://hiplotbusiness.com/api_dev/pdf_pedido_franquicia/' + pfMu.id, '_blank');
+  }
+  const obtenerPrecioPorCantidadYUnidad = (articulo: any, cantidad: number, id_unidad: number) => {
+    for (const precio of articulo.precios) {
+      const coincidencia = precio.precios_ext.find((ext: any) =>
+        ext.id_unidad === id_unidad && cantidad >= ext.minimo && cantidad <= ext.maximo
+      );
+      if (coincidencia) {
+        console.log(precio);
+        return precio.precios;
+      }
+    }
+    return null;
+  };
+
   return (
     <div className='te'>
       <div className='te__container'>
@@ -388,7 +531,7 @@ const PedidoFranquicias = () => {
             (<div className='col-11 slideLeft'>
               <div className='row'>
                 <div className='col-4 md-col-4 sm-col-12'>
-                  <Select dataSelects={series} instanceId='serieSearcher' ></Select>
+                  <Select dataSelects={series} instanceId='serieSearcher' nameSelect={'Series'}></Select>
 
                 </div>
                 <div className='col-6 md-col-6 sm-col-12'>
@@ -413,7 +556,7 @@ const PedidoFranquicias = () => {
                     setEmpresaDyn={setFranquiciaSearcher} setSucursalDyn={setSucursalFSearcher}></Empresas_Sucursales>
                 </div>
                 <div className='col-4 md-col-4 sm-col-12'>
-                  <Select dataSelects={proveedorSearcher} instanceId='proveedorSearcher' ></Select>
+                  <Select dataSelects={proveedorSearcher} instanceId='proveedorSearcher' nameSelect={'Proveedor'}></Select>
                 </div>
               </div>
               <div className='row'>
@@ -426,21 +569,21 @@ const PedidoFranquicias = () => {
                 <div className='col-6 md-col-4 sm-col-12 container__checkbox_orders'>
                   <div className='col-4 md-col-4 sm-col-12 checkbox__orders'>
                     <label className="checkbox__container_general">
-                      <input className='checkbox' type="radio" name="requisitionStatus" checked={searcher.status == 0 ? true : false} onChange={()=>handleClick(0)} />
+                      <input className='checkbox' type="radio" name="requisitionStatus" checked={searcher.status == 0 ? true : false} onChange={() => handleClick(0)} />
                       <span className="checkmark__general"></span>
                     </label>
                     <p className='title__checkbox text'>Activo</p>
                   </div>
                   <div className='col-4 md-col-4 sm-col-12 checkbox__orders'>
                     <label className="checkbox__container_general">
-                      <input className='checkbox' type="radio" name="requisitionStatus" value={searcher.status} onChange={()=>handleClick(1)} />
+                      <input className='checkbox' type="radio" name="requisitionStatus" value={searcher.status} onChange={() => handleClick(1)} />
                       <span className="checkmark__general"></span>
                     </label>
                     <p className='title__checkbox text'>Cancelados</p>
                   </div>
                   <div className='col-4 md-col-4 sm-col-12 checkbox__orders'>
                     <label className="checkbox__container_general">
-                      <input className='checkbox' type="radio" name="requisitionStatus" value={searcher.status} onChange={()=>handleClick(2)} />
+                      <input className='checkbox' type="radio" name="requisitionStatus" value={searcher.status} onChange={() => handleClick(2)} />
                       <span className="checkmark__general"></span>
                     </label>
                     <p className='title__checkbox text'>Terminados</p>
@@ -448,7 +591,7 @@ const PedidoFranquicias = () => {
                 </div>
                 <div className='col-2 md-col-2 sm-col-12 justify-content-center '>
                   <label className='label__general'>Buscar</label>
-                  <button className='btn__general-success' onClick={() => Modal(false, 0)}>Buscar</button>
+                  <button className='btn__general-success' onClick={() => getData()}>Buscar</button>
                 </div>
               </div>
             </div>
@@ -457,11 +600,11 @@ const PedidoFranquicias = () => {
             {modoXfolio ?
               <div title='FILTRADO GENERAL'>
 
-                <svg onClick={() => {setModoXfolio(!modoXfolio); DynamicVariables.updateAnyVar(setSearcher,"id_serie",0)}} style={{ cursor: 'pointer' }} width={30} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" /></svg>
+                <svg onClick={() => { setModoXfolio(!modoXfolio); DynamicVariables.updateAnyVar(setSearcher, "id_serie", 0) }} style={{ cursor: 'pointer' }} width={30} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" /></svg>
               </div>
               :
               <div title='FILTRADO POR SERIE'>
-                <svg onClick={() => {setModoXfolio(!modoXfolio);DynamicVariables.updateAnyVar(setSearcher,"id_serie",0)}} style={{ cursor: 'pointer' }} width={30} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" /></svg>
+                <svg onClick={() => { setModoXfolio(!modoXfolio); DynamicVariables.updateAnyVar(setSearcher, "id_serie", 0) }} style={{ cursor: 'pointer' }} width={30} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" /></svg>
 
               </div>
             }
@@ -474,7 +617,53 @@ const PedidoFranquicias = () => {
             </div>
           </div>
         </div>
+        <div className="table__requisicion" title='Haz click en un registro para ver su información'>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead className="table__head">
+              <tr className="thead">
+                <th>Folio</th>
+                <th>Status</th>
+                <th>Fecha</th>
+                <th>Por</th>
+                <th>Empresas</th>
+                <th>Sucursal</th>
+                <th>Proveedor</th>
+              </tr>
+            </thead>
+            <tbody className="table__body">
+              {data && data.length > 0 ? (
+                data.map((requisition: any, index: number) => (
+                  <tr className="tbody__container" key={index} onClick={() => Modal(true, requisition)}>
 
+                    <td>{requisition.serie}-{requisition.folio}-{requisition.anio}</td>
+                    {/* <td>{requisition.tipo === 0 ? 'Normal' : 'Diferencial'}</td> */}
+                    <td>
+                      {requisition.status == 0 ? (
+                        <span className="active-status">Activo</span>
+                      ) : requisition.status == 2 ? (
+                        <span className="active-status">Terminada</span>
+                      ) :
+                        <span className="canceled-status">Cancelada</span>
+                      }
+                    </td>
+
+                    <td>{requisition.fecha}</td>
+                    <td>{requisition.usuario_crea}</td>
+                    <td>{requisition.empresa}</td>
+                    <td>{requisition.sucursal}</td>
+                    <td>{requisition.proveedor}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={10} style={{ textAlign: "center" }}>
+                    No hay requisiciones disponibles
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
         {/* -------------------------------------------------------------MODALES----------------------------------------------------------------------------- */}
         <div className={`overlay__create_modal ${modal ? 'active' : ''}`}>
@@ -483,114 +672,188 @@ const PedidoFranquicias = () => {
               <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
             </a>
             {modoUpdate ?
-              <p className='title__modals'><b>Actualizar Pedido de Franquicia</b></p>
-              :
-              <p className='title__modals'><b>Crear Pedido de Franquicia</b></p>
-            }
-            <hr />
-            <div className='row'>
-              <div className='col-8 md-col-8 sm-col-12'>
-                <Empresas_Sucursales modeUpdate={modoUpdate} empresaDyn={franquicia} sucursalDyn={sucursalF}
-                  setEmpresaDyn={setFranquicia} setSucursalDyn={setSucursalF}></Empresas_Sucursales>
-              </div>
-              <div className='col-4 md-col-4 sm-col-12'>
-                <Select dataSelects={proveedor} instanceId='proveedor' ></Select>
-              </div>
-            </div>
-            {selectData?.proveedor != undefined ?
-              <div className='row'>
-                <div className='col-12'>
-                  <br />
-                  <hr />
-                  <label className='label__general'>AGREGAR ARTICULOS</label>
-                  <hr />
-                  <br />
+              <div>
+                <p className='title__modals'><b>Actualizar Pedido de Franquicia</b></p>
+                <div className="card ">
+                  <div className="card-body bg-standar">
+                    <h3 className="text">{pfMu.serie}-{pfMu.folio}-{pfMu.anio}</h3>
+                    <hr />
+                    <div className='row'>
+                      <div className='col-6 md-col-12'>
+                        <span className='text'>Creado por: <b>{pfMu.usuario_crea}</b></span><br />
+                        <span className='text'>Fecha de Creación: <b>{pfMu.fecha}</b></span><br />
 
-                  <Filtrado_Articulos_Basic campos_ext={campos_ext} id_empresa_proveedor={selectData?.proveedor?.id} id_sucursal_franquicia={sucursalF.id}
-                    get_unidades={true} get_stock={true} />
-                  <br />
-                  <div className='table__modal '>
-                    <div>
-                      {articulos.length >= 1 ? (
-                        <div>
-                          <p className='text'>Articulos en la Lista ({articulos.length})</p>
-                        </div>
-                      ) : (
-                        <p className='text'>No hay Articulos</p>
-                      )}
-                    </div>
-                    <div className='table__head'>
-                      <div className='thead'>
-                        <div className='th'>
-                          <p className=''>Articulo</p>
-                        </div>
-                        <div className='th'>
-                          <p className=''>Cantidad</p>
-                        </div>
-                        <div className='th'>
-                          <p className=''>Unidad</p>
-                        </div>
-                        <div className='th'>
-                          <p className=''>Comentarios</p>
-                        </div>
-                        <div className='th'>
-                          <p className=''>OPT</p>
-                        </div>
+                      </div>
+                      <div className='col-6 md-col-12'>
+                        <span className='text'>Empresa: <b>{pfMu.empresa}</b></span><br />
+                        <span className='text'>Sucursal: <b>{pfMu.sucursal}</b></span><br />
+                        <span className='text'>Proveedor: <b>{pfMu.proveedor}</b></span>
                       </div>
                     </div>
-                    {Array.isArray(articulos) && articulos.length > 0 ? (
-                      <div className='table__body'>
-                        {articulos.map((dat: any, index: number) => (
+                    <div className='row'>
+                      <div className='col-12'>
+                        <span className='text'>Comentarios: {pfMu.comentarios}</span>
 
-                          <div className='tbody__container' key={index}>
-                            <div className='tbody'>
-                              <div className='td'>
-                                {dat.codigo} - {dat.descripcion}
-                              </div>
-
-                              <div className='td'>
-                                <input className={`inputs__general`} type="number" value={dat.cantidad}
-                                  onChange={(e) => { DynamicVariables.updateAnyVarByIndex(setArticulos, index, "cantidad", e.target.value); }}
-                                />
-                              </div>
-                              <div className='td'>
-                                <select className={`inputs__general`}
-                                  onChange={(e) => { DynamicVariables.updateAnyVarByIndex(setArticulos, index, "unidad_sel", e.target.value) }}>
-                                  {dat?.unidades.map((option: any, i: number) => (
-                                    <option key={i} value={option.id_unidad}>
-                                      {option.nombre}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-                              <div className='td'>
-                                <textarea className={`inputs__general`} value={dat.comentarios}
-                                  onChange={(e) => { DynamicVariables.updateAnyVarByIndex(setArticulos, index, "comentarios", e.target.value); }}
-                                />
-                              </div>
-                              <div className='td'>
-                                <button className='btn__general-orange mr-5' type="button" onClick={() => mostrar_stock(dat)}>Stock</button>
-                                <button className='btn__delete_users' type="button" onClick={() => {
-                                  DynamicVariables.removeObjectInArray(setArticulos, index);
-                                  { modoUpdate && dat.id != 0 ? DynamicVariables.updateAnyVarSetArrNoRepeat(setPf, "conceptos", dat.id) : null }
-                                }}>Eliminar</button>
-                              </div>
-                            </div>
-
-                          </div>
-                        ))}
                       </div>
-                    ) : (
-                      <p className='text'>No hay articulos que cargar</p>
-                    )}
+                    </div>
                   </div>
                 </div>
+                <div className="table__requisicion">
+                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead className="table__head">
+                      <tr className="thead">
+                        <th>Articulo</th>
+                        <th>Unidad</th>
+                        <th>Cantidad</th>
+                        <th>P/U</th>
+                        <th>Total</th>
+                        <th>Comentarios</th>
+                      </tr>
+                    </thead>
+                    <tbody className="table__body">
+                      {pfMu.conceptos && pfMu.conceptos.length > 0 ? (
+                        pfMu.conceptos?.map((concept: any, index: number) => (
+                          <tr className="tbody__container" key={index}>
+                            <td>{concept.codigo}-{concept.descripcion}</td>
+                            <td>{concept.unidad}</td>
+                            <td>{concept.cantidad}</td>
+                            <td>${concept.precio_unitario}</td>
+                            <td>${concept.total}</td>
+                            <td>{concept.comentarios}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={10} style={{ textAlign: "center" }}>
+                            No hay requisiciones disponibles
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              : ''}
+              :
+              <div>
+                <p className='title__modals'><b>Crear Pedido de Franquicia</b></p>
+                <hr />
+                <div className='row'>
+                  <div className='col-8 md-col-8 sm-col-12'>
+                    <Empresas_Sucursales modeUpdate={modoUpdate} empresaDyn={franquicia} sucursalDyn={sucursalF}
+                      setEmpresaDyn={setFranquicia} setSucursalDyn={setSucursalF}></Empresas_Sucursales>
+                  </div>
+                  <div className='col-4 md-col-4 sm-col-12'>
+                    <Select dataSelects={proveedor} instanceId='proveedor' nameSelect={'Proveedor'}></Select>
+                  </div>
+                </div>
+                {selectData?.proveedor != undefined ?
+                  <div className='row'>
+                    <div className='col-12'>
+                      <br />
+                      <hr />
+                      <label className='label__general'>AGREGAR ARTICULOS</label>
+                      <hr />
+                      <br />
+
+                      <Filtrado_Articulos_Basic set_article_local={setArticulos} campos_ext={campos_ext} id_empresa_proveedor={selectData?.proveedor?.id} id_sucursal_franquicia={sucursalF.id}
+                        get_unidades={true} get_stock={true} />
+                      <br />
+                      <div className=' '>
+                        <div>
+                          {articulos.length >= 1 ? (
+                            <div>
+                              <p className='text'>Articulos en la Lista ({articulos.length})</p>
+                            </div>
+                          ) : (
+                            <p className='text'>No hay Articulos</p>
+                          )}
+                        </div>
+                        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                          <thead className="table__head">
+                            <tr className="thead">
+                              <th>Articulo</th>
+                              <th>Cantidad</th>
+                              <th>Unidad</th>
+                              <th>P/U</th>
+                              <th>Total</th>
+                              <th>Comentarios</th>
+                              <th>Opts</th>
+                            </tr>
+                          </thead>
+                          <tbody className="table__body">
+                            {articulos && articulos.length > 0 ? (
+                              articulos.map((dat: any, index: number) => (
+                                <tr className="tbody__container" key={index} >
+                                  <td>{dat.codigo} - {dat.descripcion}</td>
+                                  <td>
+                                    <input className={`inputs__general`} type="number" value={dat.cantidad}
+                                      onChange={(e) => { handleCantidad(e, index) }}
+                                    />
+                                  </td>
+                                  <td>
+                                    <select className={`inputs__general`}
+                                      onChange={(e) => { handleUnits(e, index) }}>
+                                      {dat?.unidades.map((option: any, i: number) => (
+                                        <option key={i} value={option.id_unidad}>
+                                          {option.nombre}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </td>
+                                  <td>${dat.precio_unitario}</td>
+                                  <td>${dat.total}</td>
+                                  <td>
+                                    <textarea className={`inputs__general`} value={dat.comentarios}
+                                      onChange={(e) => { DynamicVariables.updateAnyVarByIndex(setArticulos, index, "comentarios", e.target.value); }}
+                                    />
+                                  </td>
+                                  <td>
+                                    <button className='btn__general-orange mr-1' type="button" onClick={() => mostrar_stock(dat)}>Stock</button>
+                                    <button className='btn__general-purple ' type="button" onClick={() => mostrar_Precios(dat)}>Precios</button>
+                                    <button className='btn__delete_users' type="button" onClick={() => {
+                                      DynamicVariables.removeObjectInArray(setArticulos, index);
+                                      { modoUpdate && dat.id != 0 ? DynamicVariables.updateAnyVarSetArrNoRepeat(setPf, "conceptos", dat.id) : null }
+                                    }}>Eliminar</button>
+                                  </td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan={10} style={{ textAlign: "center" }}>
+                                  No hay requisiciones disponibles
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  : ''}
+              </div>
+            }
+
             <br /><br /><br />
-            <div className='btns__create'>
-              <button className='btn__general-purple' onClick={(e) => create(e)}>Guardar</button>
+            <div className='d-flex justify-content-between mt-3'>
+              <div>
+                <button className='btn__general-orange' type='button' onClick={getPDF}>PDF</button>
+              </div>
+              {/* <button className='btn__general-purple d-flex align-items-center' onClick={handleCreateRequisition} disabled={updateToRequisition && updateToRequisition.status == 2}>
+                {updateToRequisition ? `${stateLoading ? 'Actualizando requisición' : 'Actualizar requisición'}` : `${stateLoading ? 'Creando requisición' : 'Crear requisición'}`}
+                {stateLoading ? <span className="loader-two"></span> : ''}
+              </button> */}
+              <>
+                <button className='btn__general-purple d-flex align-items-center' onClick={(e) => create(e)}>Guardar</button>
+                {pfMu.status == 0 ?
+                  <div>
+
+                    <button className='btn__general-danger' type='button' onClick={cancelarPf}>Cancelar</button>
+                  </div>
+                  :
+                  ''}
+              </>
             </div>
+
           </div>
         </div>
         {/* -------------------------------------------------------------FIN MODALES----------------------------------------------------------------------------- */}

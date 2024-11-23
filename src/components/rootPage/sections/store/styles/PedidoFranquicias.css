@@ -43,7 +43,10 @@
     display: flex;
     justify-content: center;
 }
-  
+.btns__cancelar-p {
+  display: flex;
+  justify-content: left;
+}
  .overlay__create_modal {
 	background: rgba(0,0,0,.3);
 	position: fixed;

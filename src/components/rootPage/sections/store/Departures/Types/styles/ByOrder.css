@@ -278,3 +278,43 @@
 /* ANIMACIONES */
 /* ------------------------- */
 .popup__modal-filter_concepts_departures.active {	transform: scale(1); opacity: 1; }
+
+
+
+/* General table structure */
+.table-body {
+    display: table; /* Hace que el contenedor se comporte como una tabla */
+    width: 100%;
+    border-collapse: collapse; /* Para evitar que haya espacios entre las celdas */
+  }
+  
+  .table-row {
+    display: table-row; /* Define cada fila de la "tabla" */
+  }
+  
+  .table-cell {
+    display: table-cell; /* Hace que los divs se comporten como celdas */
+    padding: 8px; /* Espaciado interno de las celdas */
+    border: 1px solid #ddd; /* Bordes de las celdas */
+    text-align: left; /* Alineación del texto a la izquierda */
+  }
+  
+  .table-cell-end {
+    text-align: center; /* Centra el contenido de la última celda */
+  }
+  
+  .btn__general-purple {
+    background-color: #7a4ef7; /* Un color morado de ejemplo */
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+  }
+  
+  .btn__general-purple:hover {
+    background-color: #5a3ac1; /* Un morado más oscuro para el hover */
+  }
+  

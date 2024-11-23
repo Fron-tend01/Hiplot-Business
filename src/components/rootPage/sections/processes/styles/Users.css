@@ -1,22 +1,22 @@
 .users {
     height: 90vh;
-	padding: 20px;
+    padding: 20px;
 }
 
 .users__container {
     display: grid;
-	grid-template-rows: auto 90%;
-	height: 100%;
-	background-color: var(--background-sections);
-	padding: 20px ;
-	border-radius: 10px;
+    grid-template-rows: auto 90%;
+    height: 100%;
+    background-color: var(--background-sections);
+    padding: 20px;
+    border-radius: 10px;
     overflow: hidden;
 }
 
 
 .create__users_btn-container {
     display: flex;
-	justify-content: center;
+    justify-content: center;
 }
 
 .conatiner__create_users {
@@ -27,7 +27,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-	align-items: end;
+    align-items: end;
 }
 
 
@@ -36,7 +36,7 @@
     grid-template-columns: repeat(3, 1fr);
     margin: 20px 0;
     gap: 10px;
-	align-items: end;
+    align-items: end;
 }
 
 .conatiner__create_users .row__three {
@@ -52,19 +52,17 @@
     grid-template-columns: 1fr 100px;
     justify-content: center;
     gap: 10px;
-	align-items: end;
+    align-items: end;
 }
 
-.users__form_row-three-right {
-
-}
+.users__form_row-three-right {}
 
 .users__form_row-three-right-one {
     display: grid;
     grid-template-columns: 1fr 100px;
     justify-content: center;
     gap: 10px;
-	align-items: end;
+    align-items: end;
 }
 
 
@@ -73,7 +71,7 @@
     grid-template-columns: repeat(2, 1fr) 150px;
     margin: 20px 0;
     gap: 10px;
-	align-items: end;
+    align-items: end;
 }
 
 
@@ -87,8 +85,8 @@
 
 .container__users_title-branchOffice-Areas {
     padding: 10px 5px;
-	justify-content: center;
-	width: 100%;
+    justify-content: center;
+    width: 100%;
     text-align: center;
 }
 
@@ -124,41 +122,48 @@
 
 
 .overlay__users {
-	background: rgba(0, 0, 0, 0.075);
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	align-items: center;
-	justify-content: center;
-	display: flex;
-	visibility: hidden;
+    background: rgba(0, 0, 0, 0.075);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
     overflow: auto;
+    /* Permite que el contenido se desplace si es necesario */
 }
 
 .overlay__users.active {
-	visibility: visible;
+    visibility: visible;
+    /* Hace visible el contenedor cuando tiene la clase 'active' */
 }
 
 .popup__users {
-	background-color: var(--background-modal);
-	border-radius: 5px;
-	padding: 20px;
-	text-align: center;
-	width: 90%;
-	transition: .3s ease all;
-	transform: scale(0.7);
-	opacity: 0;
+    background-color: var(--background-modal);
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    width: 90%;
+    max-height: 90vh;
+    /* Ajusta la altura máxima del popup para evitar que crezca demasiado */
+    overflow: auto;
+    /* Permite el desplazamiento si el contenido excede */
+    transition: .3s ease all;
+    transform: scale(0.7);
+    opacity: 0;
 }
 
+
 .popup__users .btn-cerrar-popup__users {
-	font-size: 16px;
-	line-height: 16px;
-	display: block;
-	text-align: right;
-	transition: .3s ease all;
-	color: #BBBBBB;
+    font-size: 16px;
+    line-height: 16px;
+    display: block;
+    text-align: right;
+    transition: .3s ease all;
+    color: #BBBBBB;
     position: absolute;
     right: 10px;
     top: 10px;
@@ -168,26 +173,27 @@
 /* ------------------------- */
 /* ANIMACIONES */
 /* ------------------------- */
-.popup__users.active {	transform: scale(1); opacity: 1; }
+.popup__users.active {
+    transform: scale(1);
+    opacity: 1;
+}
 
 
 
 
-        /*////////////////////////////////////
+/*////////////////////////////////////
        //////////////////////////////////////
        Tabla izquierda de grupos de usuarios 
      //////////////////////////////////////
     ////////////////////////////////////*/
 
-  
+
 .container__table_user-groups-left {
     margin-top: 20px;
 }
-  
-.container__table_user-groups .table__user-groups_left {
-    
-}
-  
+
+.container__table_user-groups .table__user-groups_left {}
+
 .container__table_user-groups-left .table__head {
     display: flex;
     width: 100%;
@@ -195,19 +201,17 @@
     color: var(--text-color);
     border-radius: 5px 5px 0 0;
 }
-  
+
 .container__table_user-groups-left .thead {
     display: grid;
-    grid-template-columns: repeat(2, 1fr) 80px; 
+    grid-template-columns: repeat(2, 1fr) 80px;
     width: 100%;
     padding: 10px;
     font-weight: 600;
 }
 
 
-.tbody__container_user-groups-left  {
-    
-}
+.tbody__container_user-groups-left {}
 
 .tbody__container_user-groups-left .tbody__user-groups-left {
     text-align: left;
@@ -216,34 +220,32 @@
     overflow: hidden;
     overflow: auto;
 
-    
+
     &::-webkit-scrollbar {
         width: 5px;
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: var(--primary-color); 
+        background-color: var(--primary-color);
         border-radius: 5px;
         height: 100px;
     }
 
-    &::-webkit-scrollbar-track {
-
-    }
+    &::-webkit-scrollbar-track {}
 
 }
- 
+
 .tbody__container_user-groups-left .td {
     display: flex;
     justify-content: space-between;
     padding: 10px;
-  }
+}
 
-  
+
 .tbody__container_user-groups-left .tbody__user-groups-left .td:nth-child(even) {
     background-color: var(--table-color);
-  }
-  
+}
+
 .tbody__container_user-groups-left .tbody__user-groups-left .td:nth-child(odd) {
     background-color: var(--two-table-color);
 }
@@ -258,68 +260,62 @@
 }
 
 .container__btns_usergroups {
-    margin-top: 10px  ;
+    margin-top: 10px;
     display: flex;
     justify-content: center;
 }
 
 
-    /*////////////////////////////////////
+/*////////////////////////////////////
    //////////////////////////////////////
          Tabla derecha de usuarios
  //////////////////////////////////////
 ////////////////////////////////////*/
 
-.users__form_row-three-right-two {
-
-}
+.users__form_row-three-right-two {}
 
 .container__table_users_right {
     margin-top: 20px;
 }
 
 
-.container__table_users_right .table__users_right {
-    
-}
-  
+.container__table_users_right .table__users_right {}
+
 .container__table_users_right .table__head {
     display: flex;
     width: 100%;
     background-color: var(--table-color);
     color: var(--text-color);
     border-radius: 5px 5px 0 0;
-  }
-  
+}
+
 .container__table_users_right .thead {
     display: grid;
-    grid-template-columns: repeat(2, 1fr) 80px; 
+    grid-template-columns: repeat(2, 1fr) 80px;
     width: 100%;
     padding: 10px;
     font-weight: 600;
 }
 
-.tbody__container_users_right  {
+.tbody__container_users_right {
     max-height: 200px;
     overflow: hidden;
     overflow: auto;
-    
+
     &::-webkit-scrollbar {
         width: 5px;
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: var(--primary-color); 
+        background-color: var(--primary-color);
         border-radius: 5px;
         height: 100px;
     }
 
-    &::-webkit-scrollbar-track {
-
-    }
+    &::-webkit-scrollbar-track {}
 
 }
-  
+
 .tbody__container_users_right .tbody__users_right {
     display: grid;
     grid-template-columns: repeat(2, 1fr) 70px;
@@ -331,11 +327,11 @@
 .tbody__container_users_right .tbody__users_right:nth-child(even) {
     background-color: var(--table-color);
 }
-  
+
 .tbody__container_users_right .tbody__users_right:nth-child(odd) {
     background-color: var(--two-table-color);
 }
-  
+
 
 
 .tbody__container_users_right .td {
@@ -347,7 +343,7 @@
 
 
 
-  .btn__delete_users {
+.btn__delete_users {
     background-color: #da4f3c;
     padding: 5px;
     color: #fff;
@@ -373,40 +369,40 @@
 
 
 .overlay__users_branchOffice {
-	background: rgba(0, 0, 0, 0.075);
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	align-items: center;
-	justify-content: center;
-	display: flex;
-	visibility: hidden;
+    background: rgba(0, 0, 0, 0.075);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    visibility: hidden;
 }
 
 .overlay__users_branchOffice.active {
-	visibility: visible;
+    visibility: visible;
 }
 
 .popup__users_branchOffice {
-	background: var(--background-modal);
-	border-radius: 5px;
-	padding: 20px;
-	text-align: center;
-	width: 50%;
-	transition: .3s ease all;
-	transform: scale(0.7);
-	opacity: 0;
+    background: var(--background-modal);
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    width: 50%;
+    transition: .3s ease all;
+    transform: scale(0.7);
+    opacity: 0;
 }
 
 .popup__users_branchOffice .btn-cerrar-popup__users_branchOffice {
-	font-size: 16px;
-	line-height: 16px;
-	display: block;
-	text-align: right;
-	transition: .3s ease all;
-	color: #BBBBBB;
+    font-size: 16px;
+    line-height: 16px;
+    display: block;
+    text-align: right;
+    transition: .3s ease all;
+    color: #BBBBBB;
     position: absolute;
     right: 10px;
     top: 10px;
@@ -416,7 +412,10 @@
 /* ------------------------- */
 /* ANIMACIONES */
 /* ------------------------- */
-.popup__users_branchOffice.active {	transform: scale(1); opacity: 1; }
+.popup__users_branchOffice.active {
+    transform: scale(1);
+    opacity: 1;
+}
 
 
 
@@ -446,13 +445,13 @@
     width: 200px;
     height: 50%;
     position: relative;
-    
+
 }
 
 .conatiner__areas_permissions {
-   display: flex;
-   position: relative;
-   padding: 0;
+    display: flex;
+    position: relative;
+    padding: 0;
 }
 
 .conatiner__areas_permissions .sort-up {
@@ -472,17 +471,16 @@
     border-left: 2px solid #000;
     border-bottom: 2px solid #000;
     animation: animateBorderLeft 3s ease forwards,
-               animateBorderBottom 3s ease forwards;
+        animateBorderBottom 3s ease forwards;
 }
 
-.areas__permissions {
-   
-}
+.areas__permissions {}
 
 @keyframes animateBorderLeft {
     0% {
         height: 0;
     }
+
     100% {
         height: 100%;
     }
@@ -492,6 +490,7 @@
     0% {
         width: 0;
     }
+
     100% {
         width: 100%;
     }
@@ -514,13 +513,13 @@
 .table__processes_users .table__head {
     display: flex;
     width: 100%;
-    background-color: var( --table-color);
+    background-color: var(--table-color);
     border-radius: 5px 5px 0 0;
 }
 
 .table__processes_users .table__head .thead {
-   display: flex;
-   width: 100%;
+    display: flex;
+    width: 100%;
 }
 
 .table__processes_users .table__head .thead .th {
@@ -531,35 +530,36 @@
 }
 
 .table__processes_users .table__body {
-	height: 100%;
+    height: 100%;
     overflow: hidden;
     overflow: auto;
     transition-delay: 0.0s;
+
     &::-webkit-scrollbar {
         width: 5px;
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: #1F319D; 
+        background-color: #1F319D;
         border-radius: 5px;
         height: 100px;
     }
 
     &::-webkit-scrollbar-track {
-    /* Para modificar el background */
+        /* Para modificar el background */
     }
 }
 
 
 .table__processes_users .tbody__container:nth-child(even) {
     background-color: var(--table-color);
-  }
-  
-  .table__processes_users .tbody__container:nth-child(odd) {
-    background-color: var(--two-table-color);
-  }
+}
 
-  .table__processes_users .table__body .tbody {
+.table__processes_users .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+.table__processes_users .table__body .tbody {
     display: flex;
 }
 
@@ -575,54 +575,58 @@
 }
 
 .processes__edit_btn {
-	background-color: var(--primary-color);
-	color: #fff;
-	border: none;
-	padding: 5px 10px;
-	border-radius: var(--border-radius-general);
-	cursor: pointer;
-  }
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: var(--border-radius-general);
+    cursor: pointer;
+}
 
 
 
 
 
 .overlay__edit_users {
-	background: rgba(0,0,0,.3);
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	align-items: center;
-	justify-content: center;
-	display: flex;
-	visibility: hidden;
-    overflow:auto
+    background: rgba(0, 0, 0, 0.3);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    overflow: auto;
 }
 
 .overlay__edit_users.active {
-	visibility: visible;
+    visibility: visible;
 }
+
 .popup__edit_users {
-	background-color: var(--background-modal);
-	border-radius: 5px;
-	font-family: 'Montserrat', sans-serif;
-	padding: 20px;
-	text-align: center;
-	width: 90%;
-	transition: .3s ease all;
-	transform: scale(0.7);
-	opacity: 0;
+    background-color: var(--background-modal);
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    width: 90%;
+    max-height: 90vh;
+    /* Ajusta la altura máxima del popup para evitar que crezca demasiado */
+    overflow: auto;
+    /* Permite el desplazamiento si el contenido excede */
+    transition: .3s ease all;
+    transform: scale(0.7);
+    opacity: 0;
 }
 
 .popup__edit_users .btn-cerrar-popup__edit_users {
-	font-size: 16px;
-	line-height: 16px;
-	display: block;
-	text-align: right;
-	transition: .3s ease all;
-	color: #BBBBBB;
+    font-size: 16px;
+    line-height: 16px;
+    display: block;
+    text-align: right;
+    transition: .3s ease all;
+    color: #BBBBBB;
     position: absolute;
     right: 15px;
     top: 15px;
@@ -633,7 +637,10 @@
 /* ------------------------- */
 /* ANIMACIONES */
 /* ------------------------- */
-.popup__edit_users.active {	transform: scale(1); opacity: 1; }
+.popup__edit_users.active {
+    transform: scale(1);
+    opacity: 1;
+}
 
 
 
@@ -651,13 +658,13 @@
 .table__users .table__head {
     display: flex;
     width: 100%;
-    background-color: var( --table-color);
+    background-color: var(--table-color);
     border-radius: 5px 5px 0 0;
 }
 
 .table__users .table__head .thead {
-   display: flex;
-   width: 100%;
+    display: flex;
+    width: 100%;
 }
 
 .table__users .table__head .thead {
@@ -669,33 +676,34 @@
 }
 
 .table__users .table__body {
-	height: 100%;
+    height: 100%;
     overflow: hidden;
     overflow: auto;
     transition-delay: 0.0s;
+
     &::-webkit-scrollbar {
         width: 5px;
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: #1F319D; 
+        background-color: #1F319D;
         border-radius: 5px;
         height: 100px;
     }
 
     &::-webkit-scrollbar-track {
-    /* Para modificar el background */
+        /* Para modificar el background */
     }
 }
 
 
 .table__users .tbody__container:nth-child(even) {
     background-color: var(--table-color);
-  }
-  
+}
+
 .table__users .tbody__container:nth-child(odd) {
     background-color: var(--two-table-color);
-  }
+}
 
 .table__users .table__body .tbody {
     display: flex;
