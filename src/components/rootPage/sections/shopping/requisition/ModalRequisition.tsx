@@ -278,17 +278,17 @@ const ModalRequisition: React.FC = () => {
   }
 
   const getPDFRequisition = async () => {
-    try {
-      await APIs.pdtRequisition(updateToRequisition.id);
+    window.open('https://hiplotbusiness.com/api_dev/pdf_requisicion/'+updateToRequisition.id, '_blank');
+    // try {
+      // await APIs.pdtRequisition(updateToRequisition.id);
       // Abrimos el PDF en una nueva pestaña
-      window.open('https://hiplotbusiness.com/api_dev/pdf_requisicion/1', '_blank');
 
-      let resultRequisition = await getRequisition(dataGet);
-      setRequisitions(resultRequisition);
-      setModalStateCreate('');
-    } catch (error) {
-      console.log(error);
-    }
+      // let resultRequisition = await getRequisition(dataGet);
+      // setRequisitions(resultRequisition);
+      // setModalStateCreate('');
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }
   return (
     <div className={`overlay__requisition ${modalStateCreate == 'create' ? 'active' : ''}`}>

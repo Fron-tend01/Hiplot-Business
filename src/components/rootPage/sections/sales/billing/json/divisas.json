@@ -1,21 +1,21 @@
 {
     "currencies": [
       {
-        "id": 1,
+        "id": 0,
         "name": "Peso Mexicano",
         "symbol": "$",
         "code": "MXN",
         "country": "Mexico"
       },
       {
-        "id": 2,
+        "id": 1,
         "name": "Euro",
         "symbol": "€",
         "code": "EUR",
         "country": "European Union"
       },
       {
-        "id": 3,
+        "id": 2,
         "name": "Dólar Estadounidense",
         "symbol": "$",
         "code": "USD",

@@ -13,6 +13,7 @@ import Empresas_Sucursales from '../../../Dynamic_Components/Empresas_Sucursales
 import Select from '../../../Dynamic_Components/Select'
 import { useSelectStore } from '../../../../../zustand/Select'
 import APIs from '../../../../../services/services/APIs'
+import { storeFamilies } from '../../../../../zustand/Families';
 
 const ModalCreate: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -81,19 +82,25 @@ const ModalCreate: React.FC = () => {
     };
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const value = e.target.value.trim();
+        let value = Number.isNaN(parseFloat(e.target.value)) ? 0: parseFloat(e.target.value);
+        
         const newArticleStates = [...concepts];
-        newArticleStates[index].cantidad = value === '' ? null : parseFloat(value);
+        newArticleStates[index].cantidad = value;
 
         let stocks = concepts[index].stock;
-        let almacen_predeterminado = concepts[index].almacen_predeterminado;
-
-        console.log(concepts[index])
+        let almacen_predeterminado = selectedIds?.store;
 
         let filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id);
 
         if (filter) {
-            if (value > filter[0].stock) {
+            let equivalencias = filter[0].equivalencias.filter((x:any)=> x.id_unidad==newArticleStates[index].unidad)
+            console.log('value',value);
+            console.log('canti',equivalencias[0].cantidad);
+            
+            if (value > equivalencias[0].cantidad) {
+                const newArticleStates = [...concepts];
+                newArticleStates[index].cantidad = 0;
+                setConcepts(newArticleStates);
                 Swal.fire({
                     icon: "warning",
                     title: "Oops...",
@@ -101,7 +108,7 @@ const ModalCreate: React.FC = () => {
                 });
             } else {
                 const newArticleStates = [...concepts];
-                newArticleStates[index].cantidad = value === '' ? null : parseFloat(value);
+                newArticleStates[index].cantidad = value;
                 setConcepts(newArticleStates);
             }
             return
@@ -112,10 +119,16 @@ const ModalCreate: React.FC = () => {
 
     };
 
+    const [selectedUnit, setSelectedUnit] = useState<any>(false)
+
 
     const handleUnits = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
         const value = parseInt(event.target.value, 10);
         concepts[index].unidad = value;
+        setSelectedUnit(value)
+        const newArticleStates = [...concepts];
+        newArticleStates[index].cantidad = 0;
+        setConcepts(newArticleStates);
     };
 
     const handleCreateWarehouseExit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -128,6 +141,7 @@ const ModalCreate: React.FC = () => {
             comentarios: comments,
             conceptos: concepts
         };
+        console.log(data)
 
         const dataGet = {
             id_almacen: null,
@@ -159,14 +173,15 @@ const ModalCreate: React.FC = () => {
 
     const [modalIndex, setModalIndex] = useState<any>(false);
 
+    const [activeH, setActiveH] = useState<boolean>(false)
     const seeStock = (x: any, index: any) => {
+        setActiveH(true)
         setModalSeeStocks((prev) => {
             const newState = [...prev];
             newState[index] = true;
             return newState;
         });
         setModalIndex(index);
-        console.log(x)
     };
 
     const closeModalSeeStocks = (index: any) => {
@@ -177,7 +192,6 @@ const ModalCreate: React.FC = () => {
         });
     };
 
-    console.log(concepts)
 
 
     const modalCloseCreate = () => {
@@ -185,13 +199,24 @@ const ModalCreate: React.FC = () => {
     }
     useEffect(() => {
         if (selectedIds != null) {
-            if (selectedIds.store) {
-
-                setConcepts([])
+            if (selectedIds.almacen_origin) {
+    
+                concepts.forEach((el:any, index:number) => {
+                  const newArticleStates = [...concepts];
+                  newArticleStates[index].cantidad = 0;
+                  setConcepts(newArticleStates);
+                });
             }
         }
     }, [selectedIds])
 
+
+
+
+    useEffect(() => {
+        console.log(concepts);
+
+    }, [concepts])
     return (
         <div className={`overlay__departures ${modal == 'modal-create__departures' ? 'active' : ''}`}>
             <div className={`popup__departures ${modal == 'modal-create__departures' ? 'active' : ''}`}>
@@ -249,7 +274,7 @@ const ModalCreate: React.FC = () => {
 
                         </div>
                         <div className='row__three'>
-                            <div className='table__direct_warehouse-exit' >
+                            <div className={`table__direct_warehouse-exit ${activeH ? "active" : ""}`} >
                                 <div>
                                     <div>
                                         {concepts ? (
@@ -303,7 +328,7 @@ const ModalCreate: React.FC = () => {
                                                             <input className='inputs__general' type="number" value={item.cantidad} placeholder='Cantidad' onChange={(e) => handleAmountChange(e, index)} />
                                                         </div>
                                                         <div className='td'>
-                                                            <select className='traditional__selector' onChange={(event) => handleUnits(event, index)} value={item.id_unidad} >
+                                                            <select className='traditional__selector' onChange={(event) => handleUnits(event, index)} value={item.unidad}>
                                                                 {item.unidades && item.unidades.map((item: any) => (
                                                                     <option key={item.id} value={item.id_unidad}>
                                                                         {item.nombre}
@@ -338,7 +363,7 @@ const ModalCreate: React.FC = () => {
                                                                             {item.storeWarning ?
                                                                                 <div className='store-warning'>
                                                                                     <svg xmlns="http://www.w3.org/2000/svg" width='20' fill='#D9D9D9' viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24V264c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z" /></svg>
-                                                                                    <p>Este articulo no sele asingno almacen</p>
+                                                                                    <p>Este articulo no tiene almacen configurado</p>
                                                                                 </div>
                                                                                 :
                                                                                 ''}
@@ -353,30 +378,39 @@ const ModalCreate: React.FC = () => {
 
                                                                                 </div>
                                                                             </div>
-                                                                            {item.stock?.length > 0 ? (
-                                                                                <div className='table__body'>
-                                                                                    {item.stock?.map((x: any, index: any) => (
-                                                                                        <div className='tbody__container' key={index}>
-                                                                                            <div className='tbody'>
-                                                                                                <div className='td'>
-                                                                                                    {x.nombre}
-                                                                                                </div>
-                                                                                                <div className='td'>
-                                                                                                    {x.stock}
-                                                                                                </div>
-                                                                                                <div className='td'>
-                                                                                                    {x.cantidad}
-                                                                                                </div>
-                                                                                                <div className='td'>
-                                                                                                    {x.descripcion}
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    ))}
-                                                                                </div>
-                                                                            ) : (
-                                                                                <p className='text'>No hay conceptos</p>
-                                                                            )}
+                                                                            <table className='table '>
+                                                                                <thead className='thead'>
+                                                                                    <tr>
+                                                                                        <th>Nombre</th>
+                                                                                        {/* Agrega una columna para cada equivalencia, si existe */}
+                                                                                        {item.stock?.[0]?.equivalencias?.map((equivalencia:any, eqIndex:number) => (
+                                                                                            <th key={eqIndex}>{equivalencia.nombre_unidad}</th>
+                                                                                        ))}
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    {item.stock?.length > 0 ? (
+                                                                                        item.stock.map((x:any, index:number) => (
+                                                                                            <tr key={index}>
+                                                                                                <td>{x.nombre}</td>
+                                                                                                {/* Mostrar valores de equivalencias en columnas adicionales */}
+                                                                                                {x.equivalencias && x.equivalencias.length > 0 ? (
+                                                                                                    x.equivalencias.map((equivalencia:any, eqIndex:number) => (
+                                                                                                        <td key={eqIndex}>{equivalencia.cantidad}</td>
+                                                                                                    ))
+                                                                                                ) : (
+                                                                                                    <td colSpan={x.equivalencias?.length || 1}>No hay equivalencias</td>
+                                                                                                )}
+                                                                                            </tr>
+                                                                                        ))
+                                                                                    ) : (
+                                                                                        <tr>
+                                                                                            <td >No hay conceptos</td>
+                                                                                        </tr>
+                                                                                    )}
+                                                                                </tbody>
+                                                                            </table>
+
                                                                         </div>
                                                                     </div>
                                                                 </div>

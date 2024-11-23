@@ -8,7 +8,10 @@ const ModalUpdate = ({ conceptsUpdate }: any) => {
     const setModal = storeWarehouseExit(state => state.setModal);
     const { modal } = useStore(storeWarehouseExit)
 
+    const getPdf = async () => {
+        window.open('https://hiplotbusiness.com/api_dev/pdf_salida/' + conceptsUpdate.id, '_blank');
 
+    }
 
     return (
         <div className={`overlay__modal-concepts_departures ${modal == 'modal-update__concepts' ? 'active' : ''}`}>
@@ -18,40 +21,28 @@ const ModalUpdate = ({ conceptsUpdate }: any) => {
                 </a>
                 <div className='container__modal-concepts_departures'>
                     <div className='modal-concepts_departures'>
-                        <div className='table__modal-concepts_departures'>
-                            <div className='d-flex'>
-                                <div className='salida__container'>
-                                    <p>{conceptsUpdate.serie}-{conceptsUpdate.folio}-{conceptsUpdate.anio}</p>
-                                </div>
-                                <div className='user'>
-                                    <p>{conceptsUpdate.usuario_crea}</p>
-                                </div>
-                            </div>
-                            <div className='row w-full my-4'>
-                                <div className='select__container col-4'>
-                                    <label className='label__general'>Empresas</label>
-                                    <div className='container__text_result'>
-                                        <p className='text__result' >{conceptsUpdate.empresa}</p>
+                        <div className=''>
+                            <div className="card ">
+                                <div className="card-body bg-standar">
+                                    <h3 className="text">{conceptsUpdate.serie}-{conceptsUpdate.folio}-{conceptsUpdate.anio}</h3>
+                                    <hr />
+                                    <div className='row'>
+                                        <div className='col-6 md-col-12'>
+                                            <span className='text'>Creado por: <b>{conceptsUpdate.usuario_crea}</b></span><br />
+                                            <span className='text'>Fecha de Creación: <b>{conceptsUpdate.fecha_creacion}</b></span><br />
+
+                                        </div>
+                                        <div className='col-6 md-col-12'>
+                                            <span className='text'>Empresa: <b>{conceptsUpdate.empresa}</b></span><br />
+                                            <span className='text'>Sucursal: <b>{conceptsUpdate.sucursal}</b></span><br />
+                                            <span className='text'>Almacen: <b>{conceptsUpdate.almacen}</b></span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className='select__container col-4'>
-                                    <label className='label__general'>sucursal</label>
-                                    <div className='container__text_result'>
-                                        <p className='text__result' >{conceptsUpdate.sucursal}</p>
-                                    </div>
-                                </div>
-                                <div className='select__container col-4'>
-                                    <label className='label__general'>Fecha creación</label>
-                                    <div className='container__text_result'>
-                                        <p className='text__result' >{conceptsUpdate.fecha_creacion}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='row'>
-                                <div className='select__container col-12'>
-                                    <label className='label__general'>Comentarios</label>
-                                    <div className='container__text_result'>
-                                        <p className='text__result' >{conceptsUpdate.comentarios}</p>
+                                    <div className='row'>
+                                        <div className='col-12'>
+                                            <span className='text'>Comentarios: {conceptsUpdate.comentarios}</span>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -66,55 +57,53 @@ const ModalUpdate = ({ conceptsUpdate }: any) => {
                                         <p className='text'>No hay stock</p>
                                     )}
                                 </div>
-                                <div className='table__head'>
-                                    <div className='thead'>
-                                        <div className='th'>
-                                            <p className=''>Descripción</p>
-                                        </div>
-                                        <div className='th'>
-                                            <p className=''>Unidad</p>
-                                        </div>
-                                        <div className='th'>
-                                            <p className=''>Cantidad</p>
-                                        </div>
-                                        <div className='th'>
-                                            <p className=''>Comentarios</p>
-                                        </div>
-                                        <div className='th'>
-
-                                        </div>
-                                    </div>
+                                <div className="table__requisicion">
+                                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                                        <thead className="table__head">
+                                            <tr className="thead">
+                                                <th>Articulo</th>
+                                                <th>Unidad</th>
+                                                <th>Cantidad</th>
+                                                <th>Entradas Afect.</th>
+                                                <th>Comentarios</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="table__body">
+                                            {conceptsUpdate.conceptos && conceptsUpdate.conceptos.length > 0 ? (
+                                                conceptsUpdate.conceptos?.map((concept: any, index: number) => (
+                                                    <tr className="tbody__container" key={index}>
+                                                        <td>{concept.codigo}-{concept.descripcion}</td>
+                                                        <td>{concept.unidad}</td>
+                                                        <td>{concept.cantidad}</td>
+                                                        <td>
+                                                            {concept.entradas_afectadas?.map((ent: any, i: number) => (
+                                                                <span key={i}>
+                                                                    {ent.serie}-{ent.folio}-{ent.anio} ||
+                                                                </span>
+                                                            ))}
+                                                        </td>
+                                                        <td>{concept.comentarios}</td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan={10} style={{ textAlign: "center" }}>
+                                                        No hay requisiciones disponibles
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
                                 </div>
-                                {conceptsUpdate.conceptos?.length > 0 ? (
-                                    <div className='table__body'>
-                                        {conceptsUpdate.conceptos?.map((concept: any, index: any) => (
-                                            <div className='tbody__container' key={index}>
-                                                <div className='tbody'>
-                                                    <div className='td'>
-                                                        {`${concept.codigo}-${concept.descripcion}`}
-                                                    </div>
-                                                    <div className='td'>
-                                                        {concept.unidad}
-                                                    </div>
-                                                    <div className='td'>
-                                                        {concept.cantidad}
-                                                    </div>
-                                                    <div className='td'>
-                                                        {concept.descripcion}
-                                                    </div>
-                                                    <div className='td'>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className='text'>No hay conceptos</p>
-                                )}
                             </div>
                         </div>
                     </div>
+                </div>
+                <div className='d-flex justify-content-between mt-3'>
+                    <div>
+                        <button className='btn__general-orange' type='button' onClick={getPdf}>PDF</button>
+                    </div>
+                   
                 </div>
             </div>
         </div>

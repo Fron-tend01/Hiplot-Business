@@ -1,12 +1,12 @@
 {
     "currencies": [
       {
-        "id": 1,
-        "name": "Pago en un solo exhibición"
+          "id": 0,
+          "name": "PUE - PAGO EN UNA SOLA EXHIBICION"
       },
       {
-        "id": 2,
-        "name": "Pago en parciales o diferido"
+          "id": 1,
+          "name": "PPD - PAGO EN PARCIALIDADES O DIFERIDO"
       }
   ]
 }

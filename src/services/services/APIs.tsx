@@ -153,9 +153,12 @@ const APIs = {
     return ConfigurationAPIs.post(path, data);
   },
 
-  putUsers: async (user_id: number, sucursal_id: number, nombre: string, email: string, password: string, tipo_us: number, sucursales_nuevas: any[], sucursales_eliminar: any[], areas_nuevas: any[], areas_eliminar: any[], subordinados_nuevos: any[], subordinados_eliminar: any[], grupos_nuevos: any[], grupos_eliminar: any[], customPath?: string) => {
+  putUsers: async (user_id: number, sucursal_id: number, nombre: string, email: string, password: string, 
+    tipo_us: number, sucursales_nuevas: any[], sucursales_eliminar: any[], areas_nuevas: any[], areas_eliminar: any[], 
+    subordinados_nuevos: any[], subordinados_eliminar: any[], grupos_nuevos: any[], grupos_eliminar: any[],usuarios_comercial: any[], usuarios_comercial_eliminar: any[], customPath?: string) => {
     const path = customPath || `usuario_update/${user_id}`
-    return ConfigurationAPIs.put(path, {user_id, sucursal_id,  nombre, email, password, tipo_us, sucursales_nuevas, sucursales_eliminar, areas_nuevas, areas_eliminar, subordinados_nuevos, subordinados_eliminar, grupos_nuevos, grupos_eliminar})
+    return ConfigurationAPIs.put(path, {user_id, sucursal_id,  nombre, email, password, tipo_us, sucursales_nuevas, 
+      sucursales_eliminar, areas_nuevas, areas_eliminar, subordinados_nuevos, subordinados_eliminar, grupos_nuevos, grupos_eliminar,usuarios_comercial,usuarios_comercial_eliminar})
   },
 
   

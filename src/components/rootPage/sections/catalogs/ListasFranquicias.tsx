@@ -55,8 +55,7 @@ const ListasFranquicias = () => {
   const [modoUpdate, setModoUpdate] = useState<boolean>(false)
 
   const [data, setData] = useState<any>(null)
-  const setArticulos = storeDv(state => state.setArticulos)
-  const { articulos }: any = useStore(storeDv)
+  const [articulos, setArticulos] = useState<any[]>([])
   const { getCompaniesXUsers }: any = companiesRequests()
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
@@ -273,7 +272,7 @@ const ListasFranquicias = () => {
                 <label className='label__general'>AGREGAR ARTICULOS</label>
                 <hr />
                 <br />
-                <Filtrado_Articulos_Basic campos_ext={campos_ext} />
+                <Filtrado_Articulos_Basic campos_ext={campos_ext} set_article_local={setArticulos}/>
                 <br />
                 <div className='table__modal '>
                   <div>

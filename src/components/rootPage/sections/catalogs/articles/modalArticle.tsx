@@ -26,6 +26,7 @@ import APIs from '../../../../../services/services/APIs';
 import Swal from 'sweetalert2';
 
 import Select from '../../../Dynamic_Components/Select';
+import CobrosFranquicia from './modals/CobrosFranquicia';
 
 const modalArticle: React.FC = () => {
     //////////////////////////// Data del articulo /////////////////////////////////////
@@ -43,6 +44,7 @@ const modalArticle: React.FC = () => {
     const setComponents = storeArticles(state => state.setComponents)
     const setAreas = storeArticles(state => state.setAreas)
     const setMinimalCharges = storeArticles(state => state.setMinimalCharges)
+    const setCobrosFranquicia = storeArticles(state => state.setCobrosFranquicia)
 
 
 
@@ -52,7 +54,9 @@ const modalArticle: React.FC = () => {
     const { selectedIds } = useStore(useSelectStore);
 
     ///////////////////////////////////////////////////////////Variables de los modales ////////////////////////////////////////////////////////////////////////////
-    const { modalArticle, imagesArticles, branchOffices, deleteBranchOffices, prices, deletePrices, maxsMins, deleteMaxsMins, units, deleteUnits, components, deleteComponents, variations, deleteVariations, combinations, deleteCombinations, suppliers, deleteSuppliers, deliveryTimes, deleteDeliveryTimes, minimalCharges, deleteMinimalCharges, additionalArticles, deleteAdditionalArticles, areas, deleteAreas }: any = useStore(storeArticles);
+    const { modalArticle, imagesArticles, branchOffices, deleteBranchOffices, prices, deletePrices, maxsMins, deleteMaxsMins, units, deleteUnits, 
+        components, deleteComponents, variations, deleteVariations, combinations, deleteCombinations, suppliers, deleteSuppliers, deliveryTimes, deleteDeliveryTimes,
+         minimalCharges, deleteMinimalCharges, additionalArticles, deleteAdditionalArticles, areas, deleteAreas, cobros_franquicia, deleteCobros_franquicia }: any = useStore(storeArticles);
 
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
@@ -180,6 +184,7 @@ const modalArticle: React.FC = () => {
             setComponents(articleToUpdate.componentes);
             setAreas(articleToUpdate.areas_produccion);
             setMinimalCharges(articleToUpdate.cargos_minimos);
+            setCobrosFranquicia(articleToUpdate.cobros_franquicia);
             setAdditionalArticles(articleToUpdate.adicionales)
         }
     }
@@ -294,6 +299,9 @@ const modalArticle: React.FC = () => {
 
             adicional: additionalArticles,
             adicional_elim: deleteAdditionalArticles,
+
+            cobros_franquicia: cobros_franquicia,
+            cobros_franquicia_elim: deleteCobros_franquicia,
 
             imagenes: imagesArticles
         };
@@ -712,6 +720,12 @@ const modalArticle: React.FC = () => {
                                     <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-additiona-articles')}>Art. adicionales</button>
                                 </div>
                                 <AdditionalArticles />
+                            </div>
+                            <div>
+                                <div>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-cobros-franquicia')}>Cobros Franquicia</button>
+                                </div>
+                                <CobrosFranquicia />
                             </div>
                         </div>
                         <div className='d-flex justify-content-center'>

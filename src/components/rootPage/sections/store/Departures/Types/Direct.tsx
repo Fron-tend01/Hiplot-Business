@@ -66,7 +66,6 @@ const Direct: React.FC = () => {
 
 
   const search = async () => {
-    console.log(selectedSearchBy);
     
     let data = {
         id: 0,
@@ -115,10 +114,8 @@ const Direct: React.FC = () => {
         if(filter.length <= 0) {
           toast.warning('El articulo que agregaste no tiene alamcen')
           warning = true
-          console.log('No esta')
         } else {
           warning = false
-          console.log('Si esta')
         }
       
         // selectedResult.id_articulo = selectedResult.id
@@ -153,7 +150,7 @@ const Direct: React.FC = () => {
 
 
   useEffect(() => {
-
+    
   }, [concepts])
 
   return (

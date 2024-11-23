@@ -43,8 +43,6 @@ const ByOrder: React.FC = () => {
   const fecht = async () => {
     let companies = await getCompaniesXUsers(user_id)
     setCompanies(companies)
-    let result = await getSeriesXUser(user_id)
-    setSeries(result)
   }
 
   useEffect(() => {
@@ -79,19 +77,6 @@ const ByOrder: React.FC = () => {
     }
     let result = await getOrdedrs(data)
     setOrders(result)
-  }
-
-
-  const [selectedSerie, setSelectedSerie] = useState<number | null>(null)
-  const [selectSeries, setSelectSeries] = useState<boolean>(false)
-
-  const openSelectSeries = () => {
-    setSelectSeries(!selectSeries)
-  }
-
-  const handleSeriesChange = (serie: any) => {
-    setSelectedSerie(serie.id)
-    setSelectSeries(false)
   }
 
   ///////////////////////////////// Result ////////////////////////////////////
@@ -135,10 +120,10 @@ const ByOrder: React.FC = () => {
 
       let warning;
 
-      if(selectedIds?.store) {
-        if(result) {
-          const filter = result[0].stock?.filter((x: any) => x.id == selectedIds.store);
-          if(filter.length <= 0) {
+      if (selectedIds != null) {
+        if (result) {
+          const filter = result[0].stock?.filter((x: any) => x.id == selectedIds.store.id);
+          if (filter.length <= 0) {
             toast.warning('El articulo que agregaste no tiene alamcen')
             warning = true
             console.log('No esta')
@@ -146,8 +131,7 @@ const ByOrder: React.FC = () => {
             warning = false
             console.log('Si esta')
           }
-    
-          console.log(concept)
+
 
           await setConcepts([...concepts, {
             id_articulo: result[0].id,
@@ -155,12 +139,12 @@ const ByOrder: React.FC = () => {
             ped: `${order.serie}-${order.folio}-${order.anio}`,
             cantidad: concept.cantidad,
             comentarios: concept.comentarios,
-            id_unidad: concept.id_unidad,
-            unidad: concept.unidad,
+            unidad: concept.id_unidad,
             unidades: result[0].unidades,
             stock: result[0].stock,
             almacen_predeterminado: result[0].almacen_predeterminado,
-            pedido_almacen_concepto_id: concept.id
+            pedido_almacen_concepto_id: concept.id,
+            storeWarning: warning
           }]);
         }
       } else {
@@ -174,6 +158,8 @@ const ByOrder: React.FC = () => {
 
   return (
     <div className='by-order__warehouse-exit'>
+      <br />
+      <b>FILTRAR PEDIDOS</b>
       <div className='row'>
         <div className="col-8">
           <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
@@ -188,34 +174,6 @@ const ByOrder: React.FC = () => {
           <button className='btn__general-purple' type='button' onClick={filterSeveral}>Filtran</button>
         </div>
       </div>
-      <div className='row__two'>
-        <div className='select__container'>
-          <label className='label__general'>Series</label>
-          <div className='select-btn__general'>
-            <div className={`select-btn ${selectSeries ? 'active' : ''}`} onClick={openSelectSeries} >
-              <div className='select__container_title'>
-                <p>{selectedSerie ? series.find((s: { id: number }) => s.id === selectedSerie)?.nombre : 'Selecciona'}</p>
-              </div>
-              <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-            </div>
-            <div className={`content ${selectSeries ? 'active' : ''}`} >
-              <ul className={`options ${selectSeries ? 'active' : ''}`} style={{ opacity: selectSeries ? '1' : '0' }}>
-                {series && series.map((serie: any) => (
-                  <li key={serie.id} onClick={() => handleSeriesChange(serie)}>
-                    {serie.nombre}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div>
-          <label className='label__general'>Folio</label>
-          <div className='warning__general'><small >Este campo es obligatorio</small></div>
-          <input className={`inputs__general`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
-        </div>
-        <button className='btn__general-purple'>Filtran</button>
-      </div>
       <div className='row__three'>
         <div className='table__modal_filter_orders'>
           <div>
@@ -226,44 +184,29 @@ const ByOrder: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className='table__head'>
-              <div className='thead'>
-                <div className='th'>
-                  <p className=''>Serie</p>
-                </div>
-                <div className='th'>
-                  <p className=''>Folio</p>
-                </div>
-                <div className='th'>
-                  <p className=''>Fecha</p>
-                </div>
-                <div className='th'>
-                </div>
-                <div className='th'>
-
-                </div>
-              </div>
-            </div>
             {orders && orders.length > 0 ? (
               <div className='table__body'>
                 {orders && orders.map((order: any, index: any) => (
                   <div className='tbody__container' key={index}>
-                    <div className='tbody'>
-                      <div className='td'>
-                        {order.id_folio}
-                      </div>
-                      <div className='td'>
-                        ({order.comentarios})
-                      </div>
-                      <div className='td'>
-                        {order.fecha_creacion}
-                      </div>
-                      <div className='td end'>
-                        <div>
-                          <button onClick={() => seeConcepts(order.id)} type='button' className='btn__general-purple'>Ver conceptos</button>
+                    <div className="table-body">
+                      <div className="table-row">
+                        <div className="table-cell">
+                          {order.serie}-{order.folio}-{order.anio}
+                        </div>
+                        <div className="table-cell">
+                          {order.empresa} {' > '} {order.sucursal} {' > '} {order.area}
+                        </div>
+                        <div className="table-cell">
+                          {order.fecha_creacion}
+                        </div>
+                        <div className="table-cell table-cell-end">
+                          <button onClick={() => seeConcepts(order.id)} type="button" className="btn__general-purple">
+                            Ver conceptos
+                          </button>
                         </div>
                       </div>
                     </div>
+
                     <div className={`overlay__modal-filter_concepts_departures ${modalUpdatePermissions[order.id] ? 'active' : ''}`}>
                       <div className={`popup__modal-filter_concepts_departures ${modalUpdatePermissions[order.id] ? 'active' : ''}`}>
                         <a href="#" className="btn-cerrar-popup__modal-filter_concepts_departures" onClick={closeModalUpdatePermissions}>
@@ -275,11 +218,11 @@ const ByOrder: React.FC = () => {
                               <div>
                                 {order.conceptos ? (
                                   <div className='table__numbers'>
-                                    <p className='text'>Total de stocks</p>
+                                    <p className='text'>Conceptos en el pedido</p>
                                     <div className='quantities_tables'>{order.conceptos && order.conceptos.length}</div>
                                   </div>
                                 ) : (
-                                  <p className='text'>No hay stock</p>
+                                  <p className='text'>No hay conceptos</p>
                                 )}
                               </div>
                               <div className='table__head'>
@@ -307,7 +250,7 @@ const ByOrder: React.FC = () => {
                                     <div className='tbody__container' key={index}>
                                       <div className='tbody'>
                                         <div className='td'>
-                                          {concept.codigo}
+                                          {concept.codigo}-{concept.descripcion}
                                         </div>
                                         <div className='td'>
                                           {concept.unidad}
@@ -316,7 +259,7 @@ const ByOrder: React.FC = () => {
                                           {concept.cantidad}
                                         </div>
                                         <div className='td'>
-                                          {concept.descripcion}
+                                          {concept.comentarios}
                                         </div>
                                         <div className='td'>
                                           <button className='btn__general-purple' type='button' onClick={() => addOrders(concept, order)}>Agregar</button>

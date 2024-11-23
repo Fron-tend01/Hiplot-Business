@@ -159,15 +159,54 @@ const ModalCreate: React.FC = () => {
     newSelected[index] = valueUnit;
     // Actualizar el estado con las nuevas selecciones
     setSelectedUnit(newSelected);
+    const newArticleStates = [...concepts];
+    newArticleStates[index].cantidad = 0;
+    setConcepts(newArticleStates);
   };
 
-  
+
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const value = e.target.value.trim();
+    let value = Number.isNaN(parseFloat(e.target.value)) ? 0: parseFloat(e.target.value);
+    if (selectedIds.almacen_origin == null) {
+      Swal.fire('Notificacion', 'Selecciona un almacen de Origen', 'warning')
+      const newArticleStates = [...concepts];
+      newArticleStates[index].cantidad = 0;
+      setConcepts(newArticleStates);
+      return
+    }
     const newArticleStates = [...concepts];
-    newArticleStates[index].cantidad = value === '' ? null : parseFloat(value);
-    setConcepts(newArticleStates);
+    newArticleStates[index].cantidad = value;
+
+    let stocks = concepts[index].stocks;
+    let almacen_predeterminado = selectedIds?.almacen_origin;
+
+    let filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id);
+
+    if (filter) {
+        let equivalencias = filter[0].equivalencias.filter((x:any)=> x.id_unidad==newArticleStates[index].unidad)
+        console.log('value',value);
+        console.log('canti',equivalencias[0].cantidad);
+        
+        if (value > equivalencias[0].cantidad) {
+            const newArticleStates = [...concepts];
+            newArticleStates[index].cantidad = 0;
+            setConcepts(newArticleStates);
+            Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: 'La cantidad ingresada supera el stock disponible'
+            });
+        } else {
+            const newArticleStates = [...concepts];
+            newArticleStates[index].cantidad = value;
+            setConcepts(newArticleStates);
+        }
+        return
+    } else {
+        console.log('El almacen no existe')
+    }
+
   };
 
   const handleComentariosChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -185,10 +224,10 @@ const ModalCreate: React.FC = () => {
     let data = {
       id_usuario_crea: user_id,
       id_sucursal: branchOffices.id,
-      id_almacen_origen: selectedIds.almacen_origin,
+      id_almacen_origen: selectedIds.almacen_origin.id,
       id_sucursal_origen: branchOffices.id,
       id_sucursal_destino: branchOfficesTwo.id,
-      id_almacen_destino: selectedIds.almacen_destino,
+      id_almacen_destino: selectedIds.almacen_destino.id,
       comentarios: comments,
       conceptos: concepts
     };
@@ -239,7 +278,18 @@ const ModalCreate: React.FC = () => {
     let filter = concepts.filter((_: number, index: number) => index !== indextwo)
     setConcepts(filter)
   }
+  useEffect(() => {
+    if (selectedIds != null) {
+        if (selectedIds.almacen_origin) {
 
+            concepts.forEach((el:any, index:number) => {
+              const newArticleStates = [...concepts];
+              newArticleStates[index].cantidad = 0;
+              setConcepts(newArticleStates);
+            });
+        }
+    }
+}, [selectedIds])
   return (
     <div className={`overlay__transfers ${modalStateCreate == 'create' ? 'active' : ''}`}>
       <div className={`popup__transfers ${modalStateCreate == 'create' ? 'active' : ''}`}>
@@ -253,7 +303,7 @@ const ModalCreate: React.FC = () => {
               <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
             </div>
             <div className='col-4'>
-              <Select dataSelects={selectStore} instanceId='almacen_origin' nameSelect={'Almacen origin'}/>
+              <Select dataSelects={selectStore} instanceId='almacen_origin' nameSelect={'Almacen origin'} />
             </div>
           </div>
           <div className='row my-4'>
@@ -261,7 +311,7 @@ const ModalCreate: React.FC = () => {
               <Empresas_Sucursales empresaDyn={companiesTwo} sucursalDyn={branchOfficesTwo} setEmpresaDyn={setCompaniesTwo} setSucursalDyn={setBranchOfficesTwo} modeUpdate={false} />
             </div>
             <div className='col-4'>
-              <Select dataSelects={selectStoreTwo} instanceId='almacen_destino' nameSelect={'Almacen destino'}/>
+              <Select dataSelects={selectStoreTwo} instanceId='almacen_destino' nameSelect={'Almacen destino'} />
             </div>
           </div>
           <div className='row__four'>
@@ -304,14 +354,14 @@ const ModalCreate: React.FC = () => {
               <label className='label__general'>Resultado</label>
               <div className='select-btn__general'>
                 <div className={`select-btn ${selectResults ? 'active' : ''}`} onClick={openSelectResults} >
-                  <p>{selectedResult ? articles.find((s: { id: number }) => s.id === selectedResult.id)?.nombre : 'Selecciona'}</p>
+                  <p>{selectedResult ? articles.find((s: { id: number }) => s.id === selectedResult.id)?.descripcion : 'Selecciona'}</p>
                   <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                 </div>
                 <div className={`content ${selectResults ? 'active' : ''}`} >
                   <ul className={`options ${selectResults ? 'active' : ''}`} style={{ opacity: selectResults ? '1' : '0' }}>
                     {articles && articles.map((result: any) => (
                       <li key={result.id} onClick={() => handleResultsChange(result)}>
-                        {result.nombre}
+                        {result.descripcion}
                       </li>
                     ))}
                   </ul>
@@ -332,7 +382,7 @@ const ModalCreate: React.FC = () => {
               <div className='table__head'>
                 <div className='thead'>
                   <div className='th'>
-                    <p className='table__store_title'>Nombre</p>
+                    <p className='table__store_title'>Articulo</p>
                   </div>
                   <div className='th'>
                     <p className='table__store_title'>Cantidad</p>
@@ -349,7 +399,7 @@ const ModalCreate: React.FC = () => {
                 <div className='container__branchOffice_table-modal'>
                   {concepts.map((concept: any, index: any) => (
                     <div className='tbody' key={index}>
-                      <p>{concept.nombre}</p>
+                      <p>{concept.codigo}-{concept.descripcion}</p>
                       <div>
                         <input className='inputs__general' value={concept.cantidad} onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' />
                       </div>
@@ -365,7 +415,7 @@ const ModalCreate: React.FC = () => {
                       <div>
                         <input className='inputs__general' value={concept.comentarios == '' ? '' : concept.comentarios} onChange={(e) => handleComentariosChange(e, index)} type="text" placeholder='Comentarios' />
                       </div>
-                      <button className='btn__general-purple' type='button' onClick={() => seeStock(concept, index)}>conceptos</button>
+                      <button className='btn__general-purple' type='button' onClick={() => seeStock(concept, index)}>Stocks</button>
                       <button className='btn__general-danger' type='button' onClick={() => deleteConcepts(index)}>Eliminar</button>
                       <div className={`overlay__modal_transfers-concepts_see-stock ${modalSeeStocks[index] ? 'active' : ''}`}>
                         <div className={`popup__modal_transfers-concepts_see-stock ${modalSeeStocks[index] ? 'active' : ''}`}>
@@ -392,44 +442,39 @@ const ModalCreate: React.FC = () => {
                                 </div>
                                 :
                                 ''}
-                              <div className='table__head'>
-
-                                <div className='thead'>
-                                  <div className='th'>
-                                    <p className=''>Nombre</p>
-                                  </div>
-                                  <div className='th'>
-                                    <p className=''>Cantidad de stocks</p>
-                                  </div>
-
-                                </div>
-                              </div>
-                              {concept.stocks && concept.stocks.length > 0 ? (
-                                <div className='table__body'>
-                                  {concept.stocks && concept.stocks.map((x: any, index: any) => (
-                                    <div className='tbody__container' key={index}>
-                                      <div className='tbody'>
-                                        <div className='td'>
-                                          {x.nombre}
-                                        </div>
-                                        <div className='td'>
-                                          {x.stock}
-                                        </div>
-                                        <div className='td'>
-                                          {x.cantidad}
-                                        </div>
-                                        <div className='td'>
-                                          {x.descripcion}
-                                        </div>
-
-                                      </div>
-
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : (
-                                <p className='text'>No hay conceptos</p>
-                              )}
+                              <table className='table '>
+                                <thead className='thead'>
+                                  <tr>
+                                    <th>Nombre </th>
+                                    {/* Agrega una columna para cada equivalencia, si existe */}
+                                    {console.log(concept)}
+                                    {concept.stocks?.[0]?.equivalencias?.map((equivalencia: any, eqIndex: number) => (
+                                      <th key={eqIndex}>{equivalencia.nombre_unidad}</th>
+                                    ))}
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {concept.stocks?.length > 0 ? (
+                                    concept.stocks.map((x: any, index: number) => (
+                                      <tr key={index} className='table__body'>
+                                        <td>{x.nombre}</td>
+                                        {/* Mostrar valores de equivalencias en columnas adicionales */}
+                                        {x.equivalencias && x.equivalencias.length > 0 ? (
+                                          x.equivalencias.map((equivalencia: any, eqIndex: number) => (
+                                            <td key={eqIndex}>{equivalencia.cantidad}</td>
+                                          ))
+                                        ) : (
+                                          <td colSpan={x.equivalencias?.length || 1}>No hay equivalencias</td>
+                                        )}
+                                      </tr>
+                                    ))
+                                  ) : (
+                                    <tr>
+                                      <td >No hay conceptos</td>
+                                    </tr>
+                                  )}
+                                </tbody>
+                              </table>
                             </div>
                           </div>
 

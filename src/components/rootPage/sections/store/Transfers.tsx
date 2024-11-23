@@ -78,11 +78,11 @@ const Transfers: React.FC = () => {
     })
 
 
-    let resultSerie = await getSeriesXUser(user_id)
+    let resultSeries = await getSeriesXUser({ tipo_ducumento: 4, id: user_id })
     setSeries({
       selectName: 'Series',
       options: 'nombre',
-      dataSelect: [...resultSerie]
+      dataSelect: [...resultSeries]
     })
 
     let data = {
@@ -99,15 +99,15 @@ const Transfers: React.FC = () => {
 
     let result = await getTransfers(data)
     setTransfers(result)
-
-  }
-
-  useEffect(() => {
-    fetch()
     setSelectedId('company_desde', 0)
     setSelectedId('store_desde', 0)
     setSelectedId('company_hasta', 0)
     setSelectedId('store_hasta', 0)
+  }
+
+  useEffect(() => {
+    fetch()
+    
   }, []);
 
 
@@ -175,7 +175,6 @@ const Transfers: React.FC = () => {
     setType(value)
   };
 
-console.log(transfer)
 
   return (
     <div className='transfer'>

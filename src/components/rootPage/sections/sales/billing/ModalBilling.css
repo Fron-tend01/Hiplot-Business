@@ -40,6 +40,7 @@
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
+    overflow: hidden;
     
 
 }
@@ -66,22 +67,18 @@
 
 .billing-modal{
     height: 100%;
-    overflow: auto;
     padding: 5px;
-    transition-delay: 0.0s;
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
+    display:grid;
+    grid-template-rows: auto 1fr auto;
 
-    &::-webkit-scrollbar-thumb {
-        background-color: var(--primary-color); 
-        border-radius: 5px;
-        height: 100px;
-    }
+}
 
-    &::-webkit-scrollbar-track {
-    /* Para modificar el background */
-    }
+.billing-modal-container {
+    height: 100%;
+    padding: 5px;
+    display:grid;
+    grid-template-rows: repeat(5, auto) 1fr 1fr;
+    overflow:auto
 }
 
  /*************************************************************
@@ -91,8 +88,9 @@
  .table__billing_sale-orders {
     border-radius: 10px;
     display: grid;
-    height: 100%;
+    max-height: 400px;
     grid-template-rows: repeat(2, auto) 1fr;
+    overflow: hidden;
 }
 
 
@@ -194,7 +192,7 @@
 
 .table__billing_concepts .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(8, 1fr);
     padding: 10px;
     font-weight: 600;
 }
@@ -240,7 +238,7 @@
 
 .table__billing_concepts .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(8, 1fr);
     padding: 10px;
 
 }
@@ -252,8 +250,8 @@
 
 
 .information_of_pay {
-    color: var(--text-color);
+    color: white;
     padding: 5px;
-    background-color: var(--primary-color);
+    background-color: #095c8a;
     border-radius: 5px;
 }

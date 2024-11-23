@@ -129,7 +129,6 @@ const Departures = () => {
     };
 
    
-    console.log(warehouseExit)
 
 
     return (
