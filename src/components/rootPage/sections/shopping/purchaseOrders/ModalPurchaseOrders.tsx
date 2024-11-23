@@ -435,68 +435,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   };
 
 
-  const [dateRange, setDateRange] = useState([null, null]);
-
-
-  ////////////////////////
-  /// Fechas
-  ////////////////////////
-  // Estado para almacenar las fechas seleccionadas
-  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
-
-  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
-
-  // Método para inicializar Flatpickr
-  const initFlatpickr = () => {
-    let storedStartDate = localStorage.getItem('selectedStartDate');
-    let storedEndDate = localStorage.getItem('selectedEndDate');
-
-    if (!storedStartDate || !storedEndDate) {
-      const defaultStartDate = new Date();
-      defaultStartDate.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00.000
-      const defaultEndDate = new Date(defaultStartDate.getTime() - 7 * 24 * 60 * 60 * 1000); // Fecha de hace una semana
-      defaultEndDate.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00.000
-
-
-      setSelectedStartDate(defaultStartDate);
-      setSelectedEndDate(defaultEndDate);
-
-      storedStartDate = defaultStartDate.toISOString().split('T')[0];
-      storedEndDate = defaultEndDate.toISOString().split('T')[0];
-    } else {
-      setSelectedStartDate(new Date(storedStartDate));
-      setSelectedEndDate(new Date(storedEndDate));
-    }
-
-
-    // React.useEffect(() => {
-    //   flatpickr('#dateRangePicker', {
-    //     mode: 'range',
-    //     dateFormat: 'Y-m-d',
-    //     locale: 'es', // Establecer el idioma en español
-    //     defaultDate: [selectedStartDate ?? '', selectedEndDate ?? ''], // Use empty string as fallback
-    //     onChange: (selectedDates: Date[]) => {
-    //       // Cuando se seleccionan fechas, actualiza los estados
-    //       setSelectedStartDate(selectedDates[0]);
-    //       setSelectedEndDate(selectedDates[1]);
-
-    //       // Almacena las fechas seleccionadas en localStorage
-    //       localStorage.setItem('selectedStartDate', selectedDates[0].toISOString());
-    //       localStorage.setItem('selectedEndDate', selectedDates[1].toISOString());
-
-    //       // Realizar la solicitud después de actualizar las fechas seleccionadas
-    //     }
-    //   });
-    // }, [selectedStartDate, selectedEndDate]);
-
-
-  };
-
-  // Llamada a initFlatpickr después de que se renderiza el componente
-  // useEffect(() => {
-  //   initFlatpickr();
-  // }, []);
-
+ 
 
   const filterByRequest = async () => {
     let data = {
@@ -513,22 +452,6 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
 
 
-
-
-  const searchByRequest = () => {
-    let id = 0
-    let folio = invoice
-    let id_serie = selectedModalSerie
-    let id_sucursal = selectedByRequestBranchOffice
-    let id_usuario = 12
-    let id_area = 0
-    let tipo = 0
-    let status = 1
-    let desde = '2024-03-19'
-    let hasta = selectedEndDate
-
-    getPurchaseOrders(id, folio, id_serie, id_sucursal, id_usuario, id_area, tipo, desde, hasta, status)
-  }
 
 
   const [modalStateConcepts, setModalStateConcepts] = useState<boolean>(false)
@@ -630,7 +553,10 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
     try {
       if (purchaseOrderToUpdate) {
-        let resultCreate = await APIs.updatePurchaseOrders(data);
+        let resultCreate: any = await APIs.updatePurchaseOrders(data);
+        if(resultCreate.error == true) {
+          return Swal.fire('Advertencia', resultCreate.mensaje, 'warning');
+        }
         let resultGet = await APIs.getPurchaseOrders(dataGet);
         setPurchaseOrders(resultGet)
         setConceptosElim([])
@@ -639,7 +565,10 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
         setStateLoading(false);
         setModal('')
       } else {
-        let result = await APIs.createPurchaseOrders(data);
+        let result: any = await APIs.createPurchaseOrders(data);
+        if(result.error == true) {
+          return Swal.fire('Advertencia', result.mensaje, 'warning');
+        }
         let resultGet = await APIs.getPurchaseOrders(dataGet);
         setPurchaseOrders(resultGet)
         setConceptosElim([])

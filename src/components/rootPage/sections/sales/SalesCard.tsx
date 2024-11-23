@@ -18,6 +18,7 @@ import Components from './sales-sard_modals/Components';
 import APIs from '../../../../services/services/APIs';
 import { Toaster, toast } from 'sonner'
 import { storePersonalized } from '../../../../zustand/Personalized';
+import { storeQuotation } from '../../../../zustand/Quotation';
 
 
 const SalesCard: React.FC = () => {
@@ -33,6 +34,8 @@ const SalesCard: React.FC = () => {
 
   const setArticle = storeSaleCard(state => state.setArticle);
 
+  const setIdentifier = storeQuotation(state => state.setIdentifier);
+  const { identifier }: any = useStore(storeQuotation);
 
   const setDataPersonalized = storeSaleCard(state => state.setDataPersonalized);
   const setDataSaleOrder = storeSaleOrder(state => state.setDataSaleOrder);
@@ -178,6 +181,8 @@ const SalesCard: React.FC = () => {
       campos: article.plantilla_data,
     };
 
+
+
     try {
       let result: any = await APIs.getTotalPrice(dataArticle);
 
@@ -192,26 +197,38 @@ const SalesCard: React.FC = () => {
         
         setData({
           id_pers: 0,
-          check: false,
-          produccion_interna: true,
+          front: true,
           id_articulo: article.id,
+          produccion_interna: true,
           id_area_produccion: 0,
           enviar_a_produccion: false,
           personalized: false,
+          check: false,
           status: 0,
-          cantidad: amount,
-          monto_urgencia: 0,
-          precio_unitario: result.mensaje,
+          descripcion: article.descripcion,
+          codigo: article.codigo,
           unidad: selectedUnit.id,
+          name_unidad: selectedUnit.nombre,
+          cantidad: amount,
+          precio_total: result.mensaje,
           obs_produccion: "",
           obs_factura: "",
+          monto_urgencia: 0,
           urgencia_monto: 0,
+          precio_unitario: result.mensaje,
+
+          /////////////////////Para Orden de Requicicion //////////////////////////
+
           urgencia: false,
           areas_produccion: article.areas_produccion,
-          codigo: article.codigo,
-          descripcion: article.descripcion,
-          name_unidad: selectedUnit.nombre,
-          precio_total: result.mensaje,
+         
+          /////////////////////Para Orden de compra //////////////////////////
+          id_ov: 0,
+          id_orden_produccion: 0,
+          status_produccion: 0,
+          cobrado: 0,
+          id_unidad: 0,
+            
           campos_plantilla: article.plantilla_data.map((x: any) => ({
             nombre_campo_plantilla: x.nombre,
             tipo_campo_plantilla: 0,
@@ -219,7 +236,6 @@ const SalesCard: React.FC = () => {
           }))
 
         })
-
         
         return
 
@@ -249,18 +265,20 @@ const SalesCard: React.FC = () => {
     }
   }
 
-  const [identifier, setIdentifier] = useState<number>(0);
+  
 
   const addQua = () => {
     const newData = { ...data };
-  newData.id_identifier = identifier + 1;
-  setIdentifier(identifier + 1);
+    newData.id_identifier = identifier + 1;
+    setIdentifier(identifier + 1);
 
-  
+
     setNormalConcepts([...normalConcepts, newData])
     setCustomData([...customData, newData])
 
   };
+
+
   const addSaleOrder = () => {
     if (dataSaleOrder !== undefined) {
       setDataSaleOrder([...dataSaleOrder, data[0]])
@@ -278,7 +296,6 @@ const SalesCard: React.FC = () => {
     console.log('xscombinacionsasdsads', x)
     let data = {
       id: x.id_articulo,
-    
       activos: true,
       nombre: '',
       codigo: '',
@@ -320,6 +337,7 @@ const SalesCard: React.FC = () => {
   useEffect(() => {
 
   }, [data])
+  
 
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' ? 'active' : ''}`}>

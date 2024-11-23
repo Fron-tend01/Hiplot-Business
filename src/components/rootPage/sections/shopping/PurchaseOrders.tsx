@@ -57,9 +57,7 @@ const PurchaseOrders: React.FC = () => {
     let resultSeries = await APIs.getSeriesXUser(dataS)
     setSeries(resultSeries)
     
-    setDates([
-      hoy.toISOString().split('T')[0], haceUnaSemana.toISOString().split('T')[0]
-    ])
+    setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
    
 
     let data = {
@@ -88,6 +86,8 @@ const PurchaseOrders: React.FC = () => {
   useEffect(() => {
     fecth()
   }, [])
+
+
 
   ////////////////////////
   /// Fechas
@@ -135,6 +135,7 @@ const PurchaseOrders: React.FC = () => {
 
 
   const searchOrders = () => {
+    console.log(dates)
     const data = {
       folio: invoice,
       id_serie: selectedSerie,
@@ -142,8 +143,8 @@ const PurchaseOrders: React.FC = () => {
       id_usuario: user_id,
       id_area: 0,
       // tipo: tipo,
-      desde: dates[1],
-      hasta: dates[0],
+      desde: dates[0],
+      hasta: dates[1],
       status: type,
     };
 
@@ -274,7 +275,7 @@ const PurchaseOrders: React.FC = () => {
             <ModalUpdate purchaseOrder={purchaseOrderToUpdate} conceptss={conceptss} suppliersUpdate={suppliersUpdate} />
           </div>
         </div> */}
-        <div className="table__requisicion" title='Haz click en un registro para ver su información'>
+        {/* <div className="table__requisicion" title='Haz click en un registro para ver su información'>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead className="table__head">
               <tr className="thead">
@@ -311,8 +312,8 @@ const PurchaseOrders: React.FC = () => {
               )}
             </tbody>
           </table>
-        </div>
-        {/* <div className='table__purchase-order'>
+        </div> */}
+        <div className='table__purchase-order'>
           {purchaseOrders ? (
             <div className='table__numbers'>
               <p className='text'>Total de Ordenes</p>
@@ -347,7 +348,7 @@ const PurchaseOrders: React.FC = () => {
             <div className='table__body'>
               {purchaseOrders.map((requisition: any) => {
                 return (
-                  <div className='tbody__container' key={requisition.id}>
+                  <div className='tbody__container' key={requisition.id} onClick={() => modalUpdate(requisition)}>
                     <div className='tbody'>
                       <div className='td'>
                         <p>{requisition.serie}-{requisition.folio}-{requisition.anio}</p>
@@ -369,15 +370,6 @@ const PurchaseOrders: React.FC = () => {
                       <div className='td'>
                         <p>{requisition.sucursal}</p>
                       </div>
-                      <div className='td'>
-                        <p>{requisition.area}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{requisition.comentarios}</p>
-                      </div>
-                      <div className='td'>
-                        <button className='branchoffice__edit_btn' onClick={() => modalUpdate(requisition)}>Editar</button>
-                      </div>
                     </div>
                   </div>
                 )
@@ -386,7 +378,7 @@ const PurchaseOrders: React.FC = () => {
           ) : (
             <p>Cargando datos...</p>
           )}
-        </div> */}
+        </div>
       </div>
     </div>
   )

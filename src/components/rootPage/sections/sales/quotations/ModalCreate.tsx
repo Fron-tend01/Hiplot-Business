@@ -30,6 +30,7 @@ const ModalCreate = () => {
   const setCustomConcepts = storePersonalized((state) => state.setCustomConcepts);
   const setCustomData = storePersonalized((state) => state.setCustomData);
 
+  const { identifier }: any = useStore(storeQuotation);
 
   const setDataQuotation = storeSaleCard(state => state.setDataQuotation)
   const setDataUpdate = storePersonalized((state) => state.setDataUpdate);
@@ -37,8 +38,7 @@ const ModalCreate = () => {
   const { modal }: any = useStore(storeModals)
   const setClientsModal = storeQuotation((state) => state.setClientsModal);
   const setClient = storeQuotation((state) => state.setClient);
-  const { dataUpdate, normalConcepts, customConcepts, personalized }: any = useStore(storePersonalized)
-  const { dataQuotation, conceptsPersonalized }: any = useStore(storeSaleCard)
+  const { dataUpdate, normalConcepts, customConcepts, customData, personalized }: any = useStore(storePersonalized)
   const { quatation }: any = useStore(storeQuotation)
   const { getClients }: any = ClientsRequests()
 
@@ -74,17 +74,52 @@ const ModalCreate = () => {
     fetch()
   }, [])
 
+
+
+  const client = async () => {
+
+
+    let data = {
+      id_sucursal: quatation.id_sucursal,
+      id_usuario: user_id,
+      nombre: quatation.rfc
+    }
+
+    try {
+      let resultClients = await getClients(data)
+      setClients({
+        selectName: 'Cliente',
+        options: 'razon_social',
+        dataSelect: resultClients
+      })
+
+      setSelectedId('clients', { id: quatation.id_cliente });
+    } catch (error) {
+
+    }
+
+
+
+  }
+
   useEffect(() => {
-    if(modal === 'update-modal__qoutation') {
-      setCompany({id: quatation.id_empresa})
-      setBranch({id: quatation.id_sucursal})
+    if (modal === 'update-modal__qoutation') {
+      client()
+            
+      setCompany({ id: quatation.id_empresa })
+      setBranch({ id: quatation.id_sucursal })
       setComments(quatation.comentarios)
-      setDataQuotation(quatation.conceptos)
+      
+      // setNormalConcepts([...normalConcepts, ...quatation.conceptos])
+      setNormalConcepts([...quatation.conceptos, ...quatation.conceptos_pers])
+      setCustomData([...customConcepts, ...quatation.conceptos]);
+
     }
   }, [quatation])
 
 
   const selectedIds = useSelectStore((state) => state.selectedIds);
+  const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
   const [clients, setClients] = useState<any>()
 
@@ -103,11 +138,15 @@ const ModalCreate = () => {
         options: 'razon_social',
         dataSelect: resultClients
       })
+
+
     } catch (error) {
 
     }
 
   }
+
+
 
   useEffect(() => {
 
@@ -115,6 +154,7 @@ const ModalCreate = () => {
 
   const seeClient = (client: any) => {
     setClient(client)
+
     setClientsModal('clients_modal')
   }
 
@@ -125,10 +165,8 @@ const ModalCreate = () => {
     let filter = normalConcepts.filter((x: any) => x.personalized == false)
 
 
-
-
     const data = {
-      id_sucursal: 3,
+      id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
       id_cliente: selectedIds.clients.id,
       id_usuario_crea: user_id,
       comentarios: comments,
@@ -139,30 +177,53 @@ const ModalCreate = () => {
 
     console.log('DATA QUE SE ENVIA AL BEKEND', data)
 
+    
+
     try {
-      let result = await APIs.createQuotation(data)
-      Swal.fire('Cotizacion creada exitosamente', '', 'success');
+      if(modal === 'create-modal__qoutation') {
+        let result: any = await APIs.createQuotation(data)
+        if(result.error == true) {
+          return Swal.fire('Advertencia', result.mensaje, 'warning');
+        } else {
+          Swal.fire('Cotizacion creada exitosamente', '', 'success');
+        }
+ 
+      } else {
+        let result: any = await APIs.updateRequisition(data)
+        if(result.error == true) {
+          return Swal.fire('Advertencia', result.mensaje, 'warning');
+        } else {
+          Swal.fire('Cotizacion actualizada exitosamente', '', 'success');
+        }
+       
+      }
     } catch (error) {
       Swal.fire('Error', 'Hubo un error al crear la cotizacion', 'error');
     }
 
   }
 
-
+  console.log('quatation', quatation)
   const [permisoDescount] = useState<boolean>(true)
 
   const modalSeeConcepts = (article: any) => {
     setPersonalizedModal('personalized_modal-quotation-update')
     setDataUpdate(article)
-
   }
 
   const undoConcepts = (article: any, i: number) => {
     let filter = customConcepts.filter((_: any, index: number) => index !== i)
-    let data = [...filter, ...article.conceptos]
+    let filterNor = normalConcepts.filter((_: any, index: number) => index !== i)
+    if(article.front) {
+      article.conceptos.forEach((element: any) => {
+        element.id_identifier += identifier + 1
+      });
+    }
+    let data = [...filterNor, ...article.conceptos]
     setNormalConcepts(data)
-    setCustomData([...customConcepts, ...article.conceptos]);
+    setCustomData([...customData, ...article.conceptos]);
   }
+
 
   const deleteArticle = (_: any, i: number) => {
     let filter = normalConcepts.filter((_: any, index: number) => index !== i)
@@ -179,13 +240,14 @@ const ModalCreate = () => {
 
   const closeModal = () => {
     setModal('')
-    if(modal === 'update-modal__qoutation') {
+    if (modal === 'update-modal__qoutation') {
       setComments('')
       setDataQuotation([])
     }
- 
+
   }
 
+ 
 
 
   return (
@@ -198,16 +260,55 @@ const ModalCreate = () => {
         </a>
         <p className='title__modals'>Crea nueva cotización</p>
         <div className='quotations__modal'>
-          <div className='row'>
-            <div className='row col-12 md-col-12'>
-              <div className='col-8 md-col-12'>
-                <Empresas_Sucursales modeUpdate={modal === 'update-modal__qoutation' ? true : false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
-              </div>
-              <div className='col-4  md-col-6 sm-col-12'>
-                <Select dataSelects={dataSelects} instanceId="select1" nameSelect={'Vendedor'} />
+          {modal == 'create-modal__qoutation' ?
+            <div className='row'>
+              <div className='row col-12 md-col-12'>
+                <div className='col-8 md-col-12'>
+                  <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
+                </div>
+                <div className='col-4  md-col-6 sm-col-12'>
+                  <Select dataSelects={dataSelects} instanceId="select1" nameSelect={'Vendedor'} />
+                </div>
               </div>
             </div>
-          </div>
+            :
+            <div className="card ">
+              <div className="card-body bg-standar">
+                <h3 className="text">{quatation.serie}-{quatation.folio}-{quatation.anio}</h3>
+                <hr />
+                <div className='row'>
+                  <div className='col-6 md-col-12'>
+                    <span className='text'>Creado por: <b>{quatation.usuario_crea}</b></span><br />
+                    <span className='text'>Fecha de Creación: <b>{quatation.fecha_creacion}</b></span><br />
+                    <span className='text'>Titulo: <b>{quatation.titulo}</b> </span>
+                    {quatation.status === 0 ? (
+                      <span className="active-status">Activo</span>
+                    ) : quatation.status === 1 ? (
+                      <span className="canceled-status">Cancelada</span>
+                    ) : (
+                      quatation.status === 2 ? (
+                        <span className="end-status">Terminado</span>
+                      ) : (
+                        ""
+                      )
+                    )}
+
+                  </div>
+                  <div className='col-6 md-col-12'>
+                    <span className='text'>Empresa: <b>{quatation.empresa}</b></span><br />
+                    <span className='text'>Sucursal: <b>{quatation.sucursal}</b></span><br />
+                    <span className='text'>Area: <b>{quatation.area}</b></span>
+                  </div>
+                </div>
+                <div className='row'>
+                  <div className='col-12'>
+                    <span className='text'>Comentarios: {quatation.comentarios}</span>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
           <div className='row my-4 w-full'>
             <div className='col-12'>
               <label className='label__general'>Comentarios</label>
@@ -247,7 +348,7 @@ const ModalCreate = () => {
               <p className="text">No hay empresas que mostras</p>
             )}
             <div className='table__head'>
-              <div className='thead'>
+              <div className={`thead `}>
                 <div className='th'>
                   <p>Artículo</p>
                 </div>
@@ -270,7 +371,7 @@ const ModalCreate = () => {
                 {normalConcepts?.map((article: any, index: number) => {
                   return (
                     <div className='tbody__container' key={article.id}>
-                      {article?.personalized ?
+                      {article.personalized ?
                         <div className='concept__personalized'>
                           <p>Concepto Perzonalizado</p>
                         </div>
@@ -278,7 +379,7 @@ const ModalCreate = () => {
                         ''
                       }
                       {article.personalized ?
-                        <div className='tbody personalized'>
+                        <div className={`tbody personalized`}>
                           <div className='td'>
                             <p>{article.codigo}-{article.descripcion}</p>
                           </div>
@@ -301,8 +402,9 @@ const ModalCreate = () => {
                             <p>$ {article.precio_total}</p>
                           </div>
                           <div className='td'>
-                            <button className='btn__general-purple' onClick={() => modalSeeConcepts(article)}>Conceptos</button>
-                          </div>
+                              <button className='btn__general-purple' onClick={() => modalSeeConcepts(article)}>Conceptos</button>
+                            </div>
+
                           <div className='td'>
                             <button className='btn__general-orange' onClick={() => undoConcepts(article, index)}>Deshacer</button>
                           </div>
@@ -333,9 +435,7 @@ const ModalCreate = () => {
                           <div className='td'>
                             <button className='add_urgency'>Agregar Urgencia</button>
                           </div>
-                          <div className='td'>
-                            <button className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-quotation-update')}>Conceptos</button>
-                          </div>
+                      
                           <div className='td'>
                             <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
                           </div>
@@ -349,7 +449,6 @@ const ModalCreate = () => {
               <p className="text">Cargando datos...</p>
             )}
           </div>
-
           <div className='row'>
             <div className='col-12 d-flex justify-content-center'>
               <button className='btn__general-purple' onClick={createQuotation}>Crear contizacion</button>

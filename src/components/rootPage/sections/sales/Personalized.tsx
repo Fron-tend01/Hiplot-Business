@@ -9,6 +9,7 @@ import DynamicVariables from '../../../../utils/DynamicVariables'
 import APIs from '../../../../services/services/APIs'
 import { v4 as uuidv4 } from 'uuid';
 import { useSelectStore } from '../../../../zustand/Select'
+import { storeModals } from '../../../../zustand/Modals'
 
 const Personalized = () => {
   const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
@@ -21,7 +22,7 @@ const Personalized = () => {
   const { personalizedModal, dataUpdate, customData, normalConcepts, customConcepts, personalized }: any = useStore(storePersonalized)
   const { dataQuotation, dataPersonalized, conceptsPersonalized, }: any = useStore(storeSaleCard)
   const { dataBillign, }: any = useStore(storeBilling)
-
+  const { modal }: any = useStore(storeModals)
 
   const setDataPersonalized = storeSaleCard(state => state.setDataPersonalized);
 
@@ -71,9 +72,35 @@ const Personalized = () => {
     newData[index] = { ...newData[index], check: !newData[index].check };
     setCustomData(newData)
 
-    let exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
+    if(modal === 'update-modal__qoutation') {
+      let exist = normalConcepts.some((x: any) => x.id == item.id)
 
-    console.log(exist)
+      
+    if (exist) {
+      ////////////////////////////////////// Se agrega ///////////////////////
+      let findItem = customData.find((xx: any) => xx.id == item.id)
+      setCustomConcepts([...customConcepts, findItem]);
+
+      let deleteFilter = normalConcepts.filter((xx: any) => xx.id !== item.id)
+      setNormalConcepts(deleteFilter)
+      
+
+      
+      return
+    } else {
+      let find = customConcepts.find((xx: any) => xx.id == item.id)
+      setNormalConcepts([...normalConcepts, find])
+
+      let deleteFilter = customConcepts.filter((xx: any) => xx.id !== item.id)
+      setCustomConcepts(deleteFilter)
+
+    }
+
+    }
+
+  
+
+    let exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
 
     if (exist) {
       ////////////////////////////////////// Se agrega ///////////////////////
@@ -100,13 +127,13 @@ const Personalized = () => {
   const [selectsSatKey, setSelectsSatKey] = useState<any>()
   const [selectedSatKey, setSelectedSatKey] = useState<any>()
 
-  const [modal, setModal] = useState<Boolean>(false)
+  const [modalStatus, setModalStatus] = useState<Boolean>(false)
 
   useEffect(() => {
     if (personalizedModal !== '') {
-      setModal(true)
+      setModalStatus(true)
     } else {
-      setModal(false)
+      setModalStatus(false)
     }
   })
 
@@ -145,24 +172,24 @@ const Personalized = () => {
     }
 
     if (personalizedModal == 'personalized_modal-sale') {
-      console.log('selectedSatKey', selectedSatKey)
       let data = {
         descripcion: inpust.descripcion,
         personalized: true,
         codigo: inpust.codigo,
         cantidad: inpust.cantidad,
-        unidad: selectedIds.id_unidad,
-        name_unidad: selectedIds.units.nombre,
-        clave_sat: selectedSatKey.Clave,
+        unidad: selectedIds?.units?.id,
+        name_unidad: selectedIds?.units?.nombre,
+        clave_sat: parseInt(selectedSatKey.Clave),
         codigo_unidad_sat: 0,
         precio_total: inpust.precio_total,
         comentarios_produccion: inpust.comentarios_produccion,
         comentarios_factura: inpust.comentarios_factura,
-        conceptos: articlesPersonalized
+        conceptos: customConcepts
       }
 
-      setConceptsPersonalized([...conceptsPersonalized, data])
-      // setDataSales([...dataSales, data])
+      setCustomData(normalConcepts)
+      setNormalConcepts([...normalConcepts, data])
+      setPersonalized([...personalized, data])
     }
 
 
@@ -239,8 +266,8 @@ const Personalized = () => {
 
 
   return (
-    <div className={`overlay__personalized_modal ${modal ? 'active' : ''}`}>
-      <div className={`popup__personalized_modal ${modal ? 'active' : ''}`}>
+    <div className={`overlay__personalized_modal ${modalStatus ? 'active' : ''}`}>
+      <div className={`popup__personalized_modal ${modalStatus ? 'active' : ''}`}>
         <a href="#" className="btn-cerrar-popup__personalized_modal" onClick={() => setPersonalizedModal('')}>
           <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
             <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />

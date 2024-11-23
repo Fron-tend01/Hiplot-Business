@@ -24,6 +24,8 @@ const SalesOrder: React.FC = () => {
     const { getSaleOrders }: any = saleOrdersRequests()
     const [saleOrders, setSaleOrders] = useState<any>([])
 
+ 
+
     const {getSeriesXUser}: any = seriesRequests()
     const [series, setSeries] = useState<any>([])
 
@@ -115,17 +117,11 @@ console.log('sdsd',selectedIds)
     const search = async () => {
         let dataSaleOrders = {
             folio: fol,
-            id_sucursal: branchOffices.id,
-            id_serie: selectedIds?.series.id,
-            id_cliente: client,
-            desde: date[0],
-            hasta: date[1],
-            id_usuario: user_id,
-            id_vendedor: selectedIds?.users.id,
-            status: 0
+          
         }
 
         let result = await getSaleOrders(dataSaleOrders)
+        console.log('ssd')
         setSaleOrders(result)
     }
 
@@ -159,7 +155,7 @@ console.log('sdsd',selectedIds)
                         <Select dataSelects={users} nameSelect={'Usuarios'} instanceId='users' />
                     </div>
                     <div className='col-3'>
-                        <Select dataSelects={series} nameSelect={'Series'} instanceId='series' />
+                        <Select dataSelects={series} nameSelect={'Series'} instanceId='serie' />
                     </div>
                     <div className='col-3'>
                         <label className='label__general'>Folio</label>

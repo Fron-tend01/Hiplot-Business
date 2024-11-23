@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import APIs from "../services/services/APIs";
-import Swal from 'sweetalert2';
-
+import Swal from "sweetalert2";
 
 interface CompaniesXUsers {
   id: number;
@@ -9,14 +8,92 @@ interface CompaniesXUsers {
   razon_social: string;
 }
 
+interface ModelState {
+  id: number;
+  razon_social: string;
+  nombre_comercial: string;
+  bd_compaqi: string;
+  modulo_cobrofranquicia_compaqi: number;
+  id_usuario: number;
+  id_usuario_req: number;
+  id_sucursal_req: number;
+  id_area_req: number;
+  empresas_franquicias: any[];
+  empresas_franquicias_remove: any[];
+}
+
+interface FormEfState {
+  id: number;
+  id_empresa: number;
+  id_franquicia: number;
+  businessEntityID: number;
+  razon_social: string;
+}
+
 interface StoreState {
   companiesXUsers: CompaniesXUsers[];
+  model: ModelState;
+  modelClear: ModelState;
+  formEf: FormEfState;
+  formEfClear: FormEfState;
+  setModel: (model: any) => void;
+  setFormEf: (formEf: any) => void;
+ 
 }
 
 export const storeCompanies = create<StoreState>((set) => ({
   companiesXUsers: [],
-  
-  // Empresas
+
+  model: {
+    id: 0,
+    razon_social: "",
+    nombre_comercial: "",
+    bd_compaqi: "",
+    modulo_cobrofranquicia_compaqi: 0,
+    id_usuario: 0,
+    id_usuario_req: 0,
+    id_sucursal_req: 0,
+    id_area_req: 0,
+    empresas_franquicias: [],
+    empresas_franquicias_remove: [],
+  },
+  setModel: (updateFunc) => set((state) => ({
+    model: typeof updateFunc === 'function' ? updateFunc(state.model) : updateFunc,
+  })),
+
+  modelClear: {
+    id: 0,
+    razon_social: "",
+    nombre_comercial: "",
+    bd_compaqi: "",
+    modulo_cobrofranquicia_compaqi: 0,
+    id_usuario: 0,
+    id_usuario_req: 0,
+    id_sucursal_req: 0,
+    id_area_req: 0,
+    empresas_franquicias: [],
+    empresas_franquicias_remove: [],
+  },
+
+  formEf: {
+    id: 0,
+    id_empresa: 0,
+    id_franquicia: 0,
+    businessEntityID: 0,
+    razon_social: "",
+  },
+
+  setFormEf: (updateFunc) => set((state) => ({
+    formEf: typeof updateFunc === 'function' ? updateFunc(state.formEf) : updateFunc,
+  })),
+
+  formEfClear: {
+    id: 0,
+    id_empresa: 0,
+    id_franquicia: 0,
+    businessEntityID: 0,
+    razon_social: "",
+  },
 
   createCompanies: async (razon_social: string, nombre_comercial: string, id_usuario: number) => {
     try {

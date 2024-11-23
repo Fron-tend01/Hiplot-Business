@@ -4,7 +4,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 class ApiService {
   private axiosInstance: AxiosInstance;
 
-  constructor(baseURL: string = 'https://hiplotbusiness.com/api_dev') {
+  constructor(baseURL: string = 'http://hiplot.dyndns.org:84/api_dev') {
     this.axiosInstance = axios.create({
       baseURL,
       headers: {

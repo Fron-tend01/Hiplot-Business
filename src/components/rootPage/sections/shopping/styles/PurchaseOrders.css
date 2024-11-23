@@ -131,7 +131,7 @@
 
 .table__purchase-order .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     padding: 10px;
     font-weight: 600;
 }
@@ -155,11 +155,14 @@
     }
 }
 
+.table__purchase-order .tbody__container {
+    cursor: pointer;
+}
 
 .table__purchase-order .tbody__container:nth-child(even) {
     background-color: var(--table-color);
 	color: var(--text-table-color);
-  }
+}
   
 .table__purchase-order .tbody__container:nth-child(odd) {
     background-color: var(--two-table-color);
@@ -172,7 +175,7 @@
 
 .table__purchase-order .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     padding: 10px;
 
 }
@@ -190,7 +193,7 @@
 /* Tabla del Modal ordenes de compra */
 /* ------------------------- */
 
-
+/* 
 .table__modal_parchase-orders {
     margin-top: 20px;
     border-radius: 10px;
@@ -235,7 +238,7 @@
     }
 
     &::-webkit-scrollbar-track {
-    /* Para modificar el background */
+
     }
 }
 
@@ -259,7 +262,7 @@
     gap: 5px;
     align-items: center;
 
-}
+} */
 /* 
 .table__modal_parchase-orders .table__body .tbody .td {
     display: flex;

@@ -36,65 +36,6 @@
 }
 
 
- /*************************************************************
- 					Way of creating companies
-                    Modal de crear empresas
- **************************************************************/
-
-
-  
- .overlay__companies {
-	background: rgba(0,0,0,.3);
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	align-items: center;
-	justify-content: center;
-	display: flex;
-	visibility: hidden;
-}
-
-.overlay__companies.active {
-	visibility: visible;
-}
-
-.popup__companies {
-	background-color: var(--background-modal);
-	border-radius: 5px;
-	padding: 20px;
-	text-align: center;
-	width: 90%;
-	height:95%;
-	transition: .3s ease all;
-	transform: scale(0.7);
-	opacity: 0;
-	overflow:auto;
-}
-
-.popup__companies .btn-cerrar-popup__companies {
-	font-size: 16px;
-	line-height: 16px;
-	display: block;
-	text-align: right;
-	transition: .3s ease all;
-	color: #BBBBBB;
-    position: absolute;
-    right: 15px;
-    top: 15px;
-}
-
-
-
-/* ------------------------- */
-/* ANIMACIONES */
-/* ------------------------- */
-.popup__companies.active {	transform: scale(1); opacity: 1; }
-
-
-
-
 
  /*************************************************************
  					Companies table

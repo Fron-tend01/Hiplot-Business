@@ -93,7 +93,7 @@
 
 .table__quotations_clients_modal .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(4, 1fr) 80px 100px  100px 100px;
+	grid-template-columns: repeat(4, 1fr) 80px 100px  100px;
     padding: 10px;
     font-weight: 600;
     column-gap: 20px;
@@ -143,10 +143,12 @@
 
 .table__quotations_clients_modal .table__body .tbody {
     display: grid;
-	grid-template-columns: repeat(4, 1fr) 80px 100px  100px 100px;
+	grid-template-columns: repeat(4, 1fr) 80px 100px  100px;
     padding: 10px;
     column-gap: 20px;
+	
 }
+
 
 
 .table__quotations_clients_modal .table__body .tbody > .td .inputs__general {

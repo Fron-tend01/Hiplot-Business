@@ -24,13 +24,20 @@ const ModalSalesOrder: React.FC = () => {
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
+
+    const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
+    const setCustomConcepts = storePersonalized((state) => state.setCustomConcepts);
+    const setCustomData = storePersonalized((state) => state.setCustomData);
+
+    const setDataUpdate = storePersonalized((state) => state.setDataUpdate);
+
+    const { dataUpdate, normalConcepts, customConcepts, personalized }: any = useStore(storePersonalized)
+
     const setDataSaleOrder = storeSaleOrder((state) => state.setDataSaleOrder);
 
     const [companies, setCompanies] = useState<any>([])
 
     const [branchOffices, setBranchOffices] = useState<any>([])
-
-    const { modalArticleView }: any = useStore(storeArticleView)
 
     const { getClients }: any = ClientsRequests()
 
@@ -39,7 +46,7 @@ const ModalSalesOrder: React.FC = () => {
     const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
     const { modalSalesOrder }: any = useStore(storeSaleOrder)
 
-
+    
 
 
     const [clients, setClients] = useState<any>()
@@ -71,26 +78,23 @@ const ModalSalesOrder: React.FC = () => {
 
 
     // Inicializa el estado con la fecha y hora formateadas
+    const [dates, setDates] = useState(["", ""]); // Asegúrate de que el array tenga siempre dos elementos.
 
-    const [dates, setDates] = useState<any>(["", ""]);
+    const handleDateChange = (fechasSeleccionadas: Date[], index: number) => {
+        const updatedDates = [...dates]; // Clonar el estado actual
 
+        // Actualizar solo el índice correspondiente
+        updatedDates[index] =
+            fechasSeleccionadas[0]
+                ?.toISOString()
+                .split("T")
+                .join(" ")
+                .slice(0, 16) || ""; // Formatear la fecha seleccionada o asignar ""
 
-    const handleDateChange = (fechasSeleccionadas: any) => {
-        let formattedDates = ["", ""];
-
-        if (fechasSeleccionadas.length === 2) {
-            formattedDates = fechasSeleccionadas.map((fecha: Date) =>
-                fecha.toISOString().split('T').join(' ').slice(0, 16)
-            );
-        } else if (fechasSeleccionadas.length === 1) {
-            const formattedDate = fechasSeleccionadas[0]?.toISOString().split('T').join(' ').slice(0, 16) || "";
-            formattedDates = [formattedDate, formattedDate]; // Duplicar la fecha seleccionada
-        }
-
-        setDates(formattedDates);
+        setDates(updatedDates.slice(0, 2)); // Garantizar que el estado tenga solo dos elementos
     };
 
-    console.log(dataSaleOrder)
+
 
     useEffect(() => {
         if (saleOrdersToUpdate) {
@@ -102,6 +106,8 @@ const ModalSalesOrder: React.FC = () => {
     const handleCreateSaleOrder = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         console.log("Enviando orden de venta...");
+
+        let filter = normalConcepts.filter((x: any) => x.personalized == false)
 
         let [datePartOne, timePartOne] = dates[0].split(" ");
         let [datePartTwo, timePartTwo] = dates[1].split(" ");
@@ -116,21 +122,28 @@ const ModalSalesOrder: React.FC = () => {
             fecha_entrega_produccion: datePartOne,
             hora_entrega_cliente: timePartTwo,
             fecha_entrega_cliente: datePartTwo,
-            conceptos: dataSaleOrder,
+            conceptos: filter,
+            conceptos_personalizados: [],
             conceptos_elim: []
         };
 
         console.log("Datos que se envían:", data);
 
         try {
-            let result = await APIs.createSaleOrder(data);
-            console.log("Resultado de la API:", result);
-            Swal.fire('Orden de compra creada exitosamente', '', 'success');
+            let result: any = await APIs.createSaleOrder(data);
+            if(result.error == true) {
+                return Swal.fire('Advertencia', result.mensaje, 'warning');
+            } else {
+                Swal.fire('Orden de compra creada exitosamente', result.mensaje, 'success');
+            }
+            
         } catch (error) {
             console.error("Error al crear la orden de compra:", error);
             Swal.fire('Hubo un error al crear la orden de compra', '', 'error');
         }
     }
+
+    console.log(dates)
 
     const searchClients = async () => {
         let data = {
@@ -147,40 +160,26 @@ const ModalSalesOrder: React.FC = () => {
     }
 
 
-    const calculateUrgency = async (x: any, index: any) => {
-        let data = {
-            id_articulo: x.id_articulo,
-            id_sucursal: branchOffices.id,
-            total: x.precio_unitario
-        }
-        let result: any = await APIs.getCalculateUrgency(data)
-        console.log(result)
-        dataSaleOrder[index].monto_urgencia = result.total_con_urgencia
+    const modalSeeConcepts = (article: any) => {
+        setPersonalizedModal('personalized_modal-quotation-update')
+        setDataUpdate(article)
     }
 
-    const sendToProduction = async (x: any) => {
-        let data = {
-            id_ov: saleOrdersToUpdate.id,
-            id_usuario: user_id
-        }
-
-        console.log(x)
-
-        try {
-            let result = await APIs.createProductionOrders(data)
-            Swal.fire('Orden de produccion creada exitosamente', '', 'success');
-        } catch (error) {
-            Swal.fire('Hubo un error al crear la orden de produccion', '', 'error');
-        }
+    const undoConcepts = (article: any, i: number) => {
+        let filter = customConcepts.filter((_: any, index: number) => index !== i)
+        let data = [...filter, ...article.conceptos]
+        setNormalConcepts(data)
+        setCustomData([...customConcepts, ...article.conceptos]);
     }
 
-    const [checkSendToProduction, setCheckSendToProduction] = useState<any>()
 
-    const handleORequestChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        // Aquí se actualiza el valor en el array dataSaleOrder
-        dataSaleOrder[index].enviar_a_produccion = event.target.checked;
-        setCheckSendToProduction(event.target.checked)
-    };
+    const deleteArticle = (_: any, i: number) => {
+        let filter = normalConcepts.filter((_: any, index: number) => index !== i)
+        setNormalConcepts(filter)
+        setCustomData(filter);
+    }
+
+    const [permisoDescount] = useState<boolean>(true)
 
 
     return (
@@ -217,18 +216,32 @@ const ModalSalesOrder: React.FC = () => {
                         </div>
                     </div>
                     <div className='row my-4'>
-                        <div className='col-6 sale-order__input_container d-flex align-items-center'>
-                            <p className='label__general'>Fecha de entrega a producción</p>
-                            <div className='container_dates__requisition'>
-                                <Flatpickr className='date' value={dates[0]} options={{ enableTime: true, dateFormat: "Y-m-d H:i" }} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                        <div className="col-6 sale-order__input_container d-flex align-items-center">
+                            <p className="label__general">Fecha de entrega a producción</p>
+                            <div className="container_dates__requisition">
+                                <Flatpickr
+                                    className="date"
+                                    value={dates[0]} // Fecha inicial
+                                    options={{ enableTime: true, dateFormat: "Y-m-d H:i" }}
+                                    onChange={(fecha) => handleDateChange(fecha, 0)} // Índice 0
+                                    placeholder="Selecciona la fecha de inicio"
+                                />
                             </div>
                         </div>
-                        <div className='col-6 sale-order__input_container d-flex align-items-center'>
-                            <p className='label__general'>Fecha de entrega cliente</p>
-                            <div className='container_dates__requisition'>
-                                <Flatpickr className='date' value={dates[1]} options={{ enableTime: true, dateFormat: "Y-m-d H:i" }} onChange={handleDateChange} placeholder='seleciona las fechas' />
+
+                        <div className="col-6 sale-order__input_container d-flex align-items-center">
+                            <p className="label__general">Fecha de entrega cliente</p>
+                            <div className="container_dates__requisition">
+                                <Flatpickr
+                                    className="date"
+                                    value={dates[1]} // Fecha final
+                                    options={{ enableTime: true, dateFormat: "Y-m-d H:i" }}
+                                    onChange={(fecha) => handleDateChange(fecha, 1)} // Índice 1
+                                    placeholder="Selecciona la fecha de fin"
+                                />
                             </div>
                         </div>
+
                     </div>
                     <div className='row'>
                         <div className='col-12 d-flex align-items-center justify-content-between'>
@@ -243,7 +256,120 @@ const ModalSalesOrder: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='row my-4'>
+                    <div className='table__sales_modal'>
+                        {normalConcepts ? (
+                            <div className='table__numbers'>
+                                <p className='text'>Total de articulos</p>
+                                <div className='quantities_tables'>{normalConcepts.length}</div>
+                            </div>
+                        ) : (
+                            <p className="text">No hay empresas que mostras</p>
+                        )}
+                        <div className='table__head'>
+                            <div className='thead'>
+                                <div className='th'>
+                                    <p>Artículo</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Cantidad</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Unidad</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Desc. monto</p>
+                                </div>
+                                <div>
+                                    <p>Total</p>
+                                </div>
+                            </div>
+                        </div>
+                        {normalConcepts ? (
+                            <div className='table__body'>
+                                {normalConcepts?.map((article: any, index: number) => {
+                                    return (
+                                        <div className='tbody__container' key={article.id}>
+                                            {article?.personalized ?
+                                                <div className='concept__personalized'>
+                                                    <p>Concepto Perzonalizado</p>
+                                                </div>
+                                                :
+                                                ''
+                                            }
+                                            {article.personalized ?
+                                                <div className='tbody personalized'>
+                                                    <div className='td'>
+                                                        <p>{article.codigo}-{article.descripcion}</p>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <p>$ {article.cantidad}</p>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <p>{article.name_unidad}</p>
+                                                    </div>
+                                                    <div className='td'>
+                                                        {permisoDescount ?
+                                                            <div>
+                                                                <input className='inputs__general' type="text" placeholder='Descuento' />
+                                                            </div>
+                                                            :
+                                                            <p>No permitido</p>
+                                                        }
+                                                    </div>
+                                                    <div className='td'>
+                                                        <p>$ {article.precio_total}</p>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <button className='btn__general-purple' onClick={() => modalSeeConcepts(article)}>Conceptos</button>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <button className='btn__general-orange' onClick={() => undoConcepts(article, index)}>Deshacer</button>
+                                                    </div>
+                                                </div>
+                                                :
+                                                <div className='tbody'>
+                                                    <div className='td'>
+                                                        <p>{article.codigo}-{article.descripcion}</p>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <p>$ {article.cantidad}</p>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <p>{article.name_unidad}</p>
+                                                    </div>
+                                                    <div className='td'>
+                                                        {permisoDescount ?
+                                                            <div>
+                                                                <input className='inputs__general' type="text" placeholder='Descuento' />
+                                                            </div>
+                                                            :
+                                                            <p>No permitido</p>
+                                                        }
+                                                    </div>
+                                                    <div className='td'>
+                                                        <p>$ {article.precio_total}</p>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <button className='add_urgency'>Agregar Urgencia</button>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <button className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-quotation-update')}>Conceptos</button>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        ) : (
+                            <p className="text">Cargando datos...</p>
+                        )}
+                    </div>
+
+                    {/* <div className='row my-4'>
                         {dataSaleOrder?.map((x: any, index: any) => (
                             <div className='col-12 sale-order__concepts' key={x.id}>
                                 <div className='row'>
@@ -348,7 +474,7 @@ const ModalSalesOrder: React.FC = () => {
                                 </div>
                             </div>
                         ))}
-                    </div>
+                    </div> */}
                     <div className='d-flex justify-content-center'>
                         <div>
                             <button className='btn__general-purple'>Crear orden de venta</button>

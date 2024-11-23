@@ -218,7 +218,7 @@ const CreateModal = () => {
                                             <div className='select__container_title'>
                                                 <p>{
                                                     selectedType.length > 0 ?
-                                                        selectedType[index] ?  x.fields.find((field: any) => field.id === selectedType[index])?.nombre : 'Selecciona'
+                                                        selectedType[index] !== null ?  x.fields.find((field: any) => field.id === selectedType[index])?.nombre : 'Selecciona'
                                                         :
                                                         'Selecciona'
                                                     }

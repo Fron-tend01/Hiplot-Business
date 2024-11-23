@@ -19,10 +19,13 @@ const Quotation = () => {
 
   const setQuatation = storeQuotation(state => state.setQuatation)
 
+  const setIdentifier = storeQuotation(state => state.setIdentifier);
+
   const [company, setCompany] = useState<any>([])
   const [branchOffices, setBranchOffices] = useState<any>([])
 
   const [data, setData] = useState<any>([])
+  const [dates, setDates] = useState<any>()
 
   const modal = () => {
     setModal('create-modal__qoutation')
@@ -33,6 +36,7 @@ const Quotation = () => {
   haceUnaSemana.setDate(hoy.getDate() - 7);
 
   const fetch = async () => {
+      setDates([hoy, haceUnaSemana])
        let data = {
         folio: 0,
         id_sucursal: branchOffices?.id,
@@ -65,7 +69,7 @@ const Quotation = () => {
     
   }, []);
 
-  const [dates, setDates] = useState<any>()
+
 
   const handleDateChange = (fechasSeleccionadas: any) => {
     if (fechasSeleccionadas.length === 2) {
@@ -96,6 +100,7 @@ const Quotation = () => {
   const updateQuotation = (quatation: any) => {
     setModal('update-modal__qoutation')
     setQuatation(quatation)
+    setIdentifier(quatation.id_identifier)
   }
 
   return (

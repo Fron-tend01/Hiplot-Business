@@ -133,3 +133,115 @@
 	border-radius: 5px;
 	background-color: #682ce015;
 }
+
+
+
+
+
+
+
+
+ /*************************************************************
+                    Tabla de Entradas
+ **************************************************************/
+
+ .table__sales_modal {
+    border-radius: 10px;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+.table__sales_modal .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__sales_modal .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__sales_modal .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 80px 100px  100px 100px;
+    padding: 10px;
+    font-weight: 600;
+    column-gap: 20px;
+}
+
+.table__sales_modal .table__body {
+	height: 100%;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+
+
+.table__sales_modal .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+}
+  
+.table__sales_modal .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+}
+
+
+
+.table__sales_modal .table__body .tbody {
+    display: flex;
+}
+
+.table__sales_modal .table__body .tbody.personalized {
+    border: 2px solid var(--primary-color);
+}
+
+.table__sales_modal .table__body .tbody {
+    display: grid;
+	grid-template-columns: repeat(4, 1fr) 80px 100px  100px 100px;
+    padding: 10px;
+    column-gap: 20px;
+}
+
+
+.table__sales_modal .table__body .tbody > .td .inputs__general {
+    margin-top: 0;
+}
+
+
+.table__sales_modal .table__body .tbody > .td .add_urgency {
+    background-color: var(--orange-color);
+    border-radius: 5px;
+    color: #fff;
+    padding: 3px 0;
+    border: none;
+    cursor: pointer;
+}
+
+
+
+.table__quotations_clients_modal .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}

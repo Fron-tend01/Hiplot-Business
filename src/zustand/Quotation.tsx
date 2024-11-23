@@ -13,6 +13,11 @@ interface StoreState {
 
     quatation: any;
     setQuatation: (x: any) => void;
+
+    identifier: any;
+    setIdentifier: (x: any) => void;
+
+   
 }
 
 export const storeQuotation = create<StoreState>((set) => ({
@@ -21,6 +26,9 @@ export const storeQuotation = create<StoreState>((set) => ({
 
     quatation: [],
     setQuatation: (x) => set({quatation: x}),
+
+    identifier: 0,
+    setIdentifier: (x) => set({identifier: x}),
 
     client: null,
     setClient: (x) => set({client: x}),
