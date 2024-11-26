@@ -80,7 +80,10 @@ const BranchOffices: React.FC = () => {
     const deleteUser = (item: any) => {
         const updatedBranchOffices = branchOffices.filter((x: any) => x !== item);
         setBranchOffices(updatedBranchOffices);
-        setDeleteBranchOffices([...deleteBranchOffices, item.id])
+        if (item.id != null) {
+            setDeleteBranchOffices([...deleteBranchOffices, item.id])
+
+        }
     };
 
 

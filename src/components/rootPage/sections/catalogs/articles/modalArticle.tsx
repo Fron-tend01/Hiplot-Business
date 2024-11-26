@@ -237,21 +237,25 @@ const modalArticle: React.FC = () => {
     const handleCreateArticles = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setStateLoading(true)
+        let suc_elim_fix = []
+        if (Array.isArray(deleteBranchOffices)) {
+            suc_elim_fix = deleteBranchOffices.filter((x:any)=> x!= null)
 
+        }
         let data = {
             id: modalArticle == 'articles-modal-update' ? articleToUpdate.id : 0,
             tipo: type,
             codigo: code,
             descripcion: description,
             unidad: selectedUnit,
-            id_familia: selectedIds.selectFamilies,
+            id_familia: selectedIds.selectFamilies.id,
             activo: activeArticles,
             imagen: '',
-            tipo_de_cobro: selectedIds.selectTypePayment,
-            id_plantilla: selectedIds.selectTemplates,
-            base_max: baseMax,
-            altura_max: maxHeight,
-            multiplos_de: multiples,
+            tipo_de_cobro: selectedIds.selectTypePayment.id,
+            id_plantilla: selectedIds.selectTemplates.id,
+            base_max: baseMax || 0,
+            altura_max: maxHeight || 0,
+            multiplos_de: multiples || 1,
             clave_sat: satKey,
             unidad_sat: satUnit,
             visualizacion_web: viewWeb,
@@ -265,7 +269,7 @@ const modalArticle: React.FC = () => {
 
             /////////////////////////////////Modales//////////////////////////////////////// 
             sucursales: branchOffices,
-            sucursales_elim: deleteBranchOffices,
+            sucursales_elim: suc_elim_fix,
 
             max_mins: maxsMins,
             max_mins_elim: deleteMaxsMins,

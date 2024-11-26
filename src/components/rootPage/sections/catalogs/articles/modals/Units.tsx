@@ -84,7 +84,7 @@ const Units: React.FC = () => {
     let data = {
 
       id_unidad: selectedSectionUnit,
-      id_unidad_equivalencia: selectedUnits.id_unidad,
+      id_unidad_equivalencia: selectedUnits?.id_unidad || 0,
       equivalencia: valueUnits,
       unidad_almacen: false,
       unidad: unitName,
