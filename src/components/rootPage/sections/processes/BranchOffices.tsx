@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 const BranchOffices: React.FC = () => {
   const [nombre, setNombre] = useState<string>('');
   const [direccion, setDireccion] = useState<string>('');
+  const [idModuloComercial, setIdModuloComercial] = useState<number>(0);
   const [contacto, setContacto] = useState<string>('');
   const [empresa_id, setEmpresa_id] = useState<number | null>(null);
   const [sucursal_id, setSucursal_id] = useState<number | null>(null)
@@ -97,6 +98,7 @@ const BranchOffices: React.FC = () => {
         viernes: viernes,
         sabado: sabado,
         domingo: domingo,
+        id_modulo_comercial: idModuloComercial,
         id_usuario: user_id
       }
       if (modoUpdate) {
@@ -179,6 +181,7 @@ const BranchOffices: React.FC = () => {
     setWarningAddress(false)
     setWarningContact(false)
     setSucursal_id(0)
+    setIdModuloComercial(0)
     setNombre('')
     setDireccion('')
     setContacto('')
@@ -211,6 +214,7 @@ const BranchOffices: React.FC = () => {
       setdomingo(sucursal.domingo)
       setEmpresa_id(sucursal.empresa_id)
       setSelectedCompany(sucursal.empresa_id)
+      setIdModuloComercial(sucursal.id_modulo_comercial)
       setModoUpdate(true)
     } else {
       setModoUpdate(false)
@@ -313,14 +317,20 @@ const BranchOffices: React.FC = () => {
               </div>
             </div>
             <div className='row'>
-              <div className='col-10 md-col-8 sm-col-12'>
+              <div className='col-8 md-col-8 sm-col-12'>
                 <div className='inputs__branch-office'>
                   <label className='label__general'>Dirección</label>
                   <div className='warning__general' style={styleWarningAddress}><small >Este campo es obligatorio</small></div>
                   <input className={`inputs__general ${warningAddress ? 'warning' : ''}`} type="text" value={direccion} onChange={(e) => setDireccion(e.target.value)} placeholder='Ingresa la dirección' />
                 </div>
               </div>
-              <div className='col-2 md-col-4 sm-col-12'>
+              <div className='col-2 md-col-2 sm-col-12' title='Este ID hace referencia al modulo donde se van a enviar las facturas al comercial'>
+                <div className='inputs__branch-office'>
+                  <label className='label__general'>ID Modulo Comercial</label>
+                  <input className={'inputs__general'} type="text" value={idModuloComercial} onChange={(e) => setIdModuloComercial(parseInt(e.target.value))} placeholder='Ingresa el id al modulo comercial' />
+                </div>
+              </div>
+              <div className='col-2 md-col-2 sm-col-12'>
                 <label>Venta a Franquicias</label><br></br>
                 <label className="switch">
                   <input

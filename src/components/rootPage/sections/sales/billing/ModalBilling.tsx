@@ -289,31 +289,36 @@ const ModalBilling: React.FC = () => {
 
         let obs: any = [];
 
-        if (title == undefined || title?.length < 1  ) {
+        if (title == undefined || title?.length < 1) {
             Swal.fire('Notificacion', 'Ingresa un titulo para continuar', 'info')
             return
         }
-        if ( concepts == undefined|| concepts?.length < 1 ) {
+        if (concepts == undefined || concepts?.length < 1) {
             Swal.fire('Notificacion', 'Ingresa al menos un concepto para crear la factura', 'info')
             return
         }
-        if ( selectedIds?.customers == undefined) {
+        if (selectedIds?.customers == undefined) {
             Swal.fire('Notificacion', 'Selecciona un cliente para continuar', 'info')
             return
         }
         for (const element of concepts) {
+            console.log(element);
+            element.orden = null
+            element.produccion_interna = false
+            element.enviar_a_produccion = false
+            element.campos_plantilla = []
             let filter = obs.filter((x: any) => x === element.id_ov);
             if (filter.length === 0) {
                 obs.push(element.id_ov);
             }
         }
-        const data = {
+        let data = {
             id_sucursal: branchOffices.id,
             id_cliente: selectedIds?.customers.id,
             subtotal: totals.subtotal,
             urgencia: totals.urgencia,
             descuento: totals.descuento,
-            tipo:type,
+            tipo: type,
             total: totals.total,
             divisa: selectedIds?.foreignExchange.id,
             cfdi: selectedIds?.cfdi?.ID,
@@ -321,30 +326,32 @@ const ModalBilling: React.FC = () => {
             forma_pago: selectedIds?.methodPayment.ID,
             metodo_pago: selectedIds?.paymentMethod.id,
             id_usuario_crea: user_id,
-            id_usuario_vendedor: selectedIds?.users,
+            id_vendedor: selectedIds?.users.id,
             titulo: title,
             conceptos: concepts,
-            ovs_enlazadas: obs,
-            conceptos_elim: [0]
+            ovs_enlazadas: [],
+            conceptos_elim: []
         };
         console.log('facturadata', data);
 
         Swal.fire({
-            icon:'warning',
+            icon: 'warning',
             title: "Desea crear la factura con los datos seleccionados?",
             text: "Esto enviará datos al sistema comercial",
             showCancelButton: true,
             confirmButtonText: "Continuar",
-        }).then((result) => {
+        }).then(async (result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                    APIs.createInvoice(data).then(async (response: any) => {
-                        if (response.error) {
-                            Swal.fire('Notificación', response.mensaje, 'warning');
-                        }else {
+                let dataWithoutCircles = removeCircularReferences(data);
+
+                APIs.CreateAny(dataWithoutCircles, "create_factura")
+                    .then(async (response: any) => {
+                        if (!response.error) {
                             Swal.fire('Notificación', response.mensaje, 'success');
+                        } else {
+                            Swal.fire('Notificación', response.mensaje, 'warning');
                         }
-                        
                     })
             }
         });
@@ -352,7 +359,26 @@ const ModalBilling: React.FC = () => {
 
 
     }
+    const removeCircularReferences = (obj: any) => {
+        const seen = new WeakSet();
 
+        function recurse(value: any) {
+            if (value && typeof value === 'object') {
+                if (seen.has(value)) {
+                    return; // Evitar circularidad
+                }
+                seen.add(value);
+                for (let key in value) {
+                    if (value.hasOwnProperty(key)) {
+                        recurse(value[key]);
+                    }
+                }
+            }
+        }
+
+        recurse(obj);
+        return obj;
+    }
     const [title, setTitle] = useState<any>()
 
 
@@ -427,11 +453,11 @@ const ModalBilling: React.FC = () => {
             console.log(sucursal);
 
             if (sucursal.condiciones_pago != undefined) {
-                setSelectedIds('paymentConditions', {ID:sucursal.condiciones_pago})
-                setSelectedIds('methodPayment', {ID:sucursal.forma_pago})
-                setSelectedIds('paymentMethod', {id:sucursal.metodo_pago})
-                setSelectedIds('cfdi', {ID:selectedIds?.customers.uso_cfdi})
-                setSelectedIds('foreignExchange', {id:selectedIds?.customers.divisa})
+                setSelectedIds('paymentConditions', { ID: sucursal.condiciones_pago })
+                setSelectedIds('methodPayment', { ID: sucursal.forma_pago })
+                setSelectedIds('paymentMethod', { id: sucursal.metodo_pago })
+                setSelectedIds('cfdi', { ID: selectedIds?.customers.uso_cfdi })
+                setSelectedIds('foreignExchange', { id: selectedIds?.customers.divisa })
             }
         }
 
@@ -709,7 +735,7 @@ const ModalBilling: React.FC = () => {
                                                         <p>${concept.total}</p>
                                                     </div>
                                                     <div className='td'>
-                                                        <p>{concept.orden.serie}-{concept.orden.folio}-{concept.orden.serie}</p>
+                                                        <p>{concept.orden.serie}-{concept.orden.folio}-{concept.orden.anio}</p>
                                                     </div>
                                                     <div className='td'>
                                                         <button type='button' className='btn__general-purple' onClick={() => handleAddDivisionChange(concept)}>Division</button>
