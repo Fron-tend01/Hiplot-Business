@@ -35,6 +35,26 @@
     margin-top: 20px;
 }
 
+.units__add_code_sat {
+    padding: 20px 10px;
+    border-radius: 10px;
+    margin-top: 20px;
+    border: 2px solid var(--orange-color);
+}
+
+.title__key-unit {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+
+.title__key-unit > p {
+    padding: 5px;
+    background-color: var(--orange-color);
+    color: #fff;
+    border-radius: 3px;
+}
+
 
  /*************************************************************
                     Modal de crear sucursales
@@ -63,9 +83,7 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	text-align: center;
 	width: 70%;
-	
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
@@ -120,9 +138,7 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	text-align: center;
 	width: 70%;
-	
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;

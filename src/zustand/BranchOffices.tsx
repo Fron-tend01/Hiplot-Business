@@ -40,6 +40,7 @@ export const storeBranchOffcies = create<StoreState>((set) => ({
     try {
       const response = await APIs.getBranchOfficesXCompanies(empresa_id, id_usuario);
       set({ branchOfficeXCompanies: response as BranchOfficeXCompanies[] });
+      return response
     } catch (error) {
       console.error('Error fetching branch office:', error);
     }

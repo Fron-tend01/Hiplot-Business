@@ -80,7 +80,7 @@ padding: 10px;
 
 .row__form_articles-four {
 	display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr) 2fr;
 	margin: 20px 0;
     gap: 10px;
 	align-items: end;

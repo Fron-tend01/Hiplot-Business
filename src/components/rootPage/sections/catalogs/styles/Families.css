@@ -88,9 +88,7 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	text-align: center;
 	width: 50%;
-	
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
@@ -119,15 +117,10 @@
 
 
 
-
-
-
-
 .table__families {
     display: grid;
     height: 100%;
     grid-template-rows: repeat(2, auto) 1fr;
-	overflow: auto;
 }
 
 
@@ -145,7 +138,7 @@
 
 .table__families .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(2, 1fr) 100px;
+    grid-template-columns: 1fr 100px;
     padding: 10px;
     font-weight: 600;
     color: var(--text-table-color);
@@ -153,7 +146,6 @@
 
 .table__families .table__body {
 	height: 100%;
-    overflow: hidden;
     overflow: auto;
     transition-delay: 0.0s;
     &::-webkit-scrollbar {
@@ -186,7 +178,7 @@
 
 .table__families .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(2, 1fr) 100px;
+    grid-template-columns: 1fr 100px;
     padding: 10px;
 }
 
@@ -228,9 +220,7 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	text-align: center;
 	width: 60%;
-	
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
@@ -292,7 +282,6 @@
 
 .table__update_families .table__body {
 	max-height: 300px;
-    overflow: hidden;
     overflow: auto;
     transition-delay: 0.0s;
     &::-webkit-scrollbar {
@@ -300,7 +289,7 @@
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: #1F319D; 
+        background-color: var(--primary-color); 
         border-radius: 5px;
         height: 100px;
     }
@@ -336,4 +325,39 @@
 .table__update_families .table__body .tbody:hover {
     background-color: var(--secundary-color);
     color: #fff;
+}
+
+/* .container__add_families {
+    border: 2px solid var(--orange-color);
+    padding: 20px 10px;
+    margin: 20px 0;
+    border-radius: 5px;
+} */
+
+
+.container__add_families {
+
+    margin: 20px 0;
+    border-radius: 5px;
+}
+
+.title__add_families {
+    display: flex;
+    margin-bottom: 15px;
+    
+
+}
+
+.title__add_families p {
+    color: var(--text-white);
+    padding: 5px;
+    background-color: var(--orange-color);
+    border-radius: 3px;
+
+}
+
+.container__add_families .add_families {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) auto;
+    column-gap: 20px;
 }

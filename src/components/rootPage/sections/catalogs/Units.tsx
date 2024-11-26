@@ -155,39 +155,38 @@ const Units = () => {
                                     <input className={`inputs__general`} value={description} onChange={(e) => setDescription(e.target.value)} type='text' placeholder='Ingresa el Descripcción' />
                                 </div>
                             </div>
-                            <br />
-                            <b>Clave Unidad</b>
-
-                            <hr />
-                            <div className='row'>
-                                <div className='col-6 md-col-12'>
-                                    <label className='label__general'>Buscar Codigo Sat</label>
-                                    <input className={`inputs__general`} value={searcher.nombre} onChange={(e) => { DynamicVariables.updateAnyVar(setSearcher, "nombre", e.target.value) }}
-                                        type='text' placeholder='Ingresa codigo o nombre ' />
+                            <div className='units__add_code_sat'>
+                                <div className='title__key-unit'>
+                                    <p>Clave Unidad</p>
                                 </div>
-                                <div className='col-6 md-col-12'>
-                                    <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                                    {/* <SelectSearcher options={cu} /> */}
-                                    <div className='select__container'>
+                                <div className='row'>
+                                    <div className='col-6 md-col-12'>
+                                        <label className='label__general'>Buscar Codigo Sat</label>
+                                        <input className={`inputs__general`} value={searcher.nombre} onChange={(e) => { DynamicVariables.updateAnyVar(setSearcher, "nombre", e.target.value) }}
+                                            type='text' placeholder='Ingresa codigo o nombre ' />
+                                    </div>
+                                    <div className='col-6 md-col-12'>
                                         <label className='label__general'>Código SAT</label>
-                                        <div className={`select-btn ${cu.openSel ? 'active' : ''}`} onClick={() => DynamicVariables.updateAnyVar(setCu, "openSel", !cu.openSel)}>
-                                            <p>{cu.selected?.ID ? cu.result.find((s: { ID: number }) => s?.ID === cu.selected?.ID)?.Clave + ' - ' + cu.result.find((s: { ID: number }) => s?.ID === cu.selected?.ID)?.Nombre : 'No encontrado'}</p>
-                                            <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                                        </div>
-                                        <div className={`content ${cu.openSel ? 'active' : ''}`}>
-                                            <ul className={`options ${cu.openSel ? 'active' : ''}`} style={{ opacity: cu.openSel ? '1' : '0' }}>
-                                                {cu.result && cu.result.map((fam: any, index: number) => (
-                                                    <li key={index} onClick={() => { DynamicVariables.updateAnyVar(setCu, "selected", fam); DynamicVariables.updateAnyVar(setCu, "openSel", false) }}>
-                                                        <small>{fam.Clave} </small> - <b> {fam.Nombre}</b>
+                                        <div className='select-btn__general'>
+                                            <div className='select__container'>
+                                                <div className={`select-btn ${cu.openSel ? 'active' : ''}`} onClick={() => DynamicVariables.updateAnyVar(setCu, "openSel", !cu.openSel)}>
+                                                    <p>{cu.selected?.ID ? cu.result.find((s: { ID: number }) => s?.ID === cu.selected?.ID)?.Clave + ' - ' + cu.result.find((s: { ID: number }) => s?.ID === cu.selected?.ID)?.Nombre : 'No encontrado'}</p>
+                                                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                                                </div>
+                                                <div className={`content ${cu.openSel ? 'active' : ''}`}>
+                                                    <ul className={`options ${cu.openSel ? 'active' : ''}`} style={{ opacity: cu.openSel ? '1' : '0' }}>
+                                                        {cu.result && cu.result.map((fam: any, index: number) => (
+                                                            <li key={index} onClick={() => { DynamicVariables.updateAnyVar(setCu, "selected", fam); DynamicVariables.updateAnyVar(setCu, "openSel", false) }}>
+                                                                <small>{fam.Clave} </small> - <b> {fam.Nombre}</b>
 
-                                                    </li>
-                                                ))
-                                                }
-                                            </ul>
+                                                            </li>
+                                                        ))
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    {/* <input className={`inputs__general`} value={satCode} onChange={(e) => setSatCode(e.target.value)} type='text' placeholder='Ingresa el Código' /> */}
                                 </div>
                             </div>
                             <div className='create__units_btn_modal'>
@@ -264,39 +263,38 @@ const Units = () => {
                                     <input className={`inputs__general`} value={description} onChange={(e) => setDescription(e.target.value)} type='text' placeholder='Ingresa el Descripcción' />
                                 </div>
                             </div>
-                            <br />
-                            <b>Clave Unidad</b>
-
-                            <hr />
-                            <div className='row'>
-                                <div className='col-6 md-col-12'>
-                                    <label className='label__general'>Buscar Codigo Sat</label>
-                                    <input className={`inputs__general`} value={searcher.nombre} onChange={(e) => { DynamicVariables.updateAnyVar(setSearcher, "nombre", e.target.value) }}
-                                        type='text' placeholder='Ingresa codigo o nombre ' />
+                            <div className='units__add_code_sat'>
+                                <div className='title__key-unit'>
+                                    <p>Clave Unidad</p>
                                 </div>
-                                <div className='col-6 md-col-12'>
-                                    <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                                    {/* <SelectSearcher options={cu} /> */}
-                                    <div className='select__container'>
+                                <div className='row'>
+                                    <div className='col-6 md-col-12'>
+                                        <label className='label__general'>Buscar Codigo Sat</label>
+                                        <input className={`inputs__general`} value={searcher.nombre} onChange={(e) => { DynamicVariables.updateAnyVar(setSearcher, "nombre", e.target.value) }}
+                                            type='text' placeholder='Ingresa codigo o nombre ' />
+                                    </div>
+                                    <div className='col-6 md-col-12'>
                                         <label className='label__general'>Código SAT</label>
-                                        <div className={`select-btn ${cu.openSel ? 'active' : ''}`} onClick={() => DynamicVariables.updateAnyVar(setCu, "openSel", !cu.openSel)}>
-                                            <p>{cu.selected?.ID ? cu.result.find((s: { ID: number }) => s?.ID === cu.selected?.ID)?.Clave + ' - ' + cu.result.find((s: { ID: number }) => s?.ID === cu.selected?.ID)?.Nombre : 'No encontrado'}</p>
-                                            <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                                        </div>
-                                        <div className={`content ${cu.openSel ? 'active' : ''}`}>
-                                            <ul className={`options ${cu.openSel ? 'active' : ''}`} style={{ opacity: cu.openSel ? '1' : '0' }}>
-                                                {cu.result && cu.result.map((fam: any, index: number) => (
-                                                    <li key={index} onClick={() => { DynamicVariables.updateAnyVar(setCu, "selected", fam); DynamicVariables.updateAnyVar(setCu, "openSel", false) }}>
-                                                        <small>{fam.Clave} </small> - <b> {fam.Nombre}</b>
+                                        <div className='select-btn__general'>
+                                            <div className='select__container'>
+                                                <div className={`select-btn ${cu.openSel ? 'active' : ''}`} onClick={() => DynamicVariables.updateAnyVar(setCu, "openSel", !cu.openSel)}>
+                                                    <p>{cu.selected?.ID ? cu.result.find((s: { ID: number }) => s?.ID === cu.selected?.ID)?.Clave + ' - ' + cu.result.find((s: { ID: number }) => s?.ID === cu.selected?.ID)?.Nombre : 'No encontrado'}</p>
+                                                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                                                </div>
+                                                <div className={`content ${cu.openSel ? 'active' : ''}`}>
+                                                    <ul className={`options ${cu.openSel ? 'active' : ''}`} style={{ opacity: cu.openSel ? '1' : '0' }}>
+                                                        {cu.result && cu.result.map((fam: any, index: number) => (
+                                                            <li key={index} onClick={() => { DynamicVariables.updateAnyVar(setCu, "selected", fam); DynamicVariables.updateAnyVar(setCu, "openSel", false) }}>
+                                                                <small>{fam.Clave} </small> - <b> {fam.Nombre}</b>
 
-                                                    </li>
-                                                ))
-                                                }
-                                            </ul>
+                                                            </li>
+                                                        ))
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    {/* <input className={`inputs__general`} value={satCode} onChange={(e) => setSatCode(e.target.value)} type='text' placeholder='Ingresa el Código' /> */}
                                 </div>
                             </div>
                             <div className='create__units_btn_modal'>

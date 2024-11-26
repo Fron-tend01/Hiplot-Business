@@ -24,6 +24,7 @@ import { articleRequests } from '../../../../../fuctions/Articles';
 import { useSelectStore } from '../../../../../zustand/Select';
 import APIs from '../../../../../services/services/APIs';
 import Swal from 'sweetalert2';
+import { v4 as uuidv4 } from 'uuid';
 
 import Select from '../../../Dynamic_Components/Select';
 import CobrosFranquicia from './modals/CobrosFranquicia';
@@ -54,9 +55,9 @@ const modalArticle: React.FC = () => {
     const { selectedIds } = useStore(useSelectStore);
 
     ///////////////////////////////////////////////////////////Variables de los modales ////////////////////////////////////////////////////////////////////////////
-    const { modalArticle, imagesArticles, branchOffices, deleteBranchOffices, prices, deletePrices, maxsMins, deleteMaxsMins, units, deleteUnits, 
+    const { modalArticle, imagesArticles, branchOffices, deleteBranchOffices, prices, deletePrices, maxsMins, deleteMaxsMins, units, deleteUnits,
         components, deleteComponents, variations, deleteVariations, combinations, deleteCombinations, suppliers, deleteSuppliers, deliveryTimes, deleteDeliveryTimes,
-         minimalCharges, deleteMinimalCharges, additionalArticles, deleteAdditionalArticles, areas, deleteAreas, cobros_franquicia, deleteCobros_franquicia }: any = useStore(storeArticles);
+        minimalCharges, deleteMinimalCharges, additionalArticles, deleteAdditionalArticles, areas, deleteAreas, cobros_franquicia, deleteCobros_franquicia }: any = useStore(storeArticles);
 
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
@@ -88,7 +89,6 @@ const modalArticle: React.FC = () => {
     const [baseMax, setBaseMax] = useState<number | null>(null)
     const [maxHeight, setMaxHeight] = useState<number | null>(null)
     const [multiples, setMultiples] = useState<number | null>(null)
-    const [satKey, setSatKey] = useState<string>('')
     const [satUnit, setsatUnit] = useState<string>('')
     const [viewWeb, setViewWeb] = useState<boolean>(false)
     const [salesInstructions, setsalesInstructions] = useState<string>('')
@@ -114,6 +114,31 @@ const modalArticle: React.FC = () => {
 
     const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
+
+    const [selectsSatKey, setSelectsSatKey] = useState<any>()
+    const [selectedSatKey, setSelectedSatKey] = useState<any>()
+  
+    const [satKeyTerm, setSatKeyTerm] = useState<any>([])
+    const [satKey, setSatKey] = useState<any>([])
+  
+    
+    const openselectsSatKey = () => {
+      setSelectsSatKey(!selectsSatKey)
+    }
+  
+    const fetchData = async () => {
+      if (satKeyTerm.length >= 3) {
+        const result = await APIs.getKeySat({ nombre: satKeyTerm });
+        setSatKey(result);
+      }
+    };
+  
+    useEffect(() => {
+  
+      fetchData();
+    }, [satKeyTerm]);
+
+    console.log(selectedSatKey)
 
 
     ////////// Selects //////////////
@@ -162,7 +187,7 @@ const modalArticle: React.FC = () => {
             setBaseMax(articleToUpdate.base_max);
             setMaxHeight(articleToUpdate.altura_max);
             setMultiples(articleToUpdate.multiplos_de);
-            setSatKey(articleToUpdate.clave_sat);
+            setSelectedSatKey({Clave: articleToUpdate.clave_sat});
             setsatUnit(articleToUpdate.unidad_sat);
             setViewWeb(articleToUpdate.visualizacion_web)
             setsalesInstructions(articleToUpdate.indicaciones);
@@ -172,10 +197,10 @@ const modalArticle: React.FC = () => {
             setSellStock(articleToUpdate.vender_sin_stock);
             setShortage(articleToUpdate.desabasto);
             setExemptTax(articleToUpdate.iva_excento);
-
-            setSelectedId('selectFamilies', articleToUpdate.id_familia);
-            setSelectedId('selectTypePayment', articleToUpdate.tipo_de_cobro);
-            setSelectedId('selectTemplates', articleToUpdate.id_plantilla);
+            
+            setSelectedId('selectFamilies', {id: articleToUpdate.id_familia});
+            setSelectedId('selectTypePayment', {id: articleToUpdate.tipo_de_cobro});
+            setSelectedId('selectTemplates', {id: articleToUpdate.id_plantilla});
 
             setBranchOffices(articleToUpdate.sucursales)
             setMaxsMins(articleToUpdate.max_mins);
@@ -195,7 +220,7 @@ const modalArticle: React.FC = () => {
 
     }, [articleToUpdate]);
 
-
+    
 
     useEffect(() => {
 
@@ -244,15 +269,15 @@ const modalArticle: React.FC = () => {
             codigo: code,
             descripcion: description,
             unidad: selectedUnit,
-            id_familia: selectedIds.selectFamilies,
+            id_familia: selectedIds.selectFamilies.id,
             activo: activeArticles,
             imagen: '',
-            tipo_de_cobro: selectedIds.selectTypePayment,
-            id_plantilla: selectedIds.selectTemplates,
+            tipo_de_cobro: selectedIds.selectTypePayment.id,
+            id_plantilla: selectedIds.selectTemplates.id,
             base_max: baseMax,
             altura_max: maxHeight,
             multiplos_de: multiples,
-            clave_sat: satKey,
+            clave_sat: selectedSatKey.Clave,
             unidad_sat: satUnit,
             visualizacion_web: viewWeb,
             indicaciones: salesInstructions,
@@ -350,7 +375,8 @@ const modalArticle: React.FC = () => {
     useEffect(() => {
 
     }, [activeArticles])
-
+     
+    
 
     const handleInputBaseMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.trim(); // Eliminar espacios en blanco alrededor
@@ -381,12 +407,15 @@ const modalArticle: React.FC = () => {
         setExemptTax(event.target.checked)
     }
 
-    // Modal de sucursales //
+    
 
-    const openModalBranchOffcies = () => {
-        setModalStateBrnachOffices('create')
-    };
 
+
+  
+  const handleKetSatChange = (key: any) => {
+    setSelectsSatKey(false)
+    setSelectedSatKey(key)
+  }
     // Modal de MaxMin del modal de crear articulos //
 
     const modalMaxMin = () => {
@@ -406,7 +435,7 @@ const modalArticle: React.FC = () => {
 
     // Checkbox de Activo //
     const handleActiveChange = () => {
-        setActiveArticles(prevState => !prevState); // Cambiar el valor booleano
+        setActiveArticles(prevState => !prevState);
     };
 
     const [stateLoading, setStateLoading] = useState<boolean>(false)
@@ -415,8 +444,6 @@ const modalArticle: React.FC = () => {
 
 
     const clonArticle = async () => {
-
-
         let data = {
             id_articulo: articleToUpdate.id,
             id_usuario: user_id
@@ -458,7 +485,7 @@ const modalArticle: React.FC = () => {
 
     const closeModal = () => {
         setModalArticle('')
-        if(modalArticle == 'articles-modal-update') {
+        if (modalArticle == 'articles-modal-update') {
             setArticleToUpdate(null)
             setCode('')
             setDescription('')
@@ -474,7 +501,6 @@ const modalArticle: React.FC = () => {
             setShortage(false)
             setExemptTax(false)
 
-            
             setBranchOffices([])
             setMaxsMins([]);
             setPrices([]);
@@ -485,7 +511,7 @@ const modalArticle: React.FC = () => {
             setAdditionalArticles([])
         }
 
-    } 
+    }
 
 
     return (
@@ -501,7 +527,6 @@ const modalArticle: React.FC = () => {
                     <div className='loading__container'>
                         <ModalLoading />
                     </div>
-
                 ) : (
                     <form className='conatiner__articles-modal' onSubmit={handleCreateArticles}>
                         <div className='row__form_articles-radios'>
@@ -584,7 +609,7 @@ const modalArticle: React.FC = () => {
                         {/* <div className='row__form_articles-three'>
                         
                     </div> */}
-                        <div className='row__form_articles-four'>  
+                        <div className='row__form_articles-four'>
                             <div>
                                 <label className='label__general'>Indicaciones de Ventas</label>
                                 <input className='inputs__general' type="text" value={salesInstructions} onChange={(e) => setsalesInstructions(e.target.value)} placeholder='Indicaciones de Ventas' />
@@ -596,6 +621,33 @@ const modalArticle: React.FC = () => {
                             <div>
                                 <label className='label__general'>Condiciones de compra</label>
                                 <input className='inputs__general' type="text" value={purchaseConditions} onChange={(e) => setPurchaseConditions(e.target.value)} placeholder='Condiciones de compra' />
+                            </div>
+                            <div className='select__container'>
+                                <label className='label__general'>Claves SAT</label>
+                                <div className={`select-btn__general`}>
+                                    <div className={`select-btn ${selectsSatKey ? 'active' : ''}`} onClick={openselectsSatKey}>
+                                        <div className='select__container_title'>
+                                            <p>{selectedSatKey ? selectedSatKey.Clave : 'Selecciona'}</p>
+                                        </div>
+                                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                                    </div>
+                                    <div className={`content ${selectsSatKey ? 'active' : ''}`}>
+                                        <input
+                                            className='inputs__general'
+                                            type="text"
+                                            placeholder='Buscar...'
+                                            value={satKeyTerm}
+                                            onChange={(e) => setSatKeyTerm(e.target.value)}
+                                        />
+                                        <ul className={`options ${selectsSatKey ? 'active' : ''}`} style={{ opacity: selectsSatKey ? '1' : '0' }}>
+                                            {satKey?.map((key: any) => (
+                                                <li key={uuidv4()} onClick={() => handleKetSatChange(key)}>
+                                                    {key.Descripcion}-{key.Clave}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div className='row__form_articles-five'>

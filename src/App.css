@@ -24,6 +24,9 @@
   --background-sections: #f5f6f7;
 
   /* modales */
+  --background-modal: #f5f6f7;
+  --card-modal: #ffffff;
+
 
   /* colores generales  */
   --input-color:#e4e4e4;
@@ -34,12 +37,13 @@
 
   --placeholder-color: #6c6c6e;
 
-  --background-modal: #f5f6f7;
+ 
 
   --background-color: #090d1f;
   --text-color: #090d1f;
   --text-select-color: #090d1f;
-  --primary-color: #682ce0d8;
+  --primary-color: #5d35b0;
+  
 
   --light-purple-color: #652dd433;
 

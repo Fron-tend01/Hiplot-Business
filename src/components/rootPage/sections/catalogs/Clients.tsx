@@ -155,7 +155,7 @@ const Clients: React.FC = () => {
                   onKeyUp={(event) => event.key === 'Enter' && searchClient()} />
               </div>
             </div>
-            <div className='row__two'>
+            <div className='d-flex justify-content-center my-4'>
               <button className='btn__general-purple' type='button' onClick={() => setModal('create_clients')}>Crear clientes</button>
               <ModalCreate />
             </div>

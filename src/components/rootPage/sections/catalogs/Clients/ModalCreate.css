@@ -1,6 +1,29 @@
-.conatiner__create_modal_clients {
-
+.modal_clients {
+	padding: 5px;
+	height: 100%;
+	overflow: hidden;
+	display: grid;
+	grid-template-rows: auto auto 1fr auto;
 }
+
+
+
+.modal_clients .row__one .row__one {
+	display: grid;
+	grid-template-columns: 1fr 1fr auto;
+	column-gap: 20px;
+	color: var(--text-color);
+}
+
+.modal_clients .row__one .row__two {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr) auto;
+	column-gap: 20px;
+	color: var(--text-color);
+}
+
+
+
 
 .conatiner__create_modal_clients > .row__one {
     display: grid;
@@ -29,6 +52,70 @@
 
 
 
+.modal_clients .container__cards {
+	margin: 20px 0;
+	overflow: auto;
+	transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.tax__information {
+	/* background-color: #3d4353; */
+	border: 3px solid var(--input-color);
+	padding: 20px;
+	color: var(--text-color);
+	border-radius: 5px;
+}
+
+.address {
+	border: 3px solid var(--input-color);
+	padding: 20px;
+	color: var(--text-color);
+	border-radius: 5px;
+}
+
+
+.modal_clients .container__cards .tax__information .title {
+	display: flex;
+	margin-bottom: 10px;
+}
+
+
+.modal_clients .container__cards .tax__information .title > p {
+	padding: 5px;
+	border: 2px solid #5d35b0;
+	background-color: #5d35b0;
+	font-weight: 600;
+	color: #fff;
+	border-radius: 5px;
+}
+
+.modal_clients .container__cards .address .title {
+	display: flex;
+	margin-bottom: 10px;
+}
+
+
+.modal_clients .container__cards .address .title > p {
+	padding: 5px;
+	background-color: #ec7f00;
+	font-weight: 600;
+	color: #fff;
+	border-radius: 5px;
+}
 
 
 
@@ -37,11 +124,14 @@
 
 
 
- /*************************************************************
-                    Modal de updates sucursales
- **************************************************************/
+/*=================================================
+ 
+  Modal de precios del modal del articulo 
   
- .overlay__create_modal_clients {
+=================================================*/
+
+
+.overlay__create_modal_clients {
 	background: rgba(0,0,0,.3);
 	position: fixed;
 	top: 0;
@@ -52,27 +142,34 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
+    z-index: 1;
 }
 
 .overlay__create_modal_clients.active {
 	visibility: visible;
 }
 
-.popup__create_modal_clients {
+.overlay__create_modal_clients .header__modal {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.popup__create_modal_clients {      
 	background-color: var(--background-modal);
 	border-radius: 5px;
-	padding: 20px;
-	text-align: center;
+	padding: 40px 20px 20px 20px;
 	width: 95%;
-	max-height:95%;
+    height: 95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
-    overflow: scroll;
+    overflow: hidden;
+
 }
-.align-txt-left {
-	text-align: left;
-}
+
 .popup__create_modal_clients .btn-cerrar-popup__create_modal_clients {
 	font-size: 16px;
 	line-height: 16px;
@@ -81,13 +178,14 @@
 	transition: .3s ease all;
 	color: #BBBBBB;
     position: absolute;
-    right: 15px;
-    top: 15px;
+    right: 30px;
+    top: 10px;
 }
-
 
 
 /* ------------------------- */
 /* ANIMACIONES */
 /* ------------------------- */
 .popup__create_modal_clients.active {	transform: scale(1); opacity: 1; }
+
+

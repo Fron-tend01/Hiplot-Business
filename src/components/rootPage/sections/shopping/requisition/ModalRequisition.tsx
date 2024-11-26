@@ -278,7 +278,7 @@ const ModalRequisition: React.FC = () => {
   }
 
   const getPDFRequisition = async () => {
-    window.open('https://hiplotbusiness.com/api_dev/pdf_requisicion/'+updateToRequisition.id, '_blank');
+    window.open('http://hiplot.dyndns.org:84/api_dev/pdf_requisicion/'+updateToRequisition.id, '_blank');
     // try {
       // await APIs.pdtRequisition(updateToRequisition.id);
       // Abrimos el PDF en una nueva pestaña
@@ -539,17 +539,27 @@ const ModalRequisition: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className='d-flex justify-content-between mt-3'>
+          <div className={`d-flex  mt-3 ${modalStateCreate == 'create' ? 'justify-content-center' : 'justify-content-between'}`}>
+            {modalStateCreate == 'create' ? 
+            ''
+            :
             <div>
               <button className='btn__general-orange' type='button' onClick={getPDFRequisition}>PDF</button>
             </div>
+            }
+          
             <button className='btn__general-purple d-flex align-items-center' onClick={handleCreateRequisition} disabled={updateToRequisition && updateToRequisition.status == 2}>
               {updateToRequisition ? `${stateLoading ? 'Actualizando requisición' : 'Actualizar requisición'}` : `${stateLoading ? 'Creando requisición' : 'Crear requisición'}`}
               {stateLoading ? <span className="loader-two"></span> : ''}
             </button>
+            {modalStateCreate == 'create' ? 
+            ''
+            :
             <div>
               <button className='btn__general-danger' type='button' onClick={updateStatus}>Deshabilitar</button>
             </div>
+            }
+         
           </div>
 
         </div>

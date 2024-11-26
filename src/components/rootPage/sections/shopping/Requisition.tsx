@@ -28,15 +28,10 @@ const Requisition: React.FC = () => {
   const setUpdateToRequisition = storeRequisitions((state: any) => state.setUpdateToRequisition);
 
   // Selects
-  const [selectCompanies, setSelectCompanies] = useState<boolean>(false);
-  const [selectBranchOffices, setSelectBranchOffices] = useState<boolean>(false);
-  const [selectAreas, setSelectAreas] = useState<boolean>(false);
   const [selectTypes, setSelectTypes] = useState<boolean>(false);
   const [selectSeries, setSelectSeries] = useState<boolean>(false)
 
   const [selectedCompany, setSelectedCompany] = useState<number | null>(null)
-  const [selectedBranchOffice, setSelectedBranchOffice] = useState<number | null>(null);
-  const [selectedArea, setSelectedArea] = useState<number | null>(null)
   const [selectedType, setSelectedType] = useState<number | null>(null);
   const [selectedSerie, setSelectedSerie] = useState<number | null>(null)
 
@@ -53,6 +48,8 @@ const Requisition: React.FC = () => {
   const { getRequisition }: any = RequisitionRequests();
 
   const { requisitions }: any = useStore(storeRequisitions);
+
+  const [series, setSeries] = useState<any>([])
   //----------------------------------------------------ESTRUCTURA ACTUAL BORRAR TODO LO QUE NO SE USE APARTIR DE ESTE PUNTO
 
   const selectedIds = useSelectStore((state) => state.selectedIds);
@@ -64,7 +61,7 @@ const Requisition: React.FC = () => {
   const [warningName] = useState<boolean>(false)
 
 
-  const { series, getSeriesXUser }: any = storeSeries();
+  const { getSeriesXUser }: any = storeSeries();
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
 
@@ -94,7 +91,11 @@ const Requisition: React.FC = () => {
       let resultRequisition = await getRequisition(data)
       setRequisitions(resultRequisition)
     }
-    getSeriesXUser({ id: user_id, tipo_ducumento: 0 })
+    let resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 0 })
+    resultSeries.unshift({ nombre: 'Todos', id: 0 });
+    setSeries(resultSeries)
+    setSelectedSerie(resultSeries[0].id)
+
   }
 
   useEffect(() => {
@@ -358,15 +359,12 @@ const Requisition: React.FC = () => {
         <div className='row'>
           <div className='col-3 md-col-6 sm-col-12'>
             <Select dataSelects={companiesXUsers} instanceId='empresa' nameSelect={'Empresa'} />
-
           </div>
           <div className='col-3 md-col-6 sm-col-12'>
             <Select dataSelects={branchOfficeXCompanies} instanceId='sucursal' nameSelect={'Sucursal'} />
-
           </div>
           <div className='col-3 md-col-6 sm-col-12'>
             <Select dataSelects={areasXBranchOfficesXUsers} instanceId='area' nameSelect={'Area'} />
-
           </div>
           <div className='col-3 md-col-6 sm-col-12'>
             <div className='select__container'>
@@ -427,7 +425,7 @@ const Requisition: React.FC = () => {
               <label className='label__general'>Serie</label>
               <div className='select-btn__general'>
                 <div className={`select-btn ${selectSeries ? 'active' : ''}`} onClick={openSelectSeries} >
-                  <p>{selectedSerie ? series.find((s: { id: number }) => s.id === selectedSerie)?.nombre : 'Selecciona'}</p>
+                  <p>{selectedSerie !== null ? series.find((s: { id: number }) => s.id === selectedSerie)?.nombre : 'Selecciona'}</p>
                   <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                 </div>
                 <div className={`content ${selectSeries ? 'active' : ''}`} >

@@ -33,7 +33,7 @@ function App() {
 
   //Modales
   document.documentElement.style.setProperty('--background-modal', theme === 'light' ? '' : '#0e1119');
-
+  document.documentElement.style.setProperty('--card-modal', theme === 'light' ? '' : '#2f3749');
 
   // Generales
   document.documentElement.style.setProperty('--input-color', theme === 'light' ? '' : '#2d3338');

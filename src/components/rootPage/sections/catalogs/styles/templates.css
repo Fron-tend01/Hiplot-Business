@@ -91,13 +91,11 @@
     background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	text-align: center;
 	width: 80%;
 	max-height:95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
-    overflow: scroll;
 }
 
 .popup__families .btn-cerrar-popup__suppliers {
