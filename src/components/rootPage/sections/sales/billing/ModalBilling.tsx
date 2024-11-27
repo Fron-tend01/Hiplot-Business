@@ -69,6 +69,8 @@ const ModalBilling: React.FC = () => {
     const setDivision = storeBilling(state => state.setDivision)
 
     const setDataBillign = storeBilling(state => state.setDataBillign)
+    const setDataUpdate = storeBilling(state => state.setDataUpdate)
+    const setModoUpdate = storeBilling(state => state.setModoUpdate)
 
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
@@ -84,11 +86,9 @@ const ModalBilling: React.FC = () => {
     const { getSeriesXUser }: any = seriesRequests()
     const [series, setSeries] = useState<any>([])
 
-    const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
 
-    const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
-    const { dataBillign, division }: any = useStore(storeBilling)
+    const { dataBillign, division, DataUpdate, modoUpdate }: any = useStore(storeBilling)
 
 
     // Empresas sucursales
@@ -124,6 +124,10 @@ const ModalBilling: React.FC = () => {
         let uc: any = await APIs.GetAny("getUsoCfdi")
         let fp: any = await APIs.GetAny("getFormaPago")
         let cp: any = await APIs.GetAny("getCondPago")
+        uc = uc.map((item: any) => ({ ...item, id: item.ID }));
+        fp = fp.map((item: any) => ({ ...item, id: item.ID }));
+        cp = cp.map((item: any) => ({ ...item, id: item.ID }));
+
         setCfdi({
             selectName: 'CFDi Receptor',
             options: 'Value',
@@ -139,11 +143,11 @@ const ModalBilling: React.FC = () => {
             options: 'Value',
             dataSelect: cp
         })
-        setSelectedIds('paymentConditions', 0)
-        setSelectedIds('methodPayment', 0)
+        setSelectedIds('paymentConditions', cp[0])
+        setSelectedIds('methodPayment', fp[0])
         setSelectedIds('paymentMethod', 0)
-        setSelectedIds('cfdi', 0)
-        setSelectedIds('foreignExchange', 0)
+        setSelectedIds('cfdi', uc[0])
+        setSelectedIds('foreignExchange', { id: 0 })
         // let res: any = await APIs.GetAny("getRegimenFiscal")
 
     }
@@ -181,20 +185,20 @@ const ModalBilling: React.FC = () => {
 
     const fetch = async () => {
 
-        let dataSaleOrders = {
-            folio: fol,
-            id_sucursal: branchOffices.id,
-            id_serie: selectedIds?.series.id,
-            id_cliente: client,
-            desde: date[0],
-            hasta: date[1],
-            id_usuario: user_id,
-            id_vendedor: selectedIds?.users.id,
-            status: 0
-        }
+        // let dataSaleOrders = {
+        //     folio: fol,
+        //     id_sucursal: branchOffices.id,
+        //     id_serie: selectedIds?.series.id,
+        //     id_cliente: client,
+        //     desde: date[0],
+        //     hasta: date[1],
+        //     id_usuario: user_id,
+        //     id_vendedor: selectedIds?.users.id,
+        //     status: 0
+        // }
 
-        let result = await getSaleOrders(dataSaleOrders)
-        setSaleOrders(result)
+        // let result = await getSaleOrders(dataSaleOrders)
+        // setSaleOrders(result)
 
         let data = {
             nombre: '',
@@ -217,7 +221,7 @@ const ModalBilling: React.FC = () => {
             options: 'nombre',
             dataSelect: resultUsers
         })
-        setSelectedIds('users', resultUsers[0].id)
+        setSelectedIds('vendedores', resultUsers[0].id)
         setUsersFilter({
             selectName: 'Vendedores',
             options: 'nombre',
@@ -242,9 +246,24 @@ const ModalBilling: React.FC = () => {
 
     useEffect(() => {
         fetch()
-
     }, [])
+    useEffect(() => {
+        setConcepts([])
+        setTotals(totalsc)
+        if (modoUpdate) {
+            console.log(DataUpdate.conceptos);
 
+            setTitle(DataUpdate.titulo)
+            setSelectedIds('vendedores', DataUpdate.id_vendedor)
+            setClient(DataUpdate.razon_social)
+            searchClient()
+            DataUpdate.conceptos.forEach((el: any) => {
+                DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal + parseFloat(el.total))
+                DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal + parseFloat(el.total))
+            });
+            setConcepts([...concepts, ...DataUpdate.conceptos]);
+        }
+    }, [modoUpdate])
     const search = async () => {
         if (type == 2) {
             let data = {
@@ -312,8 +331,15 @@ const ModalBilling: React.FC = () => {
                 obs.push(element.id_ov);
             }
         }
+        console.log(selectedIds?.vendedores);
+        let con = concepts
+        if (modoUpdate) {
+            let filter = concepts.filter((x: any) => x.id_concepto_comercial == undefined)
+            con = filter
+        }
         let data = {
-            id_sucursal: branchOffices.id,
+            id: modoUpdate ? DataUpdate.id : 0,
+            id_sucursal: modoUpdate ? DataUpdate.id_sucursal : branchOffices.id,
             id_cliente: selectedIds?.customers.id,
             subtotal: totals.subtotal,
             urgencia: totals.urgencia,
@@ -326,38 +352,62 @@ const ModalBilling: React.FC = () => {
             forma_pago: selectedIds?.methodPayment.ID,
             metodo_pago: selectedIds?.paymentMethod.id,
             id_usuario_crea: user_id,
-            id_vendedor: selectedIds?.users.id,
+            id_vendedor: selectedIds?.vendedores?.id ?? selectedIds?.vendedores,
             titulo: title,
-            conceptos: concepts,
+            conceptos: con,
             ovs_enlazadas: [],
             conceptos_elim: []
         };
-        console.log('facturadata', data);
+        console.log(data);
 
-        Swal.fire({
-            icon: 'warning',
-            title: "Desea crear la factura con los datos seleccionados?",
-            text: "Esto enviará datos al sistema comercial",
-            showCancelButton: true,
-            confirmButtonText: "Continuar",
-        }).then(async (result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-                let dataWithoutCircles = removeCircularReferences(data);
+        if (!modoUpdate) {
+            Swal.fire({
+                icon: 'warning',
+                title: "Desea crear la factura con los datos seleccionados?",
+                text: "Esto enviará datos al sistema comercial",
+                showCancelButton: true,
+                confirmButtonText: "Continuar",
+            }).then(async (result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    let dataWithoutCircles = removeCircularReferences(data);
 
-                APIs.CreateAny(dataWithoutCircles, "create_factura")
-                    .then(async (response: any) => {
-                        if (!response.error) {
-                            Swal.fire('Notificación', response.mensaje, 'success');
-                        } else {
-                            Swal.fire('Notificación', response.mensaje, 'warning');
-                        }
-                    })
-            }
-        });
+                    APIs.CreateAny(dataWithoutCircles, "create_factura")
+                        .then(async (response: any) => {
+                            if (!response.error) {
+                                Swal.fire('Notificación', response.mensaje, 'success');
+                                setSubModal('')
+                            } else {
+                                Swal.fire('Notificación', response.mensaje, 'warning');
+                            }
+                        })
+                }
+            });
 
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: "Desea actualizar la factura con los datos seleccionados?",
+                text: "Esto modificará datos en el comercial",
+                showCancelButton: true,
+                confirmButtonText: "Continuar",
+            }).then(async (result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    let dataWithoutCircles = removeCircularReferences(data);
 
-
+                    APIs.CreateAny(dataWithoutCircles, "update_factura")
+                        .then(async (response: any) => {
+                            if (!response.error) {
+                                Swal.fire('Notificación', response.mensaje, 'success');
+                                setSubModal('')
+                            } else {
+                                Swal.fire('Notificación', response.mensaje, 'warning');
+                            }
+                        })
+                }
+            });
+        }
     }
     const removeCircularReferences = (obj: any) => {
         const seen = new WeakSet();
@@ -402,6 +452,7 @@ const ModalBilling: React.FC = () => {
             DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal + parseFloat(el.total))
             DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal + parseFloat(el.total))
         });
+        console.log(order.conceptos);
 
         setConcepts([...concepts, ...order.conceptos])
         setDataBillign([...dataBillign, ...order.conceptos])
@@ -424,7 +475,7 @@ const ModalBilling: React.FC = () => {
     const searchClient = async () => {
 
         let data = {
-            id_sucursal: branchOffices.id,
+            id_sucursal: modoUpdate ? DataUpdate.id_sucursal : branchOffices.id,
             id_usuario: user_id,
             nombre: client
         }
@@ -437,7 +488,17 @@ const ModalBilling: React.FC = () => {
                 dataSelect: result
             })
             if (result.length > 0) {
-                setSelectedIds('customers', result[0])
+                if (modoUpdate) {
+                    let filter = result.filter((x: any) => x.id == DataUpdate.id_cliente)
+                    if (filter.length > 0) {
+                        let selected = filter[0]
+                        setSelectedIds('customers', selected)
+                    }
+
+                } else {
+                    setSelectedIds('customers', result[0])
+
+                }
             }
         } catch (error) {
             console.log(error)
@@ -448,8 +509,8 @@ const ModalBilling: React.FC = () => {
     useEffect(() => {
         // console.log(selectedIds);
         if (selectedIds?.customers) {
-            console.log(selectedIds.customers);
-            let sucursal = selectedIds.customers.clientes_sucursal.filter((x: any) => x.id_sucursal == branchOffices.id)[0]
+            let id_sucursal = modoUpdate ? DataUpdate.id_sucursal : branchOffices.id
+            let sucursal = selectedIds.customers.clientes_sucursal.filter((x: any) => x.id_sucursal == id_sucursal)[0]
             console.log(sucursal);
 
             if (sucursal.condiciones_pago != undefined) {
@@ -464,10 +525,44 @@ const ModalBilling: React.FC = () => {
     }, [selectedIds?.customers])
 
     const deleteConceptos = (c: any) => {
-        DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total))
-        DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
-        const filter = concepts.filter((x: number) => x !== c);
-        setConcepts(filter);
+        if (!modoUpdate) {
+            DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total))
+            DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
+            const filter = concepts.filter((x: number) => x !== c);
+            setConcepts(filter);
+        } else {
+            if (c.id_concepto_comercial != undefined) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: "Desea eliminar el concepto seleccionado?",
+                    text: "Esto eliminará el concepto de la factura Comercial",
+                    showCancelButton: true,
+                    confirmButtonText: "Continuar",
+                }).then(async (result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        APIs.deleteAny("delete_concepto_factura/" + c.id)
+                            .then(async (response: any) => {
+                                if (!response.error) {
+                                    Swal.fire('Notificación', response.mensaje, 'success');
+                                    DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total))
+                                    DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
+                                    const filter = concepts.filter((x: number) => x !== c);
+                                    setConcepts(filter);
+                                } else {
+                                    Swal.fire('Notificación', response.mensaje, 'warning');
+                                }
+                            })
+                    }
+                });
+            } else {
+                DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total))
+                DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
+                const filter = concepts.filter((x: number) => x !== c);
+                setConcepts(filter);
+            }
+
+        }
         // setDeleteMinimalCharges([...deleteMinimalCharges, item.id])
     }
     return (
@@ -475,10 +570,14 @@ const ModalBilling: React.FC = () => {
             <Toaster expand={true} position="top-right" richColors />
             <div className={`popup__billing-modal ${subModal == 'billing__modal' ? 'active' : ''}`}>
                 <div className='header__modal'>
-                    <a href="#" className="btn-cerrar-popup__billing-modal" onClick={() => setSubModal('')} >
+                    <a href="#" className="btn-cerrar-popup__billing-modal" onClick={() => { setModoUpdate(false); setSubModal('') }} >
                         <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
                     </a>
-                    <p className='title__modals'>Crear Factura</p>
+                    {modoUpdate ?
+                        <p className='title__modals'>Actualizar Factura</p>
+                        :
+                        <p className='title__modals'>Crear Factura</p>
+                    }
                 </div>
                 <div className='billing-modal' >
                     <div className='row'>
@@ -486,21 +585,21 @@ const ModalBilling: React.FC = () => {
                             <div className='container__form_articles-radios'>
                                 <div className='checkbox__modal_articles' title={'Facturar DIRECTAMENTE'}>
                                     <label className="checkbox__container_general">
-                                        <input value={0} className='checkbox' type="checkbox" checked={type === 0} onChange={() => handleCheckboxChange(0)} />
+                                        <input value={0} className='checkbox' type="checkbox" checked={type === 0} onChange={() => handleCheckboxChange(0)} disabled={modoUpdate} />
                                         <span className="checkmark__general"></span>
                                     </label>
                                     <p className='text'>Directa</p>
                                 </div>
                                 <div className='checkbox__modal_articles' title={'Facturar por ORDEN DE VENTA'}>
                                     <label className="checkbox__container_general">
-                                        <input value={1} className='checkbox' type="checkbox" checked={type === 1} onChange={() => handleCheckboxChange(1)} />
+                                        <input value={1} className='checkbox' type="checkbox" checked={type === 1} onChange={() => handleCheckboxChange(1)} disabled={modoUpdate} />
                                         <span className="checkmark__general"></span>
                                     </label>
                                     <p className='text'>Por Ov</p>
                                 </div>
                                 <div className='checkbox__modal_articles' title={'Facturar por PEDIDO DE ALMACEN DE FRANQUICIA'}>
                                     <label className="checkbox__container_general">
-                                        <input value={2} className='checkbox' type="checkbox" checked={type === 2} onChange={() => handleCheckboxChange(2)} />
+                                        <input value={2} className='checkbox' type="checkbox" checked={type === 2} onChange={() => handleCheckboxChange(2)} disabled={modoUpdate} />
                                         <span className="checkmark__general"></span>
                                     </label>
                                     <p className='text'>Por PAF</p>
@@ -509,20 +608,59 @@ const ModalBilling: React.FC = () => {
                         </div>
                     </div>
                     <div className='billing-modal-container'>
+                        {modoUpdate ?
+
+                            <div className="card ">
+                                <div className="card-body bg-standar">
+                                    <h3 className="text">{DataUpdate.serie}-{DataUpdate.folio}-{DataUpdate.anio}</h3>
+                                    <hr />
+                                    <div className='row'>
+                                        <div className='col-6 md-col-12'>
+                                            <span className='text'>Creado por: <b>{DataUpdate.usuario_crea}</b></span><br />
+                                            <span className='text'>Fecha de Creación: <b>{DataUpdate.fecha_creacion}</b></span><br />
+                                            <span className='text'>Titulo: <b>{DataUpdate.titulo}</b> </span>
+                                            {DataUpdate.status === 0 ? (
+                                                <span className="active-status">Activo</span>
+                                            ) : DataUpdate.status === 1 ? (
+                                                <span className="canceled-status">Cancelada</span>
+                                            ) : (
+                                                DataUpdate.status === 2 ? (
+                                                    <span className="end-status">Timbrado</span>
+                                                ) : (
+                                                    ""
+                                                )
+                                            )}
+
+                                        </div>
+                                        <div className='col-6 md-col-12'>
+                                            <span className='text'>Empresa: <b>{DataUpdate.empresa}</b></span><br />
+                                            <span className='text'>Sucursal: <b>{DataUpdate.sucursal}</b></span><br />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            : ''}
                         <div className='row'>
-                            <div className='col-12'>
+                            <div className={`${modoUpdate ? 'col-8' : 'col-12'}`}>
                                 <label className='label__general'>Titulo</label>
                                 <input className='inputs__general' type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el titulo' />
                             </div>
+                            {modoUpdate ?
+                                <div className='col-4'>
+                                    <Select dataSelects={users} instanceId='vendedores' nameSelect={'Vendedor'} />
+                                </div>
+                                : ''}
                         </div>
-                        <div className='row my-4'>
-                            <div className='col-8'>
-                                <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                        {!modoUpdate ?
+                            <div className='row my-4'>
+                                <div className='col-8'>
+                                    <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                                </div>
+                                <div className='col-4'>
+                                    <Select dataSelects={users} instanceId='vendedores' nameSelect={'Vendedor'} />
+                                </div>
                             </div>
-                            <div className='col-4'>
-                                <Select dataSelects={users} instanceId='users' nameSelect={'Vendedor'} />
-                            </div>
-                        </div>
+                            : ''}
                         <div className='row my-4'>
                             <div className='col-12 information_of_pay'>
                                 <p>Cliente</p>
@@ -735,7 +873,7 @@ const ModalBilling: React.FC = () => {
                                                         <p>${concept.total}</p>
                                                     </div>
                                                     <div className='td'>
-                                                        <p>{concept.orden.serie}-{concept.orden.folio}-{concept.orden.anio}</p>
+                                                        <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
                                                     </div>
                                                     <div className='td'>
                                                         <button type='button' className='btn__general-purple' onClick={() => handleAddDivisionChange(concept)}>Division</button>
@@ -776,7 +914,12 @@ const ModalBilling: React.FC = () => {
                         </div>
                     </div>
                     <div className='d-flex justify-content-center'>
-                        <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Crear factura</button>
+                        {modoUpdate ?
+                            <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Actualizar factura</button>
+                            :
+                            <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Crear factura</button>
+
+                        }
                     </div>
                 </div>
                 <Division />

@@ -145,7 +145,6 @@ const Personalized = () => {
     });
 
 
-    console.log( 'selectedSatKey.Clave',selectedSatKey.Clave)
 
 
     if (personalizedModal == 'personalized_modal-quotation') {
@@ -217,9 +216,6 @@ const Personalized = () => {
   }
 
 
-  console.log('customConcepts', customConcepts)
-  console.log('custom data', customData)
-
   const [inpust, setInputs] = useState<any>({
     descripcion: '',
     codigo: '',
@@ -241,12 +237,10 @@ const Personalized = () => {
 
   }
 
-  // console.log('selectedIds.units', selectedIds.units)
 
   const handleKetSatChange = (key: any) => {
     setSelectsSatKey(false)
     setSelectedSatKey(key)
-    console.log(key)
   }
 
   const [satKeyTerm, setSatKeyTerm] = useState<any>()

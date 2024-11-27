@@ -643,7 +643,8 @@ const Users: React.FC = () => {
     if (nombre === '' || email === '' || selectedCompany === null || selectedBranchOffice === null || selectedTypeUser === null) {
       return;
     }
-
+    console.log('addUsuariosComercial', addUsuariosComercial);
+    
     // Si todos los campos están llenos, crear usuarios y obtener datos
     await putUsers(user, selectedBranchOffice, nombre, email, password, tipo_us, sucursalesNewTmp,
       sucursales_eliminar, areasNewTmp, areas_eliminar, subordinados_nuevos, subordinados_eliminar, grupos_nuevos, grupos_eliminar, addUsuariosComercial,UsuariosComercialElim);
@@ -743,7 +744,7 @@ const Users: React.FC = () => {
     let data = {
       id_empresa: selectedIds?.empresas_comercial?.id,
       empresa: selectedIds?.empresas_comercial?.razon_social,
-      id_usuario: UsuarioCSelected,
+      id_usuario: parseInt(UsuarioCSelected),
       usuario: filter_us.FirstName + ' ' + filter_us.LastNameFather + ' ' + filter_us.LastNameMother
     }
     let exist = addUsuariosComercial.filter((x:any)=>x.id_empresa==selectedIds?.empresas_comercial?.id)

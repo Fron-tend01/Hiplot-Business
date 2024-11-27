@@ -754,6 +754,10 @@ getTotalPrice: async (data: any, customPath?: string) => {
     const path = ruta;
     return ConfigurationAPIs.get(path)
   },
+  deleteAny: async (ruta: string) => {
+    const path = ruta;
+    return ConfigurationAPIs.delete(path)
+  },
 }
 
 

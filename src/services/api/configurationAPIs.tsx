@@ -36,6 +36,10 @@ class ApiService {
     const url = `/${path}`;
     return this.request<T>('PUT', url, data);
   }
+  public delete<T>(path: string): Promise<T> {
+    const url = `/${path}`;
+    return this.request<T>('DELETE', url);
+  }
 }
 
 export default new ApiService();

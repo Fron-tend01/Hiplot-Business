@@ -16,9 +16,6 @@ const Division = () => {
     const [number, setNumber] = useState<any | string>('')
     const [divisiones, setDivisiones] = useState<any[]>([])
 
-    console.log(divisiones)
-
-    console.log(divisiones)
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         let a = division.cantidad
