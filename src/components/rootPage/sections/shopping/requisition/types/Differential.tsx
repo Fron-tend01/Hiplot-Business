@@ -65,7 +65,8 @@ const Differential: React.FC = () => {
     let data = {
       id_proveedor: result[0].id,
       id_sucursal: selectedBranchOffice,
-      id_usuario: user_id
+      id_usuario: user_id,
+      page: 0
     }
 
     if(selectedBranchOffice == null) {

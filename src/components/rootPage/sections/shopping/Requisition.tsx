@@ -4,7 +4,8 @@ import { BranchOfficesRequests } from '../../../../fuctions/BranchOffices';
 import { areasRequests } from '../../../../fuctions/Areas';
 import { storeSeries } from '../../../../zustand/Series';
 import useUserStore from '../../../../zustand/General';
-import flatpickr from 'flatpickr';
+import Flatpickr from "react-flatpickr";
+import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/l10n/es.js'; // Importar el idioma español
 import './styles/Requisition.css'
@@ -15,12 +16,15 @@ import { RequisitionRequests } from '../../../../fuctions/Requisition';
 import { useStore } from 'zustand';
 import Select from '../../Dynamic_Components/Select';
 import { useSelectStore } from '../../../../zustand/Select';
+import types from './requisition/json/types.json'
 
 const Requisition: React.FC = () => {
 
   const setModalStateCreate = storeRequisitions((state: any) => state.setModalStateCreate);
 
   const setConcepts = storeRequisitions((state: any) => state.setConcepts);
+
+  const setDates = storeRequisitions((state: any) => state.setDates);
 
   const setDataGet = storeRequisitions((state: any) => state.setDataGet);
   const setRequisitions = storeRequisitions((state: any) => state.setRequisitions);
@@ -47,12 +51,12 @@ const Requisition: React.FC = () => {
 
   const { getRequisition }: any = RequisitionRequests();
 
-  const { requisitions }: any = useStore(storeRequisitions);
+  const { requisitions, dates }: any = useStore(storeRequisitions);
 
   const [series, setSeries] = useState<any>([])
   //----------------------------------------------------ESTRUCTURA ACTUAL BORRAR TODO LO QUE NO SE USE APARTIR DE ESTE PUNTO
 
-  const selectedIds = useSelectStore((state) => state.selectedIds);
+  const selectedIds: any = useSelectStore((state) => state.selectedIds);
   const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
 
@@ -65,8 +69,12 @@ const Requisition: React.FC = () => {
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
 
-  const fetch = async () => {
+  const hoy = new Date();
+  const haceUnaSemana = new Date();
+  haceUnaSemana.setDate(hoy.getDate() - 7);
 
+  const fetch = async () => {
+    setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
     getCompaniesXUsers(user_id).then((data: any) => {
       data.unshift({ id: 0, razon_social: 'Todos' })
       setCompaniesXUsers({
@@ -77,20 +85,20 @@ const Requisition: React.FC = () => {
     });
     setSelectedId('empresa', 0)
 
-    if (selectedStartDate && selectedEndDate) {
+      
       let data = {
         id_sucursal: 0,
         id_usuario: user_id,
         id_area: 0,
         tipo: 0,
-        desde: selectedStartDate?.toISOString().split('T')[0],
-        hasta: selectedEndDate?.toISOString().split('T')[0],
+        desde: haceUnaSemana.toISOString().split('T')[0],
+        hasta: hoy.toISOString().split('T')[0],
         status: 0
       };
       setDataGet(data)
       let resultRequisition = await getRequisition(data)
       setRequisitions(resultRequisition)
-    }
+    
     let resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 0 })
     resultSeries.unshift({ nombre: 'Todos', id: 0 });
     setSeries(resultSeries)
@@ -110,28 +118,7 @@ const Requisition: React.FC = () => {
   }
 
 
-  let types = [
-    {
-      id: 0,
-      name: 'Todos'
-    },
-    {
-      id: 1,
-      name: 'Manual'
-    },
-    {
-      id: 2,
-      name: 'Automático'
-    },
-    {
-      id: 3,
-      name: 'Automático bajo pedido'
-    },
-    {
-      id: 4,
-      name: 'Diferencial'
-    },
-  ]
+console.log(dates)
 
   const [invoice, setInvoice] = useState<string>('')
 
@@ -169,64 +156,16 @@ const Requisition: React.FC = () => {
 
     }
   }, [selectedIds?.sucursal]);
-  // Estado para almacenar las fechas seleccionadas
-  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
-  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
+ 
 
-  // Método para inicializar Flatpickr
-  const initFlatpickr = () => {
-    const storedStartDate = localStorage.getItem('selectedStartDate');
-    const storedEndDate = localStorage.getItem('selectedEndDate');
 
-    const defaultStartDate = storedStartDate ? new Date(storedStartDate) : new Date();
-    defaultStartDate.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00.000
-
-    const defaultEndDate = storedEndDate ? new Date(storedEndDate) : new Date();
-    defaultEndDate.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00.000
-
-    const currentDate = new Date(); // Obtener la fecha actual
-    currentDate.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00.000
-
-    const oneWeekAgo = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000); // Fecha de hace una semana
-
-    setSelectedStartDate(oneWeekAgo);
-    setSelectedEndDate(currentDate); // endDate siempre debe ser el día actual
-
-    const startDateString = oneWeekAgo.toISOString().split('T')[0];
-    const endDateString = currentDate.toISOString().split('T')[0];
-
-    flatpickr('#dateRangePicker', {
-      mode: 'range',
-      dateFormat: 'Y-m-d',
-      locale: 'es', // Establecer el idioma en español
-      defaultDate: [startDateString, endDateString], // Establecer las fechas predeterminadas aquí
-      onChange: (selectedDates) => {
-        // Cuando se seleccionan fechas, actualiza los estados
-        setSelectedStartDate(selectedDates[0]);
-        setSelectedEndDate(selectedDates[1]);
-
-        // Almacena las fechas seleccionadas en localStorage
-        localStorage.setItem('selectedStartDate', selectedDates[0].toISOString());
-        localStorage.setItem('selectedEndDate', selectedDates[1].toISOString());
-
-        // Realizar la solicitud después de actualizar las fechas seleccionadas
-        const startDateString = selectedDates[0].toISOString().split('T')[0];
-        const endDateString = selectedDates[1].toISOString().split('T')[0];
-        getRequisition(0, 0, 0, user_id, 0, 0, startDateString, endDateString, 0);
-      }
-    });
+  const handleDateChange = (fechasSeleccionadas: any) => {
+    if (fechasSeleccionadas.length === 2) {
+      setDates(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
+    } else {
+      setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
+    }
   };
-
-  // Llamada a initFlatpickr después de que se renderiza el componente
-  useEffect(() => {
-    initFlatpickr();
-  }, []);
-
-  useEffect(() => {
-    const startDateString = selectedStartDate?.toISOString().split('T')[0];
-    const endDateString = selectedEndDate?.toISOString().split('T')[0];
-    // getRequisition(0, 0, 0, user_id, 0, 0, startDateString, endDateString, 0);
-  }, [selectedStartDate, selectedEndDate]);
 
 
 
@@ -270,25 +209,19 @@ const Requisition: React.FC = () => {
       setStatus(value)
       switch (value) {
         case '0':
-          if (selectedStartDate && selectedEndDate) {
-            const startDateString = selectedStartDate.toISOString().split('T')[0];
-            const endDateString = selectedEndDate.toISOString().split('T')[0];
-            getRequisition(0, 0, 0, user_id, 0, 0, startDateString, endDateString, 0);
-          }
+
+            getRequisition(0, 0, 0, user_id, 0, 0, dates[0], dates[1], 0);
+          
           break;
         case '1':
-          if (selectedStartDate && selectedEndDate) {
-            const startDateString = selectedStartDate.toISOString().split('T')[0];
-            const endDateString = selectedEndDate.toISOString().split('T')[0];
-            getRequisition(0, 0, 0, user_id, 0, 0, startDateString, endDateString, 1);
-          }
+
+            getRequisition(0, 0, 0, user_id, 0, 0, dates[0], dates[1], 1);
+          
           break;
         case '2':
-          if (selectedStartDate && selectedEndDate) {
-            const startDateString = selectedStartDate.toISOString().split('T')[0];
-            const endDateString = selectedEndDate.toISOString().split('T')[0];
-            getRequisition(0, 0, 0, user_id, 0, 0, startDateString, endDateString, 2);
-          }
+          
+            getRequisition(0, 0, 0, user_id, 0, 0, dates[0], dates[1], 2);
+          
           break;
         default:
           console.log("Valor desconocido");
@@ -317,30 +250,24 @@ const Requisition: React.FC = () => {
   }
 
   const searchByFolio = async () => {
-    if (selectedStartDate && selectedEndDate) {
       let data = {
 
         id_sucursal: selectedIds.sucursal.id || selectedIds.sucursal,
         id_usuario: user_id,
         id_area: selectedIds.area.id || selectedIds.area,
         tipo: 0,
-        desde: selectedStartDate?.toISOString().split('T')[0],
-        hasta: selectedEndDate?.toISOString().split('T')[0],
+        desde: dates[0],
+        hasta: dates[1],
         status: status
       };
       let resultRequisition = await getRequisition(data)
       setRequisitions(resultRequisition)
-    }
+ 
   }
 
 
-  /* ================================================= Modal Create ==========================================================*/
-
-
-  /* ================================================= Modal Update ==========================================================*/
-
   const modalUpdate = (requisition: any) => {
-    setModalStateCreate('create')
+    setModalStateCreate('update')
     setUpdateToRequisition(requisition)
     setConcepts(requisition.conceptos)
   }
@@ -390,7 +317,7 @@ const Requisition: React.FC = () => {
         <div className='row'>
           <div className='col-6 md-col-12'>
             <div className='container_dates__requisition'>
-              <input className='date' id="dateRangePicker" type="text" placeholder="Seleccionar rango de fechas" />
+              <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
             </div>
           </div>
           <div className='col-6 md-col-12'>

@@ -18,17 +18,21 @@ import { storeModals } from "../../../../zustand/Modals";
 
 const Departures: React.FC = () => {
 
-    const { getCompaniesXUsers, companiesXUsers }: any = storeCompanies();
-    const { getBranchOfficeXCompanies, branchOfficeXCompanies }: any = storeBranchOffcies();
+    const { getCompaniesXUsers }: any = storeCompanies();
+    const { getBranchOfficeXCompanies }: any = storeBranchOffcies();
     const { series, getSeriesXUser }: any = storeSeries();
     const { getSuppliers }: any = storeSuppliers();
-    const { getOrdedrs, orders }: any = storeOrdes();
+    const { getOrdedrs, orders, dates }: any = storeOrdes();
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
 
-    const setModal = storeModals(state => state.setModal)
-    const modal = storeModals(state => state.modal)
+    const setDates = storeOrdes(state => state.setDates)
 
+    const setModal = storeModals(state => state.setModal)
+    
+    const modal = storeModals(state => state.modal)
+    const [companies, setCompanies] = useState<any>()
+    const [branchOffices, setBranchOffices] = useState<any>()
 
     const [selectedBranchOffice, setSelectedBranchOffice] = useState<number | null>(null);
 
@@ -38,41 +42,36 @@ const Departures: React.FC = () => {
 
     const [invoice, setInvoice] = useState<string>('')
 
-    const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
-    const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
+    const hoy = new Date();
+    const haceUnaSemana = new Date();
+    haceUnaSemana.setDate(hoy.getDate() - 7);
 
     const [type, setTipo] = useState<any>(0)
 
-    // let id = 0;
     let id_usuario = user_id;
-    let id_sucursal = selectedBranchOffice;
-    // let id_area = 0;
-    let desde = selectedStartDate?.toISOString().split('T')[0];
-    let hasta = selectedEndDate?.toISOString().split('T')[0];
-    // let id_serie = selectedSerie;
+    let desde = haceUnaSemana.toISOString().split('T')[0];
+    let hasta = hoy.toISOString().split('T')[0];
+
     let status = type;
-    // let folio = invoice;
 
 
-    const [companies, setCompanies] = useState<any>()
-    const [branchOffices, setBranchOffices] = useState<any>()
+
+
+
+    const fecth = async () => {
+        setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
+        await getCompaniesXUsers(user_id)
+        await getBranchOfficeXCompanies(0, user_id)
+        await getSeriesXUser(user_id)
+        await getSuppliers('', true, user_id)
+        await getOrdedrs({ id_usuario, id_sucursal: branchOffices.id, desde, hasta, status, })
+    }
 
 
     useEffect(() => {
-        getCompaniesXUsers(user_id)
-        getBranchOfficeXCompanies(0, user_id)
-        getSeriesXUser(user_id)
-        getSuppliers('', true, user_id)
-        getOrdedrs({ id_usuario, id_sucursal, desde, hasta, status, })
-    }, [id_usuario, id_sucursal, desde, hasta, status])
+        fecth()
+    }, [])
 
-
-
-    ////////////////////////
-    /// Fechas
-    ////////////////////////
-
-    const [dates, setDates] = useState<any>()
 
     const handleDateChange = (fechasSeleccionadas: any) => {
         if (fechasSeleccionadas.length === 2) {
@@ -83,10 +82,6 @@ const Departures: React.FC = () => {
     };
 
 
-
-
-
-    const [modalState, setModalState] = useState<boolean>(false)
 
     const modalCreate = () => {
         setModal('modal-create-pedido')

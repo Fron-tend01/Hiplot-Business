@@ -16,18 +16,10 @@ import { storeModals } from "../../../../../zustand/Modals";
 
 
 const ModalCreate = () => {
+    const userState = useUserStore(state => state.user);
+    let user_id = userState.id
 
-    const units = [
-        {
-            id: 0,
-            name: 'PZA'
-        },
-        {
-            id: 1,
-            name: 'KG'
-        }
-    ]
-
+    const { getOrdedrs, dates }: any = storeOrdes();
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
     const setConcepts = storeOrdes(state => state.setConcepts)
@@ -36,8 +28,7 @@ const ModalCreate = () => {
     const { articles }: any = storeArticles();
     const { getAreas }: any = areasRequests();
     const { createOrders }: any = storeOrdes();
-    const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+
 
     const setModal = storeModals(state => state.setModal)
 
@@ -70,7 +61,7 @@ const ModalCreate = () => {
             options: 'nombre',
             dataSelect: resultAreas
         })
-        setSelectedIds('id_area', areas[0].id)
+        // setSelectedIds('id_area', areas[0]?.id)
 
     }
 
@@ -97,29 +88,29 @@ const ModalCreate = () => {
         const filter = stocks.filter((x: any) => x.id === almacenPredeterminado.id);
 
         // Verificar si el almacen existe y tiene stock disponible
-        if (filter.length > 0) {
-            const availableStock = filter[0].stock;
 
-            // Verificar si la cantidad ingresada excede el stock disponible
-            if (value !== '' && parseFloat(value) > availableStock) {
+        if (filter) {
+            let equivalencias = filter[0].equivalencias.filter((x:any)=> x.id_unidad==concepts[index].unidad)
+            console.log('value',value);
+            console.log('canti',equivalencias[0].cantidad);
+            
+            if (value > equivalencias[0].cantidad) {
+                const newArticleStates = [...concepts];
+                newArticleStates[index].cantidad = 0;
+                setConcepts(newArticleStates);
                 Swal.fire({
                     icon: "warning",
                     title: "Oops...",
                     text: 'La cantidad ingresada supera el stock disponible'
                 });
             } else {
-                // Si no excede el stock, actualizamos el estado de `concepts`
                 const newArticleStates = [...concepts];
-                newArticleStates[index] = {
-                    ...newArticleStates[index],  // Copiar el objeto en ese índice
-                    cantidad: value === '' ? null : parseFloat(value)   // Actualizar solo el campo 'unidad'
-                };
+                newArticleStates[index].cantidad = value;
                 setConcepts(newArticleStates);
-                
             }
+            return
         } else {
-            // Si no se encuentra el almacen correspondiente
-            console.log('El almacen no existe o no tiene stock');
+            console.log('El almacen no existe')
         }
     };
 
@@ -133,22 +124,19 @@ const ModalCreate = () => {
     }
 
     const handleSeleccion = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-        const valorSeleccionado = event.target.value;
-
-        // Copiar el concepto en el índice correspondiente y actualizar la unidad
-        const nuevosConceptos = [...concepts];  // Crear una copia del array de conceptos
-        nuevosConceptos[index] = {
-            ...nuevosConceptos[index],  // Copiar el objeto en ese índice
-            unidad: valorSeleccionado   // Actualizar solo el campo 'unidad'
-        };
-
-        // Actualizar el estado de 'conceptos' con la nueva lista
-        setConcepts(nuevosConceptos);
-
-        // Actualizar las selecciones temporales (nuevasSelecciones)
-        const nuevasSelecciones = [...seleccionesTemporales];
-        nuevasSelecciones[index] = valorSeleccionado;
-        setSeleccionesTemporales(nuevasSelecciones);
+  
+        const valueUnit = event.target.value;
+        console.log(valueUnit)
+        concepts[index].unidad = parseInt(valueUnit, 10);
+        // Crear una copia del arreglo de selecciones temporales
+        const newSelected = [...seleccionesTemporales];
+        // Actualizar el valor seleccionado en la posición del índice correspondiente
+        newSelected[index] = valueUnit;
+        // Actualizar el estado con las nuevas selecciones
+        setSeleccionesTemporales(newSelected);
+        const newArticleStates = [...concepts];
+        newArticleStates[index].cantidad = 0;
+        setConcepts(newArticleStates);
     };
 
 
@@ -161,8 +149,17 @@ const ModalCreate = () => {
         let id_usuario_crea = user_id;
         let status = selectedOption
         let comentarios = OPcomments;
+        let data = {
+            id_usuario: user_id,
+            id_sucursal: 0,
+            desde: dates[0],
+            hasta: dates[1],
+            status: 0
+
+        }
         try {
-            await createOrders({ id_area, id_sucursal, id_usuario_crea, status, comentarios, conceptos:concepts })
+            await createOrders({ id_area, id_sucursal, id_usuario_crea, status, comentarios, conceptos: concepts })
+            await getOrdedrs(data)
             setModal('')
         } catch (error) {
             console.log(error)
@@ -310,48 +307,46 @@ const ModalCreate = () => {
                                                     <svg className='close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
                                                 </a>
                                                 <div>
-                                                    <div className='table__modal_create_orders' >
-                                                        <div>
+                                                    <div className='table__modal_create_orders-stocks' >
+                                                        {concept?.stock?.length > 0 ? (
                                                             <div>
-                                                                {concept ? (
-                                                                    <div className='table__numbers'>
-                                                                        <p className='text'>Total de stocks</p>
-                                                                        <div className='quantities_tables'>{concept.stock?.length}</div>
-                                                                    </div>
-                                                                ) : (
-                                                                    <p className='text'>No hay stock que mostrar</p>
-                                                                )}
-                                                            </div>
-                                                            <div className='table__head'>
-                                                                <div className='thead'>
-                                                                    <div className='th'>
-                                                                        <p className=''>Nombre</p>
-                                                                    </div>
-                                                                    <div className='th'>
-                                                                        <p className=''>Cantidad</p>
-                                                                    </div>
-
-                                                                </div>
-                                                            </div>
-                                                            {concept?.stock?.length > 0 ? (
-                                                                <div className='table__body'>
-                                                                    {concept.stock.map((x: any) => (
-                                                                        <div className='tbody__container' key={uuidv4()}>
-                                                                            <div className='tbody'>
-                                                                                <div className="td">
-                                                                                    <p>{x.nombre}</p>
-                                                                                </div>
-                                                                                <div className="td">
-                                                                                    <p>{x.stock}</p>
-                                                                                </div>
-                                                                            </div>
+                                                                <div className='table__head'>
+                                                                    <div className='thead' style={{ gridTemplateColumns: `repeat(${concept?.stock[0]?.equivalencias.length + 1}, 1fr)` }}>
+                                                                        <div className='th'>
+                                                                            <p className=''>Nombre</p>
                                                                         </div>
-                                                                    ))}
+                                                                        {concept?.stock[0]?.equivalencias.map((item: any) => (
+                                                                            <div className="th" key={uuidv4()}>
+                                                                                <p>{item.nombre_unidad}</p>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
                                                                 </div>
-                                                            ) : (
-                                                                <p className='text'>No hay aritculos que mostrar</p>
-                                                            )}
-                                                        </div>
+                                                                <div>
+                                                                    <div className='table__body'>
+                                                                        <div className='tbody__container' >
+                                                                            {concept?.stock?.map((x: any) => (
+                                                                                <div key={uuidv4()}>
+                                                                                    <div className='tbody' style={{ gridTemplateColumns: `repeat(${x?.equivalencias.length + 1}, 1fr)` }}>
+                                                                                        <div className="td">
+                                                                                            <p>{x.nombre}</p>
+                                                                                        </div>
+                                                                                        {x?.equivalencias.map((item: any) => (
+                                                                                            <div className="td" >
+                                                                                                <p>{item.cantidad}</p>
+                                                                                            </div>
+                                                                                        ))}
+                                                                                    </div>
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        ) : (
+                                                            <p className='text'>No hay aritculos que mostrar</p>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -368,7 +363,7 @@ const ModalCreate = () => {
                     )}
                 </div>
             </div>
-            <div>
+            <div className="d-flex justify-content-center mt-4">
                 <button className='btn__general-purple' type='submit'>Crear Pedido</button>
             </div>
         </form>

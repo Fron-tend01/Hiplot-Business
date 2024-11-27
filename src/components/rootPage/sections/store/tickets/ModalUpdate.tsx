@@ -13,18 +13,6 @@ import ModalPurchaseOrders from "../../shopping/purchaseOrders/ModalPurchaseOrde
 
 
 const ModalUpdate = ({ updateTickets }: any) => {
-
-    const units = [
-        {
-            id: 0,
-            name: 'PZA'
-        },
-        {
-            id: 1,
-            name: 'KG'
-        }
-    ]
-
     const { articles }: any = storeArticles();
     const { store, getStore }: any = storeStore()
     const { getPDFTickets }: any = storeTickets();
@@ -42,50 +30,6 @@ const ModalUpdate = ({ updateTickets }: any) => {
     const [selectedSupplier, setSelectedSupplier] = useState<any>([])
     const [suppliersModal] = useState<any[]>([])
     const [selectedStore, setSelectedStore] = useState<any>([])
-
-    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const value = e.target.value.trim();
-        const newArticleStates = [...conceptos];
-        newArticleStates[index].cantidad = value === '' ? null : parseFloat(value);
-        setConceptos(newArticleStates);
-    };
-
-    const handleComentariosChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const value = e.target.value;
-        const newArticleStates = [...conceptos];
-        newArticleStates[index].comentarios = value;
-        setConceptos(newArticleStates);
-
-    }
-
-    const handleSeleccion = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-        const valorSeleccionado = event.target.value;
-        conceptos[index].unidad = valorSeleccionado;
-        // Crear una copia del arreglo de selecciones temporales
-        const nuevasSelecciones = [...seleccionesTemporales];
-        // Actualizar el valor seleccionado en la posición del índice correspondiente
-        nuevasSelecciones[index] = valorSeleccionado;
-        // Actualizar el estado con las nuevas selecciones
-        setSeleccionesTemporales(nuevasSelecciones);
-    };
-
-
-
-    const handleProveedorChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-        const temp_proveedor = parseInt(event.target.value, 10); // Convertir a número entero
-        conceptos[index].id_proveedor = temp_proveedor;
-        const nuevaInstancia = [...selectedSupplier];
-        nuevaInstancia[index] = temp_proveedor;
-        setSelectedSupplier(nuevaInstancia);
-    };
-
-    const handleStoreChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-        const temp_store = parseInt(event.target.value, 10);
-        conceptos[index].id_almacen = temp_store;
-        const nuevaInstancia = [...selectedStore];
-        nuevaInstancia[index] = temp_store;
-        setSelectedStore(nuevaInstancia);
-    };
 
 
 

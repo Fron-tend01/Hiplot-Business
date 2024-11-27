@@ -18,9 +18,11 @@ const ModalCreate: React.FC = () => {
   const setModalStateCreate = storeTransfers((state: any) => state.setModalStateCreate);
   const { modalStateCreate }: any = useStore(storeTransfers);
 
+  const setTransfers = storeTransfers((state: any) => state.setTransfers);
+
   const { getStore }: any = StoreRequests();
 
-
+  const { getTransfers, dates }: any = storeTransfers();
 
   const [selectStore, setSelectStore] = useState<any>(false);
   const [selectStoreTwo, setSelectStoreTwo] = useState<any>(false);
@@ -28,6 +30,7 @@ const ModalCreate: React.FC = () => {
   const [comments, setComments] = useState<any>()
 
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
+  const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
   const [store, setStore] = useState<any>()
 
@@ -45,11 +48,25 @@ const ModalCreate: React.FC = () => {
       options: 'nombre',
       dataSelect: resultStore
     })
+    console.log(resultStore)
+    
+    setSelectedId('almacen_origin', {id: resultStore[0]?.id})
+    setSelectedId('almacen_destino', {id: resultStore[0]?.id})
   }
 
   useEffect(() => {
     fetch()
+    if (selectedIds) {
+      setSelectedId('company_desde', 0)
+      setSelectedId('store_desde', 0)
+      setSelectedId('company_hasta', 0)
+      setSelectedId('store_hasta', 0)
+
+
+    }
   }, []);
+
+  console.log(selectedIds)
 
 
   const modalClose = () => {
@@ -167,7 +184,7 @@ const ModalCreate: React.FC = () => {
 
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    let value = Number.isNaN(parseFloat(e.target.value)) ? 0: parseFloat(e.target.value);
+    let value = Number.isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value);
     if (selectedIds.almacen_origin == null) {
       Swal.fire('Notificacion', 'Selecciona un almacen de Origen', 'warning')
       const newArticleStates = [...concepts];
@@ -184,27 +201,27 @@ const ModalCreate: React.FC = () => {
     let filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id);
 
     if (filter) {
-        let equivalencias = filter[0].equivalencias.filter((x:any)=> x.id_unidad==newArticleStates[index].unidad)
-        console.log('value',value);
-        console.log('canti',equivalencias[0].cantidad);
-        
-        if (value > equivalencias[0].cantidad) {
-            const newArticleStates = [...concepts];
-            newArticleStates[index].cantidad = 0;
-            setConcepts(newArticleStates);
-            Swal.fire({
-                icon: "warning",
-                title: "Oops...",
-                text: 'La cantidad ingresada supera el stock disponible'
-            });
-        } else {
-            const newArticleStates = [...concepts];
-            newArticleStates[index].cantidad = value;
-            setConcepts(newArticleStates);
-        }
-        return
+      let equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == newArticleStates[index].unidad)
+      console.log('value', value);
+      console.log('canti', equivalencias[0].cantidad);
+
+      if (value > equivalencias[0].cantidad) {
+        const newArticleStates = [...concepts];
+        newArticleStates[index].cantidad = 0;
+        setConcepts(newArticleStates);
+        Swal.fire({
+          icon: "warning",
+          title: "Oops...",
+          text: 'La cantidad ingresada supera el stock disponible'
+        });
+      } else {
+        const newArticleStates = [...concepts];
+        newArticleStates[index].cantidad = value;
+        setConcepts(newArticleStates);
+      }
+      return
     } else {
-        console.log('El almacen no existe')
+      console.log('El almacen no existe')
     }
 
   };
@@ -216,12 +233,11 @@ const ModalCreate: React.FC = () => {
     setConcepts(newArticleStates);
   };
 
-
-
-
   const modalCreateTrnasfers = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    let data = {
+    e.preventDefault();
+
+    // Datos para crear el traspaso
+    const transferData = {
       id_usuario_crea: user_id,
       id_sucursal: branchOffices.id,
       id_almacen_origen: selectedIds.almacen_origin.id,
@@ -229,22 +245,39 @@ const ModalCreate: React.FC = () => {
       id_sucursal_destino: branchOfficesTwo.id,
       id_almacen_destino: selectedIds.almacen_destino.id,
       comentarios: comments,
-      conceptos: concepts
+      conceptos: concepts,
     };
 
     try {
-      let result: any = await APIs.createTransfers(data)
-      if (result.error == true) {
+      const result: any = await APIs.createTransfers(transferData);
+
+      if (result.error) {
+        // Si hay un error en la creación, mostramos el mensaje
         Swal.fire('Advertencia', result.mensaje, 'warning');
       } else {
-        Swal.fire(result.mensaje, '', 'success');
+        // Datos para obtener los traspasos
+        let data = {
+          id_usuario: user_id,
+          id_almacen: 0,  // Se puede ajustar dependiendo de la lógica de tu aplicación
+          id_sucursal: 0, // Lo mismo aquí
+          status: 0,
+          desde: dates[0],
+          hasta: dates[1],
+        };
+
+        // Obtener los traspasos después de crear uno
+        let response: any = await APIs.getTransfers(data);
+        setTransfers(response)
+        console.log('result.mensaje', response.mensaje)
+        Swal.fire('Traspaso exitoso', result.mensaje, 'success');
+        return
       }
-
     } catch (error) {
-      Swal.fire('Error al actualizar el porveedor', '', 'error');
+      // Manejo del error de la API
+      Swal.fire('Error al hacer el traspaso', error.message || '', 'error');
     }
+  };
 
-  }
 
   const [modalSeeStocks, setModalSeeStocks] = useState<boolean[]>([]);
 
@@ -280,16 +313,16 @@ const ModalCreate: React.FC = () => {
   }
   useEffect(() => {
     if (selectedIds != null) {
-        if (selectedIds.almacen_origin) {
+      if (selectedIds.almacen_origin) {
 
-            concepts.forEach((el:any, index:number) => {
-              const newArticleStates = [...concepts];
-              newArticleStates[index].cantidad = 0;
-              setConcepts(newArticleStates);
-            });
-        }
+        concepts.forEach((el: any, index: number) => {
+          const newArticleStates = [...concepts];
+          newArticleStates[index].cantidad = 0;
+          setConcepts(newArticleStates);
+        });
+      }
     }
-}, [selectedIds])
+  }, [selectedIds])
   return (
     <div className={`overlay__transfers ${modalStateCreate == 'create' ? 'active' : ''}`}>
       <div className={`popup__transfers ${modalStateCreate == 'create' ? 'active' : ''}`}>

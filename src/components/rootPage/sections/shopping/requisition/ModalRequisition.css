@@ -79,3 +79,105 @@
 }
 
 
+
+
+
+/* ------------------------- */
+/* Tabla del Modal */
+/* ------------------------- */
+
+.table__requisiciones-modal {
+    margin-top: 20px;
+    border-radius: 10px;
+    grid-column: 1 / span 2;
+
+}
+
+
+.table__requisiciones-modal .table__head {
+    display: flex;
+    width: 100%;
+	background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__requisiciones-modal .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__requisiciones-modal .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr) 100px;
+    padding: 10px;
+    font-weight: 600;
+	color: var(--text-table-color);
+}
+
+.table__requisiciones-modal .table__body {
+	max-height: 300px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+
+    }
+}
+
+
+.table__requisiciones-modal .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+  }
+  
+  .table__requisiciones-modal .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+  }
+
+  .table__requisiciones-modal .table__body .tbody {
+    display: flex;
+}
+
+.table__requisiciones-modal .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr) 100px;
+    padding: 10px;
+	column-gap: 20px;
+	align-items: center;
+	color: var(--text-color);
+}
+
+.table__requisiciones-modal  .table__body .tbody .td.code {
+	display: flex;
+}
+
+
+.table__requisiciones-modal  .table__body .tbody .td.code > p {
+	background-color: var(--primary-color);
+	color: #fff;
+	font-weight: 500;
+	padding: 10px;
+	border-radius: 5px;
+}
+
+
+.table__requisiciones-modal  .table__body .tbody .td .inputs__general {
+   margin-top: 0;
+}
+
+.table__requisiciones-modal .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+	color: var(--white-color);
+}
+
+
+

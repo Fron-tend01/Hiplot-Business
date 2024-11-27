@@ -29,6 +29,7 @@
     row-gap: 20px;
 	align-items: end; 
 	text-align: left;
+    margin: 20px 0;
 }
 
 .orders__container > .row__three {

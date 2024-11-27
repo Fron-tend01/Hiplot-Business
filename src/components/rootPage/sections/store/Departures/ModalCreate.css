@@ -133,16 +133,11 @@
     margin: 0;
 }
 
-
+           
 
 .table__direct_warehouse-exit .table__body .tbody:hover {
     background-color: var(--secundary-color);
     color: #fff;
-}
-
-
-.table__direct_warehouse-exit.active .table__body .tbody:hover {
-    color: #000000;
 }
 
 

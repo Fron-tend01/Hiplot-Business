@@ -15,6 +15,7 @@ import * as FileSaver from 'file-saver';
 import Empresas_Sucursales from "../../Dynamic_Components/Empresas_Sucursales";
 import Select from "../../Dynamic_Components/Select";
 import { useSelectStore } from "../../../../zustand/Select";
+import APIs from "../../../../services/services/APIs";
 
 const Tickets = () => {
 
@@ -23,7 +24,7 @@ const Tickets = () => {
     const { getBranchOfficeXCompanies }: any = storeBranchOffcies();
     const { getSeriesXUser }: any = storeSeries();
     const { getSuppliers }: any = storeSuppliers();
-    const { getTickets, tickets, getExcelTickets, dates }: any = storeTickets();
+    const { getTickets, getExcelTickets, dates, tickets }: any = storeTickets();
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
     const [warningName] = useState<boolean>(false)
@@ -38,15 +39,31 @@ const Tickets = () => {
 
     const setDates = storeTickets(state => state.setDates)
 
-
     const setModalTickets = storeTickets(state => state.setModalTickets)
+    const hoy = new Date();
+    const haceUnaSemana = new Date();
+    haceUnaSemana.setDate(hoy.getDate() - 7);
 
-    const [series, setSeries] = useState<any>([])
-    const [suppliers, setSuppliers] = useState<any>([])
-    const setSelectedId = useSelectStore((state) => state.setSelectedId);
+    const [series, setSeries] = useState<any>([]);
+
+
+
     const fecth = async () => {
+        setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]]);
+
+        let data = {
+            id_usuario: user_id,
+            id_empresa: companies.id,
+            id_sucursal: branchOffices.id,
+            desde: haceUnaSemana.toISOString().split('T')[0],
+            hasta: hoy.toISOString().split('T')[0],
+            id_serie: selectedIds?.series?.id,
+            status: 0,
+            folio: invoice || 0
+        }
+        await getTickets(data)
+
         let resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 2 })
-        let resultSuppliers = await getSuppliers('', false, user_id)
         resultSeries.unshift({ id: 0, nombre: 'Todos' })
 
         setSeries({
@@ -54,44 +71,26 @@ const Tickets = () => {
             options: 'nombre',
             dataSelect: resultSeries
         })
-        setSelectedId('series', 0)
 
-        // resultSuppliers.unshift({ id: 0, nombre: 'Todos' })
 
-        setSuppliers({
-            selectName: 'Proveedores',
-            options: 'nombre',
-            setSuppliers: resultSuppliers
-        })
+
     }
 
     useEffect(() => {
-
         fecth()
-
         getCompaniesXUsers(user_id)
         getBranchOfficeXCompanies(0, user_id)
 
 
 
     }, [])
-
-
-    const hoy = new Date();
-    const haceUnaSemana = new Date();
-    haceUnaSemana.setDate(hoy.getDate() - 7);
-
-    // Inicializa el estado con las fechas formateadas
-    const [date, setDate] = useState([
-        haceUnaSemana.toISOString().split('T')[0],
-        hoy.toISOString().split('T')[0]
-    ]);
+ 
 
     const handleDateChange = (fechasSeleccionadas: any) => {
         if (fechasSeleccionadas.length === 2) {
-            setDate(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
+            setDates(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
         } else {
-            setDate([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
+            setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
         }
     };
 
@@ -141,9 +140,9 @@ const Tickets = () => {
             id_usuario: user_id,
             id_empresa: companies.id,
             id_sucursal: branchOffices.id,
-            desde: date[0],
-            hasta: date[1],
-            id_serie: selectedIds?.series.id,
+            desde: dates[0],
+            hasta: dates[1],
+            id_serie: selectedIds?.series?.id,
             status: 0,
             folio: invoice || 0
         }
@@ -160,7 +159,7 @@ const Tickets = () => {
                     <div className='col-4 md-col-12'>
                         <label className='label__general'>Fechas</label>
                         <div className='container_dates__requisition'>
-                            <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                            <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
                         </div>
                     </div>
                     <div className="col-4 md-col-6 sm-col-12">
@@ -172,9 +171,9 @@ const Tickets = () => {
                         <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(parseInt(e.target.value))} placeholder='Ingresa el folio' />
                     </div>
                     <div className="col-4 md-col-12 d-flex justify-content-center align-items-end">
-                        <button className="btn__general-gray" onClick={searchTicket}>Buscar</button>
-                        <button className="btn__general-success mx-3" onClick={excel}>Excel</button>
-                        <button className="btn__general-orange" onClick={() => setModalTickets('modal-create_ticket')}>Nueva entrada</button>
+                        <button className="btn__general-purple" onClick={searchTicket}>Buscar</button>
+                        <button className="btn__general-orange mx-3" onClick={excel}>Excel</button>
+                        <button className="btn__general-purple" onClick={() => setModalTickets('modal-create_ticket')}>Nueva entrada</button>
                         {/* <Select dataSelects={suppliers} instanceId="proveedores"  nameSelect={'Proveedores'}/> */}
                     </div>
                 </div>
@@ -188,41 +187,70 @@ const Tickets = () => {
                         <ModalUpdate updateTickets={updateTickets} />
                     </div>
                 </div>
-                <div className='' title='Haz click en un registro para ver su información'>
-                    <div className='table__numbers'>
-                        <p className='text'>Total de Entradas</p>
-                        <div className='quantities_tables'>{tickets?.length || 0}</div>
+                <div>
+                <div className='table__tickets mt-4'>
+                    <div>
+                        {tickets ? (
+                             <div className='table__numbers'>
+                             <p className='text'>Total de entradas</p>
+                             <div className='quantities_tables'>{tickets.length}</div>
+                           </div>
+                        ) : (
+                            <p></p>
+                        )}
                     </div>
-                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                        <thead className="table__head">
-                            <tr className="thead">
-                                <th>Folio</th>
-                                <th>Fecha</th>
-                                <th>Por</th>
-                                <th>Empresas</th>
-                                <th>Sucursal</th>
-                            </tr>
-                        </thead>
-                        <tbody className="table__body">
-                            {tickets && tickets.length > 0 ? (
-                                tickets.map((ent: any, index: number) => (
-                                    <tr className="tbody__container" key={index} onClick={() => modalUpdate(ent)}>
-                                        <td>{ent.serie}-{ent.folio}-{ent.anio}</td>
-                                        <td>{ent.fecha_creacion}</td>
-                                        <td>{ent.usuario_crea}</td>
-                                        <td>{ent.empresa}</td>
-                                        <td>{ent.sucursal}</td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan={10} style={{ textAlign: "center" }}>
-                                        No hay requisiciones disponibles
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                    <div className='table__head'>
+                        <div className='thead'>
+                            <div className='th'>
+                                <p>Folio</p>
+                            </div>
+                            <div className='th'>
+                                <p>Fecha</p>
+                            </div>
+                            <div className='th'>
+                                <p>Por</p>
+                            </div>
+                            <div className='th'>
+                                <p>Empresas</p>
+                            </div>
+                            <div className='th'>
+                                <p>Sucursal</p>
+                            </div>
+                        </div>
+                    </div>
+                    {tickets ? (
+                        <div className='table__body'>
+                            {tickets.map((ticket: any, index: number) => {
+                                return (
+                                    <div className='tbody__container' key={index} onClick={() => modalUpdate(ticket)}>
+                                        <div className='tbody'>
+                                            <div className='td code'>
+                                                <p>{ticket.serie}-{ticket.folio}-{ticket.anio}</p>
+                                            </div>
+                                            <div className='td date'>
+                                                <p>{ticket.fecha_creacion.split('T')[0]}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>{ticket.usuario_crea}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>{ticket.empresa}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>{ticket.sucursal}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>{ticket.area}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    ) : (
+                        <p className="mt-3">No hay entradas que mostrar</p>
+                    )}
+                </div>
                 </div>
             </div>
         </div>

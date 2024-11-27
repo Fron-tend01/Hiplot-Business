@@ -8,6 +8,9 @@ interface StoreState {
 
     concepts: any;
     setConcepts: (x: any) => void;
+
+    dates: any;
+    setDates: (x: any) => void;
 }
 
 export const storeOrdes = create<StoreState>((set) => ({
@@ -15,6 +18,9 @@ export const storeOrdes = create<StoreState>((set) => ({
 
     concepts: [],
     setConcepts: (x) => set({concepts: x}),
+
+    dates: [],
+    setDates: (x) => set({dates: x}),
 
     // Almacen
  

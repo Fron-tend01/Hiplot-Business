@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import useUserStore from "../../../../../zustand/General";
-import { storeArticles } from '../../../../../zustand/Articles';
 import { storeTickets } from "../../../../../zustand/Tickets";
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/l10n/es.js'
@@ -9,12 +8,14 @@ import APIs from "../../../../../services/services/APIs";
 import Empresas_Sucursales from "../../../Dynamic_Components/Empresas_Sucursales";
 import ByOC from "./types/ByOC";
 import Direct from "./types/Direct";
-import DynamicVariables from "../../../../../utils/DynamicVariables";
 
 
 const ModalCreate = () => {
     const setModalTickets = storeTickets(state => state.setModalTickets)
     const setConceptos = storeTickets(state => state.setConceptos)
+
+    const setDates = storeTickets(state => state.setDates)
+    const { dates, getTickets }: any = storeTickets();
 
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
@@ -116,7 +117,18 @@ const ModalCreate = () => {
 
         try {
             await createTickets(id_sucursal, id_usuario_crea, comentarios, conceptos)
-            console.log({ id_sucursal, id_usuario_crea, comentarios, conceptos })
+            let data = {
+                id_usuario: user_id,
+                id_empresa: companies.id,
+                id_sucursal: branchOffices.id,
+                desde: dates[0],
+                hasta: dates[1],
+                id_serie: 0,
+                status: 0,
+                folio: 0
+            }
+            await getTickets(data)
+            setModalTickets('')
 
         } catch (error) {
             console.log(error)
@@ -148,17 +160,19 @@ const ModalCreate = () => {
 
         let ids: any = [];
 
-        conceptos.forEach((concept: any, index: number) => {
-            const exists = ids.some((x: any) => x === concept.id_orden_compra);
-            if (exists) {
-                console.log('Ya existe');
-            } else {
-                ids.push(concept.id_orden_compra);
-                costo_flete += concept.costo_flete;
-            }
-            concept.id_almacen = store[0].id
-
-        });
+        if(conceptos.length !== 0){
+            conceptos.forEach((concept: any, index: number) => {
+                const exists = ids.some((x: any) => x === concept.id_orden_compra);
+                if (exists) {
+                    console.log('Ya existe');
+                } else {
+                    ids.push(concept.id_orden_compra);
+                    costo_flete += concept.costo_flete;
+                }
+                concept.id_almacen = store[0].id
+    
+            });
+        }
 
 
         conceptos.forEach((x: any) => {
@@ -269,7 +283,7 @@ const ModalCreate = () => {
                                                 <div className='tbody__container' key={index}>
                                                     <div className='tbody'>
                                                         <div className='td'>
-                                                            {concept.codigo}
+                                                            <p>{concept.codigo}</p>
                                                         </div>
                                                         <div className='td'>
                                                             <div>
@@ -366,7 +380,7 @@ const ModalCreate = () => {
                         ''
                     }
                     <div className="mt-4">
-                        <button className='btn__general-purple' onClick={(e) => handleCreateAreas(e)}>Guardar</button>
+                        <button className='btn__general-purple' onClick={(e) => handleCreateAreas(e)}>Crear nueva entrada</button>
                     </div>
                 </div>
             </div>

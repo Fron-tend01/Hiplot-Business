@@ -109,6 +109,85 @@
 
 
 
+
+
+.table__modal_create_orders-stocks {
+    border-radius: 10px;
+
+    
+}
+
+.table__modal_create_orders-stocks .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+    
+}
+
+.table__modal_create_orders-stocks .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__modal_create_orders-stocks .table__head .thead {
+    display: grid;
+    padding: 10px;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+	
+}
+
+.table__modal_create_orders-stocks .table__body {
+	max-height: 300px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #bf6903; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+
+
+.table__modal_create_orders-stocks .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+}
+  
+.table__modal_create_orders-stocks .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+.table__modal_create_orders-stocks .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+.table__modal_create_orders-stocks .table__body .tbody {
+    display: flex;
+}
+
+.table__modal_create_orders-stocks .table__body .tbody {
+    display: grid;
+    padding: 10px;
+    gap: 10px;
+    align-items: center;
+
+}
+
+
+
  /*************************************************************
                     Modal de stock
  **************************************************************/
@@ -135,7 +214,7 @@
 .popup__modal_stock_orders {
 	background-color: var(--background-modal);
 	border-radius: 5px;
-	padding: 20px;
+	padding: 30px;
 	text-align: center;
 	width: 70%;
 	overflow-y: auto;
@@ -143,7 +222,6 @@
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
-
     &::-webkit-scrollbar {
         width: 5px;
     }

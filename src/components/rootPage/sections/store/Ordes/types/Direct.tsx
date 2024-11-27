@@ -34,7 +34,7 @@ const Direct: React.FC = () => {
     })
     // setSelectedIds('type',typeSearch[0])
     // Bucador por nombre
-    const [searchBy, setSearchBy] = useState<any>(null)
+    const [searchBy, setSearchBy] = useState<any>('')
 
     const searchFor = async () => {
         let data = {

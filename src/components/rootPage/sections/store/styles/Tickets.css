@@ -141,7 +141,8 @@
 
 .table__tickets .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 10px;
     padding: 10px;
     font-weight: 600;
 }
@@ -182,9 +183,34 @@
 
 .table__tickets .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 10px;
     padding: 10px;
 
+}
+.table__tickets  .table__body .tbody .td.code {
+	display: flex;
+}
+
+.table__tickets  .table__body .tbody .td.code > p {
+	background-color: #682ce02c;
+	color: var(--secundary-color);
+	font-weight: 500;
+	padding: 10px;
+	border-radius: 5px;
+}
+
+.table__tickets  .table__body .tbody .td.date {
+	display: flex;
+}
+
+.table__tickets  .table__body .tbody .td.date > p {
+	background-color: #bf6a032f;
+	color: var(--orange-color);
+	font-weight:500;
+	padding: 10px;
+  
+	border-radius: 5px;
 }
 
 .table__tickets .table__body .tbody:hover {

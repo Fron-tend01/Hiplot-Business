@@ -15,6 +15,7 @@ import { v4 as uuidv4 } from 'uuid'; // Importa la función v4 de uuid
 import ModalSee from './transfers/ModalSee';
 import Select from '../../Dynamic_Components/Select';
 import { useSelectStore } from '../../../../zustand/Select';
+import APIs from '../../../../services/services/APIs';
 
 
 const Transfers: React.FC = () => {
@@ -24,15 +25,20 @@ const Transfers: React.FC = () => {
   const setModalStateCreate = storeTransfers((state: any) => state.setModalStateCreate);
   const setModalStateSee = storeTransfers((state: any) => state.setModalStateSee);
   const setDataTransfer = storeTransfers((state: any) => state.setDataTransfer);
+  const setTransfers = storeTransfers((state: any) => state.setTransfers);
 
 
-  const selectedIds = useSelectStore((state) => state.selectedIds);
+  const selectedIds: any = useSelectStore((state) => state.selectedIds);
   const setSelectedId = useSelectStore((state) => state.setSelectedId);
+
+  const setDates = storeTransfers(state => state.setDates)
 
   const { getCompaniesXUsers }: any = companiesRequests();
   const { getStore }: any = StoreRequests();
   const { getSeriesXUser }: any = seriesRequests();
-  const { getTransfers }: any = TransfersRequests();
+  const { getTransfers, dates }: any = TransfersRequests();
+
+  const { transfer }: any = storeTransfers();
 
 
   const [selectedStore, setSelectedStore] = useState<any>(null);
@@ -44,9 +50,17 @@ const Transfers: React.FC = () => {
   const [storeHasta, setStoreHasta] = useState<any>()
   const [series, setSeries] = useState<any>()
 
-  const [transfer, setTransfers] = useState<any>([])
+ 
+  const hoy = new Date();
+  const haceUnaSemana = new Date();
+  haceUnaSemana.setDate(hoy.getDate() - 7);
+
 
   const fetch = async () => {
+
+    setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
+    
+
     let resultCompanies = await getCompaniesXUsers(user_id)
     resultCompanies.unshift({ id: 0, razon_social: 'Todas' })
     setCompaniesDesde({
@@ -54,6 +68,8 @@ const Transfers: React.FC = () => {
       options: 'razon_social',
       dataSelect: [...resultCompanies]
     })
+
+    
 
     setCompaniesHasta({
       selectName: 'Empresas hasta',
@@ -65,6 +81,8 @@ const Transfers: React.FC = () => {
 
 
     let resultStore = await getStore(user_id)
+
+
     resultStore.unshift({ id: 0, nombre: 'Todos' })
     setStoreDesde({
       selectName: 'Almacen desde',
@@ -87,27 +105,27 @@ const Transfers: React.FC = () => {
 
     let data = {
       id_usuario: user_id,
-      id_almacen: selectedStore.id,
+      id_almacen: 0,
       id_sucursal: 0,
       status: 0,
-      desde: date[0],
-      hasta: date[1],
+      desde: haceUnaSemana.toISOString().split('T')[0],
+      hasta: hoy.toISOString().split('T')[0],
 
     }
 
   
 
-    let result = await getTransfers(data)
-    setTransfers(result)
-    setSelectedId('company_desde', 0)
-    setSelectedId('store_desde', 0)
-    setSelectedId('company_hasta', 0)
-    setSelectedId('store_hasta', 0)
+    let response = await APIs.getTransfers(data)
+    setTransfers(response)
+  
   }
 
   useEffect(() => {
     fetch()
-    
+    setSelectedId('company_desde', 0)
+    setSelectedId('store_desde', 0)
+    setSelectedId('company_hasta', 0)
+    setSelectedId('store_hasta', 0)
   }, []);
 
 
@@ -121,21 +139,16 @@ const Transfers: React.FC = () => {
   ////////////////////////
 
 
-  const hoy = new Date();
-  const haceUnaSemana = new Date();
-  haceUnaSemana.setDate(hoy.getDate() - 7);
 
   // Inicializa el estado con las fechas formateadas
-  const [date, setDate] = useState([
-    haceUnaSemana.toISOString().split('T')[0],
-    hoy.toISOString().split('T')[0]
-  ]);
+
+  console.log(transfer)
 
   const handleDateChange = (fechasSeleccionadas: any) => {
     if (fechasSeleccionadas.length === 2) {
-      setDate(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
+      setDates(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
     } else {
-      setDate([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
+      setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
     }
   };
 
@@ -150,8 +163,8 @@ const Transfers: React.FC = () => {
       id_empresa_destino: selectedIds.company_hasta,
       id_almacen_origen: selectedIds.store_desde,
       id_almacen_destino: selectedIds.store_hasta,
-      desde: date[0],
-      hasta: date[1],
+      desde: dates[0],
+      hasta: dates[1],
       id_serie: selectedIds.serie,
       status: type,
       folio: invoice,
@@ -198,7 +211,7 @@ const Transfers: React.FC = () => {
             <div className='dates__requisition col-4'>
               <label className='label__general'>Fechas</label>
               <div className='container_dates__requisition'>
-                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
               </div>
             </div>
             <div className='col-4'>

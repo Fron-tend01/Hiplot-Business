@@ -59,11 +59,9 @@ const Direct: React.FC = () => {
 
 
 
-  const [inputSearch, setInputSearch] = useState<any>()
+  const [inputSearch, setInputSearch] = useState<any>('')
 
   const [result, setResult] = useState<any>()
-
-
 
   const search = async () => {
     

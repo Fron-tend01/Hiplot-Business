@@ -20,9 +20,14 @@ interface StoreTransfers {
     modalStateSee: any;
     setModalStateSee: (modal: any) => void;
 
+    transfer: any;
+    setTransfers: (x: any) => void;
+
     dataTransfer: any;
     setDataTransfer: (data: any) => void;
 
+    dates: any;
+    setDates: (data: any) => void;
     
     storeToUpdate: any;
     setStoreToUpdate: (store: any) => void;
@@ -42,6 +47,13 @@ export const storeTransfers = create<StoreTransfers>((set) => ({
 
     modalStateSee: '',
     setModalStateSee: (modal) => set({ modalStateSee: modal }),
+
+    
+    transfer: [],
+    setTransfers: (x) => set({ transfer: x }),
+
+    dates: [],
+    setDates: (x) => set({ dates: x }),
 
 
     dataTransfer: '',

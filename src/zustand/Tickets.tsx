@@ -32,6 +32,7 @@ interface StoreState {
 
     conceptos: any;
     setConceptos: (modal: any) => void;
+    
 
 }
 

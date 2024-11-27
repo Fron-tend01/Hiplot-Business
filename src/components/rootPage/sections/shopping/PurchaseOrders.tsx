@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { storeCompanies } from '../../../../zustand/Companies';
 import { storeBranchOffcies } from '../../../../zustand/BranchOffices';
-import { storeSeries } from '../../../../zustand/Series';
-import { storeSuppliers } from '../../../../zustand/Suppliers';
 import useUserStore from '../../../../zustand/General';
 import { storePurchaseOrders } from '../../../../zustand/PurchaseOrders';
 import Flatpickr from "react-flatpickr";
@@ -22,22 +19,15 @@ const PurchaseOrders: React.FC = () => {
   const setType = storePurchaseOrders(state => state.setType)
   const setPurchaseOrders = storePurchaseOrders(state => state.setPurchaseOrders)
 
-
-  const [companies, setCompanies] = useState<any>([])
-  const { getBranchOffices }: any = storeBranchOffcies();
-  const [branchOffices, setBranchOffices] = useState<any>([])
   const [series, setSeries] = useState<any>(null)
 
   const { getPurchaseOrders, purchaseOrders, selectedBranchOffice, type, dates }: any = storePurchaseOrders();
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
 
-  const [selectCompanies, setSelectCompanies] = useState<boolean>(false)
+
   const [selectedCompany, setSelectedCompany] = useState<number | null>(null)
 
-
-  const [selectBranchOffices, setSelectBranchOffices] = useState<boolean>(false)
-  // const [selectedBranchOffice, setSelectedBranchOffice] = useState<number | null>(null)
 
 
   const [invoice, setInvoice] = useState<any>(null)

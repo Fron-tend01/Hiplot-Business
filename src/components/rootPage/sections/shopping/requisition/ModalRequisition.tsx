@@ -26,7 +26,7 @@ const ModalRequisition: React.FC = () => {
 
   const setRequisitions = storeRequisitions((state: any) => state.setRequisitions);
 
-
+  const { dates }: any = useStore(storeRequisitions);
 
 
   const { getRequisition }: any = RequisitionRequests();
@@ -225,6 +225,18 @@ const ModalRequisition: React.FC = () => {
           Swal.fire('advertencia', result.mensaje, 'warning');
         } {
           Swal.fire(result.mensaje, '', 'success');
+          let data = {
+            id_sucursal: 0,
+            id_usuario: user_id,
+            id_area: 0,
+            tipo: 0,
+            desde: dates[0],
+            hasta:dates[1],
+            status: 0
+          };
+          let resultRequisition = await getRequisition(data)
+          setRequisitions(resultRequisition)
+          setModalStateCreate('')
         }
         setStateLoading(false)
       } catch (error) {
@@ -237,10 +249,19 @@ const ModalRequisition: React.FC = () => {
         if (result.error == true) {
           Swal.fire('advertencia', result.mensaje, 'warning');
         } else {
-          let resultRequisition = await getRequisition(dataGet)
+          Swal.fire('Requisision creada exitosamente', '', 'success');
+          let data = {
+            id_sucursal: 0,
+            id_usuario: user_id,
+            id_area: 0,
+            tipo: 0,
+            desde: dates[0],
+            hasta:dates[1],
+            status: 0
+          };
+          let resultRequisition = await getRequisition(data)
           setRequisitions(resultRequisition)
           setModalStateCreate('')
-          Swal.fire('Requisision creada exitosamente', '', 'success');
         }
         setStateLoading(false)
       } catch (error) {
@@ -291,9 +312,9 @@ const ModalRequisition: React.FC = () => {
     // }
   }
   return (
-    <div className={`overlay__requisition ${modalStateCreate == 'create' ? 'active' : ''}`}>
+    <div className={`overlay__requisition ${modalStateCreate == 'create' || modalStateCreate == 'update' ? 'active' : ''}`}>
       <Toaster expand={true} position="top-right" richColors />
-      <div className={`popup__requisition ${modalStateCreate == 'create' ? 'active' : ''}`}>
+      <div className={`popup__requisition ${stateLoading ? 'loading' : ''} ${modalStateCreate == 'create' || modalStateCreate == 'update' ? 'active' : ''} `}>
         <div className='header__modal'>
           <a href="#" className="btn-cerrar-popup__requisition" onClick={modalCloseCreate} >
             <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
@@ -452,7 +473,7 @@ const ModalRequisition: React.FC = () => {
                 <Differential />
               }
             </div>
-            <div className='table__requisiciones' >
+            <div className='table__requisiciones-modal' >
               <div>
                 <div>
                   {concepts ? (
@@ -468,9 +489,6 @@ const ModalRequisition: React.FC = () => {
                   <div className='thead'>
                     <div className='th'>
                       <p className=''>Código</p>
-                    </div>
-                    <div className='th'>
-                      <p className=''>Descripción</p>
                     </div>
                     <div className='th'>
                       <p className=''>Cantidad</p>
@@ -492,11 +510,8 @@ const ModalRequisition: React.FC = () => {
                     {concepts.map((article: any, index: any) => (
                       <div className='tbody__container' key={index}>
                         <div className='tbody'>
-                          <div className='td'>
-                            {article.codigo}
-                          </div>
-                          <div className='td'>
-                            {article.descripcion}
+                          <div className='td code'>
+                            <p>{article.codigo}-{article.descripcion}</p>
                           </div>
                           <div className='td'>
                             <div>

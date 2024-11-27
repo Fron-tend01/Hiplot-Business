@@ -23,6 +23,9 @@ interface StoreState {
     dataGet: any
     setDataGet: (x: any) => void;
 
+    dates: any
+    setDates: (x: any) => void;
+
     requisitions: any
     setRequisitions: (concept: any) => void;
 }
@@ -51,7 +54,8 @@ export const storeRequisitions = create<StoreState>((set) => ({
      concepts: [],
      setConcepts: (concept) => set({ concepts: concept }),
 
-
+     dates: [],
+     setDates: (x) => set({ dates: x }),
 
     dataGet: {
       id_sucursal: null,

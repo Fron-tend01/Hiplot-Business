@@ -65,8 +65,7 @@ const ModalCreate: React.FC = () => {
 
 
 
-    //   const [stocks, setStocks] = useState<any>([])
-    const [units, setUnits] = useState<any>([])
+
 
     const deleteConcepts = (_: any, indexConcept: number) => {
         let filter = concepts.filter((_: number, index: number) => index !== indexConcept)
@@ -192,11 +191,6 @@ const ModalCreate: React.FC = () => {
         });
     };
 
-
-
-    const modalCloseCreate = () => {
-        setModal('')
-    }
     useEffect(() => {
         if (selectedIds != null) {
             if (selectedIds.almacen_origin) {

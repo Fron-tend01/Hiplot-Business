@@ -242,19 +242,6 @@ const modalArticle: React.FC = () => {
     };
 
 
-    // Subir foto o tomar foto //
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const fileList = event.target.files;
-        if (fileList && fileList.length > 0) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (reader.result) {
-                    setSelectedFile(reader.result as string);
-                }
-            };
-            reader.readAsDataURL(fileList[0]);
-        }
-    };
 
     console.log(articleToUpdate)
 
