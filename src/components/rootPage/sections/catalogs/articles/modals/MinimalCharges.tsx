@@ -13,7 +13,7 @@ import './style/MinimalCharges.css'
 
 const MinimalCharges: React.FC = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id;
+    const user_id = userState.id;
 
     const setSubModal = storeArticles(state => state.setSubModal)
 
@@ -39,21 +39,21 @@ const MinimalCharges: React.FC = () => {
     const [typeCharges, setTypeCharges] = useState<any>([])
 
     const fetch = async () => {
-        let resultTemplates = await getTemplates(user_id)
+        const resultTemplates = await getTemplates(user_id)
         setTemplates({
             selectName: 'Por',
             options: 'nombre',
             dataSelect: resultTemplates
         })
 
-        let resultUnits = await getUnits()
+        const resultUnits = await getUnits()
         setUnits({
             selectName: 'Unidades',
             options: 'nombre',
             dataSelect: resultUnits
         })
 
-        let resultUserGroup = await getUserGroups(user_id)
+        const resultUserGroup = await getUserGroups(user_id)
         setUserGroups({
             selectName: 'Grupos de usuarios',
             options: 'nombre',
@@ -74,7 +74,7 @@ const MinimalCharges: React.FC = () => {
  
 
     const addMinimalCharges = () => {
-        let data = {
+        const data = {
             id_unidad: 0,
             desde: from,
             hasta: until,

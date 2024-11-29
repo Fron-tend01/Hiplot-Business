@@ -12,7 +12,7 @@ const Units: React.FC = () => {
 
   const [sectionsUnits, setSectionsUnits] = useState<any>()
   const get = async () => {
-    let result = await APIs.getUnits()
+    const result = await APIs.getUnits()
     setSectionsUnits(result)
   }
 
@@ -81,7 +81,7 @@ const Units: React.FC = () => {
 
 
   const addUnits = () => {
-    let data = {
+    const data = {
 
       id_unidad: selectedSectionUnit,
       id_unidad_equivalencia: selectedUnits?.id_unidad || 0,

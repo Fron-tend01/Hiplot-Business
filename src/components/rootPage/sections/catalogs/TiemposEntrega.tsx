@@ -109,7 +109,7 @@ const TiemposEntrega = () => {
   const userState = useUserStore(state => state.user);
   const [ranges, setRanges] = useState<any>([])
   const [selectRangos, setSelectRangos] = useState<boolean>(false)
-  let user_id = userState.id
+  const user_id = userState.id
   const forSlide = useRef<HTMLDivElement>(null);
   const handleScroll = () => {
     if (forSlide.current) {
@@ -124,7 +124,7 @@ const TiemposEntrega = () => {
   })
   const fetch = async () => {
 
-    let resultRanges = await APIs.CreateAny({ titulo: '' }, "rangos_get")
+    const resultRanges = await APIs.CreateAny({ titulo: '' }, "rangos_get")
     setRanges(resultRanges)
     setSearcher({
       id: 0,
@@ -146,7 +146,7 @@ const TiemposEntrega = () => {
     // if (searcher.id_sucursal?.id==undefined) {
     //   DynamicVariables.updateAnyVar(setSearcher, "id_sucursal", {nombre:'Todos', id:0})
     // }
-    let result = await APIs.CreateAny(searcher, "tentrega_get")
+    const result = await APIs.CreateAny(searcher, "tentrega_get")
     setData(result)
   }
   const calcular_entrega = () => {
@@ -182,7 +182,7 @@ const TiemposEntrega = () => {
       DynamicVariables.updateAnyVar(setTiempose, "id_rango", data.id_rango)
       // //LLENAR LA VARIABLE COLECCION
       data.tiempos_entrega_data.forEach((dat: any) => {
-        let obj = {
+        const obj = {
           id: dat.id,
           dia_recepcion: dat.dia_recepcion,
           hora_inicial_recepcion: dat.hora_inicial_recepcion,
@@ -267,7 +267,7 @@ const TiemposEntrega = () => {
 
   }
   const editarTiempo = (dat: any, index: number) => {
-    let obj = {
+    const obj = {
       i: index,
       id: dat.id,
       dia_recepcion: dat.dia_recepcion,
@@ -283,8 +283,8 @@ const TiemposEntrega = () => {
     setConfigte(obj)
   }
   const actualizarUnTe = () => {
-    let index = configte.i
-    let newData = configte
+    const index = configte.i
+    const newData = configte
     setTiempose((prevState) => {
       // Hacemos una copia del estado anterior
       const updatedTEntregaDataNuevos = [...prevState.tEntregaData_nuevos];
@@ -588,7 +588,7 @@ const TiemposEntrega = () => {
                                 <button className='btn-warning m-2' type="button" onClick={() => { editarTiempo(dat, index); handleScroll() }}>Editar</button>
                                 <button className='btn__delete_users' type="button" onClick={() => {
                                   {modoUpdate && dat.id != 0? addToElim(dat.id) : null}
-                                  ; DynamicVariables.removeObjectInArrayByKey(setTiempose, "tEntregaData_nuevos", index);
+                                   DynamicVariables.removeObjectInArrayByKey(setTiempose, "tEntregaData_nuevos", index);
                                 }}>Del</button>
 
                               </div>
@@ -662,7 +662,7 @@ const TiemposEntrega = () => {
                               <div className='td'>
                                 <button className='btn-warning m-2' type="button" onClick={() => { editarTiempo(dat, index); handleScroll() }}>Editar</button>
                                 <button className='btn__delete_users' type="button" onClick={() => {
-                                   {modoUpdate && dat.id != 0? addToElim(dat.id) : null};
+                                   {modoUpdate && dat.id != 0? addToElim(dat.id) : null}
                                   DynamicVariables.removeObjectInArrayByKey(setTiempose, "tEntregaData_nuevos", index);
                                 }}>Del</button>
 

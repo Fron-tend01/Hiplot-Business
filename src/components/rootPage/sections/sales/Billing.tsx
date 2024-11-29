@@ -17,7 +17,7 @@ const Billing: React.FC = () => {
 
     const setSubModal = storeArticles(state => state.setSubModal)
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
     const setDates = storeBilling(state => state.setDates)
     const dates = storeBilling(state => state.dates)
     const [EmpresaSearcher, setEmpresaSearcher] = useState<any>({})
@@ -80,7 +80,7 @@ const Billing: React.FC = () => {
     const search = async () => {
         console.log(SucursalSearcher);
 
-        let data = {
+        const data = {
             folio: FolioSearcher,
             id_sucursal: SucursalSearcher?.id,
             id_serie: selectData?.serieSearcher?.id,
@@ -91,7 +91,7 @@ const Billing: React.FC = () => {
             id_usuario: user_id,
             status: TypeSearcher,
         }
-        let result = await APIs.CreateAny(data, "get_factura")
+        const result = await APIs.CreateAny(data, "get_factura")
         setData(result)
     }
     const modalUpdate = (dat: any) => {

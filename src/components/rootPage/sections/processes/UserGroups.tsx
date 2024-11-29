@@ -30,7 +30,7 @@ const UserGroups: React.FC = () => {
     
   const [modalStateUpdate, setModalStateUpdate] =  useState<boolean>(false)
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   useEffect(() => {
     getCompaniesXUsers(user_id);
@@ -42,7 +42,7 @@ const UserGroups: React.FC = () => {
   const handleCreateBranchOffice = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let id_usuario = user_id
+    const id_usuario = user_id
 
     if (name === '') {
       setWarningName(true)

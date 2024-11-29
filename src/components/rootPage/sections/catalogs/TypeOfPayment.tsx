@@ -23,7 +23,7 @@ const TypeOfPayment: React.FC = () => {
 
 
   const get = async () => {
-    let resultTypeOfPayments = await getTypeOfPayments()
+    const resultTypeOfPayments = await getTypeOfPayments()
     setTypeOfPayments(resultTypeOfPayments)
   
  }

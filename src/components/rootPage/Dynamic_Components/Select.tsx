@@ -10,7 +10,7 @@ interface SelectData {
 interface SelectProps {
   dataSelects: SelectData;
   instanceId: string;
-  nameSelect?: String;
+  nameSelect?: string;
 }
 
 const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }: any) => {

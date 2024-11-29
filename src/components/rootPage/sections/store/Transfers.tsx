@@ -19,7 +19,7 @@ import APIs from '../../../../services/services/APIs';
 
 const Transfers: React.FC = () => {
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const setModalStateCreate = storeTransfers((state: any) => state.setModalStateCreate);
   const setModalStateSee = storeTransfers((state: any) => state.setModalStateSee);
@@ -57,7 +57,7 @@ const Transfers: React.FC = () => {
     setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
     
 
-    let resultCompanies = await getCompaniesXUsers(user_id)
+    const resultCompanies = await getCompaniesXUsers(user_id)
     resultCompanies.unshift({ id: 0, razon_social: 'Todas' })
     setCompaniesDesde({
       selectName: 'Empresas desde',
@@ -76,7 +76,7 @@ const Transfers: React.FC = () => {
 
 
 
-    let resultStore = await getStore(user_id)
+    const resultStore = await getStore(user_id)
 
 
     resultStore.unshift({ id: 0, nombre: 'Todos' })
@@ -92,14 +92,14 @@ const Transfers: React.FC = () => {
     })
 
 
-    let resultSeries = await getSeriesXUser({ tipo_ducumento: 4, id: user_id })
+    const resultSeries = await getSeriesXUser({ tipo_ducumento: 4, id: user_id })
     setSeries({
       selectName: 'Series',
       options: 'nombre',
       dataSelect: [...resultSeries]
     })
 
-    let data = {
+    const data = {
       id_usuario: user_id,
       id_almacen: 0,
       id_sucursal: 0,
@@ -111,7 +111,7 @@ const Transfers: React.FC = () => {
 
   
 
-    let response = await APIs.getTransfers(data)
+    const response = await APIs.getTransfers(data)
     setTransfers(response)
   
   }
@@ -125,7 +125,7 @@ const Transfers: React.FC = () => {
   }, []);
 
 
-  let modalCreate = () => {
+  const modalCreate = () => {
     setModalStateCreate('create')
   }
 
@@ -153,7 +153,7 @@ const Transfers: React.FC = () => {
   const [invoice, setInvoice] = useState<any>(0)
 
   const searchTransfers = async () => {
-    let data = {
+    const data = {
       id_usuario: user_id,
       id_empresa_origen: selectedIds.company_desde,
       id_empresa_destino: selectedIds.company_hasta,
@@ -167,7 +167,7 @@ const Transfers: React.FC = () => {
       page: 0
     }
 
-    let result = await getTransfers(data)
+    const result = await getTransfers(data)
     console.log(result)
     setTransfers(result)
   }

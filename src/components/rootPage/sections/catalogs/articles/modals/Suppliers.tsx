@@ -26,12 +26,12 @@ const Suppliers:React.FC = () => {
     const [suppliersSearch] = useState<any>([])
   
     const getData = async () => {
-        let data = {
+        const data = {
             nombre: '',
             is_flete: false,
             id_usuario: user_id
         }
-        let result = await getSuppliers(data);
+        const result = await getSuppliers(data);
         await setDataSuppliers(result)
     }
 
@@ -50,7 +50,7 @@ const Suppliers:React.FC = () => {
     
    
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
     const [containerSearch, setContainerSearch] = useState<any>('')
 
 
@@ -73,7 +73,7 @@ const Suppliers:React.FC = () => {
     }
 
     const addSuppliers = () => {
-      let dataSuppliers = {
+      const dataSuppliers = {
         id_proveedor: selectedSupplier.id,
         nombre_alterno: selectedCommercialName,
         prioridad: selectedPriority.id,
@@ -131,7 +131,7 @@ const Suppliers:React.FC = () => {
     })
 
     const search = async () => {
-        let result = await getSuppliers(searcher)
+        const result = await getSuppliers(searcher)
         setDataSuppliers(result)
       }
 

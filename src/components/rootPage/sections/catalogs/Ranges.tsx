@@ -14,11 +14,11 @@ const Ranges: React.FC = () => {
     titulo: ''
   })
   const fetch = async () => {
-    let result = await APIs.CreateAny(searcher, "rangos_get")
+    const result = await APIs.CreateAny(searcher, "rangos_get")
     setRanges(result)
   }
   const fetch2 = async () => {
-    let result = await APIs.CreateAny(searcher , "rangos_get")
+    const result = await APIs.CreateAny(searcher , "rangos_get")
     setRanges(result)
   }
   useEffect(() => {

@@ -14,7 +14,7 @@ export const RequisitionRequests = () => ({
       // Requisision
   createRequisition: async (data: any) => {
     try {
-      let response = await APIs.createRequisition(data)
+      const response = await APIs.createRequisition(data)
       return response
     } catch (error) {
       Swal.fire('Error', 'Hubo un error al crear la requisision', 'error');
@@ -24,7 +24,7 @@ export const RequisitionRequests = () => ({
 
   updateRequisition: async (data: any) => {
     try {
-      let response: any = await APIs.updateRequisition(data)
+      const response: any = await APIs.updateRequisition(data)
        if(response.error == true) {
           Swal.fire('advertencia', response.mensaje, 'warning');
         } {

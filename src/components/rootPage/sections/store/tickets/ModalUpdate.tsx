@@ -15,7 +15,7 @@ const ModalUpdate = ({ updateTickets }: any) => {
     const { getStore }: any = storeStore()
     const { getPDFTickets }: any = storeTickets();
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     const [conceptos, setConceptos] = useState<any>([])
     useEffect(() => {
@@ -49,7 +49,7 @@ const ModalUpdate = ({ updateTickets }: any) => {
 
     const setModal = storePurchaseOrders(state => state.setModal)
     const verOc = async (id_oc: number) => {
-        let data = {
+        const data = {
             id: id_oc,
             folio: 0,
             id_serie: 0,
@@ -60,7 +60,7 @@ const ModalUpdate = ({ updateTickets }: any) => {
             status: 0
         }
 
-        let result: any = await APIs.getPurchaseOrders(data);
+        const result: any = await APIs.getPurchaseOrders(data);
         setModal('modal-purchase-orders-update')
         setPurchaseOrderToUpdate(result[0])
     }

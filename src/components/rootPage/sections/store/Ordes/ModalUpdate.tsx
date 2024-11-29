@@ -17,14 +17,14 @@ const ModalUpdate = ({oderUpdate, orderConceptsUpdate}: any, ) => {
     }, [oderUpdate, orderConceptsUpdate])
    
     const changeOrderMode = async () => {
-      let id = oderUpdate.id;
+      const id = oderUpdate.id;
       // let id_usuario = user_id;
       // let id_sucursal = oderUpdate.id_sucursal;
       // let id_area = oderUpdate.id_area;
       // let desde = oderUpdate;
       // let hasta = oderUpdate;
       // let id_serie = oderUpdate;
-      let status = modeOrder === 0 ? 1 : 0;
+      const status = modeOrder === 0 ? 1 : 0;
       // let folio = oderUpdate.folio;
       // setModeOrder(status)
       await updateModeOrders({id, status})
@@ -33,21 +33,21 @@ const ModalUpdate = ({oderUpdate, orderConceptsUpdate}: any, ) => {
 
 
     const changeConceptsOrderMode = async (order: any) => {
-      let id = order.id;
+      const id = order.id;
       // let id_usuario = user_id;
       // let id_sucursal = oderUpdate.id_sucursal;
       // let id_area = oderUpdate.id_area;
       // let desde = oderUpdate;
       // let hasta = oderUpdate;
       // let id_serie = oderUpdate;
-      let status = order.status === 0 ? 1 : 0;
+      const status = order.status === 0 ? 1 : 0;
       // let folio = oderUpdate.folio;
       await updateModeConceptsOrders({id, status})
     }
 
     const getPdf = async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      let id = oderUpdate.id;
+      const id = oderUpdate.id;
     
       try {
         // Supongamos que tienes el ID de la requisición

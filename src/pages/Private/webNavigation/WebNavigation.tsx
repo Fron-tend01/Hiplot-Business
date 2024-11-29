@@ -27,14 +27,14 @@ import car from '../../../assets/web-navigation/img/carrusel.png'
 import sb from '../../../assets/web-navigation/img/smallbanner.png'
 const WebNavigation = () => {
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
   const {  HeaderAndFooter, headerAndFooter, updateWeb,  updateSectionWeb,
   createContenedor, getContenedor, updateContenedor, deleteContenedor, createSectionsWeb, getSectionsWeb, deleteSectionsWeb,
   createProductsWeb, updateProductsWeb, deleteProductsWeb, updateContenedorOrder}: any = storeWebPages();
   const {getFamilies}: any = FamiliesRequests()
   const [families, setFamilies] = useState<any>()
 
-  let id_sucursal = localStorage.getItem('Id_sucursal');
+  const id_sucursal = localStorage.getItem('Id_sucursal');
   
   const [copyContainer, setCopyContainer] = useState<any>([]);
 
@@ -53,7 +53,7 @@ const WebNavigation = () => {
   }
 
   const fetch = async () => {
-    let resultFamilies = await getFamilies(user_id)
+    const resultFamilies = await getFamilies(user_id)
     setFamilies(resultFamilies)
   
   }
@@ -63,8 +63,8 @@ const WebNavigation = () => {
   useEffect(() => {
     fetch()
 
-    let hyf = async () => {
-      let re = await HeaderAndFooter(id_sucursal)
+    const hyf = async () => {
+      const re = await HeaderAndFooter(id_sucursal)
       setlogoImage(re.logo)
 
       return re
@@ -315,7 +315,7 @@ const createProducts = async () => {
 
 
 const updateProducts = async () => {
-  let data = {
+  const data = {
       id: selectedTypeProduct,
       id_categoria: selectedTypeCategory,
       nombre: nameProducts,
@@ -331,7 +331,7 @@ const updateProducts = async () => {
 };
 
 const deleteProducts = async () => {
-  let id = selectedTypeProduct
+  const id = selectedTypeProduct
   await deleteProductsWeb({id})
 }
 
@@ -605,7 +605,7 @@ useEffect(() => {
 
   const createSections = async (e: React.FormEvent) => {
     e.preventDefault()
-    let data = {
+    const data = {
       id_pagina: headerAndFooter.id,
       seccion: nameSection,
       titulo: '',
@@ -634,7 +634,7 @@ useEffect(() => {
 
   const updateSections = async (e: React.FormEvent) => {
     e.preventDefault()
-    let data = {
+    const data = {
       id: selectedTypeSection,
       seccion: nameSection,
       titulo: '',
@@ -752,7 +752,7 @@ const SaveContainer = async (e: React.FormEvent) => {
   // let id_familia = 0;
 
   if(dataNumberService === 1) {
-    let newData = {
+    const newData = {
       titulo: dataServices[0].titulo,
       imagen: dataServices[0].imagen,
       imagen2: dataServices[0].imagen2
@@ -765,7 +765,7 @@ const SaveContainer = async (e: React.FormEvent) => {
   }
 
   if(dataNumberService === 2) {
-    let newData = {
+    const newData = {
       titulo: dataServices[0].titulo,
       imagen: dataServices[0].imagen,
       imagen2: dataServices[0].imagen2
@@ -777,7 +777,7 @@ const SaveContainer = async (e: React.FormEvent) => {
    
   }
   if(dataNumberService === 5) {
-    let newData = {
+    const newData = {
       titulo: dataServices[0].titulo,
       imagen: dataServices[0].imagen,
       imagen2: dataServices[0].imagen2
@@ -826,9 +826,9 @@ const SaveContainer = async (e: React.FormEvent) => {
 
 const saveContainer = async (x: any) => {
 
-  let id_seccion = idContainerH;
-  let id_familia = 0;
-  let tipo_contenedor = x;
+  const id_seccion = idContainerH;
+  const id_familia = 0;
+  const tipo_contenedor = x;
 
 
 
@@ -839,7 +839,7 @@ const saveContainer = async (x: any) => {
 
 
   if(x === 1) {
-    let data = {
+    const data = {
       id_seccion,
       id_familia,
       tipo_contenedor,
@@ -856,7 +856,7 @@ const saveContainer = async (x: any) => {
   ////CONTENEDRO DE SERVICIOS///////
 
   if(x === 2) {
-    let data = {
+    const data = {
       id_seccion,
       id_familia,
       tipo_contenedor,
@@ -879,7 +879,7 @@ const saveContainer = async (x: any) => {
 
   ////CONTENEDRO DE 3 ///////
   if(x == 3) {
-    let data = {
+    const data = {
       id_seccion,
       id_familia,
       tipo_contenedor,
@@ -896,7 +896,7 @@ const saveContainer = async (x: any) => {
 
     ////CONTENEDRO DE SLIDER ///////
     if(x == 4) {
-      let data = {
+      const data = {
         id_seccion,
         id_familia,
         tipo_contenedor,
@@ -922,7 +922,7 @@ const saveContainer = async (x: any) => {
 
     ////CONTENEDRO DE SLIDER ///////
     if(x == 6) {
-      let data = {
+      const data = {
         id_seccion,
         id_familia,
         tipo_contenedor,
@@ -939,7 +939,7 @@ const saveContainer = async (x: any) => {
 
       //CONTENEDRO DE SLIDER ///////
       if(x == 5) {
-        let data = {
+        const data = {
           id_seccion,
           id_familia: selectedTypeFamily.id,
           tipo_contenedor,
@@ -1196,7 +1196,7 @@ const SaveUpdateContainer = async (e: React.FormEvent) => {
   e.preventDefault()
   console.log('copyContainer' ,copyContainer)
 
-  let data = {
+  const data = {
     id: copyContainer[index].id,
     id_seccion: copyContainer[index].id_seccion,
     id_familia: selectedTypeFamily ? selectedTypeFamily.id : copyContainer[index].id_familia,
@@ -1230,10 +1230,10 @@ useEffect(() => {
 
 
 const updateContainerOrder = async (item: any, index: any) => {
-  let updatedContainer = [...copyContainer];
+  const updatedContainer = [...copyContainer];
 
   // Crea el nuevo dato con la estructura deseada
-  let data = {
+  const data = {
     id: item.id,
     tipo_contenedor: item.tipo_contenedor,
     order: index
@@ -1528,7 +1528,7 @@ const handleLinkBottonChange = (event: any) => {
 
 
 const addLinkButtons = () => {
-  let data = {
+  const data = {
     image: linkImage,
     link: linkBotton
   }

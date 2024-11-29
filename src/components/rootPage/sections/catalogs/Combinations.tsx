@@ -67,13 +67,13 @@ const Combinations = () => {
     const [selectBranchOffices, setSelectBranchOffices] = useState<boolean>(false)
     const userState = useUserStore(state => state.user);
 
-    let user_id = userState.id
+    const user_id = userState.id
     const closeModalUpdate = () => {
         setModalUpdate(false)
     }
 
     const get = async () => {
-        let result = await APIs.GetAny("get_combinacion/get")
+        const result = await APIs.GetAny("get_combinacion/get")
         setData(result)
     }
 
@@ -184,12 +184,12 @@ const Combinations = () => {
         setSelectBranchOffices(false)
     }
     const selectAutomatic = (company: any) => {
-        let filter = branchOfficeXCompanies.filter((x: any) => x.empresa_id === company)
+        const filter = branchOfficeXCompanies.filter((x: any) => x.empresa_id === company)
         setFilteringBranchOffices(filter)
     }
 
     const addCompany = () => {
-        let data = {
+        const data = {
             id:0,
             id_empresa: selectedCompany.id,
             razon_social: selectedCompany.razon_social,

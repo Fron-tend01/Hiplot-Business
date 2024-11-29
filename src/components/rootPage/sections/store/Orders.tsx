@@ -13,7 +13,6 @@ import 'flatpickr/dist/l10n/es.js'
 import './styles/Orders.css'
 import ModalUpdate from "./Ordes/ModalUpdate";
 import Empresas_Sucursales from "../../Dynamic_Components/Empresas_Sucursales";
-import Select from "../../Dynamic_Components/Select";
 import { storeModals } from "../../../../zustand/Modals";
 
 const Departures: React.FC = () => {
@@ -24,7 +23,7 @@ const Departures: React.FC = () => {
     const { getSuppliers }: any = storeSuppliers();
     const { getOrdedrs, orders, dates }: any = storeOrdes();
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     const setDates = storeOrdes(state => state.setDates)
 
@@ -45,11 +44,11 @@ const Departures: React.FC = () => {
 
     const [type, setTipo] = useState<any>(0)
 
-    let id_usuario = user_id;
-    let desde = haceUnaSemana.toISOString().split('T')[0];
-    let hasta = hoy.toISOString().split('T')[0];
+    const id_usuario = user_id;
+    const desde = haceUnaSemana.toISOString().split('T')[0];
+    const hasta = hoy.toISOString().split('T')[0];
 
-    let status = type;
+    const status = type;
 
 
 
@@ -108,7 +107,7 @@ const Departures: React.FC = () => {
     }
 
     const searchOrders = async () => {
-        let data = {
+        const data = {
             id_usuario: user_id,
             id_sucursal: branchOffices.id,
             desde: dates[0],

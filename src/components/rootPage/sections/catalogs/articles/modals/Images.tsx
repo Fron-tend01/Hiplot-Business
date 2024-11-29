@@ -20,7 +20,7 @@ const Images: React.FC = () => {
             const reader = new FileReader();
             reader.onload = () => {
                 if (reader.result) {
-                    let data = {
+                    const data = {
                         img_base64: reader.result
                     }
             
@@ -32,7 +32,7 @@ const Images: React.FC = () => {
     };
 
     const deleteImages = (_: any, i: number) => {
-        let filter = imagesArticles.filter((_: any, index: number) => index !== i)
+        const filter = imagesArticles.filter((_: any, index: number) => index !== i)
         setImagesArticles(filter)
     }
 

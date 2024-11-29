@@ -12,7 +12,7 @@ const Companies: React.FC = () => {
   // Id del del usuario global
   const userState = useUserStore(state => state.user);
   const setModal = storeModals(state => state.setModal)
-  let user_id = userState.id
+  const user_id = userState.id
   
   const setModel = storeCompanies(state => state.setModel)
 

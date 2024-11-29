@@ -39,14 +39,14 @@ const Articles: React.FC = () => {
 
   const { setArticleToUpdate, getArticlesInGlobal, articlesInGlobal }: any = useStore(storeArticles);
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const [descripcion, setDescripcion] = useState<string>('')
 
 
 
   const fuctionGetArticles = async () => {
-    let data = {
+    const data = {
       id: 0,
       activos: true,
       page: 1,
@@ -96,7 +96,7 @@ const Articles: React.FC = () => {
 
   const Modal = async (article: any) => {
     setModalLoading(true)
-    let data = {
+    const data = {
       id: article.id,
       activos: true,
       nombre: '',
@@ -122,7 +122,7 @@ const Articles: React.FC = () => {
       get_unidades: true
     }
 
-    let data2 = {
+    const data2 = {
       id: article.id,
       activos: true,
       nombre: '',
@@ -137,8 +137,8 @@ const Articles: React.FC = () => {
     getFamilies(user_id)
 
     try {
-      let result = await getArticles(data)
-      let resultImagenes = await getArticles(data2)
+      const result = await getArticles(data)
+      const resultImagenes = await getArticles(data2)
       await setArticleByOne(result[0])
       setArticleToUpdate(result[0]);
       setImagesArticles(resultImagenes[0].imagenes)
@@ -157,7 +157,7 @@ const Articles: React.FC = () => {
 
 
   const handleTypeArticleChange = async (value: number) => {
-    let data = {
+    const data = {
       id: 0,
       activos: typeActive,
       nombre: '',
@@ -185,7 +185,7 @@ const Articles: React.FC = () => {
 
 
   const handleActivesArticleChange = async (value: number) => {
-    let data = {
+    const data = {
       id: 0,
       activos: value,
       nombre: '',
@@ -212,7 +212,7 @@ const Articles: React.FC = () => {
   }
 
   const searchArticle = async () => {
-    let data = {
+    const data = {
       id: 0,
       activos: typeActive,
       nombre: descripcion == '' ? '' : descripcion,

@@ -16,7 +16,7 @@ import { storeModals } from "../../../../../zustand/Modals";
 
 const ModalCreate = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     const { getOrdedrs, dates }: any = storeOrdes();
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
@@ -52,7 +52,7 @@ const ModalCreate = () => {
 
     const fecth = async () => {
 
-        let resultAreas = await getAreas(0, user_id)
+        const resultAreas = await getAreas(0, user_id)
         setAreas({
             selectName: 'Areas',
             options: 'nombre',
@@ -87,7 +87,7 @@ const ModalCreate = () => {
         // Verificar si el almacen existe y tiene stock disponible
 
         if (filter) {
-            let equivalencias = filter[0].equivalencias.filter((x:any)=> x.id_unidad==concepts[index].unidad)
+            const equivalencias = filter[0].equivalencias.filter((x:any)=> x.id_unidad==concepts[index].unidad)
             console.log('value',value);
             console.log('canti',equivalencias[0].cantidad);
             
@@ -141,12 +141,12 @@ const ModalCreate = () => {
 
     const handleCreateOrders = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        let id_area = selectedIds.id_area.id
-        let id_sucursal = branchOffices.id;
-        let id_usuario_crea = user_id;
-        let status = selectedOption
-        let comentarios = OPcomments;
-        let data = {
+        const id_area = selectedIds.id_area.id
+        const id_sucursal = branchOffices.id;
+        const id_usuario_crea = user_id;
+        const status = selectedOption
+        const comentarios = OPcomments;
+        const data = {
             id_usuario: user_id,
             id_sucursal: 0,
             desde: dates[0],
@@ -181,7 +181,7 @@ const ModalCreate = () => {
     const [branchOffices, setBranchOffices] = useState<any>()
 
     const deleteConcepts = (_: any, indexConcept: number) => {
-        let filter = concepts.filter((_: any, index: number) => index !== indexConcept)
+        const filter = concepts.filter((_: any, index: number) => index !== indexConcept)
         setConcepts(filter)
     }
 

@@ -30,7 +30,7 @@ const Deliverytimes: React.FC = () => {
   const { companiesXUsers, getCompaniesXUsers}: any = storeCompanies()
   const { branchOfficeXCompanies, getBranchOfficeXCompanies }: any = storeBranchOffcies()
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   useEffect(() => {
     getCompaniesXUsers(user_id)

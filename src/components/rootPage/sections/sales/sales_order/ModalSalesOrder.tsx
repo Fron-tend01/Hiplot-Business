@@ -17,7 +17,7 @@ import Swal from 'sweetalert2';
 
 const ModalSalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
 
@@ -94,12 +94,12 @@ const ModalSalesOrder: React.FC = () => {
         e.preventDefault();
         console.log("Enviando orden de venta...");
 
-        let filter = normalConcepts.filter((x: any) => x.personalized == false)
+        const filter = normalConcepts.filter((x: any) => x.personalized == false)
 
-        let [datePartOne, timePartOne] = dates[0].split(" ");
-        let [datePartTwo, timePartTwo] = dates[1].split(" ");
+        const [datePartOne, timePartOne] = dates[0].split(" ");
+        const [datePartTwo, timePartTwo] = dates[1].split(" ");
 
-        let data = {
+        const data = {
             id_sucursal: branchOffices.id,
             id_cliente: selectedIds.clients.id,
             id_usuario_crea: user_id,
@@ -117,7 +117,7 @@ const ModalSalesOrder: React.FC = () => {
         console.log("Datos que se envían:", data);
 
         try {
-            let result: any = await APIs.createSaleOrder(data);
+            const result: any = await APIs.createSaleOrder(data);
             if(result.error == true) {
                 return Swal.fire('Advertencia', result.mensaje, 'warning');
             } else {
@@ -133,12 +133,12 @@ const ModalSalesOrder: React.FC = () => {
     console.log(dates)
 
     const searchClients = async () => {
-        let data = {
+        const data = {
             id_sucursal: branchOffices.id,
             id_usuario: user_id,
             nombre: searCustomer
         }
-        let result = await getClients(data)
+        const result = await getClients(data)
         setClients({
             selectName: 'Cliente',
             options: 'razon_social',
@@ -153,15 +153,15 @@ const ModalSalesOrder: React.FC = () => {
     }
 
     const undoConcepts = (article: any, i: number) => {
-        let filter = customConcepts.filter((_: any, index: number) => index !== i)
-        let data = [...filter, ...article.conceptos]
+        const filter = customConcepts.filter((_: any, index: number) => index !== i)
+        const data = [...filter, ...article.conceptos]
         setNormalConcepts(data)
         setCustomData([...customConcepts, ...article.conceptos]);
     }
 
 
     const deleteArticle = (_: any, i: number) => {
-        let filter = normalConcepts.filter((_: any, index: number) => index !== i)
+        const filter = normalConcepts.filter((_: any, index: number) => index !== i)
         setNormalConcepts(filter)
         setCustomData(filter);
     }

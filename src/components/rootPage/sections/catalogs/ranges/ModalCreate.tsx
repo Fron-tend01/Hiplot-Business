@@ -27,7 +27,7 @@ const ModalCreate = (props: any) => {
     }
 
     const fetch = async () => {
-        let resultUnits = await getUnits()
+        const resultUnits = await getUnits()
         setUnits(resultUnits)
         setSelectedUnit(resultUnits[0].id)
 
@@ -62,7 +62,7 @@ const ModalCreate = (props: any) => {
     const handleCreateRanges = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        let data = {
+        const data = {
             id_unidad: selectedUnit,
             titulo: inputs.title,
             maximo: inputs.maxs,

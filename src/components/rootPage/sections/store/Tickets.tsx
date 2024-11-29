@@ -23,7 +23,7 @@ const Tickets = () => {
     const { getSeriesXUser }: any = storeSeries();
     const { getTickets, getExcelTickets, dates, tickets }: any = storeTickets();
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
     const [warningName] = useState<boolean>(false)
 
     const [companies, setCompanies] = useState<any>([])
@@ -48,7 +48,7 @@ const Tickets = () => {
     const fecth = async () => {
         setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]]);
 
-        let data = {
+        const data = {
             id_usuario: user_id,
             id_empresa: companies.id,
             id_sucursal: branchOffices.id,
@@ -60,7 +60,7 @@ const Tickets = () => {
         }
         await getTickets(data)
 
-        let resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 2 })
+        const resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 2 })
         resultSeries.unshift({ id: 0, nombre: 'Todos' })
 
         setSeries({
@@ -110,11 +110,11 @@ const Tickets = () => {
     const excel = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        let id = 0;
-        let id_usuario = user_id; // Assuming user_id is defined elsewhere
-        let id_sucursal = branchOffices.id; // Assuming selectedBranchOffice is defined elsewhere
-        let desde = dates[0];
-        let hasta = dates[1];
+        const id = 0;
+        const id_usuario = user_id; // Assuming user_id is defined elsewhere
+        const id_sucursal = branchOffices.id; // Assuming selectedBranchOffice is defined elsewhere
+        const desde = dates[0];
+        const hasta = dates[1];
 
         try {
             const response = await getExcelTickets(id, id_usuario, id_sucursal, desde, hasta);
@@ -133,7 +133,7 @@ const Tickets = () => {
 
     const searchTicket = () => {
 
-        let data = {
+        const data = {
             id_usuario: user_id,
             id_empresa: companies.id,
             id_sucursal: branchOffices.id,

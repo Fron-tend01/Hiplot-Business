@@ -10,7 +10,7 @@ import { Toaster, toast } from 'sonner'
 
 const ModalCreate: React.FC = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     const {getCompaniesXUsers}: any = companiesRequests();
     const [companies, setCompanies] = useState<any>()
@@ -33,7 +33,7 @@ const ModalCreate: React.FC = () => {
 
 
     const fetch = async () => {
-        let resultCompanies = await getCompaniesXUsers(user_id)
+        const resultCompanies = await getCompaniesXUsers(user_id)
         setCompanies(resultCompanies)
     }
 
@@ -61,7 +61,7 @@ const ModalCreate: React.FC = () => {
     const handleCompaniesChange = async (company: any) => {
         setSelectedCompany(company);
         setSelectCompanies(false);
-        let resultBranch = await getBranchOffices(company, user_id)
+        const resultBranch = await getBranchOffices(company, user_id)
         await setBranchOffices(resultBranch)
         await setSelectedBranchOffice(resultBranch[0])
         console.log(selectedBranchOffice)
@@ -76,18 +76,18 @@ const ModalCreate: React.FC = () => {
           nombre: nombre
         };
 
-        let item = sucursales_nuevas.map((x: any) => x.id_sucursal);
+        const item = sucursales_nuevas.map((x: any) => x.id_sucursal);
 
         let filter: any[] = [];
 
         for (let i = 0; i < storeToUpdate.sucursales.length; i++) {
-          let idToRemove = storeToUpdate.sucursales[i].id_sucursal;
+          const idToRemove = storeToUpdate.sucursales[i].id_sucursal;
           filter = item.filter((x: any) => x !== idToRemove);
         }
   
 
 
-        let data_ext = {
+        const data_ext = {
           sucursales_nuevas: filter,
           sucursales_eliminar
         };
@@ -105,7 +105,7 @@ const ModalCreate: React.FC = () => {
   
       const addBranchOfice = () => {
 
-        let data =  {
+        const data =  {
           id_sucursal: selectedBranchOffice.id,
           sucursal: selectedBranchOffice.nombre
         }

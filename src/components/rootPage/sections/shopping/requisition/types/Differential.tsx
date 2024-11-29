@@ -9,7 +9,7 @@ import {toast } from 'sonner'
 
 const Differential: React.FC = () => {
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const {selectedBranchOffice,concepts}: any = useStore(storeRequisitions);
   const setConcepts = storeRequisitions((state: any) => state.setConcepts);
@@ -36,33 +36,33 @@ const Differential: React.FC = () => {
 
   const searchSuppliers = async () => {
     
-    let data = {
+    const data = {
       nombre: inputSuppliers,
       is_flete: false,
       id_usuario: user_id
     }
 
-    let resultSuppliers = await getSuppliers(data)
+    const resultSuppliers = await getSuppliers(data)
     setResult(resultSuppliers)
   }
 
   
   const searchFamilies = async () => {
     
-    let data = {
+    const data = {
       nombre: inputSuppliers,
       is_flete: true,
       id_usuario: user_id
     }
 
-    let result = await getSuppliers(data)
+    const result = await getSuppliers(data)
     setResult(result)
   }
 
 
 
   const addArticle = async () => {
-    let data = {
+    const data = {
       id_proveedor: result[0].id,
       id_sucursal: selectedBranchOffice,
       id_usuario: user_id,
@@ -74,23 +74,23 @@ const Differential: React.FC = () => {
       return
     } 
 
-    let resultArticle = await getArticlesDifferential(data)
+    const resultArticle = await getArticlesDifferential(data)
     console.log(resultArticle)
   
     let max;
     if (resultArticle[0].max_mins.find((x:any)=> x.id_sucursal == selectedBranchOffice)) {
       console.log('Si tiene la  sucursal')
-      let mm_tmp = resultArticle[0].max_mins.filter((x:any)=> x.id_sucursal == x.id_sucursal)
+      const mm_tmp = resultArticle[0].max_mins.filter((x:any)=> x.id_sucursal == x.id_sucursal)
       resultArticle[0].max_min = mm_tmp[0].maximo + ' - ' + mm_tmp[0].minimo
       max = mm_tmp[0].maximo + ' - ' + mm_tmp[0].minimo
     } else {
       max = resultArticle[0].max_min = 'N/A'
     }
 
-    let unidad = resultArticle[0].unidades.filter((x: any) => x.unidad_almacen === true);
+    const unidad = resultArticle[0].unidades.filter((x: any) => x.unidad_almacen === true);
 
 
-    let dataAticle = {
+    const dataAticle = {
       id_articulo: resultArticle[0].id,
       codigo: resultArticle[0].codigo,
       descripcion: resultArticle[0].descripcion,

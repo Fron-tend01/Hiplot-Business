@@ -65,7 +65,7 @@ const ModalBilling: React.FC = () => {
     const setModoUpdate = storeBilling(state => state.setModoUpdate)
 
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     // Usuarios
     const { getUsers }: any = usersRequests()
@@ -192,7 +192,7 @@ const ModalBilling: React.FC = () => {
         // let result = await getSaleOrders(dataSaleOrders)
         // setSaleOrders(result)
 
-        let data = {
+        const data = {
             nombre: '',
             id_usuario: user_id,
             id_usuario_consulta: user_id,
@@ -207,7 +207,7 @@ const ModalBilling: React.FC = () => {
         })
 
 
-        let resultUsers = await getUsers(data)
+        const resultUsers = await getUsers(data)
         setUsers({
             selectName: 'Vendedor',
             options: 'nombre',
@@ -224,7 +224,7 @@ const ModalBilling: React.FC = () => {
             options: 'name',
             dataSelect: metodoPago.currencies
         })
-        let resultSeries = await getSeriesXUser({ tipo_ducumento: 10, id: user_id })
+        const resultSeries = await getSeriesXUser({ tipo_ducumento: 10, id: user_id })
         resultSeries.unshift({ nombre: 'Todos', id: 0 });
         setSeries({
             selectName: 'Series',
@@ -258,7 +258,7 @@ const ModalBilling: React.FC = () => {
     }, [modoUpdate])
     const search = async () => {
         if (type == 2) {
-            let data = {
+            const data = {
                 id: 0,
                 id_usuario: user_id,
                 id_sucursal: branchOfficesFilter.id,
@@ -269,10 +269,10 @@ const ModalBilling: React.FC = () => {
                 folio: fol
             }
 
-            let result = await APIs.CreateAny(data, "pedido_franquicia/get")
+            const result = await APIs.CreateAny(data, "pedido_franquicia/get")
             setSaleOrders(result)
         } else {
-            let dataSaleOrders = {
+            const dataSaleOrders = {
                 folio: fol,
                 id_sucursal: branchOfficesFilter.id,
                 id_serie: selectedIds?.series?.id,
@@ -284,7 +284,7 @@ const ModalBilling: React.FC = () => {
                 status: 0
             }
 
-            let result = await getSaleOrders(dataSaleOrders)
+            const result = await getSaleOrders(dataSaleOrders)
             setSaleOrders(result)
 
         }
@@ -298,7 +298,7 @@ const ModalBilling: React.FC = () => {
     const handleCreateInvoice = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
-        let obs: any = [];
+        const obs: any = [];
 
         if (title == undefined || title?.length < 1) {
             Swal.fire('Notificacion', 'Ingresa un titulo para continuar', 'info')
@@ -318,7 +318,7 @@ const ModalBilling: React.FC = () => {
             element.produccion_interna = false
             element.enviar_a_produccion = false
             element.campos_plantilla = []
-            let filter = obs.filter((x: any) => x === element.id_ov);
+            const filter = obs.filter((x: any) => x === element.id_ov);
             if (filter.length === 0) {
                 obs.push(element.id_ov);
             }
@@ -326,10 +326,10 @@ const ModalBilling: React.FC = () => {
         console.log(selectedIds?.vendedores);
         let con = concepts
         if (modoUpdate) {
-            let filter = concepts.filter((x: any) => x.id_concepto_comercial == undefined)
+            const filter = concepts.filter((x: any) => x.id_concepto_comercial == undefined)
             con = filter
         }
-        let data = {
+        const data = {
             id: modoUpdate ? DataUpdate.id : 0,
             id_sucursal: modoUpdate ? DataUpdate.id_sucursal : branchOffices.id,
             id_cliente: selectedIds?.customers.id,
@@ -362,7 +362,7 @@ const ModalBilling: React.FC = () => {
             }).then(async (result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
-                    let dataWithoutCircles = removeCircularReferences(data);
+                    const dataWithoutCircles = removeCircularReferences(data);
 
                     APIs.CreateAny(dataWithoutCircles, "create_factura")
                         .then(async (response: any) => {
@@ -386,7 +386,7 @@ const ModalBilling: React.FC = () => {
             }).then(async (result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
-                    let dataWithoutCircles = removeCircularReferences(data);
+                    const dataWithoutCircles = removeCircularReferences(data);
 
                     APIs.CreateAny(dataWithoutCircles, "update_factura")
                         .then(async (response: any) => {
@@ -410,7 +410,7 @@ const ModalBilling: React.FC = () => {
                     return; // Evitar circularidad
                 }
                 seen.add(value);
-                for (let key in value) {
+                for (const key in value) {
                     if (value.hasOwnProperty(key)) {
                         recurse(value[key]);
                     }
@@ -463,13 +463,13 @@ const ModalBilling: React.FC = () => {
 
     const searchClient = async () => {
 
-        let data = {
+        const data = {
             id_sucursal: modoUpdate ? DataUpdate.id_sucursal : branchOffices.id,
             id_usuario: user_id,
             nombre: client
         }
         try {
-            let result: any = await APIs.getClients(data)
+            const result: any = await APIs.getClients(data)
 
             setCustomers({
                 selectName: 'Clientes',
@@ -478,9 +478,9 @@ const ModalBilling: React.FC = () => {
             })
             if (result.length > 0) {
                 if (modoUpdate) {
-                    let filter = result.filter((x: any) => x.id == DataUpdate.id_cliente)
+                    const filter = result.filter((x: any) => x.id == DataUpdate.id_cliente)
                     if (filter.length > 0) {
-                        let selected = filter[0]
+                        const selected = filter[0]
                         setSelectedIds('customers', selected)
                     }
 
@@ -498,8 +498,8 @@ const ModalBilling: React.FC = () => {
     useEffect(() => {
         // console.log(selectedIds);
         if (selectedIds?.customers) {
-            let id_sucursal = modoUpdate ? DataUpdate.id_sucursal : branchOffices.id
-            let sucursal = selectedIds.customers.clientes_sucursal.filter((x: any) => x.id_sucursal == id_sucursal)[0]
+            const id_sucursal = modoUpdate ? DataUpdate.id_sucursal : branchOffices.id
+            const sucursal = selectedIds.customers.clientes_sucursal.filter((x: any) => x.id_sucursal == id_sucursal)[0]
             console.log(sucursal);
 
             if (sucursal.condiciones_pago != undefined) {

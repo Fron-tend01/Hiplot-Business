@@ -7,14 +7,14 @@ import './styles/Store.css'
 
 const Store: React.FC = () => {
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const {branchOfficeXCompanies }: any = storeBranchOffcies();
   const setStore = storeStore(state => state.setStore)
   const {setModalState, setStoreToUpdate, getStore, store}: any = storeStore();
 
   const fetch = async () => {
-    let result = await getStore(user_id)
+    const result = await getStore(user_id)
     setStore(result)
     
   }

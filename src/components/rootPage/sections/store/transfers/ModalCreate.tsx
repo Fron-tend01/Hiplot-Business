@@ -13,7 +13,7 @@ import { useSelectStore } from '../../../../../zustand/Select';
 
 const ModalCreate: React.FC = () => {
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const setModalStateCreate = storeTransfers((state: any) => state.setModalStateCreate);
   const { modalStateCreate, dates }: any = useStore(storeTransfers);
@@ -34,7 +34,7 @@ const ModalCreate: React.FC = () => {
   // const [store, setStore] = useState<any>()
 
   const fetch = async () => {
-    let resultStore = await getStore(user_id)
+    const resultStore = await getStore(user_id)
     // setStore(resultStore)
     setSelectStore({
       selectName: 'Almacen origin',
@@ -79,7 +79,7 @@ const ModalCreate: React.FC = () => {
   const [selectedSearch, setSelectedSearch] = useState<number | null>(null)
   const [nameBy, setNameBy] = useState<string | number>('')
 
-  let searchX = [
+  const searchX = [
     {
       id: 0,
       name: 'Código'
@@ -101,7 +101,7 @@ const ModalCreate: React.FC = () => {
 
 
   const searchFor = async () => {
-    let data = {
+    const data = {
       id: 0,
       activos: true,
       nombre: selectedSearch == 1 ? nameBy : '',
@@ -119,10 +119,10 @@ const ModalCreate: React.FC = () => {
       id_usuario: user_id
     }
     if (selectedSearch === 0) {
-      let result = await getArticles(data)
+      const result = await getArticles(data)
       setArticles(result)
     } else if (selectedSearch === 1) {
-      let result = await getArticles(data)
+      const result = await getArticles(data)
       setArticles(result)
     }
   }
@@ -144,7 +144,7 @@ const ModalCreate: React.FC = () => {
 
 
   const addRequisition = () => {
-    let data = {
+    const data = {
       id_traspaso_almacen: 0,
       nombre: selectedResult.nombre,
       id_articulo: selectedResult.id,
@@ -180,7 +180,7 @@ const ModalCreate: React.FC = () => {
 
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    let value = Number.isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value);
+    const value = Number.isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value);
     if (selectedIds.almacen_origin == null) {
       Swal.fire('Notificacion', 'Selecciona un almacen de Origen', 'warning')
       const newArticleStates = [...concepts];
@@ -191,13 +191,13 @@ const ModalCreate: React.FC = () => {
     const newArticleStates = [...concepts];
     newArticleStates[index].cantidad = value;
 
-    let stocks = concepts[index].stocks;
-    let almacen_predeterminado = selectedIds?.almacen_origin;
+    const stocks = concepts[index].stocks;
+    const almacen_predeterminado = selectedIds?.almacen_origin;
 
-    let filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id);
+    const filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id);
 
     if (filter) {
-      let equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == newArticleStates[index].unidad)
+      const equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == newArticleStates[index].unidad)
       console.log('value', value);
       console.log('canti', equivalencias[0].cantidad);
 
@@ -252,7 +252,7 @@ const ModalCreate: React.FC = () => {
         Swal.fire('Advertencia', result.mensaje, 'warning');
       } else {
         // Datos para obtener los traspasos
-        let data = {
+        const data = {
           id_usuario: user_id,
           id_almacen: 0,  // Se puede ajustar dependiendo de la lógica de tu aplicación
           id_sucursal: 0, // Lo mismo aquí
@@ -262,7 +262,7 @@ const ModalCreate: React.FC = () => {
         };
 
         // Obtener los traspasos después de crear uno
-        let response: any = await APIs.getTransfers(data);
+        const response: any = await APIs.getTransfers(data);
         setTransfers(response)
         console.log('result.mensaje', response.mensaje)
         Swal.fire('Traspaso exitoso', result.mensaje, 'success');
@@ -304,7 +304,7 @@ const ModalCreate: React.FC = () => {
   const [branchOfficesTwo, setBranchOfficesTwo] = useState<any>()
 
   const deleteConcepts = (indextwo: any) => {
-    let filter = concepts.filter((_: number, index: number) => index !== indextwo)
+    const filter = concepts.filter((_: number, index: number) => index !== indextwo)
     setConcepts(filter)
   }
   useEffect(() => {

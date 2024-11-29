@@ -14,11 +14,10 @@ import Select from "../../Dynamic_Components/Select";
 import { StoreRequests } from '../../../../fuctions/Store'
 import { storeWarehouseExit } from "../../../../zustand/WarehouseExit";
 import { useStore } from "zustand";
-import ModalUpdate from "./Departures/ModalUpdate";
 
 const Departures = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
     
 
     const setModal = storeWarehouseExit(state => state.setModal)
@@ -60,19 +59,19 @@ const Departures = () => {
         }
 
 
-        let resultSeries = await getSeriesXUser({ tipo_ducumento: 4, id: user_id })
+        const resultSeries = await getSeriesXUser({ tipo_ducumento: 4, id: user_id })
         setSeries({
             selectName: 'Series',
             options: 'nombre',
             dataSelect: resultSeries
         })
-        let store = await getStore(user_id)
+        const store = await getStore(user_id)
         setStore({
             selectName: 'Almacen',
             options: 'nombre',
             dataSelect: store
         })
-        let result = await getWarehouseExit(data)
+        const result = await getWarehouseExit(data)
         setWarehouseExit(result)
     }
 
@@ -121,10 +120,10 @@ const Departures = () => {
     }
 
 
-    const [conceptsUpdate, setConceptsUpdate] = useState<any>([])
+    // const [conceptsUpdate, setConceptsUpdate] = useState<any>([])
 
-    const modalUpdate = (item: number) => {
-        setConceptsUpdate(item)
+    const modalUpdate = () => {
+        // setConceptsUpdate(item)
         setModal('modal-update__concepts')
     };
 
@@ -172,8 +171,6 @@ const Departures = () => {
                 </div>
 
                 <ModalCreate />
-                <ModalUpdate conceptsUpdate={conceptsUpdate} />
-
                 <div className='table__departures'>
                     {warehouseExit ? (
                         <div className='table__numbers'>
@@ -227,7 +224,7 @@ const Departures = () => {
                                                 </div>
                                             </div>
                                             <div className='td end'>
-                                                <button className='branchoffice__edit_btn' onClick={() => modalUpdate(exit)}>Ver conceptos</button>
+                                                <button className='branchoffice__edit_btn' onClick={() => modalUpdate()}>Ver conceptos</button>
                                             </div>
                                         </div>
                                         

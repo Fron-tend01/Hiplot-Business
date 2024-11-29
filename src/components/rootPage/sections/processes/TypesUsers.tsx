@@ -33,7 +33,7 @@ const TypesUsers: React.FC = () => {
   const { getBranchOfficeXCompanies }: any = storeBranchOffcies();
   const { createTypesUsers, getTypesUsers, typesUsers, updateTypesUsers, usersTypesStructure, getUsersTypesStructure, }: any = storeTypesUsers();
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
 
   useEffect(() => {
@@ -59,8 +59,8 @@ const TypesUsers: React.FC = () => {
         return;
       }
 
-      let id_empresa = selectedCompany
-      let id_usuario = user_id
+      const id_empresa = selectedCompany
+      const id_usuario = user_id
 
       const data = {
         nombre,
@@ -201,12 +201,12 @@ const TypesUsers: React.FC = () => {
 
     e.preventDefault()
 
-    let id_empresa = selectedCompany
-    let id_usuario = user_id
+    const id_empresa = selectedCompany
+    const id_usuario = user_id
 
-    let id = typeUser_id
+    const id = typeUser_id
 
-    let data = {
+    const data = {
       nombre,
       id_empresa,
       id_usuario,
@@ -220,7 +220,7 @@ const TypesUsers: React.FC = () => {
     }
 
 
-    let permisos = {
+    const permisos = {
       arr1_nuevas: permisosNuevos,
       arr1_eliminar: permisosEliminar
     }

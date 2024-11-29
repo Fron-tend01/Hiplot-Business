@@ -49,7 +49,7 @@ const Components: React.FC = () => {
   };
 
   const deleteComponent = (item: any) => {
-    let filter = components.filter((x: any) => x.id !== item.id)
+    const filter = components.filter((x: any) => x.id !== item.id)
     setComponents(filter)
     setDeleteComponents(filter)
   }

@@ -136,9 +136,9 @@ const ModalCreate = () => {
         }
     }, [modal])
     const getRefs = async () => {
-        let result: any = await APIs.GetAny("getUsoCfdi")
+        const result: any = await APIs.GetAny("getUsoCfdi")
         setUc(result)
-        let res: any = await APIs.GetAny("getRegimenFiscal")
+        const res: any = await APIs.GetAny("getRegimenFiscal")
         setRf(res)
         DynamicVariables.updateAnyVar(setInputs, "uso_cfdi", result[0].ID)
         DynamicVariables.updateAnyVar(setInputs, "regimen_fiscal", res[0].ID)

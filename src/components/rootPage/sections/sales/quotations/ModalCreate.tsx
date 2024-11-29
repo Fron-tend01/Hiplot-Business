@@ -22,7 +22,7 @@ import SeeClient from '../SeeClient';
 
 const ModalCreate: React.FC = () => {
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
   const setModalArticleView = storeArticleView((state) => state.setModalArticleView);
   const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
 
@@ -50,7 +50,7 @@ const ModalCreate: React.FC = () => {
   const [comments, setComments] = useState<any>()
 
   const [dataSelects, setDataSelects] = useState<any>([])
-  let dataUsers = {
+  const dataUsers = {
     nombre: '',
     id_usuario: user_id,
     id_usuario_consulta: user_id,
@@ -58,7 +58,7 @@ const ModalCreate: React.FC = () => {
     id_sucursal: 0
   }
   const fetch = async () => {
-    let resultUsers = await APIs.getUsers(dataUsers)
+    const resultUsers = await APIs.getUsers(dataUsers)
     setDataSelects(
       {
         selectName: 'Vendedor',
@@ -77,14 +77,14 @@ const ModalCreate: React.FC = () => {
   const client = async () => {
 
 
-    let data = {
+    const data = {
       id_sucursal: quatation.id_sucursal,
       id_usuario: user_id,
       nombre: quatation.rfc
     }
 
     try {
-      let resultClients = await getClients(data)
+      const resultClients = await getClients(data)
       setClients({
         selectName: 'Cliente',
         options: 'razon_social',
@@ -123,14 +123,14 @@ const ModalCreate: React.FC = () => {
 
 
   const searchUsers = async () => {
-    let data = {
+    const data = {
       id_sucursal: branch.id,
       id_usuario: user_id,
       nombre: name
     }
 
     try {
-      let resultClients = await getClients(data)
+      const resultClients = await getClients(data)
       setClients({
         selectName: 'Cliente',
         options: 'razon_social',
@@ -160,7 +160,7 @@ const ModalCreate: React.FC = () => {
 
   const createQuotation = async () => {
 
-    let filter = normalConcepts.filter((x: any) => x.personalized == false)
+    const filter = normalConcepts.filter((x: any) => x.personalized == false)
 
 
     const data = {
@@ -179,7 +179,7 @@ const ModalCreate: React.FC = () => {
 
     try {
       if(modal === 'create-modal__qoutation') {
-        let result: any = await APIs.createQuotation(data)
+        const result: any = await APIs.createQuotation(data)
         if(result.error == true) {
           return Swal.fire('Advertencia', result.mensaje, 'warning');
         } else {
@@ -187,7 +187,7 @@ const ModalCreate: React.FC = () => {
         }
  
       } else {
-        let result: any = await APIs.updateRequisition(data)
+        const result: any = await APIs.updateRequisition(data)
         if(result.error == true) {
           return Swal.fire('Advertencia', result.mensaje, 'warning');
         } else {
@@ -211,20 +211,20 @@ const ModalCreate: React.FC = () => {
 
   const undoConcepts = (article: any, i: number) => {
     // let filter = customConcepts.filter((_: any, index: number) => index !== i)
-    let filterNor = normalConcepts.filter((_: any, index: number) => index !== i)
+    const filterNor = normalConcepts.filter((_: any, index: number) => index !== i)
     if(article.front) {
       article.conceptos.forEach((element: any) => {
         element.id_identifier += identifier + 1
       });
     }
-    let data = [...filterNor, ...article.conceptos]
+    const data = [...filterNor, ...article.conceptos]
     setNormalConcepts(data)
     setCustomData([...customData, ...article.conceptos]);
   }
 
 
   const deleteArticle = (_: any, i: number) => {
-    let filter = normalConcepts.filter((_: any, index: number) => index !== i)
+    const filter = normalConcepts.filter((_: any, index: number) => index !== i)
     setNormalConcepts(filter)
     setCustomData(filter);
   }

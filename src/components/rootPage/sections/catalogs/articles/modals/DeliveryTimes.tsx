@@ -12,7 +12,7 @@ import { useSelectStore } from '../../../../../../zustand/Select'
 
 const DeliveryTimes: React.FC = () => {
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
   const setSubModal = storeArticles(state => state.setSubModal)
 
   const {subModal, deliveryTimes, articleToUpdate, deleteDeliveryTimes}: any = useStore(storeArticles)
@@ -40,12 +40,12 @@ const DeliveryTimes: React.FC = () => {
 
 
   const searchDeliveryTimes = async () => {
-    let data = {
+    const data = {
       nombre: name,
       id_sucursal: branch.id,
       id_usuario: user_id
     }
-    let result = await APIs.getDeliveryTimes(data)
+    const result = await APIs.getDeliveryTimes(data)
     setDataSelects({
       selectName: 'Tiempos de entrega',
       options: 'nombre',
@@ -59,7 +59,7 @@ const DeliveryTimes: React.FC = () => {
 
   const addDeliveryTimes = async () => {
       setDeliveryTimesView((prevState: any) => [...prevState, ...selectedIds.deliveryTimes.tiempos_entrega_data]);
-      let filter = await selectedIds.deliveryTimes.tiempos_entrega_data
+      const filter = await selectedIds.deliveryTimes.tiempos_entrega_data
       .filter((x: any) => x.id)    // Filtramos solo los elementos que tienen `id`
       .map((x: any) => x.id); 
       setDeliveryTimes([...deliveryTimes, ...filter])

@@ -11,7 +11,7 @@ import { FamiliesRequests } from '../../../../fuctions/Families';
 
 const ArticleViewModal = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id;
+    const user_id = userState.id;
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
@@ -29,10 +29,10 @@ const ArticleViewModal = () => {
 
     const [dataCollection, setDataCollection] = useState<any>()
 
-    let fetch = async () => {
-        let resultFamilies = await getFamilies(user_id)
+    const fetch = async () => {
+        const resultFamilies = await getFamilies(user_id)
 
-        let data = {
+        const data = {
             id: 0,
             activos: true,
             nombre: '',
@@ -50,7 +50,7 @@ const ArticleViewModal = () => {
             get_unidades: false
         };
 
-        let result = await getArticles(data);
+        const result = await getArticles(data);
         setArticles(result);
         setFamilies(resultFamilies)
     };
@@ -81,7 +81,7 @@ const ArticleViewModal = () => {
             setModalSalesCard('sale-card')
             console.log(x)
         } else {
-            let data = {
+            const data = {
                 id: 0,
                 activos: true,
                 nombre: '',
@@ -101,7 +101,7 @@ const ArticleViewModal = () => {
                 get_unidades: false
             };
 
-            let result = await getArticles(data);
+            const result = await getArticles(data);
             setArticles(result);
             setDataCollection(x)
         }
@@ -117,7 +117,7 @@ const ArticleViewModal = () => {
     };
 
     const search = async () => {
-        let data = {
+        const data = {
             id: 0,
             activos: true,
             nombre: inputs.name,
@@ -137,7 +137,7 @@ const ArticleViewModal = () => {
             get_unidades: false
         };
 
-        let result = await getArticles(data);
+        const result = await getArticles(data);
         setArticles(result);
     }
 

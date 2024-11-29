@@ -18,7 +18,7 @@ const Normal: React.FC = () => {
   const [selectedSearch, setSelectedSearch] = useState<number | null>(null)
   const [nameBy, setNameBy] = useState<string | number>('')
 
-  let searchX = [
+  const searchX = [
     {
       id: 0,
       name: 'Código'
@@ -42,7 +42,7 @@ const Normal: React.FC = () => {
 
   
   const searchFor = async () => {
-    let data = {
+    const data = {
       id: 0,
       activos: true,
       nombre: selectedSearch == 1 ? nameBy : '',
@@ -59,10 +59,10 @@ const Normal: React.FC = () => {
       get_unidades: true
     }
     if (selectedSearch === 0) {
-      let result = await getArticles(data)
+      const result = await getArticles(data)
       setArticles(result)
     } else if (selectedSearch === 1) {
-      let result = await getArticles(data)
+      const result = await getArticles(data)
       setArticles(result)
     }
   }
@@ -88,19 +88,19 @@ const Normal: React.FC = () => {
 
     let max;
     if (selectedResult.max_mins.find((x:any)=> x.id_sucursal == selectedBranchOffice)) {
-      let mm_tmp = selectedResult.max_mins.filter((x:any)=> x.id_sucursal == x.id_sucursal)
+      const mm_tmp = selectedResult.max_mins.filter((x:any)=> x.id_sucursal == x.id_sucursal)
       selectedResult.max_min = mm_tmp[0].maximo + ' - ' + mm_tmp[0].minimo
       max = mm_tmp[0].maximo + ' - ' + mm_tmp[0].minimo
     } else {
       max = selectedResult.max_min = 'N/A'
 
     }
-      let id_articulo = selectedResult.id
-      let codigo = selectedResult.codigo
-      let descripcion = selectedResult.descripcion
-      let unidades = selectedResult.unidades
-      let unidad = selectedResult.unidades[0].id_unidad
-      let max_min = max
+      const id_articulo = selectedResult.id
+      const codigo = selectedResult.codigo
+      const descripcion = selectedResult.descripcion
+      const unidades = selectedResult.unidades
+      const unidad = selectedResult.unidades[0].id_unidad
+      const max_min = max
       setConcepts([...concepts, {codigo, descripcion, max_min, id_articulo, cantidad: null, unidad, unidades, comentarios: '' , max_mins:selectedResult.max_mins}]);
     }
   

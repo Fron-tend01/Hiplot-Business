@@ -22,14 +22,14 @@ const Empresas_Sucursales = (props: any) => {
     const [sucursalSelectedOpen, SetSucursalSelectedOpen] = useState<boolean>(false)
 
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     const fetch = async () => {
-        let resultCompanies = await getCompaniesXUsers(user_id)
+        const resultCompanies = await getCompaniesXUsers(user_id)
         if (all) {
             resultCompanies.unshift({ razon_social: 'Todos', id: 0 });
         }
-        let resultBranch = await getBranchOffices(resultCompanies[0].id, user_id)
+        const resultBranch = await getBranchOffices(resultCompanies[0].id, user_id)
         if (all) {
             resultBranch.unshift({ nombre: 'Todos', id: 0 });
         }
@@ -44,9 +44,9 @@ const Empresas_Sucursales = (props: any) => {
     }, [])
 
     const fetch2 = async () => {
-        let resultCompanies = await getCompaniesXUsers(user_id)
+        const resultCompanies = await getCompaniesXUsers(user_id)
 
-        let resultBranch = await getBranchOffices(empresaDyn.id, user_id)
+        const resultBranch = await getBranchOffices(empresaDyn.id, user_id)
         setEmpresas(resultCompanies)
         // setEmpresa(resultCompanies[0])
         setSucursales(resultBranch)
@@ -63,7 +63,7 @@ const Empresas_Sucursales = (props: any) => {
 
 
     const selectAutomaticSuc = async (company: any) => {
-        let resultBranch = await getBranchOffices(company, user_id)
+        const resultBranch = await getBranchOffices(company, user_id)
         if (all) {
             resultBranch.unshift({ nombre: 'Todos', id: 0 });
         }

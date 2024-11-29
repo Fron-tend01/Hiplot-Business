@@ -18,8 +18,8 @@ const ArticleView = () => {
     const { getArticles }: any = articleRequests();
     const [articles, setArticles] = useState<any>([]);
 
-    let fetch = async () => {
-        let data = {
+    const fetch = async () => {
+        const data = {
             id: 0,
             activos: true,
             nombre: '',
@@ -36,7 +36,7 @@ const ArticleView = () => {
             get_unidades: false
         };
 
-        let result = await getArticles(data);
+        const result = await getArticles(data);
         setArticles(result);
     };
 

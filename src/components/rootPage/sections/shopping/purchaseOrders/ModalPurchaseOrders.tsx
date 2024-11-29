@@ -46,7 +46,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
   const { getArticles }: any = storeArticles();
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const [suppliers, setSuppliers] = useState<any>()
   const [conceptosElim, setConceptosElim] = useState<any[]>([])
@@ -89,12 +89,12 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   }, [purchaseOrderToUpdate])
 
   const fetch = async () => {
-    let data = {
+    const data = {
       nombre: "",
       is_flete: true,
       id_usuario: user_id
     }
-    let result: any = await APIs.getSuppliers(data)
+    const result: any = await APIs.getSuppliers(data)
     result.unshift({ id: 0, nombre_comercial: 'Ninguno' })
     setSuppliers(result)
   }
@@ -255,7 +255,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
 
   const searchFor = async () => {
-    let data = {
+    const data = {
       id: 0,
       activos: true,
       nombre: selectedTypeSearch == 1 ? nameBy : '',
@@ -273,11 +273,11 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     };
     try {
       if (selectedTypeSearch === 0) {
-        let result: any = await APIs.getArticles(data)
+        const result: any = await APIs.getArticles(data)
         setResultModalOC(result);
 
       } else if (selectedTypeSearch === 1) {
-        let result = await getArticles(data)
+        const result = await getArticles(data)
         setResultModalOC(result);
 
       }
@@ -384,11 +384,11 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     let totalDiscount = 0;
     let ivaTotal = 0
     conceptos.forEach((article: any) => {
-      let total_cantidad = article.cantidad || 1; // Si no hay cantidad definida, se asume 1
+      const total_cantidad = article.cantidad || 1; // Si no hay cantidad definida, se asume 1
       let iva_x_precio = 0;
 
       if (article.iva_on) {
-        let iva = article.precio_unitario * 0.16 || 0;
+        const iva = article.precio_unitario * 0.16 || 0;
         iva_x_precio = article.precio_unitario + iva;
         ivaTotal += iva
 
@@ -405,7 +405,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
     const totalValue: any = subtotalValue - totalDiscount;
     if (freightCostActive) {
-      let totalWith = totalValue + freightCost;
+      const totalWith = totalValue + freightCost;
       setTotal(totalWith);
     } else {
       setTotal(totalValue);
@@ -417,12 +417,12 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   }, [conceptos, freightCostActive, freightCost]);
 
   const addArticles = () => {
-    let id_articulo = articleResult.id
-    let proveedores = articleResult.proveedores
-    let unidades = articleResult.unidades
-    let descripcion = articleResult.descripcion
-    let unidad = articleResult.unidades[0].id_unidad
-    let id_proveedor = articleResult.proveedores[0].id_proveedor
+    const id_articulo = articleResult.id
+    const proveedores = articleResult.proveedores
+    const unidades = articleResult.unidades
+    const descripcion = articleResult.descripcion
+    const unidad = articleResult.unidades[0].id_unidad
+    const id_proveedor = articleResult.proveedores[0].id_proveedor
 
     setConceptos((prevArticleStates: any) => [...prevArticleStates, { id_proveedor, proveedores, id_articulo, descripcion, cantidad: 0, descuento: 0, unidad, unidades, precio_unitario: 0, comentarios: '' }]);
   };
@@ -431,14 +431,14 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
  
 
   const filterByRequest = async () => {
-    let data = {
+    const data = {
       id_sucursal: selectedModalBranchOffice == null ? 0 : selectedModalBranchOffice.id,
       id_usuario: user_id,
       desde: dateForReq[0],
       hasta: dateForReq[1],
       status: 0
     }
-    let res = await getRequisition2(data)
+    const res = await getRequisition2(data)
     setRequisitions(res)
   }
 
@@ -510,7 +510,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   const hanledCreateOC = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
     setStateLoading(true);
-    let data = {
+    const data = {
       id: purchaseOrderToUpdate ? purchaseOrderToUpdate.id : null,
       id_usuario_crea: user_id,
       id_usuario_autoriza: 0,
@@ -532,7 +532,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
       documento_siguiente: ''
     };
 
-    let dataGet = {
+    const dataGet = {
       folio: 0,
       id_serie: 0,
       id_sucursal: selectedBranchOffice == null ? 0 : selectedBranchOffice.id,
@@ -546,11 +546,11 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
     try {
       if (purchaseOrderToUpdate) {
-        let resultCreate: any = await APIs.updatePurchaseOrders(data);
+        const resultCreate: any = await APIs.updatePurchaseOrders(data);
         if(resultCreate.error == true) {
           return Swal.fire('Advertencia', resultCreate.mensaje, 'warning');
         }
-        let resultGet = await APIs.getPurchaseOrders(dataGet);
+        const resultGet = await APIs.getPurchaseOrders(dataGet);
         setPurchaseOrders(resultGet)
         setConceptosElim([])
         setConceptos([])
@@ -558,11 +558,11 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
         setStateLoading(false);
         setModal('')
       } else {
-        let result: any = await APIs.createPurchaseOrders(data);
+        const result: any = await APIs.createPurchaseOrders(data);
         if(result.error == true) {
           return Swal.fire('Advertencia', result.mensaje, 'warning');
         }
-        let resultGet = await APIs.getPurchaseOrders(dataGet);
+        const resultGet = await APIs.getPurchaseOrders(dataGet);
         setPurchaseOrders(resultGet)
         setConceptosElim([])
         setConceptos([])
@@ -602,17 +602,17 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
         console.log(item)
       }
     }
-    let filter = conceptos.filter((_: any, index: number) => index !== i)
+    const filter = conceptos.filter((_: any, index: number) => index !== i)
     setConceptos(filter)
   }
 
   const updateStatus = async () => {
-    let data = {
+    const data = {
       id: purchaseOrderToUpdate.id,
       status: purchaseOrderToUpdate.status == 0 ? 1 : 0
     }
 
-    let dataGet = {
+    const dataGet = {
       folio: 0,
       id_serie: 0,
       id_sucursal: selectedBranchOffice,
@@ -624,8 +624,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
       status: type,
     };
     try {
-      let result: any = await APIs.updateStatusPurchaseOrder(data)
-      let resultGet = await APIs.getPurchaseOrders(dataGet);
+      const result: any = await APIs.updateStatusPurchaseOrder(data)
+      const resultGet = await APIs.getPurchaseOrders(dataGet);
       setPurchaseOrders(resultGet)
       Swal.fire('Status actualizado', result.mensaje, 'success');
       setModal('')
@@ -638,13 +638,13 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   const setConceptos_req = storeRequisitions((state: any) => state.setConcepts);
 
   const reqxid = async (id:number) => {
-    let hoy = new Date()
-    let fecha = hoy.toISOString().split('T')[0]
-      let resultRequisition = await getRequisition2({id:id, id_sucursal:0,id_usuario:user_id,desde:fecha,hasta:fecha})
+    const hoy = new Date()
+    const fecha = hoy.toISOString().split('T')[0]
+      const resultRequisition = await getRequisition2({id:id, id_sucursal:0,id_usuario:user_id,desde:fecha,hasta:fecha})
       return resultRequisition
   }
   const modalReq = async (art:any) => {
-    let req = await reqxid(art.id_requisicion || art.requisicion.id)
+    const req = await reqxid(art.id_requisicion || art.requisicion.id)
     setModalStateCreate('create')
     setUpdateToRequisition(req[0])
     setConceptos_req(req[0].conceptos)

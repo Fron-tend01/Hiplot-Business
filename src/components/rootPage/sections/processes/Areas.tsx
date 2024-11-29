@@ -39,7 +39,7 @@ const Areas: React.FC = () => {
   const {getBranchOfficeXCompanies, branchOfficeXCompanies }: any = storeBranchOffcies();
   const {createAreas, areasXBranchOfficesXUsers, getAreasXBranchOfficesXUsers, updateAreas }: any = storeAreas();
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   useEffect(() => {
     getAreasXBranchOfficesXUsers(0, user_id)
@@ -65,7 +65,7 @@ const Areas: React.FC = () => {
   const handleCreateAreas = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    let nombre = name
+    const nombre = name
 
     if (name === '') {
       setWarningName(true)

@@ -100,7 +100,7 @@ const modalArticle: React.FC = () => {
 
     // Modales Zustand
 
-    let user_id = userState.id
+    const user_id = userState.id
 
 
 
@@ -141,10 +141,10 @@ const modalArticle: React.FC = () => {
     const [selectTemplates, setSelectTemplates] = useState<any>()
 
     const fecht = async () => {
-        let resultTemplates = await getTemplates(user_id)
-        let resultType = await APIs.getTypeOfPayments()
+        const resultTemplates = await getTemplates(user_id)
+        const resultType = await APIs.getTypeOfPayments()
 
-        let resultFamilies = await getFamilies(user_id)
+        const resultFamilies = await getFamilies(user_id)
         setSelectTemplates({
             selectName: 'Plantillas',
             options: 'nombre',
@@ -243,7 +243,7 @@ const modalArticle: React.FC = () => {
         e.preventDefault()
         setStateLoading(true)
 
-        let data = {
+        const data = {
             id: modalArticle == 'articles-modal-update' ? articleToUpdate.id : 0,
             tipo: type,
             codigo: code,
@@ -311,7 +311,7 @@ const modalArticle: React.FC = () => {
             imagenes: imagesArticles
         };
 
-        let dataArticle = {
+        const dataArticle = {
             id: 0,
             activos: true,
             nombre: '',
@@ -424,13 +424,13 @@ const modalArticle: React.FC = () => {
 
 
     const clonArticle = async () => {
-        let data = {
+        const data = {
             id_articulo: articleToUpdate.id,
             id_usuario: user_id
         }
         try {
-            let result: any = await APIs.cloneArticles(data)
-            let dataArticle = {
+            const result: any = await APIs.cloneArticles(data)
+            const dataArticle = {
                 id: result.id_articulo,
                 activos: true,
                 nombre: '',
@@ -455,7 +455,7 @@ const modalArticle: React.FC = () => {
                 get_unidades: true
             };
             Swal.fire(result.mensaje, '', 'success');
-            let resultArticle: any = await APIs.getArticles(dataArticle);
+            const resultArticle: any = await APIs.getArticles(dataArticle);
             setArticleToUpdate(resultArticle[0])
 
         } catch (error) {

@@ -20,7 +20,7 @@ const ModalCreate = () => {
     const [branchOffices, setBranchOffices] = useState<any>()
     const { createTickets, modalTickets, conceptos }: any = storeTickets();
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
 
     const [comments, setComments] = useState<any>('')
@@ -28,7 +28,7 @@ const ModalCreate = () => {
     const [store, setStore] = useState<any>()
 
     const fecth = async () => {
-        let result = await APIs.getStore(user_id)
+        const result = await APIs.getStore(user_id)
         setStore(result)
     }
 
@@ -37,6 +37,7 @@ const ModalCreate = () => {
     }, [])
 
     const [selectedOption, setSelectedOption] = useState<number | null>(0);
+
     const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         if (value === "normal") {
@@ -49,7 +50,7 @@ const ModalCreate = () => {
         }
     };
 
-
+  
     const [selectedUnit, setSelectedUnit] = useState<any[]>([]);
     const [selectedSupplier, setSelectedSupplier] = useState<any>([])
     const [selectedStore, setSelectedStore] = useState<any>([])
@@ -110,13 +111,13 @@ const ModalCreate = () => {
 
     const handleCreateAreas = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
-        let id_sucursal = branchOffices.id;
-        let id_usuario_crea = user_id;
-        let comentarios = comments;
+        const id_sucursal = branchOffices.id;
+        const id_usuario_crea = user_id;
+        const comentarios = comments;
 
         try {
             await createTickets(id_sucursal, id_usuario_crea, comentarios, conceptos)
-            let data = {
+            const data = {
                 id_usuario: user_id,
                 id_empresa: companies.id,
                 id_sucursal: branchOffices.id,
@@ -140,7 +141,7 @@ const ModalCreate = () => {
     // }, [conceptos])
 
     const deleteTicket = (_: any, indexTicket: any) => {
-        let filter = conceptos.filter((_: any, index: any) => index !== indexTicket)
+        const filter = conceptos.filter((_: any, index: any) => index !== indexTicket)
         setConceptos(filter)
     }
 
@@ -157,7 +158,7 @@ const ModalCreate = () => {
         console.log(iva)
         let costo_flete = 0;
 
-        let ids: any = [];
+        const ids: any = [];
 
         if(conceptos.length !== 0){
             conceptos.forEach((concept: any) => {
@@ -178,7 +179,7 @@ const ModalCreate = () => {
             totalSub += x.cantidad * x.precio_unitario;
             totalDiscount += x.descuento;
             if (x.iva_on) {
-                let temp_iva = (x.cantidad * x.precio_unitario) - x.descuento
+                const temp_iva = (x.cantidad * x.precio_unitario) - x.descuento
                 iva += temp_iva * .16
             }
 

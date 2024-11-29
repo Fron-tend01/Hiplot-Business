@@ -19,7 +19,7 @@ const Suppliers: React.FC = () => {
   const [email, setEmail] = useState<string>('')
 
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
   const [searcher, setSearcher] = useState<any>({
     nombre: '',
     is_flete: false,
@@ -51,7 +51,7 @@ const Suppliers: React.FC = () => {
   const fetch = async () => {
     getCompaniesXUsers(user_id)
     getBranchOfficeXCompanies(0, user_id)
-    let result = await getSuppliers(searcher)
+    const result = await getSuppliers(searcher)
     setSuppliers(result)
   }
 
@@ -123,7 +123,7 @@ const Suppliers: React.FC = () => {
     }
 
 
-    let data = {
+    const data = {
       razon_social: businessName,
       nombre_comercial: tradename,
       ubicacion: location,
@@ -137,7 +137,7 @@ const Suppliers: React.FC = () => {
 
     try {
       await createSuppliers(data)
-      let result = await getSuppliers(searcher)
+      const result = await getSuppliers(searcher)
       setSuppliers(result)
       closeModalCreate()
 
@@ -225,14 +225,14 @@ const Suppliers: React.FC = () => {
 
     const idsToRemove = selectedSupplier.empresas.map((empresa: any) => empresa.id_empresa);
     const updatedSuppliers = newSuppliers.filter((supplier: any) => !idsToRemove.includes(supplier.id_empresa));
-    let ids_supl: any = []
+    const ids_supl: any = []
     await updatedSuppliers.forEach(element => {
       ids_supl.push(element.id)
     });
     // console.log(updatedSuppliers);
 
     // return
-    let data = {
+    const data = {
       id: idSupplier,
       razon_social: businessName,
       nombre_comercial: tradename,
@@ -249,7 +249,7 @@ const Suppliers: React.FC = () => {
 
     try {
       await updateSuppliers(data)
-      let result = await getSuppliers(searcher)
+      const result = await getSuppliers(searcher)
       setSuppliers(result)
       setmodalStateUpdate(false)
     } catch {
@@ -262,7 +262,7 @@ const Suppliers: React.FC = () => {
   }, [newSuppliers])
 
   const search = async () => {
-    let result = await getSuppliers(searcher)
+    const result = await getSuppliers(searcher)
     setSuppliers(result)
   }
 

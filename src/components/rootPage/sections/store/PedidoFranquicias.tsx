@@ -26,8 +26,8 @@ interface searcher {
   id: number,
   id_usuario: number,
   id_sucursal: number,
-  desde: String,
-  hasta: String,
+  desde: string,
+  hasta: string,
   id_serie: number,
   status: number,
   folio: number
@@ -51,7 +51,7 @@ const PedidoFranquicias = () => {
   })
   const [pfMu, setPfMu] = useState<any>({})
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const hoy = new Date();
   const haceUnaSemana = new Date();
@@ -126,11 +126,11 @@ const PedidoFranquicias = () => {
     console.log(searcher);
     searcher.id_sucursal = sucursalFSearcher.id
     searcher.id_serie = selectData?.serieSearcher?.id
-    let result = await APIs.CreateAny(searcher, "pedido_franquicia/get")
+    const result = await APIs.CreateAny(searcher, "pedido_franquicia/get")
     setData(result)
   }
   const getEmpresas = async () => {
-    let resultCompanies = await getCompaniesXUsers(user_id)
+    const resultCompanies = await getCompaniesXUsers(user_id)
     setProveedor({
       selectName: 'Proveedor',
       dataSelect: resultCompanies,
@@ -146,7 +146,7 @@ const PedidoFranquicias = () => {
   const fetch = async () => {
     await getEmpresas()
     // await getData()
-    let resultSerie = await getSeriesXUser({ tipo_ducumento: 10, id: user_id })
+    const resultSerie = await getSeriesXUser({ tipo_ducumento: 10, id: user_id })
     setSeries({
       selectName: 'serieSearcher',
       dataSelect: resultSerie,
@@ -161,7 +161,7 @@ const PedidoFranquicias = () => {
     fetch()
   }, [])
   const traer_alm_pred_prov = async (index: any) => {
-    let data = {
+    const data = {
       id_empresa: selectData?.proveedor?.id,
       id_empresa_franquicia: franquicia?.id,
       id_articulo: articulos[index]?.id
@@ -223,33 +223,33 @@ const PedidoFranquicias = () => {
     }
     setPf(pfClear)
 
-    let createObjLf = { ...pfClear };
+    const createObjLf = { ...pfClear };
 
     createObjLf.id_empresa_proveedor = selectData.proveedor.id;
     createObjLf.id_sucursal = sucursalF.id;
     createObjLf.id_usuario_crea = user_id
     //------------------------------------------------------------------FULL VALIDACIONES X ARTICULO--------------------------------------------------------------------------------
-    let validacion: any[] = []
+    const validacion: any[] = []
     await articulos.forEach(async (el: any) => {
-      let obt_alm = el.stock.filter((s: any) => s.id == el.alm_pred.id_almacen_pred)
+      const obt_alm = el.stock.filter((s: any) => s.id == el.alm_pred.id_almacen_pred)
       if (obt_alm.length == 0) {
-        let error = 'El articulo ' + el.codigo + '-' + el.descripcion + ' no cuenta con almacen predeterminado en la sucursal predeterminada de ventas para franquicia del proveedor seleccionado'
+        const error = 'El articulo ' + el.codigo + '-' + el.descripcion + ' no cuenta con almacen predeterminado en la sucursal predeterminada de ventas para franquicia del proveedor seleccionado'
         validacion.push(error)
       } else {
-        let alm = obt_alm[0]
+        const alm = obt_alm[0]
         console.log(el.unidad_sel);
 
-        let eq = await alm.equivalencias.filter((x: any) => x.id_unidad == parseInt(el.unidad_sel))
+        const eq = await alm.equivalencias.filter((x: any) => x.id_unidad == parseInt(el.unidad_sel))
 
         if (eq.length == 0) {
-          let error = 'El articulo ' + el.codigo + '-' + el.descripcion + ' la unidad seleccionada no concuerda con las unidades en la configuración'
+          const error = 'El articulo ' + el.codigo + '-' + el.descripcion + ' la unidad seleccionada no concuerda con las unidades en la configuración'
           validacion.push(error)
         } else {
-          let equi = eq[0]
+          const equi = eq[0]
           if (equi.cantidad >= el.cantidad) {
             //se inserta el articulo
           } else {
-            let error = 'El articulo ' + el.codigo + '-' + el.descripcion + ' la cantidad que se está pidiendo es mayor a la cantidad en su stock: ' + equi.cantidad + ' ' + equi.nombre_unidad
+            const error = 'El articulo ' + el.codigo + '-' + el.descripcion + ' la cantidad que se está pidiendo es mayor a la cantidad en su stock: ' + equi.cantidad + ' ' + equi.nombre_unidad
             validacion.push(error)
           }
         }
@@ -265,7 +265,7 @@ const PedidoFranquicias = () => {
     }
     createObjLf.conceptos = []
     await articulos.forEach((el: any) => {
-      let c = {
+      const c = {
         "id_articulo": el.id,
         "cantidad": parseFloat(el.cantidad),
         "precio_unitario": parseFloat(el.precio_unitario),
@@ -390,17 +390,17 @@ const PedidoFranquicias = () => {
   };
 
   const handleCantidad = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    let value = Number.isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value);
+    const value = Number.isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value);
 
     const newArticleStates = [...articulos];
     newArticleStates[index].cantidad = value;
 
-    let stocks = articulos[index].stock;
-    let almacen_predeterminado = newArticleStates[index].alm_pred;
+    const stocks = articulos[index].stock;
+    const almacen_predeterminado = newArticleStates[index].alm_pred;
 
-    let filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id_almacen_pred);
+    const filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id_almacen_pred);
     if (filter) {
-      let equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == newArticleStates[index].unidad_sel)
+      const equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == newArticleStates[index].unidad_sel)
       console.log(equivalencias);
       console.log(filter[0].equivalencias);
 
@@ -419,7 +419,7 @@ const PedidoFranquicias = () => {
         setArticulos(newArticleStates);
 
         //-----------------------------------------------INVOCAR PARA OBTENER EL PRECIO Y CALCULAR EL IMPORTE Y EL PRECIO UNITARIO
-        let precio = obtenerPrecioPorCantidadYUnidad(articulos[index], newArticleStates[index].cantidad, newArticleStates[index].unidad_sel)
+        const precio = obtenerPrecioPorCantidadYUnidad(articulos[index], newArticleStates[index].cantidad, newArticleStates[index].unidad_sel)
         if (precio != null) {
           const newArticleStates = [...articulos];
           newArticleStates[index].precio_unitario = precio;

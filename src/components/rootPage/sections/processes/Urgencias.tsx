@@ -74,7 +74,7 @@ const Urgencias = () => {
     }
   }
   const getData = async () => {
-    let result = await APIs.GetAny("urgencias/get")
+    const result = await APIs.GetAny("urgencias/get")
     setData(result)
   }
 
@@ -89,7 +89,7 @@ const Urgencias = () => {
       Swal.fire('Notificación', 'Es necesario agregar articulos para la urgencia', 'error');
       return
     }
-    let updatedUrgencia = { ...Urgencia };
+    const updatedUrgencia = { ...Urgencia };
 
     updatedUrgencia.id_sucursal = sucursalDyn.id;
 

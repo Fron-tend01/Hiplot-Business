@@ -55,7 +55,7 @@ const SalesCard: React.FC = () => {
 
 
   const fetch = async () => {
-    let data = {
+    const data = {
       id: IdArticle,
       activos: true,
       nombre: '',
@@ -79,13 +79,13 @@ const SalesCard: React.FC = () => {
       id_usuario: user_id
     };
 
-    let result = await getArticles(data);
+    const result = await getArticles(data);
     if (result && result.length > 0) {
-      let plantilla_data = result[0].plantilla_data || []; // Inicializar como un arreglo vacío
-      let id_plantillas_art_campos = [];
+      const plantilla_data = result[0].plantilla_data || []; // Inicializar como un arreglo vacío
+      const id_plantillas_art_campos = [];
 
       for (let i = 0; i < plantilla_data.length; i++) {
-        let id = plantilla_data[i].id;
+        const id = plantilla_data[i].id;
         id_plantillas_art_campos.push(id);
       }
 
@@ -99,12 +99,12 @@ const SalesCard: React.FC = () => {
     }
 
 
-    let resultUnits = await getUnits(data);
+    const resultUnits = await getUnits(data);
     if (resultUnits && resultUnits.length > 0) {
       setUnits(resultUnits);
     }
 
-    let resultUsers = await getUserGroups(user_id);
+    const resultUsers = await getUserGroups(user_id);
     if (resultUsers) {
       setUsersGroups(resultUsers);
     }
@@ -147,7 +147,7 @@ const SalesCard: React.FC = () => {
   };
 
   const handleTemplatesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    let value = parseInt(e.target.value);
+    const value = parseInt(e.target.value);
     const updatedArticle = { ...article };
     updatedArticle.plantilla_data[index].valor = value;
 
@@ -171,7 +171,7 @@ const SalesCard: React.FC = () => {
   
 
   const get = async () => {
-    let dataArticle = {
+    const dataArticle = {
       id_articulo: article.id,
       id_grupo_us: selectedUserGroup,
       id_unidad: selectedUnit.id,
@@ -182,7 +182,7 @@ const SalesCard: React.FC = () => {
 
 
     try {
-      let result: any = await APIs.getTotalPrice(dataArticle);
+      const result: any = await APIs.getTotalPrice(dataArticle);
 
       if (result.error == true) {
         toast.warning(result.mensaje)
@@ -292,7 +292,7 @@ const SalesCard: React.FC = () => {
 
   const combinacion = async (x: any) => {
     console.log('xscombinacionsasdsads', x)
-    let data = {
+    const data = {
       id: x.id_articulo,
       activos: true,
       nombre: '',
@@ -316,7 +316,7 @@ const SalesCard: React.FC = () => {
       id_usuario: user_id
     };
 
-    let result = await getArticles(data)
+    const result = await getArticles(data)
     setArticle(result[0])
     console.log('sdsdsssssssss', result[0])
   }

@@ -12,7 +12,7 @@ import useUserStore from '../../../../../../zustand/General';
 const Direct: React.FC = () => {
 
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
 //////////////////////////////////Directa////////////////////////////////////////////////
 
@@ -36,7 +36,7 @@ const Direct: React.FC = () => {
     const [searchBy, setSearchBy] = useState<any>('')
 
     const searchFor = async () => {
-        let data = {
+        const data = {
             id: 0,
             activos: true,
             nombre: selectedIds.type.id == 1 ? searchBy : '',
@@ -55,7 +55,7 @@ const Direct: React.FC = () => {
         };
         
         try {
-            let result = await APIs.getArticles(data)
+            const result = await APIs.getArticles(data)
             setArticles(result)    
         } catch (error) {
             console.log(error)

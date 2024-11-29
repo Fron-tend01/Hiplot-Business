@@ -74,7 +74,7 @@ const Users: React.FC = () => {
   const { getTypesUsers, typesUsers }: any = storeTypesUsers();
   const { createUsers, getUsers, putUsers }: any = storeUsers();
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const [searcher, setSearcher] = useState<any>({
     nombre: '',
@@ -89,7 +89,7 @@ const Users: React.FC = () => {
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
   const [companiesLocal, setCompaniesLocal] = useState<any>([])
   const fetch = async () => {
-    let res = await getCompaniesXUsers(user_id)
+    const res = await getCompaniesXUsers(user_id)
     setCompaniesLocal({
       selectName: 'Empresa',
       dataSelect: res,
@@ -235,9 +235,9 @@ const Users: React.FC = () => {
 
   const handleCreateUsers = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let tipo_us = selectedTypeUser
-    let id_usuario_crea = user_id
-    let sucursal_id = selectedBranchOffice
+    const tipo_us = selectedTypeUser
+    const id_usuario_crea = user_id
+    const sucursal_id = selectedBranchOffice
     const data_user = {
       sucursal_id,
       nombre,
@@ -488,7 +488,7 @@ const Users: React.FC = () => {
     if (selectedUserGroup != null) {
       const userGroup = userGroups.find((x: any) => x.id === selectedUserGroup);
       if (userGroup) {
-        let exist = usersGroupsExist.some((group) => group.id === userGroup.id);
+        const exist = usersGroupsExist.some((group) => group.id === userGroup.id);
         if (exist) {
           console.log('El grupo seleccionado ya existe');
         } else {
@@ -512,7 +512,7 @@ const Users: React.FC = () => {
     if (selectUser !== null) {
       const user = usuarios.find((x: any) => x.id === selectUser);
       if (user) {
-        let exist = usersExist.some((x: any) => x.id === user.id);
+        const exist = usersExist.some((x: any) => x.id === user.id);
         if (exist) {
           console.log('El grupo seleccionado ya existe');
         } else {
@@ -560,9 +560,9 @@ const Users: React.FC = () => {
   const handleUpdateUsers = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let tipo_us = selectedTypeUser
-    let sucursalesNewTmp: any = []
-    let areasNewTmp: any = []
+    const tipo_us = selectedTypeUser
+    const sucursalesNewTmp: any = []
+    const areasNewTmp: any = []
     await updateBranchPermissions.forEach((x: any) => {
       setSucursalesNuevas(prevGrupos => [...prevGrupos, x.id]);
       sucursalesNewTmp.push(x.id)
@@ -578,17 +578,17 @@ const Users: React.FC = () => {
 
 
     const id_userGroup = usersGroupsExist.filter(x => !x.exist).map(x => x.id);
-    let grupos_nuevos: any[] = []
+    const grupos_nuevos: any[] = []
     grupos_nuevos.push(...id_userGroup)
 
     const users_ids = usersExist.filter(x => !x.exist).map(x => x.id);
-    let subordinados_nuevos: any[] = []
+    const subordinados_nuevos: any[] = []
     subordinados_nuevos.push(...users_ids)
 
 
-    let grupos_eliminar: any[] = [];
+    const grupos_eliminar: any[] = [];
 
-    let subordinados_eliminar: any[] = [];
+    const subordinados_eliminar: any[] = [];
 
     userGroupDelete.forEach((x: any) => {
       grupos_eliminar.push(x.id);
@@ -599,7 +599,7 @@ const Users: React.FC = () => {
     });
 
 
-    let password = ''
+    const password = ''
 
     if (nombre === '') {
       setWarningNombre(true);
@@ -735,14 +735,14 @@ const Users: React.FC = () => {
   const [UsuariosComercialElim, setUsuariosComercialElim] = useState<any>([])
 
   const agregarUsuariosParaComercial = () => {
-    let filter_us = usuariosComercial.filter((x:any)=> x.ContactID==UsuarioCSelected)[0]
-    let data = {
+    const filter_us = usuariosComercial.filter((x:any)=> x.ContactID==UsuarioCSelected)[0]
+    const data = {
       id_empresa: selectedIds?.empresas_comercial?.id,
       empresa: selectedIds?.empresas_comercial?.razon_social,
       id_usuario: parseInt(UsuarioCSelected),
       usuario: filter_us.FirstName + ' ' + filter_us.LastNameFather + ' ' + filter_us.LastNameMother
     }
-    let exist = addUsuariosComercial.filter((x:any)=>x.id_empresa==selectedIds?.empresas_comercial?.id)
+    const exist = addUsuariosComercial.filter((x:any)=>x.id_empresa==selectedIds?.empresas_comercial?.id)
     if (exist.length >= 1) {
       Swal.fire('Notificacion', 'Cada empresa solo puede tener un usuario de comercial enlazado', 'warning')
       return

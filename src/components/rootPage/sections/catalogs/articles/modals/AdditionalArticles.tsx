@@ -40,7 +40,7 @@ const AdditionalArticles: React.FC = () => {
   const [extrFields, setExtrFields] = useState<any>()
 
   const fetch = async () => {
-    let resutTemplates = await getTemplatesxFields()
+    const resutTemplates = await getTemplatesxFields()
   
 
     setExtrFields([
@@ -144,7 +144,7 @@ const AdditionalArticles: React.FC = () => {
   }
 
   const deleteAdditionalArticle = (item: any) => {
-    let filter = additionalArticles.filter((x: {id: any}) => x.id !== item.id)
+    const filter = additionalArticles.filter((x: {id: any}) => x.id !== item.id)
     setAdditionalArticles(filter)
     setDeleteAdditionalArticles([...deleteAdditionalArticles, item.id])
   }
@@ -152,7 +152,7 @@ const AdditionalArticles: React.FC = () => {
 
   const fecthTwo = async () => {
     // Obtener los templates
-    let resutTemplates = await getTemplatesxFields();
+    const resutTemplates = await getTemplatesxFields();
 
     // Asegúrate de que additionalArticles tenga elementos
     if (additionalArticles && additionalArticles.length > 0) {

@@ -9,17 +9,17 @@ const Carousel: React.FC<any> = ({selectedTypeFamily, item}: any) => {
 
   useEffect(() => {
    
-    let id = 0;
-    let activos = true;
-    let nombre = '';
-    let codigo = '';
-    let familia = selectedTypeFamily == undefined ? item.id_familia : selectedTypeFamily.id;
-    let proveedor = 0;
-    let materia_prima = 0;
-    let get_sucursales = false;
-    let get_proveedores = false;
-    let get_max_mins = false;
-    let get_plantilla_data = false;
+    const id = 0;
+    const activos = true;
+    const nombre = '';
+    const codigo = '';
+    const familia = selectedTypeFamily == undefined ? item.id_familia : selectedTypeFamily.id;
+    const proveedor = 0;
+    const materia_prima = 0;
+    const get_sucursales = false;
+    const get_proveedores = false;
+    const get_max_mins = false;
+    const get_plantilla_data = false;
 
     getArticles({id, activos, nombre, codigo, familia, proveedor, materia_prima, get_sucursales, get_proveedores,  get_max_mins, get_plantilla_data})
 

@@ -17,7 +17,7 @@ import APIs from '../../../../../../services/services/APIs'
 
 const Prices: React.FC = () => {
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id;
+  const user_id = userState.id;
 
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
@@ -48,15 +48,15 @@ const Prices: React.FC = () => {
   const [ranges, setRanges] = useState<any>();
 
   const fetch = async () => {
-    let data = {
+    const data = {
       titulo: ''
     }
     try {
-      let resultRanges = await getRanges(data);
+      const resultRanges = await getRanges(data);
       setRanges(resultRanges)
-      let resultTemplates = await getTemplates(user_id);
+      const resultTemplates = await getTemplates(user_id);
       setTemplates(resultTemplates)
-      let resultUserGroups = await getUserGroups(user_id);
+      const resultUserGroups = await getUserGroups(user_id);
       setUsersGroups(resultUserGroups)
       if (articleByOne) {
         setPrices(articleByOne.precios)
@@ -165,7 +165,7 @@ const Prices: React.FC = () => {
 
 
   const additionalPrices = () => {
-    let data = {
+    const data = {
       id_rangos: selectedRanges.id,
       rango_titulo: selectedRanges.titulo,
       id_articulos_precios: null,
@@ -198,7 +198,7 @@ const Prices: React.FC = () => {
   const addPrices = () => {
 
     if (selectedIds?.grouspusers && inputs.price && inputs.observations && inputs.roundPrice) {
-      let data = {
+      const data = {
         id_grupos_us: selectedIds.grouspusers.id,
         name_group: selectedIds.grouspusers.nombre,
         precios: inputs.price,
@@ -247,7 +247,7 @@ const Prices: React.FC = () => {
 
   const searchRanges = async (value: string) => {
     setSearchTerm(value)
-    let resultRanges = await getRanges({ titulo: value });
+    const resultRanges = await getRanges({ titulo: value });
     setRanges(resultRanges);
   };
 
@@ -332,13 +332,13 @@ const Prices: React.FC = () => {
 
 
   const clonePrice = async () => {
-    let data = {
+    const data = {
       id_articulo: articleToUpdate.id,
       id_grupo_us_desde: selectedIds.id_groupUserDe,
       id_grupo_us_hasta: selectedIds.id_groupUserAl
     }
     try {
-      let result: any = await APIs.cloneArticlesPrice(data)
+      const result: any = await APIs.cloneArticlesPrice(data)
       Swal.fire(result.mensaje, '', 'success');
     } catch (error) {
       Swal.fire('Hubo un error', '', 'error');

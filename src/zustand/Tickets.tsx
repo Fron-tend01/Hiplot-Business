@@ -4,20 +4,7 @@ import APIs from '../services/services/APIs';
 import Swal from 'sweetalert2';
 
 
-interface Tickets {
-    id: number,
-    id_folio: number,
-    id_usuario_crea: number,
-    id_sucursal: number,
-    fecha_creacion: any,
-    comentarios: string,
-    status: number,
-    id_1: number,
-    nombre: string,
-    direccion: string,
-    contacto: string,
-    empresa_id: number
-  }
+
   
 interface StoreState {
     // store: Store[];
@@ -33,7 +20,7 @@ interface StoreState {
     conceptos: any;
     setConceptos: (modal: any) => void;
     
-    
+    tickets: any,
 
 }
 
@@ -51,6 +38,8 @@ export const storeTickets = create<StoreState>((set) => ({
 
     conceptos: [],
     setConceptos: (x) => set({ conceptos: x }),
+
+    tickets: [],
 
     // Almacen
  
@@ -80,7 +69,7 @@ export const storeTickets = create<StoreState>((set) => ({
       getTickets: async (data: any) => {
         try {
           const response: any = await  APIs.getTickets(data);
-          set({tickets: response as Tickets[]})
+          set({tickets: response})
           return response
     
         } catch {
@@ -99,7 +88,7 @@ export const storeTickets = create<StoreState>((set) => ({
 
       getExcelTickets: async (id: number,id_usuario: number, id_sucursal: number, desde: Date, hasta: Date, id_serie: number, status: number, folio: number) => {
         try {
-          let result = await  APIs.getExcelTickets(id, id_sucursal, id_usuario, desde, hasta, id_serie, status, folio);
+          const result = await  APIs.getExcelTickets(id, id_sucursal, id_usuario, desde, hasta, id_serie, status, folio);
           return result
     
         } catch {

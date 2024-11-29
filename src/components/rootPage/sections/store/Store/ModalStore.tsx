@@ -12,7 +12,7 @@ import APIs from '../../../../../services/services/APIs';
 
 const ModalCreate: React.FC = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     const { getCompaniesXUsers }: any = companiesRequests();
     const [companies, setCompanies] = useState<any>()
@@ -37,7 +37,7 @@ const ModalCreate: React.FC = () => {
     const [predeterminada, setPredeterminada] = useState<boolean>(false);
 
     const fetch = async () => {
-        let resultCompanies = await getCompaniesXUsers(user_id)
+        const resultCompanies = await getCompaniesXUsers(user_id)
         setCompanies(resultCompanies)
     }
 
@@ -60,7 +60,7 @@ const ModalCreate: React.FC = () => {
     const handleCompaniesChange = async (company: any) => {
         setSelectedCompany(company);
         setSelectCompanies(false);
-        let resultBranch = await getBranchOffices(company, user_id)
+        const resultBranch = await getBranchOffices(company, user_id)
         await setBranchOffices(resultBranch)
         await setSelectedBranchOffice(resultBranch[0])
         console.log(selectedBranchOffice)
@@ -76,7 +76,7 @@ const ModalCreate: React.FC = () => {
         };
 
 
-        let data_ext = {
+        const data_ext = {
             sucursales_nuevas: sucursales_nuevas,
             sucursales_eliminar
         };
@@ -86,9 +86,9 @@ const ModalCreate: React.FC = () => {
         if (modalState == 'modal-create_store') {
             try {
 
-                let result: any = await APIs.createStore(data, data_ext);
+                const result: any = await APIs.createStore(data, data_ext);
                 await getStore(user_id)
-                let resultStore = await getStore(user_id)
+                const resultStore = await getStore(user_id)
                 setStore(resultStore)
                 setModalState('')
                 Swal.fire({ icon: 'success', title: 'Almacén creado', text: result.mensaje });
@@ -98,9 +98,9 @@ const ModalCreate: React.FC = () => {
             }
         } else {
             try {
-                let result: any = await APIs.updateStore(data, data_ext);
+                const result: any = await APIs.updateStore(data, data_ext);
                 await getStore(user_id)
-                let resultStore = await getStore(user_id)
+                const resultStore = await getStore(user_id)
                 setStore(resultStore)
                 setModalState('')
                 Swal.fire({ icon: 'success', title: 'Almacén actualizado', text: result.mensaje });
@@ -123,9 +123,9 @@ const ModalCreate: React.FC = () => {
             return;
         }
 
-        let filter = companies.filter((x: any) => x.id == selectedBranchOffice.empresa_id)
+        const filter = companies.filter((x: any) => x.id == selectedBranchOffice.empresa_id)
 
-        let data = {
+        const data = {
             id: selectedBranchOffice.id,
             predeterminado_empresa: predeterminada,
             sucursal: selectedBranchOffice.nombre,
@@ -170,7 +170,7 @@ const ModalCreate: React.FC = () => {
         }
     }
     const selectPredeterminada = (ChangeEvent:any) => {
-        let exist = sucursales_nuevas.filter((x:any) => x.predeterminado_empresa==true)
+        const exist = sucursales_nuevas.filter((x:any) => x.predeterminado_empresa==true)
         if (exist.length > 0) {
             Swal.fire('Notificacion', 'Ya existe una empresa predeterminada para este almacen: ' + exist[0].empresa, 'info')
             return

@@ -30,7 +30,7 @@ const MaxMin: React.FC = () => {
     const { getBranchOfficeXCompanies }: any = storeBranchOffcies();
     const { store, getStore }: any = storeStore()
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     const { articleByOne }: any = useStore(storeArticles);
     const { setMaxsMins, maxsMins, deleteMaxsMins, setWarinings } = useStore(storeArticles);
@@ -50,7 +50,7 @@ const MaxMin: React.FC = () => {
 
     const addMaxMin = async () => {
 
-        let filter = await maxsMins.find((x: any) => x.id_almacen == selectedMaxMinStore && x.accion==selectedAction)
+        const filter = await maxsMins.find((x: any) => x.id_almacen == selectedMaxMinStore && x.accion==selectedAction)
 
         if (filter) {
             setWarinings('maxsmins')
@@ -66,7 +66,7 @@ const MaxMin: React.FC = () => {
             }
 
             setWarinings('')
-            let dataMaxMin = {
+            const dataMaxMin = {
                 id_almacen: selectedMaxMinStore,
                 maximo: maximum,
                 minimo: minimum,
@@ -142,7 +142,7 @@ const MaxMin: React.FC = () => {
     }
 
 
-    let actionMaxMin: any = {
+    const actionMaxMin: any = {
         1: 'Crear requisición',
         2: 'Traspaso automatico',
         3: 'Orden de compra'

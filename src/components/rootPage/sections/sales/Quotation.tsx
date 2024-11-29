@@ -12,7 +12,7 @@ import { storeQuotation } from '../../../../zustand/Quotation'
 
 const Quotation: React.FC = () => {
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const setModal = storeModals(state => state.setModal)
 
@@ -36,7 +36,7 @@ const Quotation: React.FC = () => {
 
   const fetch = async () => {
       setDates([hoy, haceUnaSemana])
-       let data = {
+       const data = {
         folio: 0,
         id_sucursal: branchOffices?.id,
         id_serie: 0,
@@ -45,7 +45,7 @@ const Quotation: React.FC = () => {
         id_usuario: user_id,
       }
       try {
-        let result = await APIs.getQuotation(data);
+        const result = await APIs.getQuotation(data);
         if (result) {
           setData(result);
         } else {
@@ -79,7 +79,7 @@ const Quotation: React.FC = () => {
   };
 
   const searchQuotation = async () => {
-    let data = {
+    const data = {
       folio: 0,
       id_sucursal: branchOffices?.id,
       id_serie: 0,
@@ -89,7 +89,7 @@ const Quotation: React.FC = () => {
     }
 
     try {
-      let result = await APIs.getQuotation(data)
+      const result = await APIs.getQuotation(data)
       setData(result)
     } catch (error) {
 

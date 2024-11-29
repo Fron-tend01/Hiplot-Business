@@ -15,7 +15,7 @@ import './ModalRequisition.css'
 
 const ModalRequisition: React.FC = () => {
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   /////////////// Requisiciones /////////////////////////////
   const setUpdateToRequisition = storeRequisitions((state: any) => state.setUpdateToRequisition);
@@ -67,14 +67,14 @@ const ModalRequisition: React.FC = () => {
   }, [])
 
   const fetch = async () => {
-    let resultCompanies = await getCompaniesXUsers(user_id)
+    const resultCompanies = await getCompaniesXUsers(user_id)
     setCompanies(resultCompanies)
     if (updateToRequisition) {
       setSelectedModalCompany(updateToRequisition.id_empresa)
-      let resultBranch = await getBranchOffices(updateToRequisition.id_empresa, user_id)
+      const resultBranch = await getBranchOffices(updateToRequisition.id_empresa, user_id)
       setBranchOffices(resultBranch)
       setSelectedBranchOffice(resultBranch[0].id)
-      let resultAreas = await getAreas(resultBranch[0].id, user_id)
+      const resultAreas = await getAreas(resultBranch[0].id, user_id)
       setAreas(resultAreas)
       setSelectedModalArea(resultAreas[0].id)
     }
@@ -128,10 +128,10 @@ const ModalRequisition: React.FC = () => {
   const handleModalCompaniesChange = async (company: any) => {
     setSelectedModalCompany(company.id);
     setSelectModalCompanies(false);
-    let resultBranch = await getBranchOffices(company.id, user_id)
+    const resultBranch = await getBranchOffices(company.id, user_id)
     setBranchOffices(resultBranch)
     setSelectedBranchOffice(resultBranch[0].id)
-    let resultAreas = await getAreas(resultBranch[0].id, user_id)
+    const resultAreas = await getAreas(resultBranch[0].id, user_id)
     setAreas(resultAreas)
     setSelectedModalArea(resultAreas[0].id)
 
@@ -204,7 +204,7 @@ const ModalRequisition: React.FC = () => {
     setStateLoading(true)
     // let art_tmp = articles.filter((x:any)=>x.id == selectedResult)
 
-    let data = {
+    const data = {
       id: updateToRequisition ? updateToRequisition.id : null,
       id_usuario_crea: user_id,
       id_sucursal: selectedBranchOffice,
@@ -220,12 +220,12 @@ const ModalRequisition: React.FC = () => {
 
     if (updateToRequisition) {
       try {
-        let result: any = await APIs.updateRequisition(data)
+        const result: any = await APIs.updateRequisition(data)
         if (result.error == true) {
           Swal.fire('advertencia', result.mensaje, 'warning');
         } {
           Swal.fire(result.mensaje, '', 'success');
-          let data = {
+          const data = {
             id_sucursal: 0,
             id_usuario: user_id,
             id_area: 0,
@@ -234,7 +234,7 @@ const ModalRequisition: React.FC = () => {
             hasta:dates[1],
             status: 0
           };
-          let resultRequisition = await getRequisition(data)
+          const resultRequisition = await getRequisition(data)
           setRequisitions(resultRequisition)
           setModalStateCreate('')
         }
@@ -245,12 +245,12 @@ const ModalRequisition: React.FC = () => {
       }
     } else {
       try {
-        let result = await createRequisition(data)
+        const result = await createRequisition(data)
         if (result.error == true) {
           Swal.fire('advertencia', result.mensaje, 'warning');
         } else {
           Swal.fire('Requisision creada exitosamente', '', 'success');
-          let data = {
+          const data = {
             id_sucursal: 0,
             id_usuario: user_id,
             id_area: 0,
@@ -259,7 +259,7 @@ const ModalRequisition: React.FC = () => {
             hasta:dates[1],
             status: 0
           };
-          let resultRequisition = await getRequisition(data)
+          const resultRequisition = await getRequisition(data)
           setRequisitions(resultRequisition)
           setModalStateCreate('')
         }
@@ -283,14 +283,14 @@ const ModalRequisition: React.FC = () => {
 
   const updateStatus = async () => {
 
-    let data = {
+    const data = {
       id: updateToRequisition.id,
       status: !updateToRequisition.status
     }
 
     try {
       await APIs.updateStatusRequisition(data)
-      let resultRequisition = await getRequisition(dataGet)
+      const resultRequisition = await getRequisition(dataGet)
       setRequisitions(resultRequisition)
       setModalStateCreate('')
     } catch (error) {

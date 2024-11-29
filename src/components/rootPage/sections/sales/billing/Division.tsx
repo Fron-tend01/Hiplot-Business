@@ -18,15 +18,15 @@ const Division = () => {
 
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        let a = division.cantidad
-        let x = divisiones.length
-        let c: any = e.target.value;
-        let f = a - c;
+        const a = division.cantidad
+        const x = divisiones.length
+        const c: any = e.target.value;
+        const f = a - c;
         
         if (x > 1) {
-        let g = f / (x - 1);
+        const g = f / (x - 1);
         
-        let nuevasDivisiones = divisiones.map((division, i) => {
+        const nuevasDivisiones = divisiones.map((division, i) => {
             if (i === index) {
                 return {
                     ...division,
@@ -46,15 +46,15 @@ const Division = () => {
     }
              
     const handleUnitPriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        let a = division.precio_unitario
-        let x = divisiones.length
-        let c: any = e.target.value;
-        let f = a - c;
+        const a = division.precio_unitario
+        const x = divisiones.length
+        const c: any = e.target.value;
+        const f = a - c;
 
         if (x > 1) {
-        let g = f / (x - 1); 
+        const g = f / (x - 1); 
 
-        let nuevasDivisiones = divisiones.map((division, i) => {
+        const nuevasDivisiones = divisiones.map((division, i) => {
             if (i === index) {
                 return {
                     ...division,
@@ -77,15 +77,15 @@ const Division = () => {
 
 
     const handleTotalPriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: any) => {
-        let a = division.total_concepto
-        let x = divisiones.length
-        let c: any = e.target.value;
-        let f = a - c;
+        const a = division.total_concepto
+        const x = divisiones.length
+        const c: any = e.target.value;
+        const f = a - c;
 
         if (x > 1) {
-        let g = f / (x - 1); 
+        const g = f / (x - 1); 
 
-        let nuevasDivisiones = divisiones.map((division, i) => {
+        const nuevasDivisiones = divisiones.map((division, i) => {
             if (i === index) {
                 return {
                     ...division,
@@ -113,7 +113,7 @@ const Division = () => {
             const num = parseInt(value, 10);
 
             if (num > 0) {
-                let newDivisiones = [];
+                const newDivisiones = [];
                 for (let i = 0; i < num; i++) {
                     // Creamos una copia del objeto division para evitar mutaciones directas
                     const divisionCopy = { ...division };

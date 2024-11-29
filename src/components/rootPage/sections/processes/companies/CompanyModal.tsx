@@ -23,7 +23,7 @@ const CompanyModal = () => {
 
 
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
 
     const [formEf, setFormEf] = useState({
@@ -53,7 +53,7 @@ const CompanyModal = () => {
  
 
     const fetch = async () => {
-        let data = await getCompaniesXUsers(user_id);
+        const data = await getCompaniesXUsers(user_id);
         setDataEmpresas({
             selectName: 'Sucursal Req. Auto',
             dataSelect: data,

@@ -22,7 +22,7 @@ const PurchaseOrders: React.FC = () => {
 
   const { getPurchaseOrders, purchaseOrders, selectedBranchOffice, type, dates }: any = storePurchaseOrders();
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
 
   const [selectedCompany, setSelectedCompany] = useState<number | null>(null)
@@ -38,18 +38,18 @@ const PurchaseOrders: React.FC = () => {
 
   const fecth = async () => {
 
-    let dataS = {
+    const dataS = {
       id: user_id,
       tipo_ducumento: 1
     }
   
-    let resultSeries = await APIs.getSeriesXUser(dataS)
+    const resultSeries = await APIs.getSeriesXUser(dataS)
     setSeries(resultSeries)
     
     setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
    
 
-    let data = {
+    const data = {
       id: 0,
       folio: 0,
       id_serie: 0,
@@ -66,7 +66,7 @@ const PurchaseOrders: React.FC = () => {
  
 
 
-    let result = await APIs.getPurchaseOrders(data);
+    const result = await APIs.getPurchaseOrders(data);
     setPurchaseOrders(result)
 
   }

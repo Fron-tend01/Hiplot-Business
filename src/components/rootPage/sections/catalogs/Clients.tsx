@@ -10,7 +10,7 @@ import { storeClients } from '../../../../zustand/Clients'
 
 const Clients: React.FC = () => {
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const {getCompaniesXUsers}: any = companiesRequests()
   const [companies, setCompanies] = useState<any>([])
@@ -26,33 +26,33 @@ const Clients: React.FC = () => {
   const setModal = storeModals(state => state.setModal)
   const { modal }: any = storeModals()
   const fetch = async () => {
-      let resultCompanies = await getCompaniesXUsers(user_id);
+      const resultCompanies = await getCompaniesXUsers(user_id);
       setCompanies(resultCompanies)
       setSelectedCompany(resultCompanies[0].id)
 
-      let resultBranchOffices = await getBranchOffices(resultCompanies[0].id,  user_id);
+      const resultBranchOffices = await getBranchOffices(resultCompanies[0].id,  user_id);
       setBranchOffices(resultBranchOffices)
       setSelectedBranchOffice(resultBranchOffices[0].id)
 
 
-      let data = {
+      const data = {
         id_sucursal: resultBranchOffices[0].id,
         id_usuario: user_id,
         nombre: name
       }
 
-      let resultCLients = await getClients(data)
+      const resultCLients = await getClients(data)
       setClients(resultCLients)
    
   }
   const searchClient = async () =>  {
-    let data = {
+    const data = {
         id_sucursal: selectedBranchOffice,
         id_usuario: user_id,
         nombre: name
       }
 
-      let resultCLients = await getClients(data)
+      const resultCLients = await getClients(data)
       setClients(resultCLients)
    
   }
@@ -76,7 +76,7 @@ const Clients: React.FC = () => {
 
   const handleCompaniesChange = async (company: any) => {
       setSelectedCompany(company.id)
-      let resultBranchOffices = await getBranchOffices(company.id,  user_id);
+      const resultBranchOffices = await getBranchOffices(company.id,  user_id);
       setBranchOffices(resultBranchOffices)
       setSelectCompanies(false)
       setSelectedBranchOffice(resultBranchOffices[0].id)

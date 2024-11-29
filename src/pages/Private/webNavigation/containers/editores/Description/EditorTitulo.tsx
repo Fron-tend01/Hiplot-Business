@@ -63,7 +63,7 @@ const EditorTitulo = ({ dataEditorDescriptionTitulo }: any) => {
   };
 
   const handleTitleContainerChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    let value = event.target.value;
+    const value = event.target.value;
     setLocalEditor((prevStyles: any) => ({
       ...prevStyles,
       titulo: value,

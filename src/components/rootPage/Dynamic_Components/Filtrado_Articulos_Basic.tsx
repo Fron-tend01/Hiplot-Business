@@ -46,8 +46,8 @@ interface FiltradoArticulosBasicProps {
     const [familia, setFamilia] = useState<any>({})
 
 
-    let user_id = userState.id
-    let searchX = [
+    const user_id = userState.id
+    const searchX = [
         {
             id: 0,
             name: 'Código'
@@ -72,7 +72,7 @@ interface FiltradoArticulosBasicProps {
     }
 
     const searchFor = async () => {
-        let data = {
+        const data = {
             id: 0,
             activos: true,
             nombre: selectedSearch == 1 ? nameBy : '',
@@ -101,15 +101,15 @@ interface FiltradoArticulosBasicProps {
             id_usuario: user_id
         }
         if (selectedSearch === 0) {
-            let result = await getArticles(data)
+            const result = await getArticles(data)
             setArticles(result)
             setSelectedResult(result[0])
         } else if (selectedSearch === 1) {
-            let result = await getArticles(data)
+            const result = await getArticles(data)
             setArticles(result)
             setSelectedResult(result[0])
         } else if (selectedSearch === 2) {
-            let result = await getArticles(data)
+            const result = await getArticles(data)
             setArticles(result)
             setSelectedResult(result[0])
         }
@@ -126,7 +126,7 @@ interface FiltradoArticulosBasicProps {
 
 
     const fetch = async () => {
-        let dataFam = await getFamilies(user_id)
+        const dataFam = await getFamilies(user_id)
         setFamilia(dataFam[0])
         setSelectedSearch(0)
     }
@@ -136,7 +136,7 @@ interface FiltradoArticulosBasicProps {
     const agregar_articulos = (all: boolean) => {
         if (!all) {
             
-            let data = { ...selectedResult }; 
+            const data = { ...selectedResult }; 
             campos_ext.forEach(element => {
                if(element.tipo == 1) {
                 data[element.nombre] = data[element.asignacion];
@@ -149,9 +149,9 @@ interface FiltradoArticulosBasicProps {
             set_article_local((prevArticulos: any) => [...prevArticulos, data]);
 
         } else {
-            let datas: any = []
+            const datas: any = []
             articles.forEach((d:any) => {
-                let data = { ...d }; 
+                const data = { ...d }; 
                 campos_ext.forEach(element => {
                    
                     if(element.tipo == 1) {

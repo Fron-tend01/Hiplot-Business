@@ -11,7 +11,7 @@ import DynamicVariables from '../../../../../utils/DynamicVariables'
 
 const AddBranchOffices: React.FC = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     const { modalSub }: any = storeModals()
     const setModalSub = storeModals(state => state.setModalSub)
@@ -39,7 +39,7 @@ const AddBranchOffices: React.FC = () => {
         }
     ])
     const fetch = async () => {
-        let resultCompanies: any = await getCompaniesXUsers(user_id);
+        const resultCompanies: any = await getCompaniesXUsers(user_id);
         setCompanies(resultCompanies)
         setSelectCompanies(resultCompanies[0].id)
         handleCompaniesChange(resultCompanies[0])
@@ -60,9 +60,9 @@ const AddBranchOffices: React.FC = () => {
         getRefs()
     }, [])
     const getRefs = async () => {
-        let result: any = await APIs.GetAny("getFormaPago")
+        const result: any = await APIs.GetAny("getFormaPago")
         setFormaPago(result)
-        let res: any = await APIs.GetAny("getCondPago")
+        const res: any = await APIs.GetAny("getCondPago")
         setCondPago(res)
         DynamicVariables.updateAnyVar(setInputs, "forma_pago", result[0].ID)
         DynamicVariables.updateAnyVar(setInputs, "condiciones_pago", res[0].ID)
@@ -77,7 +77,7 @@ const AddBranchOffices: React.FC = () => {
 
     const handleCompaniesChange = async (company: any) => {
         setSelectedCompany(company.id)
-        let resultBranchOffices = await getBranchOffices(company.id, user_id);
+        const resultBranchOffices = await getBranchOffices(company.id, user_id);
         setBranchOffices(resultBranchOffices)
 
         setSelectCompanies(false)
@@ -105,7 +105,7 @@ const AddBranchOffices: React.FC = () => {
     }
 
     const addBranch = () => {
-        let filter = branchOffices.filter((x: any) => x.id == selectedBranchOffice)
+        const filter = branchOffices.filter((x: any) => x.id == selectedBranchOffice)
         DynamicVariables.updateAnyVar(setInputs, "sucursal", filter[0].nombre)
         setAddBranchClients([...addBranchClients, inputs])
     }

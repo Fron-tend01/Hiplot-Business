@@ -67,7 +67,7 @@ const Requisition: React.FC = () => {
 
   const { getSeriesXUser }: any = storeSeries();
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const hoy = new Date();
   const haceUnaSemana = new Date();
@@ -86,7 +86,7 @@ const Requisition: React.FC = () => {
     setSelectedId('empresa', 0)
 
       
-      let data = {
+      const data = {
         id_sucursal: 0,
         id_usuario: user_id,
         id_area: 0,
@@ -96,10 +96,10 @@ const Requisition: React.FC = () => {
         status: 0
       };
       setDataGet(data)
-      let resultRequisition = await getRequisition(data)
+      const resultRequisition = await getRequisition(data)
       setRequisitions(resultRequisition)
     
-    let resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 0 })
+    const resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 0 })
     resultSeries.unshift({ nombre: 'Todos', id: 0 });
     setSeries(resultSeries)
     setSelectedSerie(resultSeries[0].id)
@@ -250,7 +250,7 @@ console.log(dates)
   }
 
   const searchByFolio = async () => {
-      let data = {
+      const data = {
 
         id_sucursal: selectedIds.sucursal.id || selectedIds.sucursal,
         id_usuario: user_id,
@@ -260,7 +260,7 @@ console.log(dates)
         hasta: dates[1],
         status: status
       };
-      let resultRequisition = await getRequisition(data)
+      const resultRequisition = await getRequisition(data)
       setRequisitions(resultRequisition)
  
   }

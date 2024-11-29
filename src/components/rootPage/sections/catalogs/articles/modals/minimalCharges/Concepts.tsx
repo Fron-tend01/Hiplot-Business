@@ -9,10 +9,13 @@ import useUserStore from '../../../../../../../zustand/General'
 import { useSelectStore } from '../../../../../../../zustand/Select'
 import './Concepts.css'
 
+interface ConceptsProps {
+  index: any; // Cambia `any` por el tipo específico de `index`, si lo conoces (ejemplo: `number` o `string`).
+}
 
-const Concepts: React.FC = ({index}: any) => {
+const Concepts: React.FC<ConceptsProps> = ({index}) => {
     const userState = useUserStore((state) => state.user);
-    let user_id = userState.id;
+    const user_id = userState.id;
   
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
   

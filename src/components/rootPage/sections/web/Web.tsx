@@ -15,7 +15,7 @@ const Web = () => {
   const {webPages, getWebPages }: any = storeWebPages();
 
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const [modalState, setModalState] = useState<boolean>(false)
 
@@ -75,7 +75,7 @@ const [branchOfficesFiltering, setBranchOfficesFiltering] = useState<any>([])
 
 
 const selectAutomatic = (company_id: number) => {
-    let filter = branchOfficeXCompanies.filter((x: any) => x.empresa_id === company_id)
+    const filter = branchOfficeXCompanies.filter((x: any) => x.empresa_id === company_id)
     setBranchOfficesFiltering(filter)
     setSelectedBranchOffice(filter.length > 0 ? filter[0].id : null);
 

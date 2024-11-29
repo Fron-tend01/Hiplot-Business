@@ -11,7 +11,7 @@ import Swal from 'sweetalert2'
 
 const Direct: React.FC = () => {
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
 
 
@@ -65,7 +65,7 @@ const Direct: React.FC = () => {
 
   const search = async () => {
     
-    let data = {
+    const data = {
         id: 0,
         activos: true,
         nombre: selectedSearchBy == 1 ? inputSearch : '',

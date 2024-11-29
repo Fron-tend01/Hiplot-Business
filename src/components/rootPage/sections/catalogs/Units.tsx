@@ -27,7 +27,7 @@ const Units = () => {
     }
 
     const get = async () => {
-        let result = await APIs.getUnits()
+        const result = await APIs.getUnits()
         setUnits(result)
     }
 
@@ -53,7 +53,7 @@ const Units = () => {
         setModal(false)
     }
     const getClavesUnidad = async () => {
-        let result: any = await APIs.CreateAny(searcher, "getClavesUnidad")
+        const result: any = await APIs.CreateAny(searcher, "getClavesUnidad")
         DynamicVariables.updateAnyVar(setCu, "result", result)
         DynamicVariables.updateAnyVar(setCu, "selected", result[0])
     }
@@ -65,7 +65,7 @@ const Units = () => {
     const handleCreateUnits = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        let data = {
+        const data = {
             nombre: name,
             descripcion: description,
             clave_sat: cu.selected.ID,
@@ -116,7 +116,7 @@ const Units = () => {
 
     const handleUpdateUnits = async (e: React.FormEvent) => {
         e.preventDefault();
-        let data = {
+        const data = {
             id: id,
             nombre: name,
             descripcion: description,

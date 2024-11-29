@@ -16,7 +16,7 @@ import APIs from '../../../../../services/services/APIs'
 
 const ModalCreate: React.FC = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     const setModal = storeWarehouseExit(state => state.setModal)
     const setConcepts = storeWarehouseExit(state => state.setConcepts)
@@ -37,8 +37,8 @@ const ModalCreate: React.FC = () => {
     const [store, setStore] = useState<any>()
 
     const fecht = async () => {
-        let companies = await getCompaniesXUsers(user_id)
-        let store = await getStore(user_id)
+        const companies = await getCompaniesXUsers(user_id)
+        const store = await getStore(user_id)
         setStore({
             selectName: 'Almacen',
             options: 'nombre',
@@ -66,7 +66,7 @@ const ModalCreate: React.FC = () => {
 
 
     const deleteConcepts = (_: any, indexConcept: number) => {
-        let filter = concepts.filter((_: number, index: number) => index !== indexConcept)
+        const filter = concepts.filter((_: number, index: number) => index !== indexConcept)
         setConcepts(filter)
 
     }
@@ -79,18 +79,18 @@ const ModalCreate: React.FC = () => {
     };
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        let value = Number.isNaN(parseFloat(e.target.value)) ? 0: parseFloat(e.target.value);
+        const value = Number.isNaN(parseFloat(e.target.value)) ? 0: parseFloat(e.target.value);
         
         const newArticleStates = [...concepts];
         newArticleStates[index].cantidad = value;
 
-        let stocks = concepts[index].stock;
-        let almacen_predeterminado = selectedIds?.store;
+        const stocks = concepts[index].stock;
+        const almacen_predeterminado = selectedIds?.store;
 
-        let filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id);
+        const filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id);
 
         if (filter) {
-            let equivalencias = filter[0].equivalencias.filter((x:any)=> x.id_unidad==newArticleStates[index].unidad)
+            const equivalencias = filter[0].equivalencias.filter((x:any)=> x.id_unidad==newArticleStates[index].unidad)
             console.log('value',value);
             console.log('canti',equivalencias[0].cantidad);
             
@@ -131,7 +131,7 @@ const ModalCreate: React.FC = () => {
     const handleCreateWarehouseExit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
-        let data = {
+        const data = {
             id_usuario_crea: user_id,
             id_sucursal: branchOffices.id,
             id_almacen: selectedIds.store.id,
@@ -154,9 +154,9 @@ const ModalCreate: React.FC = () => {
             return
         }
         try {
-            let result: any = await APIs.createWarehouseExit(data)
+            const result: any = await APIs.createWarehouseExit(data)
             Swal.fire(result.mensaje, '', 'success');
-            let resultGet: any = await APIs.getWarehouseExit(dataGet)
+            const resultGet: any = await APIs.getWarehouseExit(dataGet)
 
             setWarehouseExit(resultGet)
             setModal('')

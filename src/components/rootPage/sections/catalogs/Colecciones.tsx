@@ -103,7 +103,7 @@ export default function Colecciones() {
   const [data, setData] = useState<any>(null)
 
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
 
   useEffect(() => {
@@ -155,7 +155,7 @@ export default function Colecciones() {
     }
   };
   const selectAutomaticSuc = (company: any) => {
-    let filter = branchOfficeXCompanies.filter((x: any) => x.empresa_id === company)
+    const filter = branchOfficeXCompanies.filter((x: any) => x.empresa_id === company)
     setFilteringBranchOffices(filter)
   }
   //   const getData = async () => {
@@ -163,7 +163,7 @@ export default function Colecciones() {
   //     setData(result)
   // }
   const addEmpresa = () => {
-    let data = {
+    const data = {
       id: 0,
       id_empresa: coleccion.id_empresa,
       razon_social: coleccion.empresa.razon_social,
@@ -182,19 +182,19 @@ export default function Colecciones() {
     setSelectTypeSearch(false)
   }
   const searchFor = () => {
-    let id = 0;
-    let activos = true;
-    let nombre = '';
-    let codigo = searchBy;
-    let familia = 0;
-    let proveedor = 0;
-    let materia_prima = 0;
-    let get_sucursales = false;
-    let get_proveedores = false;
-    let get_max_mins = false;
-    let get_plantilla_data = false;
-    let get_stock = false;
-    let id_usuario = user_id;
+    const id = 0;
+    const activos = true;
+    const nombre = '';
+    const codigo = searchBy;
+    const familia = 0;
+    const proveedor = 0;
+    const materia_prima = 0;
+    const get_sucursales = false;
+    const get_proveedores = false;
+    const get_max_mins = false;
+    const get_plantilla_data = false;
+    const get_stock = false;
+    const id_usuario = user_id;
 
     if (selectedTypeSearch === 0) {
       getArticles({ id, activos, nombre, codigo, familia, proveedor, materia_prima, get_sucursales, get_proveedores, get_max_mins, get_plantilla_data, get_stock, id_usuario })
@@ -212,9 +212,9 @@ export default function Colecciones() {
     setSelectModalResults(!selectModalResults)
   }
   const addArticles = () => {
-    let seleccionado = articles.filter((a: any) => a.id == selectedModalResult)
-    let sel = seleccionado[0]
-    let data = {
+    const seleccionado = articles.filter((a: any) => a.id == selectedModalResult)
+    const sel = seleccionado[0]
+    const data = {
       id: sel.id,
       codigo: sel.codigo,
       nombre: sel.nombre,
@@ -244,7 +244,7 @@ export default function Colecciones() {
     })
   }
   const getData = async () => {
-    let result = await APIs.GetAny("get_coleccion/get")
+    const result = await APIs.GetAny("get_coleccion/get")
     setData(result)
 }
 const updateColeccion = async (e: React.FormEvent)=> {

@@ -29,7 +29,7 @@ const Personalized: React.FC = () => {
   const [units, setUnits] = useState<any>()
 
   const fetch = async () => {
-    let result = await APIs.getUnits()
+    const result = await APIs.getUnits()
     setUnits({
       selectName: 'Unidades',
       options: 'nombre',
@@ -65,25 +65,25 @@ const Personalized: React.FC = () => {
     setCustomData(newData)
 
     if(modal === 'update-modal__qoutation') {
-      let exist = normalConcepts.some((x: any) => x.id == item.id)
+      const exist = normalConcepts.some((x: any) => x.id == item.id)
 
       
     if (exist) {
       ////////////////////////////////////// Se agrega ///////////////////////
-      let findItem = customData.find((xx: any) => xx.id == item.id)
+      const findItem = customData.find((xx: any) => xx.id == item.id)
       setCustomConcepts([...customConcepts, findItem]);
 
-      let deleteFilter = normalConcepts.filter((xx: any) => xx.id !== item.id)
+      const deleteFilter = normalConcepts.filter((xx: any) => xx.id !== item.id)
       setNormalConcepts(deleteFilter)
       
 
       
       return
     } else {
-      let find = customConcepts.find((xx: any) => xx.id == item.id)
+      const find = customConcepts.find((xx: any) => xx.id == item.id)
       setNormalConcepts([...normalConcepts, find])
 
-      let deleteFilter = customConcepts.filter((xx: any) => xx.id !== item.id)
+      const deleteFilter = customConcepts.filter((xx: any) => xx.id !== item.id)
       setCustomConcepts(deleteFilter)
 
     }
@@ -92,24 +92,24 @@ const Personalized: React.FC = () => {
 
   
 
-    let exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
+    const exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
 
     if (exist) {
       ////////////////////////////////////// Se agrega ///////////////////////
-      let findItem = customData.find((xx: any) => xx.id_identifier == item.id_identifier)
+      const findItem = customData.find((xx: any) => xx.id_identifier == item.id_identifier)
       setCustomConcepts([...customConcepts, findItem]);
 
-      let deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+      const deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
       setNormalConcepts(deleteFilter)
       
 
       
       return
     } else {
-      let find = customConcepts.find((xx: any) => xx.id_identifier == item.id_identifier)
+      const find = customConcepts.find((xx: any) => xx.id_identifier == item.id_identifier)
       setNormalConcepts([...normalConcepts, find])
 
-      let deleteFilter = customConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+      const deleteFilter = customConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
       setCustomConcepts(deleteFilter)
 
     }
@@ -119,7 +119,7 @@ const Personalized: React.FC = () => {
   const [selectsSatKey, setSelectsSatKey] = useState<any>()
   const [selectedSatKey, setSelectedSatKey] = useState<any>()
 
-  const [modalStatus, setModalStatus] = useState<Boolean>(false)
+  const [modalStatus, setModalStatus] = useState<boolean>(false)
 
   useEffect(() => {
     if (personalizedModal !== '') {
@@ -140,7 +140,7 @@ const Personalized: React.FC = () => {
 
 
     if (personalizedModal == 'personalized_modal-quotation') {
-      let data = {
+      const data = {
         descripcion: inpust.descripcion,
         personalized: true,
         codigo: inpust.codigo,
@@ -163,7 +163,7 @@ const Personalized: React.FC = () => {
     }
 
     if (personalizedModal == 'personalized_modal-sale') {
-      let data = {
+      const data = {
         descripcion: inpust.descripcion,
         personalized: true,
         codigo: inpust.codigo,

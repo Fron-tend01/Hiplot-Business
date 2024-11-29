@@ -10,7 +10,7 @@ import Empresas_Sucursales from '../../../../Dynamic_Components/Empresas_Sucursa
 
 const BranchOffices: React.FC = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     const { articleByOne, setBranchOffices, branchOffices, setDeleteBranchOffices, deleteBranchOffices, subModal }: any = useStore(storeArticles);
 
@@ -57,7 +57,7 @@ const BranchOffices: React.FC = () => {
 
 
     const addBranchOffice = () => {
-        let data = {
+        const data = {
             company_id: companies.id,
             id_sucursal: selectedBranchOffice.id,
             empresa: companies.razon_social,

@@ -56,7 +56,7 @@ const ListasFranquicias = () => {
   const [articulos, setArticulos] = useState<any[]>([])
   const { getCompaniesXUsers }: any = companiesRequests()
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const Modal = (modoUpdate: boolean, data: any) => {
     setModal(true)
@@ -82,11 +82,11 @@ const ListasFranquicias = () => {
     }
   }
   const getData = async () => {
-    let result = await APIs.GetAny("listas_venta_franquicia/get")
+    const result = await APIs.GetAny("listas_venta_franquicia/get")
     setData(result)
   }
   const getEmpresas = async () => {
-    let resultCompanies = await getCompaniesXUsers(user_id)
+    const resultCompanies = await getCompaniesXUsers(user_id)
     console.log(resultCompanies)
     setProveedor({
       selectName: 'Proveedor',
@@ -113,7 +113,7 @@ const ListasFranquicias = () => {
     }
 
 
-    let createObjLf = { ...lf };
+    const createObjLf = { ...lf };
 
     createObjLf.id_empresa = selectData.proveedor.id;
     createObjLf.id_empresa_franquicia = franquicia.id;

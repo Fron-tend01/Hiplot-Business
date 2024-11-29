@@ -14,7 +14,7 @@ import Swal from 'sweetalert2'
 const CobrosFranquicia: React.FC = () => {
     const userState = useUserStore(state => state.user);
     
-    let user_id = userState.id;
+    const user_id = userState.id;
     const setSubModal = storeArticles(state => state.setSubModal)
     const setCobrosFranquicia = storeArticles(state => state.setCobrosFranquicia)
     const setDeleteCobros_franquicia = storeArticles(state => state.setDeleteCobros_franquicia)
@@ -32,7 +32,7 @@ const CobrosFranquicia: React.FC = () => {
     const [proveedores, setProveedores] = useState<any>([])
     const [userGroups, setUserGroups] = useState<any>([])
     const fetch = async () => {
-        let resultCompanies = await getCompaniesXUsers(user_id)
+        const resultCompanies = await getCompaniesXUsers(user_id)
   
         setFranquicias({
             selectName: 'Franquicias',
@@ -46,7 +46,7 @@ const CobrosFranquicia: React.FC = () => {
             dataSelect: resultCompanies
         })
        
-        let resultUserGroup = await getUserGroups(user_id)
+        const resultUserGroup = await getUserGroups(user_id)
         setUserGroups({
             selectName: 'Grupos de usuarios',
             options: 'nombre',
@@ -61,7 +61,7 @@ const CobrosFranquicia: React.FC = () => {
        
     }, [])
     const addCobroFranquicia = () => {
-        let exist = cobros_franquicia.filter((x: any) => x.id_empresa == selectData.franquicia.id && x.id_empresa_proveedor == selectData.proveedor.id && x.id_grupo_us == selectData.grupo_us.id)
+        const exist = cobros_franquicia.filter((x: any) => x.id_empresa == selectData.franquicia.id && x.id_empresa_proveedor == selectData.proveedor.id && x.id_grupo_us == selectData.grupo_us.id)
         if (selectData.franquicia==undefined || selectData.proveedor== undefined || selectData.grupo_us== undefined) {
             Swal.fire('Notificacion', 'Llena todos los campos para continuar', 'warning')
             return
@@ -70,7 +70,7 @@ const CobrosFranquicia: React.FC = () => {
             Swal.fire('Notificacion', 'Ya existe este registro creado', 'warning')
             return
         }
-        let data = {
+        const data = {
             id_empresa: selectData.franquicia.id,
             empresa_franquicia: selectData.franquicia.razon_social,
             id_empresa_proveedor: selectData.proveedor.id,

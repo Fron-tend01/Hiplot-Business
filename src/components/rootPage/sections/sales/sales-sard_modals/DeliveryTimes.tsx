@@ -13,8 +13,8 @@ const DeliveryTimes: React.FC = () => {
   const [customer, setCustomer] = useState<any>()
 
 
-  let filterClient = article?.tiempos_entrega.filter((x: any) => x.tipo == 1);
-  let filterCustomer = article?.tiempos_entrega.filter((x: any) => x.tipo == 2);
+  const filterClient = article?.tiempos_entrega.filter((x: any) => x.tipo == 1);
+  const filterCustomer = article?.tiempos_entrega.filter((x: any) => x.tipo == 2);
 
   useEffect(() => {
     setClient(filterClient)

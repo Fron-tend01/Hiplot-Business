@@ -22,7 +22,7 @@ const Variations: React.FC = () => {
   const [selectedSearch, setSelectedSearch] = useState<number | null>(null)
   const [nameBy, setNameBy] = useState<string | number>('')
 
-  let searchX = [
+  const searchX = [
     {
       id: 0,
       name: 'Código'
@@ -52,7 +52,7 @@ const Variations: React.FC = () => {
   }, [articleToUpdate])
 
   const searchFor = async () => {
-    let data = {
+    const data = {
       id: 0,
       activos: true,
       nombre: selectedSearch == 1 ? nameBy : '',
@@ -69,10 +69,10 @@ const Variations: React.FC = () => {
       get_unidades: true
     }
     if (selectedSearch === 0) {
-      let result = await getArticles(data)
+      const result = await getArticles(data)
       setArticles(result)
     } else if (selectedSearch === 1) {
-      let result = await getArticles(data)
+      const result = await getArticles(data)
       setArticles(result)
     }
   }
@@ -99,7 +99,7 @@ const Variations: React.FC = () => {
 
   const addRequisition = () => {
 
-    let articleData = {
+    const articleData = {
       id_articulo: selectedResult.id,
       codigo: selectedResult.codigo,
       descripcion: selectedResult.descripcion,
@@ -118,7 +118,7 @@ const Variations: React.FC = () => {
   }
 
   const deleteVariations = (item: any) => {
-    let filter = viewVariations.filter((x: any) => x.id !== item.id)
+    const filter = viewVariations.filter((x: any) => x.id !== item.id)
     setViewVariations(filter)
     setVariations(filter)
     setDeleteVariations(filter)

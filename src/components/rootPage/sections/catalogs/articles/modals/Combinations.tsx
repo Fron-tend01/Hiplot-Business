@@ -16,7 +16,7 @@ const Combinations: React.FC = () => {
     const [combinationsData, setCombinationsData] = useState<any>([])
 
     const fetch = async () => {
-        let resultCombinations = await APIs.getCombinations()
+        const resultCombinations = await APIs.getCombinations()
         setCombinationsData(resultCombinations)
 
         if (articleByOne) {
@@ -39,7 +39,7 @@ const Combinations: React.FC = () => {
 
     const [combinationModal, setCombinationModal] =useState<any>()
 
-    let modal  = (x: any) => {
+    const modal  = (x: any) => {
         setModalCharacteristics('create_modal_characteristics')
         setCombinationModal(x)
     }

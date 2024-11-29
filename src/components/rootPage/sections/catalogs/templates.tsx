@@ -34,7 +34,7 @@ const Templates: React.FC = () => {
   const { getBranchOfficeXCompanies }: any = storeBranchOffcies();
   const { createTemplates, templates, getTemplates, updateTemplates }: any = storeTemplates()
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   useEffect(() => {
     getCompaniesXUsers(user_id)
@@ -85,7 +85,7 @@ const Templates: React.FC = () => {
   const deleteUser = (indexToRemove: number) => {
     // Filtrar el usuario a eliminar del arreglo data_ext
     if (modoUpdate) {
-      let filter = data_extDos.filter((_, index) => index == indexToRemove)
+      const filter = data_extDos.filter((_, index) => index == indexToRemove)
       if (filter.length > 0) {
         if (filter[0].id !== undefined && filter[0].id !== null) {
           setData_eliminar([...data_eliminar, filter[0].id])
@@ -103,7 +103,7 @@ const Templates: React.FC = () => {
 
     console.log(data_extDos);
     if (Array.isArray(data_extDos) && data_extDos.length > 0) {
-      let data = {
+      const data = {
         nombre: name,
         id_empresa: selectedCompany
       };
@@ -116,7 +116,7 @@ const Templates: React.FC = () => {
           console.error("Error al crear familias:", error);
         }
       } else {
-        let filter = data_extDos.filter((x: any) => x.id == undefined || x.id == 0 || x.id == null)
+        const filter = data_extDos.filter((x: any) => x.id == undefined || x.id == 0 || x.id == null)
         await updateTemplates(id_template, data, filter, data_eliminar)
         setModalState(false)
         getTemplates(user_id)

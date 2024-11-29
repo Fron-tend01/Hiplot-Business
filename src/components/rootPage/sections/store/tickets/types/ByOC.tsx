@@ -16,7 +16,7 @@ import ModalPurchaseOrders from '../../../shopping/purchaseOrders/ModalPurchaseO
 
 const ByOC: React.FC = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////ByOCa///////////////////////////////////////////////////////
@@ -36,7 +36,7 @@ const ByOC: React.FC = () => {
     const [series, setSeries] = useState<any>([])
 
     const fecth = async () => {
-        let resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 2 })
+        const resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 2 })
         setSeries({
             selectName: 'Series',
             options: 'nombre',
@@ -66,7 +66,7 @@ const ByOC: React.FC = () => {
 
 
     const filterByRequest = async () => {
-        let data = {
+        const data = {
             folio: 0,
             id_serie: 0,
             id_sucursal: branchOffices.id,
@@ -78,7 +78,7 @@ const ByOC: React.FC = () => {
             status: 0
         }
         try {
-            let result = await APIs.getPurchaseOrders(data);
+            const result = await APIs.getPurchaseOrders(data);
             setPurchaseOrders(result)
         } catch (error) {
             console.error("Error fetching requisitions:", error);

@@ -15,7 +15,7 @@ import { storeProduction } from '../../../../zustand/Production'
 
 const Production: React.FC = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     const { getUsers }: any = usersRequests()
     const [users, setUsers] = useState<any>()
@@ -65,7 +65,7 @@ const Production: React.FC = () => {
 
     const fetch = async () => {
         
-        let dataProductionOrders = {
+        const dataProductionOrders = {
             folio: fol,
             id_sucursal: branchOffices.id,
             id_serie: selectedIds?.series.id,
@@ -77,13 +77,13 @@ const Production: React.FC = () => {
         }
 
         try {
-            let result = await APIs.getProoductionOrders(dataProductionOrders)
+            const result = await APIs.getProoductionOrders(dataProductionOrders)
             setProduction(result)
         } catch (error) {
             console.log(error)
         }
 
-        let data = {
+        const data = {
             nombre: '',
             id_usuario: user_id,
             id_usuario_consulta: user_id,
@@ -91,14 +91,14 @@ const Production: React.FC = () => {
             id_sucursal: 0
         }
 
-        let resultUsers = await getUsers(data)
+        const resultUsers = await getUsers(data)
         setUsers({
             selectName: 'Vendedores',
             options: 'nombre',
             dataSelect: resultUsers
         })
 
-        let resultSeries = await getSeriesXUser(user_id)
+        const resultSeries = await getSeriesXUser(user_id)
 
         setSeries({
             selectName: 'Series',
@@ -112,7 +112,7 @@ const Production: React.FC = () => {
     }, [])
 
     const search = async () => {
-        let dataProductionOrders = {
+        const dataProductionOrders = {
             folio: fol,
             id_sucursal: branchOffices.id,
             id_serie: selectedIds?.series.id,
@@ -124,7 +124,7 @@ const Production: React.FC = () => {
         }
 
         try {
-            let result = await APIs.getProoductionOrders(dataProductionOrders)
+            const result = await APIs.getProoductionOrders(dataProductionOrders)
             setProduction(result)
         } catch (error) {
             console.log(error)

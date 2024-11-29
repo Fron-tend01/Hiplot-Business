@@ -9,7 +9,7 @@ import { storeTypeOfPayments } from '../../../../../zustand/TypeOfPayments';
 
 const UpdateModal = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
 
     const [name, setName] = useState<any>()
@@ -29,8 +29,8 @@ const UpdateModal = () => {
 
     useEffect(() => {
       const fetch = async () => {
-          let resultTemplates = await getTemplates(user_id);
-          let resultTemplatesFields = await getTemplatesxFields();
+          const resultTemplates = await getTemplates(user_id);
+          const resultTemplatesFields = await getTemplatesxFields();
           setTemplates(resultTemplates);
           setTemplateFields(resultTemplatesFields);
       };
@@ -196,7 +196,7 @@ const UpdateModal = () => {
 
     const handleCreateTypeOfPayments = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        let data = {
+        const data = {
             nombre: name,
             operacion: operations
         }

@@ -43,7 +43,7 @@ const BranchOffices: React.FC = () => {
   const { branchOfficeXCompanies, getBranchOfficeXCompanies, }: any = storeBranchOffcies();
   const { companiesXUsers, getCompaniesXUsers }: any = storeCompanies();
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
 
 
@@ -83,7 +83,7 @@ const BranchOffices: React.FC = () => {
       if (nombre === '' || empresa_id === null || direccion === '' || contacto === '') {
         return;
       }
-      let data = {
+      const data = {
         id: sucursal_id,
         nombre: nombre,
         logo: logo,

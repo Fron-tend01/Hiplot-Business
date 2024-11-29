@@ -29,7 +29,7 @@ const Families: React.FC = () => {
   const { getBranchOfficeXCompanies, branchOfficeXCompanies }: any = storeBranchOffcies();
   const { createFamilies, families, getFamilies, getSections }: any = storeFamilies()
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const [arr1_nuevas, setArr1_nuevas] = useState<any[]>([])
   const [arr1_eliminar, setArr1_eliminar] = useState<number[]>([])
@@ -47,9 +47,9 @@ const Families: React.FC = () => {
   // Funciones para agregar usuarios
 
   const addCompany = () => {
-    let sucursal = branchOfficeXCompanies.filter((x: any) => x.id == selectedBranchOffice)
-    let empresa = companiesXUsers.filter((x: any) => x.id == selectedCompany)
-    let data = {
+    const sucursal = branchOfficeXCompanies.filter((x: any) => x.id == selectedBranchOffice)
+    const empresa = companiesXUsers.filter((x: any) => x.id == selectedCompany)
+    const data = {
       id_empresa: selectedCompany,
       id_sucursal: selectedBranchOffice,
       sucursal: sucursal[0].nombre,
@@ -63,7 +63,7 @@ const Families: React.FC = () => {
 
   const handleCreateFamilies = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    let data = {
+    const data = {
       data: {
         id: id,
         nombre: name,
@@ -107,7 +107,7 @@ const Families: React.FC = () => {
   const handleEmpresaChange = async (company: any) => {
     setselectedCompany(company)
     setSelectCompanies(false)
-    let result = await getBranchOfficeXCompanies(company, user_id)
+    const result = await getBranchOfficeXCompanies(company, user_id)
     setselectedBranchOffice(result[0].id)
     setBranchOffices(result)
   }

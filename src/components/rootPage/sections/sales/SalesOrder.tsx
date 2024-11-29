@@ -14,7 +14,7 @@ import { useSelectStore } from '../../../../zustand/Select'
 
 const SalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
     const { getUsers }: any = usersRequests()
     const [users, setUsers] = useState<any>()
@@ -69,7 +69,7 @@ console.log('sdsd',selectedIds)
 
     const fetch = async () => {
         
-        let dataSaleOrders = {
+        const dataSaleOrders = {
             folio: fol,
             id_sucursal: branchOffices.id,
             id_serie: selectedIds?.series.id,
@@ -81,10 +81,10 @@ console.log('sdsd',selectedIds)
             status: 0
         }
 
-        let result = await getSaleOrders(dataSaleOrders)
+        const result = await getSaleOrders(dataSaleOrders)
         setSaleOrders(result)
 
-        let data = {
+        const data = {
             nombre: '',
             id_usuario: user_id,
             id_usuario_consulta: user_id,
@@ -92,14 +92,14 @@ console.log('sdsd',selectedIds)
             id_sucursal: 0
         }
 
-        let resultUsers = await getUsers(data)
+        const resultUsers = await getUsers(data)
         setUsers({
             selectName: 'Vendedores',
             options: 'nombre',
             dataSelect: resultUsers
         })
 
-        let resultSeries = await getSeriesXUser(user_id)
+        const resultSeries = await getSeriesXUser(user_id)
 
         setSeries({
             selectName: 'Series',
@@ -113,12 +113,12 @@ console.log('sdsd',selectedIds)
     }, [])
 
     const search = async () => {
-        let dataSaleOrders = {
+        const dataSaleOrders = {
             folio: fol,
           
         }
 
-        let result = await getSaleOrders(dataSaleOrders)
+        const result = await getSaleOrders(dataSaleOrders)
         console.log('ssd')
         setSaleOrders(result)
     }

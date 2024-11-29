@@ -26,7 +26,7 @@ const Series: React.FC = () => {
   const { getBranchOfficeXCompanies, branchOfficeXCompanies }: any = storeBranchOffcies();
   const { createSeries, series, getSeriesXUser, updateSeries }: any = storeSeries();
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   // Select de validaciones
   const [warningName, setWarningName] = useState<boolean>(false)
@@ -117,9 +117,9 @@ const Series: React.FC = () => {
       return;
     }
 
-    let nombre = name
-    let sucursal_id = selectedBranchOffice
-    let tipo = selectedType
+    const nombre = name
+    const sucursal_id = selectedBranchOffice
+    const tipo = selectedType
 
     try {
       await createSeries(sucursal_id, nombre, tipo);
@@ -203,10 +203,10 @@ const Series: React.FC = () => {
 
   const handleUpdateSeries = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    let id = serie
-    let sucursal_id = selectedBranchOffice
-    let nombre = name
-    let tipo = selectedType
+    const id = serie
+    const sucursal_id = selectedBranchOffice
+    const nombre = name
+    const tipo = selectedType
     try {
       await updateSeries(id, sucursal_id, nombre, tipo)
       setModalStateUpdate(false)

@@ -17,7 +17,7 @@ import { toast } from 'sonner'
 
 const ByOrder: React.FC = () => {
   const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  const user_id = userState.id
 
   const { concepts, setConcepts } = useStore(storeWarehouseExit);
 
@@ -39,7 +39,7 @@ const ByOrder: React.FC = () => {
   const [branchOffices, setBranchOffices] = useState<any>()
 
   const fecht = async () => {
-    let companies = await getCompaniesXUsers(user_id)
+    const companies = await getCompaniesXUsers(user_id)
     setCompanies(companies)
   }
 
@@ -66,14 +66,14 @@ const ByOrder: React.FC = () => {
 
 
   const filterSeveral = async () => {
-    let data = {
+    const data = {
       id_usuario: user_id,
       id_sucursal: branchOffices.id,
       desde: dates[0],
       hasta: dates[1],
       status: 0,
     }
-    let result = await getOrdedrs(data)
+    const result = await getOrdedrs(data)
     setOrders(result)
   }
 
@@ -95,7 +95,7 @@ const ByOrder: React.FC = () => {
 
 
   const addOrders = async (concept: any, order: any) => {
-    let data = {
+    const data = {
       id: concept.id_articulo,
       activos: true,
       nombre: '',
@@ -113,7 +113,7 @@ const ByOrder: React.FC = () => {
       id_usuario: user_id
     };
 
-    let result = await getArticles(data)
+    const result = await getArticles(data)
     if (result) {
 
       let warning;

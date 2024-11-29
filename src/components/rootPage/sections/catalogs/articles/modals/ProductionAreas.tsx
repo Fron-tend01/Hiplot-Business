@@ -11,7 +11,7 @@ import { useSelectStore } from '../../../../../../zustand/Select'
 
 const ProductionAreas: React.FC = () => {
   const userState = useUserStore(state => state.user);
-    let user_id = userState.id
+    const user_id = userState.id
 
   const setSubModal = storeArticles(state => state.setSubModal)
   
@@ -33,7 +33,7 @@ const ProductionAreas: React.FC = () => {
   const fetch = async () => {
 
 
-    let resultAreas = await getAreas(0, user_id)
+    const resultAreas = await getAreas(0, user_id)
 
     setDataAreas({
       selectName: 'Areas',
@@ -54,7 +54,7 @@ const ProductionAreas: React.FC = () => {
 
   const addAreas = () => {
 
-    let data = {
+    const data = {
       id_area: selectedIds.areas.id,
       nombre_area: selectedIds.areas.nombre,
       id_sucursal: branchDestination.id,
