@@ -20,6 +20,7 @@ const ModalCreate = () => {
 
     const { getOrdedrs, dates }: any = storeOrdes();
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
+    const setSelectedIds: any = useSelectStore((state) => state.setSelectedId);
     const setConcepts = storeOrdes(state => state.setConcepts)
     const { concepts } = useStore(storeOrdes)
 
@@ -52,13 +53,13 @@ const ModalCreate = () => {
 
     const fecth = async () => {
 
-        const resultAreas = await getAreas(0, user_id)
+        let resultAreas = await getAreas(0, user_id)
         setAreas({
             selectName: 'Areas',
             options: 'nombre',
             dataSelect: resultAreas
         })
-        // setSelectedIds('id_area', areas[0]?.id)
+        setSelectedIds('id_area', resultAreas[0])
 
     }
 
@@ -80,7 +81,11 @@ const ModalCreate = () => {
         // Obtener los valores relevantes de `concepts`
         const stocks = concepts[index].stock;
         const almacenPredeterminado = concepts[index].almacen_predeterminado;
-
+        console.log('Almacen pred',almacenPredeterminado);
+        if (almacenPredeterminado.id==0) {
+            Swal.fire('Notificacion', 'La sucursal seleccionada no tiene un almacen predeterminado configurado', 'warning');
+            return
+        }
         // Filtrar el stock para obtener el almacen correspondiente
         const filter = stocks.filter((x: any) => x.id === almacenPredeterminado.id);
 
@@ -95,11 +100,7 @@ const ModalCreate = () => {
                 const newArticleStates = [...concepts];
                 newArticleStates[index].cantidad = 0;
                 setConcepts(newArticleStates);
-                Swal.fire({
-                    icon: "warning",
-                    title: "Oops...",
-                    text: 'La cantidad ingresada supera el stock disponible'
-                });
+                Swal.fire('Notificacion', 'La cantidad ingresada supera el stock disponible', 'warning');
             } else {
                 const newArticleStates = [...concepts];
                 newArticleStates[index].cantidad = value;
