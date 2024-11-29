@@ -1158,8 +1158,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
               </button>
               {modal == 'modal-purchase-orders-update' ?
                 <div>
-                  {purchaseOrderToUpdate.status == 0 ? <button className='btn__general-danger' type='button' onClick={updateStatus}>Deshabilitar</button> : ''}
-                  {purchaseOrderToUpdate.status == 1 ? <button className='btn__general-success' type='button' onClick={updateStatus}>Activar</button> : ''}
+                  {purchaseOrderToUpdate?.status == 0 ? <button className='btn__general-danger' type='button' onClick={updateStatus}>Deshabilitar</button> : ''}
+                  {purchaseOrderToUpdate?.status == 1 ? <button className='btn__general-success' type='button' onClick={updateStatus}>Activar</button> : ''}
                 </div>
                 :
                 ''
