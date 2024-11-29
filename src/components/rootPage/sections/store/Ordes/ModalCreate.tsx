@@ -82,8 +82,15 @@ const ModalCreate = () => {
 
         // Obtener los valores relevantes de `concepts`
         const stocks = concepts[index].stock;
-        const almacenPredeterminado = concepts[index].almacen_predeterminado;
-
+        const almacenPredeterminado = concepts[index].almacenes_predeterminados.filter((x:any)=> x.id_sucursal==branchOffices?.id)[0];
+        console.log('asdasdasd',branchOffices?.id);
+        console.log('asdasdasd',concepts[index].almacenes_predeterminados);
+        console.log('asdasdasd',almacenPredeterminado);
+        if (almacenPredeterminado == undefined) {
+            Swal.fire('Notificacion', 'La sucursal seleccionada no tiene un almacen configurado para el articulo '
+                + concepts[index].codigo + ' - ' + concepts[index].descripcion, 'warning')
+                return
+        }
         // Filtrar el stock para obtener el almacen correspondiente
         const filter = stocks.filter((x: any) => x.id === almacenPredeterminado.id);
 
@@ -91,8 +98,6 @@ const ModalCreate = () => {
 
         if (filter) {
             let equivalencias = filter[0].equivalencias.filter((x:any)=> x.id_unidad==concepts[index].unidad)
-            console.log('value',value);
-            console.log('canti',equivalencias[0].cantidad);
             
             if (value > equivalencias[0].cantidad) {
                 const newArticleStates = [...concepts];
