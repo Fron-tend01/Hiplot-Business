@@ -12,7 +12,6 @@ import { storeModals } from '../../../../../zustand/Modals';
 import './CompanyModal.css'
 
 const CompanyModal = () => {
-
     // Id del del usuario global
     const setModal = storeModals(state => state.setModal)
     const { modal }: any = useStore(storeModals)
@@ -33,7 +32,7 @@ const CompanyModal = () => {
         businessEntityID: 0,
         razon_social: ''
     })
- 
+
     const selectData: any = useSelectStore(state => state.selectedIds)
     const [dataEmpresas, setDataEmpresas] = useState<any>({})
 
@@ -50,7 +49,7 @@ const CompanyModal = () => {
     const { getViews }: any = storeViews()
 
 
- 
+
 
     const fetch = async () => {
         const data = await getCompaniesXUsers(user_id);
@@ -61,13 +60,14 @@ const CompanyModal = () => {
         })
 
         getViews(user_id, 'EMPRESAS')
+        setModel({ ...model, id_usuario: user_id })
     }
 
     useEffect(() => {
         fetch()
     }, []);
 
-   
+
 
     useEffect(() => {
         DynamicVariables.updateAnyVar(setFormEf, "id_franquicia", selectData?.franquiciaSelect?.id)
@@ -85,6 +85,7 @@ const CompanyModal = () => {
 
     const crear = async (e: React.FormEvent) => {
         e.preventDefault();
+
         if (model.razon_social === '') {
             setWarningRazonSocial(true)
         } else {
@@ -99,12 +100,17 @@ const CompanyModal = () => {
         if (model.razon_social === '' || model.nombre_comercial === '') {
             return;
         }
-        if ( modal == 'modal__update-companies') {
+        if (modal == 'modal__update-companies') {
             await APIs.CreateAnyPut(model, "empresa_update/" + model.id)
                 .then(async (response: any) => {
-                    Swal.fire('Notificación', response.mensaje, 'success');
-                    await getCompaniesXUsers(user_id)
-                  
+                    if (response.error == false) {
+                        Swal.fire('Notificación', response.mensaje, 'success');
+                        await getCompaniesXUsers(user_id)
+                        setModal('')
+                    } else {
+                        Swal.fire('Notificación', response.mensaje, 'warning');
+                    }
+
                 })
                 .catch((error: any) => {
                     if (error.response) {
@@ -120,9 +126,15 @@ const CompanyModal = () => {
         } else {
             await APIs.CreateAny(model, "empresa_create")
                 .then(async (response: any) => {
-                    Swal.fire('Notificación', response.mensaje, 'success');
-                    await getCompaniesXUsers(user_id)
-                  
+                    if (response.error == false) {
+                        Swal.fire('Notificación', response.mensaje, 'success');
+                        await getCompaniesXUsers(user_id)
+                        setModal('')
+                    } else {
+                        Swal.fire('Notificación', response.mensaje, 'warning');
+                    }
+
+
                 })
                 .catch((error: any) => {
                     if (error.response) {
@@ -151,8 +163,7 @@ const CompanyModal = () => {
         opacity: warningNombreComercial === true ? '1' : '',
         height: warningNombreComercial === true ? '23px' : ''
     }
-    
-    console.log(model)
+
 
     return (
         <div className={`overlay__companies ${modal == 'modal__creating-companies' || modal == 'modal__update-companies' ? 'active' : ''}`}>
@@ -180,7 +191,7 @@ const CompanyModal = () => {
                         <label className='label__general'>Modulo de cobro a franquicias</label>
                         <input className={`inputs__general`} value={model.modulo_cobro_franquicia_compaqi} onChange={(e) => DynamicVariables.updateAnyVar(setModel, "modulo_cobrofranquicia_compaqi", e.target.value)} type='number' placeholder='Modulo de cobro a franquicias' />
                     </div>
-                    
+
                 </div>
                 <div className='add_franchises'>
                     <div className='title__add_franchises'>
@@ -252,9 +263,15 @@ const CompanyModal = () => {
                     </div>
                 </div>
                 <div className='create__company_btn_modal_container mt-3'>
-                    <div>
-                        <input className='btn__general-purple' type='submit' value="Crear empresa" onClick={crear} />
-                    </div>
+                    {modal == 'modal__creating-companies' ?
+                        <div>
+                            <input className='btn__general-purple' type='submit' value="Crear empresa" onClick={crear} />
+                        </div>
+                        :
+                        <div>
+                            <input className='btn__general-purple' type='submit' value="Actualizar empresa" onClick={crear} />
+                        </div>
+                    }
                 </div>
             </div>
         </div>

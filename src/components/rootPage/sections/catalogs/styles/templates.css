@@ -1,5 +1,6 @@
 .families {
     display: grid;
+    grid-template-rows: auto 1fr;
     padding: 20px;
 }
 
@@ -10,7 +11,7 @@
 
 .conatiner__create_families {
     display: block;
-    
+
     gap: 10px;
 	align-items: end;
 	text-align: left;
@@ -35,8 +36,7 @@
 
 
 .container__add_companyin_families {
-    display: flex;
-    justify-content: end;
+
 }
 
 
@@ -134,7 +134,7 @@
 .table__branch-offices .table__head {
     display: flex;
     width: 100%;
-    background-color: #eeecec;
+    background-color: var( --table-color);
     border-radius: 5px 5px 0 0;
 }
 
@@ -172,11 +172,11 @@
 
 
 .table__branch-offices .tbody__container:nth-child(even) {
-    background-color: #eeecec;
+    background-color: var(--table-color);
   }
   
   .table__branch-offices .tbody__container:nth-child(odd) {
-    background-color: #f9f8f8;
+    background-color: var(--two-table-color);
   }
 
   .table__branch-offices .table__body .tbody {
@@ -276,7 +276,7 @@
 .table__templates .table__head {
     display: flex;
     width: 100%;
-    background-color: #eeecec;
+    background-color: var( --table-color);
     border-radius: 5px 5px 0 0;
 }
 
@@ -314,11 +314,11 @@
 
 
 .table__templates .tbody__container:nth-child(even) {
-    background-color: #eeecec;
+    background-color: var(--table-color);
   }
   
   .table__templates .tbody__container:nth-child(odd) {
-    background-color: #f9f8f8;
+    background-color: var(--two-table-color);
   }
 
   .table__templates .table__body .tbody {

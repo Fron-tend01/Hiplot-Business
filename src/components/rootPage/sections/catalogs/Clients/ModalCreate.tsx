@@ -128,10 +128,20 @@ const ModalCreate = () => {
     useEffect(() => {
         console.log(clientToUpdate)
         if (modal == 'update_clients') {
-            setInputs(clientToUpdate)
+            setInputs(clientToUpdate)  
             setAddBranchClients(clientToUpdate.clientes_sucursal)
+            DynamicVariables.updateAnyVar(setInputs, "persona_juridica", clientToUpdate.persona_juridica)
+            DynamicVariables.updateAnyVar(setInputs, "divisa", clientToUpdate.divisa)
+            DynamicVariables.updateAnyVar(setInputs, "uso_cfdi", clientToUpdate.uso_cfdi)
+            DynamicVariables.updateAnyVar(setInputs, "regimen_fiscal", clientToUpdate.regimen_fiscal)
+            DynamicVariables.updateAnyVar(setInputs, "categoria", clientToUpdate.categoria)
         } else {
             setInputs(inputsClear)
+            DynamicVariables.updateAnyVar(setInputs, "persona_juridica", pj[0]?.id)
+            DynamicVariables.updateAnyVar(setInputs, "divisa", divisas[0]?.id)
+            DynamicVariables.updateAnyVar(setInputs, "uso_cfdi", uc[0]?.ID)
+            DynamicVariables.updateAnyVar(setInputs, "regimen_fiscal", rf[0]?.ID)
+            DynamicVariables.updateAnyVar(setInputs, "categoria", categorias[0]?.id)
             setAddBranchClients([])
         }
     }, [modal])
@@ -142,7 +152,11 @@ const ModalCreate = () => {
         setRf(res)
         DynamicVariables.updateAnyVar(setInputs, "uso_cfdi", result[0].ID)
         DynamicVariables.updateAnyVar(setInputs, "regimen_fiscal", res[0].ID)
+
+
     }
+
+    console.log(inputs)
 
 
 

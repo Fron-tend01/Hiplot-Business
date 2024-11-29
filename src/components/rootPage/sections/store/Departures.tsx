@@ -14,6 +14,7 @@ import Select from "../../Dynamic_Components/Select";
 import { StoreRequests } from '../../../../fuctions/Store'
 import { storeWarehouseExit } from "../../../../zustand/WarehouseExit";
 import { useStore } from "zustand";
+import ModalUpdate from "./Departures/ModalUpdate";
 
 const Departures = () => {
     const userState = useUserStore(state => state.user);
@@ -120,10 +121,10 @@ const Departures = () => {
     }
 
 
-    // const [conceptsUpdate, setConceptsUpdate] = useState<any>([])
+    const [conceptsUpdate, setConceptsUpdate] = useState<any>([])
 
-    const modalUpdate = () => {
-        // setConceptsUpdate(item)
+    const modalUpdate = (item: any) => {
+        setConceptsUpdate(item)
         setModal('modal-update__concepts')
     };
 
@@ -171,6 +172,7 @@ const Departures = () => {
                 </div>
 
                 <ModalCreate />
+                <ModalUpdate conceptsUpdate={conceptsUpdate} />
                 <div className='table__departures'>
                     {warehouseExit ? (
                         <div className='table__numbers'>
@@ -224,7 +226,7 @@ const Departures = () => {
                                                 </div>
                                             </div>
                                             <div className='td end'>
-                                                <button className='branchoffice__edit_btn' onClick={() => modalUpdate()}>Ver conceptos</button>
+                                                <button className='branchoffice__edit_btn' onClick={() => modalUpdate(exit)}>Ver conceptos</button>
                                             </div>
                                         </div>
                                         

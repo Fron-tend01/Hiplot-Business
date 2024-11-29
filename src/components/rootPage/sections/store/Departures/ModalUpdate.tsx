@@ -3,7 +3,12 @@ import { storeWarehouseExit } from '../../../../../zustand/WarehouseExit'
 import { useStore } from 'zustand';
 import './ModalUpdate.css'
 
-const ModalUpdate: React.FC = ({ conceptsUpdate }: any) => {
+interface Articles {
+    conceptsUpdate: any
+}
+  
+
+const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
 
     const setModal = storeWarehouseExit(state => state.setModal);
     const { modal } = useStore(storeWarehouseExit)

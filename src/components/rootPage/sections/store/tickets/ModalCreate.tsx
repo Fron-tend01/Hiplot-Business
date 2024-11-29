@@ -280,10 +280,10 @@ const ModalCreate = () => {
                                     {conceptos?.length > 0 ? (
                                         <div className='table__body'>
                                             {conceptos.map((concept: any, index: any) => (
-                                                <div className='tbody__container' key={index}>
+                                                <div className='tbody__container' key={index}>s
                                                     <div className='tbody'>
                                                         <div className='td'>
-                                                            <p>{concept.codigo}</p>
+                                                            <p>{concept.codigo}-{concept.descripcion}</p>
                                                         </div>
                                                         <div className='td'>
                                                             <div>

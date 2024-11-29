@@ -83,6 +83,8 @@ const ModalRequisition: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<any>(0);
 
 
+  console.log(updateToRequisition)
+
   useEffect(() => {
     if (updateToRequisition) {
       // setSelectedOption(updateToRequisition.tipo)
@@ -92,8 +94,8 @@ const ModalRequisition: React.FC = () => {
 
     }
     fetch()
-    console.log('LLEGANDO A MODAL REQ',updateToRequisition);
-    
+    console.log('LLEGANDO A MODAL REQ', updateToRequisition);
+
   }, [updateToRequisition])
 
 
@@ -231,7 +233,7 @@ const ModalRequisition: React.FC = () => {
             id_area: 0,
             tipo: 0,
             desde: dates[0],
-            hasta:dates[1],
+            hasta: dates[1],
             status: 0
           };
           const resultRequisition = await getRequisition(data)
@@ -256,7 +258,7 @@ const ModalRequisition: React.FC = () => {
             id_area: 0,
             tipo: 0,
             desde: dates[0],
-            hasta:dates[1],
+            hasta: dates[1],
             status: 0
           };
           const resultRequisition = await getRequisition(data)
@@ -299,14 +301,14 @@ const ModalRequisition: React.FC = () => {
   }
 
   const getPDFRequisition = async () => {
-    window.open('http://hiplot.dyndns.org:84/api_dev/pdf_requisicion/'+updateToRequisition.id, '_blank');
+    window.open('http://hiplot.dyndns.org:84/api_dev/pdf_requisicion/' + updateToRequisition.id, '_blank');
     // try {
-      // await APIs.pdtRequisition(updateToRequisition.id);
-      // Abrimos el PDF en una nueva pestaña
+    // await APIs.pdtRequisition(updateToRequisition.id);
+    // Abrimos el PDF en una nueva pestaña
 
-      // let resultRequisition = await getRequisition(dataGet);
-      // setRequisitions(resultRequisition);
-      // setModalStateCreate('');
+    // let resultRequisition = await getRequisition(dataGet);
+    // setRequisitions(resultRequisition);
+    // setModalStateCreate('');
     // } catch (error) {
     //   console.log(error);
     // }
@@ -436,17 +438,17 @@ const ModalRequisition: React.FC = () => {
                       <span className='text'>Creado por: <b>{updateToRequisition.usuario_crea}</b></span><br />
                       <span className='text'>Fecha de Creación: <b>{updateToRequisition.fecha_creacion}</b></span><br />
                       <span className='text'>Titulo: <b>{updateToRequisition.titulo}</b> </span>
-                        {updateToRequisition.status === 0 ? (
-                          <span className="active-status">Activo</span>
-                        ) : updateToRequisition.status === 1 ? (
-                          <span className="canceled-status">Cancelada</span>
+                      {updateToRequisition.status === 0 ? (
+                        <span className="active-status">Activo</span>
+                      ) : updateToRequisition.status === 1 ? (
+                        <span className="canceled-status">Cancelada</span>
+                      ) : (
+                        updateToRequisition.status === 2 ? (
+                          <span className="end-status">Terminado</span>
                         ) : (
-                          updateToRequisition.status === 2 ? (
-                            <span className="end-status">Terminado</span>
-                          ) : (
-                            ""
-                          )
-                        )}
+                          ""
+                        )
+                      )}
 
                     </div>
                     <div className='col-6 md-col-12'>
@@ -555,26 +557,34 @@ const ModalRequisition: React.FC = () => {
             </div>
           </div>
           <div className={`d-flex  mt-3 ${modalStateCreate == 'create' ? 'justify-content-center' : 'justify-content-between'}`}>
-            {modalStateCreate == 'create' ? 
-            ''
-            :
-            <div>
-              <button className='btn__general-orange' type='button' onClick={getPDFRequisition}>PDF</button>
-            </div>
+            {modalStateCreate == 'create' ?
+              ''
+              :
+              <div>
+                <button className='btn__general-orange' type='button' onClick={getPDFRequisition}>PDF</button>
+              </div>
             }
-          
-            <button className='btn__general-purple d-flex align-items-center' onClick={handleCreateRequisition} disabled={updateToRequisition && updateToRequisition.status == 2}>
-              {updateToRequisition ? `${stateLoading ? 'Actualizando requisición' : 'Actualizar requisición'}` : `${stateLoading ? 'Creando requisición' : 'Crear requisición'}`}
-              {stateLoading ? <span className="loader-two"></span> : ''}
-            </button>
-            {modalStateCreate == 'create' ? 
-            ''
-            :
-            <div>
-              <button className='btn__general-danger' type='button' onClick={updateStatus}>Deshabilitar</button>
-            </div>
+            {updateToRequisition?.status == 2 ?
+              ''
+              :
+              <>
+                <button className='btn__general-purple d-flex align-items-center' onClick={handleCreateRequisition} disabled={updateToRequisition && updateToRequisition.status == 2}>
+                  {updateToRequisition ? `${stateLoading ? 'Actualizando requisición' : 'Actualizar requisición'}` : `${stateLoading ? 'Creando requisición' : 'Crear requisición'}`}
+                  {stateLoading ? <span className="loader-two"></span> : ''}
+                </button>
+                {modalStateCreate == 'create' ?
+                  ''
+                  :
+                  <div>
+                    <button className='btn__general-danger' type='button' onClick={updateStatus}>Deshabilitar</button>
+                  </div>
+                }
+              </>
             }
-         
+
+
+
+
           </div>
 
         </div>

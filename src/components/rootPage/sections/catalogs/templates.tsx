@@ -191,9 +191,9 @@ const Templates: React.FC = () => {
 
   return (
     <div className='families'>
-       <div className=''>
-            <button className='btn__general-purple' onClick={() => modalCreate(0, false)}>Nueva plantilla</button>
-          </div>
+      <div className=''>
+        <button className='btn__general-purple' onClick={() => modalCreate(0, false)}>Nueva plantilla</button>
+      </div>
       <div className={`overlay__families ${modalState ? 'active' : ''}`}>
         <div className={`popup__families ${modalState ? 'active' : ''}`}>
           <a href="#" className="btn-cerrar-popup__families" onClick={closeModalCreate}>
@@ -205,9 +205,7 @@ const Templates: React.FC = () => {
             <p className='title__modals'>Actualizar plantilla</p>
 
           }
-          <br />
-          <hr />
-          <br />
+
           <div className='conatiner__create_families'>
             <div className='row'>
               <div className='col-6 md-col-12'>

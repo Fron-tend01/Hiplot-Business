@@ -424,7 +424,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     const unidad = articleResult.unidades[0].id_unidad
     const id_proveedor = articleResult.proveedores[0].id_proveedor
 
-    setConceptos((prevArticleStates: any) => [...prevArticleStates, { id_proveedor, proveedores, id_articulo, descripcion, cantidad: 0, descuento: 0, unidad, unidades, precio_unitario: 0, comentarios: '' }]);
+    setConceptos((prevArticleStates: any) => [...prevArticleStates, { id_proveedor, codigo: articleResult.codigo, proveedores, id_articulo, descripcion, cantidad: 0, descuento: 0, unidad, unidades, precio_unitario: 0, comentarios: '' }]);
   };
 
 
@@ -473,7 +473,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
   }
 
-
+  console.log(conceptos)
 
   const closeModalConcepts = () => {
     setModalStateConcepts(false)
@@ -484,8 +484,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     const updatedConceptos = req.conceptos.map((concepto: any) => ({
       id_proveedor: concepto.proveedores[0].id_proveedor,
       proveedores: concepto.proveedores,
-      id_articulo: concepto.id_articulo,
       codigo: concepto.codigo,
+      id_articulo: concepto.id_articulo,
       descripcion: concepto.descripcion,
       cantidad: concepto.cantidad,
       descuento: 0,
@@ -615,7 +615,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     const dataGet = {
       folio: 0,
       id_serie: 0,
-      id_sucursal: selectedBranchOffice,
+      id_sucursal: 0,
       id_usuario: user_id,
       id_area: 0,
       // tipo: tipo,

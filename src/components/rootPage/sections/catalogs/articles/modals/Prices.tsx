@@ -41,6 +41,8 @@ const Prices: React.FC = () => {
 
   }, [articleByOne])
 
+  
+
   const { getRanges }: any = RangesRequests();
   const { getTemplates }: any = TemplatesRequests();
   const { getUserGroups }: any = UserGroupsRequests();
