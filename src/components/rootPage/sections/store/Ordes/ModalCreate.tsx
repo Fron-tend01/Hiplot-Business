@@ -79,8 +79,12 @@ const ModalCreate = () => {
 
         // Obtener los valores relevantes de `concepts`
         const stocks = concepts[index].stock;
-        const almacenPredeterminado = concepts[index].almacen_predeterminado;
-
+        const almacenPredeterminado = concepts[index].almacenes_predeterminados.filter((x:any)=> x.id_sucursal==branchOffices?.id)[0];
+        if (almacenPredeterminado == undefined) {
+            Swal.fire('Notificacion', 'La sucursal seleccionada no tiene un almacen configurado para el articulo '
+                + concepts[index].codigo + ' - ' + concepts[index].descripcion, 'warning')
+                return
+        }
         // Filtrar el stock para obtener el almacen correspondiente
         const filter = stocks.filter((x: any) => x.id === almacenPredeterminado.id);
 
