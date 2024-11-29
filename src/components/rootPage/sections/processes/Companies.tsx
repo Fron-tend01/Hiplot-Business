@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { storeCompanies } from '../../../../zustand/Companies';
 import useUserStore from '../../../../zustand/General';
 import { storeViews } from '../../../../zustand/views';
 import DynamicVariables from '../../../../utils/DynamicVariables';
-import { useSelectStore } from '../../../../zustand/Select';
+
 import { storeModals } from '../../../../zustand/Modals';
 import './styles/Companies.css';
 import CompanyModal from './companies/CompanyModal';
@@ -15,10 +15,10 @@ const Companies: React.FC = () => {
   let user_id = userState.id
   
   const setModel = storeCompanies(state => state.setModel)
-  const setFormEf = storeCompanies(state => state.setFormEf)
 
   const { getCompaniesXUsers, companiesXUsers }: any = storeCompanies()
   const { getViews, views }: any = storeViews()
+
 
 
   const fetch = async () => {

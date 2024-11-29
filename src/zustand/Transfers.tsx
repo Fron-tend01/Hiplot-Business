@@ -1,8 +1,5 @@
 
 import { create } from 'zustand';
-import APIs from '../services/services/APIs';
-import Swal from 'sweetalert2';
-
 
 interface Store {
     id: number,

@@ -1,5 +1,4 @@
-import APIs from '../../../../services/services/APIs'
-import Swal from 'sweetalert2';
+
 import React, { useEffect, useState } from 'react'
 import './styles/Units.css'
 import '../processes/styles/TypesUsers.css'
@@ -9,18 +8,16 @@ import CreateModal from './TypesOfPayment/CreateModal';
 import UpdateModal from './TypesOfPayment/UpdateModal';
 import { TypeOfPaymentsRequests } from '../../../../fuctions/TypeOfPayments';
 import { storeTypeOfPayments } from '../../../../zustand/TypeOfPayments';
-import { useStore } from 'zustand';
 
-const TypeOfPayment = () => {
-    const {typeOfPaymentToUpdate}: any = useStore(storeTypeOfPayments)
+const TypeOfPayment: React.FC = () => {
+
   const setTypeOfPaymentToUpdate = storeTypeOfPayments(state => state.setTypeOfPaymentToUpdate);
 
   const {getTypeOfPayments}: any = TypeOfPaymentsRequests()
   const [typeOfPayments, setTypeOfPayments] =  useState<any>([])
 
   const setModal = storeModals(state => state.setModal)
- 
-  const [characteristics, setCharacteristics] = useState<any>(null)
+
 
 
 
@@ -28,8 +25,7 @@ const TypeOfPayment = () => {
   const get = async () => {
     let resultTypeOfPayments = await getTypeOfPayments()
     setTypeOfPayments(resultTypeOfPayments)
-    let result = await APIs.GetAny("get_caracteristica/get")
-    setCharacteristics(result)
+  
  }
 
   useEffect(() => {

@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { storeModals } from '../../../../../../../zustand/Modals'
 import { useStore } from 'zustand'
-import Select from '../../../../../Dynamic_Components/Select'
-import TemplatesRequests from '../../../../../../../fuctions/Templates'
-import { UnitsRequests } from '../../../../../../../fuctions/Units'
-import useUserStore from '../../../../../../../zustand/General'
+
 import { storeDv } from '../../../../../../../zustand/Dynamic_variables'
 import { storeArticles } from '../../../../../../../zustand/Articles'
 import './Concepts.css'
 
 const Concepts = () => {
-    const userState = useUserStore(state => state.user);
-    let user_id = userState.id;
+  
 
-    const setArticulos = storeDv(state => state.setArticulos)
 
     const setModalSub = storeModals(state => state.setModalSub)
 

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { articleRequests } from '../../../fuctions/Articles';
 import useUserStore from '../../../zustand/General';
 import { storeFamilies } from '../../../zustand/Families';
-import { storeDv } from '../../../zustand/Dynamic_variables';
 
 interface FiltradoArticulosBasicProps {
   get_sucursales?: boolean;
@@ -45,7 +44,6 @@ interface FiltradoArticulosBasicProps {
 
     const [selectFamilias, setSelectFamilias] = useState<boolean>(false)
     const [familia, setFamilia] = useState<any>({})
-    const setArticulos = storeDv(state => state.setArticulos)
 
 
     let user_id = userState.id

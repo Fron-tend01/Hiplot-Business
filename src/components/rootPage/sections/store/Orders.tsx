@@ -20,7 +20,7 @@ const Departures: React.FC = () => {
 
     const { getCompaniesXUsers }: any = storeCompanies();
     const { getBranchOfficeXCompanies }: any = storeBranchOffcies();
-    const { series, getSeriesXUser }: any = storeSeries();
+    const { getSeriesXUser }: any = storeSeries();
     const { getSuppliers }: any = storeSuppliers();
     const { getOrdedrs, orders, dates }: any = storeOrdes();
     const userState = useUserStore(state => state.user);
@@ -33,9 +33,6 @@ const Departures: React.FC = () => {
     const modal = storeModals(state => state.modal)
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
-
-    const [selectedBranchOffice, setSelectedBranchOffice] = useState<number | null>(null);
-
 
 
     const [warningName] = useState<boolean>(false)
@@ -137,7 +134,7 @@ const Departures: React.FC = () => {
                     </div>
                 </div>
                 <div className="row__two">
-                    <Select instanceId="series" nameSelect={'Series'} />
+                    {/* <Select instanceId="series" nameSelect={'Series'} /> */}
                     <div>
                         <label className='label__general'>Folio</label>
                         <div className='warning__general'><small >Este campo es obligatorio</small></div>

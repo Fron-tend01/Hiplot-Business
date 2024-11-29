@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './ArticleView.css';
 import { articleRequests } from '../../../../fuctions/Articles';
-import useUserStore from '../../../../zustand/General';
-import { storeModals } from '../../../../zustand/Modals';
 import SalesCard from './SalesCard';
 import { storeSaleCard } from '../../../../zustand/SaleCard';
 import { storeArticleView } from '../../../../zustand/ArticleView';
 
 
 const ArticleView = () => {
-    const userState = useUserStore(state => state.user);
-    let user_id = userState.id;
+
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
 

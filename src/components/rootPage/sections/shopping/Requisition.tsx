@@ -35,7 +35,7 @@ const Requisition: React.FC = () => {
   const [selectTypes, setSelectTypes] = useState<boolean>(false);
   const [selectSeries, setSelectSeries] = useState<boolean>(false)
 
-  const [selectedCompany, setSelectedCompany] = useState<number | null>(null)
+
   const [selectedType, setSelectedType] = useState<number | null>(null);
   const [selectedSerie, setSelectedSerie] = useState<number | null>(null)
 
@@ -114,7 +114,7 @@ const Requisition: React.FC = () => {
   //Modales
   const modalCreate = () => {
     setModalStateCreate('create')
-    setSelectedCompany(1)
+  
   }
 
 

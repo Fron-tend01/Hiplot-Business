@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import useUserStore from "../../../../../zustand/General";
 import Select from "../../../Dynamic_Components/Select";
-import { storeArticles } from '../../../../../zustand/Articles';
 import { storeOrdes } from "../../../../../zustand/Ordes";
 import { areasRequests } from "../../../../../fuctions/Areas";
 import Direct from "./types/Direct";
@@ -21,11 +20,9 @@ const ModalCreate = () => {
 
     const { getOrdedrs, dates }: any = storeOrdes();
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
-    const setSelectedIds = useSelectStore((state) => state.setSelectedId);
     const setConcepts = storeOrdes(state => state.setConcepts)
     const { concepts } = useStore(storeOrdes)
 
-    const { articles }: any = storeArticles();
     const { getAreas }: any = areasRequests();
     const { createOrders }: any = storeOrdes();
 
@@ -74,7 +71,7 @@ const ModalCreate = () => {
 
 
 
-    const [conceptos, setConceptos] = useState<any>([])
+
     const [seleccionesTemporales, setSeleccionesTemporales] = useState<string[]>([]);
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -183,7 +180,7 @@ const ModalCreate = () => {
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
 
-    const deleteConcepts = (concept: any, indexConcept: number) => {
+    const deleteConcepts = (_: any, indexConcept: number) => {
         let filter = concepts.filter((_: any, index: number) => index !== indexConcept)
         setConcepts(filter)
     }

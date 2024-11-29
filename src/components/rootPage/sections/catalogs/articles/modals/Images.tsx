@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { storeArticles } from '../../../../../../zustand/Articles'
 import { useStore } from 'zustand';
 import './style/Images.css'
@@ -6,7 +6,7 @@ import './style/Images.css'
 
 const Images: React.FC = () => {
 
-    const [selectedFile, setSelectedFile] = useState<string | null>(null);
+
 
     const {  subModal, imagesArticles }: any = useStore(storeArticles);
 
@@ -23,7 +23,7 @@ const Images: React.FC = () => {
                     let data = {
                         img_base64: reader.result
                     }
-                    setSelectedFile(reader.result as string);
+            
                     setImagesArticles([...imagesArticles, data])
                 }
             };

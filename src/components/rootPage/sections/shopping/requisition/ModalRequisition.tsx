@@ -289,7 +289,7 @@ const ModalRequisition: React.FC = () => {
     }
 
     try {
-      let result = await APIs.updateStatusRequisition(data)
+      await APIs.updateStatusRequisition(data)
       let resultRequisition = await getRequisition(dataGet)
       setRequisitions(resultRequisition)
       setModalStateCreate('')

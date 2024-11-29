@@ -105,27 +105,6 @@ const ByOC: React.FC = () => {
 
     const [concepts, setConcepts] = useState<any[]>([])
 
-    const openModalConcepts = (item: any) => {
-        setModalStateConcepts(true);
-        console.log(item)
-        item.conceptos.forEach((element: any) => {
-            setConcepts(prevConcepts => ([{
-                ...prevConcepts,
-                cantidad: element.cantidad,
-                codigo: element.codigo,
-                comentarios: element.comentarios,
-                descripcion: element.descripcion,
-                iva_on: element.iva_on,
-                precio_unitario: element.precio_unitario,
-                proveedor: element.proveedor,
-                unidad: element.unidad,
-
-            }]));
-        });
-
-
-    }
-
 
     const [invoice, setInvoice] = useState<string>('')
     const [warningInvoice] = useState<boolean>(false)
@@ -140,10 +119,23 @@ const ByOC: React.FC = () => {
 
     const setModal = storePurchaseOrders(state => state.setModal)
     const verOc = async (data: any) => {
-        console.log(data);
-
         setPurchaseOrderToUpdate(data)
         setModal('modal-purchase-orders-update')
+        setModalStateConcepts(true);
+        data.conceptos.forEach((element: any) => {
+            setConcepts(prevConcepts => ([{
+                ...prevConcepts,
+                cantidad: element.cantidad,
+                codigo: element.codigo,
+                comentarios: element.comentarios,
+                descripcion: element.descripcion,
+                iva_on: element.iva_on,
+                precio_unitario: element.precio_unitario,
+                proveedor: element.proveedor,
+                unidad: element.unidad,
+
+            }]));
+        });
     }
     return (
         <div className='conatiner__by-request'>

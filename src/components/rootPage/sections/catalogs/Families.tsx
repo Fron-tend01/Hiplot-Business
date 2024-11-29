@@ -41,7 +41,6 @@ const Families: React.FC = () => {
 
   }, [])
 
-  const [selectedCompanyIds, setSelectedCompanyIds] = useState<number[]>([]);
 
 
 

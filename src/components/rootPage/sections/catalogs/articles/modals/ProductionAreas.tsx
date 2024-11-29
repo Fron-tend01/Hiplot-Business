@@ -23,7 +23,7 @@ const ProductionAreas: React.FC = () => {
 
   const [companies, setCompanies] = useState<any>([])
 
-  const selectedIds = useSelectStore((state) => state.selectedIds);
+  const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
   const {getAreas}: any = areasRequests()
   const [companiesDestination, setCompaniesDestination] = useState<any>([])

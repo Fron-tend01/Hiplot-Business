@@ -92,8 +92,9 @@ const DynamicVariables = {
         });
     },
 
-    selects: (setFunc, key, index: number)  => {
-        setFunc((prev: any) => {
+    selects: (setFunc: any, key: any, index: number)  => {
+        console.log(key, index)
+        setFunc((_: any) => {
             
         })
     }

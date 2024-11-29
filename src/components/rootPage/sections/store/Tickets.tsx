@@ -3,7 +3,6 @@ import { storeCompanies } from "../../../../zustand/Companies";
 import { storeBranchOffcies } from "../../../../zustand/BranchOffices";
 import { storeSeries } from "../../../../zustand/Series";
 import useUserStore from "../../../../zustand/General";
-import { storeSuppliers } from "../../../../zustand/Suppliers";
 import { storeTickets } from "../../../../zustand/Tickets";
 import ModalCreate from "./tickets/ModalCreate";
 import ModalUpdate from "./tickets/ModalUpdate";
@@ -15,7 +14,6 @@ import * as FileSaver from 'file-saver';
 import Empresas_Sucursales from "../../Dynamic_Components/Empresas_Sucursales";
 import Select from "../../Dynamic_Components/Select";
 import { useSelectStore } from "../../../../zustand/Select";
-import APIs from "../../../../services/services/APIs";
 
 const Tickets = () => {
 
@@ -23,7 +21,6 @@ const Tickets = () => {
     const { getCompaniesXUsers }: any = storeCompanies();
     const { getBranchOfficeXCompanies }: any = storeBranchOffcies();
     const { getSeriesXUser }: any = storeSeries();
-    const { getSuppliers }: any = storeSuppliers();
     const { getTickets, getExcelTickets, dates, tickets }: any = storeTickets();
     const userState = useUserStore(state => state.user);
     let user_id = userState.id

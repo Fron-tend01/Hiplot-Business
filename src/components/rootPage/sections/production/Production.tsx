@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { storeSaleOrder } from '../../../../zustand/SalesOrder'
-import { useStore } from 'zustand'
-import { saleOrdersRequests } from '../../../../fuctions/SaleOrders'
 import { seriesRequests } from '../../../../fuctions/Series'
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales'
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
@@ -22,8 +19,6 @@ const Production: React.FC = () => {
 
     const { getUsers }: any = usersRequests()
     const [users, setUsers] = useState<any>()
-
-    const { getSaleOrders }: any = saleOrdersRequests()
     
     const [production, setProduction] = useState<any>([])
 
@@ -42,7 +37,7 @@ const Production: React.FC = () => {
     const [branchOffices, setBranchOffices] = useState<any>([])
     const [fol, setFol] = useState<any>(0)
 
-    const selectedIds = useSelectStore((state) => state.selectedIds);
+    const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
     const [client, setClient] = useState<any>('')
 

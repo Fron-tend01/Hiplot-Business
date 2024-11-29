@@ -65,11 +65,12 @@
 
 
 
-.billing-modal{
+.billing-modal {
     height: 100%;
     padding: 5px;
     display:grid;
     grid-template-rows: auto 1fr auto;
+    
 
 }
 
@@ -78,7 +79,20 @@
     padding: 5px;
     display:grid;
     grid-template-rows: repeat(5, auto) 1fr 1fr;
-    overflow:auto
+    overflow:auto;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
 }
 
  /*************************************************************
@@ -169,6 +183,11 @@
     border-radius: 10px;
     display: grid;
     grid-template-rows: repeat(2, auto) 1fr;
+    border: 3px solid var(--input-color);
+    padding: 20px;
+    color: var(--text-color);
+    border-radius: 5px;
+
 }
 
 .table__billing_concepts .table__numbers {
@@ -249,9 +268,63 @@
 }
 
 
-.information_of_pay {
-    color: white;
+.add-client__container .title {
+    display: flex;
+	margin-bottom: 10px;
+}
+
+.add-client__container .title > p {
     padding: 5px;
-    background-color: #095c8a;
+	border: 2px solid #5d35b0;
+	background-color: #5d35b0;
+	font-weight: 600;
+	color: #fff;
+	border-radius: 5px;
+}
+
+
+.billing-modal .information_of_pay {
+    /* background-color: #3d4353; */ 
+    border: 3px solid var(--input-color);
+    padding: 20px;
+    color: var(--text-color);
     border-radius: 5px;
 }
+
+.billing-modal .information_of_pay .title {
+	display: flex;
+	margin-bottom: 10px;
+}
+
+.billing-modal .information_of_pay .title > p {
+    padding: 5px;
+	border: 2px solid #5d35b0;
+	background-color: #5d35b0;
+	font-weight: 600;
+	color: #fff;
+	border-radius: 5px;
+}
+
+.billing-modal .searchs__orders {
+    /* background-color: #3d4353; */ 
+    border: 3px solid var(--input-color);
+    padding: 20px;
+    color: var(--text-color);
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+.billing-modal .searchs__orders .title {
+    display: flex;
+	margin-bottom: 10px;
+}
+
+.billing-modal .searchs__orders .title > p {
+    padding: 5px;
+	border: 2px solid #ec7f00;
+	background-color: #ec7f00;
+	font-weight: 600;
+	color: #fff;
+	border-radius: 5px;
+}
+

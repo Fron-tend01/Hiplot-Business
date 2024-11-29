@@ -5,8 +5,6 @@ import DynamicVariables from '../../../../utils/DynamicVariables';
 import '../../../../utils/DynamicVariables';
 import "./styles/ListasFranquicias.css"
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales';
-import { useStore } from 'zustand';
-import { storeDv } from '../../../../zustand/Dynamic_variables';
 import Filtrado_Articulos_Basic from '../../Dynamic_Components/Filtrado_Articulos_Basic';
 import Select from '../../Dynamic_Components/Select';
 import { companiesRequests } from '../../../../fuctions/Companies';
@@ -47,7 +45,7 @@ const ListasFranquicias = () => {
   const [sucursalF, setSucursalF] = useState<any>({})
   const [campos_ext] = useState<any>([{ nombre: 'compra_adelantada', tipo: false }, { nombre: 'id_articulo', tipo: 1, asignacion: 'id' }])
 
-  const selectData = useSelectStore(state => state.selectedIds)
+  const selectData: any = useSelectStore(state => state.selectedIds)
 
   const selectDataID = useSelectStore(state => state.setSelectedId)
 

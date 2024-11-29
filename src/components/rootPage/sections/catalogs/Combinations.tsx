@@ -124,11 +124,11 @@ const Combinations = () => {
             })
     };
 
-    const [id, setId] = useState<number>()
+
 
     const ModalUpdate = (car: any) => {
         setModalUpdate(true)
-        setId(car.id)
+
         setCombination({...forclear});
         setOpcion({...opcionClear})
         console.log(car);

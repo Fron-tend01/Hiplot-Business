@@ -18,7 +18,12 @@
 }
 
 
-
+.add__branch-offices {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    padding: 10px 0;
+    overflow: hidden;
+}
 
 
 
@@ -46,6 +51,14 @@
 	visibility: visible;
 }
 
+.overlay__create_modal-sub_clients .header__modal {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+}
+
 .popup__create_modal-sub_clients {
     background-color: var(--background-modal);
 	border-radius: 5px;
@@ -56,10 +69,11 @@
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
-    overflow: scroll;
+
 }
 
-.popup__create_modal-sub_clients .btn-cerrar-popup__create_modal-sub_clients {
+
+.popup__create_modal-sub_clients .btn-cerrar-popup__create_modal-sub_clients  {
 	font-size: 16px;
 	line-height: 16px;
 	display: block;
@@ -67,8 +81,8 @@
 	transition: .3s ease all;
 	color: #BBBBBB;
     position: absolute;
-    right: 15px;
-    top: 15px;
+    right: 30px;
+    top: 10px;
 }
 
 

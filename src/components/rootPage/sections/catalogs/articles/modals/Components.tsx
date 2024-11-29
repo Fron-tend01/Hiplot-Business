@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import './style/Components.css'
 import { storeArticles } from '../../../../../../zustand/Articles'
 import { useStore } from 'zustand'
 import Filtrado_Articulos_Basic from '../../../../Dynamic_Components/Filtrado_Articulos_Basic'
-import { storeDv } from '../../../../../../zustand/Dynamic_variables'
 
 const Components: React.FC = () => {
   const setSubModal = storeArticles(state => state.setSubModal)
   const setComponents = storeArticles(state => state.setComponents)
   const setDeleteComponents = storeArticles(state => state.setDeleteComponents)
-  const setArticulos = storeDv(state => state.setArticulos)
-  const { subModal, components, deleteComponents }: any = useStore(storeArticles)
+  const { subModal, components }: any = useStore(storeArticles)
 
   const [camps] = useState<any>([
     {

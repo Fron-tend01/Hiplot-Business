@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from 'react'
-import useUserStore from '../../../../../zustand/General';
+// import useUserStore from '../../../../../zustand/General';
 import { useStore } from 'zustand';
 import './ModalCreate.css'
 import { storeTransfers } from '../../../../../zustand/Transfers';
 import APIs from '../../../../../services/services/APIs';
-import Swal from 'sweetalert2';
+// import Swal from 'sweetalert2';
 
 const ModalSee: React.FC = () => {
-  const userState = useUserStore(state => state.user);
-  let user_id = userState.id
+  // const userState = useUserStore(state => state.user);
+  // let user_id = userState.id
 
   const setModalStateSee = storeTransfers((state: any) => state.setModalStateSee);
   const { modalStateSee, dataTransfer }: any = useStore(storeTransfers);
 
 
-  const [selectedBranchOffice, setSelectedBranchOffice] = useState<any>(null);
+  // const [selectedBranchOffice, setSelectedBranchOffice] = useState<any>(null);
 
-  const [selectStore, setSelectStore] = useState<boolean>(false);
-  const [selectedStore, setSelectedStore] = useState<any>(null);
+  // const [selectStore, setSelectStore] = useState<boolean>(false);
+  // const [selectedStore, setSelectedStore] = useState<any>(null);
 
-  const [selectedBranchOfficeTwo, setSelectedBranchOfficeTwo] = useState<any>(null);
+  // const [selectedBranchOfficeTwo, setSelectedBranchOfficeTwo] = useState<any>(null);
 
-  const [selectedStoreTwo, setSelectedStoreTwo] = useState<any>(null);
+  // const [selectedStoreTwo, setSelectedStoreTwo] = useState<any>(null);
 
-  const [comments, setComments] = useState<any>()
+  // const [comments, setComments] = useState<any>()
 
 
 
@@ -40,51 +40,38 @@ const ModalSee: React.FC = () => {
     setModalStateSee('')
   }
 
-  const [concepts, setConcepts] = useState<any>([])
+  const [concepts] = useState<any>([])
 
 
   console.log(modalStateSee)
 
 
-  const modalCreateTrnasfers = async () => {
-    let data = {
-      id_usuario_crea: user_id,
-      id_sucursal: selectedBranchOffice.id,
-      id_almacen_origen: selectedStore.id,
-      id_sucursal_origen: selectedBranchOffice.id,
-      id_sucursal_destino: selectedBranchOfficeTwo.id,
-      id_almacen_destino: selectedStoreTwo.id,
-      comentarios: comments,
-      conceptos: concepts
-    };
+  // const modalCreateTrnasfers = async () => {
+  //   let data = {
+  //     id_usuario_crea: user_id,
+  //     id_sucursal: selectedBranchOffice.id,
+  //     id_almacen_origen: selectedStore.id,
+  //     id_sucursal_origen: selectedBranchOffice.id,
+  //     id_sucursal_destino: selectedBranchOfficeTwo.id,
+  //     id_almacen_destino: selectedStoreTwo.id,
+  //     comentarios: comments,
+  //     conceptos: concepts
+  //   };
 
-    try {
-      let result: any = await APIs.createTransfers(data)
-      if (result.error == true) {
-        Swal.fire('Advertencia', result.mensaje, 'warning');
-      } else {
-        Swal.fire(result.mensaje, '', 'success');
-      }
+  //   try {
+  //     let result: any = await APIs.createTransfers(data)
+  //     if (result.error == true) {
+  //       Swal.fire('Advertencia', result.mensaje, 'warning');
+  //     } else {
+  //       Swal.fire(result.mensaje, '', 'success');
+  //     }
 
-    } catch (error) {
-      Swal.fire('Error al actualizar el porveedor', '', 'error');
-    }
+  //   } catch (error) {
+  //     Swal.fire('Error al actualizar el porveedor', '', 'error');
+  //   }
 
-  }
-  console.log(dataTransfer)
-  const [modalSeeStocks, setModalSeeStocks] = useState<boolean[]>([]);
+  // }
 
-  const [setModalIndex] = useState<any>(false);
-
-  const seeStock = (x: any, index: any) => {
-    setModalSeeStocks((prev) => {
-      const newState = [...prev];
-      newState[index] = true;
-      return newState;
-    });
-    setModalIndex(index);
-    console.log(x)
-  };
 
 
   const getPDF = async () => {
@@ -102,7 +89,7 @@ const ModalSee: React.FC = () => {
           <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
         </a>
         <p className='title__modals'>Traspasos</p>
-        <form className='container__create_transfers' onSubmit={modalCreateTrnasfers}>
+        <form className='container__create_transfers'>
           <div className="card ">
             <div className="card-body bg-standar">
               <h3 className="text">{dataTransfer.serie}-{dataTransfer.folio}-{dataTransfer.anio}</h3>

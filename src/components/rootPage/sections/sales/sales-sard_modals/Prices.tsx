@@ -4,7 +4,7 @@ import { useStore } from 'zustand'
 import { storeSaleCard } from '../../../../../zustand/SaleCard'
 import './styles/Prices.css'
 
-const Prices = () => {
+const Prices: React.FC = () => {
 
   const setModalSub = storeModals(state => state.setModalSub)
   const { modalSub }: any = useStore(storeModals)

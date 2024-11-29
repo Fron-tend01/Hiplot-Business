@@ -6,7 +6,6 @@ import './CreateModal.css'
 import useUserStore from '../../../../../zustand/General';
 import { TypeOfPaymentsRequests } from '../../../../../fuctions/TypeOfPayments';
 import { storeTypeOfPayments } from '../../../../../zustand/TypeOfPayments';
-import { v4 as uuidv4 } from 'uuid';
 
 const UpdateModal = () => {
     const userState = useUserStore(state => state.user);
@@ -22,7 +21,7 @@ const UpdateModal = () => {
     const {modal}: any = useStore(storeModals)
 
     const {getTemplates, getTemplatesxFields}: any = TemplatesRequests()
-    const {createTypeOfPayments, updateTypeOfPayment}: any = TypeOfPaymentsRequests()
+    const { updateTypeOfPayment}: any = TypeOfPaymentsRequests()
     const [templates, setTemplates] = useState<any>([])
     const [templatesFields, setTemplateFields] = useState<any>([])
 

@@ -52,24 +52,24 @@ export const storePurchaseOrders = create<StoreState>((set) => ({
   type: 0,
   setType: (x) => set({ type: x }),
    
-  // Orden de compra
-  createPurchaseOrders: async (id_usuario_crea: number, id_usuario_autoriza: number, id_sucursal: number, fecha_creacion: Date ,  fecha_llegada: Date,  status: number, tipo: number,  cotizacion: string, factura: string, comentarios: string, id_proveedor_flete: number, costo_flete: number, comentarios_flete: string, sumar_flete: boolean, documento_anterior: string, documento_siguiente: string,  conceptos: any[]) => {
-    try {
-      const response: any = await APIs.createPurchaseOrders(id_usuario_crea, id_usuario_autoriza, id_sucursal, fecha_creacion , fecha_llegada, status, tipo, cotizacion, factura, comentarios, id_proveedor_flete, costo_flete, comentarios_flete, sumar_flete, documento_anterior, documento_siguiente, conceptos)
-      if (response.error === true) {
-        // Lanzar una excepción con el mensaje de error recibido
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: response.mensaje
-        });
-      } else {
-        Swal.fire('Orden de compra creada exitosamente', '', 'success');
-      }
-    } catch {
+  // // Orden de compra
+  // createPurchaseOrders: async (data) => {
+  //   try {
+  //     const response: any = await APIs.createPurchaseOrders(data)
+  //     if (response.error === true) {
+  //       // Lanzar una excepción con el mensaje de error recibido
+  //       Swal.fire({
+  //         icon: "error",
+  //         title: "Oops...",
+  //         text: response.mensaje
+  //       });
+  //     } else {
+  //       Swal.fire('Orden de compra creada exitosamente', '', 'success');
+  //     }
+  //   } catch {
   
-    }
-  },
+  //   }
+  // },
 
   getPurchaseOrders: async (data: any) => {
     try {

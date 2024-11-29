@@ -1,9 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { storeCompanies } from '../../../../../zustand/Companies';
-import { storeBranchOffcies } from '../../../../../zustand/BranchOffices';
+import React, { useState, useEffect } from 'react'
 import { storeAreas } from '../../../../../zustand/Areas';
 import { storeSeries } from '../../../../../zustand/Series';
-import { storeSuppliers } from '../../../../../zustand/Suppliers';
 import { storeArticles } from '../../../../../zustand/Articles';
 import useUserStore from '../../../../../zustand/General';
 import { storePurchaseOrders } from '../../../../../zustand/PurchaseOrders';
@@ -11,12 +8,11 @@ import { storeRequisitions } from '../../../../../zustand/Requisition';
 import APIs from '../../../../../services/services/APIs';
 import typePurchase from './json/typePurchase.json'
 import typeSearchs from './json/typeSearchs.json'
-import types from './json/types.json'
+
 // Importar el idioma español
 import '../styles/PurchaseOrders.css'
 import './styles/ModalPurchaseOrders.css'
 import Swal from 'sweetalert2';
-import { Link } from 'react-router-dom';
 // Ensure the Spanish locale is loaded
 
 
@@ -25,13 +21,12 @@ import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.css';
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import Empresas_Sucursales from '../../../Dynamic_Components/Empresas_Sucursales';
-import { PrivateRoutes } from '../../../../../models/routes';
 import ModalRequisition from '../requisition/ModalRequisition';
 
 
 const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
-  const { getRequisition, getRequisition2 }: any = storeRequisitions();
+  const { getRequisition2 }: any = storeRequisitions();
 
   const [requisitions, setRequisitions] = useState<any[]>([])
 
@@ -43,11 +38,11 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   const [conceptos, setConceptos] = useState<any>([]);
 
   const setModal = storePurchaseOrders(state => state.setModal)
-  const { createPurchaseOrders, getPurchaseOrders, modal, selectedBranchOffice, type, dates }: any = storePurchaseOrders();
+  const { modal, selectedBranchOffice, type, dates }: any = storePurchaseOrders();
 
-  const { branchOfficeXCompanies }: any = storeBranchOffcies();
-  const { series, getSeriesXUser }: any = storeSeries();
-  const { areasXBranchOfficesXUsers, getAreasXBranchOfficesXUsers }: any = storeAreas();
+
+  const { getSeriesXUser }: any = storeSeries();
+  const { getAreasXBranchOfficesXUsers }: any = storeAreas();
 
   const { getArticles }: any = storeArticles();
   const userState = useUserStore(state => state.user);
@@ -294,9 +289,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
 
 
-  const [selectedByRequestBranchOffice, setSelectedByRequestBranchOffice] = useState<any>()
 
-  const [selectedModalSerie, setSelectedModalSerie] = useState<number | null>(null)
 
 
 
@@ -325,7 +318,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   };
 
 
-  const [invoice, setInvoice] = useState<string>('')
+
   const [warningInvoice] = useState<boolean>(false)
 
 
@@ -359,8 +352,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     newArticleStates[index].comentarios = value;
     setConceptos(newArticleStates);
   };
-  const iva = 0.16;
-  const [applyExtraDiscount] = useState<boolean>(false);
+
+
 
   // Función para manejar el cambio de estado del checkbox
   const handleExtraDiscountChange = (e: React.ChangeEvent<HTMLInputElement>, index: any) => {
@@ -606,6 +599,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     if (modoUpdate) {
       if (conceptos[i].id != undefined) {
         setConceptosElim([...conceptosElim, conceptos[i].id])
+        console.log(item)
       }
     }
     let filter = conceptos.filter((_: any, index: number) => index !== i)
@@ -857,7 +851,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
               <div>
                 <label className='label__general'>Comentarios de OC</label>
                 {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
-                <textarea className={`textarea__general ${warningInvoice}  ? 'warning' : ''}`} type="text" value={OComments} onChange={(e) => setOComments(e.target.value)} placeholder='Comentarios de la orden de compra'></textarea>
+                <textarea className={`textarea__general ${warningInvoice}  ? 'warning' : ''}`} value={OComments} onChange={(e) => setOComments(e.target.value)} placeholder='Comentarios de la orden de compra'></textarea>
               </div>
             </div>
             {typeModal ?

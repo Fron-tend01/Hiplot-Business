@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Select from '../../../../Dynamic_Components/Select'
-import { storeTickets } from '../../../../../../zustand/Tickets';
+
 import { storeOrdes } from '../../../../../../zustand/Ordes';
 import typeSearch from './json/typeSearchs.json'
 import APIs from '../../../../../../services/services/APIs';
@@ -21,7 +21,6 @@ const Direct: React.FC = () => {
     const [selectModalResults, setSelectModalResults] = useState<boolean>(false)
     const [selectedModalResult, setSelectedModalResult] = useState<any>(null)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
-    const setSelectedIds: any = useSelectStore((state) => state.setSelectedId);
 
     
 

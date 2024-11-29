@@ -20,7 +20,7 @@ const DeliveryTimes: React.FC = () => {
   const setDeleteDeliveryTimes = storeArticles(state => state.setDeleteDeliveryTimes)
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
-  const [update, setUpdate] = useState<boolean>(false)
+
 
   const [company, setCompany] = useState<any>([])
   const [branch, setBranch] = useState<any>([])
@@ -85,7 +85,7 @@ const DeliveryTimes: React.FC = () => {
           <p className='title__modals'>Tiempos de entrega</p>
           <div className='row'>
             <div className='col-8'>
-              <Empresas_Sucursales modeUpdate={update} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
+              <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
             </div>
             <div className='col-3 md-col-6 sm-col-12'>
               <label className='label__general'>Nombre</label>

@@ -5,8 +5,6 @@ import DynamicVariables from '../../../../utils/DynamicVariables';
 import '../../../../utils/DynamicVariables';
 import "./styles/PedidoFranquicias.css"
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales';
-import { useStore } from 'zustand';
-import { storeDv } from '../../../../zustand/Dynamic_variables';
 import Filtrado_Articulos_Basic from '../../Dynamic_Components/Filtrado_Articulos_Basic';
 import Select from '../../Dynamic_Components/Select';
 import { companiesRequests } from '../../../../fuctions/Companies';
@@ -14,7 +12,6 @@ import { useSelectStore } from '../../../../zustand/Select';
 import useUserStore from '../../../../zustand/General';
 import Flatpickr from "react-flatpickr";
 import { Spanish } from 'flatpickr/dist/l10n/es.js'; // Importa la localización en español
-import { seriesRequests } from '../../../../fuctions/Series';
 import { storeSeries } from '../../../../zustand/Series';
 
 interface pedido {
@@ -36,7 +33,7 @@ interface searcher {
   folio: number
 }
 const PedidoFranquicias = () => {
-  const [pf, setPf] = useState<pedido>({
+  const [_, setPf] = useState<pedido>({
     id: 0,
     id_sucursal: 0,
     id_empresa_proveedor: 0,
@@ -75,7 +72,6 @@ const PedidoFranquicias = () => {
     status: 0,
     folio: 0
   })
-  const [modoXfolio, setModoXfolio] = useState<boolean>(false)
   const [proveedorSearcher, setProveedorSearcher] = useState<any>({})
   const [franquiciaSearcher, setFranquiciaSearcher] = useState<any>({})
   const [sucursalFSearcher, setSucursalFSearcher] = useState<any>({})
@@ -85,7 +81,7 @@ const PedidoFranquicias = () => {
   const [campos_ext] = useState<any>([{ nombre: 'cantidad', tipo: 0 }, { nombre: 'id_articulo', tipo: 1, asignacion: 'id' }, { nombre: 'unidad', tipo: 0 },
   { nombre: 'comentarios', tipo: '' }, { nombre: 'unidad_bool', tipo: false }, { nombre: 'unidad_sel', tipo: 0 }, { nombre: 'precio_unitario', tipo: 0 }, { nombre: 'total', tipo: 0 }])
 
-  const selectData = useSelectStore(state => state.selectedIds)
+  const selectData: any = useSelectStore(state => state.selectedIds)
 
 
   const [modal, setModal] = useState<boolean>(false)
@@ -456,7 +452,7 @@ const PedidoFranquicias = () => {
     if (selectData != null) {
       if (selectData.almacen_origin) {
 
-        articulos.forEach((el: any, index: number) => {
+        articulos.forEach((_: any, index: number) => {
           const newArticleStates = [...articulos];
           newArticleStates[index].cantidad = 0;
           setArticulos(newArticleStates);
@@ -523,80 +519,70 @@ const PedidoFranquicias = () => {
   };
 
   return (
-    <div className='te'>
-      <div className='te__container'>
-
-        <div className='row'>
-          {modoXfolio ?
-            (<div className='col-11 slideLeft'>
-              <div className='row'>
-                <div className='col-4 md-col-4 sm-col-12'>
-                  <Select dataSelects={series} instanceId='serieSearcher' nameSelect={'Series'}></Select>
-
-                </div>
-                <div className='col-6 md-col-6 sm-col-12'>
-                  <div>
-                    <label className='label__general'>Folio</label>
-                    <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                    <input className={`inputs__general`} type="text" value={searcher.folio} onChange={(e) => DynamicVariables.updateAnyVar(setSearcher, "folio", parseInt(e.target.value))} placeholder='Ingresa el folio' />
-                  </div>
-                </div>
-                <div className='col-2 md-col-2 sm-col-12'>
-                  <label className='label__general'>Buscar</label>
-                  <button className='btn__general-success' onClick={() => Modal(false, 0)}>Buscar</button>
-                </div>
-              </div>
-
-            </div>)
-            :
-            (<div className='col-11 slideRight'>
-              <div className='row'>
-                <div className='col-8 md-col-8 sm-col-12'>
-                  <Empresas_Sucursales modeUpdate={false} empresaDyn={franquiciaSearcher} sucursalDyn={sucursalFSearcher}
-                    setEmpresaDyn={setFranquiciaSearcher} setSucursalDyn={setSucursalFSearcher}></Empresas_Sucursales>
-                </div>
-                <div className='col-4 md-col-4 sm-col-12'>
-                  <Select dataSelects={proveedorSearcher} instanceId='proveedorSearcher' nameSelect={'Proveedor'}></Select>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col-4 md-col-4 sm-col-12'>
-                  <label className='label__general'>Fechas</label>
-                  <div className='container_dates__requisition'>
-                    <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
-                  </div>
-                </div>
-                <div className='col-6 md-col-4 sm-col-12 container__checkbox_orders'>
-                  <div className='col-4 md-col-4 sm-col-12 checkbox__orders'>
-                    <label className="checkbox__container_general">
-                      <input className='checkbox' type="radio" name="requisitionStatus" checked={searcher.status == 0 ? true : false} onChange={() => handleClick(0)} />
-                      <span className="checkmark__general"></span>
-                    </label>
-                    <p className='title__checkbox text'>Activo</p>
-                  </div>
-                  <div className='col-4 md-col-4 sm-col-12 checkbox__orders'>
-                    <label className="checkbox__container_general">
-                      <input className='checkbox' type="radio" name="requisitionStatus" value={searcher.status} onChange={() => handleClick(1)} />
-                      <span className="checkmark__general"></span>
-                    </label>
-                    <p className='title__checkbox text'>Cancelados</p>
-                  </div>
-                  <div className='col-4 md-col-4 sm-col-12 checkbox__orders'>
-                    <label className="checkbox__container_general">
-                      <input className='checkbox' type="radio" name="requisitionStatus" value={searcher.status} onChange={() => handleClick(2)} />
-                      <span className="checkmark__general"></span>
-                    </label>
-                    <p className='title__checkbox text'>Terminados</p>
-                  </div>
-                </div>
-                <div className='col-2 md-col-2 sm-col-12 justify-content-center '>
-                  <label className='label__general'>Buscar</label>
-                  <button className='btn__general-success' onClick={() => getData()}>Buscar</button>
-                </div>
+    <div className='franchise__orders'>
+      <div className='franchise__orders_container'>
+        <div className='row__one'>
+          <div className='row'>
+            <div className='col-8'>
+              <Empresas_Sucursales modeUpdate={false} empresaDyn={franquiciaSearcher} sucursalDyn={sucursalFSearcher}
+                setEmpresaDyn={setFranquiciaSearcher} setSucursalDyn={setSucursalFSearcher}></Empresas_Sucursales>
+            </div>
+            <div className='col-4'>
+              <Select dataSelects={proveedorSearcher} instanceId='proveedorSearcher' nameSelect={'Proveedor'}></Select>
+            </div>
+          </div>
+          <div className='row__two'>
+            <div className=''>
+              <label className='label__general'>Fechas</label>
+              <div className='container_dates__requisition'>
+                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
               </div>
             </div>
-            )}
-          <div className='col-1' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <div className=' container__checkbox_orders'>
+              <div className=' checkbox__orders'>
+                <label className="checkbox__container_general">
+                  <input className='checkbox' type="radio" name="requisitionStatus" checked={searcher.status == 0 ? true : false} onChange={() => handleClick(0)} />
+                  <span className="checkmark__general"></span>
+                </label>
+                <p className='title__checkbox text'>Activo</p>
+              </div>
+              <div className=' checkbox__orders'>
+                <label className="checkbox__container_general">
+                  <input className='checkbox' type="radio" name="requisitionStatus" value={searcher.status} onChange={() => handleClick(1)} />
+                  <span className="checkmark__general"></span>
+                </label>
+                <p className='title__checkbox text'>Cancelados</p>
+              </div>
+              <div className=' checkbox__orders'>
+                <label className="checkbox__container_general">
+                  <input className='checkbox' type="radio" name="requisitionStatus" value={searcher.status} onChange={() => handleClick(2)} />
+                  <span className="checkmark__general"></span>
+                </label>
+                <p className='title__checkbox text'>Terminados</p>
+              </div>
+            </div>
+            <div className='d-flex justify-content-end align-items-end'>
+              <button className='btn__general-purple' onClick={() => getData()}>Buscar</button>
+            </div>
+          </div>
+        </div>
+        <div className='row__two'>
+          <div className=''>
+            <Select dataSelects={series} instanceId='serieSearcher' nameSelect={'Series'}></Select>
+          </div>
+          <div className=''>
+            <div>
+              <label className='label__general'>Folio</label>
+              <div className='warning__general'><small >Este campo es obligatorio</small></div>
+              <input className={`inputs__general`} type="text" value={searcher.folio} onChange={(e) => DynamicVariables.updateAnyVar(setSearcher, "folio", parseInt(e.target.value))} placeholder='Ingresa el folio' />
+            </div>
+          </div>
+          <div className='d-flex justify-content-center align-items-end'>
+            <button className='btn__general-purple' onClick={() => Modal(false, 0)}>Buscar</button>
+          </div>
+        </div>
+
+        {/* <div className='col-1' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             {modoXfolio ?
               <div title='FILTRADO GENERAL'>
 
@@ -608,67 +594,99 @@ const PedidoFranquicias = () => {
 
               </div>
             }
-          </div>
-        </div>
-        <div className='row'>
+          </div> */}
+
+        <div className='row my-4'>
           <div className='col-12'>
             <div className='btns__create'>
               <button className='btn__general-purple' onClick={() => Modal(false, 0)}>Realizar Pedido de Franquicia</button>
             </div>
           </div>
         </div>
-        <div className="table__requisicion" title='Haz click en un registro para ver su información'>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead className="table__head">
-              <tr className="thead">
-                <th>Folio</th>
-                <th>Status</th>
-                <th>Fecha</th>
-                <th>Por</th>
-                <th>Empresas</th>
-                <th>Sucursal</th>
-                <th>Proveedor</th>
-              </tr>
-            </thead>
-            <tbody className="table__body">
-              {data && data.length > 0 ? (
-                data.map((requisition: any, index: number) => (
-                  <tr className="tbody__container" key={index} onClick={() => Modal(true, requisition)}>
-
-                    <td>{requisition.serie}-{requisition.folio}-{requisition.anio}</td>
-                    {/* <td>{requisition.tipo === 0 ? 'Normal' : 'Diferencial'}</td> */}
-                    <td>
-                      {requisition.status == 0 ? (
-                        <span className="active-status">Activo</span>
-                      ) : requisition.status == 2 ? (
-                        <span className="active-status">Terminada</span>
-                      ) :
-                        <span className="canceled-status">Cancelada</span>
-                      }
-                    </td>
-
-                    <td>{requisition.fecha}</td>
-                    <td>{requisition.usuario_crea}</td>
-                    <td>{requisition.empresa}</td>
-                    <td>{requisition.sucursal}</td>
-                    <td>{requisition.proveedor}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={10} style={{ textAlign: "center" }}>
-                    No hay requisiciones disponibles
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        <div className='table__franchise__orders'>
+          <div>
+            {data ? (
+              <div className='table__numbers'>
+                <p className='text'>Total de entradas</p>
+                <div className='quantities_tables'>{data?.length}</div>
+              </div>
+            ) : (
+              <p></p>
+            )}
+          </div>
+          <div className='table__head'>
+            <div className='thead'>
+              <div className='th'>
+                <p>Folio</p>
+              </div>
+              <div className='th'>
+                <p>Status</p>
+              </div>
+              <div className='th'>
+                <p>Fecha</p>
+              </div>
+              <div className='th'>
+                <p>Por</p>
+              </div>
+              <div className='th'>
+                <p>Empresas</p>
+              </div>
+              <div className='th'>
+                <p>Sucursal</p>
+              </div>
+              <div className='th'>
+                <p>Proveedor</p>
+              </div>
+            </div>
+          </div>
+          {data ? (
+            <div className='table__body'>
+              {data?.map((order: any, index: number) => {
+                return (
+                  <div className='tbody__container' key={index} onClick={() => Modal(true, order)}>
+                    <div className='tbody'>
+                      <div className='td code'>
+                        <p>{order.serie}-{order.folio}-{order.anio}</p>
+                      </div>
+                      <div className='td date'>
+                        <p>{order.status == 0 ? (
+                          <span className="active-status">Activo</span>
+                        ) : order.status == 2 ? (
+                          <span className="active-status">Terminada</span>
+                        ) :
+                          <span className="canceled-status">Cancelada</span>
+                        }</p>
+                      </div>
+                      <div className='td date'>
+                        <p>{order.fecha.split('T')[0]}</p>
+                      </div>
+                      <div className='td'>
+                        <p>{order.usuario_crea}</p>
+                      </div>
+                      <div className='td'>
+                        <p>{order.empresa}</p>
+                      </div>
+                      <div className='td'>
+                        <p>{order.sucursal}</p>
+                      </div>
+                      <div className='td'>
+                        <p>{order.proveedor}</p>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <p className="mt-3">No hay entradas que mostrar</p>
+          )}
         </div>
 
+
         {/* -------------------------------------------------------------MODALES----------------------------------------------------------------------------- */}
-        <div className={`overlay__create_modal ${modal ? 'active' : ''}`}>
-          <div className={`popup__create_modal ${modal ? 'active' : ''}`}>
-            <a href="#" className="btn-cerrar-popup__create_modal" onClick={() => setModal(false)}>
+        <div className={`overlay__modal__franchise-orders ${modal ? 'active' : ''}`}>
+          <div className={`popup__modal__franchise-orders ${modal ? 'active' : ''}`}>
+            <a href="#" className="btn-cerrar-popup__modal__franchise-orders" onClick={() => setModal(false)}>
               <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
             </a>
             {modoUpdate ?
@@ -736,7 +754,6 @@ const PedidoFranquicias = () => {
               :
               <div>
                 <p className='title__modals'><b>Crear Pedido de Franquicia</b></p>
-                <hr />
                 <div className='row'>
                   <div className='col-8 md-col-8 sm-col-12'>
                     <Empresas_Sucursales modeUpdate={modoUpdate} empresaDyn={franquicia} sucursalDyn={sucursalF}
@@ -746,7 +763,7 @@ const PedidoFranquicias = () => {
                     <Select dataSelects={proveedor} instanceId='proveedor' nameSelect={'Proveedor'}></Select>
                   </div>
                 </div>
-                {selectData?.proveedor != undefined ?
+
                   <div className='row'>
                     <div className='col-12'>
                       <br />
@@ -829,7 +846,7 @@ const PedidoFranquicias = () => {
                       </div>
                     </div>
                   </div>
-                  : ''}
+            
               </div>
             }
 

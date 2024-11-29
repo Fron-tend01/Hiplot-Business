@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import useUserStore from "../../../../../zustand/General";
-import { storeArticles } from '../../../../../zustand/Articles';
 import { storeStore } from "../../../../../zustand/Store";
 import { storeTickets } from "../../../../../zustand/Tickets";
 import 'flatpickr/dist/flatpickr.min.css';
@@ -13,8 +12,7 @@ import ModalPurchaseOrders from "../../shopping/purchaseOrders/ModalPurchaseOrde
 
 
 const ModalUpdate = ({ updateTickets }: any) => {
-    const { articles }: any = storeArticles();
-    const { store, getStore }: any = storeStore()
+    const { getStore }: any = storeStore()
     const { getPDFTickets }: any = storeTickets();
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
@@ -24,13 +22,6 @@ const ModalUpdate = ({ updateTickets }: any) => {
         getStore(user_id)
         setConceptos(updateTickets.conceptos)
     }, [updateTickets])
-
-
-    const [seleccionesTemporales, setSeleccionesTemporales] = useState<string[]>([]);
-    const [selectedSupplier, setSelectedSupplier] = useState<any>([])
-    const [suppliersModal] = useState<any[]>([])
-    const [selectedStore, setSelectedStore] = useState<any>([])
-
 
 
 

@@ -5,7 +5,7 @@ import { useStore } from 'zustand'
 import './style/Combinations.css'
 
 
-const Combinations = () => {
+const Combinations: React.FC = () => {
     const setSubModal = storeArticles(state => state.setSubModal)
     const setCombinations = storeArticles(state => state.setCombinations)
     const setDeleteCombinations = storeArticles(state => state.setDeleteCombinations)

@@ -14,7 +14,6 @@ const ModalCreate = () => {
     const setModalTickets = storeTickets(state => state.setModalTickets)
     const setConceptos = storeTickets(state => state.setConceptos)
 
-    const setDates = storeTickets(state => state.setDates)
     const { dates, getTickets }: any = storeTickets();
 
     const [companies, setCompanies] = useState<any>()
@@ -140,8 +139,8 @@ const ModalCreate = () => {
 
     // }, [conceptos])
 
-    const deleteTicket = (ticket: any, indexTicket: any) => {
-        let filter = conceptos.filter((x: any, index: any) => index !== indexTicket)
+    const deleteTicket = (_: any, indexTicket: any) => {
+        let filter = conceptos.filter((_: any, index: any) => index !== indexTicket)
         setConceptos(filter)
     }
 
@@ -161,7 +160,7 @@ const ModalCreate = () => {
         let ids: any = [];
 
         if(conceptos.length !== 0){
-            conceptos.forEach((concept: any, index: number) => {
+            conceptos.forEach((concept: any) => {
                 const exists = ids.some((x: any) => x === concept.id_orden_compra);
                 if (exists) {
                     console.log('Ya existe');

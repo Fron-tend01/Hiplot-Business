@@ -3,7 +3,7 @@ import { storeModals } from '../../../../../../../zustand/Modals'
 import { storeArticles } from '../../../../../../../zustand/Articles'
 import './History.css'
 
-const History = () => {
+const History: React.FC = () => {
 
     const setModalSub = storeModals(state => state.setModalSub)
 

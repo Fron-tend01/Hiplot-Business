@@ -3,7 +3,6 @@ import useUserStore from '../../../../../../zustand/General'
 import { companiesRequests } from '../../../../../../fuctions/Companies'
 import Flatpickr from "react-flatpickr";
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
-import { seriesRequests } from '../../../../../../fuctions/Series'
 import { ordersRequests } from '../../../../../../fuctions/Orders'
 import { storeWarehouseExit } from '../../../../../../zustand/WarehouseExit'
 import { articleRequests } from '../../../../../../fuctions/Articles'
@@ -22,15 +21,14 @@ const ByOrder: React.FC = () => {
 
   const { concepts, setConcepts } = useStore(storeWarehouseExit);
 
-  const [invoice, setInvoice] = useState<string>('')
+  
 
   const { getCompaniesXUsers }: any = companiesRequests()
 
 
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
-  const { getSeriesXUser }: any = seriesRequests();
-  const [series, setSeries] = useState<any>()
+
 
   const { getOrdedrs }: any = ordersRequests()
   const [orders, setOrders] = useState<any>()

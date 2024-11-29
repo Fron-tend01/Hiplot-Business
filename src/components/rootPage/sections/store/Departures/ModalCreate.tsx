@@ -8,12 +8,11 @@ import Direct from './Types/Direct'
 import './ModalCreate.css'
 import { storeWarehouseExit } from '../../../../../zustand/WarehouseExit'
 import { useStore } from 'zustand';
-import { WarehouseExitRequests } from '../../../../../fuctions/WarehouseExit'
 import Empresas_Sucursales from '../../../Dynamic_Components/Empresas_Sucursales'
 import Select from '../../../Dynamic_Components/Select'
 import { useSelectStore } from '../../../../../zustand/Select'
 import APIs from '../../../../../services/services/APIs'
-import { storeFamilies } from '../../../../../zustand/Families';
+
 
 const ModalCreate: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -21,8 +20,7 @@ const ModalCreate: React.FC = () => {
 
     const setModal = storeWarehouseExit(state => state.setModal)
     const setConcepts = storeWarehouseExit(state => state.setConcepts)
-    const { getWarehouseExit }: any = WarehouseExitRequests()
-    const { createWarehouseExit }: any = WarehouseExitRequests()
+
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
     const { concepts, dates, modal, selectedBranchOffice }: any = useStore(storeWarehouseExit)
     const setWarehouseExit = storeWarehouseExit(state => state.setWarehouseExit)
@@ -118,13 +116,13 @@ const ModalCreate: React.FC = () => {
 
     };
 
-    const [selectedUnit, setSelectedUnit] = useState<any>(false)
+   
 
 
     const handleUnits = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
         const value = parseInt(event.target.value, 10);
         concepts[index].unidad = value;
-        setSelectedUnit(value)
+   
         const newArticleStates = [...concepts];
         newArticleStates[index].cantidad = 0;
         setConcepts(newArticleStates);
@@ -170,17 +168,18 @@ const ModalCreate: React.FC = () => {
 
     const [modalSeeStocks, setModalSeeStocks] = useState<boolean[]>([]);
 
-    const [modalIndex, setModalIndex] = useState<any>(false);
+
 
     const [activeH, setActiveH] = useState<boolean>(false)
     const seeStock = (x: any, index: any) => {
+        console.log(x)
         setActiveH(true)
         setModalSeeStocks((prev) => {
             const newState = [...prev];
             newState[index] = true;
             return newState;
         });
-        setModalIndex(index);
+    
     };
 
     const closeModalSeeStocks = (index: any) => {
@@ -196,6 +195,7 @@ const ModalCreate: React.FC = () => {
             if (selectedIds.almacen_origin) {
     
                 concepts.forEach((el:any, index:number) => {
+                    console.log(el)
                   const newArticleStates = [...concepts];
                   newArticleStates[index].cantidad = 0;
                   setConcepts(newArticleStates);

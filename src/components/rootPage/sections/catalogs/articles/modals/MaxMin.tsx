@@ -17,19 +17,17 @@ const MaxMin: React.FC = () => {
     const [minimum, setMinimum] = useState<number>(0)
     const [warningMaximum] = useState<boolean>(false)
     const [warningMinimum] = useState<boolean>(false)
-    const [selectMaxMinCompanies, setSelectMaxMinCompanies] = useState<boolean>(false)
-    const [selectedMaxMinCompany, setSelectedMaxMinCompany] = useState<number | null>(null)
-    const [selectMaxMinBranchOffices, setSelectMaxMinBranchOffices] = useState<boolean>(false)
-    const [selectedMaxMinBranchOffice, setSelectedMaxMinBranchOffice] = useState<number | null>(null)
+
+
     const [selectMaxMinWarehouses, setSelectMaxMinWarehouses] = useState<boolean>(false)
     const [selectedMaxMinStore, setSelectMaxMinStore] = useState<number | null>(null)
     const [selectActions, setSelectActions] = useState<boolean>(false)
     const [selectedAction, setSelectedAction] = useState<number | null>(null)
-    const [filteredMaxMinBranchOffices, setFilteredMaxMinBranchOffices] = useState<any[]>([]);
+ 
     const [commentsMaxMin, setCommentsMaxMin] = useState<string>('')
 
-    const { getCompaniesXUsers, companiesXUsers }: any = storeCompanies();
-    const { getBranchOfficeXCompanies, branchOfficeXCompanies }: any = storeBranchOffcies();
+    const { getCompaniesXUsers }: any = storeCompanies();
+    const { getBranchOfficeXCompanies }: any = storeBranchOffcies();
     const { store, getStore }: any = storeStore()
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
@@ -97,24 +95,8 @@ const MaxMin: React.FC = () => {
 
 
 
-    const handleMaxMinCompaniesChange = (company: any) => {
-        setSelectedMaxMinCompany(company)
+  
 
-        const firstMaxmMinBranchOffice = branchOfficeXCompanies.find((BranchOffice: any) => BranchOffice.empresa_id === company)
-        if (firstMaxmMinBranchOffice) {
-            setSelectedMaxMinBranchOffice(firstMaxmMinBranchOffice.id)
-
-        } else {
-
-        }
-        setSelectMaxMinCompanies(false)
-
-    }
-
-    const handleMaxMinBranchOfficesChange = (sucursal: any) => {
-        setSelectedMaxMinBranchOffice(sucursal)
-        setSelectMaxMinBranchOffices(false)
-    }
 
 
     const handleMaxMinStoreChange = (store: any) => {
@@ -150,32 +132,6 @@ const MaxMin: React.FC = () => {
 
 
 
-    useEffect(() => {
-        if (selectedMaxMinCompany) {
-            const idSelectedMaxMinBranch = branchOfficeXCompanies.filter((branchOffice: any) => branchOffice.empresa_id === selectedMaxMinCompany);
-            setFilteredMaxMinBranchOffices(idSelectedMaxMinBranch);
-
-            if (idSelectedMaxMinBranch.length > 0) {
-                setSelectedMaxMinBranchOffice(idSelectedMaxMinBranch[0].id); // Acceder al ID del primer elemento del array
-            } else {
-                setSelectedMaxMinBranchOffice(null); // Si no se encuentra ninguna sucursal, establecer selectedBranchOffice en null
-            }
-        } else {
-            setFilteredMaxMinBranchOffices([]);
-            setSelectedMaxMinBranchOffice(null); // Si no se ha seleccionado ninguna empresa, establecer selectedBranchOffice en null
-        }
-
-
-    }, [selectedMaxMinCompany, branchOfficeXCompanies]);
-
-
-    const openSelectMaxMinCompanies = () => {
-        setSelectMaxMinCompanies(!selectMaxMinCompanies)
-    }
-
-    const openSelectMaxMinBranchOffices = () => {
-        setSelectMaxMinBranchOffices(!selectMaxMinBranchOffices)
-    }
 
     const openSelectMaxMinStore = () => {
         setSelectMaxMinWarehouses(!selectMaxMinWarehouses)
@@ -199,7 +155,6 @@ const MaxMin: React.FC = () => {
 
 
 
-    const [warningSelectCompany] = useState<boolean>(false)
 
     return (
         <div>

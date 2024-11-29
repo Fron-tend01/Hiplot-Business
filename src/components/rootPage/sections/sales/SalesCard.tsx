@@ -10,7 +10,7 @@ import useUserStore from '../../../../zustand/General';
 import { UnitsRequests } from '../../../../fuctions/Units';
 import './styles/SalesCard.css';
 import Prices from './sales-sard_modals/Prices';
-import AddQoutation from './sales-sard_modals/AddQoutation';
+
 import ToArrive from './sales-sard_modals/ToArrive';
 import Indications from './sales-sard_modals/Stocks';
 import DeliveryTimes from './sales-sard_modals/DeliveryTimes';
@@ -28,16 +28,14 @@ const SalesCard: React.FC = () => {
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts);
-  const setCustomConcepts = storePersonalized(state => state.setCustomConcepts);
   const setCustomData = storePersonalized(state => state.setCustomData);
-  const { normalConcepts, customConcepts, customData }: any = useStore(storePersonalized);
+  const { normalConcepts, customData }: any = useStore(storePersonalized);
 
   const setArticle = storeSaleCard(state => state.setArticle);
 
   const setIdentifier = storeQuotation(state => state.setIdentifier);
   const { identifier }: any = useStore(storeQuotation);
 
-  const setDataPersonalized = storeSaleCard(state => state.setDataPersonalized);
   const setDataSaleOrder = storeSaleOrder(state => state.setDataSaleOrder);
   const setModalSub = storeModals(state => state.setModalSub)
 
@@ -290,7 +288,7 @@ const SalesCard: React.FC = () => {
 
   const [productionComments, setproductionComments] = useState<string>('')
 
-  const [combinatios, setCombinations] = useState<any>()
+
 
   const combinacion = async (x: any) => {
     console.log('xscombinacionsasdsads', x)
@@ -330,7 +328,7 @@ const SalesCard: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(null);
 
   // Función para abrir el modal de opciones
-  const toggleModal = (index) => {
+  const toggleModal = (index: any) => {
     setActiveIndex(activeIndex === index ? null : index); // Alterna la visibilidad
   };
 
@@ -383,7 +381,7 @@ const SalesCard: React.FC = () => {
             <div className='row__one'>
               <div>
                 <div className="combinaciones">
-                  {article?.opciones_de_variacion?.map((x, index) => (
+                  {article?.opciones_de_variacion?.map((x: any, index: any) => (
                     <div key={index}>
                       <p className="option" onClick={() => toggleModal(index)}>
                         {x.combinacion}
@@ -391,7 +389,7 @@ const SalesCard: React.FC = () => {
                       {/* Mostrar combinación de opciones solo si el índice está activo */}
                       {activeIndex === index && (
                         <div className="combination_options">
-                          {x.opciones.map((option) => (
+                          {x.opciones.map((option: any) => (
                             <div key={option.id}>
                               <p onClick={() => combinacion(option)}>{option.nombre}</p>
                             </div>

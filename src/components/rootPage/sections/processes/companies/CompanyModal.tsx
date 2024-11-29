@@ -20,24 +20,12 @@ const CompanyModal = () => {
     const setModel = storeCompanies(state => state.setModel)
     const { model }: any = useStore(storeCompanies)
 
-    const selectedIds = useSelectStore((state) => state.selectedIds);
+
 
     const userState = useUserStore(state => state.user);
     let user_id = userState.id
 
-    const [modelClear] = useState<any>({
-        id: 0,
-        razon_social: '',
-        nombre_comercial: '',
-        bd_compaqi: '',
-        modulo_cobrofranquicia_compaqi: 0,
-        id_usuario: user_id,
-        id_usuario_req: 0,
-        id_sucursal_req: 0,
-        id_area_req: 0,
-        empresas_franquicias: [],
-        empresas_franquicias_remove: []
-    })
+
     const [formEf, setFormEf] = useState({
         id: 0,
         id_empresa: 0,
@@ -45,18 +33,12 @@ const CompanyModal = () => {
         businessEntityID: 0,
         razon_social: ''
     })
-    const [formEfClear] = useState({
-        id: 0,
-        id_empresa: 0,
-        id_franquicia: 0,
-        businessEntityID: 0,
-        razon_social: ''
-    })
-    const selectData = useSelectStore(state => state.selectedIds)
+ 
+    const selectData: any = useSelectStore(state => state.selectedIds)
     const [dataEmpresas, setDataEmpresas] = useState<any>({})
 
-    const [modalState, setModalState] = useState<boolean>(false)
-    const [modoUpdate, setModoUpdate] = useState<boolean>(false)
+
+    const [modoUpdate] = useState<boolean>(false)
     const [selectedCompany,] = useState<number | null>(null);
 
     // Estados de advertencia para validar campos
@@ -64,15 +46,11 @@ const CompanyModal = () => {
     const [warningRazonSocial, setWarningRazonSocial] = useState<boolean>(false)
     const [warningNombreComercial, setWarningNombreComercial] = useState<boolean>(false)
 
-    const { getCompaniesXUsers, companiesXUsers }: any = storeCompanies()
-    const { getViews, views }: any = storeViews()
+    const { getCompaniesXUsers }: any = storeCompanies()
+    const { getViews }: any = storeViews()
 
 
-    const [users, setUsers] = useState<any>([])
-    const [selectBranchOffice, setSelectBranchOffice] = useState<any>()
-
-    const [areas, setAreas] = useState<any>([])
-
+ 
 
     const fetch = async () => {
         let data = await getCompaniesXUsers(user_id);
@@ -126,7 +104,7 @@ const CompanyModal = () => {
                 .then(async (response: any) => {
                     Swal.fire('Notificación', response.mensaje, 'success');
                     await getCompaniesXUsers(user_id)
-                    setModalState(false)
+                  
                 })
                 .catch((error: any) => {
                     if (error.response) {
@@ -144,7 +122,7 @@ const CompanyModal = () => {
                 .then(async (response: any) => {
                     Swal.fire('Notificación', response.mensaje, 'success');
                     await getCompaniesXUsers(user_id)
-                    setModalState(false)
+                  
                 })
                 .catch((error: any) => {
                     if (error.response) {

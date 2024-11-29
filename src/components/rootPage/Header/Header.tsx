@@ -43,6 +43,8 @@ const Header: React.FC = () => {
       retryAttempts.current = 0; // Resetear intentos en reconexión exitosa
     };
 
+    console.log(notifications)
+
     socket.onmessage = (event) => {
       console.log("Mensaje recibido:", event.data);
       setNotifications((prevNotifications) => [...prevNotifications, event.data]);

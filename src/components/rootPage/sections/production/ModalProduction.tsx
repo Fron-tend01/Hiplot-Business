@@ -3,7 +3,6 @@ import { storeModals } from '../../../../zustand/Modals'
 import { useStore } from 'zustand'
 import './styles/ModalProduction.css'
 import { storeProduction } from '../../../../zustand/Production'
-import Select from '../../Dynamic_Components/Select'
 
 const ModalProduction: React.FC = () => {
 

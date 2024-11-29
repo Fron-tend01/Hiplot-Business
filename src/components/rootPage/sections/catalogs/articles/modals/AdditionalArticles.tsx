@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import useUserStore from '../../../../../../zustand/General'
 import { storeArticles } from '../../../../../../zustand/Articles'
 import { useStore } from 'zustand'
 import { storeModals } from '../../../../../../zustand/Modals'
-import Select from '../../../../Dynamic_Components/Select'
 import './style/AdditionalArticles.css'
 import TemplatesRequests from '../../../../../../fuctions/Templates'
 import Concepts from './additional-articles/Concepts'
@@ -14,8 +12,7 @@ import dataConditional from './json/dataCondicion.json'
 
 
 const AdditionalArticles: React.FC = () => {
-  const userState = useUserStore(state => state.user);
-  let user_id = userState.id;
+
 
   const setSubModal = storeArticles(state => state.setSubModal)
 
@@ -26,10 +23,8 @@ const AdditionalArticles: React.FC = () => {
   const setAdditionalArticles = storeArticles(state => state.setAdditionalArticles)
   const { subModal, additionalArticles, deleteAdditionalArticles }: any = useStore(storeArticles)
 
-  const { getTemplates, getTemplatesxFields }: any = TemplatesRequests()
+  const { getTemplatesxFields }: any = TemplatesRequests()
 
-
-  const setArticulos = storeDv(state => state.setArticulos)
   const setIndex = storeDv(state => state.setIndex)
   const { articulos }: any = useStore(storeDv)
 
@@ -40,9 +35,7 @@ const AdditionalArticles: React.FC = () => {
 
 
 
-  const [conditions, setConditions] = useState<any>()
 
-  const [templates, setTemplates] = useState<any>([])
 
   const [extrFields, setExtrFields] = useState<any>()
 
@@ -147,6 +140,7 @@ const AdditionalArticles: React.FC = () => {
   const modalConcepts = (item: any, index: any) => {
     setIndex(index)
     setModalSub('modal-additiona-articles-concepts')
+    console.log(item)
   }
 
   const deleteAdditionalArticle = (item: any) => {
@@ -159,8 +153,7 @@ const AdditionalArticles: React.FC = () => {
   const fecthTwo = async () => {
     // Obtener los templates
     let resutTemplates = await getTemplatesxFields();
-    setTemplates(resutTemplates)
-  
+
     // Asegúrate de que additionalArticles tenga elementos
     if (additionalArticles && additionalArticles.length > 0) {
       setAdditionalArticles((prevArticulos: any[]) => {

@@ -1,14 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useUserStore from '../../../../../../zustand/General'
 import { storeArticles } from '../../../../../../zustand/Articles'
 import { useStore } from 'zustand'
-import { storeModals } from '../../../../../../zustand/Modals'
 import Select from '../../../../Dynamic_Components/Select'
-import TemplatesRequests from '../../../../../../fuctions/Templates'
-import { UnitsRequests } from '../../../../../../fuctions/Units'
+
 import { UserGroupsRequests } from '../../../../../../fuctions/UserGroups'
-import Concepts from './minimalCharges/Concepts'
-import loadType from '../json/loadType.json'
+
 import './style/MinimalCharges.css'
 import { companiesRequests } from '../../../../../../fuctions/Companies'
 import { useSelectStore } from '../../../../../../zustand/Select'
@@ -19,7 +16,6 @@ const CobrosFranquicia: React.FC = () => {
     
     let user_id = userState.id;
     const setSubModal = storeArticles(state => state.setSubModal)
-    const setModalSub = storeModals(state => state.setModalSub)
     const setCobrosFranquicia = storeArticles(state => state.setCobrosFranquicia)
     const setDeleteCobros_franquicia = storeArticles(state => state.setDeleteCobros_franquicia)
 
@@ -27,10 +23,10 @@ const CobrosFranquicia: React.FC = () => {
     const { getUserGroups }: any = UserGroupsRequests()
 
 
-    const { subModal, cobros_franquicia, deleteCobros_franquicia, articleByOne }: any = useStore(storeArticles)
+    const { subModal, cobros_franquicia, deleteCobros_franquicia }: any = useStore(storeArticles)
 
-    const selectData = useSelectStore(state => state.selectedIds)
-    const setSelectData = useSelectStore(state => state.setSelectedId)
+    const selectData: any = useSelectStore(state => state.selectedIds)
+
 
     const [franquicias, setFranquicias] = useState<any>([])
     const [proveedores, setProveedores] = useState<any>([])

@@ -22,7 +22,7 @@ const MinimalCharges: React.FC = () => {
     const setMinimalCharges = storeArticles(state => state.setMinimalCharges)
     const setDeleteMinimalCharges = storeArticles(state => state.setDeleteMinimalCharges)
 
-    const { subModal, deliveryTimes, minimalCharges, deleteMinimalCharges }: any = useStore(storeArticles)
+    const { subModal, minimalCharges, deleteMinimalCharges }: any = useStore(storeArticles)
 
     const { getTemplates }: any = TemplatesRequests()
     const [templates, setTemplates] = useState<any>([])
@@ -71,7 +71,7 @@ const MinimalCharges: React.FC = () => {
         fetch()
     }, [])
 
-    const [name, setName] = useState<any>('')
+ 
 
     const addMinimalCharges = () => {
         let data = {
@@ -91,9 +91,10 @@ const MinimalCharges: React.FC = () => {
 
     const [index, setIndex] = useState<any>(null)
 
-    const concepts = (item: any, index: any) => {
+    const concepts = (_: any, index: any) => {
         setModalSub('modal-sub-minimal-charges')
         setIndex(index)
+   
     }
 
 

@@ -33,6 +33,7 @@ interface StoreState {
     conceptos: any;
     setConceptos: (modal: any) => void;
     
+    
 
 }
 
@@ -78,7 +79,7 @@ export const storeTickets = create<StoreState>((set) => ({
     
       getTickets: async (data: any) => {
         try {
-          const response = await  APIs.getTickets(data);
+          const response: any = await  APIs.getTickets(data);
           set({tickets: response as Tickets[]})
           return response
     

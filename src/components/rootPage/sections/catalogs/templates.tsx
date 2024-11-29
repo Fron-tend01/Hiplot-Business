@@ -4,7 +4,6 @@ import { storeBranchOffcies } from '../../../../zustand/BranchOffices';
 import useUserStore from '../../../../zustand/General';
 import { storeTemplates } from '../../../../zustand/Templates';
 import './styles/templates.css'
-import DynamicVariables from '../../../../utils/DynamicVariables';
 
 
 
@@ -17,7 +16,7 @@ const Templates: React.FC = () => {
   const [selectedCompany, setSelectedCompany] = useState<number | null>(null)
 
   const [modalState, setModalState] = useState<boolean>(false)
-  const [modalUpdate, setModalUpdate] = useState<boolean>(false)
+
 
   const [warningSelectCompany] = useState<boolean>(false)
   const [warningNombre] = useState<boolean>(false)
@@ -32,7 +31,7 @@ const Templates: React.FC = () => {
   const [modoUpdate, setModoUpdate] = useState<boolean>(false)
 
   const { getCompaniesXUsers, companiesXUsers }: any = storeCompanies();
-  const { getBranchOfficeXCompanies, branchOfficeXCompanies }: any = storeBranchOffcies();
+  const { getBranchOfficeXCompanies }: any = storeBranchOffcies();
   const { createTemplates, templates, getTemplates, updateTemplates }: any = storeTemplates()
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
@@ -45,7 +44,7 @@ const Templates: React.FC = () => {
 
 
 
-  const [selectedCompanyIds] = useState<number[]>([]);
+
 
 
   // Funciones para agregar usuarios

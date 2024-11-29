@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { storeModals } from '../../../../../zustand/Modals'
 import { useStore } from 'zustand'
 import './Division.css'

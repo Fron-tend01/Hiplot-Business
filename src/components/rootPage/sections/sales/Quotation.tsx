@@ -5,13 +5,12 @@ import ModalCreate from './quotations/ModalCreate'
 import './styles/Quotation.css'
 import Flatpickr from "react-flatpickr";
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
-import Select from '../../Dynamic_Components/Select'
 import APIs from '../../../../services/services/APIs'
 import useUserStore from '../../../../zustand/General'
 import { storeQuotation } from '../../../../zustand/Quotation'
 
 
-const Quotation = () => {
+const Quotation: React.FC = () => {
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
 
@@ -119,12 +118,12 @@ const Quotation = () => {
         </div>
         <div className='row'>
           <div className='col-4'>
-            <Select nameSelect={'Serie'} />
+            {/* <Select nameSelect={'Serie'} /> */}
           </div>
           <div className='col-4'>
             <label className='label__general'>Folio</label>
             <div className='warning__general'><small >Este campo es obligatorio</small></div>
-            <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el Folio' />
+            {/* <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el Folio' /> */}
           </div>
           <div className='d-flex align-items-end'>
             <button className='sm-mx-auto btn__general-purple' onClick={searchQuotation}>Buscar</button>

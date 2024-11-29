@@ -37,7 +37,7 @@ const Articles: React.FC = () => {
 
   //zustand 
 
-  const { setArticleToUpdate, warinings, getArticlesInGlobal, articlesInGlobal, modalArticle }: any = useStore(storeArticles);
+  const { setArticleToUpdate, getArticlesInGlobal, articlesInGlobal }: any = useStore(storeArticles);
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
 

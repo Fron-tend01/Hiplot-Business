@@ -24,7 +24,7 @@ const Departures = () => {
     const setModal = storeWarehouseExit(state => state.setModal)
     const setSelectedBranchOffice = storeWarehouseExit(state => state.setSelectedBranchOffice)
     const setWarehouseExit = storeWarehouseExit(state => state.setWarehouseExit)
-    const { modal, concepts, warehouseExit }: any = useStore(storeWarehouseExit)
+    const { modal, warehouseExit }: any = useStore(storeWarehouseExit)
 
 
     const { getWarehouseExit }: any = WarehouseExitRequests()

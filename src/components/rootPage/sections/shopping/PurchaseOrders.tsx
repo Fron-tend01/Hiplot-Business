@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { storeBranchOffcies } from '../../../../zustand/BranchOffices';
 import useUserStore from '../../../../zustand/General';
 import { storePurchaseOrders } from '../../../../zustand/PurchaseOrders';
 import Flatpickr from "react-flatpickr";
@@ -146,31 +145,20 @@ const PurchaseOrders: React.FC = () => {
 
 
 
-  const [modalStateUpdte, setModalStateUpdte] = useState<boolean>(false)
+
   const [purchaseOrderToUpdate, setPurchaseOrderToUpdate] = useState<any>(null);
 
 
-  const [conceptss, setConceptss] = useState<any>([])
-  const [suppliersUpdate, setSuppliersUpdate] = useState<any>([])
 
   const modalUpdate = (purchaseOrder: any) => {
     setModal('modal-purchase-orders-update')
     setPurchaseOrderToUpdate(purchaseOrder)
 
 
-    setConceptss(purchaseOrder.conceptos)
-
-    purchaseOrder.conceptos.forEach((item: any) => {
-      setSuppliersUpdate(item.proveedores)
-
-    });
 
 
   }
 
-  const closeModalUpdatetwo = () => {
-    setModalStateUpdte(false)
-  }
 
 
 

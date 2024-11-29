@@ -31,7 +31,6 @@ const Users: React.FC = () => {
 
   const [nombre, setNombre] = useState<string>('');
   const [email, setEmail] = useState<string>('')
-  const [sucursal_id, setSucursal_id] = useState<number | null>(null)
   const [password, setPassword] = useState<string>('')
   const [showPassword, setShowPassword] = useState(false);
 
@@ -87,8 +86,7 @@ const Users: React.FC = () => {
   const [usuarios, setUsuarios] = useState<any>([])
   const [usuariosComercial, setUsuariosComercial] = useState<any>([]);
   const [UsuarioCSelected, setUsuarioCSelected] = useState<any>({})
-  const selectedIds = useSelectStore((state) => state.selectedIds);
-  const setSelectedIds = useSelectStore((state) => state.setSelectedId);
+  const selectedIds: any = useSelectStore((state) => state.selectedIds);
   const [companiesLocal, setCompaniesLocal] = useState<any>([])
   const fetch = async () => {
     let res = await getCompaniesXUsers(user_id)
@@ -108,11 +106,9 @@ const Users: React.FC = () => {
   }, []);
   useEffect(() => {
     if (selectedIds?.empresas_comercial) {
-      console.log(selectedIds?.empresas_comercial);
       APIs.GetAny("get_users_comercial/" + selectedIds?.empresas_comercial.id).then(async (response: any) => {
         if (response?.error) {
           setUsuariosComercial([])
-
         } else {
           setUsuariosComercial(response)
         }
@@ -162,7 +158,6 @@ const Users: React.FC = () => {
 
   const handleBranchOfficesChange = (branchOffice: any) => {
     setSelectedBranchOffice(branchOffice.id);
-    setSucursal_id(branchOffice.id);
     setSelectBranchOffices(false);
   };
 
@@ -1145,7 +1140,6 @@ const Users: React.FC = () => {
                 <p>Tipo</p>
               </div>
               <div className='th'>
-
               </div>
             </div>
           </div>

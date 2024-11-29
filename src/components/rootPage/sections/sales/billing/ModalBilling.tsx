@@ -7,7 +7,6 @@ import useUserStore from '../../../../../zustand/General'
 import { usersRequests } from '../../../../../fuctions/Users'
 import { saleOrdersRequests } from '../../../../../fuctions/SaleOrders'
 import { seriesRequests } from '../../../../../fuctions/Series'
-import { storeSaleOrder } from '../../../../../zustand/SalesOrder'
 import { useSelectStore } from '../../../../../zustand/Select'
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import { storeModals } from '../../../../../zustand/Modals'
@@ -15,48 +14,42 @@ import Flatpickr from "react-flatpickr";
 import Division from './Division'
 import './ModalBilling.css'
 import { storeBilling } from '../../../../../zustand/Billing'
-import { Toaster, toast } from 'sonner'
+import { Toaster } from 'sonner'
 import Personalized from '../Personalized'
 import { storePersonalized } from '../../../../../zustand/Personalized'
 import divisas from './json/divisas.json'
-import condicinesPago from './json/termsOfPayment.json'
-import cfdiJson from './json/CFDI.json'
 import metodoPago from './json/paymentMethods.json'
-import formaPago from './json/methodOfPayment.json'
 import APIs from '../../../../../services/services/APIs'
 import Swal from 'sweetalert2'
 import DynamicVariables from '../../../../../utils/DynamicVariables'
-import { PorPf } from './Components/PorPf'
 
 
 const ModalBilling: React.FC = () => {
-    const [factura, setFactura] = useState<any>({
-        id: 0,
-        id_folio: 0,
-        id_sucursal: 0,
-        id_cliente: 0,
-        subtotal: 0,
-        urgencia: 0,
-        descuento: 0,
-        total: 0,
-        divisa: 0,
-        cfdi: 0,
-        condiciones_pago: 0,
-        forma_pago: 0,
-        metodo_pago: 0,
-        id_usuario_crea: 0,
-        fecha_creacion: '',
-        status: 0,
-        titulo: '',
-        conceptos: [],
-        ovs_enlazadas: [],
-        conceptos_elim: []
-    })
+    // const [factura, setFactura] = useState<any>({
+    //     id: 0,
+    //     id_folio: 0,
+    //     id_sucursal: 0,
+    //     id_cliente: 0,
+    //     subtotal: 0,
+    //     urgencia: 0,
+    //     descuento: 0,
+    //     total: 0,
+    //     divisa: 0,
+    //     cfdi: 0,
+    //     condiciones_pago: 0,
+    //     forma_pago: 0,
+    //     metodo_pago: 0,
+    //     id_usuario_crea: 0,
+    //     fecha_creacion: '',
+    //     status: 0,
+    //     titulo: '',
+    //     conceptos: [],
+    //     ovs_enlazadas: [],
+    //     conceptos_elim: []
+    // })
     const setSubModal = storeArticles(state => state.setSubModal)
 
     const { subModal }: any = useStore(storeArticles)
-
-    const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
 
     const setIdentifier = storePersonalized(state => state.setIdentifier)
 
@@ -69,7 +62,6 @@ const ModalBilling: React.FC = () => {
     const setDivision = storeBilling(state => state.setDivision)
 
     const setDataBillign = storeBilling(state => state.setDataBillign)
-    const setDataUpdate = storeBilling(state => state.setDataUpdate)
     const setModoUpdate = storeBilling(state => state.setModoUpdate)
 
     const userState = useUserStore(state => state.user);
@@ -88,21 +80,21 @@ const ModalBilling: React.FC = () => {
 
 
 
-    const { dataBillign, division, DataUpdate, modoUpdate }: any = useStore(storeBilling)
+    const { dataBillign, DataUpdate, modoUpdate }: any = useStore(storeBilling)
 
 
     // Empresas sucursales
     const [companies, setCompanies] = useState<any>([])
-    const [companiesClients, setCompaniesClients] = useState<any>([])
+
     const [companiesFilter, setCompaniesFilter] = useState<any>([])
 
     const [branchOffices, setBranchOffices] = useState<any>([])
-    const [branchOfficesClients, setBranchOfficesClients] = useState<any>([])
+
     const [branchOfficesFilter, setBranchOfficesFilter] = useState<any>([])
 
     const [fol, setFol] = useState<any>(0)
 
-    const selectedIds = useSelectStore((state) => state.selectedIds);
+    const selectedIds: any = useSelectStore((state) => state.selectedIds);
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
 
     const [client, setClient] = useState<any>('')
@@ -113,7 +105,7 @@ const ModalBilling: React.FC = () => {
         descuento: 0,
         total: 0,
     })
-    const [totalsc, setTotalsc] = useState({
+    const [totalsc] = useState({
         subtotal: 0,
         urgencia: 0,
         descuento: 0,
@@ -233,7 +225,7 @@ const ModalBilling: React.FC = () => {
             dataSelect: metodoPago.currencies
         })
         let resultSeries = await getSeriesXUser({ tipo_ducumento: 10, id: user_id })
-
+        resultSeries.unshift({ nombre: 'Todos', id: 0 });
         setSeries({
             selectName: 'Series',
             options: 'nombre',
@@ -441,10 +433,7 @@ const ModalBilling: React.FC = () => {
     };
 
 
-    const handleModalSeeChange = (order: any) => {
-
-    }
-
+  
 
     const handleAddConceptsChange = (order: any) => {
         order.conceptos.forEach((el: any) => {
@@ -563,7 +552,7 @@ const ModalBilling: React.FC = () => {
             }
 
         }
-        // setDeleteMinimalCharges([...deleteMinimalCharges, item.id])
+
     }
     return (
         <div className={`overlay__billing-modal ${subModal == 'billing__modal' ? 'active' : ''}`}>
@@ -609,11 +598,9 @@ const ModalBilling: React.FC = () => {
                     </div>
                     <div className='billing-modal-container'>
                         {modoUpdate ?
-
                             <div className="card ">
                                 <div className="card-body bg-standar">
                                     <h3 className="text">{DataUpdate.serie}-{DataUpdate.folio}-{DataUpdate.anio}</h3>
-                                    <hr />
                                     <div className='row'>
                                         <div className='col-6 md-col-12'>
                                             <span className='text'>Creado por: <b>{DataUpdate.usuario_crea}</b></span><br />
@@ -630,7 +617,6 @@ const ModalBilling: React.FC = () => {
                                                     ""
                                                 )
                                             )}
-
                                         </div>
                                         <div className='col-6 md-col-12'>
                                             <span className='text'>Empresa: <b>{DataUpdate.empresa}</b></span><br />
@@ -641,7 +627,7 @@ const ModalBilling: React.FC = () => {
                             </div>
                             : ''}
                         <div className='row'>
-                            <div className={`${modoUpdate ? 'col-8' : 'col-12'}`}>
+                            <div className={`${modoUpdate ? 'col-8' : 'col-3'}`}>
                                 <label className='label__general'>Titulo</label>
                                 <input className='inputs__general' type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el titulo' />
                             </div>
@@ -650,24 +636,22 @@ const ModalBilling: React.FC = () => {
                                     <Select dataSelects={users} instanceId='vendedores' nameSelect={'Vendedor'} />
                                 </div>
                                 : ''}
+                            {!modoUpdate ?
+                                <div className='row col-9'>
+                                    <div className='col-8'>
+                                        <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                                    </div>
+                                    <div className='col-4'>
+                                        <Select dataSelects={users} instanceId='vendedores' nameSelect={'Vendedor'} />
+                                    </div>
+                                </div>
+                                : ''}
                         </div>
-                        {!modoUpdate ?
-                            <div className='row my-4'>
-                                <div className='col-8'>
-                                    <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
-                                </div>
-                                <div className='col-4'>
-                                    <Select dataSelects={users} instanceId='vendedores' nameSelect={'Vendedor'} />
-                                </div>
-                            </div>
-                            : ''}
-                        <div className='row my-4'>
-                            <div className='col-12 information_of_pay'>
+
+                        <div className='row my-4 add-client__container'>
+                            <div className='col-12 title'>
                                 <p>Cliente</p>
                             </div>
-                            {/* <div className='col-8'>
-                            <Empresas_Sucursales update={false} empresaDyn={companiesClients} setEmpresaDyn={setCompaniesClients} sucursalDyn={branchOfficesClients} setSucursalDyn={setBranchOfficesClients} />
-                        </div> */}
                             <div className='col-4'>
                                 <label className='label__general'>Buscar Cliente</label>
                                 <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Folio/RFC/Razon social' />
@@ -682,8 +666,8 @@ const ModalBilling: React.FC = () => {
                                 <button type='button' className='btn__general-purple'>ver informacion</button>
                             </div>
                         </div>
-                        <div className='row'>
-                            <div className='col-12 information_of_pay'>
+                        <div className='row information_of_pay'>
+                            <div className='col-12 title'>
                                 <p>Información De Pago</p>
                             </div>
                             <div className='col-4'>
@@ -702,12 +686,10 @@ const ModalBilling: React.FC = () => {
                                 <Select dataSelects={cfdi} instanceId='cfdi' nameSelect={'Uso de CFDI'} />
                             </div>
                         </div>
-
-                        <div>
+ 
+                        <div className='searchs__orders'>
                             <div className='row'>
-                                <br />
-
-                                <div className='col-12 information_of_pay '>
+                                <div className='col-12 title'>
                                     <p>Buscar OV/PAF</p>
                                 </div>
                                 <div className='col-8'>
@@ -745,8 +727,7 @@ const ModalBilling: React.FC = () => {
                                     <button type='button' className='btn__general-purple' onClick={search}>Buscar</button>
                                 </div>
                             </div>
-                        </div>
-                        <div>
+                            <div>
                             <div className='table__billing_sale-orders'>
                                 {saleOrders ? (
                                     <div className='table__numbers'>
@@ -807,19 +788,17 @@ const ModalBilling: React.FC = () => {
                                     <p className="text">Cargando datos...</p>
                                 )}
                             </div>
+                            </div>
                         </div>
                         <div className='table__billing_concepts'>
                             {concepts ? (
                                 <div className='d-flex w-full justify-content-between my-3'>
                                     <div className='table__numbers'>
-                                        <div className='col-12 information_of_pay '>
+                                        <div className='col-12'>
                                             <p>Conceptos en tu Factura</p>
                                         </div>
                                         <div className='quantities_tables'>{concepts.length}</div>
                                     </div>
-                                    {/* <div className='td'>        HABILITAR SOLO EN LA ORDEN DE VENTA, SOLO AQUÍ APLICA
-                                    <button type='button' className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal')}>Perzonalizado</button>
-                                </div> */}
                                 </div>
                             ) : (
                                 <p className="text">No hay conceptos que mostrar</p>
@@ -852,7 +831,7 @@ const ModalBilling: React.FC = () => {
                             </div>
                             {concepts ? (
                                 <div className='table__body'>
-                                    {concepts.map((concept: any, index: number) => {
+                                    {concepts.map((concept: any) => {
                                         return (
                                             <div className={`tbody__container ${concept.personalized == 'personalizado' ? 'personalizado' : ''}`} key={concept.id}>
                                                 <div className='tbody'>

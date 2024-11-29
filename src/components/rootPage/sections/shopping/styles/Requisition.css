@@ -208,8 +208,8 @@
 }
 
 .popup__requisition.loading::before {
-	content: ""; /* Esto es necesario para mostrar ::before */
-	position: absolute; /* Requiere posicionamiento relativo del padre */
+	content: "";
+	position: absolute;
 	top: 0;
 	left: 0;
 	background-color: rgba(0, 0, 0, 0.103);  

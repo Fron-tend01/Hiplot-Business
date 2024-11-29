@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { companiesRequests } from '../../../../../fuctions/Companies';
 import { BranchOfficesRequests } from '../../../../../fuctions/BranchOffices';
 import { storeStore } from '../../../../../zustand/Store';
-import { StoreRequests } from '../../../../../fuctions/Store';
 import useUserStore from '../../../../../zustand/General';
 import Swal from 'sweetalert2';
 
@@ -20,8 +19,6 @@ const ModalCreate: React.FC = () => {
     const { getBranchOffices }: any = BranchOfficesRequests();
     const [branchOffices, setBranchOffices] = useState<any>()
     const { modalState, setModalState, getStore, storeToUpdate }: any = storeStore()
-    const { createStore }: any = StoreRequests()
-    const { updateStore }: any = StoreRequests()
 
     const [selectBranchOffices, setSelectBranchOffices] = useState<boolean>(false);
     const [selectedBranchOffice, setSelectedBranchOffice] = useState<any>(null);

@@ -4,32 +4,27 @@ import { useStore } from 'zustand'
 import './styles/Personalized.css'
 import Select from '../../Dynamic_Components/Select'
 import { storeSaleCard } from '../../../../zustand/SaleCard'
-import { storeBilling } from '../../../../zustand/Billing'
 import DynamicVariables from '../../../../utils/DynamicVariables'
 import APIs from '../../../../services/services/APIs'
 import { v4 as uuidv4 } from 'uuid';
 import { useSelectStore } from '../../../../zustand/Select'
 import { storeModals } from '../../../../zustand/Modals'
 
-const Personalized = () => {
+const Personalized: React.FC = () => {
   const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
-  const setDataQuotation = storeSaleCard(state => state.setDataQuotation)
+
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
 
   const setPersonalized = storePersonalized(state => state.setPersonalized)
   const setCustomData = storePersonalized(state => state.setCustomData)
   const { personalizedModal, dataUpdate, customData, normalConcepts, customConcepts, personalized }: any = useStore(storePersonalized)
-  const { dataQuotation, dataPersonalized, conceptsPersonalized, }: any = useStore(storeSaleCard)
-  const { dataBillign, }: any = useStore(storeBilling)
+  const { dataPersonalized, }: any = useStore(storeSaleCard)
   const { modal }: any = useStore(storeModals)
 
   const setDataPersonalized = storeSaleCard(state => state.setDataPersonalized);
 
-  const { concepts }: any = useStore(storeBilling)
-
-
-  const selectedIds = useSelectStore((state) => state.selectedIds);
+  const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
   const [units, setUnits] = useState<any>()
 
@@ -62,9 +57,6 @@ const Personalized = () => {
   const [articlesPersonalized, setArticlesPersonalized] = useState<any>([])
 
   const [filterPersonalized, setFilterPersonalized] = useState<any>([])
-
-  const [concetps, setConcepts] = useState<any>([])
-
 
   const addPersonalized = (item: any, index: number) => {
 

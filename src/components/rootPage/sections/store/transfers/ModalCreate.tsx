@@ -16,13 +16,12 @@ const ModalCreate: React.FC = () => {
   let user_id = userState.id
 
   const setModalStateCreate = storeTransfers((state: any) => state.setModalStateCreate);
-  const { modalStateCreate }: any = useStore(storeTransfers);
+  const { modalStateCreate, dates }: any = useStore(storeTransfers);
 
   const setTransfers = storeTransfers((state: any) => state.setTransfers);
 
   const { getStore }: any = StoreRequests();
-
-  const { getTransfers, dates }: any = storeTransfers();
+  
 
   const [selectStore, setSelectStore] = useState<any>(false);
   const [selectStoreTwo, setSelectStoreTwo] = useState<any>(false);
@@ -32,11 +31,11 @@ const ModalCreate: React.FC = () => {
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
   const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
-  const [store, setStore] = useState<any>()
+  // const [store, setStore] = useState<any>()
 
   const fetch = async () => {
     let resultStore = await getStore(user_id)
-    setStore(resultStore)
+    // setStore(resultStore)
     setSelectStore({
       selectName: 'Almacen origin',
       options: 'nombre',
@@ -48,7 +47,6 @@ const ModalCreate: React.FC = () => {
       options: 'nombre',
       dataSelect: resultStore
     })
-    console.log(resultStore)
     
     setSelectedId('almacen_origin', {id: resultStore[0]?.id})
     setSelectedId('almacen_destino', {id: resultStore[0]?.id})
@@ -61,8 +59,6 @@ const ModalCreate: React.FC = () => {
       setSelectedId('store_desde', 0)
       setSelectedId('company_hasta', 0)
       setSelectedId('store_hasta', 0)
-
-
     }
   }, []);
 
@@ -272,7 +268,7 @@ const ModalCreate: React.FC = () => {
         Swal.fire('Traspaso exitoso', result.mensaje, 'success');
         return
       }
-    } catch (error) {
+    } catch (error: any) {
       // Manejo del error de la API
       Swal.fire('Error al hacer el traspaso', error.message || '', 'error');
     }
@@ -315,7 +311,7 @@ const ModalCreate: React.FC = () => {
     if (selectedIds != null) {
       if (selectedIds.almacen_origin) {
 
-        concepts.forEach((el: any, index: number) => {
+        concepts.forEach((_: any, index: number) => {
           const newArticleStates = [...concepts];
           newArticleStates[index].cantidad = 0;
           setConcepts(newArticleStates);

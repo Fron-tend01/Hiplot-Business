@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import './styles/Transfers.css'
 import { companiesRequests } from '../../../../fuctions/Companies';
 import useUserStore from '../../../../zustand/General';
-import { BranchOfficesRequests } from '../../../../fuctions/BranchOffices';
 import { StoreRequests } from '../../../../fuctions/Store';
 import ModalCreate from './transfers/ModalCreate';
 import { seriesRequests } from '../../../../fuctions/Series';
@@ -39,9 +38,6 @@ const Transfers: React.FC = () => {
   const { getTransfers, dates }: any = TransfersRequests();
 
   const { transfer }: any = storeTransfers();
-
-
-  const [selectedStore, setSelectedStore] = useState<any>(null);
 
   const [companiesDesde, setCompaniesDesde] = useState<any>()
   const [companiesHasta, setCompaniesHasta] = useState<any>()
@@ -291,7 +287,7 @@ const Transfers: React.FC = () => {
           </div>
           {transfer && transfer ? (
             <div className='table__body'>
-              {transfer.map((transfer: any, index: any) => {
+              {transfer.map((transfer: any) => {
                 return (
                   <div className='tbody__container' key={uuidv4()}>
                     <div className='tbody'>
@@ -314,7 +310,7 @@ const Transfers: React.FC = () => {
                         <p>{transfer.fecha_creacion}</p>
                       </div>
                       <div className='td'>
-                        <button className='branchoffice__edit_btn' onClick={() => seeConcepts(transfer, index)}>ver conceptos</button>
+                        <button className='branchoffice__edit_btn' onClick={() => seeConcepts(transfer)}>ver conceptos</button>
                       </div>
                     </div>
 

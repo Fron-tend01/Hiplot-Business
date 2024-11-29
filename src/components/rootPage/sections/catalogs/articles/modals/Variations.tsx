@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { storeArticles } from '../../../../../../zustand/Articles'
-import { storeRequisitions } from '../../../../../../zustand/Requisition'
 import { useStore } from 'zustand'
 import { articleRequests } from '../../../../../../fuctions/Articles'
 import './style/Variations.css'

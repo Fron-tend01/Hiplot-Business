@@ -20,14 +20,13 @@ import SeeClient from '../SeeClient';
 
 
 
-const ModalCreate = () => {
+const ModalCreate: React.FC = () => {
   const userState = useUserStore(state => state.user);
   let user_id = userState.id
   const setModalArticleView = storeArticleView((state) => state.setModalArticleView);
   const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
 
   const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
-  const setCustomConcepts = storePersonalized((state) => state.setCustomConcepts);
   const setCustomData = storePersonalized((state) => state.setCustomData);
 
   const { identifier }: any = useStore(storeQuotation);
@@ -42,7 +41,6 @@ const ModalCreate = () => {
   const { quatation }: any = useStore(storeQuotation)
   const { getClients }: any = ClientsRequests()
 
-  const setDataPersonalized = storeSaleCard(state => state.setDataPersonalized);
 
   const [company, setCompany] = useState<any>([])
   const [branch, setBranch] = useState<any>([])
@@ -118,7 +116,7 @@ const ModalCreate = () => {
   }, [quatation])
 
 
-  const selectedIds = useSelectStore((state) => state.selectedIds);
+  const selectedIds: any = useSelectStore((state) => state.selectedIds);
   const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
   const [clients, setClients] = useState<any>()
@@ -212,7 +210,7 @@ const ModalCreate = () => {
   }
 
   const undoConcepts = (article: any, i: number) => {
-    let filter = customConcepts.filter((_: any, index: number) => index !== i)
+    // let filter = customConcepts.filter((_: any, index: number) => index !== i)
     let filterNor = normalConcepts.filter((_: any, index: number) => index !== i)
     if(article.front) {
       article.conceptos.forEach((element: any) => {

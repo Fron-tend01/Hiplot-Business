@@ -4,7 +4,7 @@ import { useStore } from 'zustand';
 import { storeSaleCard } from '../../../../../zustand/SaleCard';
 import './styles/Components.css'
 
-const Components = () => {
+const Components: React.FC = () => {
   const { article }: any = useStore(storeSaleCard);
   const setModalSub = storeModals(state => state.setModalSub)
   const { modalSub }: any = useStore(storeModals)

@@ -1,17 +1,36 @@
-.te {
-    height: 90vh;
+.franchise__orders {
+  height: 90vh;
 	padding: 20px;
 }
 
-.te__container {
-    display: grid;
+.franchise__orders_container {
+  display: grid;
 	grid-template-rows: auto auto 1fr;
-	height: 100%;
 	background-color: var(--background-sections);
 	padding: 20px ;
 	border-radius: 10px;
-    overflow: hidden;
+  overflow: hidden;
 }
+
+.franchise__orders_container .row__one {
+  
+}
+
+.franchise__orders_container > .row__one > .row__two {
+    display: grid;
+    grid-template-columns: 2fr 4fr auto;
+    column-gap: 20px;
+}
+
+
+
+.franchise__orders_container > .row__two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  column-gap: 20px;
+}
+
+
 
 .conatiner__create_modal > .row__one {
    
@@ -47,7 +66,7 @@
   display: flex;
   justify-content: left;
 }
- .overlay__create_modal {
+ .overlay__modal__franchise-orders {
 	background: rgba(0,0,0,.3);
 	position: fixed;
 	top: 0;
@@ -60,7 +79,7 @@
 	visibility: hidden;
 }
 
-.overlay__create_modal.active {
+.overlay__modal__franchise-orders.active {
 	visibility: visible;
 }
 .card-white {
@@ -68,20 +87,20 @@
     border-radius: 15px;
     background-color: #fff;
 }
-.popup__create_modal {
+.popup__modal__franchise-orders {
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
 	text-align: center;
-	width: 100%;
+	width: 95%;
 	max-height:95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
-    overflow: scroll;
+
 }
 
-.popup__create_modal .btn-cerrar-popup__create_modal {
+.popup__modal__franchise-orders .btn-cerrar-popup__modal__franchise-orders {
 	font-size: 16px;
 	line-height: 16px;
 	display: block;
@@ -92,6 +111,12 @@
     right: 15px;
     top: 15px;
 }
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__modal__franchise-orders.active {	transform: scale(1); opacity: 1; }
 
 
 
@@ -195,6 +220,84 @@
 
 
 
+.table__franchise__orders {
+    
+  display: grid;
+  height: 100%;
+  grid-template-rows: repeat(3, auto) 1fr;
+overflow: auto;
+}
+
+
+.table__franchise__orders .table__head {
+  display: flex;
+  width: 100%;
+  background-color: var( --table-color);
+  border-radius: 5px 5px 0 0;
+}
+
+.table__franchise__orders .table__head .thead {
+ display: flex;
+ width: 100%;
+}
+
+.table__franchise__orders .table__head .thead {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 10px;
+  font-weight: 600;
+  color: var(--text-table-color);
+text-align: left;
+}
+
+.table__franchise__orders .table__body {
+height: 100%;
+  overflow: hidden;
+  overflow: auto;
+  transition-delay: 0.0s;
+  &::-webkit-scrollbar {
+      width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color); 
+      border-radius: 5px;
+      height: 100px;
+  }
+
+  &::-webkit-scrollbar-track {
+  /* Para modificar el background */
+  }
+}
+
+
+.table__franchise__orders .tbody__container:nth-child(even) {
+  background-color: var(--table-color);
+}
+
+.table__franchise__orders .tbody__container:nth-child(odd) {
+  background-color: var(--two-table-color);
+}
+
+.table__franchise__orders .table__body .tbody {
+  display: flex;
+}
+
+.table__franchise__orders .table__body .tbody {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 10px;
+}
+
+.table__franchise__orders .table__body .tbody .td {
+  color: var(--text-color);
+}
+
+
+.table__franchise__orders .table__body .tbody:hover {
+  background-color: var(--secundary-color);
+  color: #fff;
+}
 
 
 
@@ -210,10 +313,10 @@
 
 
 
-/* ------------------------- */
-/* ANIMACIONES */
-/* ------------------------- */
-.popup__create_modal.active {	transform: scale(1); opacity: 1; }
+
+
+
+
 
 
 @keyframes slideInFade {

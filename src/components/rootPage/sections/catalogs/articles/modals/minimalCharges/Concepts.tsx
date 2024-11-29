@@ -5,17 +5,16 @@ import TemplatesRequests from '../../../../../../../fuctions/Templates'
 import { UnitsRequests } from '../../../../../../../fuctions/Units'
 import { UserGroupsRequests } from '../../../../../../../fuctions/UserGroups'
 import Select from '../../../../../Dynamic_Components/Select'
-import { useStore } from 'zustand'
 import useUserStore from '../../../../../../../zustand/General'
 import { useSelectStore } from '../../../../../../../zustand/Select'
 import './Concepts.css'
-import Templates from '../../../templates'
 
-const Concepts = ({index}: any) => {
+
+const Concepts: React.FC = ({index}: any) => {
     const userState = useUserStore((state) => state.user);
     let user_id = userState.id;
   
-    const selectedIds = useSelectStore((state) => state.selectedIds);
+    const selectedIds: any = useSelectStore((state) => state.selectedIds);
   
     const setModalSub = storeModals((state) => state.setModalSub);
     const modalSub = storeModals((state) => state.modalSub);

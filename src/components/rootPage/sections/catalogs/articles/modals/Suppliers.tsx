@@ -8,7 +8,7 @@ import DynamicVariables from '../../../../../../utils/DynamicVariables';
 
 const Suppliers:React.FC = () => {
 
-    const [searchValue, setSearchValue] = useState<string>('')
+
     const [selectPriorities, setselectPriorities] = useState<boolean>(false)
     const [selectedPriority, setSelectedPriority] = useState<any>(null)
     const [selectSuppliers, setSlectSuppliers] = useState<boolean>(false)
@@ -23,7 +23,7 @@ const Suppliers:React.FC = () => {
     const {getSuppliers}: any = storeSuppliers()
 
     const [dataSuppliers, setDataSuppliers] = useState<any>([])
-    const [suppliersSearch, setSuppliersSearch] = useState<any>([])
+    const [suppliersSearch] = useState<any>([])
   
     const getData = async () => {
         let data = {
@@ -67,8 +67,8 @@ const Suppliers:React.FC = () => {
     ]
 
 
-    const handleSearchEngineValueChange = (item: any) => {
-      setSearchValue(item.razon_social)
+    const handleSearchEngineValueChange = () => {
+
       setContainerSearch('')
     }
 
@@ -160,7 +160,7 @@ const Suppliers:React.FC = () => {
                         <div className={`search-result ${containerSearch.length > 0 ? 'active' : ''}`}>
                             <ul className={`options ${containerSearch.length > 0 ? 'active' : ''}`} style={{ opacity: containerSearch.length > 0 ? '1' : '0' }}>
                                 {suppliersSearch && suppliersSearch.map((item: any, index: number) => (
-                                    <li key={index}  onClick={() => handleSearchEngineValueChange(item)}>
+                                    <li key={index}  onClick={() => handleSearchEngineValueChange()}>
                                         {item.razon_social}
                                     </li>
                                 ))}

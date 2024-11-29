@@ -19,8 +19,6 @@ import './modalCreate.css'
 import { useStore } from 'zustand';
 import { TemplatesRequests } from '../../../../../fuctions/Templates';
 import ModalLoading from '../../../../loading/ModalLoading';
-import typePayments from './json/typePayments.json'
-import { articleRequests } from '../../../../../fuctions/Articles';
 import { useSelectStore } from '../../../../../zustand/Select';
 import APIs from '../../../../../services/services/APIs';
 import Swal from 'sweetalert2';
@@ -32,8 +30,6 @@ import CobrosFranquicia from './modals/CobrosFranquicia';
 const modalArticle: React.FC = () => {
     //////////////////////////// Data del articulo /////////////////////////////////////
     const { articleToUpdate }: any = useStore(storeArticles);
-
-    const { updateArticles } = articleRequests()
 
     const setArticleToUpdate = storeArticles(state => state.setArticleToUpdate)
 
@@ -52,7 +48,7 @@ const modalArticle: React.FC = () => {
     // const selectedIds = useSelectStore((state) => state.selectedIds);
 
 
-    const { selectedIds } = useStore(useSelectStore);
+    const { selectedIds }: any = useStore(useSelectStore);
 
     ///////////////////////////////////////////////////////////Variables de los modales ////////////////////////////////////////////////////////////////////////////
     const { modalArticle, imagesArticles, branchOffices, deleteBranchOffices, prices, deletePrices, maxsMins, deleteMaxsMins, units, deleteUnits,
@@ -69,8 +65,7 @@ const modalArticle: React.FC = () => {
     const { getTemplates }: any = TemplatesRequests()
 
     // Modales Zustand
-    const { setModalStateBrnachOffices, modalStateBrnachOffices } = useStore(storeArticles);
-    const { setModalStateUnits, modalStateUnits, subModal } = useStore(storeArticles);
+    const { setModalStateUnits, modalStateUnits } = useStore(storeArticles);
 
     const { setModalStateMaxsMins, modalStateMaxsMins } = useStore(storeArticles);
     const { setModalStateSuppliers, modalStateSuppliers } = useStore(storeArticles);
@@ -81,11 +76,10 @@ const modalArticle: React.FC = () => {
     //   const [contact, setContact] = useState<number | null>(null)
     const [activeArticles, setActiveArticles] = useState<boolean>(false)
     const [selectedUnit, setSelectedUnit] = useState<string>('')
-    const [selectedFamilie, setSelectedFamilie] = useState<number | null>(null)
+
 
     const [selectedFile, setSelectedFile] = useState<string | null>(null);
-    const [selectedTypePayment, setSelectedTypePayment] = useState<number | null>(null)
-    const [selectedTemplate, setSelectedTemplate] = useState<number | null>(null)
+
     const [baseMax, setBaseMax] = useState<number | null>(null)
     const [maxHeight, setMaxHeight] = useState<number | null>(null)
     const [multiples, setMultiples] = useState<number | null>(null)
@@ -100,7 +94,7 @@ const modalArticle: React.FC = () => {
     const [ExemptTax, setExemptTax] = useState<boolean>(false)
 
     const { getFamilies }: any = storeFamilies()
-    const { createArticles, getArticlesInGlobal }: any = storeArticles();
+    const { getArticlesInGlobal }: any = storeArticles();
     const userState = useUserStore(state => state.user);
 
 
@@ -110,7 +104,7 @@ const modalArticle: React.FC = () => {
 
 
 
-    const [article_id, setArticle_id] = useState<number | null>(null)
+
 
     const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
@@ -174,16 +168,15 @@ const modalArticle: React.FC = () => {
         if (articleToUpdate) {
 
             setModalLoading(false)
-            setArticle_id(articleToUpdate.id);
+         
             setType(articleToUpdate.tipo);
             setCode(articleToUpdate.codigo);
             setDescription(articleToUpdate.descripcion);
             setSelectedUnit(articleToUpdate.unidad);
-            setSelectedFamilie(articleToUpdate.id_familia);
+
             setActiveArticles(articleToUpdate.activo);
             setSelectedFile(articleToUpdate.imagen);
-            setSelectedTypePayment(articleToUpdate.tipo_de_cobro);
-            setSelectedTemplate(articleToUpdate.id_plantilla);
+ 
             setBaseMax(articleToUpdate.base_max);
             setMaxHeight(articleToUpdate.altura_max);
             setMultiples(articleToUpdate.multiplos_de);

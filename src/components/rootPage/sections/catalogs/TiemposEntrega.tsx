@@ -5,9 +5,6 @@ import DynamicVariables from '../../../../utils/DynamicVariables';
 import '../../../../utils/DynamicVariables';
 import useUserStore from '../../../../zustand/General';
 import "./styles/TiemposEntrega.css"
-import { RangesRequests } from '../../../../fuctions/Ranges'
-import { companiesRequests } from '../../../../fuctions/Companies';
-import { BranchOfficesRequests } from '../../../../fuctions/BranchOffices';
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales';
 
 interface te {
@@ -61,7 +58,7 @@ const TiemposEntrega = () => {
     entrega: '',
     edit: false
   })
-  const [configtec, setConfigtec] = useState({
+  const [configtec] = useState({
     i: 0,
     id: 0,
     dia_recepcion: '',
@@ -101,7 +98,6 @@ const TiemposEntrega = () => {
   const [empresaSelCreate, setEmpresaSelCreate] = useState<any>({})
 
 
-  const { getBranchOffices }: any = BranchOfficesRequests()
 
   const [modal, setModal] = useState<boolean>(false)
   const [modoUpdate, setModoUpdate] = useState<boolean>(false)
@@ -109,7 +105,7 @@ const TiemposEntrega = () => {
 
   const [selectTipote, setSelectTipote] = useState<boolean>(false)
   const [selectDiaRecepcion, setSelectDiaRecepcion] = useState<boolean>(false)
-  const [filteringBranchOffices, setFilteringBranchOffices] = useState<any>([])
+
   const userState = useUserStore(state => state.user);
   const [ranges, setRanges] = useState<any>([])
   const [selectRangos, setSelectRangos] = useState<boolean>(false)
@@ -172,11 +168,7 @@ const TiemposEntrega = () => {
 
 
   }
-  const selectAutomaticSuc = async (company: any) => {
-    let resultBranch = await getBranchOffices(company, user_id)
 
-    setFilteringBranchOffices(resultBranch)
-  }
   const Modal = (modoUpdate: boolean, data: any) => {
     setModal(true)
     setTiempose({ ...forclearte })
@@ -185,7 +177,7 @@ const TiemposEntrega = () => {
       DynamicVariables.updateAnyVar(setTiempose, "id", data.id)
       DynamicVariables.updateAnyVar(setTiempose, "nombre", data.nombre)
       DynamicVariables.updateAnyVar(setTiempose, "id_empresa", data.id_empresa)
-      selectAutomaticSuc(data.id_empresa)
+
       DynamicVariables.updateAnyVar(setTiempose, "id_sucursal", data.id_sucursal)
       DynamicVariables.updateAnyVar(setTiempose, "id_rango", data.id_rango)
       // //LLENAR LA VARIABLE COLECCION
@@ -524,13 +516,13 @@ const TiemposEntrega = () => {
                 </div>
                 {configte.edit ?
                   <div className='col-1 '>
-                    <button className='btn-success fade-blink' type='button' onClick={(e) => actualizarUnTe()}>Guardar</button>
-                    <button className='btn__delete_users' type='button' onClick={(e) => setConfigte(configtec)}>Cancelar</button>
+                    <button className='btn-success fade-blink' type='button' onClick={() => actualizarUnTe()}>Guardar</button>
+                    <button className='btn__delete_users' type='button' onClick={() => setConfigte(configtec)}>Cancelar</button>
                   </div>
                   :
                   <div className='col-1'>
                     <label className='label__general'>Agregar</label>
-                    <button className='btn__general-orange' type='button' onClick={(e) => DynamicVariables.updateAnyVarSetArrNoRepeat(setTiempose, "tEntregaData_nuevos", configte)}>+Add</button>
+                    <button className='btn__general-orange' type='button' onClick={() => DynamicVariables.updateAnyVarSetArrNoRepeat(setTiempose, "tEntregaData_nuevos", configte)}>+Add</button>
                   </div>
                 }
 

@@ -88,6 +88,7 @@ export const storeRequisitions = create<StoreState>((set) => ({
   getRequisition: async (data: any) => {
     try {
       const response = await APIs.getRequisition(data)
+      return response
     } catch (error) {
       console.log('error al obtener las requisiciónes', error)
     }     

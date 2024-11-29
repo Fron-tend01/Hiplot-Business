@@ -3,7 +3,7 @@ import { storeModals } from '../../../../../zustand/Modals'
 import { useStore } from 'zustand'
 import './styles/Prices.css'
 
-const ToArrive = () => {
+const ToArrive: React.FC = () => {
 
     const setModalSub = storeModals(state => state.setModalSub)
     const {modalSub}: any = useStore(storeModals)

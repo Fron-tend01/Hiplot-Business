@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { storeWarehouseExit } from '../../../../../zustand/WarehouseExit'
 import { useStore } from 'zustand';
 import './ModalUpdate.css'
 
-const ModalUpdate = ({ conceptsUpdate }: any) => {
+const ModalUpdate: React.FC = ({ conceptsUpdate }: any) => {
 
     const setModal = storeWarehouseExit(state => state.setModal);
     const { modal } = useStore(storeWarehouseExit)

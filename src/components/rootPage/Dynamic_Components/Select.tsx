@@ -13,7 +13,7 @@ interface SelectProps {
   nameSelect?: String;
 }
 
-const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }) => {
+const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }: any) => {
 
   // console.log(dataSelects)
 
@@ -36,7 +36,7 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }) 
           <div className='select__container_title'>
             <p>
               {selectedId != null 
-                ? dataSelects?.dataSelect.find((s) => s.id === selectedId.id || s.id === selectedId )?.[dataSelects?.options] || 'Selecciona'
+                ? dataSelects?.dataSelect?.find((s: any) => s.id === selectedId.id || s.id === selectedId )?.[dataSelects?.options] || 'Selecciona'
                 : 'Selecciona'}
             </p>
           </div>
@@ -46,7 +46,7 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }) 
         </div>
         <div className={`content ${selects ? 'active' : ''}`}>
           <ul className={`options ${selects ? 'active' : ''}`} style={{ opacity: selects ? '1' : '0' }}>
-            {dataSelects?.dataSelect?.map((select) => (
+            {dataSelects?.dataSelect?.map((select: any) => (
               <li key={select.id} onClick={() => handleSelectsChange(select)}>
                 {select[dataSelects?.options] || 'No disponible'}
               </li>

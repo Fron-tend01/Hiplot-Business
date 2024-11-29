@@ -19,7 +19,7 @@ const Prices: React.FC = () => {
   const userState = useUserStore(state => state.user);
   let user_id = userState.id;
 
-  const selectedIds = useSelectStore((state) => state.selectedIds);
+  const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
   const { articleToUpdate }: any = useStore(storeArticles);
 
@@ -34,7 +34,6 @@ const Prices: React.FC = () => {
 
   const { modalSub }: any = useStore(storeModals);
 
-  const [group, setGroup] = useState<any>(false);
 
   const [usersGroups, setUsersGroups] = useState<any>([]);
 
@@ -84,20 +83,20 @@ const Prices: React.FC = () => {
           dataSelect: resultUserGroups
         }
       )
-      setSelectRanges(
-        {
-          selectName: 'Rangos',
-          options: 'titulo',
-          dataSelect: resultRanges
-        }
-      )
-      setSelectTemplates(
-        {
-          selectName: '',
-          options: 'nombre',
-          dataSelect: resultTemplates
-        }
-      )
+      // setSelectRanges(
+      //   {
+      //     selectName: 'Rangos',
+      //     options: 'titulo',
+      //     dataSelect: resultRanges
+      //   }
+      // )
+      // setSelectTemplates(
+      //   {
+      //     selectName: '',
+      //     options: 'nombre',
+      //     dataSelect: resultTemplates
+      //   }
+      // )
 
 
     } catch (error) {
@@ -108,10 +107,9 @@ const Prices: React.FC = () => {
   const [dataSelects, setDataSelects] = useState<any>([])
   const [dataSelectDe, setDataSelectDe] = useState<any>([])
   const [dataSelectAl, setDataSelectAl] = useState<any>([])
-  const [selectRanges, setSelectRanges] = useState<any>([])
-  const [selectTemplates, setSelectTemplates] = useState<any>([])
 
-  const [order, setOrder] = useState<any>()
+
+
 
   useEffect(() => {
     fetch();
@@ -134,7 +132,7 @@ const Prices: React.FC = () => {
 
 
 
-  const handleInputs = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputs = (event: any) => {
     const { name, value } = event.target;
     setInputs((prevInputs: any) => ({
       ...prevInputs,
@@ -174,8 +172,8 @@ const Prices: React.FC = () => {
       variable_pc: selectedIds?.templates?.id,
       pc_nombre: selectedIds?.templates?.nombre,
       comentarios: inputs.observations,
-      orden: order,
-      agrupar: group,
+      orden: false,
+      agrupar: false,
       name_group: selectedIds?.templates?.id,
       selected: false
     };
@@ -236,13 +234,13 @@ const Prices: React.FC = () => {
 
 
 
-  const [selectsRangesTwo, setSelectsRangesTwo] = useState<any>(null)
+  // const [selectsRangesTwo, setSelectsRangesTwo] = useState<any>(null)
   const [selectedRangesTwo, setSelectedRangesTwo] = useState<any>()
 
 
   const handleRangesChangeTwo = (range: any) => {
     setSelectedRangesTwo(range.id)
-    setSelectsRangesTwo(false)
+    // setSelectsRangesTwo(false)
   }
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -257,9 +255,6 @@ const Prices: React.FC = () => {
     searchRanges(searchTerm)
   }, [searchTerm]);
 
-  const handleProveedorChange = () => {
-
-  }
 
 
   // console.log(additionalsPrices, additionalsPrices)
@@ -305,11 +300,6 @@ const Prices: React.FC = () => {
   const handleUsersGroupsChange = (e: any, index: number) => {
     prices[index].id_grupos_us = parseInt(e.target.value);
   }
-
-  const handleAgruparPricesChange = (index: number) => {
-    prices[index].agrupar = !prices[index].agrupar;
-    setPrices([...prices]);
-  };
 
 
 

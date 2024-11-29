@@ -38,7 +38,7 @@ interface StoreState {
     userUpdate: UserUpdate[];
 }
 
-export const storeUsers = create<StoreState>((set) => ({
+export const storeUsers = create<StoreState>(() => ({
     userUpdate: [],
     users: [],
 
@@ -54,16 +54,16 @@ export const storeUsers = create<StoreState>((set) => ({
     },
 
 
-    getUsers: async (nombre: string, id_usuario: number, id_usuario_consulta: number, light: boolean, id_sucursal: number) => {
-        try {
-        // Ajusta la llamada a la función getUsers para manejar el nombre opcionalmente
-        const response = await APIs.getUsers(nombre, id_usuario, id_usuario_consulta, light, id_sucursal);
-        set({ users: response as Users[] });
+    // getUsers: async (nombre: string, id_usuario: number, id_usuario_consulta: number, light: boolean, id_sucursal: number) => {
+    //     try {
+    //     // Ajusta la llamada a la función getUsers para manejar el nombre opcionalmente
+    //     const response = await APIs.getUsers(nombre, id_usuario, id_usuario_consulta, light, id_sucursal);
+    //     set({ users: response as Users[] });
         
-        } catch (error) {
-        console.log('Error de Usuarios', error);
-        }
-    },
+    //     } catch (error) {
+    //     console.log('Error de Usuarios', error);
+    //     }
+    // },
   
     putUsers: async (user_id : number, sucursal_id: number, nombre: string, email: string, password: string, tipo_us: number, 
         sucursales_nuevas: any[], sucursales_eliminar: any[], areas_nuevas: any[], areas_eliminar: any[], subordinados_nuevos: any[], subordinados_eliminar: any[]

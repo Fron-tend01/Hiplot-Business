@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import './styles/SalesOrder.css'
 import { storeSaleOrder } from '../../../../zustand/SalesOrder'
 import Modal from './sales_order/ModalSalesOrder'
-import { useStore } from 'zustand'
 import { saleOrdersRequests } from '../../../../fuctions/SaleOrders'
 import { seriesRequests } from '../../../../fuctions/Series'
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales'
@@ -10,7 +9,6 @@ import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import Flatpickr from "react-flatpickr";
 import Select from '../../Dynamic_Components/Select'
 import useUserStore from '../../../../zustand/General'
-import { ClientsRequests } from '../../../../fuctions/Clients'
 import { usersRequests } from '../../../../fuctions/Users'
 import { useSelectStore } from '../../../../zustand/Select'
 
@@ -33,14 +31,14 @@ const SalesOrder: React.FC = () => {
     
     const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
-    const  {saleOrdersToUpdate}: any = useStore(storeSaleOrder)
+
     
     const [companies, setCompanies] = useState<any>([])
 
     const [branchOffices, setBranchOffices] = useState<any>([])
     const [fol, setFol] = useState<any>(0)
 
-    const selectedIds = useSelectStore((state) => state.selectedIds);
+    const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
     const [client, setClient] = useState<any>('')
 

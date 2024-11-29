@@ -26,12 +26,12 @@ const ModalSalesOrder: React.FC = () => {
 
 
     const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
-    const setCustomConcepts = storePersonalized((state) => state.setCustomConcepts);
+
     const setCustomData = storePersonalized((state) => state.setCustomData);
 
     const setDataUpdate = storePersonalized((state) => state.setDataUpdate);
 
-    const { dataUpdate, normalConcepts, customConcepts, personalized }: any = useStore(storePersonalized)
+    const { normalConcepts, customConcepts }: any = useStore(storePersonalized)
 
     const setDataSaleOrder = storeSaleOrder((state) => state.setDataSaleOrder);
 
@@ -41,7 +41,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const { getClients }: any = ClientsRequests()
 
-    const { dataSaleOrder, saleOrdersToUpdate }: any = useStore(storeSaleOrder);
+    const { saleOrdersToUpdate }: any = useStore(storeSaleOrder);
 
     const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
     const { modalSalesOrder }: any = useStore(storeSaleOrder)
@@ -57,19 +57,6 @@ const ModalSalesOrder: React.FC = () => {
 
     const [title, setTitle] = useState<string>('')
 
-
-    const [selectAreas, setSelectAreas] = useState<any>()
-    const [selectedArea, setSelectedArea] = useState<any>()
-
-    const openSelectAreas = () => {
-        setSelectAreas(!selectAreas)
-    }
-
-    const handleAreasChange = (x: any, index: number) => {
-        dataSaleOrder[index].id_area_produccion = x.id_area
-        setSelectAreas(false)
-        setSelectedArea(x.id)
-    }
 
     ////////////////////////
     /// Fechas

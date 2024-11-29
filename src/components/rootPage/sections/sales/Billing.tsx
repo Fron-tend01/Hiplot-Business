@@ -12,7 +12,6 @@ import APIs from '../../../../services/services/APIs'
 import useUserStore from '../../../../zustand/General'
 import { useSelectStore } from '../../../../zustand/Select'
 import Select from '../../Dynamic_Components/Select'
-import DynamicVariables from '../../../../utils/DynamicVariables'
 import { usersRequests } from '../../../../fuctions/Users'
 const Billing: React.FC = () => {
 
@@ -27,7 +26,7 @@ const Billing: React.FC = () => {
     const [TypeSearcher, setTypeSearcher] = useState<number>(0)
     const [FolioSearcher, setFolioSearcher] = useState<number>(0)
     const [ClienteSearcher, setClienteSearcher] = useState<string>('')
-    const selectData = useSelectStore(state => state.selectedIds)
+    const selectData: any = useSelectStore(state => state.selectedIds)
     const setSelectData = useSelectStore(state => state.setSelectedId)
     const { getUsers }: any = usersRequests()
     const [users, setUsers] = useState<any>([])

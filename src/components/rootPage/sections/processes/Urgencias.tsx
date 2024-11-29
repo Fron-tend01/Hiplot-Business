@@ -28,7 +28,7 @@ const Urgencias = () => {
     urgencias_articulos: [],
     urgencias_articulos_elim: []
   })
-  const [UrgenciaClear, setUrgenciaClear] = useState<urgencia_i>({
+  const [UrgenciaClear] = useState<urgencia_i>({
     id: 0,
     id_sucursal: 0,
     porcentaje: 0,
