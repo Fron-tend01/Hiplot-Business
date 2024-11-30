@@ -240,9 +240,10 @@ const Prices: React.FC = () => {
   const [selectedRangesTwo, setSelectedRangesTwo] = useState<any>()
 
 
-  const handleRangesChangeTwo = (range: any) => {
+  const handleRangesChangeTwo = (range: any, index: number, index_two: number) => {
     setSelectedRangesTwo(range.id)
-    // setSelectsRangesTwo(false)
+    prices[index].precios_ext[index_two].selected = 
+    !prices[index].precios_ext[index_two].selected;
   }
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -616,24 +617,24 @@ const Prices: React.FC = () => {
                         </div>
                         {item.precios_ext?.length > 0 ? (
                           <div className='table__body'>
-                            {item.precios_ext?.map((item: any, index_two: any) => (
+                            {item.precios_ext?.map((item_two: any, index_two: any) => (
                               <div className='tbody__container' key={index_two}>
                                 <div className='tbody'>
                                   <div className='td'>
                                     <div className='td'>
                                       <div className='select__container'>
                                         <div className={`select-btn__general`}>
-                                          <div className={`select-btn ${item.selected ? 'active' : ''}`} onClick={() => openselectsRangesTwo(index, index_two)}>
+                                          <div className={`select-btn ${item_two.selected ? 'active' : ''}`} onClick={() => openselectsRangesTwo(index, index_two)}>
                                             <div className='select__container_title'>
-                                              <p>{selectedRangesTwo ? ranges.find((s: { id: number }) => s.id === selectedRangesTwo)?.titulo : item.rango_titulo}</p>
+                                              <p>{selectedRangesTwo ? ranges.find((s: { id: number }) => s.id === selectedRangesTwo)?.titulo : item_two.rango}</p>
                                             </div>
                                             <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                                           </div>
-                                          <div className={`content ${item.selected ? 'active' : ''}`}>
+                                          <div className={`content ${item_two.selected ? 'active' : ''}`}>
                                             <input type="text" className='inputs__general' placeholder='Buscar...' />
-                                            <ul className={`options ${item.selected ? 'active' : ''}`} style={{ opacity: item.selected ? '1' : '0' }}>
+                                            <ul className={`options ${item_two.selected ? 'active' : ''}`} style={{ opacity: item_two.selected ? '1' : '0' }}>
                                               {ranges?.map((company: any) => (
-                                                <li key={company.id} onClick={() => handleRangesChangeTwo(company)}>
+                                                <li key={company.id} onClick={() => handleRangesChangeTwo(company, index, index_two)}>
                                                   {company.titulo}
                                                 </li>
                                               ))}

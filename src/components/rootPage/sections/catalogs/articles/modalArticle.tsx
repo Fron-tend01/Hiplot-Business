@@ -51,7 +51,7 @@ const modalArticle: React.FC = () => {
     const { selectedIds }: any = useStore(useSelectStore);
 
     ///////////////////////////////////////////////////////////Variables de los modales ////////////////////////////////////////////////////////////////////////////
-    const { modalArticle, imagesArticles, branchOffices, deleteBranchOffices, prices, deletePrices, maxsMins, deleteMaxsMins, units, deleteUnits,
+    const { modalArticle, imagesArticles, deteleImagesArticles, branchOffices, deleteBranchOffices, prices, deletePrices, maxsMins, deleteMaxsMins, units, deleteUnits,
         components, deleteComponents, variations, deleteVariations, combinations, deleteCombinations, suppliers, deleteSuppliers, deliveryTimes, deleteDeliveryTimes,
         minimalCharges, deleteMinimalCharges, additionalArticles, deleteAdditionalArticles, areas, deleteAreas, cobros_franquicia, deleteCobros_franquicia }: any = useStore(storeArticles);
 
@@ -308,7 +308,8 @@ const modalArticle: React.FC = () => {
             cobros_franquicia: cobros_franquicia,
             cobros_franquicia_elim: deleteCobros_franquicia,
 
-            imagenes: imagesArticles
+            imagenes: imagesArticles,
+            imagenes_elim: deteleImagesArticles
         };
 
         const dataArticle = {

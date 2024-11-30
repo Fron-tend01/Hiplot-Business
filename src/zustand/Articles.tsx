@@ -140,6 +140,8 @@ interface StoreState {
   imagesArticles: any
   setImagesArticles: (x: any) => void;
 
+  deteleImagesArticles: any
+  setDeleteImagesArticles: (x: any) => void;
 
   modalStateSuppliers: any
   setModalStateSuppliers: (supplier: any) => void;
@@ -285,6 +287,10 @@ export const storeArticles = create<StoreState>((set) => ({
 
   imagesArticles: [],
   setImagesArticles: (x) => set({ imagesArticles: x }),
+
+  
+  deteleImagesArticles: [],
+  setDeleteImagesArticles: (x) => set({ deteleImagesArticles: x }),
 
 
  //  COBROS FRANQUICIA

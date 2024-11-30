@@ -95,7 +95,7 @@ const Billing: React.FC = () => {
         setData(result)
     }
     const modalUpdate = (dat: any) => {
-        setSubModal('billing__modal')
+        setSubModal('billing__modal-update')
         setDataUpdate(dat)
         setModoUpdate(true)
       }
@@ -167,7 +167,7 @@ const Billing: React.FC = () => {
                         <button className='btn__general-orange' onClick={() => search()}>Buscar</button>
                     </div>
                     <div className='col-3 md-col-3 sm-col-6'>
-                        <button className='btn__general-purple' onClick={() => {setDataUpdate({});setModoUpdate(false);setSubModal('billing__modal'); }}>Crear nueva factura</button>
+                        <button className='btn__general-purple' onClick={() => {setDataUpdate({});setModoUpdate(false);setSubModal('billing__modal-create'); }}>Crear nueva factura</button>
                     </div>
                 </div>
                 <div className='row'>

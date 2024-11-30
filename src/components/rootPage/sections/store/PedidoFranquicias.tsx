@@ -84,7 +84,7 @@ const PedidoFranquicias = () => {
   const selectData: any = useSelectStore(state => state.selectedIds)
 
 
-  const [modal, setModal] = useState<boolean>(false)
+  const [modal, setModal] = useState<string>('')
   const [modoUpdate, setModoUpdate] = useState<boolean>(false)
 
   const [series, setSeries] = useState<any>({})
@@ -106,7 +106,7 @@ const PedidoFranquicias = () => {
   };
 
   const Modal = (modoUpdate: boolean, data: any) => {
-    setModal(true)
+    setModal('modal__franchise-request_update')
     setPf(pfClear)
     setArticulos([])
     if (modoUpdate) {
@@ -284,7 +284,7 @@ const PedidoFranquicias = () => {
       await APIs.CreateAny(createObjLf, "pedido_franquicia/create")
         .then(async (response: any) => {
           if (!response.error) {
-            setModal(false)
+            setModal('')
             Swal.fire('Notificación', response.mensaje, 'success');
             await getData()
             setPf(pfClear)
@@ -484,7 +484,7 @@ const PedidoFranquicias = () => {
             Swal.fire('Notificación', response.mensaje, 'success');
             await getData()
             setPf(pfClear)
-            setModal(false)
+            setModal('')
           })
           .catch((error: any) => {
             if (error.response) {
@@ -599,7 +599,7 @@ const PedidoFranquicias = () => {
         <div className='row my-4'>
           <div className='col-12'>
             <div className='btns__create'>
-              <button className='btn__general-purple' onClick={() => Modal(false, 0)}>Realizar Pedido de Franquicia</button>
+              <button className='btn__general-purple' onClick={() => setModal('modal__franchise-request_create')}>Realizar Pedido de Franquicia</button>
             </div>
           </div>
         </div>
@@ -684,9 +684,9 @@ const PedidoFranquicias = () => {
 
 
         {/* -------------------------------------------------------------MODALES----------------------------------------------------------------------------- */}
-        <div className={`overlay__modal__franchise-orders ${modal ? 'active' : ''}`}>
-          <div className={`popup__modal__franchise-orders ${modal ? 'active' : ''}`}>
-            <a href="#" className="btn-cerrar-popup__modal__franchise-orders" onClick={() => setModal(false)}>
+        <div className={`overlay__modal__franchise-orders ${modal == 'modal__franchise-request_create' || modal == 'modal__franchise-request_update' ? 'active' : ''}`}>
+          <div className={`popup__modal__franchise-orders ${modal == 'modal__franchise-request_create' || modal == 'modal__franchise-request_update' ? 'active' : ''}`}>
+            <a href="#" className="btn-cerrar-popup__modal__franchise-orders" onClick={() => setModal('')}>
               <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
             </a>
             {modoUpdate ?
@@ -764,106 +764,110 @@ const PedidoFranquicias = () => {
                   </div>
                 </div>
 
-                  <div className='row'>
-                    <div className='col-12'>
-                      <br />
-                      <hr />
-                      <label className='label__general'>AGREGAR ARTICULOS</label>
-                      <hr />
-                      <br />
+                <div className='row'>
+                  <div className='col-12'>
+                    <br />
+                    <hr />
+                    <label className='label__general'>AGREGAR ARTICULOS</label>
+                    <hr />
+                    <br />
 
-                      <Filtrado_Articulos_Basic set_article_local={setArticulos} campos_ext={campos_ext} id_empresa_proveedor={selectData?.proveedor?.id} id_sucursal_franquicia={sucursalF.id}
-                        get_unidades={true} get_stock={true} />
-                      <br />
-                      <div className=' '>
-                        <div>
-                          {articulos.length >= 1 ? (
-                            <div>
-                              <p className='text'>Articulos en la Lista ({articulos.length})</p>
-                            </div>
-                          ) : (
-                            <p className='text'>No hay Articulos</p>
-                          )}
-                        </div>
-                        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                          <thead className="table__head">
-                            <tr className="thead">
-                              <th>Articulo</th>
-                              <th>Cantidad</th>
-                              <th>Unidad</th>
-                              <th>P/U</th>
-                              <th>Total</th>
-                              <th>Comentarios</th>
-                              <th>Opts</th>
-                            </tr>
-                          </thead>
-                          <tbody className="table__body">
-                            {articulos && articulos.length > 0 ? (
-                              articulos.map((dat: any, index: number) => (
-                                <tr className="tbody__container" key={index} >
-                                  <td>{dat.codigo} - {dat.descripcion}</td>
-                                  <td>
-                                    <input className={`inputs__general`} type="number" value={dat.cantidad}
-                                      onChange={(e) => { handleCantidad(e, index) }}
-                                    />
-                                  </td>
-                                  <td>
-                                    <select className={`inputs__general`}
-                                      onChange={(e) => { handleUnits(e, index) }}>
-                                      {dat?.unidades.map((option: any, i: number) => (
-                                        <option key={i} value={option.id_unidad}>
-                                          {option.nombre}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  </td>
-                                  <td>${dat.precio_unitario}</td>
-                                  <td>${dat.total}</td>
-                                  <td>
-                                    <textarea className={`inputs__general`} value={dat.comentarios}
-                                      onChange={(e) => { DynamicVariables.updateAnyVarByIndex(setArticulos, index, "comentarios", e.target.value); }}
-                                    />
-                                  </td>
-                                  <td>
-                                    <button className='btn__general-orange mr-1' type="button" onClick={() => mostrar_stock(dat)}>Stock</button>
-                                    <button className='btn__general-purple ' type="button" onClick={() => mostrar_Precios(dat)}>Precios</button>
-                                    <button className='btn__delete_users' type="button" onClick={() => {
-                                      DynamicVariables.removeObjectInArray(setArticulos, index);
-                                      { modoUpdate && dat.id != 0 ? DynamicVariables.updateAnyVarSetArrNoRepeat(setPf, "conceptos", dat.id) : null }
-                                    }}>Eliminar</button>
-                                  </td>
-                                </tr>
-                              ))
-                            ) : (
-                              <tr>
-                                <td colSpan={10} style={{ textAlign: "center" }}>
-                                  No hay requisiciones disponibles
+                    <Filtrado_Articulos_Basic set_article_local={setArticulos} campos_ext={campos_ext} id_empresa_proveedor={selectData?.proveedor?.id} id_sucursal_franquicia={sucursalF.id}
+                      get_unidades={true} get_stock={true} />
+                    <br />
+                    <div className=' '>
+                      <div>
+                        {articulos.length >= 1 ? (
+                          <div>
+                            <p className='text'>Articulos en la Lista ({articulos.length})</p>
+                          </div>
+                        ) : (
+                          <p className='text'>No hay Articulos</p>
+                        )}
+                      </div>
+                      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                        <thead className="table__head">
+                          <tr className="thead">
+                            <th>Articulo</th>
+                            <th>Cantidad</th>
+                            <th>Unidad</th>
+                            <th>P/U</th>
+                            <th>Total</th>
+                            <th>Comentarios</th>
+                            <th>Opts</th>
+                          </tr>
+                        </thead>
+                        <tbody className="table__body">
+                          {articulos && articulos.length > 0 ? (
+                            articulos.map((dat: any, index: number) => (
+                              <tr className="tbody__container" key={index} >
+                                <td>{dat.codigo} - {dat.descripcion}</td>
+                                <td>
+                                  <input className={`inputs__general`} type="number" value={dat.cantidad}
+                                    onChange={(e) => { handleCantidad(e, index) }}
+                                  />
+                                </td>
+                                <td>
+                                  <select className={`inputs__general`}
+                                    onChange={(e) => { handleUnits(e, index) }}>
+                                    {dat?.unidades.map((option: any, i: number) => (
+                                      <option key={i} value={option.id_unidad}>
+                                        {option.nombre}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </td>
+                                <td>${dat.precio_unitario}</td>
+                                <td>${dat.total}</td>
+                                <td>
+                                  <textarea className={`inputs__general`} value={dat.comentarios}
+                                    onChange={(e) => { DynamicVariables.updateAnyVarByIndex(setArticulos, index, "comentarios", e.target.value); }}
+                                  />
+                                </td>
+                                <td>
+                                  <button className='btn__general-orange mr-1' type="button" onClick={() => mostrar_stock(dat)}>Stock</button>
+                                  <button className='btn__general-purple ' type="button" onClick={() => mostrar_Precios(dat)}>Precios</button>
+                                  <button className='btn__delete_users' type="button" onClick={() => {
+                                    DynamicVariables.removeObjectInArray(setArticulos, index);
+                                    { modoUpdate && dat.id != 0 ? DynamicVariables.updateAnyVarSetArrNoRepeat(setPf, "conceptos", dat.id) : null }
+                                  }}>Eliminar</button>
                                 </td>
                               </tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </div>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan={10} style={{ textAlign: "center" }}>
+                                No hay requisiciones disponibles
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-            
+                </div>
+
               </div>
             }
 
             <br /><br /><br />
             <div className='d-flex justify-content-between mt-3'>
-              <div>
-                <button className='btn__general-orange' type='button' onClick={getPDF}>PDF</button>
-              </div>
+              {modal == 'modal__franchise-request_update' ?
+                <div>
+                  <button className='btn__general-orange' type='button' onClick={getPDF}>PDF</button>
+                </div>
+                :
+                ''
+              }
+
               {/* <button className='btn__general-purple d-flex align-items-center' onClick={handleCreateRequisition} disabled={updateToRequisition && updateToRequisition.status == 2}>
                 {updateToRequisition ? `${stateLoading ? 'Actualizando requisición' : 'Actualizar requisición'}` : `${stateLoading ? 'Creando requisición' : 'Crear requisición'}`}
                 {stateLoading ? <span className="loader-two"></span> : ''}
               </button> */}
               <>
                 <button className='btn__general-purple d-flex align-items-center' onClick={(e) => create(e)}>Guardar</button>
-                {pfMu.status == 0 ?
+                {modal == 'modal__franchise-request_update' ?
                   <div>
-
                     <button className='btn__general-danger' type='button' onClick={cancelarPf}>Cancelar</button>
                   </div>
                   :

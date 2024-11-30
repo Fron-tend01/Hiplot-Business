@@ -137,7 +137,7 @@ const ModalBilling: React.FC = () => {
         })
         setSelectedIds('paymentConditions', cp[0])
         setSelectedIds('methodPayment', fp[0])
-        setSelectedIds('paymentMethod', 0)
+        setSelectedIds('paymentMethod', metodoPago.currencies[0])
         setSelectedIds('cfdi', uc[0])
         setSelectedIds('foreignExchange', { id: 0 })
         // let res: any = await APIs.GetAny("getRegimenFiscal")
@@ -147,7 +147,6 @@ const ModalBilling: React.FC = () => {
     //////////////////////////
     //////// Fechas//////////
     ////////////////////////
-
 
 
 
@@ -498,15 +497,17 @@ const ModalBilling: React.FC = () => {
     useEffect(() => {
         // console.log(selectedIds);
         if (selectedIds?.customers) {
+            console.log('selectedIds?.customers', selectedIds?.customers)
             const id_sucursal = modoUpdate ? DataUpdate.id_sucursal : branchOffices.id
             const sucursal = selectedIds.customers.clientes_sucursal.filter((x: any) => x.id_sucursal == id_sucursal)[0]
             console.log(sucursal);
 
-            if (sucursal.condiciones_pago != undefined) {
-                setSelectedIds('paymentConditions', { ID: sucursal.condiciones_pago })
-                setSelectedIds('methodPayment', { ID: sucursal.forma_pago })
+            if (sucursal) {
+                console.log('sucursal', sucursal)
+                setSelectedIds('paymentConditions', { id: sucursal.condiciones_pago })
+                setSelectedIds('methodPayment', { id: sucursal.forma_pago })
                 setSelectedIds('paymentMethod', { id: sucursal.metodo_pago })
-                setSelectedIds('cfdi', { ID: selectedIds?.customers.uso_cfdi })
+                setSelectedIds('cfdi', { id: selectedIds?.customers.uso_cfdi })
                 setSelectedIds('foreignExchange', { id: selectedIds?.customers.divisa })
             }
         }
@@ -555,9 +556,9 @@ const ModalBilling: React.FC = () => {
 
     }
     return (
-        <div className={`overlay__billing-modal ${subModal == 'billing__modal' ? 'active' : ''}`}>
+        <div className={`overlay__billing-modal ${subModal == 'billing__modal-create' || subModal == 'billing__modal-update' ? 'active' : ''}`}>
             <Toaster expand={true} position="top-right" richColors />
-            <div className={`popup__billing-modal ${subModal == 'billing__modal' ? 'active' : ''}`}>
+            <div className={`popup__billing-modal ${subModal == 'billing__modal-create' || subModal == 'billing__modal-update' ? 'active' : ''}`}>
                 <div className='header__modal'>
                     <a href="#" className="btn-cerrar-popup__billing-modal" onClick={() => { setModoUpdate(false); setSubModal('') }} >
                         <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
