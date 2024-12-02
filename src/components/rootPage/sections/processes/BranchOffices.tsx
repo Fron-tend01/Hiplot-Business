@@ -5,6 +5,11 @@ import './styles/BranchOffices.css';
 import useUserStore from '../../../../zustand/General';
 import APIs from '../../../../services/services/APIs'
 import Swal from 'sweetalert2';
+import DynamicVariables from '../../../../utils/DynamicVariables';
+import { useSelectStore } from '../../../../zustand/Select';
+import { areasRequests } from '../../../../fuctions/Areas';
+import { usersRequests } from '../../../../fuctions/Users';
+import Select from '../../Dynamic_Components/Select';
 
 
 
@@ -25,6 +30,12 @@ const BranchOffices: React.FC = () => {
   const [domingo, setdomingo] = useState<boolean>(false);
   const [logo, setLogo] = useState<string>('');
   const [modoUpdate, setModoUpdate] = useState<boolean>(false);
+  const [idAreaReq, setIdAreaReq] = useState<number>(0);
+  const [idUsuarioReq, setIdUsuarioReq] = useState<number>(0);
+  const [areas, setAreas] = useState<any>([]);
+  const [users, setUsers] = useState<any>([]);
+  const selectData: any = useSelectStore(state => state.selectedIds)
+  const setSelectData: any = useSelectStore(state => state.setSelectedId)
 
 
   // Selects
@@ -45,11 +56,39 @@ const BranchOffices: React.FC = () => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
 
+  const { getAreas }: any = areasRequests()
+  const { getUsers }: any = usersRequests()
 
+  const fetch = async () => {
+    let resultAreas = await getAreas(0, user_id)
 
+    setAreas({
+      selectName: 'Areas',
+      options: 'nombre',
+      dataSelect: resultAreas
+    })
+
+    const data = {
+      nombre: '',
+      id_usuario: user_id,
+      id_usuario_consulta: user_id,
+      light: true,
+      id_sucursal: 0
+    }
+    let resultUsers = await getUsers(data)
+    setUsers({
+      selectName: 'Vendedor',
+      options: 'nombre',
+      dataSelect: resultUsers
+    })
+  }
   useEffect(() => {
     getCompaniesXUsers(user_id)
     getBranchOfficeXCompanies(0, user_id)
+
+    fetch()
+
+
   }, []);
 
   const handleCreateBranchOffices = async (e: React.FormEvent) => {
@@ -83,6 +122,14 @@ const BranchOffices: React.FC = () => {
       if (nombre === '' || empresa_id === null || direccion === '' || contacto === '') {
         return;
       }
+      if (selectData.usuarioReq==undefined) {
+        Swal.fire('Notificacion', 'Selecciona un usuario para las requisiciones automaticas', 'info')
+        return
+      }
+      if (selectData.areaReq==undefined) {
+        Swal.fire('Notificacion', 'Selecciona un area para las requisiciones automaticas', 'info')
+        return
+      }
       const data = {
         id: sucursal_id,
         nombre: nombre,
@@ -99,7 +146,9 @@ const BranchOffices: React.FC = () => {
         sabado: sabado,
         domingo: domingo,
         id_modulo_comercial: idModuloComercial,
-        id_usuario: user_id
+        id_usuario: user_id,
+        id_usuario_req: selectData.usuarioReq==undefined ? 0 : selectData.usuarioReq.id,
+        id_area_req: selectData.areaReq==undefined ? 0 :selectData.areaReq.id,
       }
       if (modoUpdate) {
         await APIs.CreateAnyPut(data, "sucursal_update/" + sucursal_id)
@@ -194,6 +243,8 @@ const BranchOffices: React.FC = () => {
     setsabado(false)
     setdomingo(false)
     setLogo('')
+    setSelectData('usuarioReq', users[0])
+    setSelectData('areaReq', areas[0])
     if (mu) {
       setWarningSelectCompany(false)
       setWarningNombre(false)
@@ -215,6 +266,8 @@ const BranchOffices: React.FC = () => {
       setEmpresa_id(sucursal.empresa_id)
       setSelectedCompany(sucursal.empresa_id)
       setIdModuloComercial(sucursal.id_modulo_comercial)
+      setSelectData('usuarioReq', sucursal.id_usuario_req)
+      setSelectData('areaReq', sucursal.id_area_req)
       setModoUpdate(true)
     } else {
       setModoUpdate(false)
@@ -342,7 +395,16 @@ const BranchOffices: React.FC = () => {
                 </label>
               </div>
             </div>
+            <div className='row'>
+              <div className='col-6' title='Determina el area de las requisiciones automaticas generadas por maxmin y bp'>
+                <Select dataSelects={areas} instanceId='areaReq' nameSelect={'Area Requisición'} />
 
+              </div>
+              <div className='col-6' title='Determina el usuario al que saldrán las requisiciones automaticas generadas por maxmin y bp'>
+                <Select dataSelects={users} instanceId='usuarioReq' nameSelect={'Usuario Requisición'} />
+
+              </div>
+            </div>
             <br />
             <hr />
             <b>DÍAS HABILES</b>
