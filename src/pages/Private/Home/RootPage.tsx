@@ -68,6 +68,10 @@ const RootHome: React.FC = () => {
         backgroundColor: activeMenuIndex === 5 && activeSidebar === true ? '#5d35b0' : ''
     }
 
+    const production = {
+        backgroundColor: activeMenuIndex === 6 && activeSidebar === true ? '#5d35b0' : ''
+    }
+
 
     const toggleMenu = () => {
         setActiveSidebar(!activeSidebar)
@@ -107,7 +111,7 @@ const RootHome: React.FC = () => {
                             <span>Dashboard</span>
                         </AnchorTag>
                     </div>
-                    {permisos && permisos.VENTA ?
+                    {permisos && permisos.VENTA.length ?
                         <div className={`nav__item ${activeMenuIndex === 1 ? 'activeMenu' : ''}`} >
                             <AnchorTag className='nav__link' style={sales} onClick={(e) => { e.preventDefault(); toggleSubMenu(1) }} to={`${PrivateRoutes.SALES}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 448 512"><path d="M0 80V229.5c0 17 6.7 33.3 18.7 45.3l176 176c25 25 65.5 25 90.5 0L418.7 317.3c25-25 25-65.5 0-90.5l-176-176c-12-12-28.3-18.7-45.3-18.7H48C21.5 32 0 53.5 0 80zm112 32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg>
@@ -230,7 +234,7 @@ const RootHome: React.FC = () => {
                     }
                     {permisos && permisos.PRO.length > 0 ?
                         <div className={`nav__item ${activeMenuIndex === 6 ? 'activeMenu' : ''}`}>
-                            <AnchorTag className='nav__link' style={store} onClick={() => toggleSubMenu(6)} to={`${PrivateRoutes.PRODUCTION}`}>
+                            <AnchorTag className='nav__link' style={production} onClick={() => toggleSubMenu(6)} to={`${PrivateRoutes.PRODUCTION}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 576 512"><path d="M248 0L208 0c-26.5 0-48 21.5-48 48l0 112c0 35.3 28.7 64 64 64l128 0c35.3 0 64-28.7 64-64l0-112c0-26.5-21.5-48-48-48L328 0l0 80c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-80zM64 256c-35.3 0-64 28.7-64 64L0 448c0 35.3 28.7 64 64 64l160 0c35.3 0 64-28.7 64-64l0-128c0-35.3-28.7-64-64-64l-40 0 0 80c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-80-40 0zM352 512l160 0c35.3 0 64-28.7 64-64l0-128c0-35.3-28.7-64-64-64l-40 0 0 80c0 8.8-7.2 16-16 16l-48 0c-8.8 0-16-7.2-16-16l0-80-40 0c-15 0-28.8 5.1-39.7 13.8c4.9 10.4 7.7 22 7.7 34.2l0 160c0 12.2-2.8 23.8-7.7 34.2C323.2 506.9 337 512 352 512z" /></svg>
                                 <span>Produccion</span>
                                 <svg className="arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M16.293 9.293 12 13.586 7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z"></path></svg>
@@ -422,7 +426,7 @@ const RootHome: React.FC = () => {
             */}
                 </ul>
                 <div className='nav__item_logout'>
-                    <AnchorTag className='nav__link' onClick={logOut} to="/session">
+                    <AnchorTag className='nav__link' onClick={logOut} to="/login">
                         <svg xmlns="http://www.w3.org/2000/svg" className='signoff' width="20" viewBox="0 0 512 512" fill="none" stroke="currentColor"><path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1L32 320c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM352 416l64 0c17.7 0 32-14.3 32-32l0-256c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c53 0 96 43 96 96l0 256c0 53-43 96-96 96l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z" /></svg>
                         <span>Cerrar session</span>
                     </AnchorTag>

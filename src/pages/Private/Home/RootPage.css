@@ -5,10 +5,10 @@
     left: 0;
     width: 260px;
     height: 100vh;
-    transition: 0.7s;
+    transition: 400ms;
     display: grid;
     grid-template-rows: auto 1fr auto;
-    background-color: var(--sidebar-color);   
+    background-color: var(--sidebar-color);
 }
 
 
@@ -24,7 +24,6 @@
     justify-content: center;
     color: #fff;
     padding: 20px 0;
-    
 }
 
 
@@ -38,19 +37,18 @@
 
 .sidebar.close .logo__sidebar .logo__image {
     width: 60px;
-    
 }
 
 .sidebar.close .logo__sidebar .title__logo {
    display: none;
-    
 }
 
 
 
 
 .sidebar .nav__items {
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     &::-webkit-scrollbar {
         width: 5px;
     }
@@ -64,7 +62,6 @@
     &::-webkit-scrollbar-track {
 
     }
-    
 }
 
 
@@ -81,11 +78,10 @@
     padding: 10px 20px;
     transition: all 0.4s ease;
     position: relative;
-    
 }
 
 .sidebar.close .nav__items  .nav__item {
-    padding: 14px 10px;    
+    padding: 10px 15px;    
 }
 
 
@@ -104,26 +100,39 @@
      
 }
 
-.nav__item_logout {
-    padding: 10px 20px;
+.sidebar .nav__item_logout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
     transition: all 0.4s ease;
     position: relative;
 }
 
 
-.nav__item_logout .nav__link {
+.sidebar .nav__item_logout .nav__link {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0 10px;
-    height: 50px;
+    height: 40px;
     text-decoration: none;
     border-radius: 5px 5px 5px 5px;
     cursor: pointer;
     transition: all 0.3s ease;
-    background-color: var(--primary-color);
+}
+
+
+.sidebar.close .nav__item_logout {
+    padding: 10px;
 
 }
+
+
+.sidebar.lose .nav__item_logout .nav__link {
+    width: 45px;
+    height: 35px;
+}
+
 
 
 
@@ -488,7 +497,7 @@
     width: 25px;
     height: 25px;
     border-radius: 20px;
-    right: 0;
+    right: -10px;
     top: 70px;
     background-color: #fff;
     cursor: pointer;

@@ -154,7 +154,7 @@ const Departures = () => {
                         <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
                     </div>
                     <div className='col-4'>
-                        <Select dataSelects={store} instanceId="store" nameSelect={'Almacen'} />
+                        <Select dataSelects={store} instanceId="store" nameSelect={'Almacén'} />
                     </div>
                 </div>
                 <div className="row__two">

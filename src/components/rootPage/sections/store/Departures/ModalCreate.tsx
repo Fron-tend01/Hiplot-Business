@@ -245,7 +245,7 @@ const ModalCreate: React.FC = () => {
                                 <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
                             </div>
                             <div className='col-4'>
-                                <Select dataSelects={store} instanceId='store' nameSelect={'Almacen'} />
+                                <Select dataSelects={store} instanceId='store' nameSelect={'Almacén'} />
                             </div>
                             <div className="col-12">
                                 <label className='label__general'>Comentarios</label>

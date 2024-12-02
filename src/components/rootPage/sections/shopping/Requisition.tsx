@@ -394,9 +394,10 @@ console.log(dates)
             <div className='table__requisiciones'>
               <div>
                 {requisitions ? (
-                  <div>
-                    <p>Tus requisiciónes {requisitions.length}</p>
-                  </div>
+                 <div className='table__numbers'>
+                 <p className='text'>Total de requisiciónes</p>
+                 <div className='quantities_tables'>{requisitions.length}</div>
+               </div>
                 ) : (
                   <p></p>
                 )}

@@ -95,8 +95,6 @@ const PedidoFranquicias = () => {
   const [articulos, setArticulos] = useState<any[]>([])
   const { getCompaniesXUsers }: any = companiesRequests()
 
-
-
   const handleDateChange = (fechasSeleccionadas: any) => {
     if (fechasSeleccionadas.length === 2) {
       setDate(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
@@ -112,7 +110,6 @@ const PedidoFranquicias = () => {
     if (modoUpdate) {
       setPfMu(data)
       console.log(pfMu);
-
       // // // //LLENAR LA VARIABLES ARRAY
       // data.articulos.forEach((element: any) => {
       //   DynamicVariables.addObjectInArrayRepeat(element, setArticulos)

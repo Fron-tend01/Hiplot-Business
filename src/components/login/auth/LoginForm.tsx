@@ -68,7 +68,7 @@ const LoginForm: React.FC = () => {
             <div className='container__form'>
               <div className='title__form'>
                 <h3 className='title__procura'>
-                  Bienvenidos a <strong>PROCURA</strong>
+                  Bienvenidos a <strong>Hiplot Business</strong>
                 </h3>
               </div>
               <div>

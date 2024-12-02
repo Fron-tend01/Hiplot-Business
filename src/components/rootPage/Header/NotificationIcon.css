@@ -8,7 +8,7 @@
 .notification-icon {
     cursor: pointer;
     position: relative;
-    color: #333;
+    fill: var(--text-color);
 }
 
 /* Estilo para el contenedor de las notificaciones */
