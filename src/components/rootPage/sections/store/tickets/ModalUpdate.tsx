@@ -38,7 +38,7 @@ const ModalUpdate = ({ updateTickets }: any) => {
         try {
             // Supongamos que tienes el ID de la requisición
             await getPDFTickets(updateTickets.id);
-            window.open(`https://hiplotbusiness.com/api_dev/pdf_entrada/${updateTickets.id}`, '_blank');
+            window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_entrada/${updateTickets.id}`, '_blank');
         } catch (error) {
             console.error('Error al generar el PDF:', error);
         }
@@ -65,6 +65,7 @@ const ModalUpdate = ({ updateTickets }: any) => {
         setPurchaseOrderToUpdate(result[0])
     }
     return (
+        
         <div className='conatiner__update_tickets'>
             <div className="row">
                 <div className="col-12">
@@ -93,62 +94,78 @@ const ModalUpdate = ({ updateTickets }: any) => {
                     </div>
                 </div>
             </div>
-
-
-            <div className=''>
-                <div className='' >
-                    <div>
-                        <div>
-                            {updateTickets.conceptos ? (
-                                <div className='table__numbers'>
-                                    <p className='text'>Total de articulos</p>
-                                    <div className='quantities_tables'>{updateTickets.conceptos.length}</div>
-                                </div>
-                            ) : (
-                                <p className='text'>No hay empresas</p>
-                            )}
-                        </div>
-                        <div className="table__requisicion">
-                            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                                <thead className="table__head">
-                                    <tr className="thead">
-                                        <th>Articulo</th>
-                                        <th>Cantidad</th>
-                                        <th>Unidad</th>
-                                        <th>Prov.</th>
-                                        <th>Almacen.</th>
-                                        <th>OC</th>
-                                        <th>Comentarios</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="table__body">
-                                    {conceptos && conceptos.length > 0 ? (
-                                        conceptos.map((con: any, index: number) => (
-                                            <tr className="tbody__container" key={index} >
-                                                <td>({con.codigo}) {con.descripcion}</td>
-                                                <td>{con.cantidad}</td>
-                                                <td>{con.unidad}</td>
-                                                <td>{con.proveedor}</td>
-                                                <td>{con.almacen}</td>
-                                                <td >
-                                                    <button className='btn__general-gray' onClick={() => verOc(con.data_oc.id_oc)}>{con.data_oc.folio}</button>
-                                                </td>
-                                                <td>{con.comentarios}</td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan={10} style={{ textAlign: "center" }}>
-                                                No hay requisiciones disponibles
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
+            <div className="table__modal_update_tickets">
+                <div>
+                    <div className='table__numbers'>
+                        <p className='text'>Total de conceptos</p>
+                        <div className='quantities_tables'>{conceptos?.length}</div>
                     </div>
                 </div>
+                <div className='table__head'>
+                    <div className='thead'>
+                        <div className='th'>
+                            <p className=''>Articulo</p>
+                        </div>
+                        <div className='th'>
+                            <p className=''>Cant</p>
+                        </div>
+
+                        <div className='th'>
+                            <p className=''>Unidad</p>
+                        </div>
+                  
+                        <div className='th'>
+                            <p className=''>Prov</p>
+                        </div>
+
+                        <div className='th'>
+                            <p className=''>Almacen</p>
+                        </div>
+                        <div className='th'>
+                            <p className=''>OC</p>
+                        </div>
+                        <div className='th'>
+                            <p className=''>Coment</p>
+                        </div>
+
+                    </div>
+                </div>
+                {conceptos?.length > 0 ? (
+                    <div className='table__body'>
+                        {conceptos.map((concept: any, index: any) => (
+                            <div className='tbody__container' key={index}>
+                                <div className='tbody'>
+                                    <div className='td'>
+                                        <p>{concept.codigo}-{concept.descripcion}</p>
+                                    </div>
+                                    <div className="td">
+                                        <p>{concept.cantidad}</p>
+                                    </div>
+                                    <div className="td">
+                                        <p>{concept.unidad}</p>
+                                    </div>
+                                    <div className="td">
+                                        <p>{concept.proveedor}</p>
+                                    </div>
+                                    <div className="td">
+                                        <p>{concept.almacen}</p>
+                                    </div>
+                                    <div className="td">
+                                        <button className='btn__general-gray' onClick={() => verOc(concept.data_oc.id_oc)}>{concept.data_oc.folio}</button>
+                                    </div>
+                                    <div className="td">
+                                        <p>{concept.comentarios}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className='text'>No hay aritculos que mostrar</p>
+                )}
             </div>
+
+           
             <div className='row__three'>
                 <div>
                     <p className='title'>Subtotal</p>

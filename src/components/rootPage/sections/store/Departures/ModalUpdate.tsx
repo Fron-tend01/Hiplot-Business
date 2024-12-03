@@ -14,7 +14,7 @@ const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
     const { modal } = useStore(storeWarehouseExit)
 
     const getPdf = async () => {
-        window.open('https://hiplotbusiness.com/api_dev/pdf_salida/' + conceptsUpdate.id, '_blank');
+        window.open('http://hiplot.dyndns.org:84/api_dev/pdf_salida/' + conceptsUpdate.id, '_blank');
 
     }
 

@@ -76,7 +76,7 @@ const ModalSee: React.FC = () => {
 
   const getPDF = async () => {
     await APIs.getStorePDF({ id: dataTransfer.id })
-    window.open(`https://hiplotbusiness.com/api_dev/pdf_traspaso/${dataTransfer.id}`, '_blank');
+    window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_traspaso/${dataTransfer.id}`, '_blank');
   }
 
   console.log(dataTransfer)
@@ -96,12 +96,14 @@ const ModalSee: React.FC = () => {
               <hr />
               <div className='row'>
                 <div className='col-6 md-col-12'>
-                <span className='text'>Empresa Origen: <b>{dataTransfer.empresa}</b></span><br />
-                <span className='text'>Sucursal Origen: <b>{dataTransfer.sucursal_origen}</b></span><br />
-                <span className='text'>Almacen Origen: <b>{dataTransfer.almacen_origen}</b></span><br />
-                <span className='text'>Salida Generada: <b>{dataTransfer.salidas_gen?.[0].serie}-{dataTransfer.salidas_gen?.[0].folio}-{dataTransfer.salidas_gen?.[0].anio}</b></span><br />
-                  <span className='text'>Creado por: <b>{dataTransfer.usuario_crea}</b></span><br />
-                  <span className='text'>Fecha de Creación: <b>{dataTransfer.fecha_creacion}</b></span><br />
+                <span className='text'>Empresa Origen: <b>{dataTransfer?.empresa}</b></span><br />
+                <span className='text'>Sucursal Origen: <b>{dataTransfer?.sucursal_origen}</b></span><br />
+                <span className='text'>Almacen Origen: <b>{dataTransfer?.almacen_origen}</b></span><br />
+                <span className='text'>Salida Generada: <b>  {dataTransfer?.salidas_gen?.length > 0 
+      ? `${dataTransfer.salidas_gen[0]?.serie}-${dataTransfer.salidas_gen[0]?.folio}-${dataTransfer.salidas_gen[0]?.anio}` 
+      : 'No disponible'}</b></span><br />
+                  <span className='text'>Creado por: <b>{dataTransfer?.usuario_crea}</b></span><br />
+                  <span className='text'>Fecha de Creación: <b>{dataTransfer?.fecha_creacion}</b></span><br />
                   {/* {dataTransfer.status === 0 ? (
                     <span className="active-status">Activo</span>
                   ) : dataTransfer.status === 1 ? (
@@ -119,7 +121,9 @@ const ModalSee: React.FC = () => {
                 <span className='text'>Empresa Destino: <b>{dataTransfer.empresa_destino}</b></span><br />
                 <span className='text'>Sucursal Destino: <b>{dataTransfer.sucursal_destino}</b></span><br />
                 <span className='text'>Almacen Destino: <b>{dataTransfer.almacen_destino}</b></span><br />
-                <span className='text'>Entrada Generada: <b>{dataTransfer.entradas_gen?.[0].serie}-{dataTransfer.entradas_gen?.[0].folio}-{dataTransfer.entradas_gen?.[0].anio}</b></span><br />
+                <span className='text'>Entrada Generada: <b>  {dataTransfer?.entradas_gen?.length > 0 
+      ? `${dataTransfer.entradas_gen[0]?.serie}-${dataTransfer.entradas_gen[0]?.folio}-${dataTransfer.entradas_gen[0]?.anio}` 
+      : 'No disponible'}</b></span><br />
                 </div>
               </div>
               <div className='row'>

@@ -35,9 +35,9 @@ const Transfers: React.FC = () => {
   const { getCompaniesXUsers }: any = companiesRequests();
   const { getStore }: any = StoreRequests();
   const { getSeriesXUser }: any = seriesRequests();
-  const { getTransfers, dates }: any = TransfersRequests();
+  const { getTransfers,  }: any = TransfersRequests();
 
-  const { transfer }: any = storeTransfers();
+  const { transfer, dates }: any = storeTransfers();
 
   const [companiesDesde, setCompaniesDesde] = useState<any>()
   const [companiesHasta, setCompaniesHasta] = useState<any>()
@@ -52,11 +52,11 @@ const Transfers: React.FC = () => {
   haceUnaSemana.setDate(hoy.getDate() - 7);
 
 
-  const fetch = async () => {
 
+
+  const fetch = async () => {
     setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
     
-
     const resultCompanies = await getCompaniesXUsers(user_id)
     resultCompanies.unshift({ id: 0, razon_social: 'Todas' })
     setCompaniesDesde({
@@ -117,6 +117,7 @@ const Transfers: React.FC = () => {
   }
 
   useEffect(() => {
+    
     fetch()
     setSelectedId('company_desde', 0)
     setSelectedId('store_desde', 0)
@@ -171,6 +172,8 @@ const Transfers: React.FC = () => {
     console.log(result)
     setTransfers(result)
   }
+
+  console.log(dates)
 
 
   const seeConcepts = (concept: any) => {

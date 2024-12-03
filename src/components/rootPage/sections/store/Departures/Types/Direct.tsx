@@ -23,11 +23,11 @@ const Direct: React.FC = () => {
   const typesSerachBy = [
     {
         id: 1,
-        name: 'Nombre'
+        name: 'Código'
     },
     {
         id: 2,
-        name: 'Código'
+        name: 'Nombre'
     }
   ]
   const [selectSearchBy, setSelectSearchBy] = useState<boolean>()
@@ -68,9 +68,10 @@ const Direct: React.FC = () => {
     const data = {
         id: 0,
         activos: true,
-        nombre: selectedSearchBy == 1 ? inputSearch : '',
-        codigo: selectedSearchBy == 2 ? inputSearch : '',
+        nombre: selectedSearchBy == 2 ? inputSearch : '',
+        codigo: selectedSearchBy == 1 ? inputSearch : '',
         familia: 0,
+        page: 1,
         proveedor: 0,
         materia_prima: 0,
         get_sucursales: false,
@@ -108,7 +109,7 @@ const Direct: React.FC = () => {
     let warning;
     if(selectedIds != null) {
       if(selectedResult) {
-        const filter = selectedResult.stock?.filter((x: any) => x.id == selectedIds.store.id);
+        const filter = selectedResult.stock?.filter((x: any) => x.id == selectedIds?.store?.id);
         if(filter.length <= 0) {
           toast.warning('El articulo que agregaste no tiene alamcen')
           warning = true
@@ -153,7 +154,6 @@ const Direct: React.FC = () => {
 
   return (
     <div className='direct-warehouse-exit'>
-
         <div className='row__one'>
             <div className='select__container'>
                 <label className='label__general'>Buscar por</label>

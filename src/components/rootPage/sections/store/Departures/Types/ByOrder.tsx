@@ -156,8 +156,7 @@ const ByOrder: React.FC = () => {
 
   return (
     <div className='by-order__warehouse-exit'>
-      <br />
-      <b>FILTRAR PEDIDOS</b>
+
       <div className='row'>
         <div className="col-8">
           <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />

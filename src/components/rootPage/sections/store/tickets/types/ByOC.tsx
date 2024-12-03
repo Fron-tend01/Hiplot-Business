@@ -101,7 +101,6 @@ const ByOC: React.FC = () => {
 
 
 
-    const [modalStateConcepts, setModalStateConcepts] = useState<boolean>(false)
 
     const [concepts, setConcepts] = useState<any[]>([])
 
@@ -111,9 +110,7 @@ const ByOC: React.FC = () => {
     const searchByRequest = () => {
     }
 
-    const closeModalConcepts = () => {
-        setModalStateConcepts(false)
-    }
+
 
     const [purchaseOrderToUpdate, setPurchaseOrderToUpdate] = useState<any>(null);
 
@@ -121,7 +118,6 @@ const ByOC: React.FC = () => {
     const verOc = async (data: any) => {
         setPurchaseOrderToUpdate(data)
         setModal('modal-purchase-orders-update')
-        setModalStateConcepts(true);
         data.conceptos.forEach((element: any) => {
             setConcepts(prevConcepts => ([{
                 ...prevConcepts,
@@ -138,16 +134,8 @@ const ByOC: React.FC = () => {
         });
     }
     return (
-        <div className='conatiner__by-request'>
+        <div className='conatiner__by-request mt-4'>
             <ModalPurchaseOrders purchaseOrderToUpdate={purchaseOrderToUpdate} />
-
-            <br />
-            <div className='row'>
-                <div className='col-12'>
-                    <b>Filtrar Ordenes de Compra</b>
-                </div>
-            </div>
-            <br />
             <div className='row'>
                 <div className='col-8'>
                     <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
@@ -175,57 +163,6 @@ const ByOC: React.FC = () => {
                         Buscar
                         <svg className='svg' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg>
                     </button>
-                </div>
-            </div>
-            <div>
-                <div className={`overlay__modal_concepts-ticket ${modalStateConcepts ? 'active' : ''}`}>
-                    <div className={`popup__modal_concepts-ticket ${modalStateConcepts ? 'active' : ''}`}>
-                        <a href="#" className="btn-cerrar-popup__modal_concepts-ticket" onClick={closeModalConcepts}>
-                            <svg className='close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
-                        </a>
-                        <p className='title__modals'>Detalles de conceptos</p>
-                        <div className='conatiner__concepts'>
-                            {concepts.map((concepto: any, index: any) => (
-                                <div className='row__one' key={index}>
-                                    <div>
-                                        <p className='text'>cantidad</p>
-                                        <p className='text'>{concepto.cantidad}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>codigo</p>
-                                        <p className='text'>{concepto.codigo}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>comentarios</p>
-                                        <p className='text'>{concepto.comentarios}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>descripcion</p>
-                                        <p className='text'>{concepto.descripcion}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>iva</p>
-                                        <p className='text'>{concepto.iva_on}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>precio_unitario</p>
-                                        <p className='text'>{concepto.precio_unitario}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>proveedor</p>
-                                        <p className='text'>{concepto.proveedor}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>unidad</p>
-                                        <p className='text'>{concepto.unidad}</p>
-                                    </div>
-                                </div>
-                            ))}
-                            <div className='row__two'>
-
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div className='row__two'>

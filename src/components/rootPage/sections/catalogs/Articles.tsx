@@ -16,7 +16,6 @@ const Articles: React.FC = () => {
   const setModalArticle = storeArticles(state => state.setModalArticle)
   const setImagesArticles = storeArticles(state => state.setImagesArticles)
 
-
   // Modales del modal de creaer articulo
   const [code, setCode] = useState<string>('')
   const [selectedFamilie, setSelectedFamilie] = useState<number | null>(null)
@@ -25,10 +24,8 @@ const Articles: React.FC = () => {
   const [selectFamilies, setSelectFamilies] = useState<boolean>(false)
   const { families, getFamilies }: any = storeFamilies()
 
-
   const { getArticles }: any = articleRequests()
   
-
   const setArticleByOne = storeArticles((state: any) => state.setArticleByOne);
 
   // const modalLoading = storeArticles((state: any) => state.modalLoading);
@@ -36,14 +33,11 @@ const Articles: React.FC = () => {
 
 
   //zustand 
-
   const { setArticleToUpdate, getArticlesInGlobal, articlesInGlobal }: any = useStore(storeArticles);
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
 
   const [descripcion, setDescripcion] = useState<string>('')
-
-
 
   const fuctionGetArticles = async () => {
     const data = {
@@ -69,6 +63,7 @@ const Articles: React.FC = () => {
     } catch (error) {
       console.log('Error')
     } finally {
+
     }
   }
 

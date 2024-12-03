@@ -241,7 +241,7 @@ const ModalCreate = () => {
                                 <div>
                                     <div>
                                         <div className='table__numbers'>
-                                            <p className='text'>Total de articulos</p>
+                                            <p className='text'>Total de conceptos</p>
                                             <div className='quantities_tables'>{conceptos?.length}</div>
                                         </div>
                                     </div>
@@ -280,7 +280,7 @@ const ModalCreate = () => {
                                     {conceptos?.length > 0 ? (
                                         <div className='table__body'>
                                             {conceptos.map((concept: any, index: any) => (
-                                                <div className='tbody__container' key={index}>s
+                                                <div className='tbody__container' key={index}>
                                                     <div className='tbody'>
                                                         <div className='td'>
                                                             <p>{concept.codigo}-{concept.descripcion}</p>
@@ -379,7 +379,7 @@ const ModalCreate = () => {
                         :
                         ''
                     }
-                    <div className="mt-4">
+                    <div className="d-flex justify-content-center mt-4">
                         <button className='btn__general-purple' onClick={(e) => handleCreateAreas(e)}>Crear nueva entrada</button>
                     </div>
                 </div>

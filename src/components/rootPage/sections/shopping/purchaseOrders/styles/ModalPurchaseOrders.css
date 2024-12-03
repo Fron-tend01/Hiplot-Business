@@ -53,20 +53,20 @@
     margin: 20px 0;
 }
 
-.conatiner__by-request .row__one {
+.parchase-orders-modal .conatiner__by-request .row__one {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     align-items: end;
 }
 
-.conatiner__by-request .row__three {
+.parchase-orders-modal .conatiner__by-request .row__three {
     display: flex;
     justify-content: center;
     margin: 20px 0;
 }
 
-.conatiner__by-request .row__three > div {
+.parchase-orders-modal .conatiner__by-request .row__three > div {
     display: grid;
     width: 50%;
     grid-template-columns: 1fr 100px;

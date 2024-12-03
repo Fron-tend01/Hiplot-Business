@@ -25,7 +25,7 @@ const Direct: React.FC = () => {
     })
 
     // Bucador por nombre
-    const [searchBy, setSearchBy] = useState<any>(null)
+    const [searchBy, setSearchBy] = useState<any>('')
 
     const searchFor = async () => {
         const data = {
@@ -34,6 +34,7 @@ const Direct: React.FC = () => {
             nombre: selectedIds.type.id == 1 ? searchBy : '',
             codigo: selectedIds.type.id == 0 ? searchBy : '',
             familia: 0,
+            page: 1,
             proveedor: 0,
             materia_prima: 0,
             get_sucursales: false,
@@ -79,14 +80,7 @@ const Direct: React.FC = () => {
     };
 
     return (
-        <div className='conatiner__direct'>
-            <br />
-            <div className='row'>
-                <div className='col-12'>
-                        <b>Filtrar Articulos</b>
-                </div>
-            </div>
-            <br />
+        <div className='conatiner__direct mt-4'>
             <div className='row__one'>
                 <Select dataSelects={selectSearchFor} nameSelect={'Buscar por'} instanceId='type' />
 

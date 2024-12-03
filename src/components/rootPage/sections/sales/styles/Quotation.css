@@ -21,7 +21,7 @@
  **************************************************************/
 
 
-
+/* 
  .table__requisicion {
 	border-radius: 10px;
 	overflow: hidden;
@@ -46,7 +46,7 @@
   }
   
   .table__body {
-	max-height: 400px; /* Ajusta según necesites */
+	max-height: 400px; 
 	overflow-y: auto;
   }
   
@@ -98,7 +98,7 @@
 	cursor: pointer;
   }
 
-
+ */
 
 
 

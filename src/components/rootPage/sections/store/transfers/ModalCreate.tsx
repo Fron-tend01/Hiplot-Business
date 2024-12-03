@@ -108,6 +108,7 @@ const ModalCreate: React.FC = () => {
       codigo: selectedSearch == 0 ? nameBy : '',
       familia: 0,
       proveedor: 0,
+      page: 1,
       materia_prima: 0,
       get_sucursales: false,
       get_proveedores: true,
@@ -266,6 +267,7 @@ const ModalCreate: React.FC = () => {
         setTransfers(response)
         console.log('result.mensaje', response.mensaje)
         Swal.fire('Traspaso exitoso', result.mensaje, 'success');
+        setModalStateCreate('')
         return
       }
     } catch (error: any) {

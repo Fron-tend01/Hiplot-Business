@@ -79,14 +79,6 @@ const Departures: React.FC = () => {
 
 
 
-    const modalCreate = () => {
-        setModal('modal-create-pedido')
-    }
-
-    const modalCloseCreate = () => {
-        setModal('')
-    }
-
     const handleClick = (value: any) => {
         setTipo(value)
     };
@@ -97,13 +89,11 @@ const Departures: React.FC = () => {
     const [orderConceptsUpdate, setorderConceptsUpdate] = useState<any>([])
 
     const modalUpdate = (order: any) => {
+       
+        setModal('modal-orders-update')
         setModalStateUpdate(true)
         setOderUpdate(order)
         setorderConceptsUpdate(order.conceptos)
-    }
-
-    const modalCloseUpdate = () => {
-        setModalStateUpdate(false)
     }
 
     const searchOrders = async () => {
@@ -172,28 +162,13 @@ const Departures: React.FC = () => {
                             <button className="btn__general-purple">Excel</button>
                         </div>
                         <div>
-                            <button className="btn__general-purple" onClick={modalCreate}>Nueva entrada</button>
+                            <button className="btn__general-purple" onClick={() => setModal('modal-create-pedido')}>Nueva entrada</button>
                         </div>
                     </div>
                 </div>
-                <div className={`overlay__orders ${modal=='modal-create-pedido' ? 'active' : ''}`}>
-                    <div className={`popup__orders ${modal=='modal-create-pedido' ? 'active' : ''}`}>
-                        <a href="#" className="btn-cerrar-popup__orders" onClick={modalCloseCreate}>
-                            <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
-                        </a>
-                        <p className='title__modals'>Crear nuevo pedido</p>
-                        <ModalCreate />
-                    </div>
-                </div>
-                <div className={`overlay__orders ${modalStateUpdate ? 'active' : ''}`}>
-                    <div className={`popup__orders ${modalStateUpdate ? 'active' : ''}`}>
-                        <a href="#" className="btn-cerrar-popup__orders" onClick={modalCloseUpdate}>
-                            <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
-                        </a>
-                        <p className='title__modals'>Actualizar pedido</p>
-                        <ModalUpdate oderUpdate={oderUpdate} orderConceptsUpdate={orderConceptsUpdate} />
-                    </div>
-                </div>
+                <ModalCreate />
+                <ModalUpdate oderUpdate={oderUpdate} orderConceptsUpdate={orderConceptsUpdate} />
+                  
                 <div className='table__orders'>
                     {orders ? (
                         <div className='table__numbers'>

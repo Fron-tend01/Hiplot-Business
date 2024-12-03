@@ -42,6 +42,7 @@ const Direct: React.FC = () => {
             nombre: selectedIds.type.id == 1 ? searchBy : '',
             codigo: selectedIds.type.id == 0 ? searchBy : '',
             familia: 0,
+            page: 1,
             proveedor: 0,
             materia_prima: 0,
             get_sucursales: false,

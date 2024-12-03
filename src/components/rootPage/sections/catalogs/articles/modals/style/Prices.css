@@ -138,7 +138,7 @@
 }
 
 
-.article__modal_prices_modal_container .tbody__container:nth-child(even) {
+/* .article__modal_prices_modal_container .tbody__container:nth-child(even) {
     background-color: var(--table-color);
     color: var(--text-table-color);
   }
@@ -147,7 +147,7 @@
     background-color: var(--two-table-color);
     color: var(--text-table-color);
    
-  }
+  } */
 
   .article__modal_prices_modal_container .table__body .tbody {
     display: flex;
@@ -197,10 +197,10 @@
 } */
 
 
-.article__modal_prices_modal_container .table__body .tbody:hover {
+/* .article__modal_prices_modal_container .table__body .tbody:hover {
     background-color: var(--secundary-color);
     color: #fff;
-}
+} */
 
 
 

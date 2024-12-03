@@ -241,9 +241,9 @@ const Prices: React.FC = () => {
 
 
   const handleRangesChangeTwo = (range: any, index: number, index_two: number) => {
+    console.log(index, index_two)
     setSelectedRangesTwo(range.id)
-    prices[index].precios_ext[index_two].selected = 
-    !prices[index].precios_ext[index_two].selected;
+    prices[index].precios_ext[index_two].selected = !prices[index].precios_ext[index_two].selected;
   }
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -352,6 +352,8 @@ const Prices: React.FC = () => {
     const value = e.target.value;
     prices[index].precios_ext[index_two].id_plantilla = value;
   }
+
+  console.log(prices)
 
   return (
     <div className={`overlay__modal_prices_creating_articles ${subModal == 'modal-prices' ? 'active' : ''}`}>
@@ -622,7 +624,8 @@ const Prices: React.FC = () => {
                                 <div className='tbody'>
                                   <div className='td'>
                                     <div className='td'>
-                                      <div className='select__container'>
+                                      <p>{item_two.rango_titulo}</p>
+                                      {/* <div className='select__container'>
                                         <div className={`select-btn__general`}>
                                           <div className={`select-btn ${item_two.selected ? 'active' : ''}`} onClick={() => openselectsRangesTwo(index, index_two)}>
                                             <div className='select__container_title'>
@@ -641,7 +644,7 @@ const Prices: React.FC = () => {
                                             </ul>
                                           </div>
                                         </div>
-                                      </div>
+                                      </div> */}
                                     </div>
                                   </div>
                                   <div className='td'>

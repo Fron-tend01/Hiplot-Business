@@ -126,7 +126,8 @@
 .table__transfers .table__body .tbody .td.transfers > div {
     background-color: var(--primary-color);
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 5px;
+    color: #fff;
 }
 
 

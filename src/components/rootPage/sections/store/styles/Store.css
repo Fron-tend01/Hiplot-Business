@@ -85,9 +85,7 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	text-align: center;
 	width: 70%;
-	
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
