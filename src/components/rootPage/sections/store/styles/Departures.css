@@ -204,7 +204,7 @@
 .table__departures .table__body .tbody .td.salida > div {
     display: flex;
     background-color: var(--primary-color);
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 10px;
     color: var(--white-color);
 }

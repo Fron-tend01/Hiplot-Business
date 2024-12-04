@@ -5,7 +5,6 @@ import './styles/BranchOffices.css';
 import useUserStore from '../../../../zustand/General';
 import APIs from '../../../../services/services/APIs'
 import Swal from 'sweetalert2';
-import DynamicVariables from '../../../../utils/DynamicVariables';
 import { useSelectStore } from '../../../../zustand/Select';
 import { areasRequests } from '../../../../fuctions/Areas';
 import { usersRequests } from '../../../../fuctions/Users';
@@ -30,8 +29,6 @@ const BranchOffices: React.FC = () => {
   const [domingo, setdomingo] = useState<boolean>(false);
   const [logo, setLogo] = useState<string>('');
   const [modoUpdate, setModoUpdate] = useState<boolean>(false);
-  const [idAreaReq, setIdAreaReq] = useState<number>(0);
-  const [idUsuarioReq, setIdUsuarioReq] = useState<number>(0);
   const [areas, setAreas] = useState<any>([]);
   const [users, setUsers] = useState<any>([]);
   const selectData: any = useSelectStore(state => state.selectedIds)

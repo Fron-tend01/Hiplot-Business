@@ -509,7 +509,7 @@
     border: 1px solid #ddd;
   }
   
-  .table-row:nth-child(even) {
+  /* .table-row:nth-child(even) {
     background-color: #f9f9f9;
   }
   
@@ -520,7 +520,7 @@
   .table-header .table-cell {
     font-weight: bold;
     color: #333;
-  }
+  } */
   
   /* Ajuste de márgenes */
   .container__concepts {

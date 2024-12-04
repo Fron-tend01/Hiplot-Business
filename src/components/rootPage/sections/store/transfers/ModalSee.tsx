@@ -122,8 +122,8 @@ const ModalSee: React.FC = () => {
                 <span className='text'>Sucursal Destino: <b>{dataTransfer.sucursal_destino}</b></span><br />
                 <span className='text'>Almacen Destino: <b>{dataTransfer.almacen_destino}</b></span><br />
                 <span className='text'>Entrada Generada: <b>  {dataTransfer?.entradas_gen?.length > 0 
-      ? `${dataTransfer.entradas_gen[0]?.serie}-${dataTransfer.entradas_gen[0]?.folio}-${dataTransfer.entradas_gen[0]?.anio}` 
-      : 'No disponible'}</b></span><br />
+                  ? `${dataTransfer.entradas_gen[0]?.serie}-${dataTransfer.entradas_gen[0]?.folio}-${dataTransfer.entradas_gen[0]?.anio}` 
+                        : 'No disponible'}</b></span><br />
                 </div>
               </div>
               <div className='row'>

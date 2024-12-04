@@ -102,7 +102,7 @@ const ByOC: React.FC = () => {
 
 
 
-    const [concepts, setConcepts] = useState<any[]>([])
+
 
 
     const [invoice, setInvoice] = useState<string>('')
@@ -118,20 +118,20 @@ const ByOC: React.FC = () => {
     const verOc = async (data: any) => {
         setPurchaseOrderToUpdate(data)
         setModal('modal-purchase-orders-update')
-        data.conceptos.forEach((element: any) => {
-            setConcepts(prevConcepts => ([{
-                ...prevConcepts,
-                cantidad: element.cantidad,
-                codigo: element.codigo,
-                comentarios: element.comentarios,
-                descripcion: element.descripcion,
-                iva_on: element.iva_on,
-                precio_unitario: element.precio_unitario,
-                proveedor: element.proveedor,
-                unidad: element.unidad,
+        // data.conceptos.forEach((element: any) => {
+        //     setConcepts(prevConcepts => ([{
+        //         ...prevConcepts,
+        //         cantidad: element.cantidad,
+        //         codigo: element.codigo,
+        //         comentarios: element.comentarios,
+        //         descripcion: element.descripcion,
+        //         iva_on: element.iva_on,
+        //         precio_unitario: element.precio_unitario,
+        //         proveedor: element.proveedor,
+        //         unidad: element.unidad,
 
-            }]));
-        });
+        //     }]));
+        // });
     }
     return (
         <div className='conatiner__by-request mt-4'>

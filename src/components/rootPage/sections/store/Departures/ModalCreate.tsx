@@ -27,6 +27,8 @@ const ModalCreate: React.FC = () => {
 
     const [comments, setComments] = useState<string>('')
 
+    console.log(selectedBranchOffice)
+
 
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
@@ -143,7 +145,7 @@ const ModalCreate: React.FC = () => {
         const dataGet = {
             id_almacen: null,
             id_usuario: user_id,
-            id_sucursal: selectedBranchOffice?.id,
+            id_sucursal: selectedBranchOffice,
             desde: dates[0],
             hasta: dates[1],
             id_serie: 0,
@@ -157,7 +159,6 @@ const ModalCreate: React.FC = () => {
             const result: any = await APIs.createWarehouseExit(data)
             Swal.fire(result.mensaje, '', 'success');
             const resultGet: any = await APIs.getWarehouseExit(dataGet)
-
             setWarehouseExit(resultGet)
             setModal('')
         } catch (error) {
@@ -309,7 +310,7 @@ const ModalCreate: React.FC = () => {
                                                 <div className='tbody__container' key={index}>
                                                     <div className='tbody'>
                                                         <div className='td'>
-                                                            {item.nameArticle}
+                                                            {item.codigo}-{item.descripcion}
                                                         </div>
                                                         <div className='td'>
                                                             {item.ped ?

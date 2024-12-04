@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import './NotificationIcon.css';
 
-const NotificationIcon = () => {
+const NotificationIcon: React.FC = () => {
     // Estado para controlar si las notificaciones están visibles
     const [showNotifications, setShowNotifications] = useState(false);
   

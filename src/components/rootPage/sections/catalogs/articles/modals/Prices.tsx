@@ -237,14 +237,10 @@ const Prices: React.FC = () => {
 
 
   // const [selectsRangesTwo, setSelectsRangesTwo] = useState<any>(null)
-  const [selectedRangesTwo, setSelectedRangesTwo] = useState<any>()
 
 
-  const handleRangesChangeTwo = (range: any, index: number, index_two: number) => {
-    console.log(index, index_two)
-    setSelectedRangesTwo(range.id)
-    prices[index].precios_ext[index_two].selected = !prices[index].precios_ext[index_two].selected;
-  }
+
+
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -305,11 +301,6 @@ const Prices: React.FC = () => {
   }
 
 
-
-  const openselectsRangesTwo = (index: number, index_two: number) => {
-    prices[index].precios_ext[index_two].selected = !prices[index].precios_ext[index_two].selected;
-    setPrices([...prices]);
-  };
 
 
   const handleOrderChange = (e: React.ChangeEvent<HTMLInputElement>, index: number, index_two: number) => {

@@ -5,14 +5,11 @@ import Flatpickr from "react-flatpickr";
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import { ordersRequests } from '../../../../../../fuctions/Orders'
 import { storeWarehouseExit } from '../../../../../../zustand/WarehouseExit'
-import { articleRequests } from '../../../../../../fuctions/Articles'
 import { useStore } from 'zustand'
 import './styles/ByOrder.css'
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/l10n/es.js'
 import Empresas_Sucursales from '../../../../Dynamic_Components/Empresas_Sucursales'
-import { useSelectStore } from '../../../../../../zustand/Select';
-import { toast } from 'sonner'
 
 
 const ByOrder: React.FC = () => {
@@ -26,14 +23,10 @@ const ByOrder: React.FC = () => {
   const { getCompaniesXUsers }: any = companiesRequests()
 
 
-  const selectedIds: any = useSelectStore((state) => state.selectedIds);
-
-
 
   const { getOrdedrs }: any = ordersRequests()
   const [orders, setOrders] = useState<any>()
 
-  const { getArticles }: any = articleRequests()
 
   const [companies, setCompanies] = useState<any>()
   const [branchOffices, setBranchOffices] = useState<any>()
@@ -94,61 +87,50 @@ const ByOrder: React.FC = () => {
   };
 
 
-  const addOrders = async (concept: any, order: any) => {
-    const data = {
-      id: concept.id_articulo,
-      activos: true,
-      nombre: '',
-      codigo: '',
-      familia: 0,
-      proveedor: 0,
-      materia_prima: 0,
-      get_sucursales: false,
-      get_proveedores: false,
-      get_max_mins: false,
-      get_plantilla_data: false,
-      get_stock: true,
-      get_web: false,
-      get_unidades: true,
-      id_usuario: user_id
-    };
+  const addOrders = async (order: any) => {
 
-    const result = await getArticles(data)
-    if (result) {
+    order.conceptos.forEach((element: any) => {
+      element.unidad = element.id_unidad
+    });
 
-      let warning;
+    setConcepts([...concepts, ...order.conceptos]);
 
-      if (selectedIds != null) {
-        if (result) {
-          const filter = result[0].stock?.filter((x: any) => x.id == selectedIds.store.id);
-          if (filter.length <= 0) {
-            toast.warning('El articulo que agregaste no tiene alamcen')
-            warning = true
-            console.log('No esta')
-          } else {
-            warning = false
-            console.log('Si esta')
-          }
+    // const result = await getArticles(data)
+    // if (result) {
+
+    //   let warning;
+
+    //   if (selectedIds != null) {
+    //     if (result) {
+    //       const filter = result[0].stock?.filter((x: any) => x.id == selectedIds.store.id);
+    //       if (filter.length <= 0) {
+    //         toast.warning('El articulo que agregaste no tiene alamcen')
+    //         warning = true
+    //         console.log('No esta')
+    //       } else {
+    //         warning = false
+    //         console.log('Si esta')
+    //       }
 
 
-          await setConcepts([...concepts, {
-            id_articulo: result[0].id,
-            nameArticle: `${result[0].codigo}-${result[0].descripcion}`,
-            ped: `${order.serie}-${order.folio}-${order.anio}`,
-            cantidad: concept.cantidad,
-            comentarios: concept.comentarios,
-            unidad: concept.id_unidad,
-            unidades: result[0].unidades,
-            stock: result[0].stock,
-            almacen_predeterminado: result[0].almacen_predeterminado,
-            pedido_almacen_concepto_id: concept.id,
-            storeWarning: warning
-          }]);
-        }
-      } else {
-        toast.warning('Seleciona un almacen para agregar')
-      }
-    }
+    //       await setConcepts([...concepts, {
+    //         id_articulo: result[0].id,
+    //         nameArticle: `${result[0].codigo}-${result[0].descripcion}`,
+    //         ped: `${order.serie}-${order.folio}-${order.anio}`,
+    //         cantidad: concept.cantidad,
+    //         comentarios: concept.comentarios,
+    //         unidad: concept.id_unidad,
+    //         unidades: result[0].unidades,
+    //         stock: result[0].stock,
+    //         almacen_predeterminado: result[0].almacen_predeterminado,
+    //         pedido_almacen_concepto_id: concept.id,
+    //         storeWarning: warning
+    //       }]);
+    //     }
+    //   } else {
+    //     toast.warning('Seleciona un almacen para agregar')
+    //   }
+    // }
   }
 
 
@@ -195,6 +177,9 @@ const ByOrder: React.FC = () => {
                         </div>
                         <div className="table-cell">
                           {order.fecha_creacion}
+                        </div>
+                        <div className="table-cell">
+                          <button className='btn__general-purple' onClick={() => addOrders(order)}>Agregar</button>
                         </div>
                         <div className="table-cell table-cell-end">
                           <button onClick={() => seeConcepts(order.id)} type="button" className="btn__general-purple">
@@ -259,7 +244,7 @@ const ByOrder: React.FC = () => {
                                           {concept.comentarios}
                                         </div>
                                         <div className='td'>
-                                          <button className='btn__general-purple' type='button' onClick={() => addOrders(concept, order)}>Agregar</button>
+                                          {/* <button className='btn__general-purple' type='button' onClick={() => addOrders(concept, order)}>Agregar</button> */}
                                         </div>
                                       </div>
 

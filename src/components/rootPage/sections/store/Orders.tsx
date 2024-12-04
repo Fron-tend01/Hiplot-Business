@@ -29,7 +29,6 @@ const Departures: React.FC = () => {
 
     const setModal = storeModals(state => state.setModal)
     
-    const modal = storeModals(state => state.modal)
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
 
@@ -83,15 +82,13 @@ const Departures: React.FC = () => {
         setTipo(value)
     };
 
-    const [modalStateUpdate, setModalStateUpdate] = useState<boolean>(false)
-
     const [oderUpdate, setOderUpdate] = useState<any>([])
     const [orderConceptsUpdate, setorderConceptsUpdate] = useState<any>([])
 
     const modalUpdate = (order: any) => {
        
         setModal('modal-orders-update')
-        setModalStateUpdate(true)
+       
         setOderUpdate(order)
         setorderConceptsUpdate(order.conceptos)
     }

@@ -244,53 +244,7 @@ const PurchaseOrders: React.FC = () => {
           </div>
         </div>
         <ModalPurchaseOrders purchaseOrderToUpdate={purchaseOrderToUpdate} />
-        {/* <div className={`overlay__purchase-orders ${modalStateUpdte ? 'active' : ''}`}>
-          <div className={`popup__purchase-orders ${modalStateUpdte ? 'active' : ''}`}>
-            <a href="#" className="btn-cerrar-popup__purchase-orders" onClick={closeModalUpdatetwo}>
-              <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
-            </a>
-            <p className='title__modals'>Crear nueva orden de compra</p>
-            <ModalUpdate purchaseOrder={purchaseOrderToUpdate} conceptss={conceptss} suppliersUpdate={suppliersUpdate} />
-          </div>
-        </div> */}
-        {/* <div className="table__requisicion" title='Haz click en un registro para ver su información'>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead className="table__head">
-              <tr className="thead">
-                <th>Folio</th>
-                <th>Status</th>
-                <th>Fecha</th>
-                <th>Por</th>
-                <th>Empresas</th>
-                <th>Sucursal</th>
-              </tr>
-            </thead>
-            <tbody className="table__body">
-              {purchaseOrders && purchaseOrders.length > 0 ? (
-                purchaseOrders.map((requisition:any, index:number) => (
-                  <tr className="tbody__container" key={index}  onClick={() => modalUpdate(requisition)}>
-                    <td>{requisition.serie}-{requisition.folio}-{requisition.anio}</td>
-                    <td>
-                    <p>{requisition.status == 0 ? <div className='active-status'><p>Activa</p></div> : ''}</p>
-                        <p>{requisition.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
-                        <p>{requisition.status == 12 ? <div className='active-status'><p>Terminada</p></div> : ''}</p>
-                    </td>
-                    <td>{requisition.fecha_creacion}</td>
-                    <td>{requisition.usuario_crea}</td>
-                    <td>{requisition.empresa}</td>
-                    <td>{requisition.sucursal}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={10} style={{ textAlign: "center" }}>
-                    No hay requisiciones disponibles
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div> */}
+      
         <div className='table__purchase-order'>
           {purchaseOrders ? (
             <div className='table__numbers'>

@@ -98,6 +98,7 @@ const Articles: React.FC = () => {
       codigo: '',
       familia: 0,
       proveedor: 0,
+      page: 1,
       materia_prima: 0,
       get_sucursales: true,
       get_proveedores: true,
@@ -214,6 +215,7 @@ const Articles: React.FC = () => {
       codigo: code == '' ? '' : code,
       familia: 0,
       proveedor: 0,
+      page: 1,
       materia_prima: typeServive,
       get_sucursales: false,
       get_proveedores: false,
@@ -231,13 +233,7 @@ const Articles: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    if (code.length === 0 && descripcion.length === 0) {
-      searchArticle();
-    } else if (code.length > 3 || descripcion.length > 3) {
-      searchArticle();
-    }
-  }, [code, descripcion]);
+
   
   return (
     <div className='articles'>
@@ -288,7 +284,6 @@ const Articles: React.FC = () => {
               </label>
               <p className='text'>Materia</p>
             </div>
-
           </div>
           <div className='container__checkbox_articles'>
             <div className='checkbox__articles'>
@@ -308,14 +303,14 @@ const Articles: React.FC = () => {
           </div>
         </div>
         <div className='row__three'>
+          <div>
+            <button className='btn__general-purple' onClick={searchArticle}>Buscar</button>
+          </div>
           <div className='create__articles_btn-container'>
             <button className='btn__general-purple' onClick={() => setModalArticle('articles-modal-create')}>Crear Nuevo Artículo</button>
           </div>
         </div>
-
-
         <ModalArticle />
-
         <div className='table__articles' >
           <div>
             {articlesInGlobal ? (

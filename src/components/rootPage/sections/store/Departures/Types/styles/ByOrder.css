@@ -129,6 +129,30 @@
 }
 
 
+/* General table structure */
+.table__modal_filter_orders .table-body {
+    display: table; /* Hace que el contenedor se comporte como una tabla */
+    width: 100%;
+    border-collapse: collapse; /* Para evitar que haya espacios entre las celdas */
+  }
+  
+.table__modal_filter_orders .table-row {
+    display: table-row; /* Define cada fila de la "tabla" */
+  }
+  
+.table__modal_filter_orders .table-cell {
+    display: table-cell; /* Hace que los divs se comporten como celdas */
+    padding: 8px; /* Espaciado interno de las celdas */
+    border: 1px solid #ddd; /* Bordes de las celdas */
+    text-align: left; /* Alineación del texto a la izquierda */
+  }
+  
+.table__modal_filter_orders .table-cell-end {
+    text-align: center; /* Centra el contenido de la última celda */
+  }
+  
+
+
 
 
 
@@ -203,13 +227,15 @@
     padding: 10px;
 
 }
-
+/* 
 .table__modal_filter-stocks_tickets .table__body .tbody:hover {
-    background-color: var(--secundary-color);
+    background-color: black;
     color: #fff;
 }
+ */
 
 
+ 
 
 
  /*************************************************************
@@ -281,25 +307,3 @@
 
 
 
-/* General table structure */
-.table-body {
-    display: table; /* Hace que el contenedor se comporte como una tabla */
-    width: 100%;
-    border-collapse: collapse; /* Para evitar que haya espacios entre las celdas */
-  }
-  
-  .table-row {
-    display: table-row; /* Define cada fila de la "tabla" */
-  }
-  
-  .table-cell {
-    display: table-cell; /* Hace que los divs se comporten como celdas */
-    padding: 8px; /* Espaciado interno de las celdas */
-    border: 1px solid #ddd; /* Bordes de las celdas */
-    text-align: left; /* Alineación del texto a la izquierda */
-  }
-  
-  .table-cell-end {
-    text-align: center; /* Centra el contenido de la última celda */
-  }
-  

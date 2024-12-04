@@ -203,7 +203,7 @@ const ModalUpdate = ({ oderUpdate, orderConceptsUpdate }: any,) => {
                         {order.status === 0 ?
                           <button className="btn__general_light-danger" type="button" onClick={() => changeConceptsOrderMode(order)}>Cancelar</button>
                           :
-                          <button className="btn__general-success" type="button" onClick={() => changeOrderMode(order)}>Activar</button>
+                          <button className="btn__general-success" type="button" onClick={changeOrderMode}>Activar</button>
                         }
                       </div>
                     </div>
