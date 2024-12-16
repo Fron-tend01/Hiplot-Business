@@ -16,6 +16,8 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
+    z-index: 1;
+
 }
 
 .overlay__modal_components_creating_articles.active {

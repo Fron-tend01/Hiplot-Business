@@ -254,9 +254,6 @@ const ModalCreate = () => {
                                                 <p className=''>Cant</p>
                                             </div>
                                             <div className='th'>
-                                                <p className=''>Flete de orden</p>
-                                            </div>
-                                            <div className='th'>
                                                 <p className=''>Unidad</p>
                                             </div>
                                             <div className='th'>
@@ -290,14 +287,6 @@ const ModalCreate = () => {
                                                                 <input className='inputs__general' value={concept.cantidad === null ? '' : concept.cantidad}
                                                                     onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' />
                                                             </div>
-                                                        </div>
-                                                        <div className="td">
-                                                            {concept.sumar_flete == 1 ?
-                                                                <p>{concept.costo_flete}</p>
-                                                                :
-                                                                <p>No aplica</p>
-                                                            }
-                                                            <p></p>
                                                         </div>
                                                         <div className='td'>
                                                             <div>

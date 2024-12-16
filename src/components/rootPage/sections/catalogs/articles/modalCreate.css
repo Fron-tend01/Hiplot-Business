@@ -668,3 +668,59 @@ padding: 10px;
 	justify-content: center;
 	margin-top: 20px;
 }
+
+
+.row-small label,
+.row-small p,
+.row-small input {
+    font-size: 12px; /* Tamaño de fuente más pequeño */
+    margin: 2px 0; /* Reducir márgenes verticales */
+}
+.small-row .switch {
+    transform: scale(0.8); /* Reduce el tamaño del switch */
+    margin-top: 5px; /* Ajusta el margen para alinearlo */
+}
+
+.small-row .switch .slider {
+    width: 30px; /* Ajusta el tamaño del slider */
+    height: 15px;
+}
+
+.row-small input {
+    height: 28px; /* Ajusta la altura de los inputs si es necesario */
+}
+.row-small .Select__control {
+    font-size: 12px; /* Reducir el tamaño del texto */
+    height: 28px; /* Reducir la altura del control */
+}
+
+.row-small .Select__menu {
+    font-size: 12px; /* Ajustar el tamaño del texto en el menú desplegable */
+}
+
+.tooltip-container {
+	position: relative;
+	display: inline-block;
+  }
+  
+  .tooltip-text {
+	visibility: hidden;
+	background-color: #7546a0;
+	color: #fff;
+	text-align: center;
+	border-radius: 4px;
+	padding: 5px;
+	position: absolute;
+	z-index: 0;
+	bottom: 125%; /* Ajustar según la posición del botón */
+	left: 50%;
+	transform: translateX(-50%);
+	opacity: 0;
+	transition: opacity 0.3s;
+  }
+  
+  .tooltip-container:hover .tooltip-text {
+	visibility: visible;
+	opacity: 1;
+  }
+  

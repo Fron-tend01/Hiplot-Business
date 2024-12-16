@@ -42,6 +42,7 @@ const Tickets = () => {
     haceUnaSemana.setDate(hoy.getDate() - 7);
 
     const [series, setSeries] = useState<any>([]);
+    const [page, setPage] = useState<number>(1);
 
 
 
@@ -56,7 +57,8 @@ const Tickets = () => {
             hasta: hoy.toISOString().split('T')[0],
             id_serie: selectedIds?.series?.id,
             status: 0,
-            folio: invoice || 0
+            folio: invoice || 0,
+            page: page
         }
         await getTickets(data)
 
@@ -81,7 +83,7 @@ const Tickets = () => {
 
 
     }, [])
- 
+
 
     const handleDateChange = (fechasSeleccionadas: any) => {
         if (fechasSeleccionadas.length === 2) {
@@ -141,11 +143,14 @@ const Tickets = () => {
             hasta: dates[1],
             id_serie: selectedIds?.series?.id,
             status: 0,
-            folio: invoice || 0
+            folio: invoice || 0,
+            page: page
         }
         getTickets(data)
     }
-
+    useEffect(() => {
+       searchTicket()
+    }, [page])
     return (
         <div className="tickets">
             <div className="tickets__container">
@@ -168,7 +173,7 @@ const Tickets = () => {
                         <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(parseInt(e.target.value))} placeholder='Ingresa el folio' />
                     </div>
                     <div className="col-4 md-col-12 d-flex justify-content-center align-items-end">
-                        <button className="btn__general-purple" onClick={searchTicket}>Buscar</button>
+                        <button className="btn__general-purple" onClick={()=>setPage(1)}>Buscar</button>
                         <button className="btn__general-orange mx-3" onClick={excel}>Excel</button>
                         <button className="btn__general-purple" onClick={() => setModalTickets('modal-create_ticket')}>Nueva entrada</button>
                         {/* <Select dataSelects={suppliers} instanceId="proveedores"  nameSelect={'Proveedores'}/> */}
@@ -184,70 +189,79 @@ const Tickets = () => {
                         <ModalUpdate updateTickets={updateTickets} />
                     </div>
                 </div>
-                <div>
-                <div className='table__tickets mt-4'>
-                    <div>
-                        {tickets ? (
-                             <div className='table__numbers'>
-                             <p className='text'>Total de entradas</p>
-                             <div className='quantities_tables'>{tickets.length}</div>
-                           </div>
-                        ) : (
-                            <p></p>
-                        )}
-                    </div>
-                    <div className='table__head'>
-                        <div className='thead'>
-                            <div className='th'>
-                                <p>Folio</p>
-                            </div>
-                            <div className='th'>
-                                <p>Fecha</p>
-                            </div>
-                            <div className='th'>
-                                <p>Por</p>
-                            </div>
-                            <div className='th'>
-                                <p>Empresas</p>
-                            </div>
-                            <div className='th'>
-                                <p>Sucursal</p>
+        
+                    <div className='table__tickets mt-4'>
+                        <div>
+                            {tickets ? (
+                                <div className='table__numbers'>
+                                    <p className='text'>Total de entradas</p>
+                                    <div className='quantities_tables'>{tickets.length}</div>
+                                </div>
+                            ) : (
+                                <p></p>
+                            )}
+                        </div>
+                        <div className='table__head'>
+                            <div className='thead'>
+                                <div className='th'>
+                                    <p>Folio</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Fecha</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Por</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Empresas</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Sucursal</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {tickets ? (
-                        <div className='table__body'>
-                            {tickets.map((ticket: any, index: number) => {
-                                return (
-                                    <div className='tbody__container' key={index} onClick={() => modalUpdate(ticket)}>
-                                        <div className='tbody'>
-                                            <div className='td code'>
-                                                <p>{ticket.serie}-{ticket.folio}-{ticket.anio}</p>
-                                            </div>
-                                            <div className='td date'>
-                                                <p>{ticket.fecha_creacion.split('T')[0]}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{ticket.usuario_crea}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{ticket.empresa}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{ticket.sucursal}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{ticket.area}</p>
+                        {tickets ? (
+                            <div className='table__body'>
+                                {tickets.map((ticket: any, index: number) => {
+                                    return (
+                                        <div className='tbody__container' key={index} onClick={() => modalUpdate(ticket)}>
+                                            <div className='tbody'>
+                                                <div className='td code'>
+                                                    <p>{ticket.serie}-{ticket.folio}-{ticket.anio}</p>
+                                                </div>
+                                                <div className='td date'>
+                                                    <p>{ticket.fecha_creacion.split('T')[0]}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{ticket.usuario_crea}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{ticket.empresa}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{ticket.sucursal}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{ticket.area}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    ) : (
-                        <p className="mt-3">No hay entradas que mostrar</p>
-                    )}
-                </div>
+                                    )
+                                })}
+                            </div>
+                        ) : (
+                            <p className="mt-3">No hay entradas que mostrar</p>
+                        )}
+                    </div>
+           
+                <div className='d-flex justify-content-between mt-4'>
+                    <div>
+                        <button className='btn__general-purple' onClick={()=>{setPage(page-1)}}
+                            disabled={page==1}>Anterior</button>
+                    </div>
+                    <div>
+                        <button className='btn__general-purple' onClick={()=>{setPage(page+1)}}>Siguente</button>
+                    </div>
                 </div>
             </div>
         </div>

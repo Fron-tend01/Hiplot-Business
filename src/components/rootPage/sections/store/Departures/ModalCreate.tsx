@@ -310,7 +310,14 @@ const ModalCreate: React.FC = () => {
                                                 <div className='tbody__container' key={index}>
                                                     <div className='tbody'>
                                                         <div className='td'>
-                                                            {item.codigo}-{item.descripcion}
+                                                            {item.nameArticle != undefined ? 
+                                                            item.nameArticle
+                                                            :
+                                                            <>
+                                                                {item.codigo}-{item.descripcion}
+                                                            </>
+                                                            }
+                                                             
                                                         </div>
                                                         <div className='td'>
                                                             {item.ped ?
@@ -365,10 +372,10 @@ const ModalCreate: React.FC = () => {
                                                                             <div className='table__head'>
                                                                                 <div className='thead'>
                                                                                     <div className='th'>
-                                                                                        <p className=''>Nombre</p>
+                                                                                        <p className='text'>Nombre</p>
                                                                                     </div>
                                                                                     <div className='th'>
-                                                                                        <p className=''>Cantidad de stocks</p>
+                                                                                        <p className='text'>Cantidad de stocks</p>
                                                                                     </div>
 
                                                                                 </div>

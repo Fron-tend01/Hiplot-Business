@@ -34,7 +34,11 @@ const ByOC: React.FC = () => {
     const { getSeriesXUser }: any = storeSeries();
 
     const [series, setSeries] = useState<any>([])
+    const [page, setPage] = useState<number>(1);
 
+    const hoy = new Date();
+    const haceUnaSemana = new Date();
+    haceUnaSemana.setDate(hoy.getDate() - 7);
     const fecth = async () => {
         const resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 2 })
         setSeries({
@@ -42,6 +46,8 @@ const ByOC: React.FC = () => {
             options: 'nombre',
             dataSelect: resultSeries
         })
+        setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
+
     }
 
     useEffect(() => {
@@ -75,7 +81,8 @@ const ByOC: React.FC = () => {
             tipo: 0,
             desde: dates[0],
             hasta: dates[1],
-            status: 0
+            status: 0,
+            page:page
         }
         try {
             const result = await APIs.getPurchaseOrders(data);
@@ -110,7 +117,9 @@ const ByOC: React.FC = () => {
     const searchByRequest = () => {
     }
 
-
+    useEffect(() => {
+        filterByRequest()
+     }, [page])
 
     const [purchaseOrderToUpdate, setPurchaseOrderToUpdate] = useState<any>(null);
 
@@ -136,6 +145,11 @@ const ByOC: React.FC = () => {
     return (
         <div className='conatiner__by-request mt-4'>
             <ModalPurchaseOrders purchaseOrderToUpdate={purchaseOrderToUpdate} />
+            <div className='add-client__container'>
+                <div className='col-12  title '>
+                    <p>Agregar Articulos por Orden de Compra</p>
+                </div>
+            </div>
             <div className='row'>
                 <div className='col-8'>
                     <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
@@ -168,7 +182,7 @@ const ByOC: React.FC = () => {
             <div className='row__two'>
                 <div className=''>
                     {purchaseOrders?.length > 0 ? (
-                        <div className='table__modal_filter_tickets' >
+                        <div className='table__modal_filter_tickets-piv' >
                             <div className='table__numbers'>
                                 <p className='text'>Tus ordenes de compras</p>
                                 <div className='quantities_tables'>{purchaseOrders.length}</div>
@@ -176,6 +190,7 @@ const ByOC: React.FC = () => {
                             <div className='table__body'>
                                 {purchaseOrders?.map((x: any, index: any) => (
                                     <div className='tbody__container' key={index}>
+                                        {/* Fila principal */}
                                         <div className='tbody'>
                                             <div className='td'>
                                                 {x.serie}-{x.folio}-{x.anio}
@@ -188,18 +203,43 @@ const ByOC: React.FC = () => {
                                             </div>
                                             <div className='td'>
                                                 <div>
-                                                    <button onClick={() => verOc(x)} type='button' className='btn__general-purple'>Ver detalle</button>
+                                                    <button onClick={() => verOc(x)} type='button' className='btn__general-purple'>
+                                                        Ver detalle
+                                                    </button>
                                                 </div>
                                             </div>
                                             <div className='td'>
                                                 <div>
-                                                    <button className='btn__general-purple' type='button' onClick={() => addArticlesByRequest(x)}>Agregar</button>
+                                                    <button className='btn__general-purple' type='button' onClick={() => addArticlesByRequest(x)}>
+                                                        Agregar
+                                                    </button>
                                                 </div>
                                             </div>
+
                                         </div>
+                                            {/* Sub-recorrido para conceptos */}
+                                            <table className='concepts-table'>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Articulo</th>
+                                                        <th>Cantidad</th>
+                                                        <th>Comentarios</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {x.conceptos?.map((concepto: any, subIndex: any) => (
+                                                        <tr key={subIndex}>
+                                                            <td >{concepto.codigo}-{concepto.descripcion}</td>
+                                                            <td >{concepto.cantidad}</td>
+                                                            <td >{concepto.comentarios}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
                                     </div>
                                 ))}
                             </div>
+
                         </div>
                     ) : (
                         <>
@@ -209,6 +249,15 @@ const ByOC: React.FC = () => {
                     )}
                 </div>
             </div>
+            <div className='d-flex justify-content-between mt-4'>
+                    <div>
+                        <button className='btn__general-purple' onClick={()=>{setPage(page-1)}}
+                            disabled={page==1}>Anterior</button>
+                    </div>
+                    <div>
+                        <button className='btn__general-purple' onClick={()=>{setPage(page+1)}}>Siguente</button>
+                    </div>
+                </div>
         </div>
     )
 }

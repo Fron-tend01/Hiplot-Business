@@ -301,7 +301,7 @@ const ModalRequisition: React.FC = () => {
   }
 
   const getPDFRequisition = async () => {
-    window.open('http://hiplot.dyndns.org:84/api_dev/pdf_requisicion/' + updateToRequisition.id, '_blank');
+    window.open('http://hiplot.dyndns.org:84/api_dev/pdf_requisicion/' + updateToRequisition.id + '/' + user_id, '_blank');
     // try {
     // await APIs.pdtRequisition(updateToRequisition.id);
     // Abrimos el PDF en una nueva pestaña

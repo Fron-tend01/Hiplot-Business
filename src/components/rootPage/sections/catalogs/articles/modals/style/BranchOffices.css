@@ -130,6 +130,8 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
+	z-index: 1;
+
 }
 
 .overlay__modal_branch-offices_creating_articles.active {
