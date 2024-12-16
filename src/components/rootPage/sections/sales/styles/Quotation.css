@@ -8,10 +8,19 @@
 	background-color: var(--background-sections);
 	padding: 20px ;
 	border-radius: 10px;
-    overflow: hidden;
+  overflow: hidden;
 }
 
 
+.container__quotation {
+  
+}
+
+.container__quotation > .row__three {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+
+}
 
 
  /*************************************************************

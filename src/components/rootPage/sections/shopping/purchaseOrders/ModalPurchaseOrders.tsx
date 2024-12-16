@@ -999,7 +999,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
           <ModalRequisition />
 
               <div className=''>
-                <div className='table__modal_create_parchase-orders ' >
+                <div className='table__modal_create_parchase-orders' >
                   <div>
                     <div>
                       {conceptos ? (

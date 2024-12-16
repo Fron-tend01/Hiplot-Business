@@ -27,8 +27,7 @@ const DeliveryTimes: React.FC = () => {
 
   const [name, setName] = useState<any>('')
   const [dataSelects, setDataSelects] = useState<any>()
-
-
+  
   const [deliveryTimesView, setDeliveryTimesView] = useState<any>([])
 
   useEffect(() => {

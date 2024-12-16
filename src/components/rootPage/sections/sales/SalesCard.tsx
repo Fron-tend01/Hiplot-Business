@@ -225,7 +225,7 @@ const SalesCard: React.FC = () => {
           id_orden_produccion: 0,
           status_produccion: 0,
           cobrado: 0,
-          id_unidad: 0,
+          id_unidad: selectedUnit.id,
             
           campos_plantilla: article.plantilla_data.map((x: any) => ({
             nombre_campo_plantilla: x.nombre,

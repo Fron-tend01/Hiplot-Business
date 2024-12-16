@@ -215,8 +215,9 @@
  .table__orders {
     border-radius: 10px;
     display: grid;
-    height: 100%;
+    overflow: hidden;
     grid-template-rows: repeat(2, auto) 1fr;
+    height: 100%;
 
 }
 

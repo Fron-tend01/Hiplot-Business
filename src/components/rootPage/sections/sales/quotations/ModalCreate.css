@@ -5,6 +5,13 @@
 }
 
 
+/*=================================================
+ 
+  Modal de precios del modal del articulo 
+  
+=================================================*/
+
+
 .overlay__quotations__modal {
 	background: rgba(0,0,0,.3);
 	position: fixed;
@@ -23,15 +30,25 @@
 	visibility: visible;
 }
 
-.popup__quotations__modal {
+.overlay__quotations__modal .header__modal {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.popup__quotations__modal {      
 	background-color: var(--background-modal);
 	border-radius: 5px;
-	padding: 20px;
-	width: 90%;
-	height: 95%;
+	padding: 40px 20px 20px 20px;
+	width: 95%;
+    height: 95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
+    overflow: hidden;
+
 }
 
 .popup__quotations__modal .btn-cerrar-popup__quotations__modal {
@@ -42,16 +59,16 @@
 	transition: .3s ease all;
 	color: #BBBBBB;
     position: absolute;
-    right: 15px;
-    top: 15px;
+    right: 30px;
+    top: 10px;
 }
-
 
 
 /* ------------------------- */
 /* ANIMACIONES */
 /* ------------------------- */
 .popup__quotations__modal.active {	transform: scale(1); opacity: 1; }
+
 
 
 

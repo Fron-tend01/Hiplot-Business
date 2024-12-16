@@ -504,6 +504,12 @@ createQuotation: async (data: any, customPath?: string) => {
   return ConfigurationAPIs.post(path, data)
 },
 
+updateQuotation: async (data: any, customPath?: string) => {
+  const path = customPath || 'update_cotizacion';
+  return ConfigurationAPIs.post(path, data)
+},
+
+
 
 getQuotation: async (data: any, customPath?: string) => {
   const path = customPath || 'cotizaciones/get';
@@ -696,6 +702,24 @@ getTotalPrice: async (data: any, customPath?: string) => {
     const path = customPath || 'calcular_urgencia';
     return ConfigurationAPIs.post(path, data)
   },
+
+
+  getSaleOrderStatus: async (customPath?: any) => {
+    const path = customPath || 'update_orden_compra_status';
+    return ConfigurationAPIs.get(path)
+  },
+  
+  getSaleOrderProduction: async (data: any, customPath?: any) => {
+    const path = customPath || 'create_orden_produccion';
+    return ConfigurationAPIs.post(path, data)
+  },
+
+  updateOvConcepto: async (data: any, customPath?: any) => {
+    const path = customPath || 'update_ov_concepto';
+    return ConfigurationAPIs.post(path, data)
+  },
+
+  
 
 
   

@@ -18,15 +18,16 @@ const Personalized: React.FC = () => {
 
   const setPersonalized = storePersonalized(state => state.setPersonalized)
   const setCustomData = storePersonalized(state => state.setCustomData)
-  const { personalizedModal, dataUpdate, customData, normalConcepts, customConcepts, personalized }: any = useStore(storePersonalized)
+  const { personalizedModal, customData, normalConcepts, customConcepts, personalized }: any = useStore(storePersonalized)
   const { dataPersonalized, }: any = useStore(storeSaleCard)
   const { modal }: any = useStore(storeModals)
+
 
   const setDataPersonalized = storeSaleCard(state => state.setDataPersonalized);
 
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
-  const [units, setUnits] = useState<any>()
+  const [units, setUnits] = useState<any>();
 
   const fetch = async () => {
     const result = await APIs.getUnits()
@@ -34,25 +35,24 @@ const Personalized: React.FC = () => {
       selectName: 'Unidades',
       options: 'nombre',
       dataSelect: result
-    })
-
+    });
   }
 
   useEffect(() => {
     fetch()
-
-
   }, [])
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (personalizedModal === 'personalized_modal-update') {
-      setDataPersonalized(dataUpdate.conceptos)
-    }
+  //   // Personalizado para cotizaciones
 
-  }, [])
-
-
+  //   // if (personalizedModal == 'personalized_modal-quotation-update') {
+  //   //   const filter = quatation.conceptos.filter((x: any) => x?.personalized !== true)
+  //   //   setCustomData(filter)
+  //   // } else {
+  //   //   setCustomData(normalConcepts)
+  //   // }
+  // }, [personalizedModal])
 
   const [articlesPersonalized, setArticlesPersonalized] = useState<any>([])
 
@@ -128,6 +128,7 @@ const Personalized: React.FC = () => {
       setModalStatus(false)
     }
   })
+  
 
   const createPersonalized = async () => {
 
@@ -135,9 +136,6 @@ const Personalized: React.FC = () => {
     articlesPersonalized.forEach((element: any) => {
       total += element.total_price;
     });
-
-
-
 
     if (personalizedModal == 'personalized_modal-quotation') {
       const data = {
@@ -181,6 +179,7 @@ const Personalized: React.FC = () => {
       setCustomData(normalConcepts)
       setNormalConcepts([...normalConcepts, data])
       setPersonalized([...personalized, data])
+
     }
 
 

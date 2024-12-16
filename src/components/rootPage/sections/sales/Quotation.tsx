@@ -5,9 +5,14 @@ import ModalCreate from './quotations/ModalCreate'
 import './styles/Quotation.css'
 import Flatpickr from "react-flatpickr";
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
-import APIs from '../../../../services/services/APIs'
-import useUserStore from '../../../../zustand/General'
-import { storeQuotation } from '../../../../zustand/Quotation'
+import APIs from '../../../../services/services/APIs';
+import useUserStore from '../../../../zustand/General';
+import { storeQuotation } from '../../../../zustand/Quotation';
+import { usersRequests } from '../../../../fuctions/Users';
+import { seriesRequests } from '../../../../fuctions/Series';
+import Select from '../../Dynamic_Components/Select'
+import { useSelectStore } from '../../../../zustand/Select'
+import { storePersonalized } from '../../../../zustand/Personalized'
 
 
 const Quotation: React.FC = () => {
@@ -17,14 +22,26 @@ const Quotation: React.FC = () => {
   const setModal = storeModals(state => state.setModal)
 
   const setQuatation = storeQuotation(state => state.setQuatation)
+  const setPersonalized = storePersonalized(state => state.setPersonalized)
 
   const setIdentifier = storeQuotation(state => state.setIdentifier);
+
+  const { getUsers }: any = usersRequests()
+  const [users, setUsers] = useState<any>()
+
+
+  const { getSeriesXUser }: any = seriesRequests()
+  const [series, setSeries] = useState<any>([])
 
   const [company, setCompany] = useState<any>([])
   const [branchOffices, setBranchOffices] = useState<any>([])
 
+  const selectedIds: any = useSelectStore((state) => state.selectedIds);
+
   const [data, setData] = useState<any>([])
   const [dates, setDates] = useState<any>()
+
+  const [fol, setFol] = useState<any>(0)
 
   const modal = () => {
     setModal('create-modal__qoutation')
@@ -34,38 +51,56 @@ const Quotation: React.FC = () => {
   const haceUnaSemana = new Date();
   haceUnaSemana.setDate(hoy.getDate() - 7);
 
+  const [client, setClient] = useState<any>('')
+
   const fetch = async () => {
-      setDates([hoy, haceUnaSemana])
-       const data = {
-        folio: 0,
-        id_sucursal: branchOffices?.id,
-        id_serie: 0,
-        desde: haceUnaSemana.toISOString().split('T')[0],
-        hasta: hoy.toISOString().split('T')[0],
-        id_usuario: user_id,
+    setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
+    const dataUser = {
+      folio: 0,
+      id_sucursal: branchOffices?.id,
+      id_serie: 0,
+      desde: haceUnaSemana.toISOString().split('T')[0],
+      hasta: hoy.toISOString().split('T')[0],
+      id_usuario: user_id,
+    }
+
+    const data = {
+      nombre: '',
+      id_usuario: user_id,
+      id_usuario_consulta: user_id,
+      light: true,
+      id_sucursal: 0
+    }
+
+    const resultUsers = await getUsers(dataUser)
+    setUsers({
+      selectName: 'Vendedores',
+      options: 'nombre',
+      dataSelect: resultUsers
+    })
+
+    const resultSeries = await getSeriesXUser(user_id)
+
+    setSeries({
+      selectName: 'Series',
+      options: 'nombre',
+      dataSelect: resultSeries
+    })
+    try {
+      const result = await APIs.getQuotation(data);
+      if (result) {
+        setData(result);
+      } else {
+        console.log("No se obtuvieron datos");
       }
-      try {
-        const result = await APIs.getQuotation(data);
-        if (result) {
-          setData(result);
-        } else {
-          console.log("No se obtuvieron datos");
-        }
-      } catch (error) {
-        console.error("Error en la petición:", error);
-      }
-      
-  
-  
+    } catch (error) {
+      console.error("Error en la petición:", error);
+    }
   }
 
 
-
   useEffect(() => {
-
-
-      fetch();
-    
+    fetch();
   }, []);
 
 
@@ -86,7 +121,10 @@ const Quotation: React.FC = () => {
       desde: dates[0],
       hasta: dates[1],
       id_usuario: user_id,
+      id_vendedor: selectedIds?.users?.id,
     }
+
+
 
     try {
       const result = await APIs.getQuotation(data)
@@ -99,8 +137,15 @@ const Quotation: React.FC = () => {
   const updateQuotation = (quatation: any) => {
     setModal('update-modal__qoutation')
     setQuatation(quatation)
+    setPersonalized(quatation)
     setIdentifier(quatation.id_identifier)
   }
+
+
+  const [type, setType] = useState<any>(0)
+  const handleClick = (value: any) => {
+    setType(value)
+  };
 
   return (
     <div className='quotation'>
@@ -116,19 +161,50 @@ const Quotation: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className='row'>
-          <div className='col-4'>
-            {/* <Select nameSelect={'Serie'} /> */}
+        <div className='row my-4'>
+          <div className='col-3'>
+            <label className='label__general'>Clientes</label>
+            <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Folio/RFC/Razon social' />
           </div>
-          <div className='col-4'>
+          <div className='col-3'>
+            <Select dataSelects={users} nameSelect={'Usuarios'} instanceId='users' />
+          </div>
+          <div className='col-3'>
+            <Select dataSelects={series} nameSelect={'Series'} instanceId='serie' />
+          </div>
+          <div className='col-3'>
             <label className='label__general'>Folio</label>
-            <div className='warning__general'><small >Este campo es obligatorio</small></div>
-            {/* <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el Folio' /> */}
+            <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' />
+          </div>
+        </div>
+        <div className='row__three'>
+          <div className='container__checkbox_orders'>
+            <div className='checkbox__orders'>
+              <label className="checkbox__container_general">
+                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 0} value={type} onChange={() => handleClick(0)} />
+                <span className="checkmark__general"></span>
+              </label>
+              <p className='title__checkbox text'>Activo</p>
+            </div>
+            <div className='checkbox__orders'>
+              <label className="checkbox__container_general">
+                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 2} value={type} onChange={() => handleClick(2)} />
+                <span className="checkmark__general"></span>
+              </label>
+              <p className='title__checkbox text'>Cancelados</p>
+            </div>
+            <div className='checkbox__orders'>
+              <label className="checkbox__container_general">
+                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 1} value={type} onChange={() => handleClick(1)} />
+                <span className="checkmark__general"></span>
+              </label>
+              <p className='title__checkbox text'>Terminados</p>
+            </div>
           </div>
           <div className='d-flex align-items-end'>
             <button className='sm-mx-auto btn__general-purple' onClick={searchQuotation}>Buscar</button>
           </div>
-          <div className='col-3 md-col-12 sm-col-12 d-flex justify-content-center align-items-end'>
+          <div className='d-flex justify-content-center align-items-end'>
             <button className='sm-mx-auto btn__general-purple' onClick={modal}>Crear cotizacion</button>
           </div>
         </div>
@@ -137,7 +213,7 @@ const Quotation: React.FC = () => {
             <div>
               {data ? (
                 <div className='table__numbers'>
-                  <p className='text'>Total de requisiciones</p>
+                  <p className='text'>Total de cotizaciones</p>
                   <div className='quantities_tables'>{data?.length}</div>
                 </div>
               ) : (

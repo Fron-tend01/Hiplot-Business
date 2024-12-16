@@ -30,6 +30,7 @@ const ModalCreate: React.FC = () => {
   const setCustomData = storePersonalized((state) => state.setCustomData);
 
   const { identifier }: any = useStore(storeQuotation);
+  const setPersonalized = storePersonalized(state => state.setPersonalized)
 
   const setDataQuotation = storeSaleCard(state => state.setDataQuotation)
   const setDataUpdate = storePersonalized((state) => state.setDataUpdate);
@@ -72,7 +73,7 @@ const ModalCreate: React.FC = () => {
     fetch()
   }, [])
 
-
+  console.log(personalized)
 
   const client = async () => {
 
@@ -103,14 +104,17 @@ const ModalCreate: React.FC = () => {
   useEffect(() => {
     if (modal === 'update-modal__qoutation') {
       client()
-            
+
       setCompany({ id: quatation.id_empresa })
       setBranch({ id: quatation.id_sucursal })
       setComments(quatation.comentarios)
-      
+
       // setNormalConcepts([...normalConcepts, ...quatation.conceptos])
       setNormalConcepts([...quatation.conceptos, ...quatation.conceptos_pers])
       setCustomData([...customConcepts, ...quatation.conceptos]);
+
+      setPersonalized(quatation.conceptos_pers)
+
 
     }
   }, [quatation])
@@ -157,11 +161,22 @@ const ModalCreate: React.FC = () => {
   }
 
 
-
   const createQuotation = async () => {
 
-    const filter = normalConcepts.filter((x: any) => x.personalized == false)
+    const filter = normalConcepts.filter((x: any) => x.personalized !== true)
 
+    filter.forEach((element: any) => {
+      element.unidad = element.id_unidad
+    });
+
+    personalized.forEach((element: any) => {
+      element.conceptos.forEach((x: any) => {
+        x.unidad = x.id_unidad
+      });
+    });
+
+
+    console.log('nomal personalized', personalized)
 
     const data = {
       id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
@@ -175,25 +190,25 @@ const ModalCreate: React.FC = () => {
 
     console.log('DATA QUE SE ENVIA AL BEKEND', data)
 
-    
+
 
     try {
-      if(modal === 'create-modal__qoutation') {
+      if (modal === 'create-modal__qoutation') {
         const result: any = await APIs.createQuotation(data)
-        if(result.error == true) {
+        if (result.error == true) {
           return Swal.fire('Advertencia', result.mensaje, 'warning');
         } else {
           Swal.fire('Cotizacion creada exitosamente', '', 'success');
         }
- 
+
       } else {
-        const result: any = await APIs.updateRequisition(data)
-        if(result.error == true) {
+        const result: any = await APIs.updateQuotation(data)
+        if (result.error == true) {
           return Swal.fire('Advertencia', result.mensaje, 'warning');
         } else {
           Swal.fire('Cotizacion actualizada exitosamente', '', 'success');
         }
-       
+
       }
     } catch (error) {
       Swal.fire('Error', 'Hubo un error al crear la cotizacion', 'error');
@@ -211,15 +226,33 @@ const ModalCreate: React.FC = () => {
 
   const undoConcepts = (article: any, i: number) => {
     // let filter = customConcepts.filter((_: any, index: number) => index !== i)
+
+    let filterPers = normalConcepts.filter((x: any) => x.personalized !== true)
+
+    console.log('filterPers', filterPers)
+
+    article.conceptos.forEach((element: any) => {
+      element.id_pers = 0
+    });
+
     const filterNor = normalConcepts.filter((_: any, index: number) => index !== i)
-    if(article.front) {
+    if (article.front) {
       article.conceptos.forEach((element: any) => {
         element.id_identifier += identifier + 1
       });
     }
+
     const data = [...filterNor, ...article.conceptos]
     setNormalConcepts(data)
-    setCustomData([...customData, ...article.conceptos]);
+    setCustomData([...filterPers, ...article.conceptos]);
+    setPersonalized([])
+
+    console.log('customData', customData)
+    console.log('filterNor', filterNor)
+
+    console.log('normalConcepts', normalConcepts)
+
+    console.log('article.conceptos', article.conceptos)
   }
 
 
@@ -245,18 +278,36 @@ const ModalCreate: React.FC = () => {
 
   }
 
- 
+
+  const modalPersonalized = () => {
+
+    if (modal === 'create-modal__qoutation') {
+      setPersonalizedModal('personalized_modal-quotation')
+    } else {
+      setPersonalizedModal('personalized_modal-quotation-update')
+    }
+
+
+
+  }
 
 
   return (
     <div className={`overlay__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
       <div className={`popup__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
-        <a href="#" className="btn-cerrar-popup__quotations__modal" onClick={closeModal}>
-          <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
-            <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
-          </svg>
-        </a>
-        <p className='title__modals'>Crea nueva cotización</p>
+        <div className='header__modal'>
+          <a href="#" className="btn-cerrar-popup__quotations__modal" onClick={closeModal}>
+            <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
+              <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+            </svg>
+          </a>
+          {modal === 'create-modal__qoutation' ?
+            <p className='title__modals'>Crear cotización</p>
+            :
+            <p className='title__modals'>Actualizar cotización</p>
+          }
+        </div>
+
         <div className='quotations__modal'>
           {modal == 'create-modal__qoutation' ?
             <div className='row'>
@@ -307,14 +358,14 @@ const ModalCreate: React.FC = () => {
               </div>
             </div>
           }
-          <div className='row my-4 w-full'>
+          <div className='row my-2 w-full'>
             <div className='col-12'>
               <label className='label__general'>Comentarios</label>
               <div className='warning__general'><small >Este campo es obligatorio</small></div>
               <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios'></textarea>
             </div>
           </div>
-          <div className='row__three my-4 w-full'>
+          <div className='row__three my-2 w-full'>
             <div className=''>
               <label className='label__general'>Nombre</label>
               <div className='warning__general'><small >Este campo es obligatorio</small></div>
@@ -330,7 +381,7 @@ const ModalCreate: React.FC = () => {
               <button className='btn__general-purple' onClick={seeClient}>ver cliente</button>
             </div>
             <div className='d-flex align-items-end'>
-              <button className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-quotation')}>Crear personalizados</button>
+              <button className='btn__general-purple' onClick={modalPersonalized}>Crear personalizados</button>
             </div>
             <div className='d-flex align-items-end'>
               <button className='btn__general-purple' onClick={() => setModalArticleView('article-view__modal')}>Catalogo</button>
@@ -400,8 +451,8 @@ const ModalCreate: React.FC = () => {
                             <p>$ {article.precio_total}</p>
                           </div>
                           <div className='td'>
-                              <button className='btn__general-purple' onClick={() => modalSeeConcepts(article)}>Conceptos</button>
-                            </div>
+                            <button className='btn__general-purple' onClick={() => modalSeeConcepts(article)}>Conceptos</button>
+                          </div>
 
                           <div className='td'>
                             <button className='btn__general-orange' onClick={() => undoConcepts(article, index)}>Deshacer</button>
@@ -433,7 +484,7 @@ const ModalCreate: React.FC = () => {
                           <div className='td'>
                             <button className='add_urgency'>Agregar Urgencia</button>
                           </div>
-                      
+
                           <div className='td'>
                             <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
                           </div>
@@ -447,10 +498,16 @@ const ModalCreate: React.FC = () => {
               <p className="text">Cargando datos...</p>
             )}
           </div>
-          <div className='row'>
-            <div className='col-12 d-flex justify-content-center'>
-              <button className='btn__general-purple' onClick={createQuotation}>Crear contizacion</button>
-            </div>
+          <div className='row mt-4'>
+            {modal === 'create-modal__qoutation' ?
+              <div className='col-12 d-flex justify-content-center'>
+                <button className='btn__general-purple' onClick={createQuotation}>Crear contizacion</button>
+              </div>
+              :
+              <div className='col-12 d-flex justify-content-center'>
+                <button className='btn__general-purple' onClick={createQuotation}>actualizar contizacion</button>
+              </div>
+            }
           </div>
         </div>
       </div>

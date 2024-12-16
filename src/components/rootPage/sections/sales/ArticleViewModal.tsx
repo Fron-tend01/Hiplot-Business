@@ -31,7 +31,6 @@ const ArticleViewModal = () => {
 
     const fetch = async () => {
         const resultFamilies = await getFamilies(user_id)
-
         const data = {
             id: 0,
             activos: true,
@@ -40,6 +39,7 @@ const ArticleViewModal = () => {
             familia: 0,
             proveedor: 0,
             materia_prima: 0,
+            page: 1,
             get_sucursales: false,
             get_proveedores: false,
             get_max_mins: false,
@@ -47,7 +47,7 @@ const ArticleViewModal = () => {
             get_areas_produccion: true,
             get_stock: false,
             get_web: false,
-            get_unidades: false
+            get_unidades: false,
         };
 
         const result = await getArticles(data);

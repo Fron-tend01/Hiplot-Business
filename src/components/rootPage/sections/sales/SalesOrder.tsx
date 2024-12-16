@@ -22,17 +22,17 @@ const SalesOrder: React.FC = () => {
     const { getSaleOrders }: any = saleOrdersRequests()
     const [saleOrders, setSaleOrders] = useState<any>([])
 
- 
 
-    const {getSeriesXUser}: any = seriesRequests()
+
+    const { getSeriesXUser }: any = seriesRequests()
     const [series, setSeries] = useState<any>([])
 
     const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
-    
+
     const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
 
-    
+
     const [companies, setCompanies] = useState<any>([])
 
     const [branchOffices, setBranchOffices] = useState<any>([])
@@ -42,8 +42,8 @@ const SalesOrder: React.FC = () => {
 
     const [client, setClient] = useState<any>('')
 
-      //////////////////////////
-     //////// Fechas//////////
+    //////////////////////////
+    //////// Fechas//////////
     ////////////////////////
 
     const hoy = new Date();
@@ -51,31 +51,31 @@ const SalesOrder: React.FC = () => {
     haceUnaSemana.setDate(hoy.getDate() - 7);
 
     // Inicializa el estado con las fechas formateadas
-    const [date, setDate] = useState([
-    haceUnaSemana.toISOString().split('T')[0],
-    hoy.toISOString().split('T')[0]
+    const [dates, setDates] = useState([
+        haceUnaSemana.toISOString().split('T')[0],
+        hoy.toISOString().split('T')[0]
     ]);
 
     const handleDateChange = (fechasSeleccionadas: any) => {
-    if (fechasSeleccionadas.length === 2) {
-        setDate(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
-    } else {
-        setDate([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
-    }
+        if (fechasSeleccionadas.length === 2) {
+            setDates(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
+        } else {
+            setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
+        }
     };
 
 
-console.log('sdsd',selectedIds)
+    console.log('sdsd', selectedIds)
 
     const fetch = async () => {
-        
+
         const dataSaleOrders = {
             folio: fol,
             id_sucursal: branchOffices.id,
             id_serie: selectedIds?.series.id,
             id_cliente: client,
-            desde: date[0],
-            hasta: date[1],
+            desde: dates[0],
+            hasta: dates[1],
             id_usuario: user_id,
             id_vendedor: selectedIds?.users.id,
             status: 0
@@ -115,20 +115,30 @@ console.log('sdsd',selectedIds)
     const search = async () => {
         const dataSaleOrders = {
             folio: fol,
-          
+            id_sucursal: branchOffices.id,
+            id_serie: selectedIds?.series?.id,
+            id_cliente: client,
+            desde: dates[0],
+            hasta: dates[1],
+            id_usuario: user_id,
+            id_vendedor: selectedIds?.users?.id,
+            status: 0
         }
-
         const result = await getSaleOrders(dataSaleOrders)
         console.log('ssd')
         setSaleOrders(result)
     }
 
     const modalUpdate = (order: any) => {
-        setModalSalesOrder('sale-order__modal')
+        setModalSalesOrder('sale-order__modal-update')
         setSaleOrdersToUpdate(order)
     }
 
-    
+    const [type, setType] = useState<any>(0)
+    const handleClick = (value: any) => {
+        setType(value)
+    };
+
 
     return (
         <div className='sales__order'>
@@ -140,9 +150,9 @@ console.log('sdsd',selectedIds)
                     <div className='col-4'>
                         <label className='label__general'>Fechas</label>
                         <div className='container_dates__requisition'>
-                            <Flatpickr className='date' options={{locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                            <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
                         </div>
-                    </div>                 
+                    </div>
                 </div>
                 <div className='row my-4'>
                     <div className='col-3'>
@@ -161,6 +171,29 @@ console.log('sdsd',selectedIds)
                     </div>
                 </div>
                 <div className='d-flex justify-content-around my-4'>
+                    <div className='container__checkbox_orders'>
+                        <div className='checkbox__orders'>
+                            <label className="checkbox__container_general">
+                                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 0} value={type} onChange={() => handleClick(0)} />
+                                <span className="checkmark__general"></span>
+                            </label>
+                            <p className='title__checkbox text'>Activo</p>
+                        </div>
+                        <div className='checkbox__orders'>
+                            <label className="checkbox__container_general">
+                                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 2} value={type} onChange={() => handleClick(2)} />
+                                <span className="checkmark__general"></span>
+                            </label>
+                            <p className='title__checkbox text'>Cancelados</p>
+                        </div>
+                        <div className='checkbox__orders'>
+                            <label className="checkbox__container_general">
+                                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 1} value={type} onChange={() => handleClick(1)} />
+                                <span className="checkmark__general"></span>
+                            </label>
+                            <p className='title__checkbox text'>Terminados</p>
+                        </div>
+                    </div>
                     <div className=''>
                         <button type='button' className='btn__general-purple' onClick={search}>Buscar</button>
                     </div>
@@ -197,7 +230,7 @@ console.log('sdsd',selectedIds)
                             </div>
                         </div>
                     </div>
-                    {saleOrders ? ( 
+                    {saleOrders ? (
                         <div className='table__body'>
                             {saleOrders.map((order: any) => {
                                 return (
@@ -213,12 +246,14 @@ console.log('sdsd',selectedIds)
                                                 <p>{order.fecha_creacion}</p>
                                             </div>
                                             <div className='td'>
-                                                <p>{order.status}</p>
+                                                <p>{order.status == 0 ? <div className='active-status'><p>Activa</p></div> : ''}</p>
+                                                <p>{order.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
+                                                <p>{order.status == 2 ? <div className='active-status'><p>Terminada</p></div> : ''}</p>
                                             </div>
                                             <div className='td'>
                                                 <button className='branchoffice__edit_btn' onClick={() => modalUpdate(order)}>Editar</button>
                                             </div>
-                                    
+
                                         </div>
                                     </div>
                                 )

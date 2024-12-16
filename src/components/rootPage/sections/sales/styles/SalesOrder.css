@@ -5,9 +5,15 @@
 
 
 .sales__order_container {
+	display: grid;
+	grid-template-rows: auto auto auto 1fr;
     height: 100%;
 	background-color: var(--background-sections);
 	padding: 20px ;
 	border-radius: 10px;
     overflow: hidden;
+}
+
+.sales__order_container > div {
+	width: 100%;
 }

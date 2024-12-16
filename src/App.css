@@ -670,14 +670,14 @@ option {
  
   }
 
-  .select__container .content.active{
+.select__container .content.active{
     height: 260px;
     max-height: 280px;
     padding: 5px 10px 5px 10px;
-  }
+}
 
   
-  .select__container .options {
+.select__container .options {
     height: 0;
     transition: opacity 300ms;
     margin-top: 10px;
