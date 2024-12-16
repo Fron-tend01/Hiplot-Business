@@ -20,14 +20,14 @@ const DeliveryTimes: React.FC = () => {
   const setDeleteDeliveryTimes = storeArticles(state => state.setDeleteDeliveryTimes)
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
-
+  
 
   const [company, setCompany] = useState<any>([])
   const [branch, setBranch] = useState<any>([])
 
   const [name, setName] = useState<any>('')
   const [dataSelects, setDataSelects] = useState<any>()
-  
+
   const [deliveryTimesView, setDeliveryTimesView] = useState<any>([])
 
   useEffect(() => {

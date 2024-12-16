@@ -64,9 +64,6 @@ const SalesOrder: React.FC = () => {
         }
     };
 
-
-    console.log('sdsd', selectedIds)
-
     const fetch = async () => {
 
         const dataSaleOrders = {
