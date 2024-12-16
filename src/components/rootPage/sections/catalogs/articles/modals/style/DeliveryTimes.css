@@ -18,6 +18,8 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
+    z-index: 1;
+
 }
 
 .overlay__modal_delivery-times_creating_articles.active {
@@ -30,7 +32,8 @@
     align-items: center;
     justify-content: center;
 	padding: 20px;
-	width: 80%;
+	width: 95%;
+	height: 95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
@@ -81,14 +84,14 @@
 .article__modal_delivery-times_table .table__head .thead {
     display: grid;
 	width: 100%;
-    grid-template-columns: repeat(3, 1fr) 2fr 100px;
+    grid-template-columns: repeat(4, 1fr) 2fr 100px;
     column-gap: 20px;
     padding: 10px;
     font-weight: 600;
 }
 
 .article__modal_delivery-times_table .table__body {
-	height: 200px;
+	height: 300px;
     overflow: hidden;
     overflow: auto;
     transition-delay: 0.0s;
@@ -126,7 +129,7 @@
 
 .article__modal_delivery-times_table .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(3, 1fr) 2fr 100px;
+    grid-template-columns: repeat(4, 1fr) 2fr 100px;
     column-gap: 20px;
     padding: 10px;
 }

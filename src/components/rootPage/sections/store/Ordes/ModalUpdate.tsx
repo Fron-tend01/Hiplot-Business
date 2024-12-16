@@ -71,7 +71,7 @@ const ModalUpdate = ({ oderUpdate, orderConceptsUpdate }: any,) => {
     try {
       // Supongamos que tienes el ID de la requisición
       await getPdfOrders(id);
-      window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_entrada/${oderUpdate.id}`, '_blank');
+      window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_pedido/${oderUpdate.id}`, '_blank');
     } catch (error) {
       console.error('Error al generar el PDF:', error);
     }

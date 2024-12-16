@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Select from '../../../../Dynamic_Components/Select'
 import { storeTickets } from '../../../../../../zustand/Tickets';
 import typeSearch from './json/typeSearchs.json'
@@ -15,6 +15,7 @@ const Direct: React.FC = () => {
     const [selectModalResults, setSelectModalResults] = useState<boolean>(false)
     const [selectedModalResult, setSelectedModalResult] = useState<any>(null)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
+    const setSelecteds: any = useSelectStore((state) => state.setSelectedId);
 
     const [articles, setArticles] = useState<any>()
 
@@ -23,7 +24,9 @@ const Direct: React.FC = () => {
         options: 'name',
         dataSelect: typeSearch
     })
-
+    useEffect(() => {
+        setSelecteds('type', typeSearch[0])
+     }, [])
     // Bucador por nombre
     const [searchBy, setSearchBy] = useState<any>('')
 
@@ -48,10 +51,10 @@ const Direct: React.FC = () => {
         };
         console.log(selectedIds.type );
         console.log(data);
-        
         try {
-            const result = await APIs.getArticles(data)
+            let result:any = await APIs.getArticles(data)
             setArticles(result)    
+            handleModalResultsChange(result[0])
         } catch (error) {
             console.log(error)
         }
@@ -81,6 +84,11 @@ const Direct: React.FC = () => {
 
     return (
         <div className='conatiner__direct mt-4'>
+            <div className='add-client__container'>
+                <div className='col-12  title '>
+                    <p>Agregar Articulos</p>
+                </div>
+            </div>
             <div className='row__one'>
                 <Select dataSelects={selectSearchFor} nameSelect={'Buscar por'} instanceId='type' />
 

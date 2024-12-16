@@ -92,6 +92,9 @@ const modalArticle: React.FC = () => {
     const [sellStock, setSellStock] = useState<boolean>(false)
     const [Shortage, setShortage] = useState<boolean>(false)
     const [ExemptTax, setExemptTax] = useState<boolean>(false)
+    const [PrecioLibre, setPrecioLibre] = useState<boolean>(false)
+    const [UltimasPiezas, setUltimasPiezas] = useState<boolean>(false)
+    const [AgruparTiempos, setAgruparTiempos] = useState<boolean>(false)
 
     const { getFamilies }: any = storeFamilies()
     const { getArticlesInGlobal }: any = storeArticles();
@@ -111,25 +114,25 @@ const modalArticle: React.FC = () => {
 
     const [selectsSatKey, setSelectsSatKey] = useState<any>()
     const [selectedSatKey, setSelectedSatKey] = useState<any>()
-  
+
     const [satKeyTerm, setSatKeyTerm] = useState<any>([])
     const [satKey, setSatKey] = useState<any>([])
-  
-    
+
+
     const openselectsSatKey = () => {
-      setSelectsSatKey(!selectsSatKey)
+        setSelectsSatKey(!selectsSatKey)
     }
-  
+
     const fetchData = async () => {
-      if (satKeyTerm.length >= 3) {
-        const result = await APIs.getKeySat({ nombre: satKeyTerm });
-        setSatKey(result);
-      }
+        if (satKeyTerm.length >= 3) {
+            const result = await APIs.getKeySat({ nombre: satKeyTerm });
+            setSatKey(result);
+        }
     };
-  
+
     useEffect(() => {
-  
-      fetchData();
+
+        fetchData();
     }, [satKeyTerm]);
 
     console.log(selectedSatKey)
@@ -168,7 +171,7 @@ const modalArticle: React.FC = () => {
         if (articleToUpdate) {
 
             setModalLoading(false)
-         
+
             setType(articleToUpdate.tipo);
             setCode(articleToUpdate.codigo);
             setDescription(articleToUpdate.descripcion);
@@ -176,11 +179,11 @@ const modalArticle: React.FC = () => {
 
             setActiveArticles(articleToUpdate.activo);
             setSelectedFile(articleToUpdate.imagen);
- 
+
             setBaseMax(articleToUpdate.base_max);
             setMaxHeight(articleToUpdate.altura_max);
             setMultiples(articleToUpdate.multiplos_de);
-            setSelectedSatKey({Clave: articleToUpdate.clave_sat});
+            setSelectedSatKey({ Clave: articleToUpdate.clave_sat });
             setsatUnit(articleToUpdate.unidad_sat);
             setViewWeb(articleToUpdate.visualizacion_web)
             setsalesInstructions(articleToUpdate.indicaciones);
@@ -190,10 +193,13 @@ const modalArticle: React.FC = () => {
             setSellStock(articleToUpdate.vender_sin_stock);
             setShortage(articleToUpdate.desabasto);
             setExemptTax(articleToUpdate.iva_excento);
-            
-            setSelectedId('selectFamilies', {id: articleToUpdate.id_familia});
-            setSelectedId('selectTypePayment', {id: articleToUpdate.tipo_de_cobro});
-            setSelectedId('selectTemplates', {id: articleToUpdate.id_plantilla});
+            setPrecioLibre(articleToUpdate.precio_libre)
+            setUltimasPiezas(articleToUpdate.ultimas_piezas)
+            setAgruparTiempos(articleToUpdate.agrupar_tiempos)
+
+            setSelectedId('selectFamilies', { id: articleToUpdate.id_familia });
+            setSelectedId('selectTypePayment', { id: articleToUpdate.tipo_de_cobro });
+            setSelectedId('selectTemplates', { id: articleToUpdate.id_plantilla });
 
             setBranchOffices(articleToUpdate.sucursales)
             setMaxsMins(articleToUpdate.max_mins);
@@ -213,7 +219,7 @@ const modalArticle: React.FC = () => {
 
     }, [articleToUpdate]);
 
-    
+
 
     useEffect(() => {
 
@@ -239,7 +245,7 @@ const modalArticle: React.FC = () => {
     console.log(articleToUpdate)
 
 
-    const handleCreateArticles = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleCreateArticles = async (e:  React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         setStateLoading(true)
 
@@ -267,6 +273,9 @@ const modalArticle: React.FC = () => {
             vender_sin_stock: sellStock,
             desabasto: Shortage,
             iva_excento: ExemptTax,
+            precio_libre: PrecioLibre,
+            ultimas_piezas: UltimasPiezas,
+            agrupar_tiempos: AgruparTiempos,
 
             /////////////////////////////////Modales//////////////////////////////////////// 
             sucursales: branchOffices,
@@ -356,8 +365,8 @@ const modalArticle: React.FC = () => {
     useEffect(() => {
 
     }, [activeArticles])
-     
-    
+
+
 
     const handleInputBaseMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.trim(); // Eliminar espacios en blanco alrededor
@@ -387,16 +396,23 @@ const modalArticle: React.FC = () => {
     const handleExemptTaxChange = (event: any) => {
         setExemptTax(event.target.checked)
     }
+    const handlePrecioLibreChange = (event: any) => {
+        setPrecioLibre(event.target.checked)
+    }
+    const handleUltimasPiezasChange = (event: any) => {
+        setUltimasPiezas(event.target.checked)
+    }
+    const handleAgruparTiemposChange = (event: any) => {
+        setAgruparTiempos(event.target.checked)
+    }
 
-    
 
 
 
-  
-  const handleKetSatChange = (key: any) => {
-    setSelectsSatKey(false)
-    setSelectedSatKey(key)
-  }
+    const handleKetSatChange = (key: any) => {
+        setSelectsSatKey(false)
+        setSelectedSatKey(key)
+    }
     // Modal de MaxMin del modal de crear articulos //
 
     const modalMaxMin = () => {
@@ -466,31 +482,34 @@ const modalArticle: React.FC = () => {
 
     const closeModal = () => {
         setModalArticle('')
-        if (modalArticle == 'articles-modal-update') {
-            setArticleToUpdate(null)
-            setCode('')
-            setDescription('')
-            setsalesInstructions('')
-            setwebNotes('')
-            setPurchaseConditions('')
-            setBaseMax(null)
-            setMaxHeight(null)
-            setMultiples(null)
-            setViewWeb(false)
-            setORequest(false)
-            setSellStock(false)
-            setShortage(false)
-            setExemptTax(false)
+        // if (modalArticle == 'articles-modal-update') {
+        setArticleToUpdate(null)
+        setCode('')
+        setDescription('')
+        setsalesInstructions('')
+        setwebNotes('')
+        setPurchaseConditions('')
+        setBaseMax(null)
+        setMaxHeight(null)
+        setMultiples(null)
+        setViewWeb(false)
+        setORequest(false)
+        setSellStock(false)
+        setShortage(false)
+        setExemptTax(false)
+        setPrecioLibre(false)
+        setUltimasPiezas(false)
+        setAgruparTiempos(false)
 
-            setBranchOffices([])
-            setMaxsMins([]);
-            setPrices([]);
-            setUnits([]);
-            setComponents([]);
-            setAreas([]);
-            setMinimalCharges([]);
-            setAdditionalArticles([])
-        }
+        setBranchOffices([])
+        setMaxsMins([]);
+        setPrices([]);
+        setUnits([]);
+        setComponents([]);
+        setAreas([]);
+        setMinimalCharges([]);
+        setAdditionalArticles([])
+        // }
 
     }
 
@@ -509,7 +528,7 @@ const modalArticle: React.FC = () => {
                         <ModalLoading />
                     </div>
                 ) : (
-                    <form className='conatiner__articles-modal' onSubmit={handleCreateArticles}>
+                    <div className='conatiner__articles-modal' >
                         <div className='row__form_articles-radios'>
                             <div className='container__form_articles-radios'>
                                 <div className='checkbox__modal_articles'>
@@ -528,18 +547,16 @@ const modalArticle: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className='row__form_articles-one'>
-                            <div>
+                        <div className='row'>
+                            <div className='col-4'>
                                 <label className='label__general'>Código</label>
                                 <input className='inputs__general' type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder='Ingresa el código' />
                             </div>
-                            <div>
+                            <div className='col-6'>
                                 <label className='label__general'>Descripción</label>
                                 <input className='inputs__general' type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder='Ingresa la descripción' />
                             </div>
-                            <Select dataSelects={selectFamilies} instanceId='selectFamilies' nameSelect={'Familias'} />
-                            <Select dataSelects={selectTypePayment} instanceId='selectTypePayment' nameSelect={'Tipo de cobro'} />
-                            <div>
+                            <div className='col-1'>
                                 <div>
                                     <p className='label__general'>Activo</p>
                                     <label className="switch">
@@ -548,143 +565,175 @@ const modalArticle: React.FC = () => {
                                     </label>
                                 </div>
                             </div>
-                        </div>
-                        <div className='row__form_articles-two my-4'>
-                            <div className="container__upload_photo" onClick={() => setSubModal('modal-images')}>
-                                <label htmlFor="file-upload" className={`custom-file-upload`} style={{ backgroundImage: `url(${selectedFile})` }}>
-                                    <span>
-                                        {/* <svg xmlns="http://www.w3.org/2000/svg" fill='#fff' viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM385 231c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-71-71V376c0 13.3-10.7 24-24 24s-24-10.7-24-24V193.9l-71 71c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9L239 119c9.4-9.4 24.6-9.4 33.9 0L385 231z" /></svg> */}
-                                        {' '}
-                                        Ver mas
-                                    </span>
-                                </label>
-                                {/* <input id="file-upload" type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} /> */}
-
-                            </div>
-                            <Images />
-                            <div>
-                                <Select dataSelects={selectTemplates} instanceId='selectTemplates' nameSelect={'Plantillas'} />
-                            </div>
-                            <div>
-                                <label className='label__general'>Base Max</label>
-                                <input className='inputs__general' type="number" value={baseMax === null ? '' : baseMax} onChange={handleInputBaseMaxChange} placeholder='Ingresa la base máxima' />
-                            </div>
-                            <div>
-                                <label className='label__general'>Altura Max</label>
-                                <input className='inputs__general' type="number" value={maxHeight === null ? '' : maxHeight} onChange={handleInputMaxHeightChange} placeholder='Ingresa la altura máxima' />
-                            </div>
-                            <div>
-                                <label className='label__general'>Múltiplos</label>
-                                <input className='inputs__general' type="number" value={multiples === null ? '' : multiples} onChange={handleInputMultiplesChange} placeholder='Ingresa los múltiplos' />
-                            </div>
-                            <div className=' '>
-
+                            <div className='col-1'>
                                 <p className='label__general'>Vista web</p>
                                 <label className="switch">
                                     <input type="checkbox" checked={viewWeb} onChange={handleViewWebChange} />
                                     <span className="slider"></span>
                                 </label>
+                            </div>
+                            <div className='col-2'>
+                                <div className="container__upload_photo" onClick={() => setSubModal('modal-images')}>
+                                    <label htmlFor="file-upload" className={`custom-file-upload`} style={{ backgroundImage: `url(${selectedFile})` }}>
+                                        <span>
+                                            {/* <svg xmlns="http://www.w3.org/2000/svg" fill='#fff' viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM385 231c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-71-71V376c0 13.3-10.7 24-24 24s-24-10.7-24-24V193.9l-71 71c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9L239 119c9.4-9.4 24.6-9.4 33.9 0L385 231z" /></svg> */}
+                                            {' '}
+                                            Ver mas
+                                        </span>
+                                    </label>
+                                    {/* <input id="file-upload" type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} /> */}
+
+                                </div>
+                                <Images />
+                            </div>
+                            <div className='col-3'>
+                                <Select dataSelects={selectFamilies} instanceId='selectFamilies' nameSelect={'Familias'} />
 
                             </div>
+                            <div className='col-2'>
+                                <Select dataSelects={selectTypePayment} instanceId='selectTypePayment' nameSelect={'Tipo de cobro'} />
+                            </div>
+                            <div className='col-3'>
+                                <Select dataSelects={selectTemplates} instanceId='selectTemplates' nameSelect={'Plantillas'} />
+                            </div>
+                            <div className='col-2'>
+                                <div className='select__container'>
+                                    <label className='label__general'>Claves SAT</label>
+                                    <div className={`select-btn__general`}>
+                                        <div className={`select-btn ${selectsSatKey ? 'active' : ''}`} onClick={openselectsSatKey}>
+                                            <div className='select__container_title'>
+                                                <p>{selectedSatKey ? selectedSatKey.Clave : 'Selecciona'}</p>
+                                            </div>
+                                            <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                                        </div>
+                                        <div className={`content ${selectsSatKey ? 'active' : ''}`}>
+                                            <input
+                                                className='inputs__general'
+                                                type="text"
+                                                placeholder='Buscar...'
+                                                value={satKeyTerm}
+                                                onChange={(e) => setSatKeyTerm(e.target.value)}
+                                            />
+                                            <ul className={`options ${selectsSatKey ? 'active' : ''}`} style={{ opacity: selectsSatKey ? '1' : '0' }}>
+                                                {satKey?.map((key: any) => (
+                                                    <li key={uuidv4()} onClick={() => handleKetSatChange(key)}>
+                                                        {key.Descripcion}-{key.Clave}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
-                        {/* <div className='row__form_articles-three'>
-                        
-                    </div> */}
-                        <div className='row__form_articles-four'>
-                            <div>
+                        <br />
+                        <hr />
+                        <h4 className='label__general'>Información Adicional</h4>
+                        <hr />
+                        <div className='row row-small'>
+                            <div className='col-1'>
+                                <label className='label__general'>Base Max</label>
+                                <input className='inputs__general' type="number" value={baseMax === null ? '' : baseMax} onChange={handleInputBaseMaxChange} placeholder='Ingresa la base máxima' />
+                            </div>
+                            <div className='col-1'>
+                                <label className='label__general'>Altura Max</label>
+                                <input className='inputs__general' type="number" value={maxHeight === null ? '' : maxHeight} onChange={handleInputMaxHeightChange} placeholder='Ingresa la altura máxima' />
+                            </div>
+                            <div className='col-1'>
+                                <label className='label__general'>Múltiplos</label>
+                                <input className='inputs__general' type="number" value={multiples === null ? '' : multiples} onChange={handleInputMultiplesChange} placeholder='Ingresa los múltiplos' />
+                            </div>
+                            <div className='col-3'>
                                 <label className='label__general'>Indicaciones de Ventas</label>
                                 <input className='inputs__general' type="text" value={salesInstructions} onChange={(e) => setsalesInstructions(e.target.value)} placeholder='Indicaciones de Ventas' />
                             </div>
-                            <div>
+                            <div className='col-3'>
                                 <label className='label__general'>Notas web</label>
                                 <input className='inputs__general' type="text" value={webNotes} onChange={(e) => setwebNotes(e.target.value)} placeholder='Notas web' />
                             </div>
-                            <div>
+                            <div className='col-3'>
                                 <label className='label__general'>Condiciones de compra</label>
                                 <input className='inputs__general' type="text" value={purchaseConditions} onChange={(e) => setPurchaseConditions(e.target.value)} placeholder='Condiciones de compra' />
                             </div>
-                            <div className='select__container'>
-                                <label className='label__general'>Claves SAT</label>
-                                <div className={`select-btn__general`}>
-                                    <div className={`select-btn ${selectsSatKey ? 'active' : ''}`} onClick={openselectsSatKey}>
-                                        <div className='select__container_title'>
-                                            <p>{selectedSatKey ? selectedSatKey.Clave : 'Selecciona'}</p>
-                                        </div>
-                                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                                    </div>
-                                    <div className={`content ${selectsSatKey ? 'active' : ''}`}>
-                                        <input
-                                            className='inputs__general'
-                                            type="text"
-                                            placeholder='Buscar...'
-                                            value={satKeyTerm}
-                                            onChange={(e) => setSatKeyTerm(e.target.value)}
-                                        />
-                                        <ul className={`options ${selectsSatKey ? 'active' : ''}`} style={{ opacity: selectsSatKey ? '1' : '0' }}>
-                                            {satKey?.map((key: any) => (
-                                                <li key={uuidv4()} onClick={() => handleKetSatChange(key)}>
-                                                    {key.Descripcion}-{key.Clave}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </div>
+                        </div>
+                        <div className='row row-small mt-3 mb-3'>
+                            <div className='col-2'>
+                                <p className='label__general'>Bajo Pedido</p>
+                                <label className="switch">
+                                    <input type="checkbox" checked={oRequest} onChange={handleORequestChange} />
+                                    <span className="slider"></span>
+                                </label>
+                            </div>
+                            <div className='col-2'>
+                                <p className='label__general'>Vender sin Stock</p>
+                                <label className="switch">
+                                    <input type="checkbox" checked={sellStock} onChange={handleSellStockChange} />
+                                    <span className="slider"></span>
+                                </label>
+                            </div>
+                            <div className='col-1'>
+                                <p className='label__general'>Desabasto</p>
+                                <label className="switch">
+                                    <input type="checkbox" checked={Shortage} onChange={handleShortageChange} />
+                                    <span className="slider"></span>
+                                </label>
+                            </div>
+                            <div className='col-2'>
+                                <p className='label__general'>IVA Excento</p>
+                                <label className="switch">
+                                    <input type="checkbox" checked={ExemptTax} onChange={handleExemptTaxChange} />
+                                    <span className="slider"></span>
+                                </label>
+                            </div>
+                            <div className='col-1'>
+                                <p className='label__general'>Precio Libre</p>
+                                <label className="switch">
+                                    <input type="checkbox" checked={PrecioLibre} onChange={handlePrecioLibreChange} />
+                                    <span className="slider"></span>
+                                </label>
+                            </div>
+                            <div className='col-2'>
+                                <p className='label__general'>Ultimas Piezas</p>
+                                <label className="switch">
+                                    <input type="checkbox" checked={UltimasPiezas} onChange={handleUltimasPiezasChange} />
+                                    <span className="slider"></span>
+                                </label>
+                            </div>
+                            <div className='col-2'>
+                                <p className='label__general'>Agrupar Tiempos</p>
+                                <label className="switch">
+                                    <input type="checkbox" checked={AgruparTiempos} onChange={handleAgruparTiemposChange} />
+                                    <span className="slider"></span>
+                                </label>
                             </div>
                         </div>
-                        <div className='row__form_articles-five'>
-                            <div>
-                                <div>
-                                    <p className='label__general'>Bajo Pedido</p>
-                                    <label className="switch">
-                                        <input type="checkbox" checked={oRequest} onChange={handleORequestChange} />
-                                        <span className="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div>
-                                <div>
-                                    <p className='label__general'>Vender sin stock</p>
-                                    <label className="switch">
-                                        <input type="checkbox" checked={sellStock} onChange={handleSellStockChange} />
-                                        <span className="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div>
-                                <div>
-                                    <p className='label__general'>Desabasto</p>
-                                    <label className="switch">
-                                        <input type="checkbox" checked={Shortage} onChange={handleShortageChange} />
-                                        <span className="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div>
-                                <div>
-                                    <p className='label__general'>IVA Excento</p>
-                                    <label className="switch">
-                                        <input type="checkbox" checked={ExemptTax} onChange={handleExemptTaxChange} />
-                                        <span className="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='row__form_articles-six'>
-                            <div>
-                                <div>
-                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('branch-office__modal')}>Sucursales</button>
+                        <div className='row'>
+                            <div className='col-1'>
+                                <div className='tooltip-container'>
+                                    <button className='btn__general-purple ' type='button' onClick={() => setSubModal('branch-office__modal')}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-building-minus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 21h9" /><path d="M9 8h1" /><path d="M9 12h1" /><path d="M9 16h1" /><path d="M14 8h1" /><path d="M14 12h1" /><path d="M5 21v-16c0 -.53 .211 -1.039 .586 -1.414c.375 -.375 .884 -.586 1.414 -.586h10c.53 0 1.039 .211 1.414 .586c.375 .375 .586 .884 .586 1.414v7" /><path d="M16 19h6" /></svg>                                    </button>
+                                    <span className="tooltip-text">Sucursales</span>
+
                                 </div>
                                 <BranchOffices />
                             </div>
-                            <div>
+                            <div className='col-1'>
                                 <Prices />
-                                <div>
-                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-prices')}>Precios</button>
+                                <div className='tooltip-container'>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-prices')}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-receipt-dollar"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2" /><path d="M14.8 8a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1" /><path d="M12 6v10" /></svg>
+                                    </button>
+                                    <span className="tooltip-text">Precios</span>
                                 </div>
                             </div>
-                            <div>
-                                <div>
-                                    <button className='btn__general-purple' type='button' onClick={modalMaxMin}>Max-Min</button>
+                            <div className='col-1'>
+                                <div className='tooltip-container'>
+                                    <button className='btn__general-purple' type='button' onClick={modalMaxMin}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-plus-minus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7h6" /><path d="M7 4v6" /><path d="M20 18h-6" /><path d="M5 19l14 -14" /></svg>
+                                    </button>
+                                    <span className="tooltip-text">Maximos y Minimos</span>
+
                                 </div>
                                 <div className={`overlay__modal_maxmin_creating_articles ${modalStateMaxsMins == 'create' ? 'active' : ''}`}>
                                     <div className={`popup__modal_maxmin_creating_articles ${modalStateMaxsMins == 'create' ? 'active' : ''}`}>
@@ -692,9 +741,13 @@ const modalArticle: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <div>
-                                    <button className='btn__general-purple' type='button' onClick={modalUnits}>Unidades</button>
+                            <div className='col-1'>
+                                <div className='tooltip-container'>
+                                    <button className='btn__general-purple' type='button' onClick={modalUnits}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-ruler-measure-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 19.875c0 .621 -.512 1.125 -1.143 1.125h-5.714a1.134 1.134 0 0 1 -1.143 -1.125v-15.875a1 1 0 0 1 1 -1h5.857c.631 0 1.143 .504 1.143 1.125z" /><path d="M12 9h-2" /><path d="M12 6h-3" /><path d="M12 12h-3" /><path d="M12 18h-3" /><path d="M12 15h-2" /><path d="M21 3h-4" /><path d="M19 3v18" /><path d="M21 21h-4" /></svg>
+                                    </button>
+                                    <span className="tooltip-text">Unidades</span>
+
                                 </div>
                                 <div className={`overlay__modal_units_creating_articles ${modalStateUnits == 'create' ? 'active' : ''}`}>
                                     <div className={`popup__modal_units_creating_articles ${modalStateUnits == 'create' ? 'active' : ''}`} >
@@ -702,33 +755,52 @@ const modalArticle: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <div>
-                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-components')}>Componentes</button>
+                            <div className='col-1'>
+                                <div className='tooltip-container'>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-components')}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-cube-spark"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M21 12v-4.01a1.98 1.98 0 0 0 -1 -1.717l-7 -4.008a2.02 2.02 0 0 0 -2 0l-7 4.008c-.619 .355 -1 1.01 -1 1.718v8.018c0 .709 .381 1.363 1 1.717l7 4.008c.62 .354 1.38 .354 2 0" /><path d="M12 22v-10" /><path d="M12 12l8.73 -5.04" /><path d="M3.27 6.96l8.73 5.04" /><path d="M19 22.5a4.75 4.75 0 0 1 3.5 -3.5a4.75 4.75 0 0 1 -3.5 -3.5a4.75 4.75 0 0 1 -3.5 3.5a4.75 4.75 0 0 1 3.5 3.5" /></svg>
+                                    </button>
+                                    <span className="tooltip-text">Componentes</span>
                                 </div>
                                 <Components />
                             </div>
-                            <div>
-                                <div>
-                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('create_modal_variations')}>Variaciones</button>
+                            <div className='col-1'>
+                                <div className='tooltip-container'>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('create_modal_variations')}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-hierarchy"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 5m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M6.5 17.5l5.5 -4.5l5.5 4.5" /><path d="M12 7l0 6" /></svg>
+                                    </button>
+                                    <span className="tooltip-text">Variaciones</span>
+
                                 </div>
                                 <Variations />
                             </div>
-                            <div>
-                                <div>
-                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('create_modal_combinations')}>Combinaciones</button>
+                            <div className='col-1'>
+                                <div className='tooltip-container'>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('create_modal_combinations')}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-git-compare"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M18 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M11 6h5a2 2 0 0 1 2 2v8" /><path d="M14 9l-3 -3l3 -3" /><path d="M13 18h-5a2 2 0 0 1 -2 -2v-8" /><path d="M10 15l3 3l-3 3" /></svg>
+                                    </button>
+                                    <span className="tooltip-text">Combinaciones</span>
+
                                 </div>
                                 <Combinations />
                             </div>
-                            <div>
-                                <div>
-                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('article-modal_areas-production')}>Areas de pro</button>
+                            <div className='col-1'>
+                                <div className='tooltip-container'>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('article-modal_areas-production')}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-settings-share"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12.004 21c-.732 .002 -1.466 -.437 -1.679 -1.317a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.306 .317 1.64 1.78 1.004 2.684" /><path d="M12 15a3 3 0 1 0 0 -6a3 3 0 0 0 0 6z" /><path d="M16 22l5 -5" /><path d="M21 21.5v-4.5h-4.5" /></svg>
+                                    </button>
+                                    <span className="tooltip-text">Areas de Producción</span>
+
                                 </div>
                                 <ProductionAreas />
                             </div>
-                            <div>
-                                <div>
-                                    <button className='btn__general-purple' type='button' onClick={modalSuppliers}>Proveedores</button>
+                            <div className='col-1'>
+                                <div className='tooltip-container'>
+                                    <button className='btn__general-purple' type='button' onClick={modalSuppliers}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-truck-delivery"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" /><path d="M3 9l4 0" /></svg>
+                                    </button>
+                                    <span className="tooltip-text">Proveedores</span>
+
                                 </div>
                                 <div className={`overlay__modal_suppliers_creating_articles ${modalStateSuppliers == 'create' ? 'active' : ''}`}>
                                     <div className={`popup__modal_suppliers_creating_articles ${modalStateSuppliers == 'create' ? 'active' : ''}`}>
@@ -736,33 +808,49 @@ const modalArticle: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <div>
-                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-delivery-times')}>T. Entrega</button>
+                            <div className='col-1'>
+                                <div className='tooltip-container'>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-delivery-times')}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-clock"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 2.66a1 1 0 0 0 -.993 .883l-.007 .117v5l.009 .131a1 1 0 0 0 .197 .477l.087 .1l3 3l.094 .082a1 1 0 0 0 1.226 0l.094 -.083l.083 -.094a1 1 0 0 0 0 -1.226l-.083 -.094l-2.707 -2.708v-4.585l-.007 -.117a1 1 0 0 0 -.993 -.883z" /></svg>
+                                    </button>
+                                    <span className="tooltip-text">Tiempos de Entrega</span>
+
                                 </div>
                                 <DeliveryTimes />
                             </div>
-                            <div>
-                                <div>
-                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-minimal-charges')}>Cargos minimos</button>
+                            <div className='col-1'>
+                                <div className='tooltip-container'>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-minimal-charges')}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-currency-dollar-off"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M16.7 8a3 3 0 0 0 -2.7 -2h-4m-2.557 1.431a3 3 0 0 0 2.557 4.569h2m4.564 4.558a3 3 0 0 1 -2.564 1.442h-4a3 3 0 0 1 -2.7 -2" /><path d="M12 3v3m0 12v3" /><path d="M3 3l18 18" /></svg>
+                                    </button>
+                                    <span className="tooltip-text">Cargos Minimos</span>
+
                                 </div>
                                 <MinimalCharges />
                             </div>
-                            <div>
-                                <div>
-                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-additiona-articles')}>Art. adicionales</button>
+                            <div className='col-1'>
+                                <div className='tooltip-container'>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-additiona-articles')}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-prism-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 9v13" /><path d="M13.02 21.655a1.7 1.7 0 0 1 -2.04 0l-5.98 -4.485a2.5 2.5 0 0 1 -1 -2v-11.17a1 1 0 0 1 1 -1h14a1 1 0 0 1 1 1v8" /><path d="M4.3 3.3l6.655 5.186a1.7 1.7 0 0 0 2.09 0l6.655 -5.186" /><path d="M16 19h6" /><path d="M19 16v6" /></svg>
+                                    </button>
+                                    <span className="tooltip-text">Articulos Adicionales</span>
+
                                 </div>
                                 <AdditionalArticles />
                             </div>
-                            <div>
-                                <div>
-                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-cobros-franquicia')}>Cobros Franquicia</button>
+                            <div className='col-1'>
+                                <div className='tooltip-container'>
+                                    <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-cobros-franquicia')}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-building-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 21h9" /><path d="M9 8h1" /><path d="M9 12h1" /><path d="M9 16h1" /><path d="M14 8h1" /><path d="M14 12h1" /><path d="M5 21v-16c0 -.53 .211 -1.039 .586 -1.414c.375 -.375 .884 -.586 1.414 -.586h10c.53 0 1.039 .211 1.414 .586c.375 .375 .586 .884 .586 1.414v7" /><path d="M16 19h6" /><path d="M19 16v6" /></svg>
+                                    </button>
+                                    <span className="tooltip-text">Cobros a Franquicias</span>
+
                                 </div>
                                 <CobrosFranquicia />
                             </div>
                         </div>
                         <div className='d-flex justify-content-center'>
-                            <button className='btn__general-purple d-flex align-items-center' type='submit'>
+                            <button className='btn__general-purple d-flex align-items-center' onClick={(e) => handleCreateArticles(e)}>
                                 {articleToUpdate ? `${stateLoading ? 'Actualizando articulo' : 'Actualizar articulo'}` : `${stateLoading ? 'Creando articulo' : 'Crear articulo'}`}
                                 {stateLoading ? <span className="loader-two"></span> : ''}
                             </button>
@@ -770,7 +858,7 @@ const modalArticle: React.FC = () => {
                                 <button className='btn__general-orange' type='button' onClick={clonArticle}>Clonar artículo</button>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 )}
             </div>
         </div>

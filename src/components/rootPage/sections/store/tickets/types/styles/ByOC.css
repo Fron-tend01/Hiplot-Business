@@ -1,11 +1,10 @@
-
- /*************************************************************
+/*************************************************************
                     Modal de crear entradas
  **************************************************************/
 
-  
- .overlay__modal_concepts-ticket {
-	background: rgba(0,0,0,.3);
+
+.overlay__modal_concepts-ticket {
+	background: rgba(0, 0, 0, .3);
 	position: fixed;
 	top: 0;
 	bottom: 0;
@@ -29,24 +28,24 @@
 	text-align: center;
 	width: 90%;
 	overflow-y: auto;
-    max-height: 95%;
+	max-height: 95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
 
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
+	&::-webkit-scrollbar {
+		width: 5px;
+	}
 
-    &::-webkit-scrollbar-thumb {
-        background-color: #1F319D; 
-        border-radius: 5px;
-        height: 100px;
-    }
+	&::-webkit-scrollbar-thumb {
+		background-color: #1F319D;
+		border-radius: 5px;
+		height: 100px;
+	}
 
-    &::-webkit-scrollbar-track {
-    /* Para modificar el background */
-    }
+	&::-webkit-scrollbar-track {
+		/* Para modificar el background */
+	}
 }
 
 .popup__modal_concepts-ticket .btn-cerrar-popup__modal_concepts-ticket {
@@ -56,9 +55,9 @@
 	text-align: right;
 	transition: .3s ease all;
 	color: #BBBBBB;
-    position: absolute;
-    right: 15px;
-    top: 15px;
+	position: absolute;
+	right: 15px;
+	top: 15px;
 }
 
 
@@ -66,6 +65,132 @@
 /* ------------------------- */
 /* ANIMACIONES */
 /* ------------------------- */
-.popup__modal_concepts-ticket.active {	transform: scale(1); opacity: 1; }
+.popup__modal_concepts-ticket.active {
+	transform: scale(1);
+	opacity: 1;
+}
 
 
+
+.table__modal_filter_tickets-piv {
+	border-radius: 10px;
+	display: grid;
+	height: 100%;
+	grid-template-rows: repeat(2, auto) 1fr;
+
+}
+
+
+.table__modal_filter_tickets-piv .table__head {
+	display: flex;
+	width: 100%;
+	background-color: var(--table-color);
+	color: var(--text-table-color);
+	border-radius: 5px 5px 0 0;
+}
+
+.table__modal_filter_tickets-piv .table__head .thead {
+	display: flex;
+	width: 100%;
+}
+
+.table__modal_filter_tickets-piv .table__head .thead {
+	display: grid;
+	grid-template-columns: repeat(10, 1fr);
+	padding: 10px;
+	font-weight: 600;
+}
+
+.table__modal_filter_tickets-piv .table__body {
+	height: 100%;
+	width: 100%;
+	overflow-y: auto;
+	transition-delay: 0.0s;
+
+	&::-webkit-scrollbar {
+		width: 5px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: #1F319D;
+		border-radius: 5px;
+		height: 100px;
+	}
+
+	&::-webkit-scrollbar-track {
+		/* Para modificar el background */
+	}
+}
+
+
+.table__modal_filter_tickets-piv .tbody__container:nth-child(even) {
+	background-color: var(--table-color);
+	color: var(--text-table-color);
+}
+
+.table__modal_filter_tickets-piv .tbody__container:nth-child(odd) {
+	background-color: var(--two-table-color);
+	color: var(--text-table-color);
+}
+
+.table__modal_filter_tickets-piv .table__body {
+	width: 100%
+}
+
+.table__modal_filter_tickets-piv .table__body .tbody {
+	display: flex;
+}
+
+.table__modal_filter_tickets-piv .table__body .tbody {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr) 150px 100px;
+	padding: 10px;
+}
+
+.table__modal_filter_tickets-piv .table__body .tbody__container:hover {
+	background-color: var(--secundary-color);
+	color: #fff;
+}
+
+.concepts-table {
+	width: 100%;
+	/* Ocupa todo el ancho disponible */
+	border-collapse: collapse;
+	/* Combina bordes de las celdas */
+	margin-top: 1px;
+	font-size: 10px;
+	/* Tamaño de texto más pequeño */
+	color: var(--text-secondary-color);
+}
+
+.concepts-table th,
+.concepts-table td {
+	border: 1px solid #ddd;
+	/* Bordes entre celdas */
+	padding: 1px;
+	/* Espaciado interno */
+	text-align: left;
+}
+
+.concepts-table th {
+	background-color: var(--table-header-background);
+	font-weight: bold;
+}
+
+.concepts-table tr:nth-child(even) {
+	background-color: var(--table-row-background-alt);
+	/* Color alternativo para filas */
+}
+
+.concepts-table tr:hover {
+	background-color: var(--table-row-hover);
+	/* Color al pasar el cursor */
+}
+
+.concept-code {
+	font-weight: bold;
+}
+
+.concept-description {
+	font-style: italic;
+}

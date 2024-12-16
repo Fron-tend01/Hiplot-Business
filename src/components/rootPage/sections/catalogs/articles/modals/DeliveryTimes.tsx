@@ -124,6 +124,13 @@ const DeliveryTimes: React.FC = () => {
                       <p className=''>Sucursal</p>
                   </div>
                   <div className='th'>
+                      <p className=''>Tipo</p>
+                  </div>
+                  <div className='th'>
+                      <p className=''>Recepción</p>
+                  </div>
+                  
+                  <div className='th'>
                       <p className=''>Entrega</p>
                   </div>
                   <div className='th'>
@@ -143,10 +150,15 @@ const DeliveryTimes: React.FC = () => {
                                     {item.sucursal}
                                   </div>
                                   <div className='td'>
-                                    {item.tipo == 1 ? 'Cliente' : 'Produccion'}
+                                    {item.tipo == 2 ? 'Cliente' : 'Produccion'}
                                   </div>
+                                  <div className='td'>
+                                    {item.dia_recepcion} de {item.hora_inicial_recepcion} a {item.hora_final_recepcion}
+                                  </div>
+                                 
+                                 
                                   <div className='td delivery'>
-                                    <p>{item.entrega}</p>
+                                    <p>{item.entrega} a las {item.hora_entrega}</p>
                                   </div>
                                   <div className='td btn'>
                                       <button className='btn__general-danger' type='button' onClick={() => deleteDeliveryTime(item)}>Eliminar</button>

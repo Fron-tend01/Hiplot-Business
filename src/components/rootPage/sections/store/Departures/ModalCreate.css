@@ -137,7 +137,7 @@
 
 .table__direct_warehouse-exit .table__body .tbody:hover {
     background-color: var(--secundary-color);
-    color: #fff;
+    /* color: #fff; */
 }
 
 
