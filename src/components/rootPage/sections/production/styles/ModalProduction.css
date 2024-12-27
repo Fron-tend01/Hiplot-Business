@@ -35,8 +35,8 @@
 	background-color: var(--background-modal);  
 	border-radius: 5px;
 	padding: 40px 20px 20px 20px;
-	width: 80%;
-    height: 80%;
+	width: 95%;
+    height: 95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
@@ -61,3 +61,120 @@
 /* ANIMACIONES */
 /* ------------------------- */
 .popup__production-modal__article-modal.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+
+
+
+ /*************************************************************
+                    Tabla de Entradas
+ **************************************************************/
+
+ .table__production_modal {
+    border-radius: 10px;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+.table__production_modal .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__production_modal .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__production_modal .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr) 2fr;
+    padding: 10px;
+    font-weight: 600;
+    column-gap: 20px;
+}
+
+.table__production_modal .table__body {
+	height: 100%;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+
+
+.table__production_modal .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+}
+  
+.table__production_modal .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+}
+
+
+
+.table__production_modal .table__body .tbody {
+    display: flex;
+}
+
+.table__production_modal .table__body .tbody.personalized {
+    border: 2px solid var(--primary-color);
+}
+
+.table__production_modal .table__body .tbody {
+    display: grid;
+	grid-template-columns: repeat(6, 1fr) 2fr;
+    padding: 10px;
+    column-gap: 20px;
+}
+
+
+.table__production_modal .table__body .tbody > .td .inputs__general {
+    margin-top: 0;
+}
+
+
+.table__production_modal .table__body .tbody > .td .add_urgency {
+    background-color: var(--orange-color);
+    border-radius: 5px;
+    color: #fff;
+    padding: 3px 0;
+    border: none;
+    cursor: pointer;
+}
+
+.table__production_modal .table__body .tbody > .td .remove_urgency {
+    background-color: var(--danger-color);
+    border-radius: 5px;
+    color: #fff;
+    padding: 3px 0;
+    border: none;
+    cursor: pointer;
+}
+
+
+
+

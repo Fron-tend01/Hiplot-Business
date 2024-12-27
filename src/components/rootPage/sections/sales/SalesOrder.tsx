@@ -68,13 +68,13 @@ const SalesOrder: React.FC = () => {
 
         const dataSaleOrders = {
             folio: fol,
-            id_sucursal: branchOffices.id,
-            id_serie: selectedIds?.series.id,
+            id_sucursal: branchOffices?.id,
+            id_serie: selectedIds?.series?.id,
             id_cliente: client,
             desde: dates[0],
             hasta: dates[1],
             id_usuario: user_id,
-            id_vendedor: selectedIds?.users.id,
+            id_vendedor: selectedIds?.users?.id,
             status: 0
         }
 

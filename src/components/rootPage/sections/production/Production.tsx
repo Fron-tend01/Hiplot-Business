@@ -68,7 +68,7 @@ const Production: React.FC = () => {
         const dataProductionOrders = {
             folio: fol,
             id_sucursal: branchOffices.id,
-            id_serie: selectedIds?.series.id,
+            id_serie: selectedIds?.series?.id,
             id_cliente: client,
             desde: date[0],
             hasta: date[1],
@@ -115,7 +115,7 @@ const Production: React.FC = () => {
         const dataProductionOrders = {
             folio: fol,
             id_sucursal: branchOffices.id,
-            id_serie: selectedIds?.series.id,
+            id_serie: selectedIds?.series?.id,
             id_cliente: client,
             desde: date[0],
             hasta: date[1],
@@ -160,10 +160,10 @@ const Production: React.FC = () => {
                         <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Folio/RFC/Razon social' />
                     </div>
                     <div className='col-3'>
-                        <Select dataSelects={users} instanceId='users' />
+                        <Select dataSelects={users} instanceId='users' nameSelect='Usuarios' />
                     </div>
                     <div className='col-3'>
-                        <Select dataSelects={series} instanceId='series' />
+                        <Select dataSelects={series} instanceId='series' nameSelect='Serie' />
                     </div>
                     <div className='col-3'>
                         <label className='label__general'>Folio</label>
@@ -187,19 +187,25 @@ const Production: React.FC = () => {
                     <div className='table__head'>
                         <div className='thead'>
                             <div className='th'>
-                                <p>Nombre</p>
+                                <p>Status</p>
                             </div>
                             <div className='th'>
-                                <p>Sucursal</p>
+                                <p>Folio</p>
                             </div>
                             <div className='th'>
-                                <p>Fecha</p>
+                                <p>Suc.Origin</p>
                             </div>
                             <div className='th'>
-                                <p>Estado</p>
+                                <p>Agente</p>
                             </div>
                             <div className="th">
-
+                                <p>Cliente</p>
+                            </div>
+                            <div className="th">
+                                <p>Fecha envio Prod</p>
+                            </div>
+                            <div className="th">
+                                <p>Fecha de entrega</p>
                             </div>
                         </div>
                     </div>

@@ -160,18 +160,15 @@ const ModalSalesOrder: React.FC = () => {
         setCustomData(filter);
     }
 
-
     const SaleOrderStatus = () => {
         APIs.getSaleOrderStatus(saleOrdersToUpdate.id)
     }
 
+    const [modalProduction, setModalProduction] = useState<string>('')
 
-    const SaleOrderProduction = () => {
-        let data = {
-            id_ov: saleOrdersToUpdate.id,
-            id_usuario: user_id
-        }
-        APIs.getSaleOrderProduction(data)
+    const SaleOrderProduction = async () => {
+        setModalProduction('sale-order-production__modal')
+        console.log(modalProduction)
     }
 
     const handleAreasChange = (item: any, index: number) => {
@@ -179,7 +176,6 @@ const ModalSalesOrder: React.FC = () => {
     }
 
     const updateSaleOrderConcept = async (article: any) => {
-
         let data = {
             id: article.id,
             id_articulo: article.id_articulo,
@@ -194,7 +190,6 @@ const ModalSalesOrder: React.FC = () => {
             obs_produccion: article.obs_produccion,
             obs_factura: article.obs_factura,
             id_pers: article.id_pers,
-
         }
 
         try {
@@ -207,10 +202,7 @@ const ModalSalesOrder: React.FC = () => {
         } catch (error: any) {
             Swal.fire('Error al actualizar el concepto', error, 'success');
         }
-
     }
-
-    console.log('normalConcepts', normalConcepts)
 
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value.trim();
@@ -247,16 +239,12 @@ const ModalSalesOrder: React.FC = () => {
         updatedConcepts[index].status_produccion = newStatus;
         setNormalConcepts(updatedConcepts);
     };
-    
 
     const handleUrgencyChange = (index: number) => {
         const newConcept = [...normalConcepts];
         newConcept[index].urgency = !newConcept[index]?.urgency;
         setNormalConcepts(newConcept);
     };
-
-
-
 
 
     const [amount, setAmount] = useState<any>(0)
@@ -268,7 +256,6 @@ const ModalSalesOrder: React.FC = () => {
         let amountTotal = 0;
         let descountTotal = 0;
         let urgencyTotal = 0;
-
 
         normalConcepts.forEach((element: any) => {
             amountTotal += element.cantidad * element.precio_unitario;
@@ -284,7 +271,15 @@ const ModalSalesOrder: React.FC = () => {
         setdTotalGeneral(amountTotal - descountTotal + urgencyTotal)
     }, [normalConcepts]);
 
-
+    const getTicket = async () => {
+        try {
+            await APIs.getPdfPurchaseOrders(saleOrdersToUpdate.id);
+            // Abrimos el PDF en una nueva pestaña
+            window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_ov/${saleOrdersToUpdate.id}`, '_blank');
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' ? 'active' : ''}`}>
@@ -296,7 +291,29 @@ const ModalSalesOrder: React.FC = () => {
                     <p className='title__modals'>Orden de venta</p>
                 </div>
                 {modalSalesOrder == 'sale-order__modal-update' ?
-                    <div className="card ">
+                    <div className="card">
+                        <div className={`overlay__sale-order_production__modal_articles ${modalProduction == 'sale-order-production__modal' ? 'active' : ''}`}>
+                            <div className={`popup__sale-order_production__modal_articles ${modalProduction == 'sale-order-production__modal' ? 'active' : ''}`}>
+                                <div className='header__modal'>
+                                    <a href="#" className="btn-cerrar-popup__sale-order_production__modal_articles" onClick={() => setModalProduction('')} >
+                                        <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+                                    </a>
+                                    <p className='title__modals'>Enviar a produccion</p>
+                                </div>
+                                <div className='sale-order_production__modal_articles'>
+                                    <div>
+                                        <div>
+                                            <p>Fecha de entraga clientes</p>
+                                            <p>{ }</p>
+                                        </div>
+                                        <div>
+                                            <p>Fecha de entraga clientes</p>
+                                            <p>{ }</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div className="card-body bg-standar">
                             <h3 className="text">{saleOrdersToUpdate.serie}-{saleOrdersToUpdate.folio}-{saleOrdersToUpdate.anio}</h3>
                             <hr />
@@ -328,7 +345,7 @@ const ModalSalesOrder: React.FC = () => {
                             <div className='d-flex justify-content-between'>
                                 <div className='d-flex'>
                                     <div className='mr-4'>
-                                        <button className='btn__general-orange'>Imprimir ticket</button>
+                                        <button className='btn__general-orange' onClick={getTicket}>Imprimir ticket</button>
                                     </div>
                                     <div>
                                         <button className='btn__general-purple' onClick={SaleOrderProduction}>Mandar a producción</button>
@@ -337,7 +354,6 @@ const ModalSalesOrder: React.FC = () => {
                                 <div>
                                     <button className='btn__general-danger' onClick={SaleOrderStatus}>Cancelar</button>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -381,9 +397,7 @@ const ModalSalesOrder: React.FC = () => {
                                         placeholder="Selecciona la fecha de inicio"
                                     />
                                 </div>
-                            </div>
-
-                            <div className="col-6 sale-order__input_container d-flex align-items-center">
+                            </div>                            <div className="col-6 sale-order__input_container d-flex align-items-center">
                                 <p className="label__general">Fecha de entrega cliente</p>
                                 <div className="container_dates__requisition">
                                     <Flatpickr
@@ -395,7 +409,6 @@ const ModalSalesOrder: React.FC = () => {
                                     />
                                 </div>
                             </div>
-
                         </div>
                         <div className='row'>
                             <div className='col-12 d-flex align-items-center justify-content-between'>
@@ -528,7 +541,6 @@ const ModalSalesOrder: React.FC = () => {
                                                                     </option>
                                                                 ))}
                                                             </select>
-
                                                         </div>
                                                         <div className='td'>
                                                             <textarea className={`textarea__general`} placeholder='Observaciones Factura' value={article.obs_factura} onChange={(e) => handleObsBillChange(e, index)} />
@@ -553,9 +565,14 @@ const ModalSalesOrder: React.FC = () => {
                                                                 </label>
                                                             </div>
                                                         </div>
-                                                        <div className='td'>
-                                                            <button type='button' className='btn__general-purple' onClick={() => updateSaleOrderConcept(article)}>Actualizar</button>
-                                                        </div>
+                                                        {modalSalesOrder == 'sale-order__modal-update' ?
+                                                            <div className='td'>
+                                                                <button type='button' className='btn__general-purple' onClick={() => updateSaleOrderConcept(article)}>Actualizar</button>
+                                                            </div>
+                                                            :
+                                                            ""
+                                                        }
+
                                                     </div>
                                                 }
                                             </div>
@@ -601,6 +618,7 @@ const ModalSalesOrder: React.FC = () => {
                 <Personalized />
             </div>
         </div>
+
     )
 }
 

@@ -1,6 +1,6 @@
 
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useThemeStore } from '../../../zustand/ThemeStore';
 import './Header.css';
 import NotificationIcon from './NotificationIcon';
@@ -27,61 +27,61 @@ const Header: React.FC = () => {
     activeMode();
   };
 
-  const [notifications, setNotifications] = useState<string[]>([]);
-  const wsUrl = "ws://hiplot.dyndns.org:84/api_dev/ws/notify"; // URL del WebSocket en el backend
-  const socketRef = useRef<WebSocket | null>(null); // Referencia para el WebSocket
-  const retryAttempts = useRef(0); // Contador de reconexiones
-  const maxRetries = 5; // Número máximo de reintentos
+  // const [notifications, setNotifications] = useState<string[]>([]);
+  // const wsUrl = "ws://hiplot.dyndns.org:84/api_dev/ws/notify"; // URL del WebSocket en el backend
+  // const socketRef = useRef<WebSocket | null>(null); // Referencia para el WebSocket
+  // const retryAttempts = useRef(0); // Contador de reconexiones
+  // const maxRetries = 5; // Número máximo de reintentos
 
-  // Función para conectar el WebSocket
-  const connectSocket = () => {
-    const socket = new WebSocket(wsUrl);
-    socketRef.current = socket;
+  // // Función para conectar el WebSocket
+  // const connectSocket = () => {
+  //   const socket = new WebSocket(wsUrl);
+  //   socketRef.current = socket;
 
-    // Eventos del WebSocket
-    socket.onopen = () => {
-      console.log("Conectado al WebSocket");
-      retryAttempts.current = 0; // Resetear intentos en reconexión exitosa
-    };
+  //   // Eventos del WebSocket
+  //   socket.onopen = () => {
+  //     console.log("Conectado al WebSocket");
+  //     retryAttempts.current = 0; // Resetear intentos en reconexión exitosa
+  //   };
 
-    console.log(notifications)
+  //   console.log(notifications)
 
-    socket.onmessage = (event) => {
-      console.log("Mensaje recibido:", event.data);
-      setNotifications((prevNotifications) => [...prevNotifications, event.data]);
-    };
+  //   socket.onmessage = (event) => {
+  //     console.log("Mensaje recibido:", event.data);
+  //     setNotifications((prevNotifications) => [...prevNotifications, event.data]);
+  //   };
 
-    socket.onclose = (event) => {
-      console.log("WebSocket desconectado:", event.code, event);
+  //   socket.onclose = (event) => {
+  //     console.log("WebSocket desconectado:", event.code, event);
 
-      // Desconexión anormal
-      if (event.code === 1006) {
-        console.log("Conexión cerrada anormalmente.");
-      }
+  //     // Desconexión anormal
+  //     if (event.code === 1006) {
+  //       console.log("Conexión cerrada anormalmente.");
+  //     }
 
-      // Intentar reconectar
-      if (retryAttempts.current < maxRetries) {
-        const timeout = Math.pow(2, retryAttempts.current) * 1000; // Retraso exponencial
-        retryAttempts.current += 1;
-        console.log(`Intentando reconectar en ${timeout / 1000} segundos...`);
-        setTimeout(connectSocket, timeout); // Reconectar
-      }
-    };
+  //     // Intentar reconectar
+  //     if (retryAttempts.current < maxRetries) {
+  //       const timeout = Math.pow(2, retryAttempts.current) * 1000; // Retraso exponencial
+  //       retryAttempts.current += 1;
+  //       console.log(`Intentando reconectar en ${timeout / 1000} segundos...`);
+  //       setTimeout(connectSocket, timeout); // Reconectar
+  //     }
+  //   };
 
-    socket.onerror = (error) => {
-      console.error("Error en WebSocket:", error);
-    };
-  };
+  //   socket.onerror = (error) => {
+  //     console.error("Error en WebSocket:", error);
+  //   };
+  // };
 
-  useEffect(() => {
-    connectSocket();
+  // useEffect(() => {
+  //   connectSocket();
 
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.close();
-      }
-    };
-  }, [wsUrl]);
+  //   return () => {
+  //     if (socketRef.current) {
+  //       socketRef.current.close();
+  //     }
+  //   };
+  // }, [wsUrl]);
 
   return (
     <div className='hero'>

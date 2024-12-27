@@ -52,7 +52,7 @@ const SalesCard: React.FC = () => {
 
   const [billingComment, setBillingComment] = useState<any>('')
 
-
+  console.log(IdArticle)
 
   const fetch = async () => {
     const data = {
@@ -99,10 +99,7 @@ const SalesCard: React.FC = () => {
     }
 
 
-    const resultUnits = await getUnits(data);
-    if (resultUnits && resultUnits.length > 0) {
-      setUnits(resultUnits);
-    }
+  
 
     const resultUsers = await getUserGroups(user_id);
     if (resultUsers) {
@@ -112,7 +109,7 @@ const SalesCard: React.FC = () => {
 
   useEffect(() => {
     fetch();
-    console.log(article)
+
   }, [IdArticle, user_id]);
 
 
@@ -205,7 +202,7 @@ const SalesCard: React.FC = () => {
           status: 0,
           descripcion: article.descripcion,
           codigo: article.codigo,
-          unidad: selectedUnit.id,
+          unidad: selectedUnit.id_unidad,
           name_unidad: selectedUnit.nombre,
           cantidad: amount,
           precio_total: result.mensaje,
@@ -225,7 +222,7 @@ const SalesCard: React.FC = () => {
           id_orden_produccion: 0,
           status_produccion: 0,
           cobrado: 0,
-          id_unidad: selectedUnit.id,
+          id_unidad: selectedUnit.id_unidad,
             
           campos_plantilla: article.plantilla_data.map((x: any) => ({
             nombre_campo_plantilla: x.nombre,
@@ -322,7 +319,8 @@ const SalesCard: React.FC = () => {
   }
 
   useEffect(() => {
-
+    console.log(article)
+    setUnits(article?.unidades);
   }, [article])
 
   const [activeIndex, setActiveIndex] = useState(null);
@@ -443,7 +441,7 @@ const SalesCard: React.FC = () => {
                     </div>
                     <div className={`content ${selectUnits ? 'active' : ''}`}>
                       <ul className={`options ${selectUnits ? 'active' : ''}`} style={{ opacity: selectUnits ? '1' : '0' }}>
-                        {units.map((userGroup: any) => (
+                        {units?.map((userGroup: any) => (
                           <li key={uuidv4()} onClick={() => handleUnitsChange(userGroup)}>
                             {userGroup.nombre}
                           </li>

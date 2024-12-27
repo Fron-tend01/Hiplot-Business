@@ -369,7 +369,7 @@ updateClients: async (data: any, customPath?: string) => {
   },
 
   getPdfPurchaseOrders: async (id: number, customPath?: string) => {
-    const path = customPath || `pdf_oc/${id}`
+    const path = customPath || `pdf_ov/${id}`
     return ConfigurationAPIs.get(path)
   },
 
@@ -719,6 +719,16 @@ getTotalPrice: async (data: any, customPath?: string) => {
     return ConfigurationAPIs.post(path, data)
   },
 
+  getTicketOV: async (id: any, customPath?: any) => {
+    const path = customPath || `api_dev/pdf_ov/${id}`;
+    return ConfigurationAPIs.get (path)
+  },
+
+  getDeleveryTime: async (data: any, customPath?: any) => {
+    const path = customPath || `api_dev/calcular_tiempo_entrega`;
+    return ConfigurationAPIs.get (path)
+  },
+
   
 
 
@@ -736,11 +746,29 @@ getTotalPrice: async (data: any, customPath?: string) => {
   //   return ConfigurationAPIs.post(path, data)
   // },
 
-  //////////////////////////////// Orden de venta ///////////////////////////////////////
+  //////////////////////////////// Produccion ///////////////////////////////////////
   getProoductionOrders: async (data: any, customPath?: string) => {
     const path = customPath || 'get_orden_produccion';
     return ConfigurationAPIs.post(path, data)
   },
+
+
+  getProoductionPDF: async (id: number, customPath?: string) => {
+    const path = customPath || `api_dev/pdf_op/${id}`;
+    return ConfigurationAPIs.get(path)
+  },
+
+
+  sendAreaProduction: async (data: any, customPath?: string) => {
+    const path = customPath || `api_dev/enviar_op_a_otra_area`;
+    return ConfigurationAPIs.post(path, data)
+  },
+
+  sendAreaConceptoProduction: async (data: any, customPath?: string) => {
+    const path = customPath || `api_dev/enviar_concepto_a_otra_area`;
+    return ConfigurationAPIs.post(path, data)
+  },
+
 
 
   
