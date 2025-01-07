@@ -4,6 +4,9 @@ import { storeBranchOffcies } from '../../../../zustand/BranchOffices';
 import useUserStore from '../../../../zustand/General';
 import { storeTemplates } from '../../../../zustand/Templates';
 import './styles/templates.css'
+import Select from '../../Dynamic_Components/Select';
+import APIs from '../../../../services/services/APIs';
+import { useSelectStore } from '../../../../zustand/Select';
 
 
 
@@ -12,11 +15,13 @@ const Templates: React.FC = () => {
   const [nameType, setNameType] = useState<string>('')
   const [id_template, setId_tempalte] = useState<number | null>(null)
 
+  const [selectTypePayment, setSelectTypePayment] = useState<any>(null)
 
   const [selectedCompany, setSelectedCompany] = useState<number | null>(null)
 
   const [modalState, setModalState] = useState<boolean>(false)
 
+  const selectData: any = useSelectStore(state => state.selectedIds)
 
   const [warningSelectCompany] = useState<boolean>(false)
   const [warningNombre] = useState<boolean>(false)
@@ -40,8 +45,18 @@ const Templates: React.FC = () => {
     getCompaniesXUsers(user_id)
     getBranchOfficeXCompanies(0, user_id)
     getTemplates(user_id)
+    fetch()
   }, [])
 
+  const fetch = async () => {
+    const resultType = await APIs.getTypeOfPayments()
+
+    setSelectTypePayment({
+      selectName: 'Tipo de cobro',
+      options: 'nombre',
+      dataSelect: resultType
+    })
+  }
 
 
 
@@ -55,10 +70,13 @@ const Templates: React.FC = () => {
     }
 
     // Crear un nuevo objeto que combine nuevaEmpresa y nuevoTipo
+    console.log(selectData.selectTypePayment);
+    
     const nuevoRegistro: any = {
       nombre: nameType,
       tipo: selectedInputType,
-      id_plantilla: 0
+      id_plantilla: 0,
+      if_id_tipo_cobro: selectData.selectTypePayment == undefined ? 0 : selectData.selectTypePayment.id
     };
 
     // Agregar el nuevo registro al estado de data_extDos
@@ -96,8 +114,6 @@ const Templates: React.FC = () => {
     setData_extDos(updatedDataExt);
   };
 
-
-
   const handleCreateFamilies = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
@@ -134,6 +150,7 @@ const Templates: React.FC = () => {
   const modalCreate = (data_upd: any, mu: boolean) => {
     setModalState(!modalState)
     setModoUpdate(mu)
+    setSelectedInputType(null)
     if (mu) {
       setName(data_upd.nombre)
       setSelectedCompany(data_upd.id_empresa)
@@ -144,6 +161,8 @@ const Templates: React.FC = () => {
       setNameType('')
       setSelectedCompany(null)
       setId_tempalte(null)
+      setData_extDos([])
+
     }
   }
 
@@ -186,7 +205,8 @@ const Templates: React.FC = () => {
   const types = {
     texto: 'texto',
     numero: 'numero',
-    check: 'check'
+    check: 'check',
+    txtvisual: 'txtvisual'
   }
 
   return (
@@ -237,7 +257,10 @@ const Templates: React.FC = () => {
               </div>
             </div>
             <div className='table__templates' >
-              <div className='row'>
+              <div className='row add-client__container'>
+                <div className='col-12 title'>
+                  <p>Agregar Campos</p>
+                </div>
                 <div className='col-6 md-col-12'>
                   <label className='label__general'>Nombre</label>
                   <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
@@ -253,13 +276,29 @@ const Templates: React.FC = () => {
                       </div>
                       <div className={`content ${selectInputTypes ? 'active' : ''}`}>
                         <ul className={`options ${selectInputTypes ? 'active' : ''}`}>
-                          {Object.keys(types).map(key => (
-                            <li key={key} value={key} onClick={() => TypesChange(key)}>{[key]}</li>
-                          ))}
+                          {Object.keys(types)
+                            .filter(key => {
+                              if (key === 'txtvisual' && !modoUpdate) {
+                                return false; 
+                              }
+                              return true; 
+                            })
+                            .map(key => (
+                              <li key={key} value={key} onClick={() => TypesChange(key)}>
+                                {key}
+                              </li>
+                            ))}
                         </ul>
+
                       </div>
                     </div>
                   </div>
+                  {selectedInputType == 'txtvisual' ?
+                    <div className='col-6 md-col-12' title='Basado en el Tipo de Cobro'>
+                      <Select dataSelects={selectTypePayment} instanceId='selectTypePayment' nameSelect={'Operación a realizar (Tipo de cobro)'} />
+                    </div>
+
+                    : ''}
                   <div>
                     <div className='container__add_companyin_families'>
                       <button className='btn__general-purple' onClick={addCompany} type='button'>Agregar</button>
@@ -297,7 +336,7 @@ const Templates: React.FC = () => {
                             {item.nombre}
                           </div>
                           <div className='td'>
-                            {item.tipo}
+                            {item.tipo} {item.plantilla!=null ? ' // TP: ('+item.plantilla+')': ''}
                           </div>
                           <div className='td'>
                             <button className='btn__delete_users' type='button' onClick={() => deleteUser(index)}>Eliminar</button>

@@ -297,7 +297,9 @@ const Prices: React.FC = () => {
   }
 
   const handleUsersGroupsChange = (e: any, index: number) => {
-    prices[index].id_grupos_us = parseInt(e.target.value);
+    const newPrices = [...prices];
+    newPrices[index].id_grupos_us = parseInt(e.target.value);
+    setPrices(newPrices); 
   }
 
 
@@ -447,7 +449,7 @@ const Prices: React.FC = () => {
                           <div className='tbody__container' key={index}>
                             <div className='tbody'>
                               <div className='td'>
-                                {item?.rango_titulo}
+                                {item?.rango_titulo }
                               </div>
                               <div className='td'>
                                 <input className='inputs__general' type="text" placeholder='Orden' onChange={(e) => handleOrdenChange(e, index)} />
@@ -550,9 +552,9 @@ const Prices: React.FC = () => {
                         <input className='inputs__general' type="text" value={item.precios_fyv} placeholder='Frente y vuelta' onChange={(e) => handlePricesFVChange(e, index)} />
                       </div>
                       <div className='td'>
-                        <select className='traditional__selector' onChange={(e) => handleUsersGroupsChange(e, index)} value={item.id_grupo} >
+                        <select className='traditional__selector' onChange={(e) => handleUsersGroupsChange(e, index)} value={item.id_grupos_us} >
                           {usersGroups.map((item: any) => (
-                            <option key={item.id} value={item.id}>
+                            <option value={item.id}>
                               {item.nombre}
                             </option>
                           ))}
@@ -615,7 +617,7 @@ const Prices: React.FC = () => {
                                 <div className='tbody'>
                                   <div className='td'>
                                     <div className='td'>
-                                      <p>{item_two.rango_titulo}</p>
+                                      <p>{item_two.rango_titulo|| item_two?.rango}</p>
                                       {/* <div className='select__container'>
                                         <div className={`select-btn__general`}>
                                           <div className={`select-btn ${item_two.selected ? 'active' : ''}`} onClick={() => openselectsRangesTwo(index, index_two)}>

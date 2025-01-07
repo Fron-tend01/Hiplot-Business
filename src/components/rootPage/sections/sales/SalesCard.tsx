@@ -165,18 +165,21 @@ const SalesCard: React.FC = () => {
 
 
   const [data, setData] = useState<any>()
-  console.log('article', article)
+
 
   const get = async () => {
+    console.log(article.plantilla_data);
+    
     const dataArticle = {
       id_articulo: article.id,
       id_grupo_us: selectedUserGroup,
       id_unidad: selectedUnit.id,
       cantidad: amount,
-      campos: article.plantilla_data,
+      campos: article.plantilla_data.filter((x:any)=> x.tipo=='numero'),
+      camposTxTVisual: article.plantilla_data.filter((x:any)=> x.tipo=='txtvisual'),
     };
-    
-  
+
+
 
     try {
       const result: any = await APIs.getTotalPrice(dataArticle);
@@ -189,14 +192,13 @@ const SalesCard: React.FC = () => {
       if (result.error == false) {
         setPrices(result.mensaje)
 
-        
 
         setData({
           id_pers: 0,
           front: true,
           id_articulo: article.id,
           produccion_interna: true,
-          id_area_produccion: article.areas_produccion[0].id_area,
+          id_area_produccion: 0,
           enviar_a_produccion: false,
           personalized: false,
           check: false,
@@ -230,14 +232,16 @@ const SalesCard: React.FC = () => {
             tipo_campo_plantilla: 0,
             valor: x.valor.toString()
           }))
+
         })
+
         return
+
       }
     } catch (error) {
       console.error('Error al obtener el precio total:', error);
     }
   };
-
 
 
   const getPrices = async () => {
@@ -314,11 +318,9 @@ const SalesCard: React.FC = () => {
 
     const result = await getArticles(data)
     setArticle(result[0])
-    console.log('sdsdsssssssss', result[0])
   }
 
   useEffect(() => {
-    console.log(article)
     setUnits(article?.unidades);
   }, [article])
 
@@ -398,8 +400,8 @@ const SalesCard: React.FC = () => {
                 </div>
 
               </div>
-              <div className='row__one'>
-                <div className='select__container'>
+              <div className='row'>
+                <div className='select__container col-6 md-col-6 sm-col-12'>
                   <label className='label__general'>Grupo de usuario</label>
                   <div className={`select-btn__general`}>
                     <div className={`select-btn ${selectUsersGroups ? 'active' : ''}`} onClick={openSelectUsersGroups}>
@@ -421,13 +423,13 @@ const SalesCard: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div>
+                <div className='col-6 md-col-6 sm-col-12'>
                   <label className='label__general'>Cantidad</label>
                   <input className={`inputs__general`} type="number" value={amount} onChange={handleAmountChange} placeholder='Ingresa la cantidad' />
                 </div>
               </div>
-              <div className='row__two'>
-                <div className='select__container'>
+              <div className='row'>
+                <div className='select__container col-4 md-col-6 sm-col-12'>
                   <label className='label__general'>Unidad</label>
                   <div className={`select-btn__general`}>
                     <div className={`select-btn ${selectUnits ? 'active' : ''}`} onClick={openSelectUnits}>
@@ -449,33 +451,49 @@ const SalesCard: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div>
+                <div className='col-4 md-col-6 sm-col-12'>
                   <label className='label__general'>Coment. factura</label>
                   <input className={`inputs__general`} type="text" value={billingComment} onChange={(e) => setBillingComment(e.target.value)} placeholder='Factura' />
                 </div>
-                <div>
+                <div className='col-4 md-col-6 sm-col-12'>
                   <label className='label__general'>Coment. producción</label>
                   <input className={`inputs__general`} type="text" value={productionComments} onChange={(e) => setproductionComments(e.target.value)} placeholder='Producción' />
                 </div>
               </div>
-              <div className='row__three'>
+              <div className='row'>
                 {article?.plantilla_data?.map((x: any, index: any) => (
-                  <div>
-                    <label className='label__general'>{x.nombre}</label>
-                    <input
-                      className={`inputs__general`}
-                      type="text"
-                      value={x.value}
-                      onChange={(e) => handleTemplatesChange(e, index)}
-                      placeholder={x.nombre}
-                    />
+                  <div className='col-4 md-col-6 sm-col-12'>
+                    {x.tipo != 'txtvisual' ?
+                      <div>
+                        <label className='label__general'>{x.nombre}</label>
+                        <input
+                          className={`inputs__general`}
+                          type="text"
+                          value={x.value}
+                          onChange={(e) => handleTemplatesChange(e, index)}
+                          placeholder={x.nombre}
+                        />
+                      </div>
+                      : ''}
+                  </div>
+                ))}
+              </div>
+              <div className='row'>
+                {article?.plantilla_data?.map((x: any) => (
+                  <div className='col-4 md-col-6 sm-col-12'>
+                    {x.tipo == 'txtvisual' ?
+                        <div className='price_x_unit'>
+                          <p>{x.nombre}</p>
+                          <p className='result__price_x_unit'>{x.value || '0'}</p>
+                        </div>
+                      : ''}
                   </div>
                 ))}
               </div>
               <div className='row__four'>
                 <div className='price_x_unit'>
                   <p>Precio por unidad:</p>
-                  <p className='result__price_x_unit'>$ 45</p>
+                  <p className='result__price_x_unit'>$ {prices/amount}</p>
                 </div>
                 <div className='total__price'>
                   <p>Precio total</p>
