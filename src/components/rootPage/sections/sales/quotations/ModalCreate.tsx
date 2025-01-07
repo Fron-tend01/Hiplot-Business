@@ -29,7 +29,9 @@ const ModalCreate: React.FC = () => {
   const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
   const setCustomData = storePersonalized((state) => state.setCustomData);
 
-  const { identifier }: any = useStore(storeQuotation);
+  const setQuotesData = storeQuotation(state => state.setQuotesData);
+
+  const { identifier, dataGet }: any = useStore(storeQuotation);
   const setPersonalized = storePersonalized(state => state.setPersonalized)
 
   const setDataQuotation = storeSaleCard(state => state.setDataQuotation)
@@ -38,6 +40,7 @@ const ModalCreate: React.FC = () => {
   const { modal }: any = useStore(storeModals)
   const setClientsModal = storeQuotation((state) => state.setClientsModal);
   const setClient = storeQuotation((state) => state.setClient);
+
   const { dataUpdate, normalConcepts, customConcepts, customData, personalized }: any = useStore(storePersonalized)
   const { quatation }: any = useStore(storeQuotation)
   const { getClients }: any = ClientsRequests()
@@ -86,11 +89,7 @@ const ModalCreate: React.FC = () => {
 
     try {
       const resultClients = await getClients(data)
-      setClients({
-        selectName: 'Cliente',
-        options: 'razon_social',
-        dataSelect: resultClients
-      })
+      setClients(resultClients)
 
       setSelectedId('clients', { id: quatation.id_cliente });
     } catch (error) {
@@ -123,7 +122,7 @@ const ModalCreate: React.FC = () => {
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
   const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
-  const [clients, setClients] = useState<any>()
+  const [clients, setClients] = useState<any>([])
 
 
   const searchUsers = async () => {
@@ -135,11 +134,7 @@ const ModalCreate: React.FC = () => {
 
     try {
       const resultClients = await getClients(data)
-      setClients({
-        selectName: 'Cliente',
-        options: 'razon_social',
-        dataSelect: resultClients
-      })
+      setClients(resultClients)
 
 
     } catch (error) {
@@ -154,11 +149,25 @@ const ModalCreate: React.FC = () => {
 
   }, [selectedIds])
 
-  const seeClient = (client: any) => {
-    setClient(client)
-
+  const seeClient = () => {
     setClientsModal('clients_modal')
+    
   }
+
+  const [selectResults, setSelectResults] = useState<boolean>(false);
+  const [selectedResult, setSelectedResult] = useState<any>(null);
+
+  const openSelectResults = () => {
+    setSelectResults(!selectResults)
+  }
+
+  const handleResultsChange = (result: any) => {
+    setClient(result)
+    setSelectedResult(result);
+    setSelectResults(!selectResults)
+  };
+
+  console.log('personalized', personalized)
 
 
   const createQuotation = async () => {
@@ -169,18 +178,19 @@ const ModalCreate: React.FC = () => {
       element.unidad = element.id_unidad
     });
 
-    personalized.forEach((element: any) => {
+    personalized?.forEach((element: any) => {
       element.conceptos.forEach((x: any) => {
         x.unidad = x.id_unidad
       });
     });
 
+    
 
-    console.log('nomal personalized', personalized)
+
 
     const data = {
       id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
-      id_cliente: selectedIds.clients.id,
+      id_cliente: modal === 'create-modal__qoutation' ? selectedResult?.id : quatation.id_cliente,
       id_usuario_crea: user_id,
       comentarios: comments,
       conceptos: filter,
@@ -194,19 +204,28 @@ const ModalCreate: React.FC = () => {
 
     try {
       if (modal === 'create-modal__qoutation') {
-        const result: any = await APIs.createQuotation(data)
-        if (result.error == true) {
-          return Swal.fire('Advertencia', result.mensaje, 'warning');
+        const response: any = await APIs.createQuotation(data)
+        if (response.error == true) {
+          return Swal.fire('Advertencia', response.mensaje, 'warning');
         } else {
           Swal.fire('Cotizacion creada exitosamente', '', 'success');
+          let response = await APIs.getQuotation(dataGet);
+          setQuotesData(response)
+          setCustomData([])
+          setModal('')
         }
 
       } else {
-        const result: any = await APIs.updateQuotation(data)
-        if (result.error == true) {
-          return Swal.fire('Advertencia', result.mensaje, 'warning');
+        let response: any = await APIs.updateQuotation(data)
+        if (response.error == true) {
+          return Swal.fire('Advertencia', response.mensaje, 'warning');
         } else {
           Swal.fire('Cotizacion actualizada exitosamente', '', 'success');
+          Swal.fire('Cotizacion creada exitosamente', '', 'success');
+          const response = await APIs.getQuotation(dataGet);
+          setQuotesData(response)
+          setCustomData([])
+          setModal('')
         }
 
       }
@@ -216,7 +235,7 @@ const ModalCreate: React.FC = () => {
 
   }
 
-  console.log('quatation', quatation)
+
   const [permisoDescount] = useState<boolean>(true)
 
   const modalSeeConcepts = (article: any) => {
@@ -273,6 +292,7 @@ const ModalCreate: React.FC = () => {
     setModal('')
     if (modal === 'update-modal__qoutation') {
       setComments('')
+         setCustomData([])
       setDataQuotation([])
     }
 
@@ -375,7 +395,26 @@ const ModalCreate: React.FC = () => {
               <button type='button' className='btn__general-purple' onClick={searchUsers}>Buscar</button>
             </div>
             <div className=''>
-              <Select dataSelects={clients} instanceId='clients' nameSelect={'Resultado'} />
+              <div className='select__container'>
+                <label className='label__general'>Resultado</label>
+                <div className={`select-btn__general`}>
+                  <div className={`select-btn ${selectResults ? 'active' : ''}`} onClick={openSelectResults}>
+                    <div className='select__container_title'>
+                      <p>{selectedResult ? clients?.find((s: { id: number }) => s.id === selectedResult.id)?.razon_social : 'Selecciona'}</p>
+                    </div>
+                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                  </div>
+                  <div className={`content ${selectResults ? 'active' : ''}`}>
+                    <ul className={`options ${selectResults ? 'active' : ''}`} style={{ opacity: selectResults ? '1' : '0' }}>
+                      {clients?.map((result: any) => (
+                        <li key={result.id} onClick={() => handleResultsChange(result)}>
+                          {result.razon_social}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
             <div className='d-flex align-items-end'>
               <button className='btn__general-purple' onClick={seeClient}>ver cliente</button>
@@ -467,7 +506,7 @@ const ModalCreate: React.FC = () => {
                             <p>$ {article.cantidad}</p>
                           </div>
                           <div className='td'>
-                            <p>{article.name_unidad}</p>
+                            <p>{article.name_unidad || article.unidad}</p>
                           </div>
                           <div className='td'>
                             {permisoDescount ?
@@ -505,7 +544,7 @@ const ModalCreate: React.FC = () => {
               </div>
               :
               <div className='col-12 d-flex justify-content-center'>
-                <button className='btn__general-purple' onClick={createQuotation}>actualizar contizacion</button>
+                <button className='btn__general-purple' onClick={createQuotation}>Actualizar contizacion</button>
               </div>
             }
           </div>

@@ -134,12 +134,12 @@ const ModalProduction: React.FC = () => {
                                 <div className='d-flex justify-content-between'>
                                     <div className='d-flex align-items-end'>
                                         <div className='mr-4'>
-                                            <button className='btn__general-orange' onClick={getPDF}>Imprimir ticket</button>
+                                            <button className='btn__general-orange' type='button' onClick={getPDF}>Imprimir ticket</button>
                                         </div>
                                         <div className='d-flex'>
                                             <div className='mr-3'>
                                                 <Select dataSelects={areas} instanceId='id_serie' nameSelect='Areas' />
-                                            </div>
+                                            </div>   
                                             <div className='d-flex align-items-end'>
                                                 <button className='btn__general-purple' onClick={sendAreas}>Enviar</button>
                                             </div>

@@ -156,8 +156,8 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 40px 20px 20px 20px;
-	width: 70%;
-    height: 80%;
+	width: auto;
+    height: auto;
 	display: grid;
 	transition: .3s ease all;
 	transform: scale(0.7);

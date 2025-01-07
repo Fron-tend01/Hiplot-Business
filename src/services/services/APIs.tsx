@@ -709,7 +709,7 @@ getTotalPrice: async (data: any, customPath?: string) => {
     return ConfigurationAPIs.get(path)
   },
   
-  getSaleOrderProduction: async (data: any, customPath?: any) => {
+  createSaleOrderProduction: async (data: any, customPath?: any) => {
     const path = customPath || 'create_orden_produccion';
     return ConfigurationAPIs.post(path, data)
   },
@@ -727,6 +727,11 @@ getTotalPrice: async (data: any, customPath?: string) => {
   getDeleveryTime: async (data: any, customPath?: any) => {
     const path = customPath || `api_dev/calcular_tiempo_entrega`;
     return ConfigurationAPIs.get (path)
+  },
+
+  calculateSalesDeliveryDime: async (data: any, customPath?: any) => {
+    const path = customPath || `api_dev/calcular_tiempo_entrega`;
+    return ConfigurationAPIs.post(path, data)
   },
 
   

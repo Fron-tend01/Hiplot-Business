@@ -15,6 +15,12 @@ interface StoreState {
     identifier: any;
     setIdentifier: (x: any) => void;
 
+    quotesData: any;
+    setQuotesData: (x: any) => void;
+
+    dataGet: any;
+    setDataGet: (x: any) => void;
+
    
 }
 
@@ -30,6 +36,12 @@ export const storeQuotation = create<StoreState>((set) => ({
 
     client: null,
     setClient: (x) => set({client: x}),
+
+    quotesData: [],
+    setQuotesData: (x) => set({quotesData: x}),
+
+    dataGet: {},
+    setDataGet: (x) => set({dataGet: x}),
 
 
 }));

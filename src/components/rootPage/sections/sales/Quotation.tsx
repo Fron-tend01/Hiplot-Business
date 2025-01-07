@@ -13,6 +13,8 @@ import { seriesRequests } from '../../../../fuctions/Series';
 import Select from '../../Dynamic_Components/Select'
 import { useSelectStore } from '../../../../zustand/Select'
 import { storePersonalized } from '../../../../zustand/Personalized'
+import { useStore } from 'zustand'
+import { ClientsRequests } from '../../../../fuctions/Clients'
 
 
 const Quotation: React.FC = () => {
@@ -20,14 +22,20 @@ const Quotation: React.FC = () => {
   const user_id = userState.id
 
   const setModal = storeModals(state => state.setModal)
-
+  const setCustomData = storePersonalized(state => state.setCustomData)
+ 
   const setQuatation = storeQuotation(state => state.setQuatation)
   const setPersonalized = storePersonalized(state => state.setPersonalized)
 
-  const setIdentifier = storeQuotation(state => state.setIdentifier);
+  const setDataGet = storeQuotation(state => state.setDataGet);
+  const setQuotesData = storeQuotation(state => state.setQuotesData);
+  const { quotesData }: any = useStore(storeQuotation)
 
   const { getUsers }: any = usersRequests()
+
   const [users, setUsers] = useState<any>()
+
+  const { getClients }: any = ClientsRequests()
 
 
   const { getSeriesXUser }: any = seriesRequests()
@@ -38,14 +46,17 @@ const Quotation: React.FC = () => {
 
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
-  const [data, setData] = useState<any>([])
+  const setIdentifier = storeQuotation(state => state.setIdentifier);
+
   const [dates, setDates] = useState<any>()
 
-  const [fol, setFol] = useState<any>(0)
+  const [fol, setFol] = useState<any>(null)
 
   const modal = () => {
     setModal('create-modal__qoutation')
   }
+
+
 
   const hoy = new Date();
   const haceUnaSemana = new Date();
@@ -71,25 +82,32 @@ const Quotation: React.FC = () => {
       light: true,
       id_sucursal: 0
     }
+    setDataGet(dataUser)
 
-    const resultUsers = await getUsers(dataUser)
+    const resultUsers = await getUsers(data)
     setUsers({
       selectName: 'Vendedores',
       options: 'nombre',
       dataSelect: resultUsers
     })
 
-    const resultSeries = await getSeriesXUser(user_id)
+    let dataSerie = {
+      id: user_id,
+      tipo_ducumento: 7,
+    }
 
+    const resultSeries = await getSeriesXUser(dataSerie)
+    resultSeries.unshift({ nombre: 'Ninguna', id: 0 });
     setSeries({
       selectName: 'Series',
       options: 'nombre',
       dataSelect: resultSeries
     })
     try {
-      const result = await APIs.getQuotation(data);
-      if (result) {
-        setData(result);
+      let response = await APIs.getQuotation(dataUser);
+      if (response) {
+        setQuotesData(response);
+        console.log('response', response)
       } else {
         console.log("No se obtuvieron datos");
       }
@@ -115,37 +133,52 @@ const Quotation: React.FC = () => {
 
   const searchQuotation = async () => {
     const data = {
-      folio: 0,
+      folio: parseInt(fol),
       id_sucursal: branchOffices?.id,
-      id_serie: 0,
+      id_serie: selectedIds?.series?.id,
       desde: dates[0],
       hasta: dates[1],
       id_usuario: user_id,
       id_vendedor: selectedIds?.users?.id,
     }
 
+  
+
 
 
     try {
-      const result = await APIs.getQuotation(data)
-      setData(result)
+      let response = await APIs.getQuotation(data);
+      if (response) {
+        setQuotesData(response);
+        console.log('response', response)
+      } else {
+        console.log("No se obtuvieron datos");
+      }
     } catch (error) {
-
+      console.error("Error en la petición:", error);
     }
   }
 
+  console.log('selectedIds.series', selectedIds.series)
+
   const updateQuotation = (quatation: any) => {
     setModal('update-modal__qoutation')
+
+    let id_identifier = 1;
+    let totalNumberIdentifiers = 0;
+    
+
+    quatation.conceptos.forEach((x: any) => {
+      x.id_identifier = id_identifier; 
+      totalNumberIdentifiers += 1;
+      id_identifier++;
+    });
+    
     setQuatation(quatation)
     setPersonalized(quatation)
-    setIdentifier(quatation.id_identifier)
+    setCustomData(quatation.conceptos)
+    setIdentifier(totalNumberIdentifiers)
   }
-
-
-  const [type, setType] = useState<any>(0)
-  const handleClick = (value: any) => {
-    setType(value)
-  };
 
   return (
     <div className='quotation'>
@@ -161,60 +194,38 @@ const Quotation: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className='row my-4'>
-          <div className='col-3'>
+        <div className='row__two my-4'>
+          <div>
             <label className='label__general'>Clientes</label>
-            <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Folio/RFC/Razon social' />
+            <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Cliente' />
           </div>
-          <div className='col-3'>
+          <div>
             <Select dataSelects={users} nameSelect={'Usuarios'} instanceId='users' />
           </div>
-          <div className='col-3'>
-            <Select dataSelects={series} nameSelect={'Series'} instanceId='serie' />
+          
+          <div>
+            <Select dataSelects={series} nameSelect={'Series'} instanceId='series' />
           </div>
-          <div className='col-3'>
+          <div>
             <label className='label__general'>Folio</label>
             <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' />
           </div>
         </div>
         <div className='row__three'>
-          <div className='container__checkbox_orders'>
-            <div className='checkbox__orders'>
-              <label className="checkbox__container_general">
-                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 0} value={type} onChange={() => handleClick(0)} />
-                <span className="checkmark__general"></span>
-              </label>
-              <p className='title__checkbox text'>Activo</p>
-            </div>
-            <div className='checkbox__orders'>
-              <label className="checkbox__container_general">
-                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 2} value={type} onChange={() => handleClick(2)} />
-                <span className="checkmark__general"></span>
-              </label>
-              <p className='title__checkbox text'>Cancelados</p>
-            </div>
-            <div className='checkbox__orders'>
-              <label className="checkbox__container_general">
-                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 1} value={type} onChange={() => handleClick(1)} />
-                <span className="checkmark__general"></span>
-              </label>
-              <p className='title__checkbox text'>Terminados</p>
-            </div>
-          </div>
-          <div className='d-flex align-items-end'>
+          <div className='button__search'>
             <button className='sm-mx-auto btn__general-purple' onClick={searchQuotation}>Buscar</button>
           </div>
-          <div className='d-flex justify-content-center align-items-end'>
+          <div className='button__create-quotation'>
             <button className='sm-mx-auto btn__general-purple' onClick={modal}>Crear cotizacion</button>
           </div>
         </div>
         <div className='table__quotations' >
           <div>
             <div>
-              {data ? (
+              {quotesData ? (
                 <div className='table__numbers'>
                   <p className='text'>Total de cotizaciones</p>
-                  <div className='quantities_tables'>{data?.length}</div>
+                  <div className='quantities_tables'>{quotesData?.length}</div>
                 </div>
               ) : (
                 <p className='text'>No hay conceptos</p>
@@ -242,9 +253,9 @@ const Quotation: React.FC = () => {
                 </div>
               </div>
             </div>
-            {data ? (
+            {quotesData ? (
               <div className='table__body'>
-                {data?.map((quatation: any, index: any) => (
+                {quotesData?.map((quatation: any, index: any) => (
                   <div className='tbody__container' key={index} onClick={() => updateQuotation(quatation)}>
                     <div className='tbody'>
                       <div className='td'>

@@ -12,6 +12,7 @@ import Empresas_Sucursales from "../../../Dynamic_Components/Empresas_Sucursales
 import { useSelectStore } from "../../../../../zustand/Select";
 import { useStore } from "zustand";
 import { storeModals } from "../../../../../zustand/Modals";
+import ByOP from "./types/ByOP";
 
 
 const ModalCreate = () => {
@@ -35,18 +36,21 @@ const ModalCreate = () => {
     const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
         const value = event.target.value;
-        if (value === "Directa") {
+
+        console.log(value)
+
+        if (value == "Directa") {
             setSelectedOption(0);
         }
-        else if (value === "PorOC") {
+        else if (value == "PorOC") {
             setSelectedOption(1);
         }
         else {
         }
 
-        if (selectedOption === 1) {
-            setSelectedOption(0);
-        }
+        // if (selectedOption === 1) {
+        //     setSelectedOption(0);
+        // }
     };
 
     const [areas, setAreas] = useState<any>()
@@ -149,7 +153,6 @@ const ModalCreate = () => {
         const id_area = selectedIds.id_area.id
         const id_sucursal = branchOffices.id;
         const id_usuario_crea = user_id;
-        const status = selectedOption
         const comentarios = OPcomments;
         const data = {
             id_usuario: user_id,
@@ -160,7 +163,7 @@ const ModalCreate = () => {
 
         }
         try {
-            await createOrders({ id_area, id_sucursal, id_usuario_crea, status, comentarios, conceptos: concepts })
+            await createOrders({ id_area, id_sucursal, id_usuario_crea, status: 0, comentarios, conceptos: concepts })
             await getOrdedrs(data)
             setModal('')
         } catch (error) {
@@ -202,14 +205,14 @@ const ModalCreate = () => {
                         <div className='container__checkbox_tickets'>
                             <div className='checkbox__tickets'>
                                 <label className="checkbox__container_general">
-                                    <input className='checkbox' type="radio" value="Directa" checked={selectedOption === 0} onChange={handleOptionChange} />
+                                    <input className='checkbox' type="radio" value="Directa" checked={selectedOption == 0} onChange={handleOptionChange} />
                                     <span className="checkmark__general"></span>
                                 </label>
                                 <p className='text'>Directa</p>
                             </div>
-                            <div className='checkbox__tickets' onClick={() => Swal.fire('Notificacion', 'Opción en desarrollo...', 'info')}>
+                            <div className='checkbox__tickets' >
                                 <label className="checkbox__container_general">
-                                    <input className='checkbox' type="radio" disabled={true} value="PorOC" checked={selectedOption === 1} onChange={handleOptionChange} />
+                                    <input className='checkbox' type="radio"  value="PorOC" checked={selectedOption == 1} onChange={handleOptionChange} />
                                     <span className="checkmark__general"></span>
                                 </label>
                                 <p className='text'>Por OP</p>
@@ -230,10 +233,10 @@ const ModalCreate = () => {
                             <textarea className={`textarea__general`} value={OPcomments} onChange={(e) => setOPcomments(e.target.value)} placeholder='Comentarios' />
                         </div>
                     </div>
-                    {selectedOption === 0 ?
+                    {selectedOption == 0 ?
                         <Direct />
                         :
-                        ''
+                        <ByOP />
                     }
                     <div className='table__modal_create_orders' >
                         <div>

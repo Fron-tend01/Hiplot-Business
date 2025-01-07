@@ -99,7 +99,7 @@ const SalesCard: React.FC = () => {
     }
 
 
-  
+
 
     const resultUsers = await getUserGroups(user_id);
     if (resultUsers) {
@@ -161,11 +161,11 @@ const SalesCard: React.FC = () => {
   }, [prices])
 
 
-  
 
-  
+
+
   const [data, setData] = useState<any>()
-  
+  console.log('article', article)
 
   const get = async () => {
     const dataArticle = {
@@ -175,8 +175,8 @@ const SalesCard: React.FC = () => {
       cantidad: amount,
       campos: article.plantilla_data,
     };
-
-
+    
+  
 
     try {
       const result: any = await APIs.getTotalPrice(dataArticle);
@@ -188,14 +188,15 @@ const SalesCard: React.FC = () => {
 
       if (result.error == false) {
         setPrices(result.mensaje)
+
         
-        
+
         setData({
           id_pers: 0,
           front: true,
           id_articulo: article.id,
           produccion_interna: true,
-          id_area_produccion: 0,
+          id_area_produccion: article.areas_produccion[0].id_area,
           enviar_a_produccion: false,
           personalized: false,
           check: false,
@@ -216,29 +217,27 @@ const SalesCard: React.FC = () => {
 
           urgencia: false,
           areas_produccion: article.areas_produccion,
-         
+
           /////////////////////Para Orden de compra //////////////////////////
           id_ov: 0,
           id_orden_produccion: 0,
           status_produccion: 0,
           cobrado: 0,
           id_unidad: selectedUnit.id_unidad,
-            
+
           campos_plantilla: article.plantilla_data.map((x: any) => ({
             nombre_campo_plantilla: x.nombre,
             tipo_campo_plantilla: 0,
             valor: x.valor.toString()
           }))
-
         })
-        
         return
-
       }
     } catch (error) {
       console.error('Error al obtener el precio total:', error);
     }
   };
+
 
 
   const getPrices = async () => {
@@ -260,7 +259,7 @@ const SalesCard: React.FC = () => {
     }
   }
 
-  
+
 
   const addQua = () => {
     const newData = { ...data };
@@ -333,7 +332,7 @@ const SalesCard: React.FC = () => {
   useEffect(() => {
 
   }, [data])
-  
+
 
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' ? 'active' : ''}`}>
@@ -497,13 +496,13 @@ const SalesCard: React.FC = () => {
             {/* <button onClick={() => setModalSub('add-qoutation_modal')} className='stock'>Agregar a cotizacion
               <svg className="icon icon-tabler icons-tabler-outline icon-tabler-building-warehouse" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 21v-13l9 -4l9 4v13" /><path d="M13 13h4v8h-10v-6h6" /><path d="M13 21v-9a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v3" /></svg>
             </button> */}
-              <button onClick={() => setModalSub('indications_modal')} className='indications'>Stock
-                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-stack-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></svg>
+            <button onClick={() => setModalSub('indications_modal')} className='indications'>Stock
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-stack-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></svg>
             </button>
             <button onClick={() => setModalSub('to-arrive_modal')} className='arrive'>Por llegar
               <svg className="icon icon-tabler icons-tabler-outline icon-tabler-truck-delivery" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" /><path d="M3 9l4 0" /></svg>
             </button>
-          
+
             <button onClick={() => setModalSub('delivery-time_modal')} className='time'>Tiempos de entrega
               <svg className="icon icon-tabler icons-tabler-outline icon-tabler-clock-hour-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7v5" /><path d="M12 12l2 -3" /></svg>
             </button>

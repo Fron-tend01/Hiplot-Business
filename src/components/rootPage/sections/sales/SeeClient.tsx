@@ -6,6 +6,8 @@ const SeeClient: React.FC = () => {
   const setClientsModal = storeQuotation(state  => state.setClientsModal)
   const {clientsModal, client}:any = useStore(storeQuotation)
 
+  console.log(client)
+
   return (
     <div className={`overlay__personalized_modal ${clientsModal == 'clients_modal' ? 'active' : ''}`}>
       <div className={`popup__personalized_modal ${clientsModal == 'clients_modal' ? 'active' : ''}`}>

@@ -16,11 +16,33 @@
   
 }
 
-.container__quotation > .row__three {
+.container__quotation > .row__two {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 20px;
 }
+
+
+.container__quotation > .row__three {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.container__quotation > .row__three > .button__search {
+
+
+  
+}
+
+.container__quotation > .row__three .button__create-quotation {
+  position: absolute;
+  right: 0;
+}
+
+
+
+
 
 
  /*************************************************************

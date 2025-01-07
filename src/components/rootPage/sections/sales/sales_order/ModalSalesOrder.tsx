@@ -83,7 +83,7 @@ const ModalSalesOrder: React.FC = () => {
         }
     }, [saleOrdersToUpdate])
 
-    console.log(normalConcepts)
+    console.log('saleOrdersToUpdate', saleOrdersToUpdate)
 
     const handleCreateSaleOrder = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -165,11 +165,42 @@ const ModalSalesOrder: React.FC = () => {
     }
 
     const [modalProduction, setModalProduction] = useState<string>('')
+    const [dataProduction, setDataProduction] = useState<any>()
 
     const SaleOrderProduction = async () => {
         setModalProduction('sale-order-production__modal')
         console.log(modalProduction)
+
+        let data = {
+            articulos: saleOrdersToUpdate.conceptos,
+            id_sucursal: saleOrdersToUpdate.id_sucursal
+        }
+
+        try {
+            let response = await APIs.calculateSalesDeliveryDime(data)
+            setDataProduction(response)
+        } catch (error) {
+
+        }
     }
+
+
+
+    const sendProduction = async () => {
+        let data = {
+            id_ov: saleOrdersToUpdate.id,
+            id_usuario: user_id,
+            fecha_entrega: dataProduction.fecha_produccion,
+            hora_entrega: dataProduction.hora_produccion
+        }
+
+        try {
+            let response = await APIs.createSaleOrderProduction(data)
+        } catch (error) {
+            
+        }
+    }
+
 
     const handleAreasChange = (item: any, index: number) => {
         console.log(item, index)
@@ -281,6 +312,8 @@ const ModalSalesOrder: React.FC = () => {
         }
     }
 
+
+
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' ? 'active' : ''}`}>
             <div className={`popup__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' ? 'active' : ''}`}>
@@ -302,14 +335,21 @@ const ModalSalesOrder: React.FC = () => {
                                 </div>
                                 <div className='sale-order_production__modal_articles'>
                                     <div>
-                                        <div>
-                                            <p>Fecha de entraga clientes</p>
-                                            <p>{ }</p>
+                                        <div className='d-flex'>
+                                            <p>Fecha de entraga cliente</p>
+                                            <p className='mx-4'>{dataProduction?.fecha_cliente}</p>
+                                            <p>Hora de cliente</p>
+                                            <p className='mx-4'>{dataProduction?.hora_cliente}</p>
                                         </div>
-                                        <div>
-                                            <p>Fecha de entraga clientes</p>
-                                            <p>{ }</p>
+                                        <div className='d-flex'>
+                                            <p>Fecha de entraga produccion</p>
+                                            <p className='mx-4'>{dataProduction?.fecha_produccion}</p>
+                                            <p>Hora de produccion</p>
+                                            <p className='mx-4'>{dataProduction?.fecha_produccion}</p>
                                         </div>
+                                    </div>
+                                    <div className='d-flex justify-content-center mt-3'>
+                                        <button className='btn__general-purple' onClick={sendProduction}>Mandar a producción</button>
                                     </div>
                                 </div>
                             </div>

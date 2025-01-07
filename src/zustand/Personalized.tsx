@@ -51,7 +51,7 @@ export const storePersonalized = create<SelectStore>((set) => ({
   personalized: [],
   setPersonalized: (x) => set({ personalized: x }),
 
-  identifier: '',
+  identifier: 0,
   setIdentifier: (x) => set({identifier: x}),
 }));
   
