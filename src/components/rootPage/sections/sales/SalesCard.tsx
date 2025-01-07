@@ -99,7 +99,7 @@ const SalesCard: React.FC = () => {
     }
 
 
-  
+
 
     const resultUsers = await getUserGroups(user_id);
     if (resultUsers) {
@@ -161,19 +161,22 @@ const SalesCard: React.FC = () => {
   }, [prices])
 
 
-  
 
-  
+
+
   const [data, setData] = useState<any>()
-  
+
 
   const get = async () => {
+    console.log(article.plantilla_data);
+    
     const dataArticle = {
       id_articulo: article.id,
       id_grupo_us: selectedUserGroup,
       id_unidad: selectedUnit.id,
       cantidad: amount,
-      campos: article.plantilla_data,
+      campos: article.plantilla_data.filter((x:any)=> x.tipo=='numero'),
+      camposTxTVisual: article.plantilla_data.filter((x:any)=> x.tipo=='txtvisual'),
     };
 
 
@@ -188,8 +191,8 @@ const SalesCard: React.FC = () => {
 
       if (result.error == false) {
         setPrices(result.mensaje)
-        
-        
+
+
         setData({
           id_pers: 0,
           front: true,
@@ -216,14 +219,14 @@ const SalesCard: React.FC = () => {
 
           urgencia: false,
           areas_produccion: article.areas_produccion,
-         
+
           /////////////////////Para Orden de compra //////////////////////////
           id_ov: 0,
           id_orden_produccion: 0,
           status_produccion: 0,
           cobrado: 0,
           id_unidad: selectedUnit.id_unidad,
-            
+
           campos_plantilla: article.plantilla_data.map((x: any) => ({
             nombre_campo_plantilla: x.nombre,
             tipo_campo_plantilla: 0,
@@ -231,7 +234,7 @@ const SalesCard: React.FC = () => {
           }))
 
         })
-        
+
         return
 
       }
@@ -260,7 +263,7 @@ const SalesCard: React.FC = () => {
     }
   }
 
-  
+
 
   const addQua = () => {
     const newData = { ...data };
@@ -315,11 +318,9 @@ const SalesCard: React.FC = () => {
 
     const result = await getArticles(data)
     setArticle(result[0])
-    console.log('sdsdsssssssss', result[0])
   }
 
   useEffect(() => {
-    console.log(article)
     setUnits(article?.unidades);
   }, [article])
 
@@ -333,7 +334,7 @@ const SalesCard: React.FC = () => {
   useEffect(() => {
 
   }, [data])
-  
+
 
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' ? 'active' : ''}`}>
@@ -399,8 +400,8 @@ const SalesCard: React.FC = () => {
                 </div>
 
               </div>
-              <div className='row__one'>
-                <div className='select__container'>
+              <div className='row'>
+                <div className='select__container col-6 md-col-6 sm-col-12'>
                   <label className='label__general'>Grupo de usuario</label>
                   <div className={`select-btn__general`}>
                     <div className={`select-btn ${selectUsersGroups ? 'active' : ''}`} onClick={openSelectUsersGroups}>
@@ -422,13 +423,13 @@ const SalesCard: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div>
+                <div className='col-6 md-col-6 sm-col-12'>
                   <label className='label__general'>Cantidad</label>
                   <input className={`inputs__general`} type="number" value={amount} onChange={handleAmountChange} placeholder='Ingresa la cantidad' />
                 </div>
               </div>
-              <div className='row__two'>
-                <div className='select__container'>
+              <div className='row'>
+                <div className='select__container col-4 md-col-6 sm-col-12'>
                   <label className='label__general'>Unidad</label>
                   <div className={`select-btn__general`}>
                     <div className={`select-btn ${selectUnits ? 'active' : ''}`} onClick={openSelectUnits}>
@@ -450,33 +451,49 @@ const SalesCard: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div>
+                <div className='col-4 md-col-6 sm-col-12'>
                   <label className='label__general'>Coment. factura</label>
                   <input className={`inputs__general`} type="text" value={billingComment} onChange={(e) => setBillingComment(e.target.value)} placeholder='Factura' />
                 </div>
-                <div>
+                <div className='col-4 md-col-6 sm-col-12'>
                   <label className='label__general'>Coment. producción</label>
                   <input className={`inputs__general`} type="text" value={productionComments} onChange={(e) => setproductionComments(e.target.value)} placeholder='Producción' />
                 </div>
               </div>
-              <div className='row__three'>
+              <div className='row'>
                 {article?.plantilla_data?.map((x: any, index: any) => (
-                  <div>
-                    <label className='label__general'>{x.nombre}</label>
-                    <input
-                      className={`inputs__general`}
-                      type="text"
-                      value={x.value}
-                      onChange={(e) => handleTemplatesChange(e, index)}
-                      placeholder={x.nombre}
-                    />
+                  <div className='col-4 md-col-6 sm-col-12'>
+                    {x.tipo != 'txtvisual' ?
+                      <div>
+                        <label className='label__general'>{x.nombre}</label>
+                        <input
+                          className={`inputs__general`}
+                          type="text"
+                          value={x.value}
+                          onChange={(e) => handleTemplatesChange(e, index)}
+                          placeholder={x.nombre}
+                        />
+                      </div>
+                      : ''}
+                  </div>
+                ))}
+              </div>
+              <div className='row'>
+                {article?.plantilla_data?.map((x: any) => (
+                  <div className='col-4 md-col-6 sm-col-12'>
+                    {x.tipo == 'txtvisual' ?
+                        <div className='price_x_unit'>
+                          <p>{x.nombre}</p>
+                          <p className='result__price_x_unit'>{x.value || '0'}</p>
+                        </div>
+                      : ''}
                   </div>
                 ))}
               </div>
               <div className='row__four'>
                 <div className='price_x_unit'>
                   <p>Precio por unidad:</p>
-                  <p className='result__price_x_unit'>$ 45</p>
+                  <p className='result__price_x_unit'>$ {prices/amount}</p>
                 </div>
                 <div className='total__price'>
                   <p>Precio total</p>
@@ -497,13 +514,13 @@ const SalesCard: React.FC = () => {
             {/* <button onClick={() => setModalSub('add-qoutation_modal')} className='stock'>Agregar a cotizacion
               <svg className="icon icon-tabler icons-tabler-outline icon-tabler-building-warehouse" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 21v-13l9 -4l9 4v13" /><path d="M13 13h4v8h-10v-6h6" /><path d="M13 21v-9a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v3" /></svg>
             </button> */}
-              <button onClick={() => setModalSub('indications_modal')} className='indications'>Stock
-                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-stack-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></svg>
+            <button onClick={() => setModalSub('indications_modal')} className='indications'>Stock
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-stack-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></svg>
             </button>
             <button onClick={() => setModalSub('to-arrive_modal')} className='arrive'>Por llegar
               <svg className="icon icon-tabler icons-tabler-outline icon-tabler-truck-delivery" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" /><path d="M3 9l4 0" /></svg>
             </button>
-          
+
             <button onClick={() => setModalSub('delivery-time_modal')} className='time'>Tiempos de entrega
               <svg className="icon icon-tabler icons-tabler-outline icon-tabler-clock-hour-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7v5" /><path d="M12 12l2 -3" /></svg>
             </button>

@@ -100,6 +100,8 @@ const CompanyModal = () => {
         if (model.razon_social === '' || model.nombre_comercial === '') {
             return;
         }
+        console.log(model);
+        
         if (modal == 'modal__update-companies') {
             await APIs.CreateAnyPut(model, "empresa_update/" + model.id)
                 .then(async (response: any) => {

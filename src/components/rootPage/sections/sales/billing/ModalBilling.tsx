@@ -223,21 +223,57 @@ const ModalBilling: React.FC = () => {
             options: 'name',
             dataSelect: metodoPago.currencies
         })
-        const resultSeries = await getSeriesXUser({ tipo_ducumento: 10, id: user_id })
-        resultSeries.unshift({ nombre: 'Todos', id: 0 });
-        setSeries({
-            selectName: 'Series',
-            options: 'nombre',
-            dataSelect: resultSeries
-        })
+        if (type == 1) {
+            getSeriesXUser({ tipo_ducumento: 7, id: user_id }).then(async (resultSeries: any) => {
+                    resultSeries.unshift({ nombre: 'Todos', id: 0 });
+                    setSeries({
+                        selectName: 'Series',
+                        options: 'nombre',
+                        dataSelect: resultSeries
+                    })
+                })
+        } else {
+            getSeriesXUser({ tipo_ducumento: 10, id: user_id }).then(async (resultSeries: any) => {
+                resultSeries.unshift({ nombre: 'Todos', id: 0 });
+                setSeries({
+                    selectName: 'Series',
+                    options: 'nombre',
+                    dataSelect: resultSeries
+                })
+            })
+        }
+
         await getRefs()
 
 
     }
+    const [type, setType] = useState<any>(1)
 
     useEffect(() => {
         fetch()
     }, [])
+    useEffect(() => {
+        if (type == 1) {
+            getSeriesXUser({ tipo_ducumento: 7, id: user_id }).then(async (resultSeries: any) => {
+                    resultSeries.unshift({ nombre: 'Todos', id: 0 });
+                    setSeries({
+                        selectName: 'Series',
+                        options: 'nombre',
+                        dataSelect: resultSeries
+                    })
+                })
+        } else {
+            getSeriesXUser({ tipo_ducumento: 10, id: user_id }).then(async (resultSeries: any) => {
+                resultSeries.unshift({ nombre: 'Todos', id: 0 });
+                setSeries({
+                    selectName: 'Series',
+                    options: 'nombre',
+                    dataSelect: resultSeries
+                })
+            })
+        }
+    }, [type])
+
     useEffect(() => {
         setConcepts([])
         setTotals(totalsc)
@@ -280,7 +316,8 @@ const ModalBilling: React.FC = () => {
                 hasta: date[1],
                 id_usuario: user_id,
                 id_vendedor: selectedIds?.users?.id,
-                status: 0
+                status: 0,
+                factura: true
             }
 
             const result = await getSaleOrders(dataSaleOrders)
@@ -291,7 +328,6 @@ const ModalBilling: React.FC = () => {
         // console.log(result)
     }
 
-    const [type, setType] = useState<any>(2)
 
 
     const handleCreateInvoice = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -338,10 +374,10 @@ const ModalBilling: React.FC = () => {
             tipo: type,
             total: totals.total,
             divisa: selectedIds?.foreignExchange.id,
-            cfdi: selectedIds?.cfdi?.ID,
-            condiciones_pago: selectedIds?.paymentConditions.ID,
-            forma_pago: selectedIds?.methodPayment.ID,
-            metodo_pago: selectedIds?.paymentMethod.id,
+            cfdi: selectedIds?.cfdi?.ID || selectedIds?.cfdi?.id,
+            condiciones_pago: selectedIds?.paymentConditions.ID || selectedIds?.paymentConditions.id,
+            forma_pago: selectedIds?.methodPayment.ID || selectedIds?.methodPayment.id,
+            metodo_pago: selectedIds?.paymentMethod.ID || selectedIds?.paymentMethod.id,
             id_usuario_crea: user_id,
             id_vendedor: selectedIds?.vendedores?.id ?? selectedIds?.vendedores,
             titulo: title,
@@ -350,7 +386,6 @@ const ModalBilling: React.FC = () => {
             conceptos_elim: []
         };
         console.log(data);
-
         if (!modoUpdate) {
             Swal.fire({
                 icon: 'warning',
@@ -432,13 +467,20 @@ const ModalBilling: React.FC = () => {
     };
 
 
-  
+
 
     const handleAddConceptsChange = (order: any) => {
         order.conceptos.forEach((el: any) => {
             el.orden = order
-            DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal + parseFloat(el.total))
-            DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal + parseFloat(el.total))
+            //de ser necesario falta sumar la urgencia y restar el descuento
+            if (type==2) {
+                DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal + parseFloat(el.total))
+                DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal + parseFloat(el.total))
+
+            }else {
+                DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal + parseFloat(el.total_restante))
+                DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal + parseFloat(el.total_restante))
+            }
         });
         console.log(order.conceptos);
 
@@ -497,10 +539,8 @@ const ModalBilling: React.FC = () => {
     useEffect(() => {
         // console.log(selectedIds);
         if (selectedIds?.customers) {
-            console.log('selectedIds?.customers', selectedIds?.customers)
             const id_sucursal = modoUpdate ? DataUpdate.id_sucursal : branchOffices.id
             const sucursal = selectedIds.customers.clientes_sucursal.filter((x: any) => x.id_sucursal == id_sucursal)[0]
-            console.log(sucursal);
 
             if (sucursal) {
                 console.log('sucursal', sucursal)
@@ -516,8 +556,14 @@ const ModalBilling: React.FC = () => {
 
     const deleteConceptos = (c: any) => {
         if (!modoUpdate) {
-            DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total))
-            DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
+            if (type==2) {
+                DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total))
+                DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
+
+            }else {
+                DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total_restante))
+                DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total_restante))
+            }
             const filter = concepts.filter((x: number) => x !== c);
             setConcepts(filter);
         } else {
@@ -546,8 +592,14 @@ const ModalBilling: React.FC = () => {
                     }
                 });
             } else {
-                DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total))
-                DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
+                if (type==2) {
+                    DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total))
+                    DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
+    
+                }else {
+                    DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total_restante))
+                    DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total_restante))
+                }
                 const filter = concepts.filter((x: number) => x !== c);
                 setConcepts(filter);
             }
@@ -573,13 +625,13 @@ const ModalBilling: React.FC = () => {
                     <div className='row'>
                         <div className='row__form_articles-radios col-12'>
                             <div className='container__form_articles-radios'>
-                                <div className='checkbox__modal_articles' title={'Facturar DIRECTAMENTE'}>
+                                {/* <div className='checkbox__modal_articles' title={'Facturar DIRECTAMENTE'}>
                                     <label className="checkbox__container_general">
                                         <input value={0} className='checkbox' type="checkbox" checked={type === 0} onChange={() => handleCheckboxChange(0)} disabled={modoUpdate} />
                                         <span className="checkmark__general"></span>
                                     </label>
                                     <p className='text'>Directa</p>
-                                </div>
+                                </div> */}
                                 <div className='checkbox__modal_articles' title={'Facturar por ORDEN DE VENTA'}>
                                     <label className="checkbox__container_general">
                                         <input value={1} className='checkbox' type="checkbox" checked={type === 1} onChange={() => handleCheckboxChange(1)} disabled={modoUpdate} />
@@ -687,7 +739,7 @@ const ModalBilling: React.FC = () => {
                                 <Select dataSelects={cfdi} instanceId='cfdi' nameSelect={'Uso de CFDI'} />
                             </div>
                         </div>
- 
+
                         <div className='searchs__orders'>
                             <div className='row'>
                                 <div className='col-12 title'>
@@ -711,7 +763,7 @@ const ModalBilling: React.FC = () => {
                                             <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Folio/RFC/Razon social' />
                                         </div>
                                         <div className='col-3'>
-                                            <Select dataSelects={usersFilter} instanceId='usersFilter' />
+                                            <Select dataSelects={usersFilter} instanceId='usersFilter' nameSelect={'Vendedor'} />
                                         </div>
                                     </>
                                 }
@@ -729,66 +781,66 @@ const ModalBilling: React.FC = () => {
                                 </div>
                             </div>
                             <div>
-                            <div className='table__billing_sale-orders'>
-                                {saleOrders ? (
-                                    <div className='table__numbers'>
-                                        <p className='text'>Total de OV's o PAF's</p>
-                                        <div className='quantities_tables'>{saleOrders.length}</div>
+                                <div className='table__billing_sale-orders'>
+                                    {saleOrders ? (
+                                        <div className='table__numbers'>
+                                            <p className='text'>Total de OV's o PAF's</p>
+                                            <div className='quantities_tables'>{saleOrders.length}</div>
+                                        </div>
+                                    ) : (
+                                        <p className="text">No hay data que mostrar</p>
+                                    )}
+                                    <div className='table__head'>
+                                        <div className='thead'>
+                                            <div className='th'>
+                                                <p>Folio</p>
+                                            </div>
+                                            <div className='th'>
+                                                <p>Sucursal</p>
+                                            </div>
+                                            <div className='th'>
+                                                <p>Fecha</p>
+                                            </div>
+                                            <div className='th'>
+                                                <p>Creado Por</p>
+                                            </div>
+                                            <div className="th">
+                                            </div>
+                                        </div>
                                     </div>
-                                ) : (
-                                    <p className="text">No hay data que mostrar</p>
-                                )}
-                                <div className='table__head'>
-                                    <div className='thead'>
-                                        <div className='th'>
-                                            <p>Folio</p>
-                                        </div>
-                                        <div className='th'>
-                                            <p>Sucursal</p>
-                                        </div>
-                                        <div className='th'>
-                                            <p>Fecha</p>
-                                        </div>
-                                        <div className='th'>
-                                            <p>Creado Por</p>
-                                        </div>
-                                        <div className="th">
-                                        </div>
-                                    </div>
-                                </div>
-                                {saleOrders ? (
-                                    <div className='table__body'>
-                                        {saleOrders.map((order: any) => {
-                                            return (
-                                                <div className='tbody__container' key={order.id}>
-                                                    <div className='tbody'>
-                                                        <div className='td'>
-                                                            <p>{order.serie}-{order.folio}-{order.anio}</p>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>{order.sucursal}</p>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>{order.fecha}</p>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>{order.usuario_crea}</p>
-                                                        </div>
-                                                        {/* <div className='td'>                HABILITAR SI ES NECESARIO PARA LA ORDEN DE VENTA 
+                                    {saleOrders ? (
+                                        <div className='table__body'>
+                                            {saleOrders.map((order: any) => {
+                                                return (
+                                                    <div className='tbody__container' key={order.id}>
+                                                        <div className='tbody'>
+                                                            <div className='td'>
+                                                                <p>{order.serie}-{order.folio}-{order.anio}</p>
+                                                            </div>
+                                                            <div className='td'>
+                                                                <p>{order.sucursal}</p>
+                                                            </div>
+                                                            <div className='td'>
+                                                                <p>{order.fecha || order.fecha_creacion}</p>
+                                                            </div>
+                                                            <div className='td'>
+                                                                <p>{order.usuario_crea}</p>
+                                                            </div>
+                                                            {/* <div className='td'>                HABILITAR SI ES NECESARIO PARA LA ORDEN DE VENTA 
                                                         <button type='button' className='btn__general-purple' onClick={() => handleModalSeeChange(order)}>conceptos</button>
                                                     </div> */}
-                                                        <div className="th">
-                                                            <button type='button' className='btn__general-purple' onClick={() => handleAddConceptsChange(order)}>Agregar</button>
+                                                            <div className="th">
+                                                                <button type='button' className='btn__general-purple' onClick={() => handleAddConceptsChange(order)}>Agregar</button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-                                ) : (
-                                    <p className="text">Cargando datos...</p>
-                                )}
-                            </div>
+                                                )
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <p className="text">Cargando datos...</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
                         <div className='table__billing_concepts'>
@@ -847,10 +899,10 @@ const ModalBilling: React.FC = () => {
                                                         <p>${concept.precio_unitario}</p>
                                                     </div>
                                                     <div className='td'>
-                                                        <p>${concept.total}</p>
+                                                        <p>${concept.total || concept.total_restante}</p>
                                                     </div>
                                                     <div className='td'>
-                                                        <p>${concept.total}</p>
+                                                        <p>${concept.total || concept.total_restante}</p>
                                                     </div>
                                                     <div className='td'>
                                                         <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
