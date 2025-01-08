@@ -68,7 +68,7 @@ const Personalized: React.FC = () => {
 
     // Create or Update
 
-    if(modal === 'create-modal__qoutation') {
+    if (modal === 'create-modal__qoutation') {
 
       /// Modal Create
 
@@ -80,19 +80,19 @@ const Personalized: React.FC = () => {
         ////////////////////////////////////// Se agrega ///////////////////////
         const findItem = customData.find((xx: any) => xx.id == item.id)
         setCustomConcepts([...customConcepts, findItem]);
-  
+
         const deleteFilter = normalConcepts.filter((xx: any) => xx.id !== item.id)
         return setNormalConcepts(deleteFilter)
       } else {
         const find = customConcepts.find((xx: any) => xx.id == item.id)
         setNormalConcepts([...normalConcepts, find])
-  
+
         const deleteFilter = customConcepts.filter((xx: any) => xx.id !== item.id)
         setCustomConcepts(deleteFilter)
       }
     }
 
-  
+
 
     const exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
 
@@ -103,9 +103,9 @@ const Personalized: React.FC = () => {
 
       const deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
       setNormalConcepts(deleteFilter)
-      
 
-      
+
+
       return
     } else {
       const find = customConcepts.find((xx: any) => xx.id_identifier == item.id_identifier)
@@ -131,7 +131,7 @@ const Personalized: React.FC = () => {
       setModalStatus(false)
     }
   })
-  
+
 
   const createPersonalized = async () => {
 
@@ -166,7 +166,7 @@ const Personalized: React.FC = () => {
 
 
     }
-    
+
 
     if (personalizedModal == 'personalized_modal-sale') {
       const data = {
@@ -268,62 +268,64 @@ const Personalized: React.FC = () => {
         </a>
         <p className='title__modals'>Crear personalizados</p>
         <div className='personalized_modal'>
-          <div className='row'>
-            <div className='col-3 md-col-6 sm-col-12'>
-              <label className='label__general'>Nombre del concepto</label>
-              <input className={`inputs__general`} type="text" value={inpust.descripcion} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'descripcion', e.target.value)} placeholder='Nombre de concepto' />
+          <div className='row__one'>
+            <div className='row'>
+              <div className='col-3 md-col-6 sm-col-12'>
+                <label className='label__general'>Nombre del concepto</label>
+                <input className={`inputs__general`} type="text" value={inpust.descripcion} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'descripcion', e.target.value)} placeholder='Nombre de concepto' />
+              </div>
+              <div className='col-2 md-col-6 sm-col-12'>
+                <label className='label__general'>Código</label>
+                <input className={`inputs__general`} type="text" value={inpust.codigo} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'codigo', e.target.value)} placeholder='Ingresa el código' />
+              </div>
+              <div className='col-3'>
+                <Select dataSelects={units} nameSelect={'Unidades'} instanceId='units' />
+              </div>
+              <div className='col-2 md-col-6 sm-col-12'>
+                <label className='label__general'>Cantidad</label>
+                <input className={`inputs__general`} value={inpust.cantidad} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'cantidad', e.target.value)} placeholder='Cantidad' />
+              </div>
+              <div className='col-2 md-col-6 sm-col-12'>
+                <label className='label__general'>Precio real</label>
+                <input className={`inputs__general`} value={inpust.precio_total} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'precio_total', e.target.value)} placeholder='Precio real' />
+              </div>
             </div>
-            <div className='col-2 md-col-6 sm-col-12'>
-              <label className='label__general'>Código</label>
-              <input className={`inputs__general`} type="text" value={inpust.codigo} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'codigo', e.target.value)} placeholder='Ingresa el código' />
-            </div>
-            <div className='col-3'>
-              <Select dataSelects={units} nameSelect={'Unidades'} instanceId='units' />
-            </div>
-            <div className='col-2 md-col-6 sm-col-12'>
-              <label className='label__general'>Cantidad</label>
-              <input className={`inputs__general`} value={inpust.cantidad} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'cantidad', e.target.value)} placeholder='Cantidad' />
-            </div>
-            <div className='col-2 md-col-6 sm-col-12'>
-              <label className='label__general'>Precio real</label>
-              <input className={`inputs__general`} value={inpust.precio_total} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'precio_total', e.target.value)} placeholder='Precio real' />
-            </div>
-          </div>
-          <div className='row gap-4 my-4 w-full'>
-            <div className='col-3 md-col-6 sm-col-12'>
-              <label className='label__general'>Observaciones Producción</label>
-              <div className='warning__general'><small >Este campo es obligatorio</small></div>
-              <textarea className={`textarea__general`} value={inpust.comentarios_produccion} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_produccion', e.target.value)} placeholder='Observaciones Producción'></textarea>
-            </div>
-            <div className=' col-3 md-col-6 sm-col-12'>
-              <label className='label__general'>Observaciones Facturación</label>
-              <div className='warning__general'><small >Este campo es obligatorio</small></div>
-              <textarea className={`inputs__general`} value={inpust.comentarios_factura} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_factura', e.target.value)} placeholder='Observaciones Facturación'></textarea>
-            </div>
-            <div className='select__container col-6'>
-              <label className='label__general'>Claves SAT</label>
-              <div className={`select-btn__general`}>
-                <div className={`select-btn ${selectsSatKey ? 'active' : ''}`} onClick={openselectsSatKey}>
-                  <div className='select__container_title'>
-                    <p>{selectedSatKey ? satKey.find((s: { ID: number }) => s.ID === selectedSatKey.ID)?.Clave : 'Selecciona'}</p>
+            <div className='row gap-4 my-4 w-full'>
+              <div className='col-3 md-col-6 sm-col-12'>
+                <label className='label__general'>Observaciones Producción</label>
+                <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                <textarea className={`textarea__general`} value={inpust.comentarios_produccion} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_produccion', e.target.value)} placeholder='Observaciones Producción'></textarea>
+              </div>
+              <div className=' col-3 md-col-6 sm-col-12'>
+                <label className='label__general'>Observaciones Facturación</label>
+                <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                <textarea className={`inputs__general`} value={inpust.comentarios_factura} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_factura', e.target.value)} placeholder='Observaciones Facturación'></textarea>
+              </div>
+              <div className='select__container col-6'>
+                <label className='label__general'>Claves SAT</label>
+                <div className={`select-btn__general`}>
+                  <div className={`select-btn ${selectsSatKey ? 'active' : ''}`} onClick={openselectsSatKey}>
+                    <div className='select__container_title'>
+                      <p>{selectedSatKey ? satKey.find((s: { ID: number }) => s.ID === selectedSatKey.ID)?.Clave : 'Selecciona'}</p>
+                    </div>
+                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                   </div>
-                  <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                </div>
-                <div className={`content ${selectsSatKey ? 'active' : ''}`}>
-                  <input
-                    className='inputs__general'
-                    type="text"
-                    placeholder='Buscar...'
-                    value={satKeyTerm}
-                    onChange={(e) => setSatKeyTerm(e.target.value)}
-                  />
-                  <ul className={`options ${selectsSatKey ? 'active' : ''}`} style={{ opacity: selectsSatKey ? '1' : '0' }}>
-                    {satKey?.map((key: any) => (
-                      <li key={uuidv4()} onClick={() => handleKetSatChange(key)}>
-                        {key.Descripcion}-{key.Clave}
-                      </li>
-                    ))}
-                  </ul>
+                  <div className={`content ${selectsSatKey ? 'active' : ''}`}>
+                    <input
+                      className='inputs__general'
+                      type="text"
+                      placeholder='Buscar...'
+                      value={satKeyTerm}
+                      onChange={(e) => setSatKeyTerm(e.target.value)}
+                    />
+                    <ul className={`options ${selectsSatKey ? 'active' : ''}`} style={{ opacity: selectsSatKey ? '1' : '0' }}>
+                      {satKey?.map((key: any) => (
+                        <li key={uuidv4()} onClick={() => handleKetSatChange(key)}>
+                          {key.Descripcion}-{key.Clave}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>

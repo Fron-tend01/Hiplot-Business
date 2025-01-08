@@ -378,8 +378,3 @@
 
 
 
-
-.table__quotations_clients_modal .table__body .tbody:hover {
-    background-color: var(--secundary-color);
-    color: #fff;
-}

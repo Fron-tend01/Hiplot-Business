@@ -1,6 +1,6 @@
 .hero {
   background-color: var(--header-color);
-  border-bottom: 3px solid #13171f;
+  border-bottom: 2px solid var(--line-general);
 }
 
 .container__hero {
@@ -8,10 +8,27 @@
     height: 100%;
     margin: 0 auto;
     display: flex;
-    justify-content: end;
-    align-items: center;
-    
+    justify-content: space-between;
+    align-items: center;    
 }
+
+.container__hero .inputs__general_icons {
+    border-radius: 20px;
+    padding: 10px 15px;
+    background-color: var(--backgorund-header-icons);
+    margin-top: 0;
+}
+
+
+.container__hero .inputs__general_icons > svg {
+    color: #848a90;
+}
+
+.container__hero .inputs__general_icons > .inputs__generic {
+    background-color: var(--backgorund-header-icons);
+}
+
+
 
 .nav__hero {
     display: flex;
@@ -20,37 +37,16 @@
     justify-content: space-between;
 }
 
-.conatiner__users {
+/* .conatiner__users {
     position: relative;
-    background-color: #ffffff; /* Cambia el color de fondo a blanco */
+    background-color: #ffffff; 
     padding: 8px 9px;
-    border-radius: 50px; /* Establece un radio de borde de 30px para redondear los bordes */
+    border-radius: 50px; 
     cursor: pointer;
-    display: inline-flex; /* Alinea los elementos en línea y los hace flexibles */
-    align-items: center; /* Centra verticalmente los elementos */
+    display: inline-flex; 
+    align-items: center; 
 }
-
-.container__bell {
-    position: relative;
-    cursor: pointer;
-    
-}
-
-
-.number__bell {
-    background-color: #f39f18;
-    color: #ffffff;
-    position: absolute;
-    padding: 2px 7px;
-    border-radius: 50px;
-    font-size: .6rem;
-    bottom: 18px;
-    left: 12px;
- 
-    
-  
-    
-}
+ */
 
 
 
@@ -132,6 +128,20 @@
 }
 
 
+.conatiner__users > .conatiner__users_svg {
+    display: flex;
+    height: 40px;
+    width: 40px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    background-color: var(--backgorund-header-icons);
+    cursor: pointer;
+}
+
+.conatiner__users > .conatiner__users_svg > svg {
+    color: #848a90;
+}
 
 
 
@@ -139,5 +149,14 @@
 
 
 
-
+.container__svg-mode {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-color);
+    border-radius: 50px;
+    color: #ffffff;
+    height: 30px;
+    width: 30px;
+}
 

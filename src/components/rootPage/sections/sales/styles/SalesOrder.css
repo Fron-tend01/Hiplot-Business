@@ -8,7 +8,7 @@
 	display: grid;
 	grid-template-rows: auto auto auto 1fr;
     height: 100%;
-	background-color: var(--background-sections);
+	background-color: var(--main-card-color);
 	padding: 20px ;
 	border-radius: 10px;
     overflow: hidden;

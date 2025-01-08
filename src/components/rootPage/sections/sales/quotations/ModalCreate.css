@@ -13,21 +13,21 @@
 
 
 .overlay__quotations__modal {
-	background: rgba(0,0,0,.3);
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	align-items: center;
-	justify-content: center;
-	display: flex;
-	visibility: hidden;
-    z-index: 1;
+    background: rgba(0, 0, 0, .3);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    visibility: hidden;
+    z-index: 10;
 }
 
 .overlay__quotations__modal.active {
-	visibility: visible;
+    visibility: visible;
 }
 
 .overlay__quotations__modal .header__modal {
@@ -38,26 +38,26 @@
     justify-content: center;
 }
 
-.popup__quotations__modal {      
-	background-color: var(--background-modal);
-	border-radius: 5px;
-	padding: 40px 20px 20px 20px;
-	width: 95%;
+.popup__quotations__modal {
+    background-color: var(--background-modal);
+    border-radius: 5px;
+    padding: 40px 20px 20px 20px;
+    width: 95%;
     height: 95%;
-	transition: .3s ease all;
-	transform: scale(0.7);
-	opacity: 0;
+    transition: .3s ease all;
+    transform: scale(0.7);
+    opacity: 0;
     overflow: hidden;
 
 }
 
 .popup__quotations__modal .btn-cerrar-popup__quotations__modal {
-	font-size: 16px;
-	line-height: 16px;
-	display: block;
-	text-align: right;
-	transition: .3s ease all;
-	color: #BBBBBB;
+    font-size: 16px;
+    line-height: 16px;
+    display: block;
+    text-align: right;
+    transition: .3s ease all;
+    color: #BBBBBB;
     position: absolute;
     right: 30px;
     top: 10px;
@@ -67,29 +67,70 @@
 /* ------------------------- */
 /* ANIMACIONES */
 /* ------------------------- */
-.popup__quotations__modal.active {	transform: scale(1); opacity: 1; }
+.popup__quotations__modal.active {
+    transform: scale(1);
+    opacity: 1;
+}
 
 
 
+
+
+.quotations__modal>.row__two .title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.quotations__modal>.row__two {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 10px;
+    background-color: var(--cards-background);
+    padding: 20px;
+    border-radius: var(--general-card-border);
+}
 
 
 .popup__quotations__modal .row__three {
     display: grid;
     grid-template-columns: 1fr auto 1fr auto auto auto;
     column-gap: 20px;
+    background-color: var(--cards-background);
+    padding: 20px;
+    border-radius: var(--general-card-border);
+}
 
+.popup__quotations__modal .row__three .search-icon {
+    background-color: var(--primary-color);
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.popup__quotations__modal .row__three .search-icon>svg {
+    display: flex;
+    color: #ffffff;
 }
 
 
 
- /*************************************************************
+/*************************************************************
                     Tabla de Entradas
  **************************************************************/
 
- .table__quotations_clients_modal {
+.table__quotations_clients_modal {
     border-radius: 10px;
     display: grid;
     grid-template-rows: auto auto 1fr;
+    height: 100%;
+    overflow: hidden;
+}
+
+.table__quotations_clients_modal .table__quotations_modal {
+    /* padding: 10px; */
+    border: 2px solid var(--border-table-color);
+    border-radius: 20px;
     height: 100%;
     overflow: hidden;
 }
@@ -98,47 +139,66 @@
 .table__quotations_clients_modal .table__head {
     display: flex;
     width: 100%;
-    background-color: var(--table-color);
-	color: var(--text-table-color);
-    border-radius: 5px 5px 0 0;
+    background-color: var(--table-header-color);
+    border-radius: 20px 20px 0 0;
 }
 
 .table__quotations_clients_modal .table__head .thead {
-   display: flex;
-   width: 100%;
+    display: flex;
+    width: 100%;
 }
 
 .table__quotations_clients_modal .table__head .thead {
     display: grid;
-	grid-template-columns: repeat(4, 1fr) 80px 100px  100px;
+    grid-template-columns: repeat(4, 1fr) 80px 100px 100px;
     padding: 10px;
     font-weight: 600;
     column-gap: 20px;
 }
 
 .table__quotations_clients_modal .table__body {
-	height: 100%;
+    height: 100%;
     overflow-y: auto;
     transition-delay: 0.0s;
+
     &::-webkit-scrollbar {
         width: 5px;
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: var(--primary-color); 
+        background-color: var(--primary-color);
         border-radius: 5px;
         height: 100px;
     }
 
     &::-webkit-scrollbar-track {
-    /* Para modificar el background */
+        /* Para modificar el background */
     }
 }
 
-
-
+.table__quotations_clients_modal .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
 
 .table__quotations_clients_modal .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+}
+
+.table__quotations_clients_modal .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+.table__quotations_clients_modal .tbody__container:first-child {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table__quotations_clients_modal .tbody__container:last-child {
+    border-bottom: none;
+    border-radius: 0 0 20px 20px;
+}
+
+
+/* .table__quotations_clients_modal .tbody__container:nth-child(even) {
     background-color: var(--table-color);
 	color: var(--text-table-color);
 }
@@ -146,7 +206,7 @@
 .table__quotations_clients_modal .tbody__container:nth-child(odd) {
     background-color: var(--two-table-color);
 	color: var(--text-table-color);
-}
+} */
 
 
 
@@ -160,20 +220,20 @@
 
 .table__quotations_clients_modal .table__body .tbody {
     display: grid;
-	grid-template-columns: repeat(4, 1fr) 80px 100px  100px;
+    grid-template-columns: repeat(4, 1fr) 80px 100px 100px;
     padding: 10px;
     column-gap: 20px;
-	
+
 }
 
 
 
-.table__quotations_clients_modal .table__body .tbody > .td .inputs__general {
+.table__quotations_clients_modal .table__body .tbody>.td .inputs__general {
     margin-top: 0;
 }
 
 
-.table__quotations_clients_modal .table__body .tbody > .td .add_urgency {
+.table__quotations_clients_modal .table__body .tbody>.td .add_urgency {
     background-color: var(--orange-color);
     border-radius: 5px;
     color: #fff;
@@ -185,16 +245,15 @@
 
 
 .table__quotations_clients_modal .table__body .tbody:hover {
-    background-color: var(--secundary-color);
+    background-color: var(--table-hover-color);
     color: #fff;
 }
-
 
 .concept__personalized {
     display: flex;
 }
 
-.concept__personalized > p {
+.concept__personalized>p {
     padding: 5px;
     background-color: var(--primary-color);
     border-radius: 5px 5px 0 0;

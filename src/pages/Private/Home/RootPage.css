@@ -9,6 +9,7 @@
     display: grid;
     grid-template-rows: auto 1fr auto;
     background-color: var(--sidebar-color);
+    border-right: 2px solid var(--line-general);
 }
 
 
@@ -84,19 +85,27 @@
     padding: 10px 15px;    
 }
 
+.sidebar.close .nav__items  .nav__item .nav__link.active {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.sidebar.close .nav__items  .nav__item .nav__link.active > svg {
+    color: #fff;
+}
+
 
 .sidebar .nav__items .nav__item .nav__link {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 10px;
-    height: 50px;
+    height: 45px;
     text-decoration: none;
     border-radius: 5px 5px 5px 5px;
-    color: #fff;
     cursor: pointer;
     transition: all 0.3s ease;
-    color: var(--text-sidebar-color);
+    color: var(--text-color-ligth);
      
 }
 
@@ -107,18 +116,25 @@
     padding: 10px;
     transition: all 0.4s ease;
     position: relative;
+ 
 }
 
 
 .sidebar .nav__item_logout .nav__link {
     display: flex;
+    width: 100%;
     justify-content: center;
     align-items: center;
     height: 40px;
     text-decoration: none;
-    border-radius: 5px 5px 5px 5px;
+    border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease;
+    background-color: var(--primary-color);
+}
+
+.sidebar.close .nav__item_logout .nav__link {
+    width: 40px;
 }
 
 
@@ -137,12 +153,12 @@
 
 
 .nav__item_logout > .nav__link {
-    color: #fff;
+    color: #ffffff;
 }
 
 .nav__item_logout > .nav__link svg {
     display: none;
-    fill: #fff;
+  
 }
 
 
@@ -218,7 +234,7 @@
 
 
 .sidebar .nav__items .nav__item .nav__link svg {
-    fill: var(--text-sidebar-color);
+    color: #d6d6d6;
 }
 
 .sidebar.close .nav__items .nav__item .nav__link span {
@@ -233,7 +249,7 @@
 
 
 .sidebar .nav__items .nav__item .sub__menu {
-    background-color: #5d35b0;
+    background-color: var(--primary-color);
     border-radius: 0 0 5px 5px;
     transition: all 0.3s ease;
     height: 0;
@@ -499,24 +515,29 @@
     border-radius: 20px;
     right: -10px;
     top: 70px;
-    background-color: #fff;
+    background-color: var(--primary-color);
     cursor: pointer;
 }
 
 .main {
     width: 100%;
     height: 100vh;
-   
+    display: flex; /* O grid si prefieres */
+    flex-direction: column;
+    overflow: hidden; /* Para evitar desbordamientos */
 }
 
 .container__main {
     display: grid;
-    grid-template-rows: 10vh 90vh;
+    grid-template-rows: 80px 1fr;
+    background-color: var(--header-color);
+    height: 100%;
 }
 
 .main__content {
-    background-color: var(--background-main);
-   
+    display: grid;
+    grid-template-rows: 1fr;
+    overflow: hidden;
 }
 
 

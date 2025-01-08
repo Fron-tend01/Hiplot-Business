@@ -20,24 +20,35 @@ function App() {
 
   document.documentElement.style.setProperty('--text-sidebar-color', theme === 'light' ? '' : '#f5f6f7');
 
-  //Sidebar 
+  //Header 
+  document.documentElement.style.setProperty('--header-color', theme === 'light' ? '' : 'rgba(12,12,12,255)');
+  document.documentElement.style.setProperty('--backgorund-header-icons', theme === 'light' ? '' : '#171717');
 
+  //Sidebar 
+  document.documentElement.style.setProperty('--sidebar-color', theme === 'light' ? '' : 'rgba(12,12,12,255)');
   document.documentElement.style.setProperty('--text-sidebar-color', theme === 'light' ? '' : '#f5f6f7');
-  document.documentElement.style.setProperty('--sidebar-hover-color', theme === 'light' ? '' : '#5d35b0');
+  document.documentElement.style.setProperty('--sidebar-hover-color', theme === 'light' ? '' : '#068fde34');
   
   //Main 
-  document.documentElement.style.setProperty('--background-main', theme === 'light' ? '' : '#0a0c12');
- 
+  document.documentElement.style.setProperty('--background-main', theme === 'light' ? '' : 'rgba(12,12,12,255)');
+  document.documentElement.style.setProperty('--background-sections', theme === 'light' ? '' : 'rgba(12,12,12,255)');
   // Sections 
-  document.documentElement.style.setProperty('--background-sections', theme === 'light' ? '' : '#0e1119');
+  document.documentElement.style.setProperty('--main-card-color', theme === 'light' ? '' : 'rgba(12,12,12,255)');
+
+  
 
   //Modales
-  document.documentElement.style.setProperty('--background-modal', theme === 'light' ? '' : '#0e1119');
+  document.documentElement.style.setProperty('--background-modal', theme === 'light' ? '' : 'rgba(12,12,12,255)');
   document.documentElement.style.setProperty('--card-modal', theme === 'light' ? '' : '#2f3749');
 
-  // Generales
-  document.documentElement.style.setProperty('--input-color', theme === 'light' ? '' : '#2d3338');
-  document.documentElement.style.setProperty('--close-color#252a36', theme === 'light' ? '' : '#f5f6f7');
+  // Generales 
+
+
+  document.documentElement.style.setProperty('--cards-background', theme === 'light' ? '' : '#121313');
+
+  document.documentElement.style.setProperty('--close-color', theme === 'light' ? '' : '#f5f6f7');
+
+  document.documentElement.style.setProperty('--line-general', theme === 'light' ? '' : '#171717');
 
   document.documentElement.style.setProperty('--background-select-content', theme === 'light' ? '' : '#252a36');
 
@@ -47,15 +58,17 @@ function App() {
   document.documentElement.style.setProperty('--sidebar-svg-color', theme === 'light' ? '' : '#f5f6f7');
   
   document.documentElement.style.setProperty('--text-color', theme === 'light' ? '' : '#f5f6f7');
-  document.documentElement.style.setProperty('--input-color', theme === 'light' ? '' : '#252a36');
+  document.documentElement.style.setProperty('--text-color-ligth', theme === 'light' ? '' : '#bfbfbf');
+  document.documentElement.style.setProperty('--input-color', theme === 'light' ? '' : '#212121');
   document.documentElement.style.setProperty('--text-select-color', theme === 'light' ? '' : '#f5f6f7');
-  document.documentElement.style.setProperty('--sidebar-color', theme === 'light' ? '' : '#13171f');
-  document.documentElement.style.setProperty('--header-color', theme === 'light' ? '' : '#0a0c12');
+ 
+ 
 
   // tabla
-
-  document.documentElement.style.setProperty('--table-color', theme === 'light' ? '' : '#1c2232');
-  document.documentElement.style.setProperty('--two-table-color', theme === 'light' ? '' : '#13171f');
+  document.documentElement.style.setProperty('--table-color', theme === 'light' ? '' : '#171717');
+  document.documentElement.style.setProperty('--table-header-color', theme === 'light' ? '' : '#212121');
+  document.documentElement.style.setProperty('--two-table-color', theme === 'light' ? '' : '#171717');
+  document.documentElement.style.setProperty('--border-table-color', theme === 'light' ? '' : '#212121');
   document.documentElement.style.setProperty('--text-table-color', theme === 'light' ? '' : '#f5f6f7');
   
   return (

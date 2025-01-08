@@ -1,14 +1,55 @@
 /* Contenedor principal */
-.notification-container {
+
+.container__bell {
     position: relative;
-    display: inline-block;
+    cursor: pointer;
+   
+    
 }
 
-/* Ícono de notificación (campana) */
-.notification-icon {
+
+.notification-container {
+    position: relative;
+
+}
+
+
+.notification-container > .notification-icon {
+    display: flex;
+    height: 40px;
+    width: 40px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    background-color: var(--backgorund-header-icons);
     cursor: pointer;
     position: relative;
-    fill: var(--text-color);
+  
+}
+
+
+
+.number__bell {
+    background-color: #fe7446;
+    color: #ffffff;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 19px;
+    width: 19px;
+    border-radius: 50px;
+    font-size: .6rem;
+    bottom: 18px;
+    right: 0;
+    top: -5px;
+    z-index: 10; 
+}
+
+
+/* Ícono de notificación (campana) */
+.notification-icon > svg {
+    color: #959fae;
 }
 
 /* Estilo para el contenedor de las notificaciones */
@@ -114,3 +155,6 @@
     text-align: center;
     font-style: italic;
 }
+
+
+

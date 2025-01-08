@@ -43,11 +43,10 @@
 	border: none;
 	outline: none;
 	background-color: #fff;
-	background: #fff;
 	border-radius: 5px 5px 5px 5px;
-	box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.1);
 	background-color: var(--input-color);
-	color: var(--text-color);
+	color: var(--text-color-ligth);
+	
 }
 
 .container_dates__requisition:hover .date::placeholder {

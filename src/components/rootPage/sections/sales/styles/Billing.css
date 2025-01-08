@@ -5,7 +5,7 @@
 
 .billing__container {
     height: 100%;
-	background-color: var(--background-sections);
+	background-color: var(--main-card-color);
 	padding: 20px ;
 	border-radius: 10px;
     overflow: hidden;

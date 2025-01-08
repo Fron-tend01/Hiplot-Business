@@ -49,9 +49,11 @@ const ModalCreate: React.FC = () => {
   const [company, setCompany] = useState<any>([])
   const [branch, setBranch] = useState<any>([])
 
+  const [deleteConcepts, setDeleteConcepts] = useState<any>([])
 
   const [name, setName] = useState<any>()
   const [comments, setComments] = useState<any>()
+  const [title, setTitle] = useState<any>('')
 
   const [dataSelects, setDataSelects] = useState<any>([])
   const dataUsers = {
@@ -151,7 +153,7 @@ const ModalCreate: React.FC = () => {
 
   const seeClient = () => {
     setClientsModal('clients_modal')
-    
+
   }
 
   const [selectResults, setSelectResults] = useState<boolean>(false);
@@ -167,7 +169,7 @@ const ModalCreate: React.FC = () => {
     setSelectResults(!selectResults)
   };
 
-  console.log('personalized', personalized)
+  console.log('quatation', quatation)
 
 
   const createQuotation = async () => {
@@ -178,24 +180,28 @@ const ModalCreate: React.FC = () => {
       element.unidad = element.id_unidad
     });
 
-    personalized?.forEach((element: any) => {
-      element.conceptos.forEach((x: any) => {
-        x.unidad = x.id_unidad
+    if (personalized.length > 0) {
+      personalized?.forEach((element: any) => {
+        element.conceptos.forEach((x: any) => {
+          x.unidad = x.id_unidad
+        });
       });
-    });
+    }
 
-    
+
 
 
 
     const data = {
+      id: modal === 'create-modal__qoutation' ? 0 : quatation.id,
       id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
       id_cliente: modal === 'create-modal__qoutation' ? selectedResult?.id : quatation.id_cliente,
       id_usuario_crea: user_id,
+      titulo: title,
       comentarios: comments,
       conceptos: filter,
       conceptos_pers: personalized,
-      conceptos_elim: []
+      conceptos_elim: deleteConcepts
     };
 
     console.log('DATA QUE SE ENVIA AL BEKEND', data)
@@ -275,10 +281,11 @@ const ModalCreate: React.FC = () => {
   }
 
 
-  const deleteArticle = (_: any, i: number) => {
+  const deleteArticle = (item: any, i: number) => {
     const filter = normalConcepts.filter((_: any, index: number) => index !== i)
     setNormalConcepts(filter)
     setCustomData(filter);
+    setDeleteConcepts([...deleteConcepts, item.id])
   }
 
 
@@ -292,7 +299,7 @@ const ModalCreate: React.FC = () => {
     setModal('')
     if (modal === 'update-modal__qoutation') {
       setComments('')
-         setCustomData([])
+      setCustomData([])
       setDataQuotation([])
     }
 
@@ -306,11 +313,9 @@ const ModalCreate: React.FC = () => {
     } else {
       setPersonalizedModal('personalized_modal-quotation-update')
     }
-
-
-
   }
 
+  console.log('normalConcepts', normalConcepts)
 
   return (
     <div className={`overlay__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
@@ -330,16 +335,7 @@ const ModalCreate: React.FC = () => {
 
         <div className='quotations__modal'>
           {modal == 'create-modal__qoutation' ?
-            <div className='row'>
-              <div className='row col-12 md-col-12'>
-                <div className='col-8 md-col-12'>
-                  <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
-                </div>
-                <div className='col-4  md-col-6 sm-col-12'>
-                  <Select dataSelects={dataSelects} instanceId="select1" nameSelect={'Vendedor'} />
-                </div>
-              </div>
-            </div>
+            ''
             :
             <div className="card ">
               <div className="card-body bg-standar">
@@ -378,23 +374,51 @@ const ModalCreate: React.FC = () => {
               </div>
             </div>
           }
-          <div className='row my-2 w-full'>
-            <div className='col-12'>
-              <label className='label__general'>Comentarios</label>
-              <div className='warning__general'><small >Este campo es obligatorio</small></div>
-              <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios'></textarea>
+          {modal == 'create-modal__qoutation' ?
+            <div className='row__two'>
+              <div className='col-12'>
+                <p className='title'>Datos de la requisición</p>
+              </div>
+              <div className='col-12'>
+                <div className='row col-12 md-col-12'>
+                  <div className='col-8 md-col-12'>
+                    <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
+                  </div>
+                  <div className='col-4  md-col-6 sm-col-12'>
+                    <Select dataSelects={dataSelects} instanceId="select1" nameSelect={'Vendedor'} />
+                  </div>
+                </div>
+              </div>
+              <div className='row col-12 my-2 w-full'>
+                <div className='col-4'>
+                  <label className='label__general'>Título</label>
+                  <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                  <input className={`inputs__general`} type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el título' />
+                </div>
+                <div className='col-8'>
+                  <label className='label__general'>Comentarios</label>
+                  <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                  <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios'></textarea>
+                </div>
+              
+              </div>
             </div>
-          </div>
+            :
+            ''
+          }
           <div className='row__three my-2 w-full'>
-            <div className=''>
+            <div>
               <label className='label__general'>Nombre</label>
               <div className='warning__general'><small >Este campo es obligatorio</small></div>
               <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
             </div>
             <div className='d-flex align-items-end justify-content-center'>
-              <button type='button' className='btn__general-purple' onClick={searchUsers}>Buscar</button>
+              <div className='search-icon' onClick={searchUsers}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+              </div>
+
             </div>
-            <div className=''>
+            <div>
               <div className='select__container'>
                 <label className='label__general'>Resultado</label>
                 <div className={`select-btn__general`}>
@@ -422,120 +446,125 @@ const ModalCreate: React.FC = () => {
             <div className='d-flex align-items-end'>
               <button className='btn__general-purple' onClick={modalPersonalized}>Crear personalizados</button>
             </div>
-            <div className='d-flex align-items-end'>
-              <button className='btn__general-purple' onClick={() => setModalArticleView('article-view__modal')}>Catalogo</button>
+            <div className='d-flex align-items-end' title='Busqueda de articulos'>
+              <div className='btn__general-purple-icon'>
+                <svg onClick={() => setModalArticleView('article-view__modal')} xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" className="d-flex lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
+              </div>
             </div>
           </div>
           <div className='table__quotations_clients_modal'>
-            {normalConcepts ? (
+            {/* {normalConcepts ? (
               <div className='table__numbers'>
                 <p className='text'>Total de articulos</p>
                 <div className='quantities_tables'>{normalConcepts.length}</div>
               </div>
             ) : (
               <p className="text">No hay empresas que mostras</p>
-            )}
-            <div className='table__head'>
-              <div className={`thead `}>
-                <div className='th'>
-                  <p>Artículo</p>
-                </div>
-                <div className='th'>
-                  <p>Cantidad</p>
-                </div>
-                <div className='th'>
-                  <p>Unidad</p>
-                </div>
-                <div className='th'>
-                  <p>Desc. monto</p>
-                </div>
-                <div>
-                  <p>Total</p>
+            )} */}
+            <div className='table__quotations_modal'>
+
+              <div className='table__head'>
+                <div className={`thead `}>
+                  <div className='th'>
+                    <p>Artículo</p>
+                  </div>
+                  <div className='th'>
+                    <p>Cantidad</p>
+                  </div>
+                  <div className='th'>
+                    <p>Unidad</p>
+                  </div>
+                  <div className='th'>
+                    <p>Desc. monto</p>
+                  </div>
+                  <div>
+                    <p>Total</p>
+                  </div>
                 </div>
               </div>
+              {normalConcepts ? (
+                <div className='table__body'>
+                  {normalConcepts?.map((article: any, index: number) => {
+                    return (
+                      <div className='tbody__container' key={article.id}>
+                        {article.personalized ?
+                          <div className='concept__personalized'>
+                            <p>Concepto Perzonalizado</p>
+                          </div>
+                          :
+                          ''
+                        }
+                        {article.personalized ?
+                          <div className={`tbody personalized`}>
+                            <div className='td '>
+                              <p>{article.codigo}-{article.descripcion}</p>
+                            </div>
+                            <div className='td'>
+                              <p>$ {article.cantidad}</p>
+                            </div>
+                            <div className='td'>
+                              <p>{article.name_unidad}</p>
+                            </div>
+                            <div className='td'>
+                              {permisoDescount ?
+                                <div>
+                                  <input className='inputs__general' type="text" placeholder='Descuento' />
+                                </div>
+                                :
+                                <p>No permitido</p>
+                              }
+                            </div>
+                            <div className='td'>
+                              <p>$ {article.precio_total}</p>
+                            </div>
+                            <div className='td'>
+                              <button className='btn__general-purple' onClick={() => modalSeeConcepts(article)}>Conceptos</button>
+                            </div>
+
+                            <div className='td'>
+                              <button className='btn__general-orange' onClick={() => undoConcepts(article, index)}>Deshacer</button>
+                            </div>
+                          </div>
+                          :
+                          <div className='tbody'>
+                            <div className='td'>
+                              <p>{article.codigo}-{article.descripcion}</p>
+                            </div>
+                            <div className='td'>
+                              <p>$ {article.cantidad}</p>
+                            </div>
+                            <div className='td'>
+                              <p>{article.name_unidad || article.unidad}</p>
+                            </div>
+                            <div className='td'>
+                              {permisoDescount ?
+                                <div>
+                                  <input className='inputs__general' type="text" placeholder='Descuento' />
+                                </div>
+                                :
+                                <p>No permitido</p>
+                              }
+                            </div>
+                            <div className='td'>
+                              <p>$ {article.precio_total}</p>
+                            </div>
+                            <div className='td'>
+                              <button className='add_urgency'>Agregar Urgencia</button>
+                            </div>
+
+                            <div className='td'>
+                              <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="text">Cargando datos...</p>
+              )}
             </div>
-            {normalConcepts ? (
-              <div className='table__body'>
-                {normalConcepts?.map((article: any, index: number) => {
-                  return (
-                    <div className='tbody__container' key={article.id}>
-                      {article.personalized ?
-                        <div className='concept__personalized'>
-                          <p>Concepto Perzonalizado</p>
-                        </div>
-                        :
-                        ''
-                      }
-                      {article.personalized ?
-                        <div className={`tbody personalized`}>
-                          <div className='td'>
-                            <p>{article.codigo}-{article.descripcion}</p>
-                          </div>
-                          <div className='td'>
-                            <p>$ {article.cantidad}</p>
-                          </div>
-                          <div className='td'>
-                            <p>{article.name_unidad}</p>
-                          </div>
-                          <div className='td'>
-                            {permisoDescount ?
-                              <div>
-                                <input className='inputs__general' type="text" placeholder='Descuento' />
-                              </div>
-                              :
-                              <p>No permitido</p>
-                            }
-                          </div>
-                          <div className='td'>
-                            <p>$ {article.precio_total}</p>
-                          </div>
-                          <div className='td'>
-                            <button className='btn__general-purple' onClick={() => modalSeeConcepts(article)}>Conceptos</button>
-                          </div>
-
-                          <div className='td'>
-                            <button className='btn__general-orange' onClick={() => undoConcepts(article, index)}>Deshacer</button>
-                          </div>
-                        </div>
-                        :
-                        <div className='tbody'>
-                          <div className='td'>
-                            <p>{article.codigo}-{article.descripcion}</p>
-                          </div>
-                          <div className='td'>
-                            <p>$ {article.cantidad}</p>
-                          </div>
-                          <div className='td'>
-                            <p>{article.name_unidad || article.unidad}</p>
-                          </div>
-                          <div className='td'>
-                            {permisoDescount ?
-                              <div>
-                                <input className='inputs__general' type="text" placeholder='Descuento' />
-                              </div>
-                              :
-                              <p>No permitido</p>
-                            }
-                          </div>
-                          <div className='td'>
-                            <p>$ {article.precio_total}</p>
-                          </div>
-                          <div className='td'>
-                            <button className='add_urgency'>Agregar Urgencia</button>
-                          </div>
-
-                          <div className='td'>
-                            <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
-                          </div>
-                        </div>
-                      }
-                    </div>
-                  )
-                })}
-              </div>
-            ) : (
-              <p className="text">Cargando datos...</p>
-            )}
           </div>
           <div className='row mt-4'>
             {modal === 'create-modal__qoutation' ?

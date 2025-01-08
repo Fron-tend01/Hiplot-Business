@@ -7,50 +7,85 @@
 
 :root {
 
+  --primary-100:#3D85C6;
+  --primary-200:#75b4f9;
+  --primary-300:#dfffff;
+  --accent-100:#F9A825;
+  --accent-200:#8b4d00;
+  --accent-300:#f55041;
+  --text-100:#FFFFFF;
+  --text-200:#e0e0e0;
+  --bg-100:#0C243C;
+  --bg-200:#1e334d;
+  --bg-300:#384c67;
+    
+
+  /* Base colors */
+  --primary-color: #3D85C6;
+  --secundary-color: #53539f;
+
+  /* sidebar */
+  --sidebar-color: rgb(12,36,60);
+  --text-sidebar-color: #fff;
+  --sidebar-hover-color: #1e334d;
+
+  
+
   /* Colors */
   --svg-color: #090d1f;
   --sidebar-svg-color: #13171f;
 
 
-  /* sidebar */
-  --text-sidebar-color: #5d35b0;
-  --sidebar-hover-color: #c6b6e3;
+  
 
   /* Main */
-  --background-main: #f5f6f7;
+  --background-main: rgba(255, 255, 255, 0.9);
+
+  --header-color: rgba(255, 255, 255, 0.9);
+  --color-primary-header: #f4f4f4;
+
+  /* // header // */
+  --placeholder-header-color: #848a90;
+  --text-header-icons: #848a90;
+  --backgorund-header-icons: #f4f4f4;
 
   /* Seciones */
 
   --background-sections: #f5f6f7;
 
   /* modales */
-  --background-modal: #f5f6f7;
+  --background-modal: rgb(255, 255, 255);
   --card-modal: #ffffff;
 
 
   /* colores generales  */
-  --input-color:#e4e4e4;
+  --input-color:#ffffff;
   --close-color: #090d1f;
 
   --background-select-content: #fff;
-  --background-hover-select: #5d35b0;
+  --background-hover-select: #3D85C6;
 
-  --placeholder-color: #6c6c6e;
+  --cards-background:  #f2f2f2;
 
- 
+  /* --placeholder-color: #6c6c6e; */
+  --placeholder-color: #7E8998;
+
+ --line-general: #f3f3f3;
 
   --background-color: #090d1f;
-  --text-color: #090d1f;
+  --text-color: #1e334d;
+  --text-color-ligth: #7E8998;
   --text-select-color: #090d1f;
-  --primary-color: #5d35b0;
+  
   
 
   --light-purple-color: #652dd433;
 
-  --secundary-color: #53539f;
+  
   --tertiary-color: #fff;
   --danger-color: #df4941c5;
   --orange-color: #bf6903;
+  
   --white-color: #f5f6f7;
 
   /* ///////// Colores de texto ////////////// */
@@ -58,24 +93,29 @@
   --text-white: #f5f6f7c7;
 
 
-  /* --primary-color: #2d47da; */
+  /*  Color de sections  */
 
-  --sidebar-color: #fff;
+  --main-card-color: rgba(255, 255, 255, 0.9);
 
-  --header-color: #f5f6f7;
+  
 
   /* color de tablas */
-  --table-color: #eeecec;
-  --two-table-color: #f9f8f8;
-  --text-table-color: #090d1f;
+  --table-color: #ffffff;
+  --table-header-color: #fcfcfc;
+  --two-table-color: #ffffff;
+  --border-table-color: #f4f4f4;
+  --text-table-color: #3d3e42;
+  --table-hover-color: #384c67;
 
 
   --border-radius-general: 5px;
+  --general-card-border: 10px;
 }
 
 
 body {
   font-family: 'Poppins', sans-serif;
+  font-size: 14px;
 
 }
 
@@ -180,7 +220,7 @@ option {
 }
 .bg-standar {
   width: 100%;
-  background-color: var(--input-color);
+  background-color: var(--cards-background);
   color: var(--text-color);
   margin-top: 10px;
   border: none;
@@ -308,8 +348,30 @@ option {
   cursor: pointer;
   border-radius: var(--border-radius-general);
   transition: all 400ms;
+}
+
+.btn__general-primary {
+  background-color: var(--primary-color);
+  padding: 10px 10px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-general);
+  transition: all 400ms;
 
 }
+
+.btn__general-purple-icon {
+  background-color: #bf6a0328;
+  padding: 5px;
+  color: #bf6903;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-general);
+  transition: all 400ms;
+}
+
+
 
 .btn__general-purple:hover {
   transform: scale(1.05);
@@ -319,6 +381,14 @@ option {
   transform: scale(.9);
 }
 
+.btn__general-bg-100 {
+  background-color: var(--bg-100);
+  padding: 10px 10px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-general);
+}
 
 
 .btn__general-danger {
@@ -332,6 +402,15 @@ option {
 
 .btn__general-success {
   background-color: #009708;
+  padding: 10px 10px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-general);
+}
+
+.btn__general-acccent {
+  background-color: var(--accent-100);
   padding: 10px 10px;
   color: #fff;
   border: none;
@@ -430,12 +509,11 @@ option {
 
 
 .btn__mode {
-  background-color: #fff;
+  background-color: var(--backgorund-header-icons);
   width: 66px;
   height: 30px;
   border-radius: 20px;
-  padding: 0 5px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  padding: 0 2px;
   position: relative;
   display: flex;
   align-items: center;
@@ -444,8 +522,6 @@ option {
 
 .btn__indicator {
   background-color: #fff;
-  width: 25px;
-  height: 25px;
   border-radius: 50%;
   position: absolute;
 
@@ -596,11 +672,10 @@ option {
   height: 40px;
   padding: 0 20px;
   background: var(--input-color);
-  color: var(--text-select-color);
+  color: var(--text-color-ligth);
   border-radius: 5px 5px 5px 5px;
   justify-content: space-between;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-   
+  /* box-shadow: 0 10px 25px rgba(0,0,0,0.1); */
   }
 
  
@@ -630,7 +705,7 @@ option {
   .select__container .search .chevron__down {
     top: 50%;
     left: 15px;
-    color: #999;
+    color: var(--text-color-ligth);
     pointer-events: none;
     transform: translateY(-50%);
     position: absolute;
@@ -684,6 +759,7 @@ option {
     max-height: 250px;
     overflow: auto;
     padding-right: 7px;
+    color: var(--text-color-ligth);
 }
 
   .select__container .options.active {
@@ -706,12 +782,11 @@ option {
   .select__container .options li{
 	height: 40px;
 	padding: 0 13px;
-  color: var(--text-color);
+  color: var(--text-color-ligth);
 
   }
 .select__container .options li:hover, li.selected{
 	border-radius: 5px;
-	/* background: #f2f2f2; */
   background-color: var(--background-hover-select);
   color: var(--text-color);
   color: var(--white-color);
@@ -724,7 +799,7 @@ option {
 
 
   .chevron__down {
-    fill: var(--svg-color);
+    fill: var(--text-color-ligth);
   }
   
   .select-btn__general {

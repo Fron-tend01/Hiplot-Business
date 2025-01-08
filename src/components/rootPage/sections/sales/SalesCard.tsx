@@ -184,6 +184,8 @@ const SalesCard: React.FC = () => {
     try {
       const result: any = await APIs.getTotalPrice(dataArticle);
 
+    
+
       if (result.error == true) {
         toast.warning(result.mensaje)
         return
@@ -191,9 +193,7 @@ const SalesCard: React.FC = () => {
 
       if (result.error == false) {
         setPrices(result.mensaje)
-
-
-        setData({
+        return setData({
           id_pers: 0,
           front: true,
           id_articulo: article.id,
@@ -230,12 +230,13 @@ const SalesCard: React.FC = () => {
           campos_plantilla: article.plantilla_data.map((x: any) => ({
             nombre_campo_plantilla: x.nombre,
             tipo_campo_plantilla: 0,
-            valor: x.valor.toString()
+            valor: 0
+            // valor: x.valor.toString()
           }))
 
         })
 
-        return
+        
 
       }
     } catch (error) {
@@ -266,7 +267,7 @@ const SalesCard: React.FC = () => {
 
 
   const addQua = () => {
-    const newData = { ...data };
+    const newData = {...data};
     newData.id_identifier = identifier + 1;
     setIdentifier(identifier + 1);
 
@@ -276,6 +277,7 @@ const SalesCard: React.FC = () => {
 
   };
 
+  console.log(data)
 
   const addSaleOrder = () => {
     if (dataSaleOrder !== undefined) {
@@ -288,7 +290,7 @@ const SalesCard: React.FC = () => {
 
   const [productionComments, setproductionComments] = useState<string>('')
 
-
+  console.log('result', normalConcepts)
 
   const combinacion = async (x: any) => {
     console.log('xscombinacionsasdsads', x)

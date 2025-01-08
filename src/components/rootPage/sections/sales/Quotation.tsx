@@ -23,7 +23,7 @@ const Quotation: React.FC = () => {
 
   const setModal = storeModals(state => state.setModal)
   const setCustomData = storePersonalized(state => state.setCustomData)
- 
+
   const setQuatation = storeQuotation(state => state.setQuatation)
   const setPersonalized = storePersonalized(state => state.setPersonalized)
 
@@ -142,7 +142,7 @@ const Quotation: React.FC = () => {
       id_vendedor: selectedIds?.users?.id,
     }
 
-  
+
 
 
 
@@ -166,14 +166,14 @@ const Quotation: React.FC = () => {
 
     let id_identifier = 1;
     let totalNumberIdentifiers = 0;
-    
+
 
     quatation.conceptos.forEach((x: any) => {
-      x.id_identifier = id_identifier; 
+      x.id_identifier = id_identifier;
       totalNumberIdentifiers += 1;
       id_identifier++;
     });
-    
+
     setQuatation(quatation)
     setPersonalized(quatation)
     setCustomData(quatation.conceptos)
@@ -182,7 +182,21 @@ const Quotation: React.FC = () => {
 
   return (
     <div className='quotation'>
+      <div className='breadcrumbs'>
+        <div className='breadcrumbs__container'>
+          <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-receipt"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 17.5v-11" /></svg>
+          <small className='title'>Ventas</small>
+        </div>
+        <div className='chevron__breadcrumbs'>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6" /></svg>
+        </div>
+        <div className='breadcrumbs__container'>
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /></svg>
+          <small className='title'>Cotizaciones</small>
+        </div>
+      </div>
       <div className='container__quotation'>
+        <div className='filter__container'>
         <div className='row'>
           <div className='col-8 md-col-12'>
             <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
@@ -202,7 +216,7 @@ const Quotation: React.FC = () => {
           <div>
             <Select dataSelects={users} nameSelect={'Usuarios'} instanceId='users' />
           </div>
-          
+
           <div>
             <Select dataSelects={series} nameSelect={'Series'} instanceId='series' />
           </div>
@@ -213,28 +227,33 @@ const Quotation: React.FC = () => {
         </div>
         <div className='row__three'>
           <div className='button__search'>
-            <button className='sm-mx-auto btn__general-purple' onClick={searchQuotation}>Buscar</button>
+            <button className='sm-mx-auto btn__general-primary' onClick={searchQuotation}>Buscar</button>
           </div>
           <div className='button__create-quotation'>
-            <button className='sm-mx-auto btn__general-purple' onClick={modal}>Crear cotizacion</button>
+            <button className='sm-mx-auto btn__general-bg-100' onClick={modal}>Crear cotizacion</button>
           </div>
         </div>
-        <div className='table__quotations' >
+        </div>
+    
+        <div className='table__quotations-head'>
           <div>
-            <div>
-              {quotesData ? (
-                <div className='table__numbers'>
-                  <p className='text'>Total de cotizaciones</p>
-                  <div className='quantities_tables'>{quotesData?.length}</div>
-                </div>
-              ) : (
-                <p className='text'>No hay conceptos</p>
-              )}
-            </div>
+            {quotesData ? (
+              <div className='table__numbers'>
+                <p className='text'>Total de cotizaciones</p>
+                <div className='quantities_tables'>{quotesData?.length}</div>
+              </div>
+            ) : (
+              <p className='text'>No hay conceptos</p>
+            )}
+          </div>
+          <div className='content__table'>
             <div className='table__head'>
               <div className='thead'>
                 <div className='th'>
                   <p className=''>Folio</p>
+                </div>
+                <div className='th'>
+                  <p className=''>Titulo</p>
                 </div>
                 <div className='th'>
                   <p className=''>Total</p>
@@ -253,22 +272,30 @@ const Quotation: React.FC = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div className='table__quotations-body'>
             {quotesData ? (
               <div className='table__body'>
                 {quotesData?.map((quatation: any, index: any) => (
                   <div className='tbody__container' key={index} onClick={() => updateQuotation(quatation)}>
                     <div className='tbody'>
                       <div className='td'>
-                        {quatation.folio}-{quatation.anio}
+                        <p className='folio'>{quatation.folio}-{quatation.anio}</p>
                       </div>
                       <div className='td'>
-                        {/* {quatation.descripcion} */}
+                        {quatation.titulo}
+                      </div>
+                      <div className='td '>
+                        <p className='total'>$ 567.45</p>
                       </div>
                       <div className='td'>
                         {quatation.Razon_social}
                       </div>
-                      <div className='td'>
-                        {quatation.usuario_crea}
+                      <div className='td '>
+                        <div className='by-user'>
+                          {quatation.usuario_crea}
+                        </div>
                       </div>
                       <div className='td'>
                         {quatation.fecha_creacion}
@@ -284,7 +311,7 @@ const Quotation: React.FC = () => {
             ) : (
               <p className='text'>Cargando datos...</p>
             )}
-          </div>
+        
         </div>
         <ModalCreate />
       </div>

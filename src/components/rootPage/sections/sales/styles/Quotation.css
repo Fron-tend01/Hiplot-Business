@@ -1,41 +1,89 @@
 .quotation {
-    height: 90vh;
-	padding: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: auto; /* Si el contenido es demasiado grande, habilita scroll */
+    flex-grow: 1; /* Esto asegura que .quotation ocupe todo el espacio disponible */
 }
 
 .container__quotation {
-	height: 100%;
-	background-color: var(--background-sections);
-	padding: 20px ;
-	border-radius: 10px;
-  overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr;
+    background-color: var(--main-card-color);
+    border-radius: 10px;
+    overflow: hidden; /* Prevenir desbordamiento */
 }
 
 
-.container__quotation {
+.quotation .breadcrumbs {
+  display: flex;
+  margin-bottom: 15px;
+
+}
+
+.quotation .breadcrumbs > .breadcrumbs__container  {
+  padding: 8px 15px;
+  background-color: var(--bg-300);
+  border-radius: 5px;
+
+}
+
+.quotation .breadcrumbs > .chevron__breadcrumbs svg {
+  color: var(--bg-300);
   
 }
 
-.container__quotation > .row__two {
+.quotation .breadcrumbs > .breadcrumbs__container svg {
+  color: #ffffff;
+  
+}
+
+
+.quotation .breadcrumbs > div {
+  display: flex;
+  align-items: center;
+}
+
+.quotation .breadcrumbs > .chevron__breadcrumbs {
+  margin: 0 10px;
+}
+
+.quotation .breadcrumbs > .breadcrumbs__container > .title {
+  margin-left: 10px;
+  color: #fff;
+  font-weight: 500;
+}
+
+
+
+
+
+
+
+
+
+.container__quotation > .filter__container {
+  background-color: var(--cards-background);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.container__quotation > .filter__container > .row__two {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   column-gap: 20px;
 }
 
 
-.container__quotation > .row__three {
+.container__quotation > .filter__container > .row__three {
   display: flex;
   justify-content: center;
   position: relative;
 }
 
-.container__quotation > .row__three > .button__search {
+.container__quotation > .filter__container > .row__three > .button__search {}
 
-
-  
-}
-
-.container__quotation > .row__three .button__create-quotation {
+.container__quotation > .filter__container > .row__three .button__create-quotation {
   position: absolute;
   right: 0;
 }
@@ -45,7 +93,7 @@
 
 
 
- /*************************************************************
+/*************************************************************
  
                     Tabla de Areas
  
@@ -133,11 +181,11 @@
 
 
 
- /*************************************************************
+/*************************************************************
                     Tabla dl modal de crear requisiciones
  **************************************************************/
 
-  
+
 
 
 /* ------------------------- */
@@ -145,94 +193,174 @@
 /* ------------------------- */
 
 
-.table__quotations {
-    margin-top: 20px;
-    border-radius: 10px;
-    grid-column: 1 / span 2;
+.table__quotations-head {
+  display: grid;
+  margin-top: 20px;
+}
 
+.table__quotations-head .content__table {
+  display: grid;
+  grid-template-rows: auto 1fr; 
+  border-radius: 10px 10px 0 0;
+  border: 2px solid var(--border-table-color);
+  border-bottom: none;
 }
 
 
-.table__quotations .table__head {
-    display: flex;
-    width: 100%;
-	background-color: var( --table-color);
-    border-radius: 5px 5px 0 0;
+.table__quotations-head .table__head {
+  display: flex;
+  width: 100%;
+  background-color: var(--table-header-color);
+  border-radius: 20px 20px 0 0 ;
 }
 
-.table__quotations .table__head .thead {
-   display: flex;
-   width: 100%;
-}
-
-.table__quotations .table__head .thead {
-    display: grid;
-    grid-template-columns: 1fr 100px repeat(4, minmax(0, 1fr));
-    padding: 10px;
-	column-gap: 20px;
-    font-weight: 600;
-	color: var(--text-table-color);
-	
-}
-
-.table__quotations .table__body {
-	max-height: 300px;
-    overflow: hidden;
-    overflow: auto;
-    transition-delay: 0.0s;
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-color: var(--primary-color); 
-        border-radius: 5px;
-        height: 100px;
-    }
-
-    &::-webkit-scrollbar-track {
-    /* Para modificar el background */
-    }
-}
-
-
-.table__quotations .tbody__container:nth-child(even) {
-    background-color: var(--table-color);
-}
+.table__quotations-head .table__head .thead {
+  display: flex;
+  width: 100%;
   
-.table__quotations .tbody__container:nth-child(odd) {
-	background-color: var(--two-table-color);
 }
 
-.table__quotations .table__body .tbody {
-    display: flex;
-}
-
-.table__quotations .table__body .tbody {
-    display: grid;
-    grid-template-columns: 1fr 100px repeat(4, minmax(0, 1fr));
-    padding: 10px;
-	column-gap: 20px;
-	align-items: center;
+.table__quotations-head .table__head .thead {
+  display: grid;
+  grid-template-columns: 100px repeat(6, minmax(0, 1fr));
+  padding: 10px;
+  column-gap: 20px;
+  font-weight: 600;
+  color: var(--text-table-color);
+  
 
 }
 
-.table__quotations  .table__body .tbody .td {
-    color: var(--text-color);
+
+/* ------------------------- */
+/* Tabla del Modal */
+/* ------------------------- */
+
+
+.table__quotations-body {
+  border: 2px solid var(--border-table-color);
+  border-top: none;
+  overflow: auto;
+  transition-delay: 0.0s;
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    height: 100px;
+  }
+
+  &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+  }
 }
 
-.table__quotations  .table__body .tbody .td.delete {
-	display: flex;
-	justify-content: end;
+
+.table__quotations-body .table__body {
+
+ 
 }
 
-.table__quotations  .table__body .tbody .td .inputs__general {
-   margin-top: 0;
+.table__quotations-body .tbody__container {
+  border-top: 2px solid var(--border-table-color);
 }
 
-.table__quotations .table__body .tbody:hover {
-    background-color: var(--secundary-color);
-    color: #fff;
+.table__quotations-body .tbody__container:nth-child(even) {
+  background-color: var(--table-color);
 }
 
+.table__quotations-body .tbody__container:nth-child(odd) {
+  background-color: var(--two-table-color);
+}
+
+.table__quotations-body .tbody__container:first-child {
+  border-top: 2px solid var(--border-table-color);
+}
+
+.table__quotations-body .tbody__container:last-child {
+  border-bottom: none;
+  border-radius: 0 0 20px 20px;
+}
+
+
+.table__quotations-body .table__body .tbody {
+  display: flex;
+}
+
+.table__quotations-body .table__body .tbody {
+  display: grid;
+  grid-template-columns: 100px repeat(6, minmax(0, 1fr));
+  padding: 10px;
+  column-gap: 20px;
+  align-items: center;
+
+}
+
+.table__quotations-body .table__body .tbody .td {
+  display: flex;
+  
+}
+
+.table__quotations-body .table__body .tbody .td > .by-user {
+  display: flex;
+  justify-content: center;
+  padding: 5px 10px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  color: #5c6c85;
+  font-weight: 500;
+}
+
+
+
+.table__quotations-body .table__body .tbody .td > .folio {
+  display: flex;
+  justify-content: center;
+  padding: 5px 10px;
+  background-color: #3d86c62c;
+  border-radius: 5px;
+  font-weight:600;
+  /* outline: 2px solid var(--primary-100); */
+  color: var(--primary-100);
+}
+
+.table__quotations-body .table__body .tbody .td > .total {
+  display: flex;
+  justify-content: center;
+  padding: 5px 10px;
+  background-color: #ff6e611f;
+  border-radius: 5px;
+  font-weight:600;
+  /* outline: 2px solid var(--primary-100); */
+  color: var(--accent-300);
+}
+
+
+
+
+.table__quotations-body .table__body .tbody .td.delete {
+  display: flex;
+  justify-content: end;
+}
+
+.table__quotations-body .table__body .tbody .td .inputs__general {
+  margin-top: 0;
+}
+
+.table__quotations-body .table__body .tbody:hover {
+  background-color: var(--table-hover-color);
+  color: #fff;
+}
+
+.table__quotations-body .table__body .tbody:hover .td > .folio {
+  background-color: #3d86c6;
+  color: #ffffff;
+}
+
+.table__quotations-body .table__body .tbody:hover .td > .total {
+  background-color: #f55041;
+  color: #ffffff;
+}
 
