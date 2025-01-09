@@ -15,6 +15,9 @@ interface StoreState {
 
     index: any;
     setIndex: (x: any) => void;
+
+    dataDynamic: any;
+    setDataDynamic: (updateFunc: any[] | ((prevArray: any[]) => any[])) => void;
 }
 
 export const storeDv = create<StoreState>((set) => ({
@@ -32,6 +35,10 @@ export const storeDv = create<StoreState>((set) => ({
     index: null,
     setIndex: (x) => set({index: x}),
 
+    dataDynamic: '',
+    setDataDynamic: (updateFunc) => set((state) => ({
+        articulos: typeof updateFunc === 'function' ? updateFunc(state.dataDynamic) : updateFunc,
+      }))
     }));
 
     

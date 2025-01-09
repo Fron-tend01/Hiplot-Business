@@ -19,6 +19,7 @@ import APIs from '../../../../services/services/APIs';
 import { Toaster, toast } from 'sonner'
 import { storePersonalized } from '../../../../zustand/Personalized';
 import { storeQuotation } from '../../../../zustand/Quotation';
+import DynamicVariables from '../../../../utils/DynamicVariables';
 
 
 const SalesCard: React.FC = () => {
@@ -104,6 +105,8 @@ const SalesCard: React.FC = () => {
     const resultUsers = await getUserGroups(user_id);
     if (resultUsers) {
       setUsersGroups(resultUsers);
+      
+      setSelectedUserGroup(resultUsers[0].id)
     }
   };
 
@@ -138,13 +141,17 @@ const SalesCard: React.FC = () => {
   };
 
   const handleUnitsChange = (item: any) => {
-    console.log(item)
     setSelectedUnit(item);
     setSelectUnits(false);
   };
 
   const handleTemplatesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const value = parseInt(e.target.value);
+    let value:any = e.target.value
+    console.log('article.plantilla_data[index]', article.plantilla_data[index]);
+    
+    if (article.plantilla_data[index].tipo=='numero') {
+      value = parseInt(e.target.value);
+    }
     const updatedArticle = { ...article };
     updatedArticle.plantilla_data[index].valor = value;
 
@@ -167,8 +174,8 @@ const SalesCard: React.FC = () => {
   const [data, setData] = useState<any>()
 
 
+
   const get = async () => {
-    console.log(article.plantilla_data);
     
     const dataArticle = {
       id_articulo: article.id,
@@ -180,10 +187,19 @@ const SalesCard: React.FC = () => {
     };
 
 
-
     try {
       const result: any = await APIs.getTotalPrice(dataArticle);
 
+      article.plantilla_data.forEach((c: any) => {
+        let buscar_in_result = result.txtvisual_campos.filter(
+          (x: any) => x.id_plantillas_art_campos == c.id
+        );
+      
+        if (buscar_in_result.length > 0) {
+          let valor = buscar_in_result[0].valor;
+          c.valor = valor; // Actualiza el valor en el objeto clonado
+        }
+      });
     
 
       if (result.error == true) {
@@ -209,8 +225,8 @@ const SalesCard: React.FC = () => {
           name_unidad: selectedUnit.nombre,
           cantidad: amount,
           precio_total: result.mensaje,
-          obs_produccion: "",
-          obs_factura: "",
+          obs_produccion: productionComments,
+          obs_factura: productionComments,
           monto_urgencia: 0,
           urgencia_monto: 0,
           precio_unitario: result.mensaje,
@@ -226,11 +242,11 @@ const SalesCard: React.FC = () => {
           status_produccion: 0,
           cobrado: 0,
           id_unidad: selectedUnit.id_unidad,
-
           campos_plantilla: article.plantilla_data.map((x: any) => ({
+            
             nombre_campo_plantilla: x.nombre,
-            tipo_campo_plantilla: 0,
-            valor: 0
+            tipo_campo_plantilla: x.tipo,
+            valor: x.tipo=='texto'? x.valor.toString() : x.valor
             // valor: x.valor.toString()
           }))
 
@@ -267,6 +283,7 @@ const SalesCard: React.FC = () => {
 
 
   const addQua = () => {
+    
     const newData = {...data};
     newData.id_identifier = identifier + 1;
     setIdentifier(identifier + 1);
@@ -277,7 +294,6 @@ const SalesCard: React.FC = () => {
 
   };
 
-  console.log(data)
 
   const addSaleOrder = () => {
     if (dataSaleOrder !== undefined) {
@@ -290,10 +306,8 @@ const SalesCard: React.FC = () => {
 
   const [productionComments, setproductionComments] = useState<string>('')
 
-  console.log('result', normalConcepts)
 
   const combinacion = async (x: any) => {
-    console.log('xscombinacionsasdsads', x)
     const data = {
       id: x.id_articulo,
       activos: true,
@@ -324,6 +338,8 @@ const SalesCard: React.FC = () => {
 
   useEffect(() => {
     setUnits(article?.unidades);
+    
+    setSelectedUnit(article?.unidades[0])
   }, [article])
 
   const [activeIndex, setActiveIndex] = useState(null);
@@ -471,7 +487,7 @@ const SalesCard: React.FC = () => {
                         <input
                           className={`inputs__general`}
                           type="text"
-                          value={x.value}
+                          value={x.valor}
                           onChange={(e) => handleTemplatesChange(e, index)}
                           placeholder={x.nombre}
                         />
@@ -486,7 +502,7 @@ const SalesCard: React.FC = () => {
                     {x.tipo == 'txtvisual' ?
                         <div className='price_x_unit'>
                           <p>{x.nombre}</p>
-                          <p className='result__price_x_unit'>{x.value || '0'}</p>
+                          <p className='result__price_x_unit'>{x.valor || '0'}</p>
                         </div>
                       : ''}
                   </div>
