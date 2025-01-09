@@ -86,8 +86,8 @@
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 10px;
-    background-color: var(--cards-background);
     padding: 20px;
+    background-color: var(--cards-background);
     border-radius: var(--general-card-border);
 }
 

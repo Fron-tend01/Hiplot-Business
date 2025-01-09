@@ -197,7 +197,7 @@ const ModalSalesOrder: React.FC = () => {
         try {
             let response = await APIs.createSaleOrderProduction(data)
         } catch (error) {
-            
+
         }
     }
 
@@ -402,51 +402,53 @@ const ModalSalesOrder: React.FC = () => {
                 }
                 <form className='sale-order__modal_articles' onSubmit={handleCreateSaleOrder}>
                     <div className='row__one'>
-                        <div className='row'>
-                            <div className='col-12'>
-                                <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
-                            </div>
-                        </div>
-                        <div className='row'>
-                            <div className='col-3'>
-                                <label className='label__general'>Buscar</label>
-                                <input className='inputs__general' type="text" value={searCustomer} onChange={(e) => setSearchCustomer(e.target.value)} placeholder='Ingresa el contacto' />
-                            </div>
-                            <div className='col-4'>
-                                <Select dataSelects={clients} instanceId='clients' nameSelect={'Clientes'} />
-                            </div>
-                            <div className='col-2 d-flex align-items-end'>
-                                <div>
-                                    <button type='button' className='btn__general-purple' onClick={searchClients}>Buscar</button>
+                        <div className='row__one'>
+                            <div className='row'>
+                                <div className='col-12'>
+                                    <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
                                 </div>
                             </div>
-                            <div className='col-3'>
-                                <label className='label__general'>Titulo</label>
-                                <input className='inputs__general' type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el titulo' />
-                            </div>
-                        </div>
-                        <div className='row my-4'>
-                            <div className="col-6 sale-order__input_container d-flex align-items-center">
-                                <p className="label__general">Fecha de entrega a producción</p>
-                                <div className="container_dates__requisition">
-                                    <Flatpickr
-                                        className="date"
-                                        value={dates[0]} // Fecha inicial
-                                        options={{ enableTime: true, dateFormat: "Y-m-d H:i" }}
-                                        onChange={(fecha) => handleDateChange(fecha, 0)} // Índice 0
-                                        placeholder="Selecciona la fecha de inicio"
-                                    />
+                            <div className='row'>
+                                <div className='col-3'>
+                                    <label className='label__general'>Buscar</label>
+                                    <input className='inputs__general' type="text" value={searCustomer} onChange={(e) => setSearchCustomer(e.target.value)} placeholder='Ingresa el contacto' />
                                 </div>
-                            </div>                            <div className="col-6 sale-order__input_container d-flex align-items-center">
-                                <p className="label__general">Fecha de entrega cliente</p>
-                                <div className="container_dates__requisition">
-                                    <Flatpickr
-                                        className="date"
-                                        value={dates[1]} // Fecha final
-                                        options={{ enableTime: true, dateFormat: "Y-m-d H:i" }}
-                                        onChange={(fecha) => handleDateChange(fecha, 1)} // Índice 1
-                                        placeholder="Selecciona la fecha de fin"
-                                    />
+                                <div className='col-4'>
+                                    <Select dataSelects={clients} instanceId='clients' nameSelect={'Clientes'} />
+                                </div>
+                                <div className='col-2 d-flex align-items-end'>
+                                    <div>
+                                        <button type='button' className='btn__general-purple' onClick={searchClients}>Buscar</button>
+                                    </div>
+                                </div>
+                                <div className='col-3'>
+                                    <label className='label__general'>Titulo</label>
+                                    <input className='inputs__general' type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el titulo' />
+                                </div>
+                            </div>
+                            <div className='row my-4'>
+                                <div className="col-6 sale-order__input_container d-flex align-items-center">
+                                    <p className="label__general">Fecha de entrega a producción</p>
+                                    <div className="container_dates__requisition">
+                                        <Flatpickr
+                                            className="date"
+                                            value={dates[0]} // Fecha inicial
+                                            options={{ enableTime: true, dateFormat: "Y-m-d H:i" }}
+                                            onChange={(fecha) => handleDateChange(fecha, 0)} // Índice 0
+                                            placeholder="Selecciona la fecha de inicio"
+                                        />
+                                    </div>
+                                </div>                            <div className="col-6 sale-order__input_container d-flex align-items-center">
+                                    <p className="label__general">Fecha de entrega cliente</p>
+                                    <div className="container_dates__requisition">
+                                        <Flatpickr
+                                            className="date"
+                                            value={dates[1]} // Fecha final
+                                            options={{ enableTime: true, dateFormat: "Y-m-d H:i" }}
+                                            onChange={(fecha) => handleDateChange(fecha, 1)} // Índice 1
+                                            placeholder="Selecciona la fecha de fin"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -457,8 +459,8 @@ const ModalSalesOrder: React.FC = () => {
                                     <div className='mx-4'>
                                         <button type='button' className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-sale')}>Personalizados</button>
                                     </div>
-                                    <div>
-                                        <button type='button' className='btn__general-purple' onClick={() => setModalArticleView('article-view__modal')}>Buscar articulos</button>
+                                    <div className='btn__search__articles'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" onClick={() => setModalArticleView('article-view__modal')} width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><path d="m7.5 4.27 9 5.15"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/><circle cx="18.5" cy="15.5" r="2.5"/><path d="M20.27 17.27 22 19"/></svg>
                                     </div>
                                 </div>
                             </div>

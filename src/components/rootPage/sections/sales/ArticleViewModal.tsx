@@ -163,7 +163,7 @@ const ArticleViewModal = () => {
                     <a href="#" className="btn-cerrar-popup__article-view__modal" onClick={() => setModalArticleView('')}>
                         <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
                     </a>
-                    <p className='title__modals'>Precios</p>
+                    <p className='title__modals'>Artículos</p>
                 </div>
                 <div className='article__view_container'>
                     <div className='row__one'>
@@ -219,10 +219,53 @@ const ArticleViewModal = () => {
                     <div className='row__two'>
                         {articles.map((x: any) => (
                             <div className='item' key={x.id} onClick={() => modal(x)}>
+                                <div className='stock'>
+                                    {x.desabasto == true ?
+                                        <div className='desabasto'>
+                                            <small>Desabasto</small>
+                                        </div>
+                                        :
+                                        ''
+                                    }
+                                    {x.ultimas_piezas == true ?
+                                        <div className='ultima-piezas'>
+                                            <small >Ultimas Piezas</small>
+                                        </div>
+                                        :
+                                        ''
+                                    }
+                                </div>
                                 <div className='img' style={{ backgroundImage: `url(${x.imagen})` }}>
                                 </div>
-                                <p>{x.codigo}</p>
-                                <p>{x.descripcion}</p>
+                                
+                                <div className='content'>
+                                    <p className='code'>{x.codigo}</p>
+                                    <p className='descripcion'>{x.descripcion}</p>
+                                    <div className='labels'>
+
+                                        {x.bajo_pedido == true ?
+                                            <div className='bajo-pedido'>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-truck"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18H9" /><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" /><circle cx="17" cy="18" r="2" /><circle cx="7" cy="18" r="2" /></svg>
+                                                <small >Bajo Pedido</small>
+                                            </div>
+                                            :
+                                            ''
+                                        }
+                                        {x.vender_sin_stock == true ?
+                                            <div className='vender-sin-stock'>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
+                                                <small >Vender sin Stock</small>
+                                            </div>
+                                            :
+                                            ''
+                                        }
+
+
+
+
+                                    </div>
+
+                                </div>
                             </div>
                         ))}
                     </div>

@@ -7,17 +7,33 @@
 
 :root {
 
-  --primary-100:#3D85C6;
-  --primary-200:#75b4f9;
-  --primary-300:#dfffff;
-  --accent-100:#F9A825;
-  --accent-200:#8b4d00;
-  --accent-300:#f55041;
-  --text-100:#FFFFFF;
-  --text-200:#e0e0e0;
-  --bg-100:#0C243C;
-  --bg-200:#1e334d;
-  --bg-300:#384c67;
+  --primary-100: #3D85C6;
+  --primary-200: #75b4f9;
+  --primary-300: #dfffff;
+  
+  --accent-100: #F9A825;
+  --accent-200: #8b4d00;
+  --accent-300: #f55041;
+  
+  --success-100: #4CAF50; /* Verde claro */
+  --success-200: #388E3C; /* Verde intermedio */
+  --success-300: #A5D6A7; /* Verde pastel suave */
+  
+  --danger-100: #FF5252; /* Rojo claro */
+  --danger-200: #D32F2F; /* Rojo intermedio */
+  --danger-300: #FFCDD2; /* Rojo pastel suave */
+  
+  --warning-100: #FFC107; /* Naranja claro */
+  --warning-200: #FF8F00; /* Naranja intermedio */
+  --warning-300: #FFE082; /* Naranja pastel suave */
+  
+  --text-100: #FFFFFF;
+  --text-200: #e0e0e0;
+  
+  --bg-100: #0C243C;
+  --bg-200: #1e334d;
+  --bg-300: #384c67;
+  
     
 
   /* Base colors */
@@ -585,9 +601,9 @@ option {
 
   .active-status > p  {
     padding: 5px 10px;
-    background-color: #0097081f;
+    background-color: #4caf4f27;
     border-radius: 5px;
-    color: #009708;
+    color: var(--success-100);
     font-weight: 600;
   }
 

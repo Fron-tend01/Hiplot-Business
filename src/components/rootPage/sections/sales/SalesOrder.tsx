@@ -140,66 +140,68 @@ const SalesOrder: React.FC = () => {
     return (
         <div className='sales__order'>
             <div className='sales__order_container'>
-                <div className='row'>
-                    <div className='col-8'>
-                        <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
-                    </div>
-                    <div className='col-4'>
-                        <label className='label__general'>Fechas</label>
-                        <div className='container_dates__requisition'>
-                            <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                <div className='row__one'>
+                    <div className='row'>
+                        <div className='col-8'>
+                            <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                        </div>
+                        <div className='col-4'>
+                            <label className='label__general'>Fechas</label>
+                            <div className='container_dates__requisition'>
+                                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className='row my-4'>
-                    <div className='col-3'>
-                        <label className='label__general'>Clientes</label>
-                        <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Folio/RFC/Razon social' />
-                    </div>
-                    <div className='col-3'>
-                        <Select dataSelects={users} nameSelect={'Usuarios'} instanceId='users' />
-                    </div>
-                    <div className='col-3'>
-                        <Select dataSelects={series} nameSelect={'Series'} instanceId='serie' />
-                    </div>
-                    <div className='col-3'>
-                        <label className='label__general'>Folio</label>
-                        <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' />
-                    </div>
-                </div>
-                <div className='d-flex justify-content-around my-4'>
-                    <div className='container__checkbox_orders'>
-                        <div className='checkbox__orders'>
-                            <label className="checkbox__container_general">
-                                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 0} value={type} onChange={() => handleClick(0)} />
-                                <span className="checkmark__general"></span>
-                            </label>
-                            <p className='title__checkbox text'>Activo</p>
+                    <div className='row my-4'>
+                        <div className='col-3'>
+                            <label className='label__general'>Clientes</label>
+                            <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Folio/RFC/Razon social' />
                         </div>
-                        <div className='checkbox__orders'>
-                            <label className="checkbox__container_general">
-                                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 2} value={type} onChange={() => handleClick(2)} />
-                                <span className="checkmark__general"></span>
-                            </label>
-                            <p className='title__checkbox text'>Cancelados</p>
+                        <div className='col-3'>
+                            <Select dataSelects={users} nameSelect={'Usuarios'} instanceId='users' />
                         </div>
-                        <div className='checkbox__orders'>
-                            <label className="checkbox__container_general">
-                                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 1} value={type} onChange={() => handleClick(1)} />
-                                <span className="checkmark__general"></span>
-                            </label>
-                            <p className='title__checkbox text'>Terminados</p>
+                        <div className='col-3'>
+                            <Select dataSelects={series} nameSelect={'Series'} instanceId='serie' />
+                        </div>
+                        <div className='col-3'>
+                            <label className='label__general'>Folio</label>
+                            <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' />
                         </div>
                     </div>
-                    <div className=''>
-                        <button type='button' className='btn__general-purple' onClick={search}>Buscar</button>
-                    </div>
-                    <div>
-                        <button type='button' className='btn__general-purple' onClick={() => setModalSalesOrder('sale-order__modal')}>Crear orden de venta</button>
+                    <div className='d-flex justify-content-around my-4'>
+                        <div className='container__checkbox_orders'>
+                            <div className='checkbox__orders'>
+                                <label className="checkbox__container_general">
+                                    <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 0} value={type} onChange={() => handleClick(0)} />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='title__checkbox text'>Activo</p>
+                            </div>
+                            <div className='checkbox__orders'>
+                                <label className="checkbox__container_general">
+                                    <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 2} value={type} onChange={() => handleClick(2)} />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='title__checkbox text'>Cancelados</p>
+                            </div>
+                            <div className='checkbox__orders'>
+                                <label className="checkbox__container_general">
+                                    <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 1} value={type} onChange={() => handleClick(1)} />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='title__checkbox text'>Terminados</p>
+                            </div>
+                        </div>
+                        <div className=''>
+                            <button type='button' className='btn__general-purple' onClick={search}>Buscar</button>
+                        </div>
+                        <div>
+                            <button type='button' className='btn__general-purple' onClick={() => setModalSalesOrder('sale-order__modal')}>Crear orden de venta</button>
+                        </div>
                     </div>
                 </div>
                 <Modal />
-                <div className='table__orders'>
+                <div className='table__sale-orders'>
                     {saleOrders ? (
                         <div className='table__numbers'>
                             <p className='text'>Total de ordenes de compra</p>
@@ -211,19 +213,34 @@ const SalesOrder: React.FC = () => {
                     <div className='table__head'>
                         <div className='thead'>
                             <div className='th'>
-                                <p>Nombre</p>
+                                <p>Folio</p>
                             </div>
                             <div className='th'>
-                                <p>Sucursal</p>
+                                <p>Título</p>
+                            </div>
+                            <div className='th'>
+                                <p>Total</p>
+                            </div>
+                            <div className='th'>
+                                <p>Total Franquicia</p>
+                            </div>
+                            <div className='th'>
+                                <p>Total Facturados</p>
+                            </div>
+                            <div className='th'>
+                                <p>Creada por</p>
                             </div>
                             <div className='th'>
                                 <p>Fecha</p>
                             </div>
                             <div className='th'>
-                                <p>Estado</p>
+                                <p>Sucursal</p>
                             </div>
-                            <div className="th">
-
+                            <div className='th'>
+                                <p>Sucursal</p>
+                            </div>
+                            <div className='th'>
+                                <p>Razon social</p>
                             </div>
                         </div>
                     </div>
@@ -231,14 +248,26 @@ const SalesOrder: React.FC = () => {
                         <div className='table__body'>
                             {saleOrders.map((order: any) => {
                                 return (
-                                    <div className='tbody__container' key={order.id}>
+                                    <div className='tbody__container' key={order.id} onClick={() => modalUpdate(order)}>
                                         <div className='tbody'>
+                                            <div className='td'>
+                                                <p className='folio'>{order.serie}-{order.folio}-{order.anio}</p>
+                                            </div>
                                             <div className='td'>
                                                 <p>{order.titulo}</p>
                                             </div>
                                             <div className='td'>
-                                                <p>{order.razon_social}</p>
+                                                <p>$ 568.83</p>
                                             </div>
+                                            <div className='td'>
+                                                <p>$ 874.49</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>$ 84.49</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>{order.usuario_crea}</p>
+                                            </div> 
                                             <div className='td'>
                                                 <p>{order.fecha_creacion}</p>
                                             </div>
@@ -248,7 +277,10 @@ const SalesOrder: React.FC = () => {
                                                 <p>{order.status == 2 ? <div className='active-status'><p>Terminada</p></div> : ''}</p>
                                             </div>
                                             <div className='td'>
-                                                <button className='branchoffice__edit_btn' onClick={() => modalUpdate(order)}>Editar</button>
+                                                <p>{order.razon_social}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>{order.razon_social}</p>
                                             </div>
 
                                         </div>

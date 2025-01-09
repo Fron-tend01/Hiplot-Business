@@ -306,6 +306,7 @@
 .table__quotations-body .table__body .tbody .td > .by-user {
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 5px 10px;
   background-color: #f5f5f5;
   border-radius: 5px;
@@ -318,6 +319,7 @@
 .table__quotations-body .table__body .tbody .td > .folio {
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 5px 10px;
   background-color: #3d86c62c;
   border-radius: 5px;
@@ -329,6 +331,7 @@
 .table__quotations-body .table__body .tbody .td > .total {
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 5px 10px;
   background-color: #ff6e611f;
   border-radius: 5px;

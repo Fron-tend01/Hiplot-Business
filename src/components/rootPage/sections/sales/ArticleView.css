@@ -24,31 +24,24 @@
 }
 
 .article__view_container .row__two > .item {
-    color: #fff;
-    background-color: #191d27;
+    /* color: var(--text-color-ligth);
+    border: 2px solid var(--line-general);
     height: auto;
     display: block;
-    padding: 20px;
+ 
     border-radius: 10px;
-    cursor: pointer;
+    cursor: pointer; */
 
 }
 
-.article__view_container .row__two > .item > p {
-    padding: 5px 0;
-    font-size: .9rem
 
-}
 
 
 .article__view_container .row__two > .item .img {
-    width: 90%;
+    /* width: 90%;
     height: 120px;
     background-size: cover;
-    background-position: center;
-    margin-bottom: 10px;
-    
-
+    background-position: center; */
 }
 
 

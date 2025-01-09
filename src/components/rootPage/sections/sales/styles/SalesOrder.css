@@ -1,19 +1,162 @@
 .sales__order {
-    height: 90vh;
-	padding: 20px;
+	height: 90vh;
 }
 
 
 .sales__order_container {
 	display: grid;
 	grid-template-rows: auto auto auto 1fr;
-    height: 100%;
+	height: 100%;
 	background-color: var(--main-card-color);
-	padding: 20px ;
+	padding: 20px;
 	border-radius: 10px;
-    overflow: hidden;
+	overflow: hidden;
 }
 
-.sales__order_container > div {
+.sales__order_container>div {
 	width: 100%;
 }
+
+
+.sales__order_container>.row__one {
+	padding: 20px;
+	background-color: var(--cards-background);
+	border-radius: var(--general-card-border);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*************************************************************
+                    Tabla de Entradas
+ **************************************************************/
+
+.table__sale-orders {
+	border-radius: 10px;
+	display: grid;
+	overflow: hidden;
+	grid-template-rows: repeat(2, auto) 1fr;
+	height: 100%;
+
+}
+
+
+.table__sale-orders .table__head {
+	display: flex;
+	width: 100%;
+	background-color: var(--table-color);
+	color: var(--text-table-color);
+	border-radius: 5px 5px 0 0;
+}
+
+.table__sale-orders .table__head .thead {
+	display: flex;
+	width: 100%;
+	border: 2px solid var(--border-table-color);
+	border-bottom: none;
+	border-radius: 20px 20px 0 0;
+}
+
+.table__sale-orders .table__head .thead {
+	display: grid;
+	grid-template-columns: repeat(10, 1fr);
+	padding: 10px;
+	font-weight: 600;
+}
+
+.table__sale-orders .table__body {
+	border: 2px solid var(--border-table-color);
+	border-top: none;
+	height: 100%;
+	overflow-y: auto;
+	transition-delay: 0.0s;
+
+	&::-webkit-scrollbar {
+		width: 5px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: var(--primary-color);
+		border-radius: 5px;
+		height: 100px;
+	}
+
+	&::-webkit-scrollbar-track {
+		/* Para modificar el background */
+	}
+}
+
+.table__sale-orders .tbody__container {
+	border-top: 2px solid var(--border-table-color);
+}
+
+.table__sale-orders .tbody__container:nth-child(even) {
+	background-color: var(--table-color);
+}
+
+.table__sale-orders .tbody__container:nth-child(odd) {
+	background-color: var(--two-table-color);
+}
+
+.table__sale-orders .tbody__container:first-child {
+	border-top: 2px solid var(--border-table-color);
+}
+
+.table__sale-orders .tbody__container:last-child {
+	border-bottom: none;
+	border-radius: 0 0 20px 20px;
+}
+
+
+.table__sale-orders .table__body .tbody {
+	display: flex;
+}
+
+.table__sale-orders .table__body .tbody {
+	display: grid;
+	grid-template-columns: repeat(10, 1fr);
+	padding: 10px;
+}
+
+.table__sale-orders .table__body .tbody .td.order>div {
+	background-color: var(--primary-color);
+	border-radius: 5px;
+	padding: 10px;
+	color: var(--white-color);
+	font-weight: 500;
+}
+
+.table__sale-orders .table__body .tbody .td>.folio {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 5px 10px;
+	background-color: #3d86c62c;
+	border-radius: 5px;
+	font-weight: 600;
+	/* outline: 2px solid var(--primary-100); */
+	color: var(--primary-100);
+}
+
+.table__sale-orders .table__body .tbody .td {
+	display: flex;
+}
+
+.table__sale-orders .table__body .tbody:hover {
+	background-color: var(--table-hover-color);
+	color: #fff;
+  }
+  
+
+.table__sale-orders .table__body .tbody:hover .td > .folio {
+	background-color: #3d86c6;
+	color: #ffffff;
+  }
