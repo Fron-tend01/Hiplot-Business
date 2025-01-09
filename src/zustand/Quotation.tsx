@@ -21,7 +21,10 @@ interface StoreState {
     dataGet: any;
     setDataGet: (x: any) => void;
 
-   
+    camposPlantillas: any;
+    setCamposPlantillas: (x: any) => void;
+    camposPlantillasModal: any;
+    setCamposPlantillasModal: (x: any) => void;
 }
 
 export const storeQuotation = create<StoreState>((set) => ({
@@ -43,6 +46,9 @@ export const storeQuotation = create<StoreState>((set) => ({
     dataGet: {},
     setDataGet: (x) => set({dataGet: x}),
 
-
+    camposPlantillas: '',
+    setCamposPlantillas: (x) => set({camposPlantillas: x}),
+    camposPlantillasModal: '',
+    setCamposPlantillasModal: (x) => set({camposPlantillasModal: x}),
 }));
 

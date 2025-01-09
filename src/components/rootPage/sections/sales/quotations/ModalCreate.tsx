@@ -17,6 +17,9 @@ import APIs from '../../../../../services/services/APIs';
 import useUserStore from '../../../../../zustand/General';
 import { storeQuotation } from '../../../../../zustand/Quotation';
 import SeeClient from '../SeeClient';
+import SeeCamposPlantillas from '../SeeCamposPlantillas';
+import { storeDv } from '../../../../../zustand/Dynamic_variables';
+
 
 
 
@@ -38,6 +41,8 @@ const ModalCreate: React.FC = () => {
   const setDataUpdate = storePersonalized((state) => state.setDataUpdate);
   const setModal = storeModals((state) => state.setModal);
   const { modal }: any = useStore(storeModals)
+  const setModalSub = storeModals((state) => state.setModalSub);
+
   const setClientsModal = storeQuotation((state) => state.setClientsModal);
   const setClient = storeQuotation((state) => state.setClient);
 
@@ -156,6 +161,11 @@ const ModalCreate: React.FC = () => {
 
   }
 
+  const setIndexVM = storeDv(state  => state.setIndex)
+  const seeVerMas = (index:number) => {
+    setIndexVM(index)
+    setModalSub('see_cp')
+  }
   const [selectResults, setSelectResults] = useState<boolean>(false);
   const [selectedResult, setSelectedResult] = useState<any>(null);
 
@@ -169,7 +179,6 @@ const ModalCreate: React.FC = () => {
     setSelectResults(!selectResults)
   };
 
-  console.log('quatation', quatation)
 
 
   const createQuotation = async () => {
@@ -317,6 +326,33 @@ const ModalCreate: React.FC = () => {
 
   console.log('normalConcepts', normalConcepts)
 
+  const handleUrgencyChange = async (index: number) => {
+    let data = {
+      "id_articulo": normalConcepts[index].id_articulo,
+      "id_sucursal": branch.id,
+      "total": normalConcepts[index].precio_total
+    }
+    const newConcept = [...normalConcepts];
+    newConcept[index].urgency = !newConcept[index]?.urgency;
+    
+    if (newConcept[index].urgency) {
+      await APIs.CreateAny(data, "calcular_urgencia")
+        .then(async (response: any) => {
+          if (!response.error) {
+            newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
+            newConcept[index].precio_total = parseFloat(response.total_con_urgencia);
+          } else {
+            Swal.fire('Notificación', response.mensaje, 'warning');
+            return
+          }
+        })
+    }else {
+      newConcept[index].precio_total = parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia);
+      newConcept[index].monto_urgencia = 0;
+    }
+    setNormalConcepts(newConcept);
+
+  };
   return (
     <div className={`overlay__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
       <div className={`popup__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
@@ -377,16 +413,16 @@ const ModalCreate: React.FC = () => {
           {modal == 'create-modal__qoutation' ?
             <div className='row__two'>
               <div className='col-12'>
-                <p className='title'>Datos de la requisición</p>
+                <p className='title'>Datos de la Cotización</p>
               </div>
               <div className='col-12'>
                 <div className='row col-12 md-col-12'>
                   <div className='col-8 md-col-12'>
                     <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
                   </div>
-                  <div className='col-4  md-col-6 sm-col-12'>
-                    <Select dataSelects={dataSelects} instanceId="select1" nameSelect={'Vendedor'} />
-                  </div>
+                  {/* <div className='col-4  md-col-6 sm-col-12'>
+                    <Select dataSelects={dataSelects} instanceId="select1" nameSelect={'Vendedor'} />:''
+                  </div> */}
                 </div>
               </div>
               <div className='row col-12 my-2 w-full'>
@@ -400,13 +436,17 @@ const ModalCreate: React.FC = () => {
                   <div className='warning__general'><small >Este campo es obligatorio</small></div>
                   <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios'></textarea>
                 </div>
-              
+
               </div>
             </div>
             :
             ''
           }
+
           <div className='row__three my-2 w-full'>
+            <div className='col-12'>
+              <p className='title'>Datos del Cliente</p>
+            </div>
             <div>
               <label className='label__general'>Nombre</label>
               <div className='warning__general'><small >Este campo es obligatorio</small></div>
@@ -414,13 +454,13 @@ const ModalCreate: React.FC = () => {
             </div>
             <div className='d-flex align-items-end justify-content-center'>
               <div className='search-icon' onClick={searchUsers}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
               </div>
 
             </div>
             <div>
               <div className='select__container'>
-                <label className='label__general'>Resultado</label>
+                <label className='label__general'>Cliente Seleccionado:</label>
                 <div className={`select-btn__general`}>
                   <div className={`select-btn ${selectResults ? 'active' : ''}`} onClick={openSelectResults}>
                     <div className='select__container_title'>
@@ -475,7 +515,8 @@ const ModalCreate: React.FC = () => {
                     <p>Unidad</p>
                   </div>
                   <div className='th'>
-                    <p>Desc. monto</p>
+                    {/* <p>Desc. monto</p> */}
+                    <p>P/U</p>
                   </div>
                   <div>
                     <p>Total</p>
@@ -486,10 +527,10 @@ const ModalCreate: React.FC = () => {
                 <div className='table__body'>
                   {normalConcepts?.map((article: any, index: number) => {
                     return (
-                      <div className='tbody__container' key={article.id}>
+                      <div className='tbody__container' key={index}>
                         {article.personalized ?
                           <div className='concept__personalized'>
-                            <p>Concepto Perzonalizado</p>
+                            <p>Concepto Personalizado</p>
                           </div>
                           :
                           ''
@@ -500,7 +541,7 @@ const ModalCreate: React.FC = () => {
                               <p>{article.codigo}-{article.descripcion}</p>
                             </div>
                             <div className='td'>
-                              <p>$ {article.cantidad}</p>
+                              <p>{article.cantidad}</p>
                             </div>
                             <div className='td'>
                               <p>{article.name_unidad}</p>
@@ -531,30 +572,44 @@ const ModalCreate: React.FC = () => {
                               <p>{article.codigo}-{article.descripcion}</p>
                             </div>
                             <div className='td'>
-                              <p>$ {article.cantidad}</p>
+                              <p>{article.cantidad}</p>
                             </div>
                             <div className='td'>
                               <p>{article.name_unidad || article.unidad}</p>
                             </div>
                             <div className='td'>
-                              {permisoDescount ?
+                              {/* {permisoDescount ?
                                 <div>
                                   <input className='inputs__general' type="text" placeholder='Descuento' />
                                 </div>
                                 :
                                 <p>No permitido</p>
+                              } */}
+                              <p>$ {article.precio_total / article.cantidad}</p>
+
+                            </div>
+                            <div className='td'>
+                              {article.urgency ? 
+                              <p>$ {article.precio_total} <span style={{ color: 'red' }}>(${article.monto_urgencia})</span></p>
+                              :
+                              <p>$ {article.precio_total}</p>
+                              }
+                            </div>
+                           
+                            <div className='td'>
+                              {article?.urgency ?
+                                <button className='remove_urgency' onClick={() => handleUrgencyChange(index)}>Remover Urgencia</button>
+                                :
+                                <button className='add_urgency' onClick={() => handleUrgencyChange(index)}>Agregar Urgencia</button>
                               }
                             </div>
                             <div className='td'>
-                              <p>$ {article.precio_total}</p>
-                            </div>
-                            <div className='td'>
-                              <button className='add_urgency'>Agregar Urgencia</button>
-                            </div>
-
-                            <div className='td'>
                               <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
                             </div>
+                            <div className='td'>
+                              <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
+                            </div>
+                            
                           </div>
                         }
                       </div>
@@ -583,6 +638,7 @@ const ModalCreate: React.FC = () => {
       <ArticleViewModal />
       <SalesCard />
       <SeeClient />
+      <SeeCamposPlantillas/>
     </div>
   );
 };
