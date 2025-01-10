@@ -4,7 +4,6 @@ import Swal from 'sweetalert2'
 import { useStore } from 'zustand';
 import './ModalCreate.css';
 import Empresas_Sucursales from '../../../Dynamic_Components/Empresas_Sucursales';
-import Select from '../../../Dynamic_Components/Select';
 import SalesCard from '../SalesCard';
 import { storeArticleView } from '../../../../../zustand/ArticleView';
 import ArticleViewModal from '../ArticleViewModal';
@@ -35,7 +34,6 @@ const ModalCreate: React.FC = () => {
   const setCustomData = storePersonalized((state) => state.setCustomData);
 
   const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
-  const setDataSaleOrder = storeSaleOrder((state) => state.setDataSaleOrder);
 
   const setQuotesData = storeQuotation(state => state.setQuotesData);
   const setIdArticle = storeSaleCard(state => state.setIdArticle)
@@ -71,7 +69,7 @@ const ModalCreate: React.FC = () => {
   const [total, setTotal] = useState<number>(0)
   const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
-  const [dataSelects, setDataSelects] = useState<any>([])
+  const [, setDataSelects] = useState<any>([])
   const dataUsers = {
     nombre: '',
     id_usuario: user_id,
@@ -273,7 +271,6 @@ const ModalCreate: React.FC = () => {
   }
 
 
-  const [permisoDescount] = useState<boolean>(true)
 
   const modalSeeConcepts = (article: any) => {
     setPersonalizedModal('personalized_modal-quotation-update')
@@ -717,13 +714,14 @@ const ModalCreate: React.FC = () => {
             }
           </div>
         </div>
+        <ModalSalesOrder />
       </div>
       <Personalized />
       <ArticleViewModal />
       <SalesCard />
       <SeeClient />
       <SeeCamposPlantillas />
-      <ModalSalesOrder />
+
     </div>
   );
 };
