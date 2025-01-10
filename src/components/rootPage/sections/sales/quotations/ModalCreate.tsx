@@ -19,6 +19,8 @@ import { storeQuotation } from '../../../../../zustand/Quotation';
 import SeeClient from '../SeeClient';
 import SeeCamposPlantillas from '../SeeCamposPlantillas';
 import { storeDv } from '../../../../../zustand/Dynamic_variables';
+import { storeSaleOrder } from '../../../../../zustand/SalesOrder';
+import ModalSalesOrder from '../sales_order/ModalSalesOrder';
 
 
 
@@ -32,7 +34,11 @@ const ModalCreate: React.FC = () => {
   const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
   const setCustomData = storePersonalized((state) => state.setCustomData);
 
+  const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
+  const setDataSaleOrder = storeSaleOrder((state) => state.setDataSaleOrder);
+
   const setQuotesData = storeQuotation(state => state.setQuotesData);
+  const setIdArticle = storeSaleCard(state => state.setIdArticle)
 
   const { identifier, dataGet }: any = useStore(storeQuotation);
   const setPersonalized = storePersonalized(state => state.setPersonalized)
@@ -59,6 +65,11 @@ const ModalCreate: React.FC = () => {
   const [name, setName] = useState<any>()
   const [comments, setComments] = useState<any>()
   const [title, setTitle] = useState<any>('')
+  const [subtotal, setSubtotal] = useState<number>(0)
+  const [descuento, setDescuento] = useState<number>(0)
+  const [urgencia, setUrgencia] = useState<number>(0)
+  const [total, setTotal] = useState<number>(0)
+  const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
   const [dataSelects, setDataSelects] = useState<any>([])
   const dataUsers = {
@@ -77,13 +88,15 @@ const ModalCreate: React.FC = () => {
         dataSelect: resultUsers
       })
   }
-
+  const mandarAOV = () => {
+    setSaleOrdersToUpdate(quatation)
+    setModalSalesOrder('sale-order__modal_bycot')
+  }
 
   useEffect(() => {
     fetch()
   }, [])
 
-  console.log(personalized)
 
   const client = async () => {
 
@@ -99,6 +112,7 @@ const ModalCreate: React.FC = () => {
       setClients(resultClients)
 
       setSelectedId('clients', { id: quatation.id_cliente });
+      setSelectedResult({ id: quatation.id_cliente })
     } catch (error) {
 
     }
@@ -108,7 +122,9 @@ const ModalCreate: React.FC = () => {
   }
 
   useEffect(() => {
+
     if (modal === 'update-modal__qoutation') {
+      console.log(quatation);
       client()
 
       setCompany({ id: quatation.id_empresa })
@@ -161,8 +177,8 @@ const ModalCreate: React.FC = () => {
 
   }
 
-  const setIndexVM = storeDv(state  => state.setIndex)
-  const seeVerMas = (index:number) => {
+  const setIndexVM = storeDv(state => state.setIndex)
+  const seeVerMas = (index: number) => {
     setIndexVM(index)
     setModalSub('see_cp')
   }
@@ -187,24 +203,30 @@ const ModalCreate: React.FC = () => {
 
     filter.forEach((element: any) => {
       element.unidad = element.id_unidad
+      element.total = element.precio_total
+      element.urgencia = element.monto_urgencia
+      element.campos_plantilla.forEach((cp: any) => {
+        cp.valor = cp.valor.toString()
+      });
     });
 
     if (personalized.length > 0) {
       personalized?.forEach((element: any) => {
         element.conceptos.forEach((x: any) => {
-          x.unidad = x.id_unidad
+          element.unidad = element.id_unidad
+          element.total = element.precio_total
+          element.urgencia = element.monto_urgencia
+          element.campos_plantilla.forEach((cp: any) => {
+            cp.valor = cp.valor.toString()
+          });
         });
       });
     }
-
-
-
-
-
     const data = {
       id: modal === 'create-modal__qoutation' ? 0 : quatation.id,
       id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
-      id_cliente: modal === 'create-modal__qoutation' ? selectedResult?.id : quatation.id_cliente,
+      // id_cliente: modal === 'create-modal__qoutation' ? selectedResult?.id : quatation.id_cliente,
+      id_cliente: modal === selectedResult?.id,
       id_usuario_crea: user_id,
       titulo: title,
       comentarios: comments,
@@ -215,7 +237,7 @@ const ModalCreate: React.FC = () => {
 
     console.log('DATA QUE SE ENVIA AL BEKEND', data)
 
-
+    // return
 
     try {
       if (modal === 'create-modal__qoutation') {
@@ -324,8 +346,6 @@ const ModalCreate: React.FC = () => {
     }
   }
 
-  console.log('normalConcepts', normalConcepts)
-
   const handleUrgencyChange = async (index: number) => {
     let data = {
       "id_articulo": normalConcepts[index].id_articulo,
@@ -334,7 +354,7 @@ const ModalCreate: React.FC = () => {
     }
     const newConcept = [...normalConcepts];
     newConcept[index].urgency = !newConcept[index]?.urgency;
-    
+
     if (newConcept[index].urgency) {
       await APIs.CreateAny(data, "calcular_urgencia")
         .then(async (response: any) => {
@@ -346,13 +366,51 @@ const ModalCreate: React.FC = () => {
             return
           }
         })
-    }else {
+    } else {
       newConcept[index].precio_total = parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia);
       newConcept[index].monto_urgencia = 0;
     }
     setNormalConcepts(newConcept);
 
   };
+
+  //EFFECT PARA CALCULAR LOS TOTALES CUANDO CAMBIE NORMALCONCEPTS-----------------------------------------------------------------------------
+  useEffect(() => {
+    const precios = normalConcepts.reduce(
+      (acc: any, item: any) => ({
+        precio_unitario: acc.precio_unitario + (item.precio_unitario / item.cantidad || 0),
+        descuento: acc.descuento + (item.descuento || 0),
+        monto_urgencia: acc.monto_urgencia + (item.monto_urgencia || 0),
+        total: acc.total + (item.precio_total || 0),
+      }),
+      { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0 }
+    );
+    setSubtotal(precios.total + precios.descuento - precios.monto_urgencia);
+    setDescuento(precios.descuento);
+    setUrgencia(precios.monto_urgencia);
+    setTotal(precios.total);
+
+  }, [normalConcepts])
+
+  const cambioInputsPers = async (valor: number, index: number, key: string) => {
+    const newConcept = [...normalConcepts];
+    newConcept[index][key] = valor;
+    setNormalConcepts(newConcept);
+  };
+  const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
+
+  const abrirFichaModifyConcept = async (x: any) => {
+    setIdArticle(x.id_articulo)
+    setModalSalesCard('sale-card')
+  }
+  const getTicket = async () => {
+    try {
+      // Abrimos el PDF en una nueva pestaña
+      window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_cotizacion/${quatation.id}`, '_blank');
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className={`overlay__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
       <div className={`popup__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
@@ -541,22 +599,19 @@ const ModalCreate: React.FC = () => {
                               <p>{article.codigo}-{article.descripcion}</p>
                             </div>
                             <div className='td'>
-                              <p>{article.cantidad}</p>
+                              <input className={`inputs__general`} type="number" value={article.cantidad} onChange={(e) => cambioInputsPers(parseFloat(e.target.value), index, 'cantidad')} placeholder='Ingresa la cantidad' />
+
                             </div>
                             <div className='td'>
                               <p>{article.name_unidad}</p>
                             </div>
                             <div className='td'>
-                              {permisoDescount ?
-                                <div>
-                                  <input className='inputs__general' type="text" placeholder='Descuento' />
-                                </div>
-                                :
-                                <p>No permitido</p>
-                              }
+                              <p>$ {(article.precio_total / article.cantidad).toFixed(4)}</p>
                             </div>
                             <div className='td'>
-                              <p>$ {article.precio_total}</p>
+                              <input className={`inputs__general`} type="number" value={article.precio_total} onChange={(e) =>
+                                cambioInputsPers(parseFloat(e.target.value), index, 'precio_total')} placeholder='Ingresa la total pers' />
+
                             </div>
                             <div className='td'>
                               <button className='btn__general-purple' onClick={() => modalSeeConcepts(article)}>Conceptos</button>
@@ -568,8 +623,8 @@ const ModalCreate: React.FC = () => {
                           </div>
                           :
                           <div className='tbody'>
-                            <div className='td'>
-                              <p>{article.codigo}-{article.descripcion}</p>
+                            <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                              <p>{article.codigo}-{article.descripcion} </p>
                             </div>
                             <div className='td'>
                               <p>{article.cantidad}</p>
@@ -589,13 +644,13 @@ const ModalCreate: React.FC = () => {
 
                             </div>
                             <div className='td'>
-                              {article.urgency ? 
-                              <p>$ {article.precio_total} <span style={{ color: 'red' }}>(${article.monto_urgencia})</span></p>
-                              :
-                              <p>$ {article.precio_total}</p>
+                              {article.urgency ?
+                                <p>$ {article.precio_total} <span style={{ color: 'red' }}>(${article.monto_urgencia})</span></p>
+                                :
+                                <p>$ {article.precio_total}</p>
                               }
                             </div>
-                           
+
                             <div className='td'>
                               {article?.urgency ?
                                 <button className='remove_urgency' onClick={() => handleUrgencyChange(index)}>Remover Urgencia</button>
@@ -609,7 +664,7 @@ const ModalCreate: React.FC = () => {
                             <div className='td'>
                               <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
                             </div>
-                            
+
                           </div>
                         }
                       </div>
@@ -622,13 +677,42 @@ const ModalCreate: React.FC = () => {
             </div>
           </div>
           <div className='row mt-4'>
+            <div className='col-3'>
+              <p className='name'>Subtotal</p>
+              <p className='value'>$ {subtotal}</p>
+            </div>
+            <div className='col-3'>
+              <p className='name'>Descuento</p>
+              <p className='value'>$ {descuento}</p>
+            </div>
+            <div className='col-3'>
+              <p className='name'>Urgencia</p>
+              <p className='value'>$ {urgencia}</p>
+            </div>
+            <div className='col-3'>
+              <p className='name'>Total</p>
+              <p className='value'>$ {total}</p>
+            </div>
             {modal === 'create-modal__qoutation' ?
               <div className='col-12 d-flex justify-content-center'>
-                <button className='btn__general-purple' onClick={createQuotation}>Crear contizacion</button>
+                <button className='btn__general-purple' onClick={createQuotation}>Crear cotizacion</button>
               </div>
               :
               <div className='col-12 d-flex justify-content-center'>
-                <button className='btn__general-purple' onClick={createQuotation}>Actualizar contizacion</button>
+                <div className='row'>
+                  <div className='col-4'>
+                    <button className='btn__general-purple' onClick={createQuotation}>Actualizar cotizacion</button>
+
+                  </div>
+                  <div className='col-4'>
+                    <button className='btn__general-orange' onClick={getTicket}>PDF</button>
+
+                  </div>
+                  <div className='col-4'>
+                    <button className='btn__general-success' onClick={mandarAOV}>Enviar a OV</button>
+
+                  </div>
+                </div>
               </div>
             }
           </div>
@@ -638,7 +722,8 @@ const ModalCreate: React.FC = () => {
       <ArticleViewModal />
       <SalesCard />
       <SeeClient />
-      <SeeCamposPlantillas/>
+      <SeeCamposPlantillas />
+      <ModalSalesOrder />
     </div>
   );
 };

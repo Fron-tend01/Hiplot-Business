@@ -259,3 +259,30 @@
     background-color: var(--primary-color);
     border-radius: 5px 5px 0 0;
 }
+
+
+.tooltip-container {
+	position: relative;
+	display: inline-block;
+  }
+  
+  .tooltip-text {
+	visibility: hidden;
+	background-color: #7546a0;
+	color: #fff;
+	text-align: center;
+	border-radius: 4px;
+	padding: 5px;
+	position: absolute;
+	z-index: 0;
+	bottom: 125%; /* Ajustar según la posición del botón */
+	left: 50%;
+	transform: translateX(-50%);
+	opacity: 0;
+	transition: opacity 0.3s;
+  }
+  
+  .tooltip-container:hover .tooltip-text {
+	visibility: visible;
+	opacity: 1;
+  }

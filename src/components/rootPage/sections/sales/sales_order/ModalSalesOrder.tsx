@@ -83,7 +83,6 @@ const ModalSalesOrder: React.FC = () => {
         }
     }, [saleOrdersToUpdate])
 
-    console.log('saleOrdersToUpdate', saleOrdersToUpdate)
 
     const handleCreateSaleOrder = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -283,25 +282,39 @@ const ModalSalesOrder: React.FC = () => {
     const [urgency, setdUrgency] = useState<any>(0)
     const [totalGeneral, setdTotalGeneral] = useState<any>(0)
 
+    // useEffect(() => {
+    //     let amountTotal = 0;
+    //     let descountTotal = 0;
+    //     let urgencyTotal = 0;
+
+    //     normalConcepts.forEach((element: any) => {
+    //         amountTotal += element.cantidad * element.precio_unitario;
+    //         descountTotal += element.monto_descuento;
+    //         if (element?.urgency) {
+    //             urgencyTotal += element.monto_urgencia;
+    //         }
+    //     });
+
+    //     setAmount(amountTotal);
+    //     setdDiscount(descountTotal)
+    //     setdUrgency(urgencyTotal)
+    //     setdTotalGeneral(amountTotal - descountTotal + urgencyTotal)
+    // }, [normalConcepts]);
     useEffect(() => {
-        let amountTotal = 0;
-        let descountTotal = 0;
-        let urgencyTotal = 0;
-
-        normalConcepts.forEach((element: any) => {
-            amountTotal += element.cantidad * element.precio_unitario;
-            descountTotal += element.monto_descuento;
-            if (element?.urgency) {
-                urgencyTotal += element.monto_urgencia;
-            }
-        });
-
-        setAmount(amountTotal);
-        setdDiscount(descountTotal)
-        setdUrgency(urgencyTotal)
-        setdTotalGeneral(amountTotal - descountTotal + urgencyTotal)
-    }, [normalConcepts]);
-
+        const precios = normalConcepts.reduce(
+            (acc: any, item: any) => ({
+                precio_unitario: acc.precio_unitario + (item.precio_unitario / item.cantidad || 0),
+                descuento: acc.descuento + (item.descuento || 0),
+                monto_urgencia: acc.monto_urgencia + (item.monto_urgencia || 0),
+                total: acc.total + (item.precio_total || 0),
+            }),
+            { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0 }
+        );
+        setAmount(precios.total + precios.descuento -precios.monto_urgencia);
+        setdDiscount(precios.descuento)
+        setdUrgency(precios.monto_urgencia)
+        setdTotalGeneral(precios.total)
+    }, [normalConcepts])
     const getTicket = async () => {
         try {
             await APIs.getPdfPurchaseOrders(saleOrdersToUpdate.id);
@@ -312,11 +325,35 @@ const ModalSalesOrder: React.FC = () => {
         }
     }
 
+    useEffect(() => {
 
+        if (modalSalesOrder === 'sale-order__modal_bycot') {
+            console.log('DATA GRAL COT A OV', saleOrdersToUpdate);
+            setDataSaleOrder(saleOrdersToUpdate?.conceptos)
+            setCompanies({id:saleOrdersToUpdate.id_empresa})
+            setBranchOffices({id:saleOrdersToUpdate.id_sucursal})
+            setTitle(saleOrdersToUpdate.titulo)
+            const data = {
+                id_sucursal: saleOrdersToUpdate.id_sucursal,
+                id_usuario: user_id,
+                nombre: saleOrdersToUpdate.rfc
+            }
+            getClients(data).then((response:any)=> {
+                setClients({
+                    selectName: 'Cliente',
+                    options: 'razon_social',
+                    dataSelect: response
+                })
+
+            })
+        }
+    }, [modalSalesOrder]);
 
     return (
-        <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' ? 'active' : ''}`}>
-            <div className={`popup__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' ? 'active' : ''}`}>
+        <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update'
+            || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
+            <div className={`popup__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update'
+                || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
                 <div className='header__modal'>
                     <a href="#" className="btn-cerrar-popup__sale-order__modal_articles" onClick={() => setModalSalesOrder('')} >
                         <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
@@ -336,7 +373,7 @@ const ModalSalesOrder: React.FC = () => {
                                 <div className='sale-order_production__modal_articles'>
                                     <div>
                                         <div className='d-flex'>
-                                            <p>Fecha de entraga cliente</p>
+                                            <p>Fecha de entrega cliente</p>
                                             <p className='mx-4'>{dataProduction?.fecha_cliente}</p>
                                             <p>Hora de cliente</p>
                                             <p className='mx-4'>{dataProduction?.hora_cliente}</p>
@@ -460,7 +497,7 @@ const ModalSalesOrder: React.FC = () => {
                                         <button type='button' className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-sale')}>Personalizados</button>
                                     </div>
                                     <div className='btn__search__articles'>
-                                        <svg xmlns="http://www.w3.org/2000/svg" onClick={() => setModalArticleView('article-view__modal')} width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><path d="m7.5 4.27 9 5.15"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/><circle cx="18.5" cy="15.5" r="2.5"/><path d="M20.27 17.27 22 19"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" onClick={() => setModalArticleView('article-view__modal')} width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
                                     </div>
                                 </div>
                             </div>
@@ -529,7 +566,7 @@ const ModalSalesOrder: React.FC = () => {
                                                             <p>$ {article.total_concepto}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <button className='btn__general-purple' onClick={() => modalSeeConcepts(article)}>Conceptos</button>
+                                                            <button type="button" className='btn__general-purple' onClick={() => modalSeeConcepts(article)}>Conceptos</button>
                                                         </div>
                                                         <div className='td'>
                                                             <button className='btn__general-orange' onClick={() => undoConcepts(article, index)}>Deshacer</button>
@@ -561,9 +598,9 @@ const ModalSalesOrder: React.FC = () => {
                                                         </div>
                                                         <div className='td'>
                                                             {article?.urgency ?
-                                                                <button className='remove_urgency' onClick={() => handleUrgencyChange(index)}>Remover Urgencia</button>
+                                                                <button type="button" className='remove_urgency' onClick={() => handleUrgencyChange(index)}>Remover Urgencia</button>
                                                                 :
-                                                                <button className='add_urgency' onClick={() => handleUrgencyChange(index)}>Agregar Urgencia</button>
+                                                                <button type="button" className='add_urgency' onClick={() => handleUrgencyChange(index)}>Agregar Urgencia</button>
                                                             }
                                                         </div>
                                                         <div className='td'>

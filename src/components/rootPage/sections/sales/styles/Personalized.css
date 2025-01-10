@@ -24,6 +24,7 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
+  z-index: 10;
 }
 
 .overlay__personalized_modal.active {
