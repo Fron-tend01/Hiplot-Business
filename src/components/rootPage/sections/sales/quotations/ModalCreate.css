@@ -43,6 +43,7 @@
     border-radius: 5px;
     padding: 40px 20px 20px 20px;
     width: 95%;
+    max-width: 1450px;
     height: 95%;
     transition: .3s ease all;
     transform: scale(0.7);

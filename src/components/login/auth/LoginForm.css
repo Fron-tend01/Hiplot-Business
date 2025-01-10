@@ -9,7 +9,7 @@
   .left {
     width: 50%;
     height: 100%;
-    background-color: #1F319D;
+    background-color: rgb(12,36,60);
   }
   
   .rigth {
@@ -23,15 +23,52 @@
     margin: 20px 0;
     font-weight: 500;
     font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .title__procura  .welcome {
+    margin-right: 10px;
+    font-size: 28px;
+    color: rgb(12,36,60);
   }
   
-  .title__procura strong {
-    color: #1F319D;
+  
+  .title__procura .hisoft {
     transition: all 0.8s ease;
+  
+    padding: 10px;
+    border-radius: 5px;
   }
   
+
+  .title__procura .hi {
+    color: #fff;
+    background-color: rgb(12,36,60);
+    padding: 2px 5px;
+    border-radius: 2px;
+
+  }
+  .title__procura .soft {
+    color: #3D85C6;
+    padding: 0 2px;
+    outline: 2px solid #3D85C6;
+    border-radius: 2px;
+    margin: 0 5px;
+
+  }
+  .title__procura .ft {
+    color: #3D85C6;
+
+
+  }
+  .title__procura .business {
+    color: #3D85C6;
+    margin-left: 10px;
+
+  }
   
-  
+
   .form {
     display: flex;
     width: 80%;
@@ -68,7 +105,7 @@
   }
   
   .container__inputs:hover {
-    border: 2px solid #1F319D  !important;
+    border: 2px solid #3D85C6  !important;
    
   }
   
@@ -80,11 +117,11 @@
   
   
   .container__inputs.focused {
-    border: 2px solid #1F319D;
+    border: 2px solid #3D85C6;
   }
   
   .container__inputs.focused svg {
-    fill: #1F319D;
+    fill: #3D85C6;
   }
   
   .error__message {
@@ -131,7 +168,7 @@
   }
   
   .container__inputs:hover svg {
-    fill: #1F319D;
+    fill: #3D85C6;
   }
   
   .btn__form-login {
@@ -141,7 +178,7 @@
   }
   
   .btn__login {
-    background-color: #1F319D;
+    background-color: #3D85C6;
     color: #fff;
     border: none;
     padding: 5px 30px;

@@ -99,6 +99,7 @@
   
 }
 
+
 .article__view_container .row__two > .item > .content {
     padding: 15px;
 }
@@ -215,7 +216,8 @@
 	border-radius: 5px;
 	padding: 20px;
 	width: 100%;
-	height: 100%;
+    max-width: 1450px;
+	height: 95vh;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;

@@ -19,6 +19,9 @@ interface StoreState {
 
     article: any;
     setArticle: (x: any) => void;
+
+    statusArticle: any;
+    setStatusArticle: (x: any) => void;
 }
 
 export const storeSaleCard = create<StoreState>((set) => ({
@@ -34,6 +37,9 @@ export const storeSaleCard = create<StoreState>((set) => ({
     article: null,       
     setArticle: (x) => set({article: x}),
 
+
+    statusArticle: false,       
+    setStatusArticle: (x) => set({statusArticle: x}),
 
     modalSalesCard: '',
     setModalSalesCard: (x) => set({modalSalesCard: x}),

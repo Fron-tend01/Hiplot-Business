@@ -15,6 +15,9 @@ const ArticleViewModal = () => {
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
+    const setStatusArticle = storeSaleCard(state => state.setStatusArticle);
+
+      const { article }: any = useStore(storeSaleCard);
 
     const { modalArticleView }: any = useStore(storeArticleView)
 
@@ -76,6 +79,19 @@ const ArticleViewModal = () => {
     };
 
     const modal = async (x: any) => {
+        // if(article?.id == x.id) {
+        //     setStatusArticle(true)
+        //     console.log('no')
+        // } else {
+        //     setStatusArticle(false)
+        //     console.log('si ')
+        // }
+
+        console.log('article', article)
+        console.log('x', x)
+
+        setStatusArticle(false)
+       
         if (x.id_familia) {
             setIdArticle(x.id)
             setModalSalesCard('sale-card')

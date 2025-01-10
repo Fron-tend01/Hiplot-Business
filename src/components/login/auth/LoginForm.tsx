@@ -68,8 +68,9 @@ const LoginForm: React.FC = () => {
             <div className='container__form'>
               <div className='title__form'>
                 <h3 className='title__procura'>
-                  Bienvenidos a <strong>Hiplot Business</strong>
+                  <p className='welcome'>Bienvenidos a</p><p className='hisoft'><b><b className='hi'>Hi</b><b className='soft'>So</b><b className='ft'>ft</b><b className='business'>Business</b></b></p>
                 </h3>
+                {/* <h2>Todos los derecho </h2> */}
               </div>
               <div>
                 {error && <small className='error__message'>{error}</small>}
