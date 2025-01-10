@@ -98,7 +98,7 @@ const SalesCard: React.FC = () => {
 
         setArticle(response[0]);
       }
-      
+
       const resultUsers = await getUserGroups(user_id);
       if (resultUsers) {
         setUsersGroups(resultUsers);
@@ -127,7 +127,7 @@ const SalesCard: React.FC = () => {
 
 
   useEffect(() => {
-    console.log('statusArtiddddddddddddddddddddddcle', statusArticle)
+    console.log('statusArtiddddddddddddddddddddddcle', statusArticle)    
   }, [statusArticle]);
 
 
@@ -311,16 +311,23 @@ const SalesCard: React.FC = () => {
 
     setNormalConcepts([...normalConcepts, newData])
     setCustomData([...customData, newData])
-
   };
 
-
+ 
   const addSaleOrder = () => {
+    const newData = { ...data };
+    newData.id_identifier = identifier + 1;
+    setIdentifier(identifier + 1);
+
     if (dataSaleOrder !== undefined) {
-      setDataSaleOrder([...dataSaleOrder, data[0]])
+      setDataSaleOrder([...dataSaleOrder, newData])
     } else {
-      setDataSaleOrder([data[0]])
+      setDataSaleOrder([data])
+      
     }
+
+    setNormalConcepts([...normalConcepts, newData])
+    setCustomData([...customData, newData])
 
   }
 
@@ -375,8 +382,6 @@ const SalesCard: React.FC = () => {
 
 
 
-
-  console.log('articleccccccccccccccccccccc', article)
 
   const modal = () => {
     setModalSalesCard('')
