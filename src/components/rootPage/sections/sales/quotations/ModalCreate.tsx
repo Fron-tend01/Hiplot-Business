@@ -19,6 +19,8 @@ import { storeQuotation } from '../../../../../zustand/Quotation';
 import SeeClient from '../SeeClient';
 import SeeCamposPlantillas from '../SeeCamposPlantillas';
 import { storeDv } from '../../../../../zustand/Dynamic_variables';
+import { storeSaleOrder } from '../../../../../zustand/SalesOrder';
+import ModalSalesOrder from '../sales_order/ModalSalesOrder';
 
 
 
@@ -31,6 +33,9 @@ const ModalCreate: React.FC = () => {
 
   const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
   const setCustomData = storePersonalized((state) => state.setCustomData);
+
+  const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
+  const setDataSaleOrder = storeSaleOrder((state) => state.setDataSaleOrder);
 
   const setQuotesData = storeQuotation(state => state.setQuotesData);
   const setIdArticle = storeSaleCard(state => state.setIdArticle)
@@ -64,6 +69,7 @@ const ModalCreate: React.FC = () => {
   const [descuento, setDescuento] = useState<number>(0)
   const [urgencia, setUrgencia] = useState<number>(0)
   const [total, setTotal] = useState<number>(0)
+  const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
   const [dataSelects, setDataSelects] = useState<any>([])
   const dataUsers = {
@@ -82,7 +88,10 @@ const ModalCreate: React.FC = () => {
         dataSelect: resultUsers
       })
   }
-
+  const mandarAOV = () => {
+    setSaleOrdersToUpdate(quatation)
+    setModalSalesOrder('sale-order__modal_bycot')
+  }
 
   useEffect(() => {
     fetch()
@@ -103,7 +112,7 @@ const ModalCreate: React.FC = () => {
       setClients(resultClients)
 
       setSelectedId('clients', { id: quatation.id_cliente });
-      setSelectedResult({id: quatation.id_cliente})
+      setSelectedResult({ id: quatation.id_cliente })
     } catch (error) {
 
     }
@@ -113,14 +122,14 @@ const ModalCreate: React.FC = () => {
   }
 
   useEffect(() => {
-    
+
     if (modal === 'update-modal__qoutation') {
       console.log(quatation);
       client()
 
       setCompany({ id: quatation.id_empresa })
       setBranch({ id: quatation.id_sucursal })
-      setComments(quatation.comentarios)  
+      setComments(quatation.comentarios)
 
       // setNormalConcepts([...normalConcepts, ...quatation.conceptos])
       setNormalConcepts([...quatation.conceptos, ...quatation.conceptos_pers])
@@ -196,7 +205,7 @@ const ModalCreate: React.FC = () => {
       element.unidad = element.id_unidad
       element.total = element.precio_total
       element.urgencia = element.monto_urgencia
-      element.campos_plantilla.forEach((cp:any) => {
+      element.campos_plantilla.forEach((cp: any) => {
         cp.valor = cp.valor.toString()
       });
     });
@@ -207,7 +216,7 @@ const ModalCreate: React.FC = () => {
           element.unidad = element.id_unidad
           element.total = element.precio_total
           element.urgencia = element.monto_urgencia
-          element.campos_plantilla.forEach((cp:any) => {
+          element.campos_plantilla.forEach((cp: any) => {
             cp.valor = cp.valor.toString()
           });
         });
@@ -376,7 +385,7 @@ const ModalCreate: React.FC = () => {
       }),
       { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0 }
     );
-    setSubtotal(precios.precio_unitario);
+    setSubtotal(precios.total + precios.descuento - precios.monto_urgencia);
     setDescuento(precios.descuento);
     setUrgencia(precios.monto_urgencia);
     setTotal(precios.total);
@@ -393,6 +402,14 @@ const ModalCreate: React.FC = () => {
   const abrirFichaModifyConcept = async (x: any) => {
     setIdArticle(x.id_articulo)
     setModalSalesCard('sale-card')
+  }
+  const getTicket = async () => {
+    try {
+      // Abrimos el PDF en una nueva pestaña
+      window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_cotizacion/${quatation.id}`, '_blank');
+    } catch (error) {
+      console.log(error);
+    }
   }
   return (
     <div className={`overlay__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
@@ -606,7 +623,7 @@ const ModalCreate: React.FC = () => {
                           </div>
                           :
                           <div className='tbody'>
-                            <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={()=> abrirFichaModifyConcept(article)}>
+                            <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
                               <p>{article.codigo}-{article.descripcion} </p>
                             </div>
                             <div className='td'>
@@ -682,7 +699,20 @@ const ModalCreate: React.FC = () => {
               </div>
               :
               <div className='col-12 d-flex justify-content-center'>
-                <button className='btn__general-purple' onClick={createQuotation}>Actualizar contizacion</button>
+                <div className='row'>
+                  <div className='col-4'>
+                    <button className='btn__general-purple' onClick={createQuotation}>Actualizar cotizacion</button>
+
+                  </div>
+                  <div className='col-4'>
+                    <button className='btn__general-orange' onClick={getTicket}>PDF</button>
+
+                  </div>
+                  <div className='col-4'>
+                    <button className='btn__general-success' onClick={mandarAOV}>Enviar a OV</button>
+
+                  </div>
+                </div>
               </div>
             }
           </div>
@@ -693,6 +723,7 @@ const ModalCreate: React.FC = () => {
       <SalesCard />
       <SeeClient />
       <SeeCamposPlantillas />
+      <ModalSalesOrder />
     </div>
   );
 };
