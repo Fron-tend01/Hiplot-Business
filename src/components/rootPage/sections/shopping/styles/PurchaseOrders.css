@@ -8,10 +8,14 @@
     display: grid;
     height: 100%;
     grid-template-rows: repeat(3, auto) 50%;
-    background-color: var(--background-sections);
     padding: 20px;
     border-radius: 10px;
     overflow: hidden;
+}
+
+.container__purchase-order > .row__one {
+  
+    
 }
 
 .container__purchase-order > .row__one {

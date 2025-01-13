@@ -327,37 +327,39 @@ const ModalRequisition: React.FC = () => {
             <p className='title__modals'>Crear Requisición</p>
           }
         </div>
-        <div className='requisition-modal' >
+        <div className='requisition-modal'>
           <div className='requisition-modal_container'>
             {updateToRequisition == null ?
-              <><div className='row__one'>
-                <div className='container__checkbox_requisition'>
-                  <div className='checkbox__requisition'>
-                    <label className="checkbox__container_general">
-                      <input
-                        className='checkbox'
-                        type="radio"
-                        value="normal"
-                        checked={selectedOption == 0}
-                        onChange={handleOptionChange} />
-                      <span className="checkmark__general"></span>
-                    </label>
-                    <p className='text'>Normal</p>
-                  </div>
-                  <div className='checkbox__requisition'>
-                    <label className="checkbox__container_general">
-                      <input
-                        className='checkbox'
-                        type="radio"
-                        value="diferencial"
-                        checked={selectedOption == 1}
-                        onChange={handleOptionChange} />
-                      <span className="checkmark__general"></span>
-                    </label>
-                    <p className='text'>Diferencial</p>
+              <div className='row__one'>
+                <div className='row__one'>
+                  <div className='container__checkbox_requisition-type'>
+                    <div className='checkbox__requisition-type'>
+                      <label className="checkbox__container_general">
+                        <input
+                          className='checkbox'
+                          type="radio"
+                          value="normal"
+                          checked={selectedOption == 0}
+                          onChange={handleOptionChange} />
+                        <span className="checkmark__general"></span>
+                      </label>
+                      <p className='text'>Normal</p>
+                    </div>
+                    <div className='checkbox__requisition'>
+                      <label className="checkbox__container_general">
+                        <input
+                          className='checkbox'
+                          type="radio"
+                          value="diferencial"
+                          checked={selectedOption == 1}
+                          onChange={handleOptionChange} />
+                        <span className="checkmark__general"></span>
+                      </label>
+                      <p className='text'>Diferencial</p>
+                    </div>
                   </div>
                 </div>
-              </div><div className='row__two'>
+                <div className='row__two'>
                   <div className='select__container'>
                     <label className='label__general'>Empresas</label>
                     <div className='select-btn__general'>
@@ -427,7 +429,8 @@ const ModalRequisition: React.FC = () => {
                       <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios' />
                     </div>
                   </div>
-                </div></>
+                </div>
+              </div>
               :
               <div className="card ">
                 <div className="card-body bg-standar">
