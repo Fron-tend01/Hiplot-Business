@@ -230,16 +230,24 @@ const ModalSalesOrder: React.FC = () => {
     }
 
 
-    const handleAreasChange = (item: any, index: number) => {
-        console.log(item, index)
-    }
+
+
+    const handleAreasChange = (event: any, index: number) => {
+        const value = parseInt(event.target.value, 10);
+        console.log("Event target value:", value);
+        console.log("Index:", normalConcepts);
+       normalConcepts[index].id_area_produccion = value
+    };
+    
+
+
 
     const updateSaleOrderConcept = async (article: any) => {
         let data = {
             id: article.id,
             id_articulo: article.id_articulo,
             produccion_interna: article.produccion_interna,
-            id_area_produccion: article.id_area_produccion,
+            id_area_produccion: article.areas_produccion[0].id_area,
             enviar_a_produccion: article.enviar_a_produccion,
             cantidad: article.cantidad,
             monto_urgencia: article.monto_urgencia,
@@ -679,23 +687,83 @@ const ModalSalesOrder: React.FC = () => {
                                                             <p>{article.codigo}-{article.descripcion}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <p>$ {article.cantidad}</p>
+                                                            <p>{article.cantidad}</p>
                                                         </div>
                                                         <div className='td'>
                                                             <p>{article.name_unidad || article.unidad}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <input className='inputs__general' type="text" placeholder='Precio' />
+                                                            ${article.precio_unitario / article.cantidad}
                                                         </div>
                                                         <div className='td'>
-                                                            <input className='inputs__general' type="text" placeholder='Descuento' />
+                                                            {article.urgency ?
+                                                                <p>$ {article.precio_total} <span style={{ color: 'red' }}>(${article.monto_urgencia})</span></p>
+                                                                :
+                                                                <p>$ {article.precio_total}</p>
+                                                            }
                                                         </div>
                                                         <div className='td'>
-                                                            <p>$ {article.total_concepto}</p>
+                                                            {article?.urgency ?
+                                                                <button type="button" className='remove_urgency' onClick={() => handleUrgencyChange(index)}>Remover Urgencia</button>
+                                                                :
+                                                                <button type="button" className='add_urgency' onClick={() => handleUrgencyChange(index)}>Agregar Urgencia</button>
+                                                            }
                                                         </div>
                                                         <div className='td'>
-                                                            <button type="button" className='btn__general-purple' onClick={() => modalSeeConcepts(article)}>Conceptos</button>
+                                                            {article?.personalized ?
+                                                                <button className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-quotation-update')}>Conceptos</button>
+                                                                :
+                                                                ''
+                                                            }
                                                         </div>
+                                                        <div className='td'>
+                                                            <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
+                                                        </div>
+                                                        <div className='td'>
+                                                            <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
+                                                        </div>
+                                                        <div className='td'>
+                                                            <div>
+                                                                <label>Area</label>
+                                                            </div>
+                                                            <select className='traditional__selector' onChange={(event) => handleAreasChange(event, index)}  >
+                                                                {article?.areas_produccion?.map((item: any) => (
+                                                                    <option key={item.id} value={item.id_area}>
+                                                                        {item.nombre_area}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                        </div>
+                                                        <div className='td'>
+                                                            <textarea className={`textarea__general`} placeholder='Observaciones Factura' value={article.obs_factura} onChange={(e) => handleObsBillChange(e, index)} />
+                                                        </div>
+                                                        <div className='td'>
+                                                            <textarea className={`textarea__general `} placeholder='Observaciones Producción' value={article.obs_produccion} onChange={(e) => handleObsProductionChange(e, index)} />
+                                                        </div>
+                                                        <div>
+                                                            <div className="d-block">
+                                                                <div>
+                                                                    <label>Enviar producción</label>
+                                                                </div>
+                                                                <label className="switch">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={article.status_produccion === 1}
+                                                                        onChange={() =>
+                                                                            handleStatusChange(article.status_produccion === 1, index)
+                                                                        }
+                                                                    />
+                                                                    <span className="slider"></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        {modalSalesOrder == 'sale-order__modal-update' ?
+                                                            <div className='td'>
+                                                                <button type='button' className='btn__general-purple' onClick={() => updateSaleOrderConcept(article)}>Actualizar</button>
+                                                            </div>
+                                                            :
+                                                            ""
+                                                        }
                                                         <div className='td'>
                                                             <button className='btn__general-orange' onClick={() => undoConcepts(article, index)}>Deshacer</button>
                                                         </div>
@@ -745,13 +813,15 @@ const ModalSalesOrder: React.FC = () => {
                                                             <div>
                                                                 <label>Area</label>
                                                             </div>
-                                                            <select className='traditional__selector' onChange={(event) => handleAreasChange(event, index)}  >
+                                                            <select className="traditional__selector" onClick={(event) => handleAreasChange(event, index)}>
                                                                 {article?.areas_produccion?.map((item: any) => (
                                                                     <option key={item.id} value={item.id_area}>
                                                                         {item.nombre_area}
                                                                     </option>
                                                                 ))}
                                                             </select>
+
+
                                                         </div>
                                                         <div className='td'>
                                                             <textarea className={`textarea__general`} placeholder='Observaciones Factura' value={article.obs_factura} onChange={(e) => handleObsBillChange(e, index)} />

@@ -431,19 +431,4 @@
 }
 
 
-@keyframes slow-blink {
-	0% {
-	  opacity: 1;
-	}
-	50% {
-	  opacity: 0;
-	}
-	100% {
-	  opacity: 1;
-	}
-  }
-  
-  .slow-blink {
-	animation: slow-blink 1.5s infinite;
-  }
-  
+
