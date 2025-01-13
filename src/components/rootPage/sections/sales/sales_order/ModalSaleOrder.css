@@ -66,7 +66,18 @@
 
 
 
+.popup__sale-order__modal_articles  .related_quote_order {
+	margin-left: 10px;
+	padding: 5px;
+	background-color: #bf6903;
+	color: #fff;
+	border-radius: 5px;
+}
 
+.popup__sale-order__modal_articles  .related_quote_order h3 {
+	color: #fff;
+	margin-left: 10px;
+}
 
 
 
@@ -390,6 +401,15 @@
 .table__sales_modal .table__body .tbody > .td .inputs__general {
     margin-top: 0;
 }
+
+.table__sales_modal .table__body .tbody > .td .textarea__general {
+	background-color: var(--cards-background);
+}
+
+.table__sales_modal .table__body .tbody > .td .traditional__selector {
+	background-color: var(--cards-background);
+}
+
 
 
 .table__sales_modal .table__body .tbody > .td .add_urgency {

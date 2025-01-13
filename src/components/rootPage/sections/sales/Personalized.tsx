@@ -57,9 +57,13 @@ const Personalized: React.FC = () => {
   const [articlesPersonalized, setArticlesPersonalized] = useState<any>([])
 
   const [filterPersonalized, setFilterPersonalized] = useState<any>([])
+  console.log('customConcepts Afuera', customConcepts)
+
+  console.log('customData Afuera', customData)
 
   const addPersonalized = (item: any, index: number) => {
-
+    console.log('customConcepts A dentro', customConcepts)
+    console.log('customData A Denter', customData)
     // Just for check
 
     const newData = [...customData];
@@ -94,30 +98,29 @@ const Personalized: React.FC = () => {
 
 
 
-    const exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
+    // const exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
 
-    if (exist) {
-      ////////////////////////////////////// Se agrega ///////////////////////
-      const findItem = customData.find((xx: any) => xx.id_identifier == item.id_identifier)
-      setCustomConcepts([...customConcepts, findItem]);
+    // if (exist) {
+    //   ////////////////////////////////////// Se agrega ///////////////////////
+    //   const findItem = customData.find((xx: any) => xx.id_identifier == item.id_identifier)
+    //   setCustomConcepts([...customConcepts, findItem]);
 
-      const deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
-      setNormalConcepts(deleteFilter)
+    //   const deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+    //   setNormalConcepts(deleteFilter)
 
 
 
-      return
-    } else {
-      const find = customConcepts.find((xx: any) => xx.id_identifier == item.id_identifier)
-      setNormalConcepts([...normalConcepts, find])
+    //   return
+    // } else {
+    //   const find = customConcepts.find((xx: any) => xx.id_identifier == item.id_identifier)
+    //   setNormalConcepts([...normalConcepts, find])
 
-      const deleteFilter = customConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
-      setCustomConcepts(deleteFilter)
+    //   const deleteFilter = customConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+    //   setCustomConcepts(deleteFilter)
 
-    }
+    // }
   };
 
-  console.log('identifier', identifier)
 
   const [selectsSatKey, setSelectsSatKey] = useState<any>()
   const [selectedSatKey, setSelectedSatKey] = useState<any>()

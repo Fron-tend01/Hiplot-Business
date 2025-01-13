@@ -32,6 +32,8 @@ const ModalCreate: React.FC = () => {
 
   const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
   const setCustomData = storePersonalized((state) => state.setCustomData);
+    const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
+
 
   const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
 
@@ -294,11 +296,20 @@ const ModalCreate: React.FC = () => {
       });
     }
 
+    console.log('article', article)
+
+    console.log('filterNor filterNor', filterNor)
+
+    console.log('normalConcepts normalConcepts', normalConcepts)
+
     const data = [...filterNor, ...article.conceptos]
     setNormalConcepts(data)
+    setCustomConcepts([])
     setCustomData([...filterPers, ...article.conceptos]);
     setPersonalized([])
   }
+
+  console.log('setCustomData', customData)
 
 
   const deleteArticle = (item: any, i: number) => {

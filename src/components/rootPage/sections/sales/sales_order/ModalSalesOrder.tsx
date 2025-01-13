@@ -17,6 +17,7 @@ import Swal from 'sweetalert2';
 import { storeDv } from '../../../../../zustand/Dynamic_variables'
 import { storeModals } from '../../../../../zustand/Modals'
 import SeeCamposPlantillas from '../SeeCamposPlantillas'
+import Binnacle from './components/Binnacle'
 
 const ModalSalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -36,6 +37,7 @@ const ModalSalesOrder: React.FC = () => {
 
 
     const setDataSaleOrder = storeSaleOrder((state) => state.setDataSaleOrder);
+    const setSubModal = storeSaleOrder((state) => state.setSubModal);
 
     const [companies, setCompanies] = useState<any>([])
 
@@ -106,22 +108,22 @@ const ModalSalesOrder: React.FC = () => {
             element.total = element.precio_total
             element.urgencia = element.monto_urgencia
             element.campos_plantilla.forEach((cp: any) => {
-              cp.valor = cp.valor.toString()
+                cp.valor = cp.valor.toString()
             });
-          });
-      
-          if (personalized.length > 0) {
+        });
+
+        if (personalized.length > 0) {
             personalized?.forEach((element: any) => {
-              element.conceptos.forEach((x: any) => {
-                element.unidad = element.id_unidad
-                element.total = element.precio_total
-                element.urgencia = element.monto_urgencia
-                element.campos_plantilla.forEach((cp: any) => {
-                  cp.valor = cp.valor.toString()
+                element.conceptos.forEach((x: any) => {
+                    element.unidad = element.id_unidad
+                    element.total = element.precio_total
+                    element.urgencia = element.monto_urgencia
+                    element.campos_plantilla.forEach((cp: any) => {
+                        cp.valor = cp.valor.toString()
+                    });
                 });
-              });
             });
-          }
+        }
         const data = {
             id_sucursal: branchOffices.id,
             id_cliente: selectedIds.clients.id,
@@ -261,6 +263,10 @@ const ModalSalesOrder: React.FC = () => {
         }
     }
 
+    const binnacleModal = () => {
+        setSubModal('logbook__sales-order-modal')
+    }
+
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value.trim();
         const newConcept = [...normalConcepts];
@@ -297,7 +303,7 @@ const ModalSalesOrder: React.FC = () => {
         setNormalConcepts(updatedConcepts);
     };
 
-   
+
 
 
     const [amount, setAmount] = useState<any>(0)
@@ -373,9 +379,9 @@ const ModalSalesOrder: React.FC = () => {
 
             })
             calcular_tiempos_entrega()
-        }else {
-            setDates([ saleOrdersToUpdate.fecha_entrega_produccion + ' ' + saleOrdersToUpdate.hora_entrega_produccion,
-                       saleOrdersToUpdate.fecha_entrega_cliente + ' ' + saleOrdersToUpdate.hora_entrega_cliente])
+        } else {
+            setDates([saleOrdersToUpdate.fecha_entrega_produccion + ' ' + saleOrdersToUpdate.hora_entrega_produccion,
+            saleOrdersToUpdate.fecha_entrega_cliente + ' ' + saleOrdersToUpdate.hora_entrega_cliente])
             setTitle(saleOrdersToUpdate.titulo)
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setCompanies({ id: saleOrdersToUpdate.id_empresa })
@@ -430,7 +436,7 @@ const ModalSalesOrder: React.FC = () => {
         await APIs.CreateAny(data, "calcular_tiempo_entrega")
             .then(async (response: any) => {
                 setDataProduction(response)
-                setDates([ response.fecha_produccion + ' ' + response.hora_produccion,response.fecha_cliente + ' ' + response.hora_cliente])
+                setDates([response.fecha_produccion + ' ' + response.hora_produccion, response.fecha_cliente + ' ' + response.hora_cliente])
             })
     }
     const setModalSub = storeModals((state) => state.setModalSub);
@@ -443,31 +449,31 @@ const ModalSalesOrder: React.FC = () => {
 
     const handleUrgencyChange = async (index: number) => {
         let data = {
-          "id_articulo": normalConcepts[index].id_articulo,
-          "id_sucursal": branchOffices.id,
-          "total": normalConcepts[index].precio_total
+            "id_articulo": normalConcepts[index].id_articulo,
+            "id_sucursal": branchOffices.id,
+            "total": normalConcepts[index].precio_total
         }
         const newConcept = [...normalConcepts];
         newConcept[index].urgency = !newConcept[index]?.urgency;
-    
+
         if (newConcept[index].urgency) {
-          await APIs.CreateAny(data, "calcular_urgencia")
-            .then(async (response: any) => {
-              if (!response.error) {
-                newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
-                newConcept[index].precio_total = parseFloat(response.total_con_urgencia);
-              } else {
-                Swal.fire('Notificación', response.mensaje, 'warning');
-                return
-              }
-            })
+            await APIs.CreateAny(data, "calcular_urgencia")
+                .then(async (response: any) => {
+                    if (!response.error) {
+                        newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
+                        newConcept[index].precio_total = parseFloat(response.total_con_urgencia);
+                    } else {
+                        Swal.fire('Notificación', response.mensaje, 'warning');
+                        return
+                    }
+                })
         } else {
-          newConcept[index].precio_total = parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia);
-          newConcept[index].monto_urgencia = 0;
+            newConcept[index].precio_total = parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia);
+            newConcept[index].monto_urgencia = 0;
         }
         setNormalConcepts(newConcept);
-    
-      };
+
+    };
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
             <div className={`popup__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
@@ -477,18 +483,6 @@ const ModalSalesOrder: React.FC = () => {
                     </a>
                     <p className='title__modals'>Orden de venta</p>
                 </div>
-                {modalSalesOrder == 'sale-order__modal_bycot' || saleOrdersToUpdate?.id_cotizacion_relacionada > 0 && saleOrdersToUpdate?.id_cotizacion_relacionada != undefined ?
-                    <div className="slow-blink" style={{ color: 'red' }}>
-
-                        <span>Esta orden tiene una cotización relacionada: </span>
-                        {saleOrdersToUpdate?.id_cotizacion_relacionada > 0 ?
-                            <h3 className="text" >{saleOrdersToUpdate.serie_cotizacion}-{saleOrdersToUpdate.folio_cotizacion}-{saleOrdersToUpdate.anio_cotizacion}</h3>
-                            :
-                            <h3 className="text" >{saleOrdersToUpdate.serie}-{saleOrdersToUpdate.folio}-{saleOrdersToUpdate.anio}</h3>
-                        }
-                    </div>
-
-                    : ''}
 
                 {modalSalesOrder == 'sale-order__modal-update' ?
                     <div className="card">
@@ -522,7 +516,19 @@ const ModalSalesOrder: React.FC = () => {
                             </div>
                         </div>
                         <div className="card-body bg-standar">
-                            <h3 className="text">{saleOrdersToUpdate.serie}-{saleOrdersToUpdate.folio}-{saleOrdersToUpdate.anio}</h3>
+                            <div className='d-flex align-items-center justify-content-between'>
+                                <h3 className="text">{saleOrdersToUpdate.serie}-{saleOrdersToUpdate.folio}-{saleOrdersToUpdate.anio}</h3>
+                                {modalSalesOrder == 'sale-order__modal_bycot' || saleOrdersToUpdate?.id_cotizacion_relacionada > 0 && saleOrdersToUpdate?.id_cotizacion_relacionada != undefined ?
+                                    <div className='d-flex align-items-center related_quote_order'>
+                                        <p>Cotización relacionada</p>
+                                        {saleOrdersToUpdate?.id_cotizacion_relacionada > 0 ?
+                                            <h3 className="text">{saleOrdersToUpdate.serie_cotizacion}-{saleOrdersToUpdate.folio_cotizacion}-{saleOrdersToUpdate.anio_cotizacion}</h3>
+                                            :
+                                            <h3 className="text" >{saleOrdersToUpdate.serie}-{saleOrdersToUpdate.folio}-{saleOrdersToUpdate.anio}</h3>
+                                        }
+                                    </div>
+                                    : ''}
+                            </div>
                             <hr />
                             <div className='row'>
                                 <div className='col-6 md-col-12'>
@@ -546,8 +552,11 @@ const ModalSalesOrder: React.FC = () => {
                                     <div className='mr-4'>
                                         <button className='btn__general-orange' onClick={getTicket}>Imprimir ticket</button>
                                     </div>
-                                    <div>
+                                    <div className='mr-4'>
                                         <button className='btn__general-purple' onClick={SaleOrderProduction}>Mandar a producción</button>
+                                    </div>
+                                    <div>
+                                        <button className='btn__general-orange' onClick={binnacleModal}>Bitácora</button>
                                     </div>
                                 </div>
                                 <div>
@@ -720,7 +729,11 @@ const ModalSalesOrder: React.FC = () => {
                                                             }
                                                         </div>
                                                         <div className='td'>
-                                                            <button className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-quotation-update')}>Conceptos</button>
+                                                            {article?.personalized ?
+                                                                <button className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-quotation-update')}>Conceptos</button>
+                                                                :
+                                                                ''
+                                                            }
                                                         </div>
                                                         <div className='td'>
                                                             <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
@@ -815,6 +828,7 @@ const ModalSalesOrder: React.FC = () => {
                 <ArticleViewModal />
                 <Personalized />
                 <SeeCamposPlantillas />
+                <Binnacle />
 
             </div>
         </div>
