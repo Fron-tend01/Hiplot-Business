@@ -8,15 +8,15 @@
 	height: 100%;
 	display: grid;
 	grid-template-rows: repeat(3, auto) 60%;
-	background-color: var(--background-sections);
-    padding: 20px;
+	
+  
     border-radius: 10px;
 }
 
-.requisition .row__one {
-	display: grid;
-	grid-template-columns: repeat(4, minmax(0, 1fr)) ;
-	gap: 10px;
+.container__requisition > .row__one {
+	background-color: var(--background-sections);
+	padding: 20px;
+	border-radius: 10px;
 }
 
 .requisition > .row__two {
@@ -24,7 +24,6 @@
 	grid-template-columns: repeat(2, 1fr);
 	align-items: center;
 	gap: 10px;
-
 }
 
 .dates__requisition {

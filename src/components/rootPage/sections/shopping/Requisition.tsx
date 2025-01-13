@@ -85,20 +85,20 @@ const Requisition: React.FC = () => {
     });
     setSelectedId('empresa', 0)
 
-      
-      const data = {
-        id_sucursal: 0,
-        id_usuario: user_id,
-        id_area: 0,
-        tipo: 0,
-        desde: haceUnaSemana.toISOString().split('T')[0],
-        hasta: hoy.toISOString().split('T')[0],
-        status: 0
-      };
-      setDataGet(data)
-      const resultRequisition = await getRequisition(data)
-      setRequisitions(resultRequisition)
-    
+
+    const data = {
+      id_sucursal: 0,
+      id_usuario: user_id,
+      id_area: 0,
+      tipo: 0,
+      desde: haceUnaSemana.toISOString().split('T')[0],
+      hasta: hoy.toISOString().split('T')[0],
+      status: 0
+    };
+    setDataGet(data)
+    const resultRequisition = await getRequisition(data)
+    setRequisitions(resultRequisition)
+
     const resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 0 })
     resultSeries.unshift({ nombre: 'Todos', id: 0 });
     setSeries(resultSeries)
@@ -114,11 +114,11 @@ const Requisition: React.FC = () => {
   //Modales
   const modalCreate = () => {
     setModalStateCreate('create')
-  
+
   }
 
 
-console.log(dates)
+  console.log(dates)
 
   const [invoice, setInvoice] = useState<string>('')
 
@@ -156,7 +156,7 @@ console.log(dates)
 
     }
   }, [selectedIds?.sucursal]);
- 
+
 
 
   const handleDateChange = (fechasSeleccionadas: any) => {
@@ -210,18 +210,18 @@ console.log(dates)
       switch (value) {
         case '0':
 
-            getRequisition(0, 0, 0, user_id, 0, 0, dates[0], dates[1], 0);
-          
+          getRequisition(0, 0, 0, user_id, 0, 0, dates[0], dates[1], 0);
+
           break;
         case '1':
 
-            getRequisition(0, 0, 0, user_id, 0, 0, dates[0], dates[1], 1);
-          
+          getRequisition(0, 0, 0, user_id, 0, 0, dates[0], dates[1], 1);
+
           break;
         case '2':
-          
-            getRequisition(0, 0, 0, user_id, 0, 0, dates[0], dates[1], 2);
-          
+
+          getRequisition(0, 0, 0, user_id, 0, 0, dates[0], dates[1], 2);
+
           break;
         default:
           console.log("Valor desconocido");
@@ -250,19 +250,19 @@ console.log(dates)
   }
 
   const searchByFolio = async () => {
-      const data = {
+    const data = {
 
-        id_sucursal: selectedIds.sucursal.id || selectedIds.sucursal,
-        id_usuario: user_id,
-        id_area: selectedIds.area.id || selectedIds.area,
-        tipo: 0,
-        desde: dates[0],
-        hasta: dates[1],
-        status: status
-      };
-      const resultRequisition = await getRequisition(data)
-      setRequisitions(resultRequisition)
- 
+      id_sucursal: selectedIds.sucursal.id || selectedIds.sucursal,
+      id_usuario: user_id,
+      id_area: selectedIds.area.id || selectedIds.area,
+      tipo: 0,
+      desde: dates[0],
+      hasta: dates[1],
+      status: status
+    };
+    const resultRequisition = await getRequisition(data)
+    setRequisitions(resultRequisition)
+
   }
 
 
@@ -283,193 +283,193 @@ console.log(dates)
   return (
     <div className='requisition'>
       <div className='container__requisition'>
-        <div className='row'>
-          <div className='col-3 md-col-6 sm-col-12'>
-            <Select dataSelects={companiesXUsers} instanceId='empresa' nameSelect={'Empresa'} />
-          </div>
-          <div className='col-3 md-col-6 sm-col-12'>
-            <Select dataSelects={branchOfficeXCompanies} instanceId='sucursal' nameSelect={'Sucursal'} />
-          </div>
-          <div className='col-3 md-col-6 sm-col-12'>
-            <Select dataSelects={areasXBranchOfficesXUsers} instanceId='area' nameSelect={'Area'} />
-          </div>
-          <div className='col-3 md-col-6 sm-col-12'>
-            <div className='select__container'>
-              <label className='label__general'>Tipo</label>
-              <div className='select-btn__general'>
-                <div className={`select-btn ${selectTypes ? 'active' : ''}`} onClick={openSelectTypes} >
-                  <p>{selectedType ? types.find((s: { id: number }) => s.id === selectedType)?.name : types[0].name}</p>
-                  <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                </div>
-                <div className={`content ${selectTypes ? 'active' : ''}`} >
-                  <ul className={`options ${selectTypes ? 'active' : ''}`} style={{ opacity: selectTypes ? '1' : '0' }}>
-                    {types.map((type: any) => (
-                      <li key={type.id} onClick={() => handleTypesChange(type)}>
-                        {type.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+        <div className='row__one'>
+          <div className='row'>
+            <div className='col-3 md-col-6 sm-col-12'>
+              <Select dataSelects={companiesXUsers} instanceId='empresa' nameSelect={'Empresa'} />
             </div>
-          </div>
-        </div>
-        <div className='row'>
-          <div className='col-6 md-col-12'>
-            <div className='container_dates__requisition'>
-              <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+            <div className='col-3 md-col-6 sm-col-12'>
+              <Select dataSelects={branchOfficeXCompanies} instanceId='sucursal' nameSelect={'Sucursal'} />
             </div>
-          </div>
-          <div className='col-6 md-col-12'>
-            <div className='container__checkbox_requisition'>
-              <div className='checkbox__requisition'>
-                <label className="checkbox__container_general">
-                  <input className='checkbox' type="checkbox" checked={status == 0 ? true : false} onClick={() => handleClick('0')} />
-                  <span className="checkmark__general"></span>
-                </label>
-                <p className='text'>Activo</p>
-              </div>
-              <div className='checkbox__requisition'>
-                <label className="checkbox__container_general">
-                  <input className='checkbox' type="checkbox" checked={status == 1 ? true : false} onClick={() => handleClick('1')} />
-                  <span className="checkmark__general"></span>
-                </label>
-                <p className='text'>Cancelados</p>
-              </div>
-              <div className='checkbox__requisition'>
-                <label className="checkbox__container_general">
-                  <input className='checkbox' type="checkbox" checked={status == 2 ? true : false} onClick={() => handleClick('2')} />
-                  <span className="checkmark__general"></span>
-                </label>
-                <p className='text'>Terminados</p>
-              </div>
+            <div className='col-3 md-col-6 sm-col-12'>
+              <Select dataSelects={areasXBranchOfficesXUsers} instanceId='area' nameSelect={'Area'} />
             </div>
-          </div>
-        </div>
-        <div className='row'>
-          <div className='col-4 md-col-6 sm-col-12'>
-            <div className='select__container'>
-              <label className='label__general'>Serie</label>
-              <div className='select-btn__general'>
-                <div className={`select-btn ${selectSeries ? 'active' : ''}`} onClick={openSelectSeries} >
-                  <p>{selectedSerie !== null ? series.find((s: { id: number }) => s.id === selectedSerie)?.nombre : 'Selecciona'}</p>
-                  <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                </div>
-                <div className={`content ${selectSeries ? 'active' : ''}`} >
-                  <ul className={`options ${selectSeries ? 'active' : ''}`} style={{ opacity: selectSeries ? '1' : '0' }}>
-                    {series.map((serie: any) => (
-                      <li key={serie.id} onClick={() => handleSeriesChange(serie)}>
-                        {serie.nombre}
-                      </li>
-                    ))}
-                  </ul>
+            <div className='col-3 md-col-6 sm-col-12'>
+              <div className='select__container'>
+                <label className='label__general'>Tipo</label>
+                <div className='select-btn__general'>
+                  <div className={`select-btn ${selectTypes ? 'active' : ''}`} onClick={openSelectTypes} >
+                    <p>{selectedType ? types.find((s: { id: number }) => s.id === selectedType)?.name : types[0].name}</p>
+                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                  </div>
+                  <div className={`content ${selectTypes ? 'active' : ''}`} >
+                    <ul className={`options ${selectTypes ? 'active' : ''}`} style={{ opacity: selectTypes ? '1' : '0' }}>
+                      {types.map((type: any) => (
+                        <li key={type.id} onClick={() => handleTypesChange(type)}>
+                          {type.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className='col-4 md-col-6 sm-col-12'>
-            <label className='label__general'>Folio</label>
-            <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div>
-            <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el nombre' />
+          <div className='row'>
+            <div className='col-6 md-col-12'>
+              <div className='container_dates__requisition'>
+                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+              </div>
+            </div>
+            <div className='col-6 md-col-12'>
+              <div className='container__checkbox_requisition'>
+                <div className='checkbox__requisition'>
+                  <label className="checkbox__container_general">
+                    <input className='checkbox' type="checkbox" checked={status == 0 ? true : false} onClick={() => handleClick('0')} />
+                    <span className="checkmark__general"></span>
+                  </label>
+                  <p className='text'>Activo</p>
+                </div>
+                <div className='checkbox__requisition'>
+                  <label className="checkbox__container_general">
+                    <input className='checkbox' type="checkbox" checked={status == 1 ? true : false} onClick={() => handleClick('1')} />
+                    <span className="checkmark__general"></span>
+                  </label>
+                  <p className='text'>Cancelados</p>
+                </div>
+                <div className='checkbox__requisition'>
+                  <label className="checkbox__container_general">
+                    <input className='checkbox' type="checkbox" checked={status == 2 ? true : false} onClick={() => handleClick('2')} />
+                    <span className="checkmark__general"></span>
+                  </label>
+                  <p className='text'>Terminados</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className='col-2 md-col-6 sm-col-12'>
+          <div className='row'>
+            <div className='col-4 md-col-6 sm-col-12'>
+              <div className='select__container'>
+                <label className='label__general'>Serie</label>
+                <div className='select-btn__general'>
+                  <div className={`select-btn ${selectSeries ? 'active' : ''}`} onClick={openSelectSeries} >
+                    <p>{selectedSerie !== null ? series.find((s: { id: number }) => s.id === selectedSerie)?.nombre : 'Selecciona'}</p>
+                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                  </div>
+                  <div className={`content ${selectSeries ? 'active' : ''}`} >
+                    <ul className={`options ${selectSeries ? 'active' : ''}`} style={{ opacity: selectSeries ? '1' : '0' }}>
+                      {series.map((serie: any) => (
+                        <li key={serie.id} onClick={() => handleSeriesChange(serie)}>
+                          {serie.nombre}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='col-4 md-col-6 sm-col-12'>
+              <label className='label__general'>Folio</label>
+              <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div>
+              <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el nombre' />
+            </div>
+            <div className='col-2 md-col-6 sm-col-12'>
 
-            <div className='create__requisition_btn-container'>
-              <div>
-                <button className='btn__general-purple' onClick={searchByFolio}>Buscar</button>
+              <div className='create__requisition_btn-container'>
+                <div>
+                  <button className='btn__general-purple' onClick={searchByFolio}>Buscar</button>
+                </div>
               </div>
             </div>
-          </div>
-          <div className='col-2 md-col-6 sm-col-12'>
-            <div className='create__requisition_btn-container'>
-              <div>
-                <button className='btn__general-purple' onClick={modalCreate}>Crear nueva Requisición</button>
+            <div className='col-2 md-col-6 sm-col-12'>
+              <div className='create__requisition_btn-container'>
+                <div>
+                  <button className='btn__general-purple' onClick={modalCreate}>Crear nueva Requisición</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
         <ModalRequisition />
-        <div className='row'>
-          <div className='col-12'>
-            <div className='table__requisiciones'>
-              <div>
-                {requisitions ? (
-                 <div className='table__numbers'>
-                 <p className='text'>Total de requisiciónes</p>
-                 <div className='quantities_tables'>{requisitions.length}</div>
-               </div>
-                ) : (
-                  <p></p>
-                )}
-              </div>
-              <div className='table__head'>
-                <div className='thead'>
-                  <div className='th'>
-                    <p>Folio</p>
-                  </div>
-                  <div className='th'>
-                    <p>Tipo</p>
-                  </div>
-                  <div className='th'>
-                    <p>Status</p>
-                  </div>
-                  <div className='th'>
-                    <p>Fecha</p>
-                  </div>
-                  <div className='th'>
-                    <p>Por</p>
-                  </div>
-                  <div className='th'>
-                    <p>Empresas</p>
-                  </div>
-                  <div className='th'>
-                    <p>Sucursal</p>
-                  </div>
-                  <div className='th'>
-                    <p>Areas</p>
-                  </div>
-                </div>
-              </div>
+        <div>
+          <div className='table__requisiciones'>
+            <div>
               {requisitions ? (
-                <div className='table__body'>
-                  {requisitions.map((requisition: any, index: number) => {
-                    return (
-                      <div className='tbody__container' key={index} onClick={() => modalUpdate(requisition)}>
-                        <div className='tbody'>
-                          <div className='td code'>
-                            <p>{requisition.serie}-{requisition.folio}-{requisition.anio}</p>
-                          </div>
-                          <div className='td'>
-                            <p>{requisition.tipo === 0 ? 'Normal' : 'Diferencial'}</p>
-                          </div>
-                          <div className='td'>
-                            <p>{requisition.status == 0 ? <div className='active-status'><p>Activo</p></div> : ''}</p>
-                            <p>{requisition.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
-                          </div>
-                          <div className='td date'>
-                            <p>{requisition.fecha_creacion.split('T')[0]}</p>
-                          </div>
-                          <div className='td'>
-                            <p>{requisition.usuario_crea}</p>
-                          </div>
-                          <div className='td'>
-                            <p>{requisition.empresa}</p>
-                          </div>
-                          <div className='td'>
-                            <p>{requisition.sucursal}</p>
-                          </div>
-                          <div className='td'>
-                            <p>{requisition.area}</p>
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  })}
+                <div className='table__numbers'>
+                  <p className='text'>Total de requisiciónes</p>
+                  <div className='quantities_tables'>{requisitions.length}</div>
                 </div>
               ) : (
-                <p>Cargando datos...</p>
+                <p></p>
               )}
             </div>
+            <div className='table__head'>
+              <div className='thead'>
+                <div className='th'>
+                  <p>Folio</p>
+                </div>
+                <div className='th'>
+                  <p>Tipo</p>
+                </div>
+                <div className='th'>
+                  <p>Status</p>
+                </div>
+                <div className='th'>
+                  <p>Fecha</p>
+                </div>
+                <div className='th'>
+                  <p>Por</p>
+                </div>
+                <div className='th'>
+                  <p>Empresas</p>
+                </div>
+                <div className='th'>
+                  <p>Sucursal</p>
+                </div>
+                <div className='th'>
+                  <p>Areas</p>
+                </div>
+              </div>
+            </div>
+            {requisitions ? (
+              <div className='table__body'>
+                {requisitions.map((requisition: any, index: number) => {
+                  return (
+                    <div className='tbody__container' key={index} onClick={() => modalUpdate(requisition)}>
+                      <div className='tbody'>
+                        <div className='td code'>
+                          <p>{requisition.serie}-{requisition.folio}-{requisition.anio}</p>
+                        </div>
+                        <div className='td'>
+                          <p>{requisition.tipo === 0 ? 'Normal' : 'Diferencial'}</p>
+                        </div>
+                        <div className='td'>
+                          <p>{requisition.status == 0 ? <div className='active-status'><p>Activo</p></div> : ''}</p>
+                          <p>{requisition.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
+                        </div>
+                        <div className='td date'>
+                          <p>{requisition.fecha_creacion.split('T')[0]}</p>
+                        </div>
+                        <div className='td'>
+                          <p>{requisition.usuario_crea}</p>
+                        </div>
+                        <div className='td'>
+                          <p>{requisition.empresa}</p>
+                        </div>
+                        <div className='td'>
+                          <p>{requisition.sucursal}</p>
+                        </div>
+                        <div className='td'>
+                          <p>{requisition.area}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <p>Cargando datos...</p>
+            )}
           </div>
         </div>
       </div>
