@@ -339,6 +339,7 @@ const ModalSalesOrder: React.FC = () => {
     // }, [normalConcepts]);
     useEffect(() => {
         calcular_totales()
+        calcular_tiempos_entrega()
     }, [normalConcepts])
     const calcular_totales = () => {
         const precios = normalConcepts.reduce(
@@ -437,7 +438,7 @@ const ModalSalesOrder: React.FC = () => {
 
 
         let data = {
-            id_sucursal: saleOrdersToUpdate.id_sucursal,
+            id_sucursal: saleOrdersToUpdate.id_sucursal || branchOffices.id,
             articulos: conceptos_a_enviar
 
         }
