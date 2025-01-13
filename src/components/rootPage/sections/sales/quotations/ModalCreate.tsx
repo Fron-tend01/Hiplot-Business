@@ -32,7 +32,7 @@ const ModalCreate: React.FC = () => {
 
   const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
   const setCustomData = storePersonalized((state) => state.setCustomData);
-    const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
+  const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
 
 
   const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
@@ -196,8 +196,11 @@ const ModalCreate: React.FC = () => {
 
 
 
-  const createQuotation = async () => {
+  // console.log('DATA QUE SE ENVIA AL BEKEND', personalized)
 
+  const createQuotation = async () => {
+    console.log('PERSONALIZADO ANTE', personalized)
+    console.log('PERSONALIZADO ANTE', normalConcepts)
     const filter = normalConcepts.filter((x: any) => x.personalized !== true)
 
     filter.forEach((element: any) => {
@@ -209,13 +212,16 @@ const ModalCreate: React.FC = () => {
       });
     });
 
+
+
     if (personalized.length > 0) {
       personalized?.forEach((element: any) => {
+        
         element.conceptos.forEach((x: any) => {
-          element.unidad = element.id_unidad
-          element.total = element.precio_total
-          element.urgencia = element.monto_urgencia
-          element.campos_plantilla.forEach((cp: any) => {
+          x.unidad = x.id_unidad
+          x.total = x.precio_total
+          x.urgencia = x.monto_urgencia
+          x?.campos_plantilla?.forEach((cp: any) => {
             cp.valor = cp.valor.toString()
           });
         });
@@ -225,7 +231,7 @@ const ModalCreate: React.FC = () => {
       id: modal === 'create-modal__qoutation' ? 0 : quatation.id,
       id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
       // id_cliente: modal === 'create-modal__qoutation' ? selectedResult?.id : quatation.id_cliente,
-      id_cliente: modal === selectedResult?.id || quatation.id_cliente,
+      id_cliente: selectedResult?.id || quatation.id_cliente,
       id_usuario_crea: user_id,
       titulo: title,
       comentarios: comments,
@@ -233,8 +239,8 @@ const ModalCreate: React.FC = () => {
       conceptos_pers: personalized,
       conceptos_elim: deleteConcepts
     };
+    
 
-    console.log('DATA QUE SE ENVIA AL BEKEND', data)
 
     // return
 
@@ -468,8 +474,16 @@ const ModalCreate: React.FC = () => {
             <div className='col-12'>
               <div className='row col-12 md-col-12'>
                 {modal == 'create-modal__qoutation' ?
-                  <div className='col-8 md-col-12'>
-                    <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
+                  <div className='row col-12'>
+                    <div className='col-8 md-col-12'>
+                      <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
+
+                    </div>
+                    <div className='col-4'>
+                      <label className='label__general'>Título</label>
+                      <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                      <input className={`inputs__general`} type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el título' />
+                    </div>
                   </div>
                   :
                   ''
@@ -480,12 +494,8 @@ const ModalCreate: React.FC = () => {
               </div>
             </div>
             <div className='row col-12 my-2 w-full'>
-              <div className='col-4'>
-                <label className='label__general'>Título</label>
-                <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                <input className={`inputs__general`} type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el título' />
-              </div>
-              <div className='col-8'>
+
+              <div className='col-12'>
                 <label className='label__general'>Comentarios</label>
                 <div className='warning__general'><small >Este campo es obligatorio</small></div>
                 <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios'></textarea>

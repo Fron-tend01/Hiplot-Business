@@ -98,76 +98,78 @@ const Billing: React.FC = () => {
         setSubModal('billing__modal-update')
         setDataUpdate(dat)
         setModoUpdate(true)
-      }
+    }
     return (
         <div className='billing'>
             <div className='billing__container'>
-                <div className='row'>
-                    <div className='col-8 md-col-12'>
-                        <Empresas_Sucursales modeUpdate={false} empresaDyn={EmpresaSearcher} sucursalDyn={SucursalSearcher}
-                            setEmpresaDyn={setEmpresaSearcher} setSucursalDyn={setSucursalSearcher} all={true} />
-                    </div>
-                    <div className='col-4 md-col-12'>
-                        <div className='dates__requisition'>
-                            <label className='label__general'>Fechas</label>
-                            <div className='container_dates__requisition'>
-                                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                <div className='row__one'>
+                    <div className='row'>
+                        <div className='col-8 md-col-12'>
+                            <Empresas_Sucursales modeUpdate={false} empresaDyn={EmpresaSearcher} sucursalDyn={SucursalSearcher}
+                                setEmpresaDyn={setEmpresaSearcher} setSucursalDyn={setSucursalSearcher} all={true} />
+                        </div>
+                        <div className='col-4 md-col-12'>
+                            <div className='dates__requisition'>
+                                <label className='label__general'>Fechas</label>
+                                <div className='container_dates__requisition'>
+                                    <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className='row'>
-                    <div className='col-3'>
-                        <Select dataSelects={users} instanceId='vendedorSearcher' nameSelect={'Vendedor'}></Select>
+                    <div className='row'>
+                        <div className='col-3'>
+                            <Select dataSelects={users} instanceId='vendedorSearcher' nameSelect={'Vendedor'}></Select>
 
-                    </div>
-                    <div className='col-3'>
-                        <div>
-                            <label className='label__general'>Cliente</label>
-                            <input className={`inputs__general`} type="text" value={ClienteSearcher} onChange={(e) => setClienteSearcher(e.target.value)} placeholder='Ingresa RFC/razon social/nombre comerial' />
                         </div>
-                    </div>
+                        <div className='col-3'>
+                            <div>
+                                <label className='label__general'>Cliente</label>
+                                <input className={`inputs__general`} type="text" value={ClienteSearcher} onChange={(e) => setClienteSearcher(e.target.value)} placeholder='Ingresa RFC/razon social/nombre comerial' />
+                            </div>
+                        </div>
 
-                    <div className='col-3'>
-                        <Select dataSelects={Series} instanceId='serieSearcher' nameSelect={'Serie'}></Select>
+                        <div className='col-3'>
+                            <Select dataSelects={Series} instanceId='serieSearcher' nameSelect={'Serie'}></Select>
 
-                    </div>
-                    <div className='col-3'>
-                        <div>
-                            <label className='label__general'>Folio</label>
-                            <input className={`inputs__general`} type="number" value={FolioSearcher} onChange={(e) => setFolioSearcher(parseInt(e.target.value))} placeholder='Ingresa el folio' />
+                        </div>
+                        <div className='col-3'>
+                            <div>
+                                <label className='label__general'>Folio</label>
+                                <input className={`inputs__general`} type="number" value={FolioSearcher} onChange={(e) => setFolioSearcher(parseInt(e.target.value))} placeholder='Ingresa el folio' />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className='row'>
-                    <div className='col-6 md-col-6 sm-col-12 container__checkbox_orders'>
-                        <div className='col-4 md-col-4 sm-col-12 checkbox__orders'>
-                            <label className="checkbox__container_general">
-                                <input className='checkbox' type="radio" name="requisitionStatus" checked={TypeSearcher == 0 ? true : false} onChange={() => handleClickType(0)} />
-                                <span className="checkmark__general"></span>
-                            </label>
-                            <p className='title__checkbox text'>Activo</p>
+                    <div className='row mt-2'>
+                        <div className='col-6 md-col-6 sm-col-12 container__checkbox_orders'>
+                            <div className='col-4 md-col-4 sm-col-12 checkbox__orders'>
+                                <label className="checkbox__container_general">
+                                    <input className='checkbox' type="radio" name="requisitionStatus" checked={TypeSearcher == 0 ? true : false} onChange={() => handleClickType(0)} />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='title__checkbox text'>Activo</p>
+                            </div>
+                            <div className='col-4 md-col-4 sm-col-12 checkbox__orders'>
+                                <label className="checkbox__container_general">
+                                    <input className='checkbox' type="radio" name="requisitionStatus" value={TypeSearcher} onChange={() => handleClickType(1)} />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='title__checkbox text'>Cancelados</p>
+                            </div>
+                            <div className='col-4 md-col-4 sm-col-12 checkbox__orders'>
+                                <label className="checkbox__container_general">
+                                    <input className='checkbox' type="radio" name="requisitionStatus" value={TypeSearcher} onChange={() => handleClickType(2)} />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='title__checkbox text'>Terminados</p>
+                            </div>
                         </div>
-                        <div className='col-4 md-col-4 sm-col-12 checkbox__orders'>
-                            <label className="checkbox__container_general">
-                                <input className='checkbox' type="radio" name="requisitionStatus" value={TypeSearcher} onChange={() => handleClickType(1)} />
-                                <span className="checkmark__general"></span>
-                            </label>
-                            <p className='title__checkbox text'>Cancelados</p>
+                        <div className='col-3 md-col-3 sm-col-6'>
+                            <button className='btn__general-orange' onClick={() => search()}>Buscar</button>
                         </div>
-                        <div className='col-4 md-col-4 sm-col-12 checkbox__orders'>
-                            <label className="checkbox__container_general">
-                                <input className='checkbox' type="radio" name="requisitionStatus" value={TypeSearcher} onChange={() => handleClickType(2)} />
-                                <span className="checkmark__general"></span>
-                            </label>
-                            <p className='title__checkbox text'>Terminados</p>
+                        <div className='col-3 md-col-3 sm-col-6'>
+                            <button className='btn__general-purple' onClick={() => { setDataUpdate({}); setModoUpdate(false); setSubModal('billing__modal-create'); }}>Crear nueva factura</button>
                         </div>
-                    </div>
-                    <div className='col-3 md-col-3 sm-col-6'>
-                        <button className='btn__general-orange' onClick={() => search()}>Buscar</button>
-                    </div>
-                    <div className='col-3 md-col-3 sm-col-6'>
-                        <button className='btn__general-purple' onClick={() => {setDataUpdate({});setModoUpdate(false);setSubModal('billing__modal-create'); }}>Crear nueva factura</button>
                     </div>
                 </div>
                 <div className='row'>
@@ -211,13 +213,13 @@ const Billing: React.FC = () => {
                                 <div className='table__body'>
                                     {Data.map((dat: any, index: number) => {
                                         return (
-                                            <div className='tbody__container' key={index}  onClick={()=>modalUpdate(dat)}>
+                                            <div className='tbody__container' key={index} onClick={() => modalUpdate(dat)}>
                                                 <div className='tbody'>
                                                     <div className='td code'>
                                                         <p>{dat.serie}-{dat.folio}-{dat.anio}</p>
                                                     </div>
                                                     <div className='td'>
-                                                        <p>{dat.tipo === 0 ? 'Directa' : dat.tipo==1 ? 'OV': 'PAF'}</p>
+                                                        <p>{dat.tipo === 0 ? 'Directa' : dat.tipo == 1 ? 'OV' : 'PAF'}</p>
                                                     </div>
                                                     <div className='td'>
                                                         <p>{dat.status == 0 ? <div className='active-status'><p>Activo</p></div> : ''}</p>

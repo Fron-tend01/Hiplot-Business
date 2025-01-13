@@ -97,6 +97,35 @@ const Personalized: React.FC = () => {
     }
 
 
+    // Create or Update
+
+    if (modal === 'personalized_modal-sale') {
+
+      /// Modal Create
+
+    } else {
+
+      const exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
+
+      if (exist) {
+        ////////////////////////////////////// Se agrega ///////////////////////
+        const findItem = customData.find((xx: any) => xx.id_identifier == item.id_identifier)
+        setCustomConcepts([...customConcepts, findItem]);
+
+        const deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+        setNormalConcepts(deleteFilter)
+
+        return
+      } else {
+        const find = customConcepts.find((xx: any) => xx.id_identifier == item.id_identifier)
+        setNormalConcepts([...normalConcepts, find])
+
+        const deleteFilter = customConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+        setCustomConcepts(deleteFilter)
+
+      }
+    }
+
 
     // const exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
 
@@ -135,6 +164,7 @@ const Personalized: React.FC = () => {
     }
   })
 
+  console.log('datassssssssssss', personalized)
 
   const createPersonalized = async () => {
 
@@ -143,7 +173,7 @@ const Personalized: React.FC = () => {
       total += element.total_price;
     });
 
-    console.log('personalizedModal', personalizedModal)
+ 
 
     if (personalizedModal == 'personalized_modal-quotation' || personalizedModal == 'personalized_modal-quotation-update') {
       const data = {
@@ -151,7 +181,7 @@ const Personalized: React.FC = () => {
         personalized: true,
         codigo: inpust.codigo,
         cantidad: inpust.cantidad,
-        unidad: selectedIds?.units?.id,
+        unidad: selectedIds?.units.id,
         name_unidad: selectedIds?.units?.nombre,
         clave_sat: parseInt(selectedSatKey.Clave),
         codigo_unidad_sat: 0,
@@ -161,17 +191,22 @@ const Personalized: React.FC = () => {
         conceptos: customConcepts
       }
 
-      console.log('datassssssssssss', data)
+
 
       setCustomData(normalConcepts)
       setNormalConcepts([...normalConcepts, data])
       setPersonalized([...personalized, data])
 
 
+
+
     }
 
+    
 
-    if (personalizedModal == 'personalized_modal-sale') {
+    if (personalizedModal == 'personalized_modal-sale' || personalizedModal == 'personalized_modal-sale') {
+
+      
       const data = {
         descripcion: inpust.descripcion,
         personalized: true,
@@ -186,6 +221,8 @@ const Personalized: React.FC = () => {
         comentarios_factura: inpust.comentarios_factura,
         conceptos: customConcepts
       }
+
+      console.log('selectedIds.units', selectedIds.units)
 
       setCustomData(normalConcepts)
       setNormalConcepts([...normalConcepts, data])

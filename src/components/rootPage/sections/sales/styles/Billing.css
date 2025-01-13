@@ -1,6 +1,5 @@
 .billing {
     height: 90vh;
-	padding: 20px;
 }
 
 .billing__container {
@@ -9,4 +8,10 @@
 	padding: 20px ;
 	border-radius: 10px;
     overflow: hidden;
+}
+
+.billing__container .row__one {
+	padding: 20px;
+	background-color: var(--cards-background);
+	border-radius: var(--general-card-border);
 }
