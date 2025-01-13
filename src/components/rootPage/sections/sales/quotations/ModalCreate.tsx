@@ -122,23 +122,22 @@ const ModalCreate: React.FC = () => {
   useEffect(() => {
 
     if (modal === 'update-modal__qoutation') {
-      console.log(quatation);
-      client()
-
-      setCompany({ id: quatation.id_empresa })
-      setBranch({ id: quatation.id_sucursal })
-      setComments(quatation.comentarios)
-
-      // setNormalConcepts([...normalConcepts, ...quatation.conceptos])
-      setNormalConcepts([...quatation.conceptos, ...quatation.conceptos_pers])
-      setCustomData([...customConcepts, ...quatation.conceptos]);
-
-      setPersonalized(quatation.conceptos_pers)
-
-
+      forupdate()
     }
   }, [quatation])
+  const forupdate = async () => {
+    await client()
 
+    setCompany({ id: quatation.id_empresa })
+    setBranch({ id: quatation.id_sucursal })
+    setComments(quatation.comentarios)
+
+    // setNormalConcepts([...normalConcepts, ...quatation.conceptos])
+    setNormalConcepts([...quatation.conceptos, ...quatation.conceptos_pers])
+    setCustomData([...customConcepts, ...quatation.conceptos]);
+
+    setPersonalized(quatation.conceptos_pers)
+  }
 
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
   const setSelectedId = useSelectStore((state) => state.setSelectedId);
@@ -224,7 +223,7 @@ const ModalCreate: React.FC = () => {
       id: modal === 'create-modal__qoutation' ? 0 : quatation.id,
       id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
       // id_cliente: modal === 'create-modal__qoutation' ? selectedResult?.id : quatation.id_cliente,
-      id_cliente: modal === selectedResult?.id,
+      id_cliente: modal === selectedResult?.id || quatation.id_cliente,
       id_usuario_crea: user_id,
       titulo: title,
       comentarios: comments,
@@ -299,13 +298,6 @@ const ModalCreate: React.FC = () => {
     setNormalConcepts(data)
     setCustomData([...filterPers, ...article.conceptos]);
     setPersonalized([])
-
-    console.log('customData', customData)
-    console.log('filterNor', filterNor)
-
-    console.log('normalConcepts', normalConcepts)
-
-    console.log('article.conceptos', article.conceptos)
   }
 
 
@@ -436,7 +428,6 @@ const ModalCreate: React.FC = () => {
                   <div className='col-6 md-col-12'>
                     <span className='text'>Creado por: <b>{quatation.usuario_crea}</b></span><br />
                     <span className='text'>Fecha de Creación: <b>{quatation.fecha_creacion}</b></span><br />
-                    <span className='text'>Titulo: <b>{quatation.titulo}</b> </span>
                     {quatation.status === 0 ? (
                       <span className="active-status">Activo</span>
                     ) : quatation.status === 1 ? (
@@ -453,50 +444,45 @@ const ModalCreate: React.FC = () => {
                   <div className='col-6 md-col-12'>
                     <span className='text'>Empresa: <b>{quatation.empresa}</b></span><br />
                     <span className='text'>Sucursal: <b>{quatation.sucursal}</b></span><br />
-                    <span className='text'>Area: <b>{quatation.area}</b></span>
-                  </div>
-                </div>
-                <div className='row'>
-                  <div className='col-12'>
-                    <span className='text'>Comentarios: {quatation.comentarios}</span>
-
                   </div>
                 </div>
               </div>
             </div>
           }
-          {modal == 'create-modal__qoutation' ?
-            <div className='row__two'>
-              <div className='col-12'>
-                <p className='title'>Datos de la Cotización</p>
-              </div>
-              <div className='col-12'>
-                <div className='row col-12 md-col-12'>
+
+          <div className='row__two'>
+            <div className='col-12'>
+              <p className='title'>Datos de la Cotización</p>
+            </div>
+            <div className='col-12'>
+              <div className='row col-12 md-col-12'>
+                {modal == 'create-modal__qoutation' ?
                   <div className='col-8 md-col-12'>
                     <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
                   </div>
-                  {/* <div className='col-4  md-col-6 sm-col-12'>
+                  :
+                  ''
+                }
+                {/* <div className='col-4  md-col-6 sm-col-12'>
                     <Select dataSelects={dataSelects} instanceId="select1" nameSelect={'Vendedor'} />:''
                   </div> */}
-                </div>
-              </div>
-              <div className='row col-12 my-2 w-full'>
-                <div className='col-4'>
-                  <label className='label__general'>Título</label>
-                  <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general`} type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el título' />
-                </div>
-                <div className='col-8'>
-                  <label className='label__general'>Comentarios</label>
-                  <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                  <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios'></textarea>
-                </div>
-
               </div>
             </div>
-            :
-            ''
-          }
+            <div className='row col-12 my-2 w-full'>
+              <div className='col-4'>
+                <label className='label__general'>Título</label>
+                <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                <input className={`inputs__general`} type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el título' />
+              </div>
+              <div className='col-8'>
+                <label className='label__general'>Comentarios</label>
+                <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios'></textarea>
+              </div>
+
+            </div>
+          </div>
+
 
           <div className='row__three my-2 w-full'>
             <div className='col-12'>

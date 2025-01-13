@@ -100,8 +100,7 @@ const CompanyModal = () => {
         if (model.razon_social === '' || model.nombre_comercial === '') {
             return;
         }
-        console.log(model);
-        
+
         if (modal == 'modal__update-companies') {
             await APIs.CreateAnyPut(model, "empresa_update/" + model.id)
                 .then(async (response: any) => {
@@ -262,6 +261,12 @@ const CompanyModal = () => {
                                 )}
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div className='row'>
+                    <div className='col-12'>
+                        <label className='label__general'>Terminos y Condiciones de Cotización:</label>
+                        <textarea className='inputs__general' rows={5} value={model.tyc_cotizaciones} onChange={(e)=> DynamicVariables.updateAnyVar(setModel, "tyc_cotizaciones", e.target.value)}></textarea>
                     </div>
                 </div>
                 <div className='create__company_btn_modal_container mt-3'>

@@ -14,6 +14,9 @@ import { useSelectStore } from '../../../../../zustand/Select'
 import Personalized from '../Personalized'
 import { storePersonalized } from '../../../../../zustand/Personalized'
 import Swal from 'sweetalert2';
+import { storeDv } from '../../../../../zustand/Dynamic_variables'
+import { storeModals } from '../../../../../zustand/Modals'
+import SeeCamposPlantillas from '../SeeCamposPlantillas'
 
 const ModalSalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -49,10 +52,17 @@ const ModalSalesOrder: React.FC = () => {
 
 
     const [clients, setClients] = useState<any>()
+    const [idCotizacion, setIdCotizacion] = useState<number>(0)
 
     const [searCustomer, setSearchCustomer] = useState<any>('')
 
     const [title, setTitle] = useState<string>('')
+
+    const hoy = new Date();
+    const haceUnaSemana = new Date();
+    haceUnaSemana.setDate(hoy.getDate() - 7);
+
+
 
 
     ////////////////////////
@@ -84,19 +94,40 @@ const ModalSalesOrder: React.FC = () => {
     }, [saleOrdersToUpdate])
 
 
-    const handleCreateSaleOrder = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleCreateSaleOrder = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        const filter = normalConcepts.filter((x: any) => x.personalized == false)
+        const filter = normalConcepts.filter((x: any) => x.personalized == false || x.personalized == undefined)
 
         const [datePartOne, timePartOne] = dates[0].split(" ");
         const [datePartTwo, timePartTwo] = dates[1].split(" ");
-
+        filter.forEach((element: any) => {
+            element.unidad = element.id_unidad
+            element.total = element.precio_total
+            element.urgencia = element.monto_urgencia
+            element.campos_plantilla.forEach((cp: any) => {
+              cp.valor = cp.valor.toString()
+            });
+          });
+      
+          if (personalized.length > 0) {
+            personalized?.forEach((element: any) => {
+              element.conceptos.forEach((x: any) => {
+                element.unidad = element.id_unidad
+                element.total = element.precio_total
+                element.urgencia = element.monto_urgencia
+                element.campos_plantilla.forEach((cp: any) => {
+                  cp.valor = cp.valor.toString()
+                });
+              });
+            });
+          }
         const data = {
             id_sucursal: branchOffices.id,
             id_cliente: selectedIds.clients.id,
             id_usuario_crea: user_id,
             titulo: title,
+            id_cotizacion_relacionada: idCotizacion,
             hora_entrega_produccion: timePartOne,
             fecha_entrega_produccion: datePartOne,
             hora_entrega_cliente: timePartTwo,
@@ -105,10 +136,6 @@ const ModalSalesOrder: React.FC = () => {
             conceptos_pers: personalized,
             conceptos_elim: []
         }
-
-        console.log("Enviando orden de venta...");
-        console.log("Datos que se envían:", data);
-
         try {
             const result: any = await APIs.createSaleOrder(data);
             if (result.error == true) {
@@ -270,11 +297,7 @@ const ModalSalesOrder: React.FC = () => {
         setNormalConcepts(updatedConcepts);
     };
 
-    const handleUrgencyChange = (index: number) => {
-        const newConcept = [...normalConcepts];
-        newConcept[index].urgency = !newConcept[index]?.urgency;
-        setNormalConcepts(newConcept);
-    };
+   
 
 
     const [amount, setAmount] = useState<any>(0)
@@ -301,6 +324,9 @@ const ModalSalesOrder: React.FC = () => {
     //     setdTotalGeneral(amountTotal - descountTotal + urgencyTotal)
     // }, [normalConcepts]);
     useEffect(() => {
+        calcular_totales()
+    }, [normalConcepts])
+    const calcular_totales = () => {
         const precios = normalConcepts.reduce(
             (acc: any, item: any) => ({
                 precio_unitario: acc.precio_unitario + (item.precio_unitario / item.cantidad || 0),
@@ -310,11 +336,11 @@ const ModalSalesOrder: React.FC = () => {
             }),
             { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0 }
         );
-        setAmount(precios.total + precios.descuento -precios.monto_urgencia);
+        setAmount(precios.total + precios.descuento - precios.monto_urgencia);
         setdDiscount(precios.descuento)
         setdUrgency(precios.monto_urgencia)
         setdTotalGeneral(precios.total)
-    }, [normalConcepts])
+    }
     const getTicket = async () => {
         try {
             await APIs.getPdfPurchaseOrders(saleOrdersToUpdate.id);
@@ -327,18 +353,39 @@ const ModalSalesOrder: React.FC = () => {
 
     useEffect(() => {
 
-        if (modalSalesOrder === 'sale-order__modal_bycot') {
-            console.log('DATA GRAL COT A OV', saleOrdersToUpdate);
+        if (modalSalesOrder === 'sale-order__modal_bycot' || modalSalesOrder == 'sale-order__modal') {
+            setIdCotizacion(saleOrdersToUpdate.id)
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
-            setCompanies({id:saleOrdersToUpdate.id_empresa})
-            setBranchOffices({id:saleOrdersToUpdate.id_sucursal})
+            setCompanies({ id: saleOrdersToUpdate.id_empresa })
+            setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
             setTitle(saleOrdersToUpdate.titulo)
             const data = {
                 id_sucursal: saleOrdersToUpdate.id_sucursal,
                 id_usuario: user_id,
                 nombre: saleOrdersToUpdate.rfc
             }
-            getClients(data).then((response:any)=> {
+            getClients(data).then((response: any) => {
+                setClients({
+                    selectName: 'Cliente',
+                    options: 'razon_social',
+                    dataSelect: response
+                })
+
+            })
+            calcular_tiempos_entrega()
+        }else {
+            setDates([ saleOrdersToUpdate.fecha_entrega_produccion + ' ' + saleOrdersToUpdate.hora_entrega_produccion,
+                       saleOrdersToUpdate.fecha_entrega_cliente + ' ' + saleOrdersToUpdate.hora_entrega_cliente])
+            setTitle(saleOrdersToUpdate.titulo)
+            setDataSaleOrder(saleOrdersToUpdate?.conceptos)
+            setCompanies({ id: saleOrdersToUpdate.id_empresa })
+            setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
+            const data = {
+                id_sucursal: saleOrdersToUpdate.id_sucursal,
+                id_usuario: user_id,
+                nombre: saleOrdersToUpdate.rfc
+            }
+            getClients(data).then((response: any) => {
                 setClients({
                     selectName: 'Cliente',
                     options: 'razon_social',
@@ -349,8 +396,78 @@ const ModalSalesOrder: React.FC = () => {
         }
     }, [modalSalesOrder]);
 
-    console.log("modalSalesOrder", modalSalesOrder)
 
+    const calcular_tiempos_entrega = async () => {
+        let normales = normalConcepts.filter((x: any) => x.personalized == undefined || x.personalized == false)
+        let pers = normalConcepts.filter((x: any) => x.personalized == true)
+        let conceptos_a_enviar: any[] = []
+        if (normales.length > 0) {
+            console.log('entrando a if normales');
+
+            normales.forEach((n: any) => {
+                conceptos_a_enviar.push(n)
+                console.log('Push en foreach a n', n);
+
+            });
+
+        }
+        if (pers.length > 0) {
+            pers.forEach((p: any) => {
+                if (p.conceptos.length > 0) {
+                    p.conceptos.forEach((c: any) => {
+                        conceptos_a_enviar.push(c)
+                    });
+                }
+            });
+        }
+
+
+        let data = {
+            id_sucursal: saleOrdersToUpdate.id_sucursal,
+            articulos: conceptos_a_enviar
+
+        }
+        await APIs.CreateAny(data, "calcular_tiempo_entrega")
+            .then(async (response: any) => {
+                setDataProduction(response)
+                setDates([ response.fecha_produccion + ' ' + response.hora_produccion,response.fecha_cliente + ' ' + response.hora_cliente])
+            })
+    }
+    const setModalSub = storeModals((state) => state.setModalSub);
+
+    const setIndexVM = storeDv(state => state.setIndex)
+    const seeVerMas = (index: number) => {
+        setIndexVM(index)
+        setModalSub('see_cp')
+    }
+
+    const handleUrgencyChange = async (index: number) => {
+        let data = {
+          "id_articulo": normalConcepts[index].id_articulo,
+          "id_sucursal": branchOffices.id,
+          "total": normalConcepts[index].precio_total
+        }
+        const newConcept = [...normalConcepts];
+        newConcept[index].urgency = !newConcept[index]?.urgency;
+    
+        if (newConcept[index].urgency) {
+          await APIs.CreateAny(data, "calcular_urgencia")
+            .then(async (response: any) => {
+              if (!response.error) {
+                newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
+                newConcept[index].precio_total = parseFloat(response.total_con_urgencia);
+              } else {
+                Swal.fire('Notificación', response.mensaje, 'warning');
+                return
+              }
+            })
+        } else {
+          newConcept[index].precio_total = parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia);
+          newConcept[index].monto_urgencia = 0;
+        }
+        setNormalConcepts(newConcept);
+    
+      };
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
             <div className={`popup__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
@@ -360,6 +477,19 @@ const ModalSalesOrder: React.FC = () => {
                     </a>
                     <p className='title__modals'>Orden de venta</p>
                 </div>
+                {modalSalesOrder == 'sale-order__modal_bycot' || saleOrdersToUpdate?.id_cotizacion_relacionada > 0 && saleOrdersToUpdate?.id_cotizacion_relacionada != undefined ?
+                    <div className="slow-blink" style={{ color: 'red' }}>
+
+                        <span>Esta orden tiene una cotización relacionada: </span>
+                        {saleOrdersToUpdate?.id_cotizacion_relacionada > 0 ?
+                            <h3 className="text" >{saleOrdersToUpdate.serie_cotizacion}-{saleOrdersToUpdate.folio_cotizacion}-{saleOrdersToUpdate.anio_cotizacion}</h3>
+                            :
+                            <h3 className="text" >{saleOrdersToUpdate.serie}-{saleOrdersToUpdate.folio}-{saleOrdersToUpdate.anio}</h3>
+                        }
+                    </div>
+
+                    : ''}
+
                 {modalSalesOrder == 'sale-order__modal-update' ?
                     <div className="card">
                         <div className={`overlay__sale-order_production__modal_articles ${modalProduction == 'sale-order-production__modal' ? 'active' : ''}`}>
@@ -398,7 +528,6 @@ const ModalSalesOrder: React.FC = () => {
                                 <div className='col-6 md-col-12'>
                                     <span className='text'>Creado por: <b>{saleOrdersToUpdate.usuario_crea}</b></span><br />
                                     <span className='text'>Fecha de Creación: <b>{saleOrdersToUpdate.fecha_creacion}</b></span><br />
-                                    <span className='text'>Titulo: <b>{saleOrdersToUpdate.titulo}</b> </span>
                                     {saleOrdersToUpdate.status === 0 ? (
                                         <span className="active-status">Activo</span>
                                     ) : saleOrdersToUpdate.status === 1 ? (
@@ -410,13 +539,6 @@ const ModalSalesOrder: React.FC = () => {
                                             ""
                                         )
                                     )}
-                                    <div className='col-12'>
-                                        <span className='text'>Creado con la cotizacion: {saleOrdersToUpdate.comentarios}</span>
-                                    </div>
-                                </div>
-                                <div className='col-6 md-col-12'>
-                                    <span className='text'>Empresa: <b>{saleOrdersToUpdate.empresa}</b></span><br />
-                                    <span className='text'>Sucursal: <b>{saleOrdersToUpdate.sucursal}</b></span><br />
                                 </div>
                             </div>
                             <div className='d-flex justify-content-between'>
@@ -437,7 +559,7 @@ const ModalSalesOrder: React.FC = () => {
                     :
                     ''
                 }
-                <form className='sale-order__modal_articles' onSubmit={handleCreateSaleOrder}>
+                <div className='sale-order__modal_articles' >
                     <div className='row__one'>
                         <div className='row__one'>
                             <div className='row'>
@@ -523,10 +645,7 @@ const ModalSalesOrder: React.FC = () => {
                                         <p>Unidad</p>
                                     </div>
                                     <div className='th'>
-                                        <p>Precio</p>
-                                    </div>
-                                    <div className='th'>
-                                        <p>Desc. monto</p>
+                                        <p>P/U</p>
                                     </div>
                                     <div>
                                         <p>Total</p>
@@ -540,7 +659,7 @@ const ModalSalesOrder: React.FC = () => {
                                             <div className='tbody__container' key={article.id}>
                                                 {article?.personalized ?
                                                     <div className='concept__personalized'>
-                                                        <p>Concepto Perzonalizado</p>
+                                                        <p>Concepto Personalizado</p>
                                                     </div>
                                                     :
                                                     ''
@@ -578,23 +697,20 @@ const ModalSalesOrder: React.FC = () => {
                                                             <p>{article.codigo}-{article.descripcion}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <p>$ {article.cantidad}</p>
+                                                            <p>{article.cantidad}</p>
                                                         </div>
                                                         <div className='td'>
                                                             <p>{article.name_unidad || article.unidad}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <div>
-                                                                <input className='inputs__general' type="text" placeholder='Precio' value={article.precio_unitario} onChange={(e) => handlePriceChange(e, index)} />
-                                                            </div>
+                                                            ${article.precio_unitario / article.cantidad}
                                                         </div>
                                                         <div className='td'>
-                                                            <div>
-                                                                <input className='inputs__general' type="text" placeholder='Descuento' value={article.monto_descuento} onChange={(e) => handleDescountChange(e, index)} />
-                                                            </div>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>$ {article.total_concepto}</p>
+                                                            {article.urgency ?
+                                                                <p>$ {article.precio_total} <span style={{ color: 'red' }}>(${article.monto_urgencia})</span></p>
+                                                                :
+                                                                <p>$ {article.precio_total}</p>
+                                                            }
                                                         </div>
                                                         <div className='td'>
                                                             {article?.urgency ?
@@ -608,6 +724,9 @@ const ModalSalesOrder: React.FC = () => {
                                                         </div>
                                                         <div className='td'>
                                                             <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
+                                                        </div>
+                                                        <div className='td'>
+                                                            <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
                                                         </div>
                                                         <div className='td'>
                                                             <div>
@@ -683,18 +802,20 @@ const ModalSalesOrder: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    {modalSalesOrder == 'sale-order__modal' ?
+                    {modalSalesOrder !== '' ?
                         <div className='d-flex justify-content-center'>
                             <div>
-                                <button className='btn__general-purple'>Crear orden de venta</button>
+                                <button className='btn__general-purple' onClick={(e) => handleCreateSaleOrder(e)}>Crear orden de venta</button>
                             </div>
                         </div>
                         :
                         ''
                     }
-                </form>
+                </div>
                 <ArticleViewModal />
                 <Personalized />
+                <SeeCamposPlantillas />
+
             </div>
         </div>
 
