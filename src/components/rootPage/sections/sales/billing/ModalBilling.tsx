@@ -332,7 +332,7 @@ const ModalBilling: React.FC = () => {
 
     const handleCreateInvoice = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
-
+        
         const obs: any = [];
 
         if (title == undefined || title?.length < 1) {
@@ -349,6 +349,7 @@ const ModalBilling: React.FC = () => {
         }
         for (const element of concepts) {
             console.log(element);
+            element.precio_unitario = element.total_restante / element.cantidad
             element.orden = null
             element.produccion_interna = false
             element.enviar_a_produccion = false
@@ -358,7 +359,6 @@ const ModalBilling: React.FC = () => {
                 obs.push(element.id_ov);
             }
         }
-        console.log(selectedIds?.vendedores);
         let con = concepts
         if (modoUpdate) {
             const filter = concepts.filter((x: any) => x.id_concepto_comercial == undefined)
@@ -397,7 +397,6 @@ const ModalBilling: React.FC = () => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     const dataWithoutCircles = removeCircularReferences(data);
-
                     APIs.CreateAny(dataWithoutCircles, "create_factura")
                         .then(async (response: any) => {
                             if (!response.error) {
@@ -470,20 +469,21 @@ const ModalBilling: React.FC = () => {
 
 
     const handleAddConceptsChange = (order: any) => {
+        let copy_totals = {...totals}
         order.conceptos.forEach((el: any) => {
             el.orden = order
             //de ser necesario falta sumar la urgencia y restar el descuento
             if (type==2) {
-                DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal + parseFloat(el.total))
-                DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal + parseFloat(el.total))
+                copy_totals.subtotal += parseFloat(el.total)
+                copy_totals.total += parseFloat(el.total)
 
             }else {
-                DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal + parseFloat(el.total_restante))
-                DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal + parseFloat(el.total_restante))
+                copy_totals.subtotal += parseFloat(el.total_restante) - parseFloat(el.monto_urgencia)
+                copy_totals.total += parseFloat(el.total_restante)
+                copy_totals.urgencia += parseFloat(el.monto_urgencia)
             }
         });
-        console.log(order.conceptos);
-
+        setTotals(copy_totals)
         setConcepts([...concepts, ...order.conceptos])
         setDataBillign([...dataBillign, ...order.conceptos])
         setIdentifier('billing')
@@ -557,11 +557,11 @@ const ModalBilling: React.FC = () => {
     const deleteConceptos = (c: any) => {
         if (!modoUpdate) {
             if (type==2) {
-                DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total))
+                DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total))
                 DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
 
             }else {
-                DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total_restante))
+                DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total_restante))
                 DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total_restante))
             }
             const filter = concepts.filter((x: number) => x !== c);
@@ -593,11 +593,11 @@ const ModalBilling: React.FC = () => {
                 });
             } else {
                 if (type==2) {
-                    DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total))
+                    DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total))
                     DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
     
                 }else {
-                    DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total_restante))
+                    DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total_restante))
                     DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total_restante))
                 }
                 const filter = concepts.filter((x: number) => x !== c);
@@ -896,7 +896,7 @@ const ModalBilling: React.FC = () => {
                                                         <p>{concept.cantidad} {concept.unidad}</p>
                                                     </div>
                                                     <div className='td'>
-                                                        <p>${concept.precio_unitario}</p>
+                                                        <p>${(concept.total_restante || concept.total) / concept.cantidad}</p>
                                                     </div>
                                                     <div className='td'>
                                                         <p>${concept.total || concept.total_restante}</p>
