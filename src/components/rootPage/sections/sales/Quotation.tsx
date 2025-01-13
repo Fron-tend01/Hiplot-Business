@@ -14,7 +14,6 @@ import Select from '../../Dynamic_Components/Select'
 import { useSelectStore } from '../../../../zustand/Select'
 import { storePersonalized } from '../../../../zustand/Personalized'
 import { useStore } from 'zustand'
-import { ClientsRequests } from '../../../../fuctions/Clients'
 
 
 const Quotation: React.FC = () => {
@@ -35,7 +34,6 @@ const Quotation: React.FC = () => {
 
   const [users, setUsers] = useState<any>()
 
-  const { getClients }: any = ClientsRequests()
 
 
   const { getSeriesXUser }: any = seriesRequests()

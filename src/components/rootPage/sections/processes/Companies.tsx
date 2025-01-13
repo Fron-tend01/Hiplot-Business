@@ -33,9 +33,9 @@ const Companies: React.FC = () => {
 
   // Modal del pop
   const modal = (company: any) => {
-    console.log(company)
     setModal('modal__update-companies')
     DynamicVariables.updateAnyVar(setModel, 'id', company.id)
+    DynamicVariables.updateAnyVar(setModel, 'tyc_cotizaciones', company.tyc_cotizaciones)
     DynamicVariables.updateAnyVar(setModel, 'razon_social', company.razon_social)
     DynamicVariables.updateAnyVar(setModel, 'nombre_comercial', company.nombre_comercial)
     DynamicVariables.updateAnyVar(setModel, 'bd_compaqi', company.bd_compaqi)

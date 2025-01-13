@@ -31,6 +31,7 @@ const Users: React.FC = () => {
 
   const [nombre, setNombre] = useState<string>('');
   const [email, setEmail] = useState<string>('')
+  const [celular, setCelular] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [showPassword, setShowPassword] = useState(false);
 
@@ -242,6 +243,7 @@ const Users: React.FC = () => {
       sucursal_id,
       nombre,
       email,
+      celular,
       password,
       tipo_us,
       id_usuario_crea
@@ -469,6 +471,7 @@ const Users: React.FC = () => {
     setUser(user.id)
     setNombre(user.nombre);
     setEmail(user.email);
+    setCelular(user.celular);
     setPassword(user.password);
     setSelectedCompany(user.empresa_id);
     getBranchOfficeXCompanies(user.empresa_id);
@@ -538,6 +541,7 @@ const Users: React.FC = () => {
     setModalUpdate(false)
     setNombre('');
     setEmail('');
+    setCelular('');
     setPassword('');
     setSelectedCompany(null);
     getBranchOfficeXCompanies(null);
@@ -559,7 +563,8 @@ const Users: React.FC = () => {
 
   const handleUpdateUsers = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+   //-------------------------------------------TIENE UN ERROR AL NO METER  SUCURSALES NUEVAS PONE LA VARIABLE = UN NUMERO 
+   //-------------------------------------------DEBE SER IGUAL A UN ARREGLO VACIOPARA QUE PASE POR BACK
     const tipo_us = selectedTypeUser
     const sucursalesNewTmp: any = []
     const areasNewTmp: any = []
@@ -638,21 +643,44 @@ const Users: React.FC = () => {
     if (nombre === '' || email === '' || selectedCompany === null || selectedBranchOffice === null || selectedTypeUser === null) {
       return;
     }
-    console.log('addUsuariosComercial', addUsuariosComercial);
-    
+    let data = {
+      sucursal_id: selectedBranchOffice,
+      nombre:nombre,
+      email:email,
+      password:password,
+      celular:celular,
+      tipo_us:tipo_us,
+      sucursales_nuevas:sucursalesNewTmp,
+      sucursales_eliminar:sucursales_eliminar,
+      areas_nuevas:areasNewTmp,
+      areas_eliminar:areas_eliminar,
+      subordinados_nuevos:subordinados_nuevos,
+      subordinados_eliminar:subordinados_eliminar,
+      grupos_nuevos:grupos_nuevos,
+      grupos_eliminar:grupos_eliminar,
+      usuarios_comercial:addUsuariosComercial,
+      usuarios_comercial_eliminar:UsuariosComercialElim
+  
+    }
     // Si todos los campos están llenos, crear usuarios y obtener datos
-    await putUsers(user, selectedBranchOffice, nombre, email, password, tipo_us, sucursalesNewTmp,
-      sucursales_eliminar, areasNewTmp, areas_eliminar, subordinados_nuevos, subordinados_eliminar, grupos_nuevos, grupos_eliminar, addUsuariosComercial,UsuariosComercialElim);
-    await getUsuarios()
-    setGrupos_eliminar([])
-    setSubordinadosNuevos([])
-    setSubordinados_eliminar([])
-
-    setSucursalesNuevas([])
-    setAreasNuevas([])
-    setUpdateBranchPermissions([])
-    setUpdateAreasPermissions([])
-    setModalUpdate(false)
+    await APIs.CreateAnyPut(data, "usuario_update/"+user)
+        .then(async (response: any) => {
+          if (!response.error) {
+            Swal.fire('Notificación', response.mensaje, 'success');
+            await getUsuarios()
+            setGrupos_eliminar([])
+            setSubordinadosNuevos([])
+            setSubordinados_eliminar([])
+            setSucursalesNuevas([])
+            setAreasNuevas([])
+            setUpdateBranchPermissions([])
+            setUpdateAreasPermissions([])
+            setModalUpdate(false)
+          } else {
+            Swal.fire('Notificación', response.mensaje, 'warning');
+            return
+          }
+        })
     try {
 
     } catch {
@@ -791,6 +819,11 @@ const Users: React.FC = () => {
                   <label className='label__general'>Email</label>
                   <div className='warning__general' style={styleWarningEmail}><small >Este campo es obligatorio</small></div>
                   <input className={`inputs__general ${warningEmail ? 'warning' : ''}`} type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Ingresa tu email' />
+                </div>
+                <div className='col-4 md-col-12'>
+                  <label className='label__general'>Celular</label>
+                  <div className='warning__general' style={styleWarningEmail}><small >Este campo es obligatorio</small></div>
+                  <input className={`inputs__general ${warningEmail ? 'warning' : ''}`} type="text" value={celular} onChange={(e) => setCelular(e.target.value)} placeholder='Ingresa celular' />
                 </div>
                 <div className='col-4 md-col-12'>
                   <label className='label__general'>Password</label>
@@ -1194,6 +1227,11 @@ const Users: React.FC = () => {
                     <input className='input__password_users' type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Ingresa tu contraseña' />
                     <svg onClick={() => setShowPassword(!showPassword)} className='see__password_users' xmlns="http://www.w3.org/2000/svg" fill='#162a9c' height="25" width="25" viewBox="0 0 576 512"><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z" /></svg>
                   </div>
+                </div>
+                <div className='col-4 md-col-12'>
+                  <label className='label__general'>Celular</label>
+                  <div className='warning__general' style={styleWarningEmail}><small >Este campo es obligatorio</small></div>
+                  <input className={`inputs__general ${warningEmail ? 'warning' : ''}`} type="text" value={celular} onChange={(e) => setCelular(e.target.value)} placeholder='Ingresa celular' />
                 </div>
               </div>
               <div className='row'>
