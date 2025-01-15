@@ -1,6 +1,39 @@
 import create from 'zustand';
 
 interface SelectStore {
+
+
+
+  ///////////////// custom variables //////////////////////////////
+  normalConcepts: any[];
+  setNormalConcepts: (x: any) => void;
+
+  deleteNormalConcepts: any[];
+  setDeleteNormalConcepts: (x: any) => void;
+
+  customConcepts: any[];
+  setCustomConcepts: (x: any) => void;
+
+  deleteCustomConcepts: any[];
+  setDeleteCustomConcepts: (x: any) => void;
+
+  conceptView: any;
+  setConceptView: (x: any) => void;
+
+  
+  customConceptView: any;
+  setCustomConceptView: (x: any) => void;
+
+
+
+
+
+
+
+
+
+
+
   personalizedModal: any;
   setPersonalizedModal: (x: any) => void;
 
@@ -13,11 +46,8 @@ interface SelectStore {
   setDataUpdate: (x: any) => void;
 
 
-  normalConcepts: any[];
-  setNormalConcepts: (x: any) => void;
 
-  customConcepts: any[];
-  setCustomConcepts: (x: any) => void;
+  
 
 
   customData: any[];
@@ -42,20 +72,41 @@ interface SelectStore {
 }
 
 export const storePersonalized = create<SelectStore>((set) => ({
+
+
+  normalConcepts: [],
+  setNormalConcepts: (x) => set({ normalConcepts: x }),
+
+  deleteNormalConcepts: [],
+  setDeleteNormalConcepts: (x) => set({ deleteNormalConcepts: x }),
+
+  customConcepts: [],
+  setCustomConcepts: (x) => set({ customConcepts: x }),
+
+  deleteCustomConcepts: [],
+  setDeleteCustomConcepts: (x) => set({ deleteCustomConcepts: x }),
+
+  conceptView: [],
+  setConceptView: (x) => set({ conceptView: x }),
+
+  customConceptView: [],
+  setCustomConceptView: (x) => set({ customConceptView: x }),
+
+
+
+
+
+
+
   personalizedModal: '',
   setPersonalizedModal: (x) => set({ personalizedModal: x }),
-
 
 
   dataUpdate: [],
   setDataUpdate: (x) => set({ dataUpdate: x }),
 
 
-  normalConcepts: [],
-  setNormalConcepts: (x) => set({ normalConcepts: x }),
 
-  customConcepts: [],
-  setCustomConcepts: (x) => set({ customConcepts: x }),
 
   customData: [],
   setCustomData: (x) => set({ customData: x }),

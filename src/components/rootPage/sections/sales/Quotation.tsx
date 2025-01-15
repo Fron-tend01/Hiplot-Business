@@ -20,6 +20,14 @@ const Quotation: React.FC = () => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
 
+    ////////////////// Personalized Variations////////////////////////////////// 
+    const setConceptView = storePersonalized(state => state.setConceptView)
+    const setNormalConcepts = storePersonalized(state => state.setConceptView)
+    const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
+    const setCustomConcepts = storePersonalized(state => state.setCustomConceptView)
+
+
+
   const setModal = storeModals(state => state.setModal)
   const setCustomData = storePersonalized(state => state.setCustomData)
 
@@ -160,9 +168,7 @@ const Quotation: React.FC = () => {
     }
   }
 
-  console.log('selectedIds.series', selectedIds.series)
-
-  const updateQuotation = (quatation: any) => {
+    const updateQuotation = (quatation: any) => {
     setModal('update-modal__qoutation')
 
     let id_identifier = 1;
@@ -175,6 +181,10 @@ const Quotation: React.FC = () => {
       id_identifier++;
     });
 
+    setConceptView(quatation.conceptos);
+    setNormalConcepts(quatation.conceptos);
+    setCustomConceptView(quatation.conceptos);
+
     setQuatation(quatation)
     setPersonalized(quatation)
     setCustomData(quatation.conceptos)
@@ -183,6 +193,10 @@ const Quotation: React.FC = () => {
 
   
   }
+
+
+  
+  
 
   return (
     <div className='quotation'>
