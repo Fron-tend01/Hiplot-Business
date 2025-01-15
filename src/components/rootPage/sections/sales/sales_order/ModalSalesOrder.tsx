@@ -29,11 +29,12 @@ const ModalSalesOrder: React.FC = () => {
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
     const { normalConcepts, customConcepts, personalized }: any = useStore(storePersonalized)
 
+    const setSelectedIds = useSelectStore((state) => state.setSelectedId);
     const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
+    const setPersonalized = storePersonalized((state) => state.setPersonalized);
 
     const setCustomData = storePersonalized((state) => state.setCustomData);
 
-    const setDataUpdate = storePersonalized((state) => state.setDataUpdate);
 
 
     const setDataSaleOrder = storeSaleOrder((state) => state.setDataSaleOrder);
@@ -115,10 +116,10 @@ const ModalSalesOrder: React.FC = () => {
         if (personalized.length > 0) {
             personalized?.forEach((element: any) => {
                 element.conceptos.forEach((x: any) => {
-                    element.unidad = element.id_unidad
-                    element.total = element.precio_total
-                    element.urgencia = element.monto_urgencia
-                    element.campos_plantilla.forEach((cp: any) => {
+                    x.unidad = x.id_unidad
+                    x.total = x.precio_total
+                    x.urgencia = x.monto_urgencia
+                    x.campos_plantilla.forEach((cp: any) => {
                         cp.valor = cp.valor.toString()
                     });
                 });
@@ -168,12 +169,6 @@ const ModalSalesOrder: React.FC = () => {
         })
     }
 
-
-    const modalSeeConcepts = (article: any) => {
-        setPersonalizedModal('personalized_modal-quotation-update')
-        setDataUpdate(article)
-    }
-
     const undoConcepts = (article: any, i: number) => {
         const filter = customConcepts.filter((_: any, index: number) => index !== i)
         const data = [...filter, ...article.conceptos]
@@ -186,10 +181,31 @@ const ModalSalesOrder: React.FC = () => {
         const filter = normalConcepts.filter((_: any, index: number) => index !== i)
         setNormalConcepts(filter)
         setCustomData(filter);
+
     }
 
     const SaleOrderStatus = () => {
-        APIs.getSaleOrderStatus(saleOrdersToUpdate.id)
+        Swal.fire({
+            title: "Seguro que deseas cancelar la Orden de Venta?",
+            text: "Se desapartará el material apartado, está acción no se puede deshacer",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await APIs.CreateAnyPut({}, "cancelar_orden_venta/" + saleOrdersToUpdate.id)
+                    .then(async (response: any) => {
+                        if (response.error) {
+
+                        } else {
+                            Swal.fire('Notificación', response.mensaje, 'success');
+                            setModalSalesOrder('')
+
+                        }
+                    })
+            }
+        });
+
     }
 
     const [modalProduction, setModalProduction] = useState<string>('')
@@ -223,7 +239,7 @@ const ModalSalesOrder: React.FC = () => {
         }
 
         try {
-            let response = await APIs.createSaleOrderProduction(data)
+            await APIs.createSaleOrderProduction(data)
         } catch (error) {
 
         }
@@ -236,9 +252,9 @@ const ModalSalesOrder: React.FC = () => {
         const value = parseInt(event.target.value, 10);
         console.log("Event target value:", value);
         console.log("Index:", normalConcepts);
-       normalConcepts[index].id_area_produccion = value
+        normalConcepts[index].id_area_produccion = value
     };
-    
+
 
 
 
@@ -274,20 +290,6 @@ const ModalSalesOrder: React.FC = () => {
     const binnacleModal = () => {
         setSubModal('logbook__sales-order-modal')
     }
-
-    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const value = e.target.value.trim();
-        const newConcept = [...normalConcepts];
-        newConcept[index].precio_unitario = value === '' ? null : parseInt(value, 10);
-        setNormalConcepts(newConcept);
-    }
-
-    const handleDescountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const value = e.target.value.trim();
-        const newConcept = [...normalConcepts];
-        newConcept[index].monto_descuento = value === '' ? null : parseInt(value, 10);
-        setNormalConcepts(newConcept);
-    };
 
     const handleObsBillChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
         const value = e.target.value.trim();
@@ -395,6 +397,7 @@ const ModalSalesOrder: React.FC = () => {
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setCompanies({ id: saleOrdersToUpdate.id_empresa })
             setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
+            setSelectedIds('clients', saleOrdersToUpdate.id_cliente)
             const data = {
                 id_sucursal: saleOrdersToUpdate.id_sucursal,
                 id_usuario: user_id,
@@ -483,6 +486,73 @@ const ModalSalesOrder: React.FC = () => {
         setNormalConcepts(newConcept);
 
     };
+
+    const handleUrgencyChangePers = async (index: number, idx: number) => {
+        let data = {
+            "id_articulo": personalized[index].conceptos[idx].id_articulo,
+            "id_sucursal": branchOffices.id,
+            "total": personalized[index].conceptos[idx].precio_total
+        }
+        const newConcept = [...personalized];
+        newConcept[index].conceptos[idx].urgency = !newConcept[index]?.conceptos[idx].urgency;
+
+        if (newConcept[index].conceptos[idx].urgency) {
+            await APIs.CreateAny(data, "calcular_urgencia")
+                .then(async (response: any) => {
+                    if (!response.error) {
+                        newConcept[index].conceptos[idx].monto_urgencia = parseFloat(response.monto_urgencia);
+                        newConcept[index].conceptos[idx].precio_total = parseFloat(response.total_con_urgencia);
+                    } else {
+                        Swal.fire('Notificación', response.mensaje, 'warning');
+                        return
+                    }
+                })
+        } else {
+            newConcept[index].conceptos[idx].precio_total = parseFloat(newConcept[index].conceptos[idx].precio_total) - parseFloat(newConcept[index].conceptos[idx].monto_urgencia);
+            newConcept[index].conceptos[idx].monto_urgencia = 0;
+        }
+        setPersonalized(newConcept);
+        (newConcept);
+
+    };
+    const updateOrdenVenta = async () => {
+        const [datePartOne, timePartOne] = dates[0].split(" ");
+        const [datePartTwo, timePartTwo] = dates[1].split(" ");
+        let data = {
+            id: saleOrdersToUpdate.id,
+            id_sucursal: branchOffices.id,
+            id_usuario_crea: saleOrdersToUpdate.id_usuario_crea,
+            id_cliente: selectedIds.clients.id || saleOrdersToUpdate.id_cliente,
+            titulo: title,
+            hora_entrega_produccion: timePartOne,
+            fecha_entrega_produccion: datePartOne,
+            hora_entrega_cliente: timePartTwo,
+            fecha_entrega_cliente: datePartTwo,
+        }
+        await APIs.CreateAny(data, "update_ov_gral")
+            .then(async (response: any) => {
+                if (response.error) {
+                    Swal.fire('Notificación', response.mensaje, 'info');
+                } else {
+                    Swal.fire('Notificación', response.mensaje, 'success');
+                }
+            })
+    }
+    const [urgenciaG, setUrgenciaG] = useState<boolean>(false)
+    const urgenciaGlobal = async (urg: boolean) => {
+        setUrgenciaG(urg)
+        const normal = normalConcepts.map((x: any, index: number) => ({ ...x, originalIndex: index }))
+            .filter((x: any) => x.personalized == false || x.personalized == undefined);
+        normal.forEach((n: any) => {
+            handleUrgencyChange(n.originalIndex)
+        });
+        personalized.forEach((pers: any, index: number) => {
+            pers.conceptos.forEach((_: any, idx: number) => {
+                handleUrgencyChangePers(index, idx)
+            });
+        });
+    }
+
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
             <div className={`popup__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
@@ -512,14 +582,14 @@ const ModalSalesOrder: React.FC = () => {
                                             <p className='mx-4'>{dataProduction?.hora_cliente}</p>
                                         </div>
                                         <div className='d-flex'>
-                                            <p>Fecha de entraga produccion</p>
+                                            <p>Fecha de entrega produccion</p>
                                             <p className='mx-4'>{dataProduction?.fecha_produccion}</p>
                                             <p>Hora de produccion</p>
                                             <p className='mx-4'>{dataProduction?.fecha_produccion}</p>
                                         </div>
                                     </div>
                                     <div className='d-flex justify-content-center mt-3'>
-                                        <button className='btn__general-purple' onClick={sendProduction}>Mandar a producción</button>
+                                        <button className='btn__general-purple' onClick={sendProduction} >Mandar a producción </button>
                                     </div>
                                 </div>
                             </div>
@@ -540,37 +610,81 @@ const ModalSalesOrder: React.FC = () => {
                             </div>
                             <hr />
                             <div className='row'>
-                                <div className='col-6 md-col-12'>
+                                <div className='col-5 md-col-12'>
                                     <span className='text'>Creado por: <b>{saleOrdersToUpdate.usuario_crea}</b></span><br />
                                     <span className='text'>Fecha de Creación: <b>{saleOrdersToUpdate.fecha_creacion}</b></span><br />
                                     {saleOrdersToUpdate.status === 0 ? (
-                                        <span className="active-status">Activo</span>
+                                        <b className="active-status" style={{ color: 'green' }}>Activo</b>
                                     ) : saleOrdersToUpdate.status === 1 ? (
-                                        <span className="canceled-status">Cancelada</span>
+                                        <b className="canceled-status" style={{ color: 'red' }}>Cancelada</b>
                                     ) : (
                                         saleOrdersToUpdate.status === 2 ? (
-                                            <span className="end-status">Terminado</span>
+                                            <b className="end-status" style={{ color: 'yellow' }}>Pendiente</b>
                                         ) : (
                                             ""
                                         )
                                     )}
                                 </div>
+                                <div className='col-4 md-col-12'>
+                                    <b>FACTURAS RELACIONADAS:</b>
+                                    {saleOrdersToUpdate ? (
+                                        <div className='table__body'>
+                                            {saleOrdersToUpdate.facturas.map((facts: any) => {
+                                                return (
+                                                    <div className='tbody__container'>
+                                                        <div className='tbody'>
+                                                            <div className='td'>
+                                                                <p className='folio'>{facts.folio_completo}  || ${facts.total_facturado}</p>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    ) : ''}
+                                </div>
+                                <div className='col-3 md-col-12'>
+                                    <b>ORDENES DE PRODUCCIÓN:</b>
+                                    {saleOrdersToUpdate ? (
+                                        <div className='table__body'>
+                                            {saleOrdersToUpdate.ordenes_produccion.map((facts: any) => {
+                                                return (
+                                                    <div className='tbody__container'>
+                                                        <div className='tbody'>
+                                                            <div className='td'>
+                                                                <p className='folio'>{facts.folio_completo}</p>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    ) : ''}
+                                </div>
                             </div>
                             <div className='d-flex justify-content-between'>
                                 <div className='d-flex'>
-                                    <div className='mr-4'>
-                                        <button className='btn__general-orange' onClick={getTicket}>Imprimir ticket</button>
-                                    </div>
-                                    <div className='mr-4'>
-                                        <button className='btn__general-purple' onClick={SaleOrderProduction}>Mandar a producción</button>
-                                    </div>
+                                    {saleOrdersToUpdate.status === 0 ?
+                                        <>
+                                            <div className='mr-4'>
+                                                <button className='btn__general-orange' onClick={getTicket}>Imprimir ticket</button>
+                                            </div>
+                                            <div className='mr-4'>
+                                                <button className='btn__general-purple' onClick={SaleOrderProduction}>Mandar a producción</button>
+                                            </div>
+                                        </>
+                                        : ''}
                                     <div>
                                         <button className='btn__general-orange' onClick={binnacleModal}>Bitácora</button>
                                     </div>
                                 </div>
-                                <div>
-                                    <button className='btn__general-danger' onClick={SaleOrderStatus}>Cancelar</button>
-                                </div>
+                                {saleOrdersToUpdate.status === 0 ?
+                                    <div>
+                                        <button className='btn__general-danger' onClick={SaleOrderStatus}>Cancelar</button>
+                                    </div>
+                                    : ''}
                             </div>
                         </div>
                     </div>
@@ -582,7 +696,11 @@ const ModalSalesOrder: React.FC = () => {
                         <div className='row__one'>
                             <div className='row'>
                                 <div className='col-12'>
-                                    <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                                    {modalSalesOrder !== 'sale-order__modal-update' ?
+                                        <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                                        :
+                                        <Empresas_Sucursales modeUpdate={true} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                                    }
                                 </div>
                             </div>
                             <div className='row'>
@@ -590,15 +708,15 @@ const ModalSalesOrder: React.FC = () => {
                                     <label className='label__general'>Buscar</label>
                                     <input className='inputs__general' type="text" value={searCustomer} onChange={(e) => setSearchCustomer(e.target.value)} placeholder='Ingresa el contacto' />
                                 </div>
-                                <div className='col-4'>
-                                    <Select dataSelects={clients} instanceId='clients' nameSelect={'Clientes'} />
-                                </div>
-                                <div className='col-2 d-flex align-items-end'>
+                                <div className='col-1 d-flex align-items-end'>
                                     <div>
                                         <button type='button' className='btn__general-purple' onClick={searchClients}>Buscar</button>
                                     </div>
                                 </div>
-                                <div className='col-3'>
+                                <div className='col-4'>
+                                    <Select dataSelects={clients} instanceId='clients' nameSelect={'Cliente Seleccionado'} />
+                                </div>
+                                <div className='col-4'>
                                     <label className='label__general'>Titulo</label>
                                     <input className='inputs__general' type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el titulo' />
                                 </div>
@@ -634,6 +752,11 @@ const ModalSalesOrder: React.FC = () => {
                                 <p className='title__concepts'>Conceptos</p>
                                 <div className='d-flex align-items-center'>
                                     <div className='mx-4'>
+                                        {urgenciaG ?
+                                            <button type='button' className='btn__general-success' onClick={() => urgenciaGlobal(false)}>Remover Urgencias</button>
+                                            :
+                                            <button type='button' className='btn__general-orange' onClick={() => urgenciaGlobal(true)}>Agregar Urgencia a Orden</button>
+                                        }
                                         <button type='button' className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-sale')}>Personalizados</button>
                                     </div>
                                     <div className='btn__search__articles'>
@@ -790,13 +913,16 @@ const ModalSalesOrder: React.FC = () => {
                                                                 <p>$ {article.precio_total}</p>
                                                             }
                                                         </div>
-                                                        <div className='td'>
-                                                            {article?.urgency ?
-                                                                <button type="button" className='remove_urgency' onClick={() => handleUrgencyChange(index)}>Remover Urgencia</button>
-                                                                :
-                                                                <button type="button" className='add_urgency' onClick={() => handleUrgencyChange(index)}>Agregar Urgencia</button>
-                                                            }
-                                                        </div>
+                                                        {modalSalesOrder !== 'sale-order__modal-update' ?
+                                                            <div className='td'>
+                                                                {article?.urgency ?
+                                                                    <button type="button" className='remove_urgency' onClick={() => handleUrgencyChange(index)}>Remover Urgencia</button>
+                                                                    :
+                                                                    <button type="button" className='add_urgency' onClick={() => handleUrgencyChange(index)}>Agregar Urgencia</button>
+                                                                }
+                                                            </div>
+                                                            :
+                                                            ''}
                                                         <div className='td'>
                                                             {article?.personalized ?
                                                                 <button className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-quotation-update')}>Conceptos</button>
@@ -805,7 +931,9 @@ const ModalSalesOrder: React.FC = () => {
                                                             }
                                                         </div>
                                                         <div className='td'>
-                                                            <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
+                                                            {saleOrdersToUpdate.status != 1 ?
+                                                                <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Cancelar</button>
+                                                                : ''}
                                                         </div>
                                                         <div className='td'>
                                                             <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
@@ -821,14 +949,6 @@ const ModalSalesOrder: React.FC = () => {
                                                                     </option>
                                                                 ))}
                                                             </select>
-
-
-                                                        </div>
-                                                        <div className='td'>
-                                                            <textarea className={`textarea__general`} placeholder='Observaciones Factura' value={article.obs_factura} onChange={(e) => handleObsBillChange(e, index)} />
-                                                        </div>
-                                                        <div className='td'>
-                                                            <textarea className={`textarea__general `} placeholder='Observaciones Producción' value={article.obs_produccion} onChange={(e) => handleObsProductionChange(e, index)} />
                                                         </div>
                                                         <div>
                                                             <div className="d-block">
@@ -847,7 +967,7 @@ const ModalSalesOrder: React.FC = () => {
                                                                 </label>
                                                             </div>
                                                         </div>
-                                                        {modalSalesOrder == 'sale-order__modal-update' ?
+                                                        {modalSalesOrder == 'sale-order__modal-update' && saleOrdersToUpdate.status != 1 ?
                                                             <div className='td'>
                                                                 <button type='button' className='btn__general-purple' onClick={() => updateSaleOrderConcept(article)}>Actualizar</button>
                                                             </div>
@@ -889,7 +1009,16 @@ const ModalSalesOrder: React.FC = () => {
                     {modalSalesOrder !== '' ?
                         <div className='d-flex justify-content-center'>
                             <div>
-                                <button className='btn__general-purple' onClick={(e) => handleCreateSaleOrder(e)}>Crear orden de venta</button>
+
+                                {modalSalesOrder !== 'sale-order__modal-update' ?
+                                    <button className='btn__general-purple' onClick={(e) => handleCreateSaleOrder(e)}>
+                                        Crear Orden de Venta
+                                    </button>
+                                    : saleOrdersToUpdate.status == 0 ?
+                                        <button className='btn__general-purple' onClick={updateOrdenVenta}>
+                                            Actualizar Orden de Venta
+                                        </button>
+                                        : ''}
                             </div>
                         </div>
                         :
@@ -898,6 +1027,7 @@ const ModalSalesOrder: React.FC = () => {
                 </div>
                 <ArticleViewModal />
                 <Personalized />
+                {/* <Personalizado/> */}
                 <SeeCamposPlantillas />
                 <Binnacle />
 

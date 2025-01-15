@@ -11,6 +11,7 @@ import Select from '../../Dynamic_Components/Select'
 import useUserStore from '../../../../zustand/General'
 import { usersRequests } from '../../../../fuctions/Users'
 import { useSelectStore } from '../../../../zustand/Select'
+import { useStore } from 'zustand'
 
 const SalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -96,7 +97,7 @@ const SalesOrder: React.FC = () => {
             dataSelect: resultUsers
         })
 
-        const resultSeries = await getSeriesXUser(user_id)
+        const resultSeries = await getSeriesXUser({tipo_ducumento: 7, id: user_id })
 
         setSeries({
             selectName: 'Series',
@@ -104,11 +105,16 @@ const SalesOrder: React.FC = () => {
             dataSelect: resultSeries
         })
     }
+    const { modalSalesOrder }: any = useStore(storeSaleOrder)
 
     useEffect(() => {
         fetch()
     }, [])
-
+    useEffect(() => {
+        if (modalSalesOrder == '') {
+            search()
+        }
+    }, [modalSalesOrder])
     const search = async () => {
         const dataSaleOrders = {
             folio: fol,
@@ -119,7 +125,7 @@ const SalesOrder: React.FC = () => {
             hasta: dates[1],
             id_usuario: user_id,
             id_vendedor: selectedIds?.users?.id,
-            status: 0
+            status: type
         }
         const result = await getSaleOrders(dataSaleOrders)
         console.log('ssd')
@@ -179,17 +185,17 @@ const SalesOrder: React.FC = () => {
                             </div>
                             <div className='checkbox__orders'>
                                 <label className="checkbox__container_general">
-                                    <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 2} value={type} onChange={() => handleClick(2)} />
+                                    <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 1} value={type} onChange={() => handleClick(1)} />
                                     <span className="checkmark__general"></span>
                                 </label>
                                 <p className='title__checkbox text'>Cancelados</p>
                             </div>
                             <div className='checkbox__orders'>
                                 <label className="checkbox__container_general">
-                                    <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 1} value={type} onChange={() => handleClick(1)} />
+                                    <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 2} value={type} onChange={() => handleClick(2)} />
                                     <span className="checkmark__general"></span>
                                 </label>
-                                <p className='title__checkbox text'>Terminados</p>
+                                <p className='title__checkbox text'>Pendiente</p>
                             </div>
                         </div>
                         <div className=''>
@@ -257,13 +263,13 @@ const SalesOrder: React.FC = () => {
                                                 <p>{order.titulo}</p>
                                             </div>
                                             <div className='td'>
-                                                <p>$ 568.83</p>
+                                                <p>$ {order.total_orden}</p>
                                             </div>
                                             <div className='td'>
-                                                <p>$ 874.49</p>
+                                                <p>$ N/A</p>
                                             </div>
                                             <div className='td'>
-                                                <p>$ 84.49</p>
+                                                <p>$ {order.total_facturado}</p>
                                             </div>
                                             <div className='td'>
                                                 <p>{order.usuario_crea}</p>
