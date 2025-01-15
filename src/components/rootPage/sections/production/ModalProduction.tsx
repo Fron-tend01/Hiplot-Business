@@ -22,7 +22,7 @@ const ModalProduction: React.FC = () => {
     const { modalSub }: any = useStore(storeModals)
 
     const handleCreateSaleOrder = () => {
-        
+
     }
 
     const [areas, setAreas] = useState<any>()
@@ -92,7 +92,7 @@ const ModalProduction: React.FC = () => {
                     </a>
                     <p className='title__modals'>Modal de produccion</p>
                 </div>
-                <form  onSubmit={handleCreateSaleOrder}>
+                <form onSubmit={handleCreateSaleOrder}>
                     <div>
                         <div className="card ">
                             <div className="card-body bg-standar">
@@ -123,7 +123,7 @@ const ModalProduction: React.FC = () => {
                                         <span className='text'>Sucursal actual: <b>{productionToUpdate.sucursal}</b></span><br />
                                         <span className='text'>Area: <b>{productionToUpdate.area}</b></span><br />
                                         <span className='text'>Archivo: <b>{productionToUpdate.usuario_crea}</b></span><br />
-                                        
+
                                     </div>
                                 </div>
                                 <div className='row'>
@@ -139,7 +139,7 @@ const ModalProduction: React.FC = () => {
                                         <div className='d-flex'>
                                             <div className='mr-3'>
                                                 <Select dataSelects={areas} instanceId='id_serie' nameSelect='Areas' />
-                                            </div>   
+                                            </div>
                                             <div className='d-flex align-items-end'>
                                                 <button className='btn__general-purple' onClick={sendAreas}>Enviar</button>
                                             </div>
@@ -164,25 +164,25 @@ const ModalProduction: React.FC = () => {
                         <div className='table__head'>
                             <div className='thead'>
                                 <div className='th'>
-                                    <p>Estatus</p>
+                                    <p>Status</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Articulo</p>
                                 </div>
                                 <div className='th'>
                                     <p>Cantidad</p>
                                 </div>
                                 <div className='th'>
-                                    <p>Unidad</p>
+                                    <p>P/U</p>
                                 </div>
                                 <div className='th'>
-                                    <p>Precio</p>
-                                </div>
-                                <div className='th'>
-                                    <p>Importe</p>
-                                </div>
-                                <div>
                                     <p>Total</p>
                                 </div>
-                                <div>
+                                <div className='th'>
                                     <p>Comentarios</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Area Actual</p>
                                 </div>
                             </div>
                         </div>
@@ -190,36 +190,42 @@ const ModalProduction: React.FC = () => {
                             <div className='table__body'>
                                 {productionToUpdate.conceptos?.map((article: any, index: number) => {
                                     return (
-                                        <div className='tbody__container' key={article.id}>
+                                        <div className='tbody__container' key={index}>
                                             <div className='tbody'>
+                                                <div className='td'>
+                                                    <p>{article.status == 1 ? <b style={{ color: 'green' }}>ACTIVO</b> :
+                                                        article.status == 2 ? <b style={{ color: 'red' }}>CANCELADO</b> : <b style={{ color: 'blue' }}>TERMINADO</b>}</p>
+                                                </div>
                                                 <div className='td'>
                                                     <p>{article.codigo}-{article.descripcion}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>$ {article.cantidad}</p>
+                                                    <p>{article.cantidad} {article.name_unidad || article.unidad}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>{article.name_unidad || article.unidad}</p>
+                                                    <p>$ {article.total / article.cantidad}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>$ {article.precio_unitario}</p>
-                                                </div>
-                                                <div className='td'>
-                                                    <p>$ {article.monto_descuento}</p>
-                                                </div>
-                                                <div className='td'>
-                                                    <p>$ {article.total_concepto}</p>
+                                                    <p>$ {article.total}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <div>
-                                                        <textarea className='inputs__general' placeholder='Descuento' value={article.monto_descuento} onChange={(e) => handleDescountChange(e, index)} />
+                                                        <textarea className='inputs__general' placeholder='Comentarios' value={article.obs_produccion} />
                                                     </div>
+                                                </div>
+                                                <div  className='td'>
+                                                    <select className="" value={article.id_area_produccion} >
+                                                        <option value="" disabled>-- Selecciona una opción --</option>
+                                                        {article.areas_produccion.map((option: any, idx: number) => (
+                                                            <option key={index} value={option.id_area
+                                                            }>
+                                                                {option.nombre_area} - {option.nombre_sucursal}
+                                                            </option>
+                                                        ))}
+                                                    </select>
                                                 </div>
                                                 <div className='td'>
                                                     <div className='d-flex'>
-                                                        <div className='mr-3'>
-                                                            <Select dataSelects={areas} instanceId='id_serie' nameSelect='Areas' />
-                                                        </div>
                                                         <div className='d-flex align-items-end'>
                                                             <button className='btn__general-purple' onClick={sendConceptoAreas}>Enviar</button>
                                                         </div>
@@ -227,12 +233,12 @@ const ModalProduction: React.FC = () => {
                                                 </div>
                                                 <div className='td'>
                                                     <div>
-                                                        <button className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-quotation-update')}>Terminar conceptos</button>
+                                                        <button className='btn__general-purple' >Terminar conceptos</button>
                                                     </div>
                                                 </div>
                                                 <div className='td'>
                                                     <div>
-                                                        <button className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-quotation-update')}>Enviar concepto a sucursal</button>
+                                                        <button className='btn__general-purple' >Enviar concepto a sucursal</button>
                                                     </div>
                                                 </div>
                                             </div>

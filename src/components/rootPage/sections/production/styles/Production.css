@@ -11,3 +11,105 @@
 	border-radius: 10px;
     overflow: hidden;
 }
+
+.table__orders_production {
+    border-radius: 10px;
+    display: grid;
+    overflow: hidden;
+    grid-template-rows: repeat(11, auto) 1fr;
+    height: 100%;
+
+}
+
+
+.table__orders_production .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__orders_production .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__orders_production .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr) ;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__orders_production .table__body {
+	height: 100%;
+    overflow-y: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__orders_production .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+  }
+  
+.table__orders_production .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+  }
+
+.table__orders_production .table__body .tbody {
+    display: flex;
+}
+
+.table__orders_production .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    padding: 10px;
+}
+
+.table__orders_production .table__body .tbody .td.order > div {
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    padding: 10px;
+    color: var(--white-color);
+    font-weight: 500;
+}
+
+.table__orders_production .table__body .tbody .td {
+    display: flex;
+}
+
+.table__orders_production .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+.tbody.red {
+    background-color: #f86d6d;
+}
+
+.tbody.yellow {
+    background-color: #f8eb6d;
+}
+
+.tbody.blue {
+    background-color: #bcdbf1;
+}
+
+.tbody.no-color {
+    background-color: transparent;
+}
