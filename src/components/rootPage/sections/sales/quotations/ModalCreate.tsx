@@ -299,7 +299,7 @@ const ModalCreate: React.FC = () => {
 
   }
 
-
+  console.log('Hola')
 
   const undoConcepts = (concept: any) => {
     // Primero, modificamos los conceptos
