@@ -30,10 +30,14 @@ const ModalCreate: React.FC = () => {
   const setModalArticleView = storeArticleView((state) => state.setModalArticleView);
   const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
 
+  // Temporal
+
+
   const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
   const setCustomData = storePersonalized((state) => state.setCustomData);
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
 
+  const setDataUpdatepersonalized = storePersonalized(state => state.setDataUpdatepersonalized)
 
   const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
 
@@ -52,7 +56,7 @@ const ModalCreate: React.FC = () => {
   const setClientsModal = storeQuotation((state) => state.setClientsModal);
   const setClient = storeQuotation((state) => state.setClient);
 
-  const { dataUpdate, normalConcepts, customConcepts, customData, personalized }: any = useStore(storePersonalized)
+  const { dataUpdate, normalConcepts, customConcepts, customData, personalized, personalizedModal, temporaryNormalConcepts }: any = useStore(storePersonalized)
   const { quatation }: any = useStore(storeQuotation)
   const { getClients }: any = ClientsRequests()
 
@@ -120,6 +124,7 @@ const ModalCreate: React.FC = () => {
 
 
   }
+   const setTemporaryNormalConcepts = storePersonalized(state => state.setTemporaryNormalConcepts)
 
   useEffect(() => {
 
@@ -139,7 +144,19 @@ const ModalCreate: React.FC = () => {
     setCustomData([...customConcepts, ...quatation.conceptos]);
 
     setPersonalized(quatation.conceptos_pers)
+
+  
   }
+
+  useEffect(() => {
+    if(personalizedModal == 'personalized_modal-quotation-update') {
+      
+    } else {
+      setTemporaryNormalConcepts(normalConcepts)
+    }
+ 
+  }, [normalConcepts])
+
 
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
   const setSelectedId = useSelectStore((state) => state.setSelectedId);
@@ -194,13 +211,13 @@ const ModalCreate: React.FC = () => {
     setSelectResults(!selectResults)
   };
 
-
+  console.log('personalized', personalized)
+  console.log('normalConcepts', normalConcepts)
 
   // console.log('DATA QUE SE ENVIA AL BEKEND', personalized)
 
   const createQuotation = async () => {
-    console.log('PERSONALIZADO ANTE', personalized)
-    console.log('PERSONALIZADO ANTE', normalConcepts)
+
     const filter = normalConcepts.filter((x: any) => x.personalized !== true)
 
     filter.forEach((element: any) => {
@@ -216,7 +233,6 @@ const ModalCreate: React.FC = () => {
 
     if (personalized.length > 0) {
       personalized?.forEach((element: any) => {
-        
         element.conceptos.forEach((x: any) => {
           x.unidad = x.id_unidad
           x.total = x.precio_total
@@ -239,7 +255,7 @@ const ModalCreate: React.FC = () => {
       conceptos_pers: personalized,
       conceptos_elim: deleteConcepts
     };
-    
+
 
 
     // return
@@ -279,11 +295,6 @@ const ModalCreate: React.FC = () => {
 
 
 
-  const modalSeeConcepts = (article: any) => {
-    setPersonalizedModal('personalized_modal-quotation-update')
-    setDataUpdate(article)
-  }
-
   const undoConcepts = (article: any, i: number) => {
     // let filter = customConcepts.filter((_: any, index: number) => index !== i)
 
@@ -302,11 +313,7 @@ const ModalCreate: React.FC = () => {
       });
     }
 
-    console.log('article', article)
 
-    console.log('filterNor filterNor', filterNor)
-
-    console.log('normalConcepts normalConcepts', normalConcepts)
 
     const data = [...filterNor, ...article.conceptos]
     setNormalConcepts(data)
@@ -315,7 +322,7 @@ const ModalCreate: React.FC = () => {
     setPersonalized([])
   }
 
-  console.log('setCustomData', customData)
+
 
 
   const deleteArticle = (item: any, i: number) => {
@@ -334,23 +341,49 @@ const ModalCreate: React.FC = () => {
 
   const closeModal = () => {
     setModal('')
-    if (modal === 'update-modal__qoutation') {
+    if (personalizedModal === 'update-modal__qoutation') {
       setComments('')
       setCustomData([])
       setDataQuotation([])
+    } else {
+      
     }
+
 
   }
 
 
   const modalPersonalized = () => {
 
-    if (modal === 'create-modal__qoutation') {
-      setPersonalizedModal('personalized_modal-quotation')
-    } else {
-      setPersonalizedModal('personalized_modal-quotation-update')
-    }
+    setPersonalizedModal('personalized_modal-quotation')
+
   }
+
+  console.log(personalizedModal)
+
+  const [idIdentifier, setIdIdentifier] = useState<number>()
+
+  const modalPersonalizedUpdate = (concept: any, index: number) => {
+    setPersonalizedModal('personalized_modal-quotation-update')
+    setIdIdentifier(concept.id_identifier)
+    concept.conceptos.forEach((element: any) => {
+      element.temporary_custom = true
+    });
+    const filter = normalConcepts.filter((x: any) => x.personalized !== true)
+    console.log('filter', filter)
+    console.log('concept.conceptos', concept.conceptos)
+
+    setDataUpdate([...concept.conceptos, ...filter])
+  
+
+ 
+
+    setDataUpdatepersonalized([])
+  }
+
+
+
+ 
 
   const handleUrgencyChange = async (index: number) => {
     let data = {
@@ -463,6 +496,23 @@ const ModalCreate: React.FC = () => {
                     <span className='text'>Sucursal: <b>{quatation.sucursal}</b></span><br />
                   </div>
                 </div>
+                <div className='mt-3'>
+                  {modal === 'create-modal__qoutation' ?
+                    ''
+                    :
+                    <div className='row__bts col-12'>
+                      <div className='btn__pdf'>
+                        <button className='btn__general-orange' onClick={getTicket}>PDF</button>
+                      </div>
+                      <div className='btn__update-qoutation'>
+                        <button className='btn__general-primary' onClick={createQuotation}>Actualizar cotizacion</button>
+                      </div>
+                      <div>
+                        <button className='btn__general-bg-100' onClick={mandarAOV}>Enviar a OV</button>
+                      </div>
+                    </div>
+                  }
+                </div>
               </div>
             </div>
           }
@@ -506,9 +556,9 @@ const ModalCreate: React.FC = () => {
 
 
           <div className='row__three my-2 w-full'>
-            <div className='col-12'>
+            {/* <div className='col-12'>
               <p className='title'>Datos del Cliente</p>
-            </div>
+            </div> */}
             <div>
               <label className='label__general'>Nombre</label>
               <div className='warning__general'><small >Este campo es obligatorio</small></div>
@@ -518,7 +568,6 @@ const ModalCreate: React.FC = () => {
               <div className='search-icon' onClick={searchUsers}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
               </div>
-
             </div>
             <div>
               <div className='select__container'>
@@ -554,180 +603,176 @@ const ModalCreate: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className='table__quotations_clients_modal'>
-            {/* {normalConcepts ? (
-              <div className='table__numbers'>
-                <p className='text'>Total de articulos</p>
-                <div className='quantities_tables'>{normalConcepts.length}</div>
+          <div className='table__quotations_modal'>
+            <div className='table__head'>
+              <div className={`thead `}>
+                <div className='th'>
+                  <p>Artículo</p>
+                </div>
+                <div className='th'>
+                  <p>Cantidad</p>
+                </div>
+                <div className='th'>
+                  <p>Unidad</p>
+                </div>
+                <div className='th'>
+                  <p>P/U</p>
+                </div>
+                <div>
+                  <p>Total</p>
+                </div>
+              </div>
+            </div>
+            {normalConcepts ? (
+              <div className='table__body'>
+                {normalConcepts?.map((article: any, index: number) => {
+                  return (
+                    <div className='tbody__container' key={index}>
+                      {article.personalized ?
+                        <div className='concept__personalized'>
+                          <p>Concepto Personalizado</p>
+                        </div>
+                        :
+                        ''
+                      }
+                      {article.personalized ?
+                        <div className={`tbody personalized`}>
+                          <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                            <p className='article'>{article.codigo}-{article.descripcion}</p>
+                          </div>
+                          <div className='td'>
+                            <p className='amount'>{article.cantidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{article.name_unidad || article.unidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)}</p>
+                          </div>
+                          <div className='td'>
+                            <div className='d-flex'>
+                              <p className='total'>$ {article.precio_total}</p>
+                              <div className='see-concepts'>
+                                <button className='btn__general-purple' onClick={() => modalPersonalizedUpdate(article, index)}>Conceptos</button>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className='td urgency'>
+
+                          </div>
+                          <div className='td'>
+                            <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
+                          </div>
+
+                          <div className='td'>
+                            <button className='btn__general-orange' onClick={() => undoConcepts(article, index)}>Deshacer</button>
+                          </div>
+                        </div>
+                        :
+                        <div className='tbody'>
+                          <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                            <p className='article'>{article.codigo}-{article.descripcion}</p>
+                          </div>
+                          <div className='td'>
+                            <p className='amount'>{article.cantidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{article.name_unidad || article.unidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p className=''>$ {article.precio_total / article.cantidad}</p>
+                          </div>
+                          <div className='td '>
+                            {article.urgency ?
+                              <div className='container__total'>
+                                <p className='total'>$ {article.precio_total}</p>
+                                <p className='remove__urgency' title='urgencia'>(${article.monto_urgencia})</p>
+                              </div>
+                              :
+                              <p className='total'>$ {article.precio_total}</p>
+                            }
+                          </div>
+
+                          <div className='td urgency'>
+                            {article?.urgency ?
+                              <div>
+                                <button className='modal-create-quotations__tooltip-text no-urgency' type='button' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                </button>
+                              </div>
+                              :
+                              <div>
+                                <button className='modal-create-quotations__tooltip-text yes-urgency' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)} type='button'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                </button>
+                              </div>
+                            }
+                          </div>
+                          <div className='td'>
+                            <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
+                          </div>
+                          <div className='td'>
+                            <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  )
+                })}
               </div>
             ) : (
-              <p className="text">No hay empresas que mostras</p>
-            )} */}
-            <div className='table__quotations_modal'>
-
-              <div className='table__head'>
-                <div className={`thead `}>
-                  <div className='th'>
-                    <p>Artículo</p>
-                  </div>
-                  <div className='th'>
-                    <p>Cantidad</p>
-                  </div>
-                  <div className='th'>
-                    <p>Unidad</p>
-                  </div>
-                  <div className='th'>
-                    {/* <p>Desc. monto</p> */}
-                    <p>P/U</p>
-                  </div>
-                  <div>
-                    <p>Total</p>
-                  </div>
+              <p className="text">Cargando datos...</p>
+            )}
+          </div>
+          <div className='row__end mt-4'>
+            <div className='btns'>
+              <div className='subtotal'>
+                <div>
+                  <p className='name'>Subtotal</p>
+                  <p className='value'>$ {subtotal}</p>
                 </div>
               </div>
-              {normalConcepts ? (
-                <div className='table__body'>
-                  {normalConcepts?.map((article: any, index: number) => {
-                    return (
-                      <div className='tbody__container' key={index}>
-                        {article.personalized ?
-                          <div className='concept__personalized'>
-                            <p>Concepto Personalizado</p>
-                          </div>
-                          :
-                          ''
-                        }
-                        {article.personalized ?
-                          <div className={`tbody personalized`}>
-                            <div className='td '>
-                              <p>{article.codigo}-{article.descripcion}</p>
-                            </div>
-                            <div className='td'>
-                              <input className={`inputs__general`} type="number" value={article.cantidad} onChange={(e) => cambioInputsPers(parseFloat(e.target.value), index, 'cantidad')} placeholder='Ingresa la cantidad' />
-
-                            </div>
-                            <div className='td'>
-                              <p>{article.name_unidad}</p>
-                            </div>
-                            <div className='td'>
-                              <p>$ {(article.precio_total / article.cantidad).toFixed(4)}</p>
-                            </div>
-                            <div className='td'>
-                              <input className={`inputs__general`} type="number" value={article.precio_total} onChange={(e) =>
-                                cambioInputsPers(parseFloat(e.target.value), index, 'precio_total')} placeholder='Ingresa la total pers' />
-
-                            </div>
-                            <div className='td'>
-                              <button className='btn__general-purple' onClick={() => modalSeeConcepts(article)}>Conceptos</button>
-                            </div>
-
-                            <div className='td'>
-                              <button className='btn__general-orange' onClick={() => undoConcepts(article, index)}>Deshacer</button>
-                            </div>
-                          </div>
-                          :
-                          <div className='tbody'>
-                            <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
-                              <p>{article.codigo}-{article.descripcion} </p>
-                            </div>
-                            <div className='td'>
-                              <p>{article.cantidad}</p>
-                            </div>
-                            <div className='td'>
-                              <p>{article.name_unidad || article.unidad}</p>
-                            </div>
-                            <div className='td'>
-                              {/* {permisoDescount ?
-                                <div>
-                                  <input className='inputs__general' type="text" placeholder='Descuento' />
-                                </div>
-                                :
-                                <p>No permitido</p>
-                              } */}
-                              <p>$ {article.precio_total / article.cantidad}</p>
-
-                            </div>
-                            <div className='td'>
-                              {article.urgency ?
-                                <p>$ {article.precio_total} <span style={{ color: 'red' }}>(${article.monto_urgencia})</span></p>
-                                :
-                                <p>$ {article.precio_total}</p>
-                              }
-                            </div>
-
-                            <div className='td'>
-                              {article?.urgency ?
-                                <button className='remove_urgency' onClick={() => handleUrgencyChange(index)}>Remover Urgencia</button>
-                                :
-                                <button className='add_urgency' onClick={() => handleUrgencyChange(index)}>Agregar Urgencia</button>
-                              }
-                            </div>
-                            <div className='td'>
-                              <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
-                            </div>
-                            <div className='td'>
-                              <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
-                            </div>
-
-                          </div>
-                        }
-                      </div>
-                    )
-                  })}
+              <div className='discount'>
+                <div>
+                  <p className='name'>Descuento</p>
+                  <p className='value'>$ {descuento}</p>
                 </div>
-              ) : (
-                <p className="text">Cargando datos...</p>
-              )}
-            </div>
-          </div>
-          <div className='row mt-4'>
-            <div className='col-3'>
-              <p className='name'>Subtotal</p>
-              <p className='value'>$ {subtotal}</p>
-            </div>
-            <div className='col-3'>
-              <p className='name'>Descuento</p>
-              <p className='value'>$ {descuento}</p>
-            </div>
-            <div className='col-3'>
-              <p className='name'>Urgencia</p>
-              <p className='value'>$ {urgencia}</p>
-            </div>
-            <div className='col-3'>
-              <p className='name'>Total</p>
-              <p className='value'>$ {total}</p>
+              </div>
+              <div className='urgency'>
+                <div>
+                  <p className='name'>Urgencia</p>
+                  <p className='value'>$ {urgencia}</p>
+                </div>
+              </div>
+              <div className='total'>
+                <div>
+                  <p className='name'>Total</p>
+                  <p className='value'>$ {total}</p>
+                </div>
+              </div>
             </div>
             {modal === 'create-modal__qoutation' ?
-              <div className='col-12 d-flex justify-content-center'>
+              <div className='d-flex justify-content-center mt-3'>
                 <button className='btn__general-purple' onClick={createQuotation}>Crear cotizacion</button>
               </div>
               :
-              <div className='col-12 d-flex justify-content-center'>
-                <div className='row'>
-                  <div className='col-4'>
-                    <button className='btn__general-purple' onClick={createQuotation}>Actualizar cotizacion</button>
-
-                  </div>
-                  <div className='col-4'>
-                    <button className='btn__general-orange' onClick={getTicket}>PDF</button>
-
-                  </div>
-                  <div className='col-4'>
-                    <button className='btn__general-success' onClick={mandarAOV}>Enviar a OV</button>
-
-                  </div>
-                </div>
-              </div>
+              ''
             }
           </div>
+
         </div>
         <ModalSalesOrder />
       </div>
-      <Personalized />
+      <Personalized idIdentifier={idIdentifier}  branch={branch} />
       <ArticleViewModal />
       <SalesCard />
       <SeeClient />
-      <SeeCamposPlantillas />
+      {personalizedModal !== '' ? 
+    <SeeCamposPlantillas />
+    :
+    ""
+    }
 
     </div>
   );

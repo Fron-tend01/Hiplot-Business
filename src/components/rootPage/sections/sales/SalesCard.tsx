@@ -118,16 +118,16 @@ const SalesCard: React.FC = () => {
 
 
   useEffect(() => {
-    if(modalSalesCard !== '') {
+    if (modalSalesCard !== '') {
       fetch();
     }
-   
+
 
   }, [modalSalesCard]);
 
 
   useEffect(() => {
-    console.log('statusArtiddddddddddddddddddddddcle', statusArticle)    
+    console.log('statusArtiddddddddddddddddddddddcle', statusArticle)
   }, [statusArticle]);
 
 
@@ -179,7 +179,7 @@ const SalesCard: React.FC = () => {
     getPrices()
   };
 
-  const [prices, setPrices] = useState<any>()
+  const [prices, setPrices] = useState<any>(0)
 
 
 
@@ -313,7 +313,7 @@ const SalesCard: React.FC = () => {
     setCustomData([...customData, newData])
   };
 
- 
+
   const addSaleOrder = () => {
     const newData = { ...data };
     newData.id_identifier = identifier + 1;
@@ -323,7 +323,7 @@ const SalesCard: React.FC = () => {
       setDataSaleOrder([...dataSaleOrder, newData])
     } else {
       setDataSaleOrder([data])
-      
+
     }
 
     setNormalConcepts([...normalConcepts, newData])
@@ -466,38 +466,35 @@ const SalesCard: React.FC = () => {
               }
               {statusArticle !== false ?
                 <div className='row__two'>
-                  <div>
-                    <button onClick={() => setModalSub('prices_modal')} className='price'>
-                      {/* Precios */}
+                  <div className='btn__sale__card-tooltip-container'>
+                    <button className='btn__general-purple' type='button' onClick={() => setModalSub('prices_modal')}>
                       <svg className="icon icon-tabler icons-tabler-outline icon-tabler-premium-rights" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M13.867 9.75c-.246 -.48 -.708 -.769 -1.2 -.75h-1.334c-.736 0 -1.333 .67 -1.333 1.5c0 .827 .597 1.499 1.333 1.499h1.334c.736 0 1.333 .671 1.333 1.5c0 .828 -.597 1.499 -1.333 1.499h-1.334c-.492 .019 -.954 -.27 -1.2 -.75" /><path d="M12 7v2" /><path d="M12 15v2" /></svg>
                     </button>
+                    <span className="sale__card-tooltip-text">Precios</span>
                   </div>
-                  {/* <button onClick={() => setModalSub('add-qoutation_modal')} className='stock'>Agregar a cotizacion
-                 <svg className="icon icon-tabler icons-tabler-outline icon-tabler-building-warehouse" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 21v-13l9 -4l9 4v13" /><path d="M13 13h4v8h-10v-6h6" /><path d="M13 21v-9a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v3" /></svg>
-               </button> */}
-                  <div>
-                    <button onClick={() => setModalSub('indications_modal')} className='indications'>
-                      {/* Stock */}
+                  <div className='btn__sale__card-tooltip-container'>
+                    <button className='btn__general-purple' type='button' onClick={() => setModalSub('stock_modal')}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-stack-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></svg>
                     </button>
+                    <span className="sale__card-tooltip-text">Stock</span>
                   </div>
-                  <div>
-                    <button onClick={() => setModalSub('to-arrive_modal')} className='arrive'>
-                      {/* Por llegar */}
+                  <div className='btn__sale__card-tooltip-container'>
+                    <button className='btn__general-purple' type='button' onClick={() => setModalSub('to-arrive_modal')}>
                       <svg className="icon icon-tabler icons-tabler-outline icon-tabler-truck-delivery" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" /><path d="M3 9l4 0" /></svg>
                     </button>
+                    <span className="sale__card-tooltip-text">Por llegar</span>
                   </div>
-                  <div>
-                    <button onClick={() => setModalSub('delivery-time_modal')} className='time'>
-                      {/* Tiempos de entrega */}
+                  <div className='btn__sale__card-tooltip-container'>
+                    <button className='btn__general-purple' type='button' onClick={() => setModalSub('delivery-time_modal')}>
                       <svg className="icon icon-tabler icons-tabler-outline icon-tabler-clock-hour-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7v5" /><path d="M12 12l2 -3" /></svg>
                     </button>
+                    <span className="sale__card-tooltip-text">Por llegar</span>
                   </div>
-                  <div>
-                    <button onClick={() => setModalSub('components_modal')} className='components'>
-                      {/* Componentes */}
+                  <div className='btn__sale__card-tooltip-container'>
+                    <button className='btn__general-purple' type='button' onClick={() => setModalSub('components_modal')}>
                       <svg className="icon icon-tabler icons-tabler-outline icon-tabler-components" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 12l3 3l3 -3l-3 -3z" /><path d="M15 12l3 3l3 -3l-3 -3z" /><path d="M9 6l3 3l3 -3l-3 -3z" /><path d="M9 18l3 3l3 -3l-3 -3z" /></svg>
                     </button>
+                    <span className="sale__card-tooltip-text">Componentes</span>
                   </div>
                 </div>
                 :
@@ -568,7 +565,7 @@ const SalesCard: React.FC = () => {
                   </div>
                 </div>
                 :
-                <div className="card-sale__pulse__combinations">
+                <div className="card-sale__pulse__combinations mt-4">
                   <div className="animate-pulse">
                     <div className="rounded-full"></div>
                     <div className="row__p-one">
@@ -708,13 +705,15 @@ const SalesCard: React.FC = () => {
 
               }
               {statusArticle !== false ?
-                <div className='row'>
+                <div className='row result__template__fields'>
                   {article?.plantilla_data?.map((x: any) => (
                     <div className='col-4 md-col-6 sm-col-12'>
                       {x.tipo == 'txtvisual' ?
                         <div className='price_x_unit'>
-                          <p>{x.nombre}</p>
-                          <p className='result__price_x_unit'>{x.valor || '0'}</p>
+                          <div>
+                            <p>{x.nombre}</p>
+                            <p className='result__price_x_unit'>: ${x.valor || '0'}</p>
+                          </div>
                         </div>
                         : ''}
                     </div>
@@ -737,18 +736,17 @@ const SalesCard: React.FC = () => {
             <div className='row__three'>
               <div className='row__four'>
                 <div className='price_x_unit'>
-                  <p>Precio por unidad:</p>
-                  <p className='result__price_x_unit'>$ {prices / amount}</p>
+                  <p className='title__price_x_unit'>Precio por unidad:</p>
+                  <p className='result__price_x_unit'>$ {prices !== 0 ? prices : 0 / amount !== 0 ? amount : 0}</p>
                 </div>
                 <div className='total__price'>
-                  <p>Precio total</p>
+                  <p className='title__total-price'>Precio total</p>
                   <p className='result__total-price'>$ {prices}</p>
                 </div>
 
               </div>
               <div className='row__five'>
                 <div className='row__one'>
-
                 </div>
                 <div className='row__two'>
                   <button className='add__quotation' onClick={addQua}>Agregar a cotizacción</button>

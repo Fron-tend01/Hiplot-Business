@@ -17,6 +17,7 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
+	z-index: 10;
 }
 
 .overlay__templates_fields_modal.active {
@@ -61,4 +62,72 @@
   padding: 20px;
   background-color: var(--cards-background);
   border-radius: var(--general-card-border);
+}
+
+
+
+
+.sales__order_modal_template-fields {
+
+}
+
+.sales__order_modal_template-fields .row__one {
+
+}
+
+
+.sales__order_modal_template-fields .row__one > .row__one {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	column-gap: 20px;
+	padding: 20px;
+	background-color: var(--cards-background);
+	border-radius: var(--general-card-border);
+	margin-top: 20px
+}
+
+.sales__order_modal_template-fields > .row__one > .row__two {
+	background-color: var(--cards-background);
+	border-radius: var(--general-card-border);
+	padding: 20px;
+	margin-top: 20px
+}
+
+.sales__order_modal_template-fields > .row__one > .row__two > .row__one {
+	display: flex;
+}
+
+.sales__order_modal_template-fields > .row__one > .row__two > .row__one > p {
+	padding: 5px;
+	background-color: var(--primary-color);
+	color: #fff;
+	border-radius: 5px;
+	margin-bottom: 10px;
+}
+
+
+
+.sales__order_modal_template-fields .row__one .row__two > .row__two {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	column-gap: 20px;
+}
+
+.sales__order_modal_template-fields > .row__one > .row__three {
+	display: flex;
+	margin-top: 20px;
+}
+
+.sales__order_modal_template-fields > .row__one > .row__three  .price_x_unit  {
+	display: flex;
+}
+
+.sales__order_modal_template-fields > .row__one > .row__three  .price_x_unit > div  {
+	display: flex;
+	background-color: #3d86c62a;
+	color: #3D85C6;
+	font-weight: 600;
+	padding: 5px;
+	border-radius: 5px;
+	margin: 0 10px;
 }

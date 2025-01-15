@@ -26,6 +26,9 @@ const Quotation: React.FC = () => {
   const setQuatation = storeQuotation(state => state.setQuatation)
   const setPersonalized = storePersonalized(state => state.setPersonalized)
 
+  const setTemporaryNormalConcepts = storePersonalized(state => state.setTemporaryNormalConcepts)
+
+
   const setDataGet = storeQuotation(state => state.setDataGet);
   const setQuotesData = storeQuotation(state => state.setQuotesData);
   const { quotesData }: any = useStore(storeQuotation)
@@ -176,6 +179,9 @@ const Quotation: React.FC = () => {
     setPersonalized(quatation)
     setCustomData(quatation.conceptos)
     setIdentifier(totalNumberIdentifiers)
+   
+
+  
   }
 
   return (

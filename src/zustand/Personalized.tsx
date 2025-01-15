@@ -26,6 +26,18 @@ interface SelectStore {
   personalized: any[];
   setPersonalized: (x: any) => void;
 
+  dataUpdatepersonalized: any[];
+  setDataUpdatepersonalized: (x: any) => void;
+
+
+
+
+  // Variables temporales al cerrar los modales
+  temporaryNormalConcepts: any[];
+  setTemporaryNormalConcepts: (x: any) => void;
+
+  temporaryCustomConcepts: any[];
+  setTemporaryCustomConcepts: (x: any) => void;
   
 }
 
@@ -35,7 +47,7 @@ export const storePersonalized = create<SelectStore>((set) => ({
 
 
 
-  dataUpdate: {},
+  dataUpdate: [],
   setDataUpdate: (x) => set({ dataUpdate: x }),
 
 
@@ -50,6 +62,15 @@ export const storePersonalized = create<SelectStore>((set) => ({
 
   personalized: [],
   setPersonalized: (x) => set({ personalized: x }),
+
+  dataUpdatepersonalized: [],
+  setDataUpdatepersonalized: (x) => set({ personalized: x }),
+
+  temporaryNormalConcepts: [],
+  setTemporaryNormalConcepts: (x) => set({ temporaryNormalConcepts: x }),
+
+  temporaryCustomConcepts: [],
+  setTemporaryCustomConcepts: (x) => set({ temporaryCustomConcepts: x }),
 
   identifier: 0,
   setIdentifier: (x) => set({identifier: x}),

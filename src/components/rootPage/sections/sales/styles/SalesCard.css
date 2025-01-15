@@ -35,7 +35,6 @@
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: 20px;
-    overflow: auto;
     transition-delay: 0.0s;
     &::-webkit-scrollbar {
         width: 5px;
@@ -121,6 +120,31 @@
     
 }
 
+
+
+
+
+.result__template__fields  .price_x_unit {
+  display: flex;
+}
+
+
+.result__template__fields  .price_x_unit > div {
+  display: flex;
+  background-color: #3082c9;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+
+
+
+
+
+
+
 .conatiner__create_sale-card > .row__three > .row__four {
     display: flex;
     margin: 20px 0;
@@ -129,7 +153,9 @@
 }
 
 .conatiner__create_sale-card > .row__three > .row__four .price_x_unit {
-    margin-right: 20px;
+  border: 2px solid #3081c9;
+  border-radius: 5px;
+  margin-right: 20px;
     
 }
 
@@ -139,23 +165,39 @@
     color: var(--text-color);
 }
 
+.conatiner__create_sale-card > .row__three > .row__four > div .title__price_x_unit {
+  padding: 5px 10px;
+  background-color: #3081c9;
+  color: var(--text-white);
+
+
+}
+
 .conatiner__create_sale-card > .row__three > .row__four > div .result__price_x_unit {
     padding: 5px 10px;
-    background-color: var(--primary-color);
     border-radius: 5px;
-    color: var(--text-white);
-    margin-left: 10px;
  
+}
+
+
+.conatiner__create_sale-card > .row__three > .row__four > .total__price {
+  border: 2px solid #bf6903;
+  border-radius: 5px;
+}
+
+
+
+.conatiner__create_sale-card > .row__three > .row__four > div .title__total-price {
+  padding: 5px 10px;
+  background-color: var(--orange-color);
+  color: var(--text-white);
 }
 
 .conatiner__create_sale-card > .row__three > .row__four > div .result__total-price {
     padding: 5px 10px;
-    background-color: var(--orange-color);
-    border-radius: 5px;
-    color: var(--text-white);
-    margin-left: 10px;
- 
+    border-radius: 5px; 
 }
+
 
 
 
@@ -476,6 +518,33 @@
  
 }
 
+.btn__sale__card-tooltip-container {
+	position: relative;
+	display: inline-block;
+  }
+  
+  .btn__sale__card-tooltip-container > .sale__card-tooltip-text {
+	visibility: hidden;
+	background-color: #126fc0;
+	color: #fff;
+	text-align: center;
+	border-radius: 4px;
+	padding: 5px;
+	position: absolute;
+	z-index: 0;
+	bottom: 125%; /* Ajustar según la posición del botón */
+	left: 50%;
+	transform: translateX(-50%);
+	opacity: 0;
+	transition: opacity 0.3s;
+  }
+  
+  .btn__sale__card-tooltip-container:hover .sale__card-tooltip-text {
+	visibility: visible;
+	opacity: 1;
+  }
+  
+
 
 
  /*************************************************************
@@ -505,12 +574,13 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 20px;
-	width: 100%;
-    max-width: 1450px;
+	width: 95vw;
+  max-width: 1450px;
 	height: 95vh;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
+  overflow: visible;
 }
 
 .popup__sale-card .btn-cerrar-popup__sale-card {

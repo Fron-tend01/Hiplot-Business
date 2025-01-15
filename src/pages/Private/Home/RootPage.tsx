@@ -23,7 +23,7 @@ const RootHome: React.FC = () => {
     const userState = useUserStore(state => state.user);
     const user_id = userState.id
     const [activeMenuIndex, setActiveMenuIndex] = useState(null);
-    const [activeSidebar, setActiveSidebar] = useState<boolean>(false)
+    const [activeSidebar, setActiveSidebar] = useState<boolean>(true)
 
     const { resetUser, UserKey }: any = useUserStore()
 
@@ -50,26 +50,26 @@ const RootHome: React.FC = () => {
 
     };
     const sales = {
-        backgroundColor: activeMenuIndex === 1 && activeSidebar === true ? '#5d35b0' : ''
+        backgroundColor: activeMenuIndex === 1 && activeSidebar === true ? '#3D85C6' : ''
     }
 
     const shopping = {
-        backgroundColor: activeMenuIndex === 2 && activeSidebar === true ? '#5d35b0' : ''
+        backgroundColor: activeMenuIndex === 2 && activeSidebar === true ? '#3D85C6' : ''
     }
     const store = {
-        backgroundColor: activeMenuIndex === 3 && activeSidebar === true ? '#5d35b0' : ''
+        backgroundColor: activeMenuIndex === 3 && activeSidebar === true ? '#3D85C6' : ''
     }
 
     const catalogue = {
-        backgroundColor: activeMenuIndex === 4 && activeSidebar === true ? '#5d35b0' : ''
+        backgroundColor: activeMenuIndex === 4 && activeSidebar === true ? '#3D85C6' : ''
     }
 
     const processes = {
-        backgroundColor: activeMenuIndex === 5 && activeSidebar === true ? '#5d35b0' : ''
+        backgroundColor: activeMenuIndex === 5 && activeSidebar === true ? '#3D85C6' : ''
     }
 
     const production = {
-        backgroundColor: activeMenuIndex === 6 && activeSidebar === true ? '#5d35b0' : ''
+        backgroundColor: activeMenuIndex === 6 && activeSidebar === true ? '#3D85C6' : ''
     }
 
 
@@ -102,7 +102,7 @@ const RootHome: React.FC = () => {
                     {/* <h2 className='title__logo'>Procura</h2> */}
                 </div>
                 <div className='arrow__sidebar' onClick={toggleMenu}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill='#FFF' height="16" width="10" viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 6l6 6l-6 6" /></svg>
                 </div>
                 <ul className='nav__items'>
                     <div className={`nav__item ${activeMenuIndex === 0 ? 'activeMenu' : ''}`} >
@@ -116,7 +116,7 @@ const RootHome: React.FC = () => {
                             <AnchorTag className='nav__link' style={sales} onClick={(e) => { e.preventDefault(); toggleSubMenu(1) }} to={`${PrivateRoutes.SALES}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-receipt"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 17.5v-11" /></svg>
                                 <span>Ventas</span>
-                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
                             </AnchorTag>
                             <div className='sub__menu '>
                                 {permisos.VENTA && permisos.VENTA.map((permiso: any, index: any) => {
@@ -151,7 +151,7 @@ const RootHome: React.FC = () => {
                         <div className={`nav__item ${activeMenuIndex === 2 ? 'activeMenu' : ''}`}>
                             <AnchorTag className='nav__link' style={shopping} onClick={(e) => { e.preventDefault(); toggleSubMenu(2) }} to={`${PrivateRoutes.SHOPPING}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-shopping-cart"><circle cx="8" cy="21" r="1" /><circle cx="19" cy="21" r="1" /><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /></svg>                                <span>Compras</span>
-                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
                             </AnchorTag>
                             <div className='sub__menu '>
                                 {permisos.COMPRA && permisos.COMPRA.map((permiso: any, index: number) => {
@@ -182,7 +182,7 @@ const RootHome: React.FC = () => {
                             <AnchorTag className='nav__link' style={store} onClick={(e) => { e.preventDefault(); toggleSubMenu(3) }} to={`${PrivateRoutes.WAREHOUSES}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-package"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" /><path d="M12 22V12" /><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7" /><path d="m7.5 4.27 9 5.15" /></svg>
                                 <span>Almacen</span>
-                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
                             </AnchorTag>
                             <div className='sub__menu '>
                                 {permisos.ALM && permisos.ALM.map((permiso: any) => {
@@ -236,7 +236,7 @@ const RootHome: React.FC = () => {
                             <AnchorTag className='nav__link' style={production} onClick={() => toggleSubMenu(6)} to={`${PrivateRoutes.PRODUCTION}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-factory"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" /><path d="M17 18h1" /><path d="M12 18h1" /><path d="M7 18h1" /></svg>
                                 <span>Produccion</span>
-                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
                             </AnchorTag>
                             <div className='sub__menu '>
                                 {permisos.PRO && permisos.PRO.map((permiso: any) => {
@@ -258,8 +258,8 @@ const RootHome: React.FC = () => {
                     {permisos && permisos.CATAL.length > 0 ?
                         <div className={`nav__item ${activeMenuIndex === 4 ? 'activeMenu' : ''}`}>
                             <AnchorTag className='nav__link' style={catalogue} onClick={(e) => { e.preventDefault(); toggleSubMenu(4) }} to={`${PrivateRoutes.CATALOGUE}`}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-folder-closed"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/><path d="M2 10h20"/></svg>                                <span>Catalágos</span>
-                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-folder-closed"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" /><path d="M2 10h20" /></svg>                                <span>Catalágos</span>
+                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
                             </AnchorTag>
                             <div className='sub__menu '>
                                 {permisos.CATAL && permisos.CATAL.map((permiso: any) => {
@@ -347,8 +347,8 @@ const RootHome: React.FC = () => {
                     {permisos && permisos.CONFIG.length > 0 ?
                         <div className={`nav__item ${activeMenuIndex === 5 ? 'activeMenu' : ''}`}>
                             <AnchorTag className='nav__link' style={processes} onClick={(e) => { e.preventDefault(); toggleSubMenu(5) }} to={`${PrivateRoutes.PROCESSOS}`}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>                                <span>Procesos</span>
-                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /><path d="M12 11h4" /><path d="M12 16h4" /><path d="M8 11h.01" /><path d="M8 16h.01" /></svg>                                <span>Procesos</span>
+                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
                             </AnchorTag>
                             <div className='sub__menu '>
                                 {permisos.CONFIG && permisos.CONFIG.map((permiso: any) => {
@@ -424,7 +424,7 @@ const RootHome: React.FC = () => {
                 </ul>
                 <div className='nav__item_logout'>
                     <AnchorTag className='nav__link' onClick={logOut} to="/login">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="signoff lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="signoff lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" x2="9" y1="12" y2="12" /></svg>
                         <span>Cerrar session</span>
                     </AnchorTag>
                 </div>

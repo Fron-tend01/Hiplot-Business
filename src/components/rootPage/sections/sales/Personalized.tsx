@@ -9,21 +9,28 @@ import APIs from '../../../../services/services/APIs'
 import { v4 as uuidv4 } from 'uuid';
 import { useSelectStore } from '../../../../zustand/Select'
 import { storeModals } from '../../../../zustand/Modals'
+import { storeDv } from '../../../../zustand/Dynamic_variables'
+import Swal from 'sweetalert2'
+import SeeCamposPlantillas from './SeeCamposPlantillas'
 
-const Personalized: React.FC = () => {
+const Personalized: React.FC<any> = ({branch, idIdentifier}: any,) => {
   const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
+
+  const setDataUpdate = storePersonalized(state => state.setDataUpdate)
 
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
 
   const setPersonalized = storePersonalized(state => state.setPersonalized)
   const setCustomData = storePersonalized(state => state.setCustomData)
-  const { personalizedModal, customData, normalConcepts, customConcepts, personalized }: any = useStore(storePersonalized)
+  const { personalizedModal, customData, normalConcepts, customConcepts, personalized, dataUpdate, temporaryNormalConcepts }: any = useStore(storePersonalized)
   const { dataPersonalized, }: any = useStore(storeSaleCard)
   const { modal }: any = useStore(storeModals)
   const { identifier }: any = useStore(storePersonalized)
 
   const setDataPersonalized = storeSaleCard(state => state.setDataPersonalized);
+
+  const setModalSub = storeModals((state) => state.setModalSub);
 
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
@@ -42,33 +49,82 @@ const Personalized: React.FC = () => {
     fetch()
   }, [])
 
-  // useEffect(() => {
+  useEffect(() => {
+    if (personalizedModal == 'personalized_modal-quotation-update') {
+      dataUpdate.forEach((element: any) => {
+        if (element.temporary_custom) {
+          element.check = true
+        }
+      });
+    }
+  }, [personalizedModal])
 
-  //   // Personalizado para cotizaciones
 
-  //   // if (personalizedModal == 'personalized_modal-quotation-update') {
-  //   //   const filter = quatation.conceptos.filter((x: any) => x?.personalized !== true)
-  //   //   setCustomData(filter)
-  //   // } else {
-  //   //   setCustomData(normalConcepts)
-  //   // }
-  // }, [personalizedModal])
+  // console.log('dataUpdate', dataUpdate)
 
   const [articlesPersonalized, setArticlesPersonalized] = useState<any>([])
 
   const [filterPersonalized, setFilterPersonalized] = useState<any>([])
-  console.log('customConcepts Afuera', customConcepts)
 
-  console.log('customData Afuera', customData)
+
+  const [item, setItem] = useState<any>()
 
   const addPersonalized = (item: any, index: number) => {
-    console.log('customConcepts A dentro', customConcepts)
-    console.log('customData A Denter', customData)
+    setItem(item)
     // Just for check
 
-    const newData = [...customData];
-    newData[index] = { ...newData[index], check: !newData[index].check };
-    setCustomData(newData)
+
+
+    // // Create or Update
+
+    // if (modal === 'create-modal__qoutation') {
+
+    //   /// Modal Create
+
+    // } else {
+
+    //   if (personalizedModal == 'personalized_modal-quotation') {
+
+    //     /// Modal Update
+    //     const exist = normalConcepts.some((x: any) => x.id == item.id)
+    //     if (exist) {
+    //       ////////////////////////////////////// Se agrega ///////////////////////
+    //       const findItem = customData.find((xx: any) => xx.id == item.id)
+    //       setCustomConcepts([...customConcepts, findItem]);
+
+    //       const deleteFilter = normalConcepts.filter((xx: any) => xx.id !== item.id)
+    //       return setNormalConcepts(deleteFilter)
+    //     } else {
+    //       const find = customConcepts.find((xx: any) => xx.id == item.id)
+    //       setNormalConcepts([...normalConcepts, find])
+
+    //       const deleteFilter = customConcepts.filter((xx: any) => xx.id !== item.id)
+    //       setCustomConcepts(deleteFilter)
+    //     }
+
+    //   } else {
+    //     // personalizedModal == 'personalized_modal-quotation-update'
+    //     /// Modal Update
+    //     const exist = normalConcepts.some((x: any) => x.id == item.id)
+    //     if (exist) {
+    //       ////////////////////////////////////// Se agrega ///////////////////////
+    //       const findItem = customData.find((xx: any) => xx.id == item.id)
+    //       setCustomConcepts([...customConcepts, findItem]);
+
+    //       const deleteFilter = normalConcepts.filter((xx: any) => xx.id !== item.id)
+    //       return setNormalConcepts(deleteFilter)
+    //     } else {
+    //       const find = customConcepts.find((xx: any) => xx.id == item.id)
+    //       setNormalConcepts([...normalConcepts, find])
+
+    //       const deleteFilter = customConcepts.filter((xx: any) => xx.id !== item.id)
+    //       setCustomConcepts(deleteFilter)
+    //     }
+
+    //   }
+
+
+    // }
 
     // Create or Update
 
@@ -78,53 +134,145 @@ const Personalized: React.FC = () => {
 
     } else {
 
-      /// Modal Update
-      const exist = normalConcepts.some((x: any) => x.id == item.id)
-      if (exist) {
-        ////////////////////////////////////// Se agrega ///////////////////////
-        const findItem = customData.find((xx: any) => xx.id == item.id)
-        setCustomConcepts([...customConcepts, findItem]);
+      if (personalizedModal == 'personalized_modal-quotation') {
 
-        const deleteFilter = normalConcepts.filter((xx: any) => xx.id !== item.id)
-        return setNormalConcepts(deleteFilter)
+        const newData = [...customData];
+        newData[index] = { ...newData[index], check: !newData[index].check };
+        setCustomData(newData)
+
+        const exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
+
+        if (exist) {
+          ////////////////////////////////////// Se agrega ///////////////////////
+          const findItem = customData.find((xx: any) => xx.id_identifier == item.id_identifier)
+          setCustomConcepts([...customConcepts, findItem]);
+
+          const deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+          setNormalConcepts(deleteFilter)
+
+          return
+        } else {
+          const find = customConcepts.find((xx: any) => xx.id_identifier == item.id_identifier)
+          setNormalConcepts([...normalConcepts, find])
+
+          const deleteFilter = customConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+          setCustomConcepts(deleteFilter)
+
+        }
       } else {
-        const find = customConcepts.find((xx: any) => xx.id == item.id)
-        setNormalConcepts([...normalConcepts, find])
 
-        const deleteFilter = customConcepts.filter((xx: any) => xx.id !== item.id)
-        setCustomConcepts(deleteFilter)
+        // 'personalized_modal-quotation-update'
+
+
+        if (item.check == true) {
+          item.temporary_custom = false;
+          setNormalConcepts([item, ...normalConcepts]);
+
+          const updatedDataUpdate = dataUpdate.map((x: any) => {
+            if (x.id_identifier === item.id_identifier) {
+              return { ...x, temporary_custom: false, check: false };
+            }
+            // Si no coincide, retorna el objeto original
+            return x;
+          });
+          setDataUpdate(updatedDataUpdate);
+        } else {
+          const updatedDataUpdate = dataUpdate.map((x: any) => {
+            if (x.id_identifier == item.id_identifier) {
+              return { ...x, temporary_custom: true, check: true };
+            }
+            // Si no coincide, retorna el objeto original
+            return x;
+          });
+          setDataUpdate(updatedDataUpdate);
+
+          const deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+          setNormalConcepts(deleteFilter)
+        }
+
+
+
+
+
+
+        // const exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
+
+        // if (exist) {
+        //   ////////////////////////////////////// Se agrega ///////////////////////
+        //   const findItem = customData.find((xx: any) => xx.id_identifier == item.id_identifier)
+        //   setCustomConcepts([...customConcepts, findItem]);
+
+        //   const deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+        //   setNormalConcepts(deleteFilter)
+
+        //   return
+        // } else {
+        //   const find = customConcepts.find((xx: any) => xx.id_identifier == item.id_identifier)
+        //   setNormalConcepts([...normalConcepts, find])
+
+        //   const deleteFilter = customConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+        //   setCustomConcepts(deleteFilter)
+
+        // }
       }
     }
 
 
     // Create or Update
 
-    if (modal === 'personalized_modal-sale') {
+    // if (modal === 'personalized_modal-sale') {
 
-      /// Modal Create
+    //   /// Modal Create
 
-    } else {
+    // } else {
 
-      const exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
+    //   if (personalizedModal == 'personalized_modal-quotation') {
+    //     const exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
 
-      if (exist) {
-        ////////////////////////////////////// Se agrega ///////////////////////
-        const findItem = customData.find((xx: any) => xx.id_identifier == item.id_identifier)
-        setCustomConcepts([...customConcepts, findItem]);
+    //     if (exist) {
+    //       ////////////////////////////////////// Se agrega ///////////////////////
+    //       const findItem = customData.find((xx: any) => xx.id_identifier == item.id_identifier)
+    //       setCustomConcepts([...customConcepts, findItem]);
 
-        const deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
-        setNormalConcepts(deleteFilter)
+    //       const deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+    //       setNormalConcepts(deleteFilter)
 
-        return
-      } else {
-        const find = customConcepts.find((xx: any) => xx.id_identifier == item.id_identifier)
-        setNormalConcepts([...normalConcepts, find])
+    //       return
+    //     } else {
+    //       const find = customConcepts.find((xx: any) => xx.id_identifier == item.id_identifier)
+    //       setNormalConcepts([...normalConcepts, find])
 
-        const deleteFilter = customConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
-        setCustomConcepts(deleteFilter)
+    //       const deleteFilter = customConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+    //       setCustomConcepts(deleteFilter)
 
-      }
-    }
+    //     }
+    //   } else {
+
+    //     'personalized_modal-quotation-update'
+
+    //     const exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
+
+    //     if (exist) {
+    //       ////////////////////////////////////// Se agrega ///////////////////////
+    //       const findItem = customData.find((xx: any) => xx.id_identifier == item.id_identifier)
+    //       setCustomConcepts([...customConcepts, findItem]);
+
+    //       const deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+    //       setNormalConcepts(deleteFilter)
+
+    //       return
+    //     } else {
+    //       const find = customConcepts.find((xx: any) => xx.id_identifier == item.id_identifier)
+    //       setNormalConcepts([...normalConcepts, find])
+
+    //       const deleteFilter = customConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+    //       setCustomConcepts(deleteFilter)
+
+    //     }
+    //   }
+
+
+    // }
 
 
     // const exist = normalConcepts.some((x: any) => x.id_identifier == item.id_identifier)
@@ -164,18 +312,19 @@ const Personalized: React.FC = () => {
     }
   })
 
-  console.log('datassssssssssss', personalized)
+
 
   const createPersonalized = async () => {
-
     let total = 0;
     articlesPersonalized.forEach((element: any) => {
       total += element.total_price;
     });
 
- 
 
-    if (personalizedModal == 'personalized_modal-quotation' || personalizedModal == 'personalized_modal-quotation-update') {
+
+    if (personalizedModal == 'personalized_modal-quotation') {
+
+
       const data = {
         descripcion: inpust.descripcion,
         personalized: true,
@@ -188,25 +337,49 @@ const Personalized: React.FC = () => {
         precio_total: inpust.precio_total,
         comentarios_produccion: inpust.comentarios_produccion,
         comentarios_factura: inpust.comentarios_factura,
-        conceptos: customConcepts
+        conceptos: customConcepts,
+        id_identifier: identifier + 1
       }
-
 
 
       setCustomData(normalConcepts)
       setNormalConcepts([...normalConcepts, data])
       setPersonalized([...personalized, data])
+     
+    } else if(personalizedModal == 'personalized_modal-quotation-update') {
+      const filterFalse = dataUpdate.filter((x: any) => x.check === false);
+      console.log('filterFalse', filterFalse)
 
+      const filterTrue = dataUpdate.filter((x: any) => x.check === true);
+      console.log('filterTrue',filterTrue)
 
+      const updatedNormalConcepts = normalConcepts.map((x: any) => {
+        if (x.id_identifier === idIdentifier) {
+          return { 
+            ...x, 
+            conceptos: filterTrue, // Solo incluye los elementos con `check === true`
+          };
+        }
+        return x; // Retorna los objetos que no coinciden sin cambios
+      });
 
+  
+      updatedNormalConcepts.forEach((element: any) => {
+        element.check = false
+      });
+      console.log('updatedNormalConcepts',updatedNormalConcepts)
+      setNormalConcepts(updatedNormalConcepts);
+      
+      
 
+     
+      
+    } else {
+      setDataUpdate([])
     }
 
-    
 
     if (personalizedModal == 'personalized_modal-sale' || personalizedModal == 'personalized_modal-sale') {
-
-      
       const data = {
         descripcion: inpust.descripcion,
         personalized: true,
@@ -254,6 +427,7 @@ const Personalized: React.FC = () => {
 
   }
 
+console.log(normalConcepts)
 
   const [inpust, setInputs] = useState<any>({
     descripcion: '',
@@ -297,11 +471,67 @@ const Personalized: React.FC = () => {
   }, [satKeyTerm]);
 
 
+  const closeModal = () => {
+    normalConcepts.forEach((element: any) => {
+      element.check = false
+    });
+
+    if (personalizedModal == 'personalized_modal-quotation') {
+      setNormalConcepts(temporaryNormalConcepts)
+      setDataUpdate([])
+    } else if(personalizedModal == 'personalized_modal-quotation-update') {
+      // personalized_modal-quotation-update
+      setNormalConcepts(temporaryNormalConcepts)
+
+    }
+    setPersonalizedModal('')
+
+  }
+
+
+
+
+    const setIndexVM = storeDv(state => state.setIndex)
+
+    const seeVerMas = (index: number) => {
+      setIndexVM(index)
+      setModalSub('see_cp-personalized')
+    }
+
+    const handleUrgencyChange = async (index: number) => {
+      let data = {
+        id_articulo: dataUpdate[index].id_articulo,
+        id_sucursal: branch.id,
+        total: dataUpdate[index].precio_total
+      }
+      const newConcept = [...dataUpdate];
+      newConcept[index].urgency = !newConcept[index]?.urgency;
+  
+      if (newConcept[index].urgency) {
+        await APIs.CreateAny(data, "calcular_urgencia")
+          .then(async (response: any) => {
+            if (!response.error) {
+              newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
+              newConcept[index].precio_total = parseFloat(response.total_con_urgencia);
+            } else {
+              Swal.fire('Notificación', response.mensaje, 'warning');
+              return
+            }
+          })
+      } else {
+        newConcept[index].precio_total = parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia);
+        newConcept[index].monto_urgencia = 0;
+      }
+      setNormalConcepts(newConcept);
+  
+    };
+ 
+
 
   return (
     <div className={`overlay__personalized_modal ${modalStatus ? 'active' : ''}`}>
       <div className={`popup__personalized_modal ${modalStatus ? 'active' : ''}`}>
-        <a href="#" className="btn-cerrar-popup__personalized_modal" onClick={() => setPersonalizedModal('')}>
+        <a href="#" className="btn-cerrar-popup__personalized_modal" onClick={closeModal}>
           <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
             <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
           </svg>
@@ -370,90 +600,202 @@ const Personalized: React.FC = () => {
               </div>
             </div>
           </div>
-
-          <div className='table__personalized'>
-            {customData ? (
-              <div className='table__numbers'>
-                <p className='text'>Total de Ordenes</p>
-                <div className='quantities_tables'>{customData.length}</div>
-              </div>
-            ) : (
-              <p className="text">No hay empresas que mostras</p>
-            )}
-            <div className='table__head'>
-              <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
-                {personalizedModal == 'personalized_modal-update' ?
-                  ''
-                  :
+          {personalizedModal == "personalized_modal-quotation" ?
+            <div className='table__personalized'>
+              {customData ? (
+                <div className='table__numbers'>
+                  <p className='text'>Total de artículos</p>
+                  <div className='quantities_tables'>{customData.length}</div>
+                </div>
+              ) : (
+                <p className="text">No hay empresas que mostras</p>
+              )}
+              <div className='table__head'>
+                <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
+                  {personalizedModal == 'personalized_modal-update' ?
+                    ''
+                    :
+                    <div className='th'>
+                    </div>
+                  }
                   <div className='th'>
+                    <p>Artículo</p>
                   </div>
-                }
-
-                <div className='th'>
-                  <p>Nombre del articulo</p>
+                  <div className='th'>
+                    <p>Cantidad</p>
+                  </div>
+                  <div className='th'>
+                    <p>Unidad</p>
+                  </div>
                 </div>
-                <div className='th'>
-                  <p>Codigo</p>
-                </div>
-                <div className='th'>
-                  <p>Empresa</p>
-                </div>
-
               </div>
-            </div>
-            {customData ? (
-              <div className='table__body'>
-                {customData.map((quotation: any, index: number) => {
-                  return (
-                    <div className='tbody__container'>
-                      <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={quotation.id}>
-                        {personalizedModal == 'personalized_modal-update' ?
-                          ''
-                          :
+              {customData ? (
+                <div className='table__body'>
+                  {customData.map((quotation: any, index: number) => {
+                    return (
+                      <div className='tbody__container'>
+                        <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={quotation.id}>
+                          {personalizedModal == 'personalized_modal-update' ?
+                            ''
+                            :
+                            <div className='td'>
+                              <div className="td">
+                                <label className="custom-checkbox">
+                                  <input
+                                    type="checkbox"
+                                    checked={customData[index]?.check || false}
+                                    onChange={() => addPersonalized(quotation, index)}
+                                  />
+                                  <span className="checkmark"></span>
+                                </label>
+                              </div>
+                            </div>
+                          }
+
                           <div className='td'>
-                            <div className="td">
-                              <label className="custom-checkbox">
-                                <input
-                                  type="checkbox"
-                                  checked={customData[index]?.check || false}
-                                  onChange={() => addPersonalized(quotation, index)}
-                                />
-                                <span className="checkmark"></span>
-                              </label>
+                            <div className='article'>
+                              <p>{quotation.codigo}-{quotation.descripcion}</p>
                             </div>
                           </div>
-                        }
-
-                        <div className='td'>
-                          <p>{quotation.descripcion}</p>
-                        </div>
-                        <div className='td'>
-                          <div>
-                            <p>{quotation.codigo}</p>
+                          <div className='td'>
+                            <div>
+                              <p>{quotation.cantidad}</p>
+                            </div>
+                          </div>
+                          <div className='td'>
+                            <div>
+                              <p>{quotation.name_unidad}</p>
+                            </div>
+                          </div>
+                          <div className='td'>
                           </div>
                         </div>
-                        <div className='td'>
-                          <p>{quotation.codigo}</p>
-                        </div>
-                        <div className='td'>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="text">Cargando datos...</p>
+              )}
+            </div>
+            :
+            <div className='table__personalized-update'>
+              {dataUpdate ? (
+                <div className='table__numbers'>
+                  <p className='text'>Total de artículos</p>
+                  <div className='quantities_tables'>{dataUpdate.length}</div>
+                </div>
+              ) : (
+                <p className="text">No hay empresas que mostras</p>
+              )}
+              <div className='table__head'>
+                <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
+                  {personalizedModal == 'personalized_modal-update' ?
+                    ''
+                    :
+                    <div className='th'>
+                    </div>
+                  }
+                  <div className='th'>
+                    <p>Artículo</p>
+                  </div>
+                  <div className='th'>
+                    <p>Cantidad</p>
+                  </div>
+                  <div className='th'>
+                    <p>Unidad</p>
+                  </div>
+                </div>
+              </div>
+              {dataUpdate ? (
+                <div className='table__body'>
+                  {dataUpdate.map((concept: any, index: number) => {
+                    return (
+                      <div className='tbody__container'>
+                        <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={concept.id}>
+                          {personalizedModal == 'personalized_modal-update' ?
+                            ''
+                            :
+                            <div className='td'>
+                              <div className="td">
+                                <label className="custom-checkbox">
+                                  <input
+                                    type="checkbox"
+                                    checked={dataUpdate[index]?.check || false}
+                                    onChange={() => addPersonalized(concept, index)}
+                                  />
+                                  <span className="checkmark"></span>
+                                </label>
+                              </div>
+                            </div>
+                          }
+
+                          <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                            <p className='article'>{concept.codigo}-{concept.descripcion}</p>
+                          </div>
+                          <div className='td'>
+                            <p className='amount'>{concept.cantidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{concept.name_unidad || concept.unidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p className=''>$ {concept.precio_total / concept.cantidad}</p>
+                          </div>
+                          <div className='td '>
+                            {concept.urgency ?
+                              <div className='container__total'>
+                                <p className='total'>$ {concept.precio_total}</p>
+                                <p className='remove__urgency' title='urgencia'>(${concept.monto_urgencia})</p>
+                              </div>
+                              :
+                              <p className='total'>$ {concept.precio_total}</p>
+                            }
+                          </div>
+
+                          <div className='td urgency'>
+                            {concept?.urgency ?
+                              <div>
+                                <button className='modal-create-quotations__tooltip-text no-urgency' type='button' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                </button>
+                              </div>
+                              :
+                              <div>
+                                <button className='modal-create-quotations__tooltip-text yes-urgency' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)} type='button'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                </button>
+                              </div>
+                            }
+                          </div>
+                          <div className='td'>
+                            <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  )
-                })}
-              </div>
-            ) : (
-              <p className="text">Cargando datos...</p>
-            )}
-          </div>
-
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="text">Cargando datos...</p>
+              )}
+            </div>
+          }
           <div className='mt-5 d-flex justify-content-center'>
-            <div>
+            {personalizedModal == 'personalized_modal-quotation' ? 
+              <div>
               <button className='btn__general-purple' onClick={createPersonalized}>Crear personalizado</button>
             </div>
+          :
+          <div>
+          <button className='btn__general-purple' onClick={createPersonalized}>Actulizar personalizado</button>
+        </div>
+          }
+          
           </div>
         </div>
       </div>
+      <SeeCamposPlantillas />
     </div>
   )
 }
