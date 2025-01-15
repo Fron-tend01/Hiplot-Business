@@ -325,7 +325,7 @@ const ModalCreate: React.FC = () => {
   const deleteArticle = (item: any, i: number) => {
     const filter = normalConcepts.filter((_: any, index: number) => index !== i)
     setNormalConcepts(filter)
-    setCustomData(filter);
+
     setDeleteConcepts([...deleteConcepts, item.id])
   }
 
