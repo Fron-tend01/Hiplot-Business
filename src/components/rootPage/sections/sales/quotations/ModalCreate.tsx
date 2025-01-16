@@ -32,10 +32,17 @@ const ModalCreate: React.FC = () => {
 
   // Temporal
 
+  const setConceptView = storePersonalized(state => state.setConceptView)
+    const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+    const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
+    const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
 
-  const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
-  const setCustomData = storePersonalized((state) => state.setCustomData);
-  const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
+
+  ////////////////// Personalized Variations////////////////////////////////// 
+  const { conceptView,  dataUpdate, normalConcepts, customConcepts, customData, personalized, personalizedModal, temporaryNormalConcepts }: any = useStore(storePersonalized)
+
+
+
 
   const setDataUpdatepersonalized = storePersonalized(state => state.setDataUpdatepersonalized)
 
@@ -56,7 +63,7 @@ const ModalCreate: React.FC = () => {
   const setClientsModal = storeQuotation((state) => state.setClientsModal);
   const setClient = storeQuotation((state) => state.setClient);
 
-  const { dataUpdate, normalConcepts, customConcepts, customData, personalized, personalizedModal, temporaryNormalConcepts }: any = useStore(storePersonalized)
+
   const { quatation }: any = useStore(storeQuotation)
   const { getClients }: any = ClientsRequests()
 
@@ -211,8 +218,7 @@ const ModalCreate: React.FC = () => {
     setSelectResults(!selectResults)
   };
 
-  console.log('personalized', personalized)
-  console.log('normalConcepts', normalConcepts)
+
 
   // console.log('DATA QUE SE ENVIA AL BEKEND', personalized)
 
@@ -269,7 +275,7 @@ const ModalCreate: React.FC = () => {
           Swal.fire('Cotizacion creada exitosamente', '', 'success');
           let response = await APIs.getQuotation(dataGet);
           setQuotesData(response)
-          setCustomData([])
+ 
           setModal('')
         }
 
@@ -282,7 +288,7 @@ const ModalCreate: React.FC = () => {
           Swal.fire('Cotizacion creada exitosamente', '', 'success');
           const response = await APIs.getQuotation(dataGet);
           setQuotesData(response)
-          setCustomData([])
+   
           setModal('')
         }
 
@@ -293,42 +299,33 @@ const ModalCreate: React.FC = () => {
 
   }
 
+  console.log('Hola')
 
-
-  const undoConcepts = (article: any, i: number) => {
-    // let filter = customConcepts.filter((_: any, index: number) => index !== i)
-
-    let filterPers = normalConcepts.filter((x: any) => x.personalized !== true)
-
-    console.log('filterPers', filterPers)
-
-    article.conceptos.forEach((element: any) => {
-      element.id_pers = 0
+  const undoConcepts = (concept: any) => {
+    // Primero, modificamos los conceptos
+    const updatedConcepts = concept.conceptos.map((element: any) => {
+      element.id_pers = 0;  // Establecer id_pers en 0
+      element.id_identifier += identifier + 1;  // Actualizar id_identifier
+      return element;
     });
-
-    const filterNor = normalConcepts.filter((_: any, index: number) => index !== i)
-    if (article.front) {
-      article.conceptos.forEach((element: any) => {
-        element.id_identifier += identifier + 1
-      });
-    }
-
-
-
-    const data = [...filterNor, ...article.conceptos]
-    setNormalConcepts(data)
-    setCustomConcepts([])
-    setCustomData([...filterPers, ...article.conceptos]);
-    setPersonalized([])
-  }
+  
+    // Actualizar el estado de normalConcepts
+    setNormalConcepts([...normalConcepts, ...updatedConcepts]);
+    
+    // Filtrar y actualizar conceptView para eliminar los conceptos con el id_identifier especificado
+    const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
+    setConceptView([...deleteItem, concept.conceptos]);
+  
+  };
+  
 
 
-
+  console.log('conceptView', conceptView)
 
   const deleteArticle = (item: any, i: number) => {
     const filter = normalConcepts.filter((_: any, index: number) => index !== i)
     setNormalConcepts(filter)
-    setCustomData(filter);
+
     setDeleteConcepts([...deleteConcepts, item.id])
   }
 
@@ -623,9 +620,9 @@ const ModalCreate: React.FC = () => {
                 </div>
               </div>
             </div>
-            {normalConcepts ? (
+            {conceptView ? (
               <div className='table__body'>
-                {normalConcepts?.map((article: any, index: number) => {
+                {conceptView?.map((article: any, index: number) => {
                   return (
                     <div className='tbody__container' key={index}>
                       {article.personalized ?
