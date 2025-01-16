@@ -7,6 +7,7 @@ import APIs from '../../../../services/services/APIs'
 import Select from '../../Dynamic_Components/Select'
 import useUserStore from '../../../../zustand/General'
 import { useSelectStore } from '../../../../zustand/Select'
+import Swal from 'sweetalert2'
 
 const ModalProduction: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -26,24 +27,44 @@ const ModalProduction: React.FC = () => {
     }
 
     const [areas, setAreas] = useState<any>()
+    const [areasGral, setAreasGral] = useState<any>()
 
     useEffect(() => {
         if (productionToUpdate) {
+            const uniqueAreas = new Set<string>(); // Usamos Set para almacenar las áreas como cadenas JSON
+
             productionToUpdate?.conceptos?.forEach((element: any) => {
                 setAreas({
                     selectName: 'Areas',
                     options: 'nombre_area',
-                    dataSelect: element.areas_produccion
-                })
+                    dataSelect: element.areas_produccion,
+                });
+
+                element.areas_produccion.forEach((area: any) => {
+                    const areaStr = JSON.stringify({
+                        nombre_area: area.nombre_area,
+                        id_area: area.id_area,
+                        id: area.id_area,
+                    });
+                    uniqueAreas.add(areaStr); // Agregamos la cadena JSON al Set
+                });
+            });
+
+            // Convertimos las cadenas JSON de vuelta a objetos antes de actualizar el estado
+            setAreasGral({
+                selectName: 'Areas',
+                options: 'nombre_area',
+                dataSelect: Array.from(uniqueAreas).map((areaStr) => JSON.parse(areaStr)),
             });
         }
-    }, [])
+    }, [productionToUpdate]);
+
 
 
     const getPDF = async () => {
         try {
             await APIs.getProoductionPDF(productionToUpdate.id)
-            window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_ov/${productionToUpdate.id}`, '_blank');
+            window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_op/${productionToUpdate.id}`, '_blank');
         } catch (error) {
 
         }
@@ -57,32 +78,130 @@ const ModalProduction: React.FC = () => {
         let data = {
             id: productionToUpdate.id,
             id_usuario: user_id,
-            id_area_nueva: selectedIds?.id_serie?.id
+            id_area_nueva: selectedIds?.areasGral?.id_area
         }
+        Swal.fire({
+            title: "Seguro que deseas cambiar de area la orden?",
+            text: "Para regresar la orden de nuevo a tu area deberás solicitarlo con el encargado del area a la que se está enviando",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    APIs.sendAreaProduction(data).then(() => {
+                        Swal.fire('Notificacion', 'Orden movida de area correctamente', 'success')
+                    })
+                } catch (error) {
+                    Swal.fire('Notificacion', 'Ocurrió un error al cambiar de area, consulta con soporte', 'info')
 
-        try {
-            await APIs.sendAreaProduction(data)
-        } catch (error) {
+                }
+            }
+        });
 
-        }
     }
 
-    const sendConceptoAreas = async () => {
+    const sendConceptoAreas = async (art: any) => {
         let data = {
-            id: productionToUpdate.id,
+            id: art.id,
             id_usuario: user_id,
-            id_area_nueva: selectedIds?.id_serie?.id
+            id_area_nueva: art.id_area_produccion
         }
+        Swal.fire({
+            title: "Seguro que deseas cambiar de Area el concepto " + art.descripcion + '?',
+            text: "Si no tienes acceso al area que vas a enviar, tendrás que solicitar el cambio al encargado del area enviada",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await APIs.sendAreaConceptoProduction(data)
+                    Swal.fire('Notificacion', 'Cambio de Area realizado correctamente', 'success')
+                } catch (error) {
+                    Swal.fire('Notificacion', 'Ocurrió un error al cambiar el area: ' + error, 'info')
 
-        try {
-            await APIs.sendAreaConceptoProduction(data)
-        } catch (error) {
+                }
+            }
+        });
 
-        }
     }
+    const setProductionToUpdate = storeProduction(state => state.setProductionToUpdate)
 
-
-
+    const onChangeAreaConcepto = async (index_concepto: number, valor: any) => {
+        let copy = { ...productionToUpdate }
+        copy.conceptos[index_concepto].id_area_produccion = parseInt(valor)
+        setProductionToUpdate(copy)
+    }
+    const terminarConcepto = async (art: any, index: number) => {
+        let data = {
+            id: art.id,
+            id_usuario: user_id,
+        }
+        Swal.fire({
+            title: "Seguro que deseas terminar el concepto " + art.descripcion + '?',
+            text: "Esta acción no se puede deshacer.",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await APIs.CreateAny(data, "terminar_concepto_op")
+                    .then(async (_: any) => {
+                        Swal.fire('Notificación', 'Concepto terminado Correctamente', 'success');
+                        let copy = { ...productionToUpdate }
+                        copy.conceptos[index].status_produccion = 2
+                        setProductionToUpdate(copy)
+                    })
+            }
+        });
+    }
+    const enviarASucursalConcepto = async (art: any, index: number) => {
+        let data = {
+            id: art.id,
+            id_usuario: user_id,
+        }
+        Swal.fire({
+            title: "Seguro que deseas enviar a sucursal el concepto " + art.descripcion + '?',
+            text: "Esta acción no se puede deshacer.",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await APIs.CreateAny(data, "enviar_sucursal_concepto_op")
+                    .then(async (_: any) => {
+                        Swal.fire('Notificación', 'Concepto enviado a sucursal Correctamente', 'success');
+                        let copy = { ...productionToUpdate }
+                        copy.conceptos[index].status_produccion = 3
+                        setProductionToUpdate(copy)
+                    })
+            }
+        });
+    }
+    const cancelarConcepto = async (art: any, index: number) => {
+        let data = {
+            id: art.id,
+            id_usuario: user_id,
+        }
+        Swal.fire({
+            title: "Seguro que deseas CANCELAR el concepto " + art.descripcion + '?',
+            text: "Esta acción no se puede deshacer.",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await APIs.CreateAny(data, "cancelar_concepto_op")
+                    .then(async (_: any) => {
+                        Swal.fire('Notificación', 'Concepto enviado a cancelado Correctamente', 'success');
+                        let copy = { ...productionToUpdate }
+                        copy.conceptos[index].status_produccion = 1
+                        setProductionToUpdate(copy)
+                    })
+            }
+        });
+    }
     return (
         <div className={`overlay__production-modal__article-modal ${modalSub == 'production__modal' ? 'active' : ''}`}>
             <div className={`popup__production-modal__article-modal ${modalSub == 'production__modal' ? 'active' : ''}`}>
@@ -100,29 +219,17 @@ const ModalProduction: React.FC = () => {
                                 <hr />
                                 <div className='row'>
                                     <div className='col-6 md-col-12'>
-                                        <span className='text'>Titulo: <b>{productionToUpdate.usuario_crea}</b></span><br />
                                         <span className='text'>Creado por: <b>{productionToUpdate.usuario_crea}</b></span><br />
-                                        <span className='text'>Cliente: <b>{productionToUpdate.titulo}</b> </span><br />
                                         <span className='text'>Fecha envio producción: <b>{productionToUpdate.fecha_creacion}</b></span><br />
                                         <span className='text'>Fecha Entrega: <b>{productionToUpdate.fecha_creacion}</b></span><br />
-                                        {productionToUpdate.status === 0 ? (
-                                            <span className="active-status">Activo</span>
-                                        ) : productionToUpdate.status === 1 ? (
-                                            <span className="canceled-status">Cancelada</span>
-                                        ) : (
-                                            productionToUpdate.status === 2 ? (
-                                                <span className="end-status">Terminado</span>
-                                            ) : (
-                                                ""
-                                            )
-                                        )}
+                                         <p>{productionToUpdate.status == 0 ? <b style={{ color: 'green' }}>ACTIVO</b> :
+                                                        productionToUpdate.status == 1 ? <b style={{ color: 'red' }}>CANCELADO</b> : 
+                                                        productionToUpdate.status == 2 ? <b style={{ color: 'blue' }}>TERMINADO</b> :<b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
                                     </div>
                                     <div className='col-6 md-col-12'>
                                         <span className='text'>Empresa: <b>{productionToUpdate.empresa}</b></span><br />
                                         <span className='text'>Sucursal de origen: <b>{productionToUpdate.sucursal}</b></span><br />
-                                        <span className='text'>Sucursal actual: <b>{productionToUpdate.sucursal}</b></span><br />
-                                        <span className='text'>Area: <b>{productionToUpdate.area}</b></span><br />
-                                        <span className='text'>Archivo: <b>{productionToUpdate.usuario_crea}</b></span><br />
+                                        <span className='text'>Orden de Venta: <b>{productionToUpdate.usuario_crea}</b></span><br />
 
                                     </div>
                                 </div>
@@ -138,7 +245,7 @@ const ModalProduction: React.FC = () => {
                                         </div>
                                         <div className='d-flex'>
                                             <div className='mr-3'>
-                                                <Select dataSelects={areas} instanceId='id_serie' nameSelect='Areas' />
+                                                <Select dataSelects={areasGral} instanceId='areasGral' nameSelect='Enviar todo a Otra Area:' />
                                             </div>
                                             <div className='d-flex align-items-end'>
                                                 <button className='btn__general-purple' onClick={sendAreas}>Enviar</button>
@@ -193,8 +300,9 @@ const ModalProduction: React.FC = () => {
                                         <div className='tbody__container' key={index}>
                                             <div className='tbody'>
                                                 <div className='td'>
-                                                    <p>{article.status == 1 ? <b style={{ color: 'green' }}>ACTIVO</b> :
-                                                        article.status == 2 ? <b style={{ color: 'red' }}>CANCELADO</b> : <b style={{ color: 'blue' }}>TERMINADO</b>}</p>
+                                                    <p>{article.status_produccion == 0 ? <b style={{ color: 'green' }}>ACTIVO</b> :
+                                                        article.status_produccion == 1 ? <b style={{ color: 'red' }}>CANCELADO</b> : 
+                                                        article.status_produccion == 2 ? <b style={{ color: 'blue' }}>TERMINADO</b> :<b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <p>{article.codigo}-{article.descripcion}</p>
@@ -206,18 +314,21 @@ const ModalProduction: React.FC = () => {
                                                     <p>$ {article.total / article.cantidad}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>$ {article.total}</p>
+                                                    {article.monto_urgencia != undefined && article.monto_urgencia > 0 ? 
+                                                    <p>$ {article.total} <span style={{ color: 'red' }}>(${article.monto_urgencia})</span></p>
+                                                    :
+                                                    <p>$ {article.total}</p>}
                                                 </div>
                                                 <div className='td'>
                                                     <div>
                                                         <textarea className='inputs__general' placeholder='Comentarios' value={article.obs_produccion} />
                                                     </div>
                                                 </div>
-                                                <div  className='td'>
-                                                    <select className="" value={article.id_area_produccion} >
+                                                <div className='td'>
+                                                    <select className="" value={article.id_area_produccion} onChange={(e) => onChangeAreaConcepto(index, e.target.value)}>
                                                         <option value="" disabled>-- Selecciona una opción --</option>
                                                         {article.areas_produccion.map((option: any, idx: number) => (
-                                                            <option key={index} value={option.id_area
+                                                            <option key={idx} value={option.id_area
                                                             }>
                                                                 {option.nombre_area} - {option.nombre_sucursal}
                                                             </option>
@@ -227,18 +338,23 @@ const ModalProduction: React.FC = () => {
                                                 <div className='td'>
                                                     <div className='d-flex'>
                                                         <div className='d-flex align-items-end'>
-                                                            <button className='btn__general-purple' onClick={sendConceptoAreas}>Enviar</button>
+                                                            <button type='button' className='btn__general-purple' onClick={() => sendConceptoAreas(article)}>Enviar</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div className='td'>
                                                     <div>
-                                                        <button className='btn__general-purple' >Terminar conceptos</button>
+                                                        <button className='btn__general-purple' onClick={() => terminarConcepto(article, index)}>Terminar conceptos</button>
                                                     </div>
                                                 </div>
                                                 <div className='td'>
                                                     <div>
-                                                        <button className='btn__general-purple' >Enviar concepto a sucursal</button>
+                                                        <button className='btn__general-purple' onClick={() => enviarASucursalConcepto(article, index)}>Enviar concepto a sucursal</button>
+                                                    </div>
+                                                </div>
+                                                <div className='td'>
+                                                    <div>
+                                                        <button className='btn__general-danger' onClick={() => cancelarConcepto(article, index)}>Cancelar Concepto</button>
                                                     </div>
                                                 </div>
                                             </div>
