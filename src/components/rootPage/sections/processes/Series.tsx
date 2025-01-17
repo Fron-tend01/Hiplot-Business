@@ -91,8 +91,11 @@ const Series: React.FC = () => {
     {
       id: 10,
       name: 'Pedido de franquicia'
+    },
+    {
+      id: 11,
+      name: 'Vales'
     }
-
   ]
 
 

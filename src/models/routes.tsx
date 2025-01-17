@@ -55,6 +55,7 @@ export const PublicRoutes = {
 
     //Ventas 
     PRODUCTION: 'production',
+    VALES: 'vales',
     
 
     // Web //
