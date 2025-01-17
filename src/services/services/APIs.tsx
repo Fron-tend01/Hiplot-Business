@@ -724,7 +724,7 @@ getTotalPrice: async (data: any, customPath?: string) => {
     return ConfigurationAPIs.get (path)
   },
 
-  getDeleveryTime: async (data: any, customPath?: any) => {
+  getDeleveryTime: async (customPath?: any) => {
     const path = customPath || `api_dev/calcular_tiempo_entrega`;
     return ConfigurationAPIs.get (path)
   },

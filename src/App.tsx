@@ -42,8 +42,6 @@ function App() {
   document.documentElement.style.setProperty('--card-modal', theme === 'light' ? '' : '#2f3749');
 
   // Generales 
-
-
   document.documentElement.style.setProperty('--cards-background', theme === 'light' ? '' : '#121313');
 
   document.documentElement.style.setProperty('--close-color', theme === 'light' ? '' : '#f5f6f7');

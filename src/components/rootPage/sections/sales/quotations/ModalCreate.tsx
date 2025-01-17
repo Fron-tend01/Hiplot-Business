@@ -37,27 +37,24 @@ const ModalCreate: React.FC = () => {
   const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
   const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
-
+  const setCustomLocal = storePersonalized(state => state.setCustomLocal)
 
 
   ////////////////// Personalized Variations////////////////////////////////// 
-  const { conceptView, dataUpdate, normalConcepts, customConcepts, customData, personalized, personalizedModal, temporaryNormalConcepts }: any = useStore(storePersonalized)
+  const { normalConcepts, deleteNormalConcepts, customConcepts, deleteCustomConcepts, conceptView, dataUpdate, personalized, personalizedModal }: any = useStore(storePersonalized)
 
 
-
-
-  const setDataUpdatepersonalized = storePersonalized(state => state.setDataUpdatepersonalized)
 
   const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
 
   const setQuotesData = storeQuotation(state => state.setQuotesData);
   const setIdArticle = storeSaleCard(state => state.setIdArticle)
 
-  const { identifier, dataGet }: any = useStore(storeQuotation);
+  const { dataGet }: any = useStore(storeQuotation);
+  const { identifier }: any = useStore(storePersonalized);
   const setPersonalized = storePersonalized(state => state.setPersonalized)
 
   const setDataQuotation = storeSaleCard(state => state.setDataQuotation)
-  const setDataUpdate = storePersonalized((state) => state.setDataUpdate);
   const setModal = storeModals((state) => state.setModal);
   const { modal }: any = useStore(storeModals)
   const setModalSub = storeModals((state) => state.setModalSub);
@@ -133,7 +130,7 @@ const ModalCreate: React.FC = () => {
 
 
   }
-  const setTemporaryNormalConcepts = storePersonalized(state => state.setTemporaryNormalConcepts)
+
 
   useEffect(() => {
 
@@ -148,9 +145,6 @@ const ModalCreate: React.FC = () => {
     setBranch({ id: quatation.id_sucursal })
     setComments(quatation.comentarios)
 
-    // setNormalConcepts([...normalConcepts, ...quatation.conceptos])
-    setNormalConcepts([...quatation.conceptos, ...quatation.conceptos_pers])
-    // setCustomData([...customConcepts, ...quatation.conceptos]);
 
     setPersonalized(quatation.conceptos_pers)
 
@@ -161,10 +155,10 @@ const ModalCreate: React.FC = () => {
     if (personalizedModal == 'personalized_modal-quotation-update') {
 
     } else {
-      setTemporaryNormalConcepts(normalConcepts)
+
     }
 
-  }, [normalConcepts])
+  }, [])
 
 
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
@@ -259,9 +253,10 @@ const ModalCreate: React.FC = () => {
       id_usuario_crea: user_id,
       titulo: title,
       comentarios: comments,
-      conceptos: filter,
-      conceptos_pers: personalized,
-      conceptos_elim: deleteConcepts
+      conceptos: normalConcepts,
+      conceptos_pers: customConcepts,
+      conceptos_elim: deleteNormalConcepts,
+      conceptos_pers_elim: deleteCustomConcepts
     };
 
 
@@ -346,13 +341,18 @@ const ModalCreate: React.FC = () => {
 
   const closeModal = () => {
     setModal('')
-    if (personalizedModal === 'update-modal__qoutation') {
-      setComments('')
-    
-      setDataQuotation([])
-    } else {
 
-    }
+    setNormalConcepts([])
+    setDeleteNormalConcepts([])
+
+    setCustomConcepts([])
+    setDeleteNormalConcepts([])
+
+    setConceptView([])
+    setCustomConceptView([])
+
+    setDataQuotation([])
+
 
 
   }
@@ -364,27 +364,34 @@ const ModalCreate: React.FC = () => {
 
   }
 
-  console.log(personalizedModal)
 
-  const [idIdentifier, setIdIdentifier] = useState<number>()
+
+  const [idItem, setIdItem] = useState<number>()
 
   const modalPersonalizedUpdate = (concept: any) => {
-    setPersonalizedModal('personalized_modal-quotation-update')
-    setIdIdentifier(concept.id_identifier)
+    setPersonalizedModal('personalized_modal-quotation-update');
+    setIdItem(concept);
+
+    // Obtener el valor actual del identificador
+    const currentIdentifier = storePersonalized.getState().identifier;
+    let newIdentifier = currentIdentifier;
+
+    // Asignar identificadores únicos a cada concepto
     concept.conceptos.forEach((element: any) => {
-      element.check = true
+      element.check = true;
+      element.id_identifier = ++newIdentifier; // Incrementar y asignar
     });
-    const filter = normalConcepts.filter((x: any) => x.personalized !== true)
 
+    // Actualizar el identificador global al último valor utilizado
+    storePersonalized.setState({ identifier: newIdentifier });
 
-    setDataUpdate([...concept.conceptos, ...filter])
+    // Actualizar vistas con los conceptos personalizados
+    setCustomConceptView([...concept.conceptos, ...normalConcepts]);
+    setCustomLocal(concept.conceptos);
 
-    console.log('concept.conceptos', concept.conceptos)
-
-    setCustomConceptView([...concept.conceptos, ...normalConcepts])
-
-
-    setDataUpdatepersonalized([])
+    // Debug
+    console.log('normalConcepts', normalConcepts);
+    console.log('concept', concept);
   }
 
 
@@ -437,11 +444,11 @@ const ModalCreate: React.FC = () => {
 
   }, [normalConcepts])
 
-  const cambioInputsPers = async (valor: number, index: number, key: string) => {
-    const newConcept = [...normalConcepts];
-    newConcept[index][key] = valor;
-    setNormalConcepts(newConcept);
-  };
+  // const cambioInputsPers = async (valor: number, index: number, key: string) => {
+  //   const newConcept = [...normalConcepts];
+  //   newConcept[index][key] = valor;
+  //   setNormalConcepts(newConcept);
+  // };
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
   const abrirFichaModifyConcept = async (x: any) => {
@@ -659,7 +666,7 @@ const ModalCreate: React.FC = () => {
                             <div className='d-flex'>
                               <p className='total'>$ {article.precio_total}</p>
                               <div className='see-concepts'>
-                                <button className='btn__general-purple' onClick={() => modalPersonalizedUpdate(article, index)}>Conceptos</button>
+                                <button className='btn__general-purple' onClick={() => modalPersonalizedUpdate(article)}>Conceptos</button>
                               </div>
                             </div>
                           </div>
@@ -672,7 +679,7 @@ const ModalCreate: React.FC = () => {
                           </div>
 
                           <div className='td'>
-                            <button className='btn__general-orange' onClick={() => undoConcepts(article, index)}>Deshacer</button>
+                            <button className='btn__general-orange' onClick={() => undoConcepts(article)}>Deshacer</button>
                           </div>
                         </div>
                         :
@@ -770,7 +777,7 @@ const ModalCreate: React.FC = () => {
         </div>
         <ModalSalesOrder />
       </div>
-      <Personalized idIdentifier={idIdentifier} branch={branch} />
+      <Personalized idItem={idItem} branch={branch} />
       <ArticleViewModal />
       <SalesCard />
       <SeeClient />

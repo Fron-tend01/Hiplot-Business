@@ -73,7 +73,7 @@ const Users: React.FC = () => {
   const { areasXBranchOfficesXUsers, getAreasXBranchOfficesXUsers }: any = storeAreas();
   const { userGroups, getUserGroups }: any = storeUserGroups();
   const { getTypesUsers, typesUsers }: any = storeTypesUsers();
-  const { createUsers, getUsers, putUsers }: any = storeUsers();
+  const { createUsers, getUsers }: any = storeUsers();
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
 

@@ -29,21 +29,18 @@ const ModalProduction: React.FC = () => {
 
       const setModalSubSub = storeModals((state) => state.setModalSubSub);
 
-    const [areas, setAreas] = useState<any>()
+
     const [areasGral, setAreasGral] = useState<any>()
+    console.log()
 
     useEffect(() => {
         if (productionToUpdate) {
             const uniqueAreas = new Set<string>(); // Usamos Set para almacenar las áreas como cadenas JSON
 
             productionToUpdate?.conceptos?.forEach((element: any) => {
-                setAreas({
-                    selectName: 'Areas',
-                    options: 'nombre_area',
-                    dataSelect: element.areas_produccion,
-                });
+           
 
-                element.areas_produccion.forEach((area: any) => {
+                element?.areas_produccion.forEach((area: any) => {
                     const areaStr = JSON.stringify({
                         nombre_area: area.nombre_area,
                         id_area: area.id_area,
@@ -324,7 +321,10 @@ const ModalProduction: React.FC = () => {
                                                 </div>
                                                 <div className='td'>
                                                     {article.monto_urgencia != undefined && article.monto_urgencia > 0 ?
-                                                        <p>$ {article.total} <span style={{ color: 'red' }}>(${article.monto_urgencia})</span></p>
+                                                    <div className='d-flex'>
+                                                        <p className='total-identifier'>$ {article.total}</p>
+                                                        <p>${article.monto_urgencia}</p>
+                                                    </div>
                                                         :
                                                         <p className='total-identifier'>$ {article.total}</p>}
                                                 </div>
@@ -339,7 +339,7 @@ const ModalProduction: React.FC = () => {
                                                     </div>
                                                 </div>
                                                 <div className='td'>
-                                                    <select className="traditional__selector" value={article.id_area_produccion} onChange={(e) => onChangeAreaConcepto(index, e.target.value)}>
+                                                    <select className="traditional__selector mr-3" value={article.id_area_produccion} onChange={(e) => onChangeAreaConcepto(index, e.target.value)}>
                                                         <option value="" disabled>-- Selecciona una opción --</option>
                                                         {article.areas_produccion.map((option: any, idx: number) => (
                                                             <option key={idx} value={option.id_area
@@ -348,6 +348,11 @@ const ModalProduction: React.FC = () => {
                                                             </option>
                                                         ))}
                                                     </select>
+                                                    <div className='d-flex'>
+                                                        <div className='d-flex align-items-end'>
+                                                            <button type='button' className='btn__general-purple' onClick={() => sendConceptoAreas(article)}>Enviar</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
                                                 <div className='td'>
@@ -365,13 +370,7 @@ const ModalProduction: React.FC = () => {
                                                         <button className='btn__general-danger' type='button' onClick={() => cancelarConcepto(article, index)}>Cancelar Concepto</button>
                                                     </div>
                                                 </div>
-                                                <div className='td'>
-                                                    <div className='d-flex'>
-                                                        <div className='d-flex align-items-end'>
-                                                            <button type='button' className='btn__general-purple' onClick={() => sendConceptoAreas(article)}>Enviar</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                        
                                             </div>
                                         </div>
                                     )
