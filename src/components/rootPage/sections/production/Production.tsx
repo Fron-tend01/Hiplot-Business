@@ -12,7 +12,7 @@ import APIs from '../../../../services/services/APIs'
 import { storeModals } from '../../../../zustand/Modals'
 import ModalProduction from './ModalProduction'
 import { storeProduction } from '../../../../zustand/Production'
-import Swal from 'sweetalert2';
+
 
 const Production: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -41,8 +41,6 @@ const Production: React.FC = () => {
 
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
     const setSelectedIds = useSelectStore(state => state.setSelectedId)
-
-    const [client, setClient] = useState<any>('')
 
     //////////////////////////
     //////// Fechas//////////
@@ -109,9 +107,9 @@ const Production: React.FC = () => {
             options: 'nombre',
             dataSelect: resultSeries
         })
-      
+
     }
-    const intervalRef = useRef<number | null>(null); 
+    const intervalRef = useRef<number | null>(null);
 
     const fetchData = async () => {
         search()
@@ -119,7 +117,7 @@ const Production: React.FC = () => {
     useEffect(() => {
         fetch()
         //---------------------------SIRVE PARA ESTAR CONSULTANDO CADA CIERTO TIEMPO, EL CLEARINVERVAL ROMPE EL INTERVALO CUANDO RETURN SE EJECUTA Y EL COMPONENTE SE DESMONTA
-        fetchData(); 
+        fetchData();
         intervalRef.current = setInterval(fetchData, 30000);
         return () => {
             if (intervalRef.current !== null) {
@@ -165,7 +163,7 @@ const Production: React.FC = () => {
         })
     }
     useEffect(() => {
-        APIs.GetAny(`get_area_x_sucursal/${branchOffices.id}/${user_id}`).then((resp:any) => {
+        APIs.GetAny(`get_area_x_sucursal/${branchOffices.id}/${user_id}`).then((resp: any) => {
             setAreas({
                 selectName: 'Areas',
                 options: 'nombre',
@@ -174,45 +172,67 @@ const Production: React.FC = () => {
             setSelectedIds('areas', resp[0])
         })
     }, [branchOffices])
-   
+
+    const [type, setType] = useState<any>(0)
+    const handleClick = (value: any) => {
+        setType(value)
+    };
 
 
     return (
         <div className='production'>
             <div className='production__container'>
-                <div className='row'>
-                    <div className='col-8'>
-                        <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
-                    </div>
-                    <div className='col-4'>
-                        <label className='label__general'>Fechas</label>
-                        <div className='container_dates__requisition'>
-                            <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                <div className='row__one'>
+                    <div className='row'>
+                        <div className='col-8'>
+                            <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                        </div>
+                        <div className='col-4'>
+                            <label className='label__general'>Fechas</label>
+                            <div className='container_dates__requisition'>
+                                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className='row my-4'>
-                    {/* <div className='col-3'>
-                        <label className='label__general'>Clientes</label>
-                        <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Folio/RFC/Razon social' />
+                    <div className='row__two my-4'>
+                        <div className='container__checkbox_orders'>
+                            <div className='checkbox__orders'>
+                                <label className="checkbox__container_general">
+                                    <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 0} value={type} onChange={() => handleClick(0)} />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='title__checkbox text'>Activos</p>
+                            </div>
+                            <div className='checkbox__orders'>
+                                <label className="checkbox__container_general">
+                                    <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 1} value={type} onChange={() => handleClick(1)} />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='title__checkbox text'>Cancelados</p>
+                            </div>
+                            <div className='checkbox__orders'>
+                                <label className="checkbox__container_general">
+                                    <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 2} value={type} onChange={() => handleClick(2)} />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='title__checkbox text'>Sucursal(Terminados)</p>
+                            </div>
+                        </div>
+                        <div>
+                            <Select dataSelects={Areas} instanceId='areas' nameSelect='Area' />
+                        </div>
+                        <div>
+                            <Select dataSelects={series} instanceId='series' nameSelect='Serie' />
+                        </div>
+                        <div>
+                            <label className='label__general'>Folio</label>
+                            <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' />
+                        </div>
                     </div>
-                    <div className='col-3'>
-                        <Select dataSelects={users} instanceId='users' nameSelect='Usuarios' />
-                    </div> */}
-                     <div className='col-3'>
-                        <Select dataSelects={Areas} instanceId='areas' nameSelect='Area' />
-                    </div>
-                    <div className='col-3'>
-                        <Select dataSelects={series} instanceId='series' nameSelect='Serie' />
-                    </div>
-                    <div className='col-3'>
-                        <label className='label__general'>Folio</label>
-                        <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' />
-                    </div>
-                </div>
-                <div className='d-flex justify-content-center'>
-                    <div>
-                        <button className='btn__general-purple' type='button' onClick={search}>Buscar</button>
+                    <div className='d-flex justify-content-center'>
+                        <div>
+                            <button className='btn__general-purple' type='button' onClick={search}>Buscar</button>
+                        </div>
                     </div>
                 </div>
                 <div className='table__orders_production'>
@@ -227,9 +247,6 @@ const Production: React.FC = () => {
                     <div className='table__head'>
                         <div className='thead'>
                             <div className='th'>
-                                <p>Status</p>
-                            </div>
-                            <div className='th'>
                                 <p>Folio</p>
                             </div>
                             <div className='th'>
@@ -237,6 +254,9 @@ const Production: React.FC = () => {
                             </div>
                             <div className='th'>
                                 <p>Agente</p>
+                            </div>
+                            <div className='th'>
+                                <p> Status</p>
                             </div>
                             <div className="th">
                                 <p>Fecha envio Prod</p>
@@ -255,25 +275,25 @@ const Production: React.FC = () => {
                                 return (
                                     <div className='tbody__container' key={order.id} title='Haz Clic para ver más detalles de la Orden de Producción'>
                                         <div className={`tbody ${order.color_estado === 'rojo'
-                                            ? 'red'
+                                            ? 'delayed'
                                             : order.color_estado === 'amarillo'
-                                                ? 'yellow'
+                                                ? 'to-deliver'
                                                 : order.color_estado === 'azul_cielo'
                                                     ? 'blue'
                                                     : 'no-color'
                                             }`}>
                                             <div className='td' onClick={() => handleModalChange(order)}>
-                                                <p>{order.status == 0 ? <b style={{ color: 'green' }}>ACTIVO</b> :
-                                                    order.status == 1 ? <b style={{ color: 'red' }}>CANCELADO</b> : <b style={{ color: 'blue' }}>TERMINADO</b>}</p>
-                                            </div>
-                                            <div className='td' onClick={() => handleModalChange(order)}>
-                                                <p>{order.serie}-{order.folio}-{order.anio}</p>
+                                                <p className='folio-identifier'>{order.serie}-{order.folio}-{order.anio}</p>
                                             </div>
                                             <div className='td' onClick={() => handleModalChange(order)}>
                                                 <p>{order.sucursal}</p>
                                             </div>
                                             <div className='td' onClick={() => handleModalChange(order)}>
-                                                <p>{order.usuario_crea}</p>
+                                                <p className='user-identifier'>{order.usuario_crea}</p>
+                                            </div>
+                                            <div className='td' onClick={() => handleModalChange(order)}>
+                                                <p>{order.status == 0 ? <b className='active-identifier'>ACTIVO</b> :
+                                                    order.status == 1 ? <b >CANCELADO</b> : <b>TERMINADO</b>}</p>
                                             </div>
                                             <div className='td' onClick={() => handleModalChange(order)}>
                                                 <p>{order.fecha_creacion}</p>
@@ -281,16 +301,16 @@ const Production: React.FC = () => {
                                             <div className='td' onClick={() => handleModalChange(order)}>
                                                 <p>{order.fecha_entrega} {order.hora_entrega}</p>
                                             </div>
-                                            <div className='td' >
-                                                <input type="checkbox" className='m-1' checked={order.aux1}
+                                            <div className='td checkbox-group'>
+                                                <input type="checkbox" className='m-1 checkbox-input' checked={order.aux1}
                                                     onChange={(e) => { updateAux(e.target.checked, order.id, 1); }} />
-                                                <input type="checkbox" className='m-1' checked={order.aux2}
+                                                <input type="checkbox" className='m-1 checkbox-input' checked={order.aux2}
                                                     onChange={(e) => { updateAux(e.target.checked, order.id, 2); }} />
-                                                <input type="checkbox" className='m-1' checked={order.aux3}
+                                                <input type="checkbox" className='m-1 checkbox-input' checked={order.aux3}
                                                     onChange={(e) => { updateAux(e.target.checked, order.id, 3); }} />
-                                                <input type="checkbox" className='m-1' checked={order.aux4}
+                                                <input type="checkbox" className='m-1 checkbox-input' checked={order.aux4}
                                                     onChange={(e) => { updateAux(e.target.checked, order.id, 4); }} />
-                                                <input type="checkbox" className='m-1' checked={order.aux5}
+                                                <input type="checkbox" className='m-1 checkbox-input' checked={order.aux5}
                                                     onChange={(e) => { updateAux(e.target.checked, order.id, 5); }} />
                                             </div>
                                         </div>

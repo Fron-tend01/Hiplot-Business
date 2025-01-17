@@ -33,13 +33,15 @@ const ModalCreate: React.FC = () => {
   // Temporal
 
   const setConceptView = storePersonalized(state => state.setConceptView)
-    const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
-    const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
-    const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
+  const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+  const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
+  const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
+  const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
+
 
 
   ////////////////// Personalized Variations////////////////////////////////// 
-  const { conceptView,  dataUpdate, normalConcepts, customConcepts, customData, personalized, personalizedModal, temporaryNormalConcepts }: any = useStore(storePersonalized)
+  const { conceptView, dataUpdate, normalConcepts, customConcepts, customData, personalized, personalizedModal, temporaryNormalConcepts }: any = useStore(storePersonalized)
 
 
 
@@ -131,7 +133,7 @@ const ModalCreate: React.FC = () => {
 
 
   }
-   const setTemporaryNormalConcepts = storePersonalized(state => state.setTemporaryNormalConcepts)
+  const setTemporaryNormalConcepts = storePersonalized(state => state.setTemporaryNormalConcepts)
 
   useEffect(() => {
 
@@ -148,20 +150,20 @@ const ModalCreate: React.FC = () => {
 
     // setNormalConcepts([...normalConcepts, ...quatation.conceptos])
     setNormalConcepts([...quatation.conceptos, ...quatation.conceptos_pers])
-    setCustomData([...customConcepts, ...quatation.conceptos]);
+    // setCustomData([...customConcepts, ...quatation.conceptos]);
 
     setPersonalized(quatation.conceptos_pers)
 
-  
+
   }
 
   useEffect(() => {
-    if(personalizedModal == 'personalized_modal-quotation-update') {
-      
+    if (personalizedModal == 'personalized_modal-quotation-update') {
+
     } else {
       setTemporaryNormalConcepts(normalConcepts)
     }
- 
+
   }, [normalConcepts])
 
 
@@ -275,7 +277,7 @@ const ModalCreate: React.FC = () => {
           Swal.fire('Cotizacion creada exitosamente', '', 'success');
           let response = await APIs.getQuotation(dataGet);
           setQuotesData(response)
- 
+
           setModal('')
         }
 
@@ -288,7 +290,7 @@ const ModalCreate: React.FC = () => {
           Swal.fire('Cotizacion creada exitosamente', '', 'success');
           const response = await APIs.getQuotation(dataGet);
           setQuotesData(response)
-   
+
           setModal('')
         }
 
@@ -299,25 +301,31 @@ const ModalCreate: React.FC = () => {
 
   }
 
-  console.log('Hola')
+
 
   const undoConcepts = (concept: any) => {
     // Primero, modificamos los conceptos
     const updatedConcepts = concept.conceptos.map((element: any) => {
-      element.id_pers = 0;  // Establecer id_pers en 0
-      element.id_identifier += identifier + 1;  // Actualizar id_identifier
+      element.id_pers = 0;
+      element.id_identifier += identifier + 1;
       return element;
     });
-  
+
     // Actualizar el estado de normalConcepts
     setNormalConcepts([...normalConcepts, ...updatedConcepts]);
-    
+    console.log('updatedConcepts', updatedConcepts)
+
     // Filtrar y actualizar conceptView para eliminar los conceptos con el id_identifier especificado
     const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
-    setConceptView([...deleteItem, concept.conceptos]);
-  
+    setConceptView([...deleteItem, ...concept.conceptos]);
+    concept.conceptos.forEach((element: any) => {
+      element.check = false
+    });
+    setCustomConceptView([...deleteItem, ...concept.conceptos])
+
+
   };
-  
+
 
 
   console.log('conceptView', conceptView)
@@ -340,10 +348,10 @@ const ModalCreate: React.FC = () => {
     setModal('')
     if (personalizedModal === 'update-modal__qoutation') {
       setComments('')
-      setCustomData([])
+    
       setDataQuotation([])
     } else {
-      
+
     }
 
 
@@ -360,27 +368,28 @@ const ModalCreate: React.FC = () => {
 
   const [idIdentifier, setIdIdentifier] = useState<number>()
 
-  const modalPersonalizedUpdate = (concept: any, index: number) => {
+  const modalPersonalizedUpdate = (concept: any) => {
     setPersonalizedModal('personalized_modal-quotation-update')
     setIdIdentifier(concept.id_identifier)
     concept.conceptos.forEach((element: any) => {
-      element.temporary_custom = true
+      element.check = true
     });
     const filter = normalConcepts.filter((x: any) => x.personalized !== true)
-    console.log('filter', filter)
-    console.log('concept.conceptos', concept.conceptos)
+
 
     setDataUpdate([...concept.conceptos, ...filter])
-  
 
- 
+    console.log('concept.conceptos', concept.conceptos)
+
+    setCustomConceptView([...concept.conceptos, ...normalConcepts])
+
 
     setDataUpdatepersonalized([])
   }
 
 
 
- 
+
 
   const handleUrgencyChange = async (index: number) => {
     let data = {
@@ -761,15 +770,15 @@ const ModalCreate: React.FC = () => {
         </div>
         <ModalSalesOrder />
       </div>
-      <Personalized idIdentifier={idIdentifier}  branch={branch} />
+      <Personalized idIdentifier={idIdentifier} branch={branch} />
       <ArticleViewModal />
       <SalesCard />
       <SeeClient />
-      {personalizedModal !== '' ? 
-    <SeeCamposPlantillas />
-    :
-    ""
-    }
+      {personalizedModal !== '' ?
+        <SeeCamposPlantillas />
+        :
+        ""
+      }
 
     </div>
   );

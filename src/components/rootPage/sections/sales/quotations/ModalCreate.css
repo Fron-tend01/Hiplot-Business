@@ -220,9 +220,8 @@
 .table__quotations_modal .table__head {
     display: flex;
     width: 100%;
-    background-color: var(--table-header-color);
     border-radius: 20px 20px 0 0;
-     background-color: var(--table-header-color);
+    background-color: var(--table-header-color);
 }
 
 .table__quotations_modal .table__head .thead {

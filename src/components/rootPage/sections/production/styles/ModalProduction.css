@@ -1,3 +1,13 @@
+.production-modal__article-modal {
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+
+
+
+
 
 /*=================================================
  
@@ -68,6 +78,7 @@
 
 
 
+
  /*************************************************************
                     Tabla de Entradas
  **************************************************************/
@@ -96,7 +107,10 @@
 
 .table__production_modal .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(8, 1fr) ;
+    grid-template-columns: repeat(7, 1fr) ;
+    border: 2px solid var(--border-table-color);
+    border-radius: 10px 10px 0 0;
+    border-bottom: none;
     padding: 10px;
     font-weight: 600;
     column-gap: 20px;
@@ -105,6 +119,8 @@
 .table__production_modal .table__body {
 	height: 100%;
     overflow-y: auto;
+    border: 2px solid var(--border-table-color);
+    border-radius: 0 0 10px 10px;
     transition-delay: 0.0s;
     &::-webkit-scrollbar {
         width: 5px;
@@ -121,28 +137,11 @@
     }
 }
 
-
-
-
-.table__production_modal .tbody__container:nth-child(even) {
-    background-color: var(--table-color);
-	color: var(--text-table-color);
-}
-  
-.table__production_modal .tbody__container:nth-child(odd) {
-    background-color: var(--two-table-color);
-	color: var(--text-table-color);
-}
-
-
-
 .table__production_modal .table__body .tbody {
     display: flex;
 }
 
-.table__production_modal .table__body .tbody.personalized {
-    border: 2px solid var(--primary-color);
-}
+
 
 .table__production_modal .table__body .tbody {
     display: grid;
@@ -151,10 +150,54 @@
     column-gap: 20px;
 }
 
+.table__production_modal .table__body .tbody:hover {
+    background-color: var(--table-hover-color);
+    color: #fff;
+}
+
+  .table__production_modal .table__body .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table__production_modal .table__body .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+}
+
+.table__production_modal .table__body .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+.table__production_modal .table__body .tbody__container:first-child {
+    border-top: none;
+}
+
+.table__production_modal .table__body .tbody__container:last-child {
+    border-radius: 0 0 10px 10px;
+}
+
+
+.table__production_modal .table__body .tbody > .td {
+    display: flex;
+    align-items: center;
+}
+
+.table__production_modal .table__body .tbody.personalized {
+    border: 2px solid var(--primary-color);
+}
+
+.table__production_modal .table__body .tbody > .td . {
+    margin-top: 0;
+}
 
 .table__production_modal .table__body .tbody > .td .inputs__general {
     margin-top: 0;
+    outline: 2px solid var(--text-color-ligth);
 }
+.table__production_modal .table__body .tbody > .td .traditional__selector {
+    margin-top: 0;
+    outline: 2px solid var(--text-color-ligth);
+}
+
 
 
 .table__production_modal .table__body .tbody > .td .add_urgency {
@@ -177,4 +220,29 @@
 
 
 
+.table__production_modal .table__body .tbody:hover .td > .folio-identifier {
+    background-color: #3d86c6;
+    color: #ffffff;
+  }
+  
+  .table__production_modal .table__body .tbody:hover .td > .amount-identifier {
+    background-color: #FF8F00;
+    color: #ffffff;
+  }
+
+  .table__production_modal .table__body .tbody:hover .td  .total-identifier {
+    background-color: #5d35b0;
+    color: #ffffff;
+  }
+
+  
+  .table__production_modal .table__body .tbody:hover .td .active-identifier {
+    background-color: #4CAF50;
+    color: #ffffff;
+  }
+  
+  .table__production_modal .table__body .tbody:hover .td .no-urgency {
+    background-color: #D32F2F;
+  }
+  
 

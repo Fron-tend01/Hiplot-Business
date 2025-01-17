@@ -63,6 +63,7 @@ const Quotation: React.FC = () => {
 
   const modal = () => {
     setModal('create-modal__qoutation')
+    
   }
 
 
@@ -181,16 +182,17 @@ const Quotation: React.FC = () => {
       id_identifier++;
     });
 
+    console.log('totalNumberIdentifiers', totalNumberIdentifiers)
+
     setConceptView(quatation.conceptos);
     setNormalConcepts(quatation.conceptos);
     setCustomConceptView(quatation.conceptos);
 
     setQuatation(quatation)
     setPersonalized(quatation)
-    setCustomData(quatation.conceptos)
-    setIdentifier(totalNumberIdentifiers)
-   
 
+    setIdentifier(totalNumberIdentifiers)
+  BB    
   
   }
 

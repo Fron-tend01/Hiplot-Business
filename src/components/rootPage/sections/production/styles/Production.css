@@ -6,11 +6,23 @@
 
 .production__container {
     height: 100%;
-	background-color: var(--background-sections);
-	padding: 20px ;
 	border-radius: 10px;
     overflow: hidden;
 }
+
+
+.production__container > .row__one {
+    padding: 20px;
+    background-color: var(--cards-background);
+    border-radius: var(--general-card-border);
+}
+
+.production__container > .row__one .row__two {
+    display: grid;
+    grid-template-columns: 2fr repeat(3, 1fr);
+    column-gap: 20px;
+}
+
 
 .table__orders_production {
     border-radius: 10px;
@@ -31,7 +43,7 @@
 }
 
 .table__orders_production .table__head .thead {
-   display: flex;
+ 
    width: 100%;
 }
 
@@ -40,12 +52,18 @@
     grid-template-columns: repeat(7, 1fr) ;
     padding: 10px;
     font-weight: 600;
+    border: 2px solid var(--border-table-color);
+    border-radius: 10px 10px 0 0;
+    border-bottom: none;
 }
 
 .table__orders_production .table__body {
 	height: 100%;
     overflow-y: auto;
     transition-delay: 0.0s;
+    border: 2px solid var(--border-table-color);
+  
+    border-radius: 0 0 10px 10px;
     &::-webkit-scrollbar {
         width: 5px;
     }
@@ -62,15 +80,31 @@
 }
 
 
+.table__orders_production .table__body .tbody:hover {
+    background-color: var(--table-hover-color);
+    color: #fff;
+}
+
+  .table__orders_production .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
+
 .table__orders_production .tbody__container:nth-child(even) {
     background-color: var(--table-color);
-	color: var(--text-table-color);
-  }
-  
+}
+
 .table__orders_production .tbody__container:nth-child(odd) {
     background-color: var(--two-table-color);
-	color: var(--text-table-color);
-  }
+}
+
+.table__orders_production .tbody__container:first-child {
+    border-top: none;
+}
+
+.table__orders_production .tbody__container:last-child {
+    border-radius: 0 0 10px 10px;
+}
+
 
 .table__orders_production .table__body .tbody {
     display: flex;
@@ -92,19 +126,163 @@
 
 .table__orders_production .table__body .tbody .td {
     display: flex;
+    align-items: center;
 }
 
-.table__orders_production .table__body .tbody:hover {
-    background-color: var(--secundary-color);
+.table__orders_production .table__body .tbody:hover .td > .folio-identifier {
+    background-color: #3d86c6;
+    color: #ffffff;
+}
+
+.table__orders_production .table__body .tbody:hover .td > .user-identifier {
+    background-color: #ffffff;
+    color: #7E8998;
+}
+
+.table__orders_production .table__body .tbody:hover .td > p .active-identifier {
+    background-color: #4CAF50;
+    color: #ffffff;
+}
+
+
+.checkbox-group {
+  
+}
+
+.table__orders_production .table__body .tbody .td .checkbox-input {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #4b5563;
+  border-radius: 4px;
+  margin: 0 5px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+.table__orders_production .table__body .tbody .td .checkbox-input:checked {
+    background-color: var(--primary-color);
+    border-color:  var(--primary-color);
+}
+
+.table__orders_production .table__body .tbody .td .checkbox-input:checked::after {
+  content: '\2714';
+  font-size: 14px;
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.table__orders_production .table__body .tbody:hover .td .checkbox-input:not(:checked) {
+    border-color: #fff;
+    background-color: #fff;
+  }
+  
+
+.table__orders_production .table__body .tbody .td .checkbox-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px  var(--primary-color);
+}
+
+
+
+
+
+.tbody.delayed {
+    background-color: #ff5252dc;
     color: #fff;
 }
-.tbody.red {
-    background-color: #f86d6d;
+
+.tbody.delayed .folio-identifier {
+    display: flex;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    font-weight: 600;
+    /* outline: 2px solid var(--primary-100); */
+    color: #5c6c85;
 }
 
-.tbody.yellow {
-    background-color: #f8eb6d;
+.tbody.delayed .active-identifier {
+    display: flex;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #00b894;
+    border-radius: 5px;
+    font-weight: 600;
+    color: #ffffff;
 }
+
+
+.table__orders_production .table__body .tbody.delayed .td .checkbox-input {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffffff;
+    background-color: #ffffff;
+  }
+
+  .table__orders_production .table__body .tbody.delayed .td .checkbox-input:checked {
+    background-color: #50a2e9;
+    border-color:  #50a2e9;
+}
+
+
+.tbody.to-deliver {
+    background-color: #ff9800;
+    color: #fff;
+}
+
+.table__orders_production .table__body .tbody.to-deliver .td .checkbox-input {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffffff;
+    background-color: #ffffff;
+  }
+
+  .table__orders_production .table__body .tbody.to-deliver .td .checkbox-input:checked {
+    background-color: #50a2e9;
+    border-color:  #50a2e9;
+}
+
+
+.tbody.to-deliver .folio-identifier {
+    display: flex;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    font-weight: 600;
+    /* outline: 2px solid var(--primary-100); */
+    color: #5c6c85;
+}
+
+.tbody.to-deliver .active-identifier {
+    display: flex;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #4caf4f;
+    border-radius: 5px;
+    font-weight: 600;
+    color: #ffffff;
+}
+  
+  
+
+
 
 .tbody.blue {
     background-color: #bcdbf1;

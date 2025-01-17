@@ -21,6 +21,7 @@ const Personalized: React.FC<any> = ({branch, idIdentifier}: any,) => {
 
   const setConceptView = storePersonalized(state => state.setConceptView)
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+
   const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
 
@@ -28,7 +29,7 @@ const Personalized: React.FC<any> = ({branch, idIdentifier}: any,) => {
 
   const setPersonalized = storePersonalized(state => state.setPersonalized)
   const setCustomData = storePersonalized(state => state.setCustomData)
-  const { normalConcepts, deleteNormalConcepts, customConceptView, customConcepts, personalizedModal, customData, personalized, dataUpdate, temporaryNormalConcepts }: any = useStore(storePersonalized)
+  const { normalConcepts, deleteNormalConcepts, customConceptView, customConcepts, conceptView, deleteCustomConcepts, personalizedModal, customData, personalized, dataUpdate, temporaryNormalConcepts }: any = useStore(storePersonalized)
   const { dataPersonalized, }: any = useStore(storeSaleCard)
   const { modal }: any = useStore(storeModals)
   const { identifier }: any = useStore(storePersonalized)
@@ -52,11 +53,19 @@ const Personalized: React.FC<any> = ({branch, idIdentifier}: any,) => {
 
   useEffect(() => {
     fetch()
+
   }, [])
+  const [customLocal, setCustomLocal] = useState<any>([])
 
-  console.log('customConceptView', customConceptView)
-  console.log('normalConcepts', normalConcepts)
+  // console.log('normalConcepts', normalConcepts)
+  // console.log('deleteNormalConcepts', deleteNormalConcepts)
 
+  // console.log('customConcepts', customConcepts)
+  // console.log('deleteCustomConcepts', deleteCustomConcepts)
+
+
+  // console.log('conceptView', conceptView)
+  // console.log('customConceptView', customConceptView)
 
 
   // console.log('dataUpdate', dataUpdate)
@@ -71,11 +80,11 @@ const Personalized: React.FC<any> = ({branch, idIdentifier}: any,) => {
 
   const [item, setItem] = useState<any>()
 
-  const [customLocal, setCustomLocal] = useState<any>([])
+
 
   const addPersonalized = (item: any, index: number) => {
     setItem(item)
-    
+    console.log('custom local', customLocal)
 
     if (modal === 'create-modal__qoutation') {
 
@@ -90,10 +99,18 @@ const Personalized: React.FC<any> = ({branch, idIdentifier}: any,) => {
           ///// Eliminar el concepto de la variable de normal conceptos que se envia al backend /////////////
           const deleteItem = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
           setNormalConcepts(deleteItem)
-          setDeleteNormalConcepts([...deleteNormalConcepts, existItem[0]])
+          setDeleteNormalConcepts([...deleteNormalConcepts, existItem])
 
           ////////////////// Se agrega el concepto a la variable de conceptos de personalizados //////////////
-          setCustomLocal([...customLocal, item])
+          const existLocal = customLocal.some((x: any) => x.id_identifier == existItem.id_identifier)
+          if(existLocal) {
+            console.log('Ya existe')
+            
+          } else {
+            setCustomLocal([...customLocal, item])
+          }
+    
+    
           return
 
         } else {
@@ -107,31 +124,59 @@ const Personalized: React.FC<any> = ({branch, idIdentifier}: any,) => {
         
       } else {
         // 'personalized_modal-quotation-update'
-
+      
         if (item.check == true) {
-          item.temporary_custom = false;
+    
+          const updatedDataUpdate = customConceptView.map((x: any) => {
+            if (x.id_identifier === item.id_identifier) {
+              return { ...x, check: false };
+            } else {
+           
+            }
+            // Si no coincide, retorna el objeto original
+            return x;
+          });
+
+          setCustomConceptView(updatedDataUpdate);
+
+          const existItem = normalConcepts.find((x: any) => x.id_identifier == item.id_identifier)
+          if(existItem) {
+            const deleteItem = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+            setNormalConcepts(deleteItem)
+            setDeleteNormalConcepts([...deleteNormalConcepts, existItem])
+
+            const existLocal = customLocal.some((x: any) => x.id_identifier == existItem.id_identifier)
+            if(existLocal) {
+              console.log('Ya existe')
+              const deleteItem = customLocal.filter((xx: any) => xx.id_identifier !== item.id_identifier)
+              setCustomLocal([...deleteItem, item])
+            } else {
+              setCustomLocal([...customLocal, item])
+            }
+          }
+
+     
           setNormalConcepts([item, ...normalConcepts]);
 
-          const updatedDataUpdate = dataUpdate.map((x: any) => {
-            if (x.id_identifier === item.id_identifier) {
-              return { ...x, temporary_custom: false, check: false };
-            }
-            // Si no coincide, retorna el objeto original
-            return x;
-          });
-          setDataUpdate(updatedDataUpdate);
+         
         } else {
-          const updatedDataUpdate = dataUpdate.map((x: any) => {
-            if (x.id_identifier == item.id_identifier) {
-              return { ...x, temporary_custom: true, check: true };
+          const updatedDataUpdate = customConceptView.map((x: any) => {
+            if (x.id_identifier === item.id_identifier) {
+              return { ...x, check: true };
             }
             // Si no coincide, retorna el objeto original
             return x;
           });
-          setDataUpdate(updatedDataUpdate);
+          setCustomConceptView(updatedDataUpdate);
 
-          const deleteFilter = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
-          setNormalConcepts(deleteFilter)
+          const addFind = normalConcepts.find((xx: any) => xx.id_identifier == item.id_identifier)
+          setCustomLocal([...customLocal, addFind])
+
+          const deleteItem = normalConcepts.filter((xx: any) => xx.id_identifier !== addFind.id_identifier)
+          setNormalConcepts(deleteItem)
+          setConceptView(deleteItem)
+
+          
         }
 
 
@@ -142,6 +187,7 @@ const Personalized: React.FC<any> = ({branch, idIdentifier}: any,) => {
    
   };
 
+  console.log('identifier', identifier)
 
   const [selectsSatKey, setSelectsSatKey] = useState<any>()
   const [selectedSatKey, setSelectedSatKey] = useState<any>()
@@ -170,27 +216,31 @@ const Personalized: React.FC<any> = ({branch, idIdentifier}: any,) => {
 
 
       const data = {
-        descripcion: inpust.descripcion,
+        // descripcion: inpust.descripcion,
         personalized: true,
-        codigo: inpust.codigo,
-        cantidad: inpust.cantidad,
-        unidad: selectedIds?.units.id,
-        name_unidad: selectedIds?.units?.nombre,
-        clave_sat: parseInt(selectedSatKey.Clave),
-        codigo_unidad_sat: 0,
-        precio_total: inpust.precio_total,
-        comentarios_produccion: inpust.comentarios_produccion,
-        comentarios_factura: inpust.comentarios_factura,
+        // codigo: inpust.codigo,
+        // cantidad: inpust.cantidad,
+        // unidad: selectedIds?.units.id,
+        // name_unidad: selectedIds?.units?.nombre,
+        // clave_sat: parseInt(selectedSatKey.Clave),
+        // codigo_unidad_sat: 0,
+        // precio_total: inpust.precio_total,
+        // comentarios_produccion: inpust.comentarios_produccion,
+        // comentarios_factura: inpust.comentarios_factura,
         conceptos: customLocal,
         id_identifier: identifier + 1
       }
 
 
-     
+      console.log('customLocal', customLocal)
+
+      setCustomConcepts([...customConcepts, data])
 
       setConceptView([...normalConcepts, data])
-      setCustomConceptView([normalConcepts])
-      setCustomConcepts([...customConcepts, data])
+      setCustomConceptView(normalConcepts)
+
+
+      
 
       setPersonalizedModal('')
       setFilterPersonalized([])
@@ -199,35 +249,35 @@ const Personalized: React.FC<any> = ({branch, idIdentifier}: any,) => {
       return
      
     } else if(personalizedModal == 'personalized_modal-quotation-update') {
-      const filterFalse = dataUpdate.filter((x: any) => x.check === false);
-      console.log('filterFalse', filterFalse)
 
-      const filterTrue = dataUpdate.filter((x: any) => x.check === true);
-      console.log('filterTrue',filterTrue)
+      
+      // const updatedCustomConcepts = customConceptView.map((x: any) => {
+      //   if (x.id_identifier === item.id_identifier) {
+      //     return { ...x, conceptos: customLocal };
+      //   }
 
-      const updatedNormalConcepts = normalConcepts.map((x: any) => {
-        if (x.id_identifier === idIdentifier) {
-          return { 
-            ...x, 
-            conceptos: filterTrue,
-          };
+      //   return x;
+      // });
+      console.log('xxxxxxxxxxxxxxxxxxxx', item)
+      const updatedConceptView = conceptView.map((x: any) => {
+       
+        if (x.id_identifier === item.id_identifier) {
+          return { ...x, conceptos: customLocal };
         }
-        return x; 
+
+        return x;
       });
 
-  
-      updatedNormalConcepts.forEach((element: any) => {
-        element.check = false
-      });
-      console.log('updatedNormalConcepts',updatedNormalConcepts)
-      setNormalConcepts(updatedNormalConcepts);
-      
-      
+      console.log('updatedConceptView', updatedConceptView)
 
+      // setCustomConcepts(updatedCustomConcepts)
+      setConceptView(updatedConceptView)
+
+      setPersonalizedModal('')
      
-      
+
     } else {
-      setDataUpdate([])
+     
     }
 
 
@@ -277,7 +327,6 @@ const Personalized: React.FC<any> = ({branch, idIdentifier}: any,) => {
 
   }
 
-console.log(normalConcepts)
 
   const [inpust, setInputs] = useState<any>({
     descripcion: '',
@@ -533,7 +582,7 @@ console.log(normalConcepts)
               {customConceptView ? (
                 <div className='table__numbers'>
                   <p className='text'>Total de artículos</p>
-                  <div className='quantities_tables'>{dataUpdate.length}</div>
+                  <div className='quantities_tables'>{customConceptView.length}</div>
                 </div>
               ) : (
                 <p className="text">No hay empresas que mostras</p>
@@ -571,7 +620,7 @@ console.log(normalConcepts)
                                 <label className="custom-checkbox">
                                   <input
                                     type="checkbox"
-                                    checked={dataUpdate[index]?.check || false}
+                                    checked={customConceptView[index]?.check || false}
                                     onChange={() => addPersonalized(concept, index)}
                                   />
                                   <span className="checkmark"></span>

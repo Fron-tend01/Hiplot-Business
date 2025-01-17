@@ -420,7 +420,7 @@ const ModalSalesOrder: React.FC = () => {
         let pers = normalConcepts.filter((x: any) => x.personalized == true)
         let conceptos_a_enviar: any[] = []
         if (normales.length > 0) {
-            console.log('entrando a if normales');
+           
 
             normales.forEach((n: any) => {
                 conceptos_a_enviar.push(n)

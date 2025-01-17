@@ -8,6 +8,7 @@ import Select from '../../Dynamic_Components/Select'
 import useUserStore from '../../../../zustand/General'
 import { useSelectStore } from '../../../../zustand/Select'
 import Swal from 'sweetalert2'
+import Binnacle from './Binnacle'
 
 const ModalProduction: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -25,6 +26,8 @@ const ModalProduction: React.FC = () => {
     const handleCreateSaleOrder = () => {
 
     }
+
+      const setModalSubSub = storeModals((state) => state.setModalSubSub);
 
     const [areas, setAreas] = useState<any>()
     const [areasGral, setAreasGral] = useState<any>()
@@ -211,20 +214,25 @@ const ModalProduction: React.FC = () => {
                     </a>
                     <p className='title__modals'>Modal de produccion</p>
                 </div>
-                <form onSubmit={handleCreateSaleOrder}>
+                <form className='production-modal__article-modal' onSubmit={handleCreateSaleOrder}>
                     <div>
                         <div className="card ">
                             <div className="card-body bg-standar">
-                                <h3 className="text">{productionToUpdate.serie}-{productionToUpdate.folio}-{productionToUpdate.anio}</h3>
+                                <div className='d-flex justify-content-between'>
+                                    <h3 className="text">{productionToUpdate.serie}-{productionToUpdate.folio}-{productionToUpdate.anio}</h3>
+                                    <div>
+                                        <button type='button' className='btn__general-warning-200' onClick={() => setModalSubSub('logbook__production-modal')}>Bitacora</button>
+                                    </div>
+                                </div>
                                 <hr />
                                 <div className='row'>
                                     <div className='col-6 md-col-12'>
                                         <span className='text'>Creado por: <b>{productionToUpdate.usuario_crea}</b></span><br />
                                         <span className='text'>Fecha envio producción: <b>{productionToUpdate.fecha_creacion}</b></span><br />
                                         <span className='text'>Fecha Entrega: <b>{productionToUpdate.fecha_creacion}</b></span><br />
-                                         <p>{productionToUpdate.status == 0 ? <b style={{ color: 'green' }}>ACTIVO</b> :
-                                                        productionToUpdate.status == 1 ? <b style={{ color: 'red' }}>CANCELADO</b> : 
-                                                        productionToUpdate.status == 2 ? <b style={{ color: 'blue' }}>TERMINADO</b> :<b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
+                                        <p>{productionToUpdate.status == 0 ? <b style={{ color: 'green' }}>ACTIVO</b> :
+                                            productionToUpdate.status == 1 ? <b style={{ color: 'red' }}>CANCELADO</b> :
+                                                productionToUpdate.status == 2 ? <b style={{ color: 'blue' }}>TERMINADO</b> : <b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
                                     </div>
                                     <div className='col-6 md-col-12'>
                                         <span className='text'>Empresa: <b>{productionToUpdate.empresa}</b></span><br />
@@ -243,17 +251,22 @@ const ModalProduction: React.FC = () => {
                                         <div className='mr-4'>
                                             <button className='btn__general-orange' type='button' onClick={getPDF}>Imprimir ticket</button>
                                         </div>
-                                        <div className='d-flex'>
+                                        <div className='d-flex mr-4'>
                                             <div className='mr-3'>
                                                 <Select dataSelects={areasGral} instanceId='areasGral' nameSelect='Enviar todo a Otra Area:' />
                                             </div>
                                             <div className='d-flex align-items-end'>
                                                 <button className='btn__general-purple' onClick={sendAreas}>Enviar</button>
                                             </div>
+                                            
+                                        </div>
+                                        <div>
+                                            <button className='btn__general-primary'>Enviar a sucursal</button>
                                         </div>
                                     </div>
                                     <div className='d-flex align-items-end'>
-                                        <button className='btn__general-danger' onClick={finishConcept}>Terminar orden</button>
+                                        <button className='btn__general-danger mr-3' onClick={finishConcept}>Terminar orden</button>
+                                        <button className='btn__general-danger'>Cancelar</button>
                                     </div>
                                 </div>
                             </div>
@@ -270,9 +283,7 @@ const ModalProduction: React.FC = () => {
                         )}
                         <div className='table__head'>
                             <div className='thead'>
-                                <div className='th'>
-                                    <p>Status</p>
-                                </div>
+
                                 <div className='th'>
                                     <p>Articulo</p>
                                 </div>
@@ -284,6 +295,9 @@ const ModalProduction: React.FC = () => {
                                 </div>
                                 <div className='th'>
                                     <p>Total</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Status</p>
                                 </div>
                                 <div className='th'>
                                     <p>Comentarios</p>
@@ -300,24 +314,24 @@ const ModalProduction: React.FC = () => {
                                         <div className='tbody__container' key={index}>
                                             <div className='tbody'>
                                                 <div className='td'>
-                                                    <p>{article.status_produccion == 0 ? <b style={{ color: 'green' }}>ACTIVO</b> :
-                                                        article.status_produccion == 1 ? <b style={{ color: 'red' }}>CANCELADO</b> : 
-                                                        article.status_produccion == 2 ? <b style={{ color: 'blue' }}>TERMINADO</b> :<b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
+                                                    <p className='folio-identifier'>{article.codigo}-{article.descripcion}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>{article.codigo}-{article.descripcion}</p>
-                                                </div>
-                                                <div className='td'>
-                                                    <p>{article.cantidad} {article.name_unidad || article.unidad}</p>
+                                                    <p className='amount-identifier'>{article.cantidad} {article.name_unidad || article.unidad}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <p>$ {article.total / article.cantidad}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    {article.monto_urgencia != undefined && article.monto_urgencia > 0 ? 
-                                                    <p>$ {article.total} <span style={{ color: 'red' }}>(${article.monto_urgencia})</span></p>
-                                                    :
-                                                    <p>$ {article.total}</p>}
+                                                    {article.monto_urgencia != undefined && article.monto_urgencia > 0 ?
+                                                        <p>$ {article.total} <span style={{ color: 'red' }}>(${article.monto_urgencia})</span></p>
+                                                        :
+                                                        <p className='total-identifier'>$ {article.total}</p>}
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{article.status_produccion == 0 ? <b className='active-identifier'>ACTIVO</b> :
+                                                        article.status_produccion == 1 ? <b className='cancel-identifier'>CANCELADO</b> :
+                                                            article.status_produccion == 2 ? <b className='finished-identifier'>TERMINADO</b> : <b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <div>
@@ -325,7 +339,7 @@ const ModalProduction: React.FC = () => {
                                                     </div>
                                                 </div>
                                                 <div className='td'>
-                                                    <select className="" value={article.id_area_produccion} onChange={(e) => onChangeAreaConcepto(index, e.target.value)}>
+                                                    <select className="traditional__selector" value={article.id_area_produccion} onChange={(e) => onChangeAreaConcepto(index, e.target.value)}>
                                                         <option value="" disabled>-- Selecciona una opción --</option>
                                                         {article.areas_produccion.map((option: any, idx: number) => (
                                                             <option key={idx} value={option.id_area
@@ -335,26 +349,27 @@ const ModalProduction: React.FC = () => {
                                                         ))}
                                                     </select>
                                                 </div>
+
+                                                <div className='td'>
+                                                    <div>
+                                                        <button className='btn__general-purple' type='button' onClick={() => terminarConcepto(article, index)}>Terminar conceptos</button>
+                                                    </div>
+                                                </div>
+                                                <div className='td'>
+                                                    <div>
+                                                        <button className='btn__general-purple' type='button' onClick={() => enviarASucursalConcepto(article, index)}>Enviar concepto a sucursal</button>
+                                                    </div>
+                                                </div>
+                                                <div className='td'>
+                                                    <div>
+                                                        <button className='btn__general-danger' type='button' onClick={() => cancelarConcepto(article, index)}>Cancelar Concepto</button>
+                                                    </div>
+                                                </div>
                                                 <div className='td'>
                                                     <div className='d-flex'>
                                                         <div className='d-flex align-items-end'>
                                                             <button type='button' className='btn__general-purple' onClick={() => sendConceptoAreas(article)}>Enviar</button>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div className='td'>
-                                                    <div>
-                                                        <button className='btn__general-purple' onClick={() => terminarConcepto(article, index)}>Terminar conceptos</button>
-                                                    </div>
-                                                </div>
-                                                <div className='td'>
-                                                    <div>
-                                                        <button className='btn__general-purple' onClick={() => enviarASucursalConcepto(article, index)}>Enviar concepto a sucursal</button>
-                                                    </div>
-                                                </div>
-                                                <div className='td'>
-                                                    <div>
-                                                        <button className='btn__general-danger' onClick={() => cancelarConcepto(article, index)}>Cancelar Concepto</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -367,6 +382,7 @@ const ModalProduction: React.FC = () => {
                         )}
                     </div>
                 </form>
+                <Binnacle />
             </div>
         </div>
     )

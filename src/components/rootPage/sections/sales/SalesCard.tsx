@@ -28,9 +28,12 @@ const SalesCard: React.FC = () => {
 
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
-  const setNormalConcepts = storePersonalized(state => state.setNormalConcepts);
+  const setConceptView = storePersonalized(state => state.setConceptView)
+  const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+
+
   const setCustomData = storePersonalized(state => state.setCustomData);
-  const { normalConcepts, customData }: any = useStore(storePersonalized);
+  const { normalConcepts, conceptView }: any = useStore(storePersonalized);
 
   const setArticle = storeSaleCard(state => state.setArticle);
 
@@ -310,7 +313,7 @@ const SalesCard: React.FC = () => {
 
 
     setNormalConcepts([...normalConcepts, newData])
-    setCustomData([...customData, newData])
+    setConceptView([...conceptView, newData])
   };
 
 
