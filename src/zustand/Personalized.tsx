@@ -20,13 +20,13 @@ interface SelectStore {
   conceptView: any;
   setConceptView: (x: any) => void;
 
-
+  
   customConceptView: any;
   setCustomConceptView: (x: any) => void;
 
-  ov_repo: any;
-  setov_repo: (x: any) => void;
 
+  customLocal: any;
+  setCustomLocal: (x: any) => void;
 
 
 
@@ -38,8 +38,9 @@ interface SelectStore {
   personalizedModal: any;
   setPersonalizedModal: (x: any) => void;
 
-  identifier: any;
-  setIdentifier: (x: any) => void;
+  identifier: number;
+  setIdentifier: (newIdentifier: number) => void;
+  incrementIdentifier: () => void;
 
 
 
@@ -48,7 +49,7 @@ interface SelectStore {
 
 
 
-
+  
 
 
   customData: any[];
@@ -69,7 +70,7 @@ interface SelectStore {
 
   temporaryCustomConcepts: any[];
   setTemporaryCustomConcepts: (x: any) => void;
-
+  
 }
 
 export const storePersonalized = create<SelectStore>((set) => ({
@@ -93,9 +94,9 @@ export const storePersonalized = create<SelectStore>((set) => ({
   customConceptView: [],
   setCustomConceptView: (x) => set({ customConceptView: x }),
 
-  ov_repo: null as any | null,
-  setov_repo: (x: any) => set({ ov_repo: x }),
 
+  customLocal: [],
+  setCustomLocal: (x) => set({ customLocal: x }),
 
 
 
@@ -125,7 +126,11 @@ export const storePersonalized = create<SelectStore>((set) => ({
   temporaryCustomConcepts: [],
   setTemporaryCustomConcepts: (x) => set({ temporaryCustomConcepts: x }),
 
+  
   identifier: 0,
-  setIdentifier: (x) => set({ identifier: x }),
-}));
+  setIdentifier: (newIdentifier) => set({ identifier: newIdentifier }),
+  incrementIdentifier: () => set((state) => ({ identifier: state.identifier + 1 }))
 
+
+}));
+  

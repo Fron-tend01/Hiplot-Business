@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { storeCompanies } from '../../../../zustand/Companies';
-import { storeBranchOffcies } from '../../../../zustand/BranchOffices';
-import { storeAreas } from '../../../../zustand/Areas';
 import useUserStore from '../../../../zustand/General';
 import './styles/Vales.css'
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales';
@@ -13,28 +10,18 @@ import Flatpickr from "react-flatpickr";
 import { usersRequests } from '../../../../fuctions/Users';
 import APIs from '../../../../services/services/APIs';
 import Swal from 'sweetalert2';
-interface BranchOffices {
-  id: number;
-  nombre: string;
-  direccion: string;
-  contacto: string;
-  empresa_id: number;
-  empresa: string;
-  sucursal: string
-  produccion: boolean
-}
+
 
 const Vales: React.FC = () => {
   // Modales
   const [modalState, setModalState] = useState<boolean>(false)
-  const [modalStateUpdate, setModalStateUpdate] = useState<boolean>(false)
 
   // Estados de advertencia para validar campos
   // Warning states to validate fields
-  const [warningName, setWarningName] = useState<boolean>(false)
 
 
-  const { areasXBranchOfficesXUsers }: any = storeAreas();
+
+
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
 

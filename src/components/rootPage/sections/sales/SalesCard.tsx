@@ -7,7 +7,6 @@ import { articleRequests } from '../../../../fuctions/Articles';
 import { v4 as uuidv4 } from 'uuid';
 import { UserGroupsRequests } from '../../../../fuctions/UserGroups';
 import useUserStore from '../../../../zustand/General';
-import { UnitsRequests } from '../../../../fuctions/Units';
 import './styles/SalesCard.css';
 import Prices from './sales-sard_modals/Prices';
 
@@ -19,7 +18,6 @@ import APIs from '../../../../services/services/APIs';
 import { Toaster, toast } from 'sonner'
 import { storePersonalized } from '../../../../zustand/Personalized';
 import { storeQuotation } from '../../../../zustand/Quotation';
-import DynamicVariables from '../../../../utils/DynamicVariables';
 
 
 const SalesCard: React.FC = () => {
@@ -28,12 +26,14 @@ const SalesCard: React.FC = () => {
 
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
-  const setConceptView = storePersonalized(state => state.setConceptView)
+  
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
 
+  const setConceptView = storePersonalized(state => state.setConceptView)
+  const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
-  const setCustomData = storePersonalized(state => state.setCustomData);
-  const { normalConcepts, conceptView }: any = useStore(storePersonalized);
+
+  const { normalConcepts, conceptView, customConceptView }: any = useStore(storePersonalized);
 
   const setArticle = storeSaleCard(state => state.setArticle);
 
@@ -314,24 +314,28 @@ const SalesCard: React.FC = () => {
 
     setNormalConcepts([...normalConcepts, newData])
     setConceptView([...conceptView, newData])
+    setCustomConceptView([...customConceptView, newData])
   };
+
+  console.log('normalConcepts', normalConcepts)
 
 
   const addSaleOrder = () => {
+    const incrementIdentifier = storePersonalized.getState().incrementIdentifier;
     const newData = { ...data };
-    newData.id_identifier = identifier + 1;
-    setIdentifier(identifier + 1);
+    newData.id_identifier = storePersonalized.getState().identifier + 1; // Usa el valor actual de identifier
+    incrementIdentifier();
 
     if (dataSaleOrder !== undefined) {
       setDataSaleOrder([...dataSaleOrder, newData])
     } else {
       setDataSaleOrder([data])
-
     }
 
     setNormalConcepts([...normalConcepts, newData])
-    setCustomData([...customData, newData])
-
+    setConceptView([...conceptView, newData])
+    setCustomConceptView([...customConceptView, newData])
+  
   }
 
   const [productionComments, setproductionComments] = useState<string>('')

@@ -20,26 +20,25 @@ const Quotation: React.FC = () => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
 
-    ////////////////// Personalized Variations////////////////////////////////// 
-    const setConceptView = storePersonalized(state => state.setConceptView)
-    const setNormalConcepts = storePersonalized(state => state.setConceptView)
-    const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
-    const setCustomConcepts = storePersonalized(state => state.setCustomConceptView)
+  ////////////////// Personalized Variations////////////////////////////////// 
+  const setConceptView = storePersonalized(state => state.setConceptView)
+  const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+  const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
+  const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
-
+ 
 
   const setModal = storeModals(state => state.setModal)
-  const setCustomData = storePersonalized(state => state.setCustomData)
 
   const setQuatation = storeQuotation(state => state.setQuatation)
   const setPersonalized = storePersonalized(state => state.setPersonalized)
 
-  const setTemporaryNormalConcepts = storePersonalized(state => state.setTemporaryNormalConcepts)
 
 
   const setDataGet = storeQuotation(state => state.setDataGet);
   const setQuotesData = storeQuotation(state => state.setQuotesData);
   const { quotesData }: any = useStore(storeQuotation)
+  const { identifier, conceptView }: any = useStore(storePersonalized)
 
   const { getUsers }: any = usersRequests()
 
@@ -55,7 +54,7 @@ const Quotation: React.FC = () => {
 
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
-  const setIdentifier = storeQuotation(state => state.setIdentifier);
+  const setIdentifier = storePersonalized(state => state.setIdentifier);
 
   const [dates, setDates] = useState<any>()
 
@@ -169,36 +168,46 @@ const Quotation: React.FC = () => {
     }
   }
 
-    const updateQuotation = (quatation: any) => {
-    setModal('update-modal__qoutation')
-
-    let id_identifier = 1;
-    let totalNumberIdentifiers = 0;
-
-
-    quatation.conceptos.forEach((x: any) => {
-      x.id_identifier = id_identifier;
-      totalNumberIdentifiers += 1;
-      id_identifier++;
+  const updateQuotation = (quotation: {
+    conceptos: { id_identifier?: number }[];
+    conceptos_pers: { id_identifier?: number }[];
+  }) => {
+    // Cambia el estado del modal
+    setModal('update-modal__qoutation');
+  
+    // Obtiene el valor actual de identifier desde el store
+    const currentIdentifier = storePersonalized.getState().identifier;
+    let newIdentifier = currentIdentifier;
+  
+    // Actualiza los identificadores en conceptos
+    quotation.conceptos.forEach((x) => {
+      x.id_identifier = ++newIdentifier;
     });
-
-    console.log('totalNumberIdentifiers', totalNumberIdentifiers)
-
-    setConceptView(quatation.conceptos);
-    setNormalConcepts(quatation.conceptos);
-    setCustomConceptView(quatation.conceptos);
-
-    setQuatation(quatation)
-    setPersonalized(quatation)
-
-    setIdentifier(totalNumberIdentifiers)
-  BB    
   
-  }
-
-
+    quotation.conceptos_pers.forEach((x) => {
+      x.id_identifier = ++newIdentifier;
+    });
+  
+    // Actualiza el identificador global en el store
+    storePersonalized.setState({ identifier: newIdentifier });
+  
+    // Actualiza los estados locales con los datos procesados
+    setConceptView([...quotation.conceptos, ...quotation.conceptos_pers]);
+    setCustomConcepts(quotation.conceptos_pers);
+    setNormalConcepts(quotation.conceptos);
+    setCustomConceptView(quotation.conceptos);
+  
+    // Actualiza otros estados relacionados con la cotización
+    setQuatation(quotation);
+    setPersonalized(quotation);
+  };
   
   
+  
+  console.log('conceptViewconceptViewconceptViewc', conceptView)
+
+
+
 
   return (
     <div className='quotation'>
@@ -217,44 +226,44 @@ const Quotation: React.FC = () => {
       </div>
       <div className='container__quotation'>
         <div className='filter__container'>
-        <div className='row'>
-          <div className='col-8 md-col-12'>
-            <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+          <div className='row'>
+            <div className='col-8 md-col-12'>
+              <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+            </div>
+            <div className='dates__requisition col-4'>
+              <label className='label__general'>Fechas</label>
+              <div className='container_dates__requisition'>
+                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+              </div>
+            </div>
           </div>
-          <div className='dates__requisition col-4'>
-            <label className='label__general'>Fechas</label>
-            <div className='container_dates__requisition'>
-              <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+          <div className='row__two my-4'>
+            <div>
+              <label className='label__general'>Clientes</label>
+              <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Cliente' />
+            </div>
+            <div>
+              <Select dataSelects={users} nameSelect={'Usuarios'} instanceId='users' />
+            </div>
+
+            <div>
+              <Select dataSelects={series} nameSelect={'Series'} instanceId='series' />
+            </div>
+            <div>
+              <label className='label__general'>Folio</label>
+              <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' />
+            </div>
+          </div>
+          <div className='row__three'>
+            <div className='button__search'>
+              <button className='sm-mx-auto btn__general-primary' onClick={searchQuotation}>Buscar</button>
+            </div>
+            <div className='button__create-quotation'>
+              <button className='sm-mx-auto btn__general-bg-100' onClick={modal}>Crear cotizacion</button>
             </div>
           </div>
         </div>
-        <div className='row__two my-4'>
-          <div>
-            <label className='label__general'>Clientes</label>
-            <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Cliente' />
-          </div>
-          <div>
-            <Select dataSelects={users} nameSelect={'Usuarios'} instanceId='users' />
-          </div>
 
-          <div>
-            <Select dataSelects={series} nameSelect={'Series'} instanceId='series' />
-          </div>
-          <div>
-            <label className='label__general'>Folio</label>
-            <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' />
-          </div>
-        </div>
-        <div className='row__three'>
-          <div className='button__search'>
-            <button className='sm-mx-auto btn__general-primary' onClick={searchQuotation}>Buscar</button>
-          </div>
-          <div className='button__create-quotation'>
-            <button className='sm-mx-auto btn__general-bg-100' onClick={modal}>Crear cotizacion</button>
-          </div>
-        </div>
-        </div>
-    
         <div className='table__quotations-head'>
           <div>
             {quotesData ? (
@@ -295,43 +304,43 @@ const Quotation: React.FC = () => {
           </div>
         </div>
         <div className='table__quotations-body'>
-            {quotesData ? (
-              <div className='table__body'>
-                {quotesData?.map((quatation: any, index: any) => (
-                  <div className='tbody__container' key={index} onClick={() => updateQuotation(quatation)}>
-                    <div className='tbody'>
-                      <div className='td'>
-                        <p className='folio'>{quatation.folio}-{quatation.anio}</p>
-                      </div>
-                      <div className='td'>
-                        {quatation.titulo}
-                      </div>
-                      <div className='td '>
-                        <p className='total'>$ 567.45</p>
-                      </div>
-                      <div className='td'>
-                        {quatation.Razon_social}
-                      </div>
-                      <div className='td '>
-                        <div className='by-user'>
-                          {quatation.usuario_crea}
-                        </div>
-                      </div>
-                      <div className='td'>
-                        {quatation.fecha_creacion}
-                      </div>
-                      <div className='td'>
-                        {quatation.sucursal}
-                      </div>
-
+          {quotesData ? (
+            <div className='table__body'>
+              {quotesData?.map((quatation: any, index: any) => (
+                <div className='tbody__container' key={index} onClick={() => updateQuotation(quatation)}>
+                  <div className='tbody'>
+                    <div className='td'>
+                      <p className='folio'>{quatation.folio}-{quatation.anio}</p>
                     </div>
+                    <div className='td'>
+                      {quatation.titulo}
+                    </div>
+                    <div className='td '>
+                      <p className='total'>$ 567.45</p>
+                    </div>
+                    <div className='td'>
+                      {quatation.Razon_social}
+                    </div>
+                    <div className='td '>
+                      <div className='by-user'>
+                        {quatation.usuario_crea}
+                      </div>
+                    </div>
+                    <div className='td'>
+                      {quatation.fecha_creacion}
+                    </div>
+                    <div className='td'>
+                      {quatation.sucursal}
+                    </div>
+
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p className='text'>Cargando datos...</p>
-            )}
-        
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className='text'>Cargando datos...</p>
+          )}
+
         </div>
         <ModalCreate />
       </div>

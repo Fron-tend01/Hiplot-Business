@@ -19,7 +19,7 @@ const Production: React.FC = () => {
     const user_id = userState.id
 
     const { getUsers }: any = usersRequests()
-    const [users, setUsers] = useState<any>()
+    const [setUsers] = useState<any>()
 
     const [production, setProduction] = useState<any>([])
 

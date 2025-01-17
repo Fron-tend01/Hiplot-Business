@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
 import './Binancle.css'
 import { storeSaleOrder } from '../../../../../../zustand/SalesOrder'
-import { useStore } from 'zustand'
 
 const Binnacle: React.FC = () => {
 
     const { subModal }: any = storeSaleOrder()
     const setSubModal = storeSaleOrder((state) => state.setSubModal);
 
-    const { saleOrdersToUpdate }: any = useStore(storeSaleOrder);
 
     const [data] = useState([])
 
@@ -44,7 +42,7 @@ const Binnacle: React.FC = () => {
                         </div>
                         {data ? (
                             <div className='table__body'>
-                                {data?.map((article: any, index: number) => {
+                                {data?.map((article: any) => {
                                     return (
                                         <div className='tbody__container' key={article.id}>
                                             <div className='tbody personalized'>

@@ -23,9 +23,9 @@ const ByOP: React.FC = () => {
 
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
-    const [dataInputs, setDataInputs] = useState({
-        invoice: ''
-    })
+    // const [dataInputs, setDataInputs] = useState({
+    //     invoice: ''
+    // })
 
     const [series, setSeries] = useState<any>()
 
@@ -92,6 +92,9 @@ const ByOP: React.FC = () => {
         setConcepts([...concepts, ...item.conceptos])
     }
     
+    const openModalConcepts = () => {
+
+    }
 
 
 
@@ -195,7 +198,7 @@ const ByOP: React.FC = () => {
                                             </div>
                                             <div className='td'>
                                                 <div>
-                                                    <button onClick={() => openModalConcepts(x)} type='button' className='btn__general-purple'>Ver conceptos</button>
+                                                    <button onClick={() => openModalConcepts()} type='button' className='btn__general-purple'>Ver conceptos</button>
                                                 </div>
                                             </div>
                                             <div className='td'>
