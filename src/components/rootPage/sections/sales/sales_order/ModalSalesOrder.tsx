@@ -27,10 +27,11 @@ const ModalSalesOrder: React.FC = () => {
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
-    const { normalConcepts, customConcepts, personalized }: any = useStore(storePersonalized)
+    const { normalConcepts, customConcepts, personalized, ov_repo }: any = useStore(storePersonalized)
 
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
     const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
+    const setov_repo = storePersonalized((state) => state.setov_repo);
     const setPersonalized = storePersonalized((state) => state.setPersonalized);
 
     const setCustomData = storePersonalized((state) => state.setCustomData);
@@ -131,6 +132,7 @@ const ModalSalesOrder: React.FC = () => {
             id_usuario_crea: user_id,
             titulo: title,
             id_cotizacion_relacionada: idCotizacion,
+            id_ov_repo: ov_repo==null?0:ov_repo?.id,
             hora_entrega_produccion: timePartOne,
             fecha_entrega_produccion: datePartOne,
             hora_entrega_cliente: timePartTwo,
@@ -144,7 +146,9 @@ const ModalSalesOrder: React.FC = () => {
             if (result.error == true) {
                 return Swal.fire('Advertencia', result.mensaje, 'warning');
             } else {
-                Swal.fire('Orden de compra creada exitosamente', result.mensaje, 'success');
+                Swal.fire('Orden de venta creada exitosamente', result.mensaje, 'success');
+                setov_repo(null)
+
             }
 
         } catch (error) {
@@ -371,46 +375,52 @@ const ModalSalesOrder: React.FC = () => {
     useEffect(() => {
 
         if (modalSalesOrder === 'sale-order__modal_bycot' || modalSalesOrder == 'sale-order__modal') {
-            setIdCotizacion(saleOrdersToUpdate.id)
-            setDataSaleOrder(saleOrdersToUpdate?.conceptos)
-            setCompanies({ id: saleOrdersToUpdate.id_empresa })
-            setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
-            setTitle(saleOrdersToUpdate.titulo)
-            const data = {
-                id_sucursal: saleOrdersToUpdate.id_sucursal,
-                id_usuario: user_id,
-                nombre: saleOrdersToUpdate.rfc
-            }
-            getClients(data).then((response: any) => {
-                setClients({
-                    selectName: 'Cliente',
-                    options: 'razon_social',
-                    dataSelect: response
+            if (modalSalesOrder === 'sale-order__modal_bycot') {
+                setIdCotizacion(saleOrdersToUpdate.id)
+                setDataSaleOrder(saleOrdersToUpdate?.conceptos)
+                setCompanies({ id: saleOrdersToUpdate.id_empresa })
+                setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
+                setTitle(saleOrdersToUpdate.titulo)
+                const data = {
+                    id_sucursal: saleOrdersToUpdate.id_sucursal,
+                    id_usuario: user_id,
+                    nombre: saleOrdersToUpdate.rfc
+                }
+                getClients(data).then((response: any) => {
+                    setClients({
+                        selectName: 'Cliente',
+                        options: 'razon_social',
+                        dataSelect: response
+                    })
+
                 })
 
-            })
+            }
             calcular_tiempos_entrega()
         } else {
-            setDates([saleOrdersToUpdate.fecha_entrega_produccion + ' ' + saleOrdersToUpdate.hora_entrega_produccion,
-            saleOrdersToUpdate.fecha_entrega_cliente + ' ' + saleOrdersToUpdate.hora_entrega_cliente])
-            setTitle(saleOrdersToUpdate.titulo)
-            setDataSaleOrder(saleOrdersToUpdate?.conceptos)
-            setCompanies({ id: saleOrdersToUpdate.id_empresa })
-            setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
-            setSelectedIds('clients', saleOrdersToUpdate.id_cliente)
-            const data = {
-                id_sucursal: saleOrdersToUpdate.id_sucursal,
-                id_usuario: user_id,
-                nombre: saleOrdersToUpdate.rfc
-            }
-            getClients(data).then((response: any) => {
-                setClients({
-                    selectName: 'Cliente',
-                    options: 'razon_social',
-                    dataSelect: response
+            if (modalSalesOrder == 'sale-order__modal-update') {
+                setDates([saleOrdersToUpdate.fecha_entrega_produccion + ' ' + saleOrdersToUpdate.hora_entrega_produccion,
+                saleOrdersToUpdate.fecha_entrega_cliente + ' ' + saleOrdersToUpdate.hora_entrega_cliente])
+                setTitle(saleOrdersToUpdate.titulo)
+                setDataSaleOrder(saleOrdersToUpdate?.conceptos)
+                setCompanies({ id: saleOrdersToUpdate.id_empresa })
+                setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
+                setSelectedIds('clients', saleOrdersToUpdate.id_cliente)
+                const data = {
+                    id_sucursal: saleOrdersToUpdate.id_sucursal,
+                    id_usuario: user_id,
+                    nombre: saleOrdersToUpdate.rfc
+                }
+                getClients(data).then((response: any) => {
+                    setClients({
+                        selectName: 'Cliente',
+                        options: 'razon_social',
+                        dataSelect: response
+                    })
+
                 })
 
-            })
+            }
         }
     }, [modalSalesOrder]);
 
@@ -420,7 +430,7 @@ const ModalSalesOrder: React.FC = () => {
         let pers = normalConcepts.filter((x: any) => x.personalized == true)
         let conceptos_a_enviar: any[] = []
         if (normales.length > 0) {
-           
+
 
             normales.forEach((n: any) => {
                 conceptos_a_enviar.push(n)
@@ -552,12 +562,31 @@ const ModalSalesOrder: React.FC = () => {
             });
         });
     }
+    const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
+    const cargar_repo = () => {
+        Swal.fire({
+            title: "Desea levantar una REPOSICIÓN de esta orden?",
+            text: "Esta acción ligará la orden actual a la nueva orden como una reposición",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setov_repo(saleOrdersToUpdate)
+                setNormalConcepts([])
+                setModalSalesOrder('sale-order__modal')
+                setSaleOrdersToUpdate(null)
+            }
+        });
+
+    }
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
             <div className={`popup__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
                 <div className='header__modal'>
-                    <a href="#" className="btn-cerrar-popup__sale-order__modal_articles" onClick={() => setModalSalesOrder('')} >
+                    <a href="#" className="btn-cerrar-popup__sale-order__modal_articles" onClick={() => { setModalSalesOrder('');setov_repo(null) }} >
                         <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
                     </a>
                     <p className='title__modals'>Orden de venta</p>
@@ -613,12 +642,12 @@ const ModalSalesOrder: React.FC = () => {
                                 <div className='col-5 md-col-12'>
                                     <span className='text'>Creado por: <b>{saleOrdersToUpdate.usuario_crea}</b></span><br />
                                     <span className='text'>Fecha de Creación: <b>{saleOrdersToUpdate.fecha_creacion}</b></span><br />
-                                    {saleOrdersToUpdate.status === 0 ? (
+                                    {saleOrdersToUpdate?.status === 0 ? (
                                         <b className="active-status" style={{ color: 'green' }}>Activo</b>
-                                    ) : saleOrdersToUpdate.status === 1 ? (
+                                    ) : saleOrdersToUpdate?.status === 1 ? (
                                         <b className="canceled-status" style={{ color: 'red' }}>Cancelada</b>
                                     ) : (
-                                        saleOrdersToUpdate.status === 2 ? (
+                                        saleOrdersToUpdate?.status === 2 ? (
                                             <b className="end-status" style={{ color: 'yellow' }}>Pendiente</b>
                                         ) : (
                                             ""
@@ -666,7 +695,7 @@ const ModalSalesOrder: React.FC = () => {
                             </div>
                             <div className='d-flex justify-content-between'>
                                 <div className='d-flex'>
-                                    {saleOrdersToUpdate.status === 0 ?
+                                    {saleOrdersToUpdate?.status === 0 ?
                                         <>
                                             <div className='mr-4'>
                                                 <button className='btn__general-orange' onClick={getTicket}>Imprimir ticket</button>
@@ -679,8 +708,11 @@ const ModalSalesOrder: React.FC = () => {
                                     <div>
                                         <button className='btn__general-orange' onClick={binnacleModal}>Bitácora</button>
                                     </div>
+                                    <div>
+                                        <button className='btn__general-orange' onClick={cargar_repo}>Cargar Reposición</button>
+                                    </div>
                                 </div>
-                                {saleOrdersToUpdate.status === 0 ?
+                                {saleOrdersToUpdate?.status === 0 ?
                                     <div>
                                         <button className='btn__general-danger' onClick={SaleOrderStatus}>Cancelar</button>
                                     </div>
@@ -694,7 +726,17 @@ const ModalSalesOrder: React.FC = () => {
                 <div className='sale-order__modal_articles' >
                     <div className='row__one'>
                         <div className='row__one'>
+                            {ov_repo != undefined && ov_repo != null && ov_repo != 0 ?
+                                <span style={{
+                                    color: 'red', display: 'flex', justifyContent: 'space-between',
+                                }}>Estás por realizar una reposición de la orden {ov_repo?.serie}-{ov_repo?.folio}-{ov_repo?.anio}
+                                    <button type='button' className='btn__general-danger' style={{ marginLeft: 'auto' }}
+                                        onClick={() => setov_repo(null)}>Cancelar Reposición</button>
+                                </span>
+
+                                : ''}
                             <div className='row'>
+
                                 <div className='col-12'>
                                     {modalSalesOrder !== 'sale-order__modal-update' ?
                                         <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
@@ -931,7 +973,7 @@ const ModalSalesOrder: React.FC = () => {
                                                             }
                                                         </div>
                                                         <div className='td'>
-                                                            {saleOrdersToUpdate.status != 1 ?
+                                                            {saleOrdersToUpdate?.status != 1 ?
                                                                 <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Cancelar</button>
                                                                 : ''}
                                                         </div>
@@ -967,7 +1009,7 @@ const ModalSalesOrder: React.FC = () => {
                                                                 </label>
                                                             </div>
                                                         </div>
-                                                        {modalSalesOrder == 'sale-order__modal-update' && saleOrdersToUpdate.status != 1 ?
+                                                        {modalSalesOrder == 'sale-order__modal-update' && saleOrdersToUpdate?.status != 1 ?
                                                             <div className='td'>
                                                                 <button type='button' className='btn__general-purple' onClick={() => updateSaleOrderConcept(article)}>Actualizar</button>
                                                             </div>
@@ -1014,7 +1056,7 @@ const ModalSalesOrder: React.FC = () => {
                                     <button className='btn__general-purple' onClick={(e) => handleCreateSaleOrder(e)}>
                                         Crear Orden de Venta
                                     </button>
-                                    : saleOrdersToUpdate.status == 0 ?
+                                    : saleOrdersToUpdate?.status == 0 ?
                                         <button className='btn__general-purple' onClick={updateOrdenVenta}>
                                             Actualizar Orden de Venta
                                         </button>

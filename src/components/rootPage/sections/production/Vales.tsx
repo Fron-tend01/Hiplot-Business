@@ -267,35 +267,35 @@ const Vales: React.FC = () => {
       setDataVales(resp)
     })
   }
-  const handleDateChangeCobro = (e:any, index:number) => {
+  const handleDateChangeCobro = (e: any, index: number) => {
     const newDate = e.target.value; // Obtén el nuevo valor del input
-    setDataUpdate((prevData:any) => ({
+    setDataUpdate((prevData: any) => ({
       ...prevData,
-      cobros: prevData.cobros.map((cobro:any, i:number) =>
+      cobros: prevData.cobros.map((cobro: any, i: number) =>
         i === index ? { ...cobro, fecha_cobro: newDate } : cobro
       ),
     }));
   };
-  const handleMontoChangeCobro = (e:any, index:number) => {
+  const handleMontoChangeCobro = (e: any, index: number) => {
     const newVal = e.target.value; // Obtén el nuevo valor del input
-    setDataUpdate((prevData:any) => ({
+    setDataUpdate((prevData: any) => ({
       ...prevData,
-      cobros: prevData.cobros.map((cobro:any, i:number) =>
+      cobros: prevData.cobros.map((cobro: any, i: number) =>
         i === index ? { ...cobro, monto: newVal } : cobro
       ),
     }));
   };
-  const handleCheckChangeCobro = (e:any, index:number) => {
+  const handleCheckChangeCobro = (e: any, index: number) => {
     const isChecked = e.target.checked; // Obtén el valor booleano del checkbox
-    setDataUpdate((prevData:any) => ({
+    setDataUpdate((prevData: any) => ({
       ...prevData,
-      cobros: prevData.cobros.map((cobro:any, i:number) =>
+      cobros: prevData.cobros.map((cobro: any, i: number) =>
         i === index ? { ...cobro, cobrado: isChecked } : cobro
       ),
     }));
   };
   const actualizarVale = () => {
-  
+
     if (total < 1 || total == undefined || Number.isNaN(total)) {
       Swal.fire('Notificacion', 'El monto a ingresar no puede ser 0', 'warning')
       return
@@ -322,6 +322,54 @@ const Vales: React.FC = () => {
               Swal.fire('Notificación', response.mensaje, 'success');
               setModalState(false)
               clearVariables()
+              searchVale()
+            }
+          })
+      }
+    });
+  }
+  const get_pdf = () => {
+    window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_vale/${dataUpdate.id}`, '_blank');
+
+  }
+  const cancelarVale = () => {
+    Swal.fire({
+      title: "Desea Cancelar este vale?",
+      text: "Esta acción no se puede deshacer.",
+      showCancelButton: true,
+      confirmButtonText: "Aceptar",
+      denyButtonText: `Cancelar`
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await APIs.GetAny("cancelar_vale/" + dataUpdate.id)
+          .then(async (response: any) => {
+            if (response.error) {
+              Swal.fire('Notificación', response.mensaje, 'info');
+            } else {
+              Swal.fire('Notificación', response.mensaje, 'success');
+              setModalState(false)
+              searchVale()
+            }
+          })
+      }
+    });
+  }
+  const FinalizarVale = () => {
+    Swal.fire({
+      title: "Desea Finalizar este vale?",
+      text: "Esta acción de por echo los cobros",
+      showCancelButton: true,
+      confirmButtonText: "Aceptar",
+      denyButtonText: `Cancelar`
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await APIs.GetAny("finalizar_vale/" + dataUpdate.id)
+          .then(async (response: any) => {
+            if (response.error) {
+              Swal.fire('Notificación', response.mensaje, 'info');
+            } else {
+              Swal.fire('Notificación', response.mensaje, 'success');
+              setModalState(false)
               searchVale()
             }
           })
@@ -674,19 +722,31 @@ const Vales: React.FC = () => {
                       </div>
                       <div className='col-6 md-col-12'>
                         <span className='text'>Empresa: <b>{dataUpdate.empresa}</b></span><br />
-                        <span className='text'>Sucursal:: <b>{dataUpdate.sucursal}</b></span><br />
-
+                        <span className='text'>Sucursal: <b>{dataUpdate.sucursal}</b></span><br />
+                        <span className='text'>Ordenes de producción:
+                          {dataUpdate?.ordenes_produccion.map((dat: any) => {
+                            return (
+                              <b>{dat.serie}-{dat.folio}-{dat.anio} ||</b>
+                            )
+                          })}
+                        </span><br />
                       </div>
                     </div>
 
                     <div className='d-flex justify-content-between'>
                       <div className='d-flex align-items-end'>
                         <div className='mr-4'>
-                          <button className='btn__general-orange' type='button' >Imprimir ticket</button>
+                          <button className='btn__general-orange' type='button' onClick={get_pdf}>Imprimir ticket</button>
                         </div>
                       </div>
-
+                      <div className='d-flex align-items-start'>
+                        <div className='mr-4'>
+                          <button className='btn__general-purple' type='button' onClick={FinalizarVale}>Finalizar Vale</button>
+                          <button className='btn__general-danger' type='button' onClick={cancelarVale}>Cancelar Vale</button>
+                        </div>
+                      </div>
                     </div>
+
                   </div>
                 </div>
                 <div className='row'>
@@ -709,14 +769,14 @@ const Vales: React.FC = () => {
                     return (
                       <div className='col-3'>
                         <div className="card-cobros">
-                          <div className="card-cobros-header">Cobro #{i+1}</div>
+                          <div className="card-cobros-header">Cobro #{i + 1}</div>
                           <div className="card-cobros-body">
-                            <div><strong>Fecha:</strong> <input type="date" value={dat.fecha_cobro} onChange={(e)=> handleDateChangeCobro(e,i)}/></div>
-                            <div><strong>Monto:</strong> <input type="number" value={dat.monto} onChange={(e)=> handleMontoChangeCobro(e,i)}/></div>
+                            <div><strong>Fecha:</strong> <input type="date" value={dat.fecha_cobro} onChange={(e) => handleDateChangeCobro(e, i)} /></div>
+                            <div><strong>Monto:</strong> <input type="number" value={dat.monto} onChange={(e) => handleMontoChangeCobro(e, i)} /></div>
                           </div>
                           <div className="card-cobros-footer">
                             <label className="checkbox-cobrado">
-                              <input type="checkbox" checked={dat.cobrado} onChange={(e) => handleCheckChangeCobro(e,i)}/> Marcar como cobrado
+                              <input type="checkbox" checked={dat.cobrado} onChange={(e) => handleCheckChangeCobro(e, i)} /> Marcar como cobrado
                             </label>
                             <button className="btn-delete" >Eliminar</button>
                           </div>
@@ -731,7 +791,7 @@ const Vales: React.FC = () => {
 
 
             <div className="d-flex justify-content-center mt-4">
-              <button className='btn__general-purple' onClick={modoUpdate?actualizarVale:crearVale}>Guardar</button>
+              <button className='btn__general-purple' onClick={modoUpdate ? actualizarVale : crearVale}>Guardar</button>
             </div>
           </div>
         </div>

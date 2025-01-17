@@ -20,11 +20,12 @@ interface SelectStore {
   conceptView: any;
   setConceptView: (x: any) => void;
 
-  
+
   customConceptView: any;
   setCustomConceptView: (x: any) => void;
 
-
+  ov_repo: any;
+  setov_repo: (x: any) => void;
 
 
 
@@ -47,7 +48,7 @@ interface SelectStore {
 
 
 
-  
+
 
 
   customData: any[];
@@ -68,7 +69,7 @@ interface SelectStore {
 
   temporaryCustomConcepts: any[];
   setTemporaryCustomConcepts: (x: any) => void;
-  
+
 }
 
 export const storePersonalized = create<SelectStore>((set) => ({
@@ -92,7 +93,8 @@ export const storePersonalized = create<SelectStore>((set) => ({
   customConceptView: [],
   setCustomConceptView: (x) => set({ customConceptView: x }),
 
-
+  ov_repo: null as any | null,
+  setov_repo: (x: any) => set({ ov_repo: x }),
 
 
 
@@ -124,6 +126,6 @@ export const storePersonalized = create<SelectStore>((set) => ({
   setTemporaryCustomConcepts: (x) => set({ temporaryCustomConcepts: x }),
 
   identifier: 0,
-  setIdentifier: (x) => set({identifier: x}),
+  setIdentifier: (x) => set({ identifier: x }),
 }));
-  
+
