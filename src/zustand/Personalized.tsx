@@ -29,7 +29,8 @@ interface SelectStore {
   setCustomLocal: (x: any) => void;
 
 
-
+  ov_repo: any;
+  setov_repo: (x: any) => void;
 
 
 
@@ -99,7 +100,8 @@ export const storePersonalized = create<SelectStore>((set) => ({
   setCustomLocal: (x) => set({ customLocal: x }),
 
 
-
+  ov_repo: null as any | null,
+  setov_repo: (x: any) => set({ ov_repo: x }),
 
   personalizedModal: '',
   setPersonalizedModal: (x) => set({ personalizedModal: x }),

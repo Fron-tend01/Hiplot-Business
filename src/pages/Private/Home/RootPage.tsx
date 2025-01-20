@@ -341,7 +341,13 @@ const RootHome: React.FC = () => {
                                                 <span>Listas Franquicias</span>
                                             </AnchorTag>
                                         );
-                                    } else {
+                                    } else if (permiso.titulo == "DESCUENTOS") {
+                                        return (
+                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.DESCUENTOS}`}>
+                                                <span>Descuentos</span>
+                                            </AnchorTag>
+                                        );
+                                    }else {
                                         return null;
                                     }
                                 })}
