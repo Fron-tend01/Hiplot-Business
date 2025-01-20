@@ -3,7 +3,6 @@ import { storePersonalized } from '../../../../zustand/Personalized'
 import { useStore } from 'zustand'
 import './styles/Personalized.css'
 import Select from '../../Dynamic_Components/Select'
-
 import DynamicVariables from '../../../../utils/DynamicVariables'
 import APIs from '../../../../services/services/APIs'
 import { v4 as uuidv4 } from 'uuid';
@@ -16,9 +15,6 @@ import SeeCamposPlantillas from './SeeCamposPlantillas'
 const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
 
-  const setDataUpdate = storePersonalized(state => state.setDataUpdate)
-
-
   const setConceptView = storePersonalized(state => state.setConceptView)
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
 
@@ -29,8 +25,6 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
   const setCustomLocal = storePersonalized(state => state.setCustomLocal)
 
-  const setPersonalized = storePersonalized(state => state.setPersonalized)
-  const setCustomData = storePersonalized(state => state.setCustomData)
   const { normalConcepts, deleteNormalConcepts, customConceptView, deleteCustomConcepts, customConcepts, conceptView, customLocal, personalizedModal, customData, dataUpdate, temporaryNormalConcepts }: any = useStore(storePersonalized)
   const { modal }: any = useStore(storeModals)
   const { identifier }: any = useStore(storePersonalized)
@@ -49,6 +43,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
       options: 'nombre',
       dataSelect: result
     });
+
   }
 
   useEffect(() => {
@@ -124,7 +119,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         // 'personalized_modal-quotation-update'
 
         //////////// Quiere decir que el concepto existe en normal concept y que el check esta en true y se tiene que pasar a false ////////////
-       
+
         if (item.check == true) {
           const updatedDataUpdate = customConceptView.map((x: any) => {
             //////////////////// Solo para cambiar el check //////////////////
@@ -143,22 +138,22 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
             //////////////////// Solo para cambiar el check //////////////////
             if (x.id_identifier === item.id_identifier) {
               return { ...x, check: false };
-            } 
+            }
             return x;
           });
           const addItem = newNormalConcept.find((xx: any) => xx.id_identifier == item.id_identifier)
-        
+
           setCustomConceptView(updatedDataUpdate);
           setNormalConcepts([...normalConcepts, addItem])
-          
+
           const deleteItem = customLocal.filter((xx: any) => xx.id_identifier !== addItem.id_identifier)
           setCustomLocal(deleteItem)
 
-          
+
 
           console.log('customLocal', customLocal)
           console.log('normalConcepts', normalConcepts)
-          
+
         } else {
           const updatedDataUpdate = customConceptView.map((x: any) => {
             if (x.id_identifier === item.id_identifier) {
@@ -179,7 +174,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
           console.log('customLocal', customLocal)
           console.log('normalConcepts', normalConcepts)
-      
+
         }
 
       }
@@ -221,7 +216,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         // 'personalized_modal-quotation-update'
 
         //////////// Quiere decir que el concepto existe en normal concept y que el check esta en true y se tiene que pasar a false ////////////
-       
+
         if (item.check == true) {
           const updatedDataUpdate = customConceptView.map((x: any) => {
             //////////////////// Solo para cambiar el check //////////////////
@@ -240,22 +235,22 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
             //////////////////// Solo para cambiar el check //////////////////
             if (x.id_identifier === item.id_identifier) {
               return { ...x, check: false };
-            } 
+            }
             return x;
           });
           const addItem = newNormalConcept.find((xx: any) => xx.id_identifier == item.id_identifier)
-        
+
           setCustomConceptView(updatedDataUpdate);
           setNormalConcepts([...normalConcepts, addItem])
-          
+
           const deleteItem = customLocal.filter((xx: any) => xx.id_identifier !== addItem.id_identifier)
           setCustomLocal(deleteItem)
 
-          
+
 
           console.log('customLocal', customLocal)
           console.log('normalConcepts', normalConcepts)
-          
+
         } else {
           const updatedDataUpdate = customConceptView.map((x: any) => {
             if (x.id_identifier === item.id_identifier) {
@@ -276,17 +271,14 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
           console.log('customLocal', customLocal)
           console.log('normalConcepts', normalConcepts)
-      
+
         }
 
       }
     }
-
-
-
   };
 
-
+  console.log(personalizedModal)
 
   const [selectsSatKey, setSelectsSatKey] = useState<any>()
   const [selectedSatKey, setSelectedSatKey] = useState<any>()
@@ -296,10 +288,21 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   useEffect(() => {
     if (personalizedModal !== '') {
       setModalStatus(true)
+      if (personalizedModal == 'personalized_modal-quotation-update') {
+        setInputs((prev: any) => ({
+          ...prev,
+          descripcion: idItem?.descripcion,
+          codigo: idItem?.codigo,
+          cantidad: idItem?.cantidad,
+          precio_total: idItem?.precio_total,
+          comentarios_produccion: idItem?.comentarios_produccion,
+          comentarios_factura: idItem?.comentarios_factura,
+        }));
+      }
     } else {
       setModalStatus(false)
     }
-  })
+  }, [personalizedModal])
 
 
 
@@ -330,10 +333,6 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         id_identifier: identifier + 1
       }
 
-
-      console.log('customLocal', customLocal)
-      console.log('normalConcepts', normalConcepts)
-
       setCustomConcepts([...customConcepts, data])
 
       setConceptView([...normalConcepts, data])
@@ -349,15 +348,8 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
       return
 
     }
-    
-    if(personalizedModal == 'personalized_modal-quotation-update') {
 
-      console.log('customConcepts', customConcepts)
-      console.log('item', item)
-          
-      console.log('customLocal', customLocal)
-      console.log('customConcepts', customConcepts)
-      console.log('normalConcepts', normalConcepts)
+    if (personalizedModal == 'personalized_modal-quotation-update') {
       const updatedConceptView = customConcepts.map((x: any) => {
 
         if (x.id_identifier === idItem.id_identifier) {
@@ -365,26 +357,34 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         }
         return x;
       });
-      
-          console.log('updatedConceptView', updatedConceptView)
-     
-    
-    
+
       setConceptView([...updatedConceptView, ...normalConcepts])
       setCustomConcepts(updatedConceptView)
       setCustomConceptView(normalConcepts)
 
 
-      // setCustomConcepts(updatedCustomConcepts)
-   
-
       setPersonalizedModal('')
       return
 
-    } 
+    }
 
 
-    if (personalizedModal == 'personalized_modal-sale' || personalizedModal == 'personalized_modal-sale') {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    if (personalizedModal == 'personalized_modal-sale') {
       const data = {
         descripcion: inpust.descripcion,
         personalized: true,
@@ -397,15 +397,37 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         precio_total: inpust.precio_total,
         comentarios_produccion: inpust.comentarios_produccion,
         comentarios_factura: inpust.comentarios_factura,
-        conceptos: customConcepts
+        conceptos: customLocal,
+        id_identifier: identifier + 1
       }
 
-      console.log('selectedIds.units', selectedIds.units)
 
-      setCustomData(normalConcepts)
-      setNormalConcepts([...normalConcepts, data])
-      setPersonalized([...customConceptView, data])
+      setCustomConcepts([...customConcepts, data])
 
+      setConceptView([...normalConcepts, data])
+      setCustomConceptView(normalConcepts)
+
+      setPersonalizedModal('')
+      setFilterPersonalized([])
+      setArticlesPersonalized([])
+      return
+
+    }
+    if (personalizedModal == 'personalized_modal-sale-update') {
+      const updatedConceptView = customConcepts.map((x: any) => {
+
+        if (x.id_identifier === idItem.id_identifier) {
+          return { ...x, conceptos: customLocal };
+        }
+        return x;
+      });
+
+      setConceptView([...updatedConceptView, ...normalConcepts])
+      setCustomConcepts(updatedConceptView)
+      setCustomConceptView(normalConcepts)
+
+      setPersonalizedModal('')
+      return
     }
 
 
@@ -478,18 +500,22 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
       element.check = false
     });
 
-    if (personalizedModal == 'personalized_modal-quotation') {
-      setNormalConcepts(temporaryNormalConcepts)
-      setDataUpdate([])
-    } else if (personalizedModal == 'personalized_modal-quotation-update') {
-      // personalized_modal-quotation-update
-      setNormalConcepts(temporaryNormalConcepts)
-
+    if (personalizedModal === 'personalized_modal-quotation-update') {
+      setInputs((prev: any) => ({
+        ...prev,
+        descripcion: '',
+        codigo: '',
+        cantidad: '',
+        precio_total: '',
+        comentarios_produccion: '',
+        comentarios_factura: '',
+      }));
     }
     setPersonalizedModal('')
 
   }
 
+  console.log('inpust', inpust)
 
 
 
@@ -531,6 +557,29 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   const abrirFichaModifyConcept = () => {
 
   }
+
+  const deleteArticle = (_: any, i: number) => {
+    const filter = normalConcepts.filter((_: any, index: number) => index !== i)
+    setNormalConcepts(filter)
+
+  }
+
+
+  const handleAreasChange = (event: any, index: number) => {
+    const value = parseInt(event.target.value, 10);
+    console.log("Event target value:", value);
+    console.log("Index:", normalConcepts);
+    normalConcepts[index].id_area_produccion = value
+  };
+
+  const handleStatusChange = (status: boolean, index: number) => {
+    const newStatus = status ? 0 : 1;
+    const updatedConcepts = [...normalConcepts];
+    updatedConcepts[index].enviar_a_produccion = newStatus;
+    updatedConcepts[index].status_produccion = newStatus;
+    setNormalConcepts(updatedConcepts);
+  };
+
 
   return (
     <div className={`overlay__personalized_modal ${modalStatus ? 'active' : ''}`}>
@@ -683,6 +732,10 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
               )}
             </div>
             :
+            ''
+          }
+
+          {personalizedModal == 'personalized_modal-quotation-update' ?
             <div className='table__personalized-update'>
               {customConceptView ? (
                 <div className='table__numbers'>
@@ -784,6 +837,221 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
                 <p className="text">Cargando datos...</p>
               )}
             </div>
+            :
+            ''
+          }
+
+          {personalizedModal == "personalized_modal-sale" ?
+            <div className='table__personalized'>
+              {customData ? (
+                <div className='table__numbers'>
+                  <p className='text'>Total de artículos</p>
+                  <div className='quantities_tables'>{customData.length}</div>
+                </div>
+              ) : (
+                <p className="text">No hay empresas que mostras</p>
+              )}
+              <div className='table__head'>
+                <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
+                  {personalizedModal == 'personalized_modal-update' ?
+                    ''
+                    :
+                    <div className='th'>
+                    </div>
+                  }
+                  <div className='th'>
+                    <p>Artículo</p>
+                  </div>
+                  <div className='th'>
+                    <p>Cantidad</p>
+                  </div>
+                  <div className='th'>
+                    <p>Unidad</p>
+                  </div>
+                </div>
+              </div>
+              {customConceptView ? (
+                <div className='table__body'>
+                  {customConceptView.map((quotation: any, index: number) => {
+                    return (
+                      <div className='tbody__container'>
+                        <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={quotation.id}>
+                          {personalizedModal == 'personalized_modal-update' ?
+                            ''
+                            :
+                            <div className='td'>
+                              <div className="td">
+                                <label className="custom-checkbox">
+                                  <input
+                                    type="checkbox"
+                                    checked={customConceptView[index]?.check || false}
+                                    onChange={() => addPersonalized(quotation, index)}
+                                  />
+                                  <span className="checkmark"></span>
+                                </label>
+                              </div>
+                            </div>
+                          }
+
+                          <div className='td'>
+                            <div className='article'>
+                              <p>{quotation.codigo}-{quotation.descripcion}</p>
+                            </div>
+                          </div>
+                          <div className='td'>
+                            <div>
+                              <p>{quotation.cantidad}</p>
+                            </div>
+                          </div>
+                          <div className='td'>
+                            <div>
+                              <p>{quotation.name_unidad}</p>
+                            </div>
+                          </div>
+                          <div className='td'>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="text">Cargando datos...</p>
+              )}
+            </div>
+            :
+            ''
+          }
+          {personalizedModal == 'personalized_modal-sale-update' ?
+            <div className='table__personalized-update'>
+              {customConceptView ? (
+                <div className='table__numbers'>
+                  <p className='text'>Total de artículos</p>
+                  <div className='quantities_tables'>{customConceptView.length}</div>
+                </div>
+              ) : (
+                <p className="text">No hay empresas que mostras</p>
+              )}
+              <div className='table__head'>
+                <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
+                  {personalizedModal == 'personalized_modal-update' ?
+                    ''
+                    :
+                    <div className='th'>
+                    </div>
+                  }
+                  <div className='th'>
+                    <p>Artículo</p>
+                  </div>
+                  <div className='th'>
+                    <p>Cantidad</p>
+                  </div>
+                  <div className='th'>
+                    <p>Unidad</p>
+                  </div>
+                  <div className='th'>
+                    <p>P/U</p>
+                  </div>
+                  <div className='th'>
+                    <p>Total</p>
+                  </div>
+                </div>
+              </div>
+              {customConceptView ? (
+                <div className='table__body'>
+                  {customConceptView.map((concept: any, index: number) => {
+                    return (
+                      <div className='tbody__container'>
+                        <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={concept.id}>
+                          <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept()}>
+                            <p className='article'>{concept.codigo}-{concept.descripcion}</p>
+                          </div>
+                          <div className='td'>
+                            <p className='amount'>{concept.cantidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{concept.name_unidad || concept.unidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p className=''>$ {concept.precio_total / concept.cantidad}</p>
+                          </div>
+                          <div className='td'>
+                            {concept.urgency ?
+                              <div className='d-flex'>
+                                <p className='total-identifier'>$ {concept.precio_total}</p>
+                                <p className='urgency-identifier'>${parseFloat(concept.monto_urgencia).toFixed(2)}</p>
+                              </div>
+                              :
+                              <p className='total-identifier'>$ {concept.precio_total}</p>
+                            }
+                          </div>
+                          <div className='td urgency'>
+                            {concept?.urgency ?
+                              <div>
+                                <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                </div>
+                              </div>
+                              :
+                              <div>
+                                <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                </div>
+                              </div>
+                            }
+                          </div>
+                          <div className='td'>
+                            <div className='cancel-icon' onClick={() => deleteArticle(concept, index)} title='Cancelar concepto'>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
+                            </div>
+                          </div>
+                          <div className='td'>
+                            <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
+                            </div>
+                          </div>
+                          <div className='td'>
+                            <div className='send-areas'>
+                              <div>
+                                <label>Area</label>
+                              </div>
+                              <select className="traditional__selector" onClick={(event) => handleAreasChange(event, index)}>
+                                {concept?.areas_produccion?.map((item: any) => (
+                                  <option key={item.id} value={item.id_area}>
+                                    {item.nombre_area}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                          <div className='td'>
+                            <div>
+                              <div className=''>
+                                <label>Enviar producción</label>
+                              </div>
+                              <label className="switch">
+                                <input
+                                  type="checkbox"
+                                  checked={concept.status_produccion === 1}
+                                  onChange={() =>
+                                    handleStatusChange(concept.status_produccion === 1, index)
+                                  }
+                                />
+                                <span className="slider"></span>
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="text">Cargando datos...</p>
+              )}
+            </div>
+            :
+            ''
           }
           <div className='mt-5 d-flex justify-content-center'>
             {personalizedModal == 'personalized_modal-quotation' ?

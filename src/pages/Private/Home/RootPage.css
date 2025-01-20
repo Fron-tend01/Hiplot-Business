@@ -518,6 +518,7 @@
     background-color: var(--primary-color);
     cursor: pointer;
     color: #fff;
+    z-index: 1;
 }
 
 .main {

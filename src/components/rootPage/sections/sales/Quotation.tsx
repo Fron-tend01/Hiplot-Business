@@ -168,10 +168,7 @@ const Quotation: React.FC = () => {
     }
   }
 
-  const updateQuotation = (quotation: {
-    conceptos: { id_identifier?: number }[];
-    conceptos_pers: { id_identifier?: number }[];
-  }) => {
+  const updateQuotation = (quotation: any) => {
     // Cambia el estado del modal
     setModal('update-modal__qoutation');
   

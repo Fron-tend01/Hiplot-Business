@@ -419,7 +419,7 @@ const ModalCreate: React.FC = () => {
           }
         })
     } else {
-      newConcept[index].precio_total = parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia);
+      newConcept[index].precio_total = (parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia)).toFixed(2);
       newConcept[index].monto_urgencia = 0;
     }
     setNormalConcepts(newConcept);
@@ -483,7 +483,7 @@ const ModalCreate: React.FC = () => {
           {modal == 'create-modal__qoutation' ?
             ''
             :
-            <div className="card ">
+            <div className="row__one card ">
               <div className="card-body bg-standar">
                 <h3 className="text">{quatation.serie}-{quatation.folio}-{quatation.anio}</h3>
                 <hr />
@@ -531,214 +531,216 @@ const ModalCreate: React.FC = () => {
           }
 
           <div className='row__two'>
-            <div className='col-12'>
-              <p className='title'>Datos de la Cotización</p>
-            </div>
-            <div className='col-12'>
-              <div className='row col-12 md-col-12'>
-                {modal == 'create-modal__qoutation' ?
-                  <div className='row col-12'>
-                    <div className='col-8 md-col-12'>
-                      <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
+            <div className='row__one'>
+              <div className='col-12'>
+                <p className='title'>Datos de la Cotización</p>
+              </div>
+              <div className='col-12'>
+                <div className='row col-12 md-col-12'>
+                  {modal == 'create-modal__qoutation' ?
+                    <div className='row col-12'>
+                      <div className='col-8 md-col-12'>
+                        <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
 
+                      </div>
+                      <div className='col-4'>
+                        <label className='label__general'>Título</label>
+                        <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                        <input className={`inputs__general`} type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el título' />
+                      </div>
                     </div>
-                    <div className='col-4'>
-                      <label className='label__general'>Título</label>
-                      <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                      <input className={`inputs__general`} type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el título' />
-                    </div>
-                  </div>
-                  :
-                  ''
-                }
-                {/* <div className='col-4  md-col-6 sm-col-12'>
+                    :
+                    ''
+                  }
+                  {/* <div className='col-4  md-col-6 sm-col-12'>
                     <Select dataSelects={dataSelects} instanceId="select1" nameSelect={'Vendedor'} />:''
                   </div> */}
+                </div>
+              </div>
+              <div className='row col-12 my-2 w-full'>
+
+                <div className='col-12'>
+                  <label className='label__general'>Comentarios</label>
+                  <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                  <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios'></textarea>
+                </div>
+
               </div>
             </div>
-            <div className='row col-12 my-2 w-full'>
-
-              <div className='col-12'>
-                <label className='label__general'>Comentarios</label>
-                <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios'></textarea>
-              </div>
-
-            </div>
-          </div>
 
 
-          <div className='row__three my-2 w-full'>
-            {/* <div className='col-12'>
+            <div className='row__three my-2 w-full'>
+              {/* <div className='col-12'>
               <p className='title'>Datos del Cliente</p>
             </div> */}
-            <div>
-              <label className='label__general'>Nombre</label>
-              <div className='warning__general'><small >Este campo es obligatorio</small></div>
-              <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
-            </div>
-            <div className='d-flex align-items-end justify-content-center'>
-              <div className='search-icon' onClick={searchUsers}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+              <div>
+                <label className='label__general'>Nombre</label>
+                <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
               </div>
-            </div>
-            <div>
-              <div className='select__container'>
-                <label className='label__general'>Cliente Seleccionado:</label>
-                <div className={`select-btn__general`}>
-                  <div className={`select-btn ${selectResults ? 'active' : ''}`} onClick={openSelectResults}>
-                    <div className='select__container_title'>
-                      <p>{selectedResult ? clients?.find((s: { id: number }) => s.id === selectedResult.id)?.razon_social : 'Selecciona'}</p>
+              <div className='d-flex align-items-end justify-content-center'>
+                <div className='search-icon' onClick={searchUsers}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                </div>
+              </div>
+              <div>
+                <div className='select__container'>
+                  <label className='label__general'>Cliente Seleccionado:</label>
+                  <div className={`select-btn__general`}>
+                    <div className={`select-btn ${selectResults ? 'active' : ''}`} onClick={openSelectResults}>
+                      <div className='select__container_title'>
+                        <p>{selectedResult ? clients?.find((s: { id: number }) => s.id === selectedResult.id)?.razon_social : 'Selecciona'}</p>
+                      </div>
+                      <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                     </div>
-                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                    <div className={`content ${selectResults ? 'active' : ''}`}>
+                      <ul className={`options ${selectResults ? 'active' : ''}`} style={{ opacity: selectResults ? '1' : '0' }}>
+                        {clients?.map((result: any) => (
+                          <li key={result.id} onClick={() => handleResultsChange(result)}>
+                            {result.razon_social}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
-                  <div className={`content ${selectResults ? 'active' : ''}`}>
-                    <ul className={`options ${selectResults ? 'active' : ''}`} style={{ opacity: selectResults ? '1' : '0' }}>
-                      {clients?.map((result: any) => (
-                        <li key={result.id} onClick={() => handleResultsChange(result)}>
-                          {result.razon_social}
-                        </li>
-                      ))}
-                    </ul>
+                </div>
+              </div>
+              <div className='d-flex align-items-end'>
+                <button className='btn__general-purple' onClick={seeClient}>ver cliente</button>
+              </div>
+              <div className='d-flex align-items-end'>
+                <button className='btn__general-purple' onClick={modalPersonalized}>Crear personalizados</button>
+              </div>
+              <div className='d-flex align-items-end' title='Busqueda de articulos'>
+                <div className='btn__general-purple-icon'>
+                  <svg onClick={() => setModalArticleView('article-view__modal')} xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" className="d-flex lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
+                </div>
+              </div>
+            </div>
+            <div className='table__quotations_modal'>
+              <div className='table__head'>
+                <div className={`thead `}>
+                  <div className='th'>
+                    <p>Artículo</p>
+                  </div>
+                  <div className='th'>
+                    <p>Cantidad</p>
+                  </div>
+                  <div className='th'>
+                    <p>Unidad</p>
+                  </div>
+                  <div className='th'>
+                    <p>P/U</p>
+                  </div>
+                  <div>
+                    <p>Total</p>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className='d-flex align-items-end'>
-              <button className='btn__general-purple' onClick={seeClient}>ver cliente</button>
-            </div>
-            <div className='d-flex align-items-end'>
-              <button className='btn__general-purple' onClick={modalPersonalized}>Crear personalizados</button>
-            </div>
-            <div className='d-flex align-items-end' title='Busqueda de articulos'>
-              <div className='btn__general-purple-icon'>
-                <svg onClick={() => setModalArticleView('article-view__modal')} xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" className="d-flex lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
-              </div>
-            </div>
-          </div>
-          <div className='table__quotations_modal'>
-            <div className='table__head'>
-              <div className={`thead `}>
-                <div className='th'>
-                  <p>Artículo</p>
-                </div>
-                <div className='th'>
-                  <p>Cantidad</p>
-                </div>
-                <div className='th'>
-                  <p>Unidad</p>
-                </div>
-                <div className='th'>
-                  <p>P/U</p>
-                </div>
-                <div>
-                  <p>Total</p>
-                </div>
-              </div>
-            </div>
-            {conceptView ? (
-              <div className='table__body'>
-                {conceptView?.map((article: any, index: number) => {
-                  return (
-                    <div className='tbody__container' key={index}>
-                      {article.personalized ?
-                        <div className='concept__personalized'>
-                          <p>Concepto Personalizado</p>
-                        </div>
-                        :
-                        ''
-                      }
-                      {article.personalized ?
-                        <div className={`tbody personalized`}>
-                          <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
-                            <p className='article'>{article.codigo}-{article.descripcion}</p>
+              {conceptView ? (
+                <div className='table__body'>
+                  {conceptView?.map((article: any, index: number) => {
+                    return (
+                      <div className='tbody__container' key={index}>
+                        {article.personalized ?
+                          <div className='concept__personalized'>
+                            <p>Concepto Personalizado</p>
                           </div>
-                          <div className='td'>
-                            <p className='amount'>{article.cantidad}</p>
-                          </div>
-                          <div className='td'>
-                            <p>{article.name_unidad || article.unidad}</p>
-                          </div>
-                          <div className='td'>
-                            <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)}</p>
-                          </div>
-                          <div className='td'>
-                            <div className='d-flex'>
-                              <p className='total'>$ {article.precio_total}</p>
-                              <div className='see-concepts'>
-                                <button className='btn__general-purple' onClick={() => modalPersonalizedUpdate(article)}>Conceptos</button>
+                          :
+                          ''
+                        }
+                        {article.personalized ?
+                          <div className={`tbody personalized`}>
+                            <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                              <p className='article'>{article.codigo}-{article.descripcion}</p>
+                            </div>
+                            <div className='td'>
+                              <p className='amount'>{article.cantidad}</p>
+                            </div>
+                            <div className='td'>
+                              <p>{article.name_unidad || article.unidad}</p>
+                            </div>
+                            <div className='td'>
+                              <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)}</p>
+                            </div>
+                            <div className='td'>
+                              <div className='d-flex'>
+                                <p className='total'>$ {article.precio_total}</p>
+                                <div className='see-concepts'>
+                                  <button className='btn__general-purple' onClick={() => modalPersonalizedUpdate(article)}>Conceptos</button>
+                                </div>
                               </div>
                             </div>
-                          </div>
 
-                          <div className='td urgency'>
+                            <div className='td urgency'>
 
-                          </div>
-                          <div className='td'>
-                            <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
-                          </div>
+                            </div>
+                            <div className='td'>
+                              <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
+                            </div>
 
-                          <div className='td'>
-                            <button className='btn__general-orange' onClick={() => undoConcepts(article)}>Deshacer</button>
+                            <div className='td'>
+                              <button className='btn__general-orange' onClick={() => undoConcepts(article)}>Deshacer</button>
+                            </div>
                           </div>
-                        </div>
-                        :
-                        <div className='tbody'>
-                          <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
-                            <p className='article'>{article.codigo}-{article.descripcion}</p>
-                          </div>
-                          <div className='td'>
-                            <p className='amount'>{article.cantidad}</p>
-                          </div>
-                          <div className='td'>
-                            <p>{article.name_unidad || article.unidad}</p>
-                          </div>
-                          <div className='td'>
-                            <p className=''>$ {article.precio_total / article.cantidad}</p>
-                          </div>
-                          <div className='td '>
-                            {article.urgency ?
-                              <div className='container__total'>
-                                <p className='total'>$ {article.precio_total}</p>
-                                <p className='remove__urgency' title='urgencia'>(${article.monto_urgencia})</p>
-                              </div>
-                              :
-                              <p className='total'>$ {article.precio_total}</p>
-                            }
-                          </div>
+                          :
+                          <div className='tbody'>
+                            <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                              <p className='article'>{article.codigo}-{article.descripcion}</p>
+                            </div>
+                            <div className='td'>
+                              <p className='amount'>{article.cantidad}</p>
+                            </div>
+                            <div className='td'>
+                              <p>{article.name_unidad || article.unidad}</p>
+                            </div>
+                            <div className='td'>
+                              <p className=''>$ {article.precio_total / article.cantidad}</p>
+                            </div>
+                            <div className='td '>
+                              {article.urgency ?
+                                <div className='container__total'>
+                                  <p className='total'>$ {article.precio_total}</p>
+                                  <p className='remove__urgency' title='urgencia'>(${parseFloat(article.monto_urgencia).toFixed(2)})</p>
+                                </div>
+                                :
+                                <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                              }
+                            </div>
 
-                          <div className='td urgency'>
-                            {article?.urgency ?
-                              <div>
-                                <button className='modal-create-quotations__tooltip-text no-urgency' type='button' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
-                                </button>
-                              </div>
-                              :
-                              <div>
-                                <button className='modal-create-quotations__tooltip-text yes-urgency' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)} type='button'>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
-                                </button>
-                              </div>
-                            }
+                            <div className='td urgency'>
+                              {article?.urgency ?
+                                <div>
+                                  <button className='modal-create-quotations__tooltip-text no-urgency' type='button' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                  </button>
+                                </div>
+                                :
+                                <div>
+                                  <button className='modal-create-quotations__tooltip-text yes-urgency' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)} type='button'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                  </button>
+                                </div>
+                              }
+                            </div>
+                            <div className='td'>
+                              <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
+                            </div>
+                            <div className='td'>
+                              <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
+                            </div>
                           </div>
-                          <div className='td'>
-                            <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
-                          </div>
-                          <div className='td'>
-                            <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
-                          </div>
-                        </div>
-                      }
-                    </div>
-                  )
-                })}
-              </div>
-            ) : (
-              <p className="text">Cargando datos...</p>
-            )}
+                        }
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="text">Cargando datos...</p>
+              )}
+            </div>
           </div>
-          <div className='row__end mt-4'>
+          <div className='row__three'>
             <div className='btns'>
               <div className='subtotal'>
                 <div>

@@ -310,8 +310,6 @@
   display: block;
 }
 
-
-
  .table__personalized-update {
   border-radius: 10px;
   display: grid;
@@ -500,7 +498,6 @@
   margin-top: 0;
 }
 
-
 .table__personalized-update .table__body .tbody>.td .add_urgency {
   background-color: var(--orange-color);
   border-radius: 5px;
@@ -510,44 +507,41 @@
   cursor: pointer;
 }
 
-
-
-.table__personalized-update .table__body .tbody:hover {
-  background-color: var(--table-hover-color);
-  color: #fff;
+.table__personalized-update .table__body .tbody:hover .td .cancel-icon {
+  background-color: #D32F2F;
+  color: #ffffff;
 }
 
+.table__personalized-update .table__body .tbody:hover .td .see-icon {
+  background-color: #3d86c6;
+  color: #ffffff;
+}
+
+.table__personalized-update .table__body .tbody:hover .td .total-identifier {
+  background-color: #5d35b0;
+  color: #ffffff;
+}
 
 .table__personalized-update .table__body .tbody:hover .td > .article {
   background-color: #3d86c6;
   color: #ffffff;
 }
 
-.table__personalized-update .table__body .tbody:hover .td > .amount {
+
+
+.table__personalized-update .table__body .tbody:hover .td .urgency-false-icon {
   background-color: #FF8F00;
   color: #ffffff;
 }
 
-.table__personalized-update .table__body .tbody:hover .td  .total {
-  background-color: #5d35b0;
-  color: #ffffff;
-}
-
-
-.table__personalized-update .table__body .tbody:hover .td .yes-urgency {
-  background-color: #FF8F00;
-}
-
-.table__personalized-update .table__body .tbody:hover .td .no-urgency {
+.table__personalized-update .table__body .tbody:hover .td .urgency-true-icon {
   background-color: #D32F2F;
-}
-
-.table__personalized-update .table__body .tbody:hover .td .yes-urgency svg {
   color: #ffffff;
 }
 
-.table__personalized-update .table__body .tbody:hover .td .no-urgency svg {
-  color: #ffffff;
+.table__personalized-update .table__body .tbody:hover {
+  background-color: var(--table-hover-color);
+  color: #fff;
 }
 
 

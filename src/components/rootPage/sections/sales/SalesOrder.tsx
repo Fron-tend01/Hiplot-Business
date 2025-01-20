@@ -12,10 +12,17 @@ import useUserStore from '../../../../zustand/General'
 import { usersRequests } from '../../../../fuctions/Users'
 import { useSelectStore } from '../../../../zustand/Select'
 import { useStore } from 'zustand'
+import { storePersonalized } from '../../../../zustand/Personalized'
 
 const SalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
     const user_id = userState.id
+
+    const setConceptView = storePersonalized(state => state.setConceptView)
+    const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+    const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
+    const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
+
 
     const { getUsers }: any = usersRequests()
     const [users, setUsers] = useState<any>()
@@ -97,7 +104,7 @@ const SalesOrder: React.FC = () => {
             dataSelect: resultUsers
         })
 
-        const resultSeries = await getSeriesXUser({tipo_ducumento: 7, id: user_id })
+        const resultSeries = await getSeriesXUser({ tipo_ducumento: 7, id: user_id })
 
         setSeries({
             selectName: 'Series',
@@ -135,6 +142,27 @@ const SalesOrder: React.FC = () => {
     const modalUpdate = (order: any) => {
         setModalSalesOrder('sale-order__modal-update')
         setSaleOrdersToUpdate(order)
+        // Obtiene el valor actual de identifier desde el store
+        const currentIdentifier = storePersonalized.getState().identifier;
+        let newIdentifier = currentIdentifier;
+
+        // Actualiza los identificadores en conceptos
+        order.conceptos.forEach((x: any) => {
+            x.id_identifier = ++newIdentifier;
+        });
+
+        order.conceptos_pers.forEach((x: any) => {
+            x.id_identifier = ++newIdentifier;
+        });
+
+        // Actualiza el identificador global en el store
+        storePersonalized.setState({ identifier: newIdentifier });
+
+        // Actualiza los estados locales con los datos procesados
+        setConceptView([...order.conceptos, ...order.conceptos_pers]);
+        setCustomConcepts(order.conceptos_pers);
+        setNormalConcepts(order.conceptos);
+        setCustomConceptView(order.conceptos);
     }
 
     const [type, setType] = useState<any>(0)
@@ -273,7 +301,7 @@ const SalesOrder: React.FC = () => {
                                             </div>
                                             <div className='td'>
                                                 <p>{order.usuario_crea}</p>
-                                            </div> 
+                                            </div>
                                             <div className='td'>
                                                 <p>{order.fecha_creacion}</p>
                                             </div>

@@ -31,17 +31,12 @@ interface SelectStore {
 
 
 
-
-
-
-
   personalizedModal: any;
   setPersonalizedModal: (x: any) => void;
 
   identifier: number;
   setIdentifier: (newIdentifier: number) => void;
   incrementIdentifier: () => void;
-
 
 
   dataUpdate: any;

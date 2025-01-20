@@ -1083,7 +1083,17 @@ html, body {
   color: var(--primary-100);
 }
 
-
+.amount-identifier {
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #ff91001f;
+    border-radius: 5px;
+    font-weight: 600;
+    /* outline: 2px solid var(--primary-100); */
+    color: #FF8F00;
+}
 .user-identifier {
   display: flex;
   padding: 5px;
@@ -1133,17 +1143,19 @@ html, body {
   color: #ffffff;
 }
 
-.amount-identifier {
+.urgency-identifier {
   display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 5px 10px;
-    background-color: #ff91001f;
-    border-radius: 5px;
-    font-weight: 600;
-    /* outline: 2px solid var(--primary-100); */
-    color: #FF8F00;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #ff52523a;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #FF5252;
 }
+
+
 
 .total-identifier {
   display: flex;
@@ -1162,5 +1174,98 @@ html, body {
 
 
 
+/* ////////////////////////Iconos////////////////////// */
+
+.urgency-true-icon {
+  display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  background-color: #ff910038;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #FF8F00;
+  cursor: pointer;
+}
+
+.urgency-false-icon {
+  display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  background-color: #ff52523a;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #FF5252;
+  cursor: pointer;
+}
+
+.conept-icon {
+  display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  background-color: #3d86c62c;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #3D85C6;
+  cursor: pointer;
+}
 
 
+
+.cancel-icon {
+  display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  background-color: #ff52523a;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #FF5252;
+  cursor: pointer;
+}
+
+.see-icon {
+  display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  background-color: #3d86c62c;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #3D85C6;
+  cursor: pointer;
+}
+
+
+.delete-icon {
+  display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  background-color: #ff52523a;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #FF5252;
+  cursor: pointer;
+}
+
+.undo-icon {
+  display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  background-color: #ff52523a;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #FF5252;
+  cursor: pointer;
+}

@@ -196,7 +196,7 @@ const SalesCard: React.FC = () => {
 
   const [data, setData] = useState<any>()
 
-
+console.log('article', article)
 
   const get = async () => {
 
@@ -237,7 +237,7 @@ const SalesCard: React.FC = () => {
           front: true,
           id_articulo: article.id,
           produccion_interna: true,
-          id_area_produccion: 0,
+          id_area_produccion: article.areas_produccion[0].id_area,
           enviar_a_produccion: false,
           personalized: false,
           check: false,

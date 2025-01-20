@@ -294,6 +294,92 @@
 	cursor: pointer;
 }
 
+/* /////////////////////////////////////////////////////////////////////
+  //////////////////////////////// ROW THREE //////////////////////////
+/////////////////////////////////////////////////////////////////// */
+
+
+.sale-order__modal_articles > .row__two {
+   
+}
+
+
+.sale-order__modal_articles > .row__two > .btns {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.sale-order__modal_articles > .row__two .btns>div {
+    display: flex;
+    align-items: center;
+}
+
+.sale-order__modal_articles > .row__two .btns>.subtotal>div {
+    display: flex;
+    border: 2px solid #3d86c633;
+    border-radius: 5px;
+
+}
+
+.sale-order__modal_articles > .row__two .btns>.discount>div {
+    display: flex;
+    border: 2px solid #ff52522f;
+    border-radius: 5px;
+
+}
+
+.sale-order__modal_articles > .row__two .btns>.urgency>div {
+    display: flex;
+    border: 2px solid #ff910031;
+    border-radius: 5px;
+
+}
+
+.sale-order__modal_articles > .row__two .btns>.total>div {
+    display: flex;
+    border: 2px solid #5e35b038;
+    border-radius: 5px;
+
+}
+
+.sale-order__modal_articles > .row__two .btns>.subtotal>div>.name {
+    background-color: #3d86c633;
+    color: #3d86c6;
+    font-weight: 600;
+}
+
+.sale-order__modal_articles > .row__two .btns>.discount>div>.name {
+    background-color: #ff52522f;
+    color: #FF5252;
+    font-weight: 600;
+}
+
+
+.sale-order__modal_articles > .row__two .btns>.urgency>div>.name {
+    background-color: #ff910031;
+    color: #FF8F00;
+    font-weight: 600;
+}
+
+.sale-order__modal_articles > .row__two .btns>.total>div>.name {
+    background-color: #5e35b038;
+    color: #5d35b0;
+    font-weight: 600;
+}
+
+
+.sale-order__modal_articles > .row__two .btns>div>div>.name {
+    color: #fff;
+    padding: 5px 10px 5px 5px;
+}
+
+
+.sale-order__modal_articles > .row__two .btns>div>div>.value {
+    padding: 5px;
+}
+
+
 
 
 
@@ -328,7 +414,7 @@
 
 .table__sales_modal .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(5, 1fr) 80px 100px  100px 100px;
+	grid-template-columns: repeat(4, 1fr) 2fr repeat(4, 50px);
     padding: 10px;
     font-weight: 600;
     column-gap: 20px;
@@ -355,28 +441,31 @@
 
 
 
-
+.table__sales_modal .tbody:hover {
+	background-color: var(--table-hover-color);
+    color: #fff;
+}
 
 .table__sales_modal .tbody__container {
 	border-top: 2px solid var(--border-table-color);
-  }
+}
   
-  .table__sales_modal .tbody__container:nth-child(even) {
+.table__sales_modal .tbody__container:nth-child(even) {
 	background-color: var(--table-color);
-  }
+}
   
-  .table__sales_modal .tbody__container:nth-child(odd) {
+.table__sales_modal .tbody__container:nth-child(odd) {
 	background-color: var(--two-table-color);
-  }
+}
   
-  .table__sales_modal .tbody__container:first-child {
+.table__sales_modal .tbody__container:first-child {
 	border-top: 2px solid var(--border-table-color);
-  }
+}
   
-  .table__sales_modal .tbody__container:last-child {
+.table__sales_modal .tbody__container:last-child {
 	border-bottom: none;
 	border-radius: 0 0 20px 20px;
-  }
+}
 
 
 
@@ -392,11 +481,15 @@
 
 .table__sales_modal .table__body .tbody {
     display: grid;
-	grid-template-columns: repeat(5, 1fr) 80px 100px  100px 100px;
+	grid-template-columns: repeat(4, 1fr) 2fr repeat(4, 50px);
     padding: 10px;
     column-gap: 20px;
 }
 
+.table__sales_modal .table__body .tbody > .td {
+    display: flex;
+	align-items: center;
+}
 
 .table__sales_modal .table__body .tbody > .td .inputs__general {
     margin-top: 0;
@@ -409,6 +502,80 @@
 .table__sales_modal .table__body .tbody > .td .traditional__selector {
 	background-color: var(--cards-background);
 }
+
+.table__sales_modal .table__body .tbody > .td .urgency-identifier {
+	margin-left: 10px;
+}
+
+.table__sales_modal .table__body .tbody > .td .send-areas {
+	display: flex;
+	align-items: center;
+}
+
+.table__sales_modal .table__body .tbody > .td .send-areas > div {
+	margin-right: 10px;
+}
+
+.table__sales_modal .table__body .tbody:hover > .td .folio-identifier {
+	background-color: #3D85C6;
+	color: #ffffff;
+}
+
+.table__sales_modal .table__body .tbody:hover > .td .amount-identifier {
+	background-color: #ff9100;
+	color: #ffffff;
+}
+
+
+.table__sales_modal .table__body .tbody:hover > .td .total-identifier {
+	background-color: #5e35b0;
+	color: #ffffff;
+}
+
+.table__sales_modal .table__body .tbody:hover > .td .urgency-identifier {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+
+
+.table__sales_modal .table__body .tbody:hover > .td .urgency-true-icon {
+	background-color: #ff9100;
+	color: #ffffff;
+}
+
+.table__sales_modal .table__body .tbody:hover > .td .urgency-false-icon {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+.table__sales_modal .table__body .tbody:hover > .td .conept-icon {
+	background-color: #3D85C6;
+	color: #ffffff;
+}
+
+.table__sales_modal .table__body .tbody:hover > .td .cancel-icon {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+.table__sales_modal .table__body .tbody:hover > .td .see-icon {
+	background-color: #3D85C6;
+	color: #ffffff;
+}
+
+
+.table__sales_modal .table__body .tbody:hover > .td .delete-icon {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+.table__sales_modal .table__body .tbody:hover > .td .undo-icon {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+
 
 
 
