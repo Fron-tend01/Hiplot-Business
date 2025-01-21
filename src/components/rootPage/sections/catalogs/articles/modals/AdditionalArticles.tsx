@@ -118,12 +118,21 @@ const AdditionalArticles: React.FC = () => {
 
   const handleAppearsByChange = (e: React.ChangeEvent<HTMLSelectElement>, index: any) => {
     const value = e.target.value;
-    articulos[index].aparece_por = value;
+    setAdditionalArticles((prevArticulos: any) => {
+      const updatedArticulos = [...prevArticulos];
+      updatedArticulos[index].aparece_por = value;
+      return updatedArticulos;
+    });
+    
   };
 
   const handleConditionsChange = (e: React.ChangeEvent<HTMLSelectElement>, index: any) => {
     const value = e.target.value;
-    articulos[index].condicion = value;
+    setAdditionalArticles((prevArticulos: any) => {
+      const updatedArticulos = [...prevArticulos];
+      updatedArticulos[index].condicion = value;
+      return updatedArticulos;
+    });
   };
 
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>, index: any) => {
@@ -258,7 +267,7 @@ const AdditionalArticles: React.FC = () => {
                         {item.nombre_sucursal}
                       </div>
                       <div className='td'>
-                        <select className='traditional__selector' onChange={(e) => handleAppearsByChange(e, index)}>
+                        <select className='traditional__selector' value={item.aparece_por}onChange={(e) => handleAppearsByChange(e, index)}>
                           {item.data_aparece_por?.map((item: any) => (
                             <option key={item.id} value={item.id}>
                               {item.nombre}
@@ -267,7 +276,7 @@ const AdditionalArticles: React.FC = () => {
                         </select>
                       </div>
                       <div className='td'>
-                        <select className='traditional__selector' onChange={(e) => handleConditionsChange(e, index)}>
+                        <select className='traditional__selector' value={item.condicion} onChange={(e) => handleConditionsChange(e, index)}>
                           {item.data_condicion?.map((item: any) => (
                             <option key={item.id} value={item.name}>
                               {item.name}
