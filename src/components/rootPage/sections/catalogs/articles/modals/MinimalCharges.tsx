@@ -10,6 +10,7 @@ import { UserGroupsRequests } from '../../../../../../fuctions/UserGroups'
 import Concepts from './minimalCharges/Concepts'
 import loadType from '../json/loadType.json'
 import './style/MinimalCharges.css'
+import { useSelectStore } from '../../../../../../zustand/Select'
 
 const MinimalCharges: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -71,18 +72,19 @@ const MinimalCharges: React.FC = () => {
         fetch()
     }, [])
 
+   const selectData: any = useSelectStore(state => state.selectedIds)
  
 
     const addMinimalCharges = () => {
         const data = {
-            id_unidad: 0,
+            id_unidad: selectData?.units.id,
             desde: from,
             hasta: until,
             monto: value,
             por: 0,
             variable_multiplicacion: 0,
-            grupo_de_usuario: 0,
-            tipo: 0,
+            grupo_de_usuario: selectData?.userGroups?.id,
+            tipo: selectData?.typeCharges?.id,
             variable_descuento: 0,
             cantidad_descuento: 0
         };
@@ -161,16 +163,16 @@ const MinimalCharges: React.FC = () => {
                 </div>
                 <div className='row my-4'>
                     <div className='col-2 md-col-6 sm-col-12'>
-                        <Select dataSelects={templates} instanceId="templates" />
+                        <Select dataSelects={templates} instanceId="templates" nameSelect='Campo Plantilla'/>
                     </div>
                     <div className='col-3 md-col-6 sm-col-12'>
-                        <Select dataSelects={units} instanceId='units' />
+                        <Select dataSelects={units} instanceId='units' nameSelect='Unidad'/>
                     </div>
                     <div className='col-3 md-col-6 sm-col-12'>
-                        <Select dataSelects={typeCharges} instanceId='typeCharges' />
+                        <Select dataSelects={typeCharges} instanceId='typeCharges' nameSelect='Tipo'/>
                     </div>
                     <div className='col-3 md-col-6 sm-col-12'>
-                        <Select dataSelects={userGroups} instanceId='userGroups' />
+                        <Select dataSelects={userGroups} instanceId='userGroups' nameSelect='Grupo de Usuario'/>
                     </div>
                     <div className='col-1 d-flex align-items-end'>
                         <button type='button' className='btn__general-purple' onClick={addMinimalCharges}>Agregar</button>
