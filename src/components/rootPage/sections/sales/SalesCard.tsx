@@ -66,6 +66,7 @@ const SalesCard: React.FC = () => {
       proveedor: 0,
       materia_prima: 0,
       get_sucursales: false,
+      // get_adicional: true,
       get_proveedores: false,
       get_max_mins: true,
       get_precios: true,
@@ -203,6 +204,7 @@ const SalesCard: React.FC = () => {
       id_articulo: article.id,
       id_grupo_us: selectedUserGroup,
       id_unidad: selectedUnit.id_unidad,
+      id_usuario: user_id,
       cantidad: amount,
       campos: article.plantilla_data.filter((x: any) => x.tipo == 'numero'),
       camposTxTVisual: article.plantilla_data.filter((x: any) => x.tipo == 'txtvisual'),
@@ -312,7 +314,7 @@ const SalesCard: React.FC = () => {
     newData.id_identifier = identifier + 1;
     setIdentifier(identifier + 1);
 
-    
+
     setNormalConcepts([...normalConcepts, newData])
     setConceptView([...conceptView, newData])
     setCustomConceptView([...customConceptView, newData])
@@ -712,20 +714,23 @@ const SalesCard: React.FC = () => {
 
               }
               {statusArticle !== false ?
-                <div className='row result__template__fields'>
-                  {article?.plantilla_data?.map((x: any) => (
-                    <div className='col-4 md-col-6 sm-col-12'>
-                      {x.tipo == 'txtvisual' ?
-                        <div className='price_x_unit'>
-                          <div>
-                            <p>{x.nombre}</p>
-                            <p className='result__price_x_unit'>: {x.valor || '0'}</p>
+                <>
+                  <div className='row result__template__fields'>
+                    {article?.plantilla_data?.map((x: any) => (
+                      <div className='col-4 md-col-6 sm-col-12'>
+                        {x.tipo == 'txtvisual' ?
+                          <div className='price_x_unit'>
+                            <div>
+                              <p>{x.nombre}</p>
+                              <p className='result__price_x_unit'>: {x.valor || '0'}</p>
+                            </div>
                           </div>
-                        </div>
-                        : ''}
-                    </div>
-                  ))}
-                </div>
+                          : ''}
+                      </div>
+                    ))}
+                  </div>
+                 
+                </>
                 :
                 <div className="card-sale__template__values">
                   <div className="animate-pulse">
@@ -742,15 +747,15 @@ const SalesCard: React.FC = () => {
           {statusArticle !== false ?
             <div className='row__three'>
               <div className='row__four'>
-              {descuento > 0 ? 
-                <div className='price_x_unit'>
-                  <p className='title__price_x_unit'>Descuento Aplicado:</p>
-                  <p className='result__price_x_unit'>$ {descuento}</p>
-                </div>
-              :''}
+                {descuento > 0 ?
+                  <div className='price_x_unit'>
+                    <p className='title__price_x_unit'>Descuento Aplicado:</p>
+                    <p className='result__price_x_unit'>$ {descuento}</p>
+                  </div>
+                  : ''}
                 <div className='price_x_unit'>
                   <p className='title__price_x_unit'>Precio por unidad:</p>
-                  <p className='result__price_x_unit'>$ {Number.isNaN(prices / amount)?0:(prices / amount) }</p>
+                  <p className='result__price_x_unit'>$ {Number.isNaN(prices / amount) ? 0 : (prices / amount)}</p>
                 </div>
                 <div className='total__price'>
                   <p className='title__total-price'>Precio total</p>
