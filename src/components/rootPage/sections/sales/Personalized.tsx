@@ -565,38 +565,21 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
   }
 
 
-  const handleAreasChange = (event: React.ChangeEvent<HTMLSelectElement>, parentIndex: number) => {
-    const selectedAreaId = parseInt(event.target.value, 10);
+  const handleAreasChange = (event: React.ChangeEvent<HTMLSelectElement>, i: number) => {
+    const value = parseInt(event.target.value, 10);
+    let newCustomConcep = [...idItem.conceptos]
 
-    const updatedConcepts = customConcepts.map((concept: any, index: number) => {
-      if (index === parentIndex) {
-        // Encuentra el elemento específico dentro de `concept.conceptos`.
-        const updatedConceptos = concept.conceptos.map((item: any) => {
-          if (item.id_identifair === concept.id_identifair) {
-            return {
-              ...item,
-              id_area_produccion: selectedAreaId, // Actualiza solo este objeto.
-            };
-          }
-          return item;
-        });
+    newCustomConcep[i].id_area_produccion = value
+    // Actualizamos el estado con el array modificado
+    setCustomConcepts(newCustomConcep);
 
-        // Devuelve el concepto con el array actualizado.
-        return {
-          ...concept,
-          conceptos: updatedConceptos,
-        };
-      }
-      return concept; // Si no es el concepto objetivo, devuelve sin cambios.
-    });
-
-    setCustomConcepts(updatedConcepts);
+    console.log('newCustomConcep', newCustomConcep)
   };
 
+    
 
 
-
-  const handleStatusChange = (conceptItem: any, i: any) => {    
+  const handleStatusChange = (_: any, i: any) => {    
     let newCustomConcep = [...idItem.conceptos]
 
     newCustomConcep[i].enviar_a_produccion = !newCustomConcep[i].enviar_a_produccion
@@ -617,7 +600,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
       id: article.id,
       id_articulo: article.id_articulo,
       produccion_interna: article.produccion_interna,
-      id_area_produccion: article.areas_produccion[0].id_area,
+      id_area_produccion: article.id_area_produccion,
       enviar_a_produccion: article.enviar_a_produccion,
       cantidad: article.cantidad,
       monto_urgencia: article.monto_urgencia,

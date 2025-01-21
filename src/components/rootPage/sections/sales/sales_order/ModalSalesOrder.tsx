@@ -1011,10 +1011,7 @@ const ModalSalesOrder: React.FC = () => {
                                                                     <input
                                                                         type="checkbox"
                                                                         checked={article.enviar_a_produccion}
-                                                                        onChange={() =>
-                                                                            handleStatusChange(article.enviar_a_produccion, index)
-                                                                        }
-                                                                    />
+                                                                        onChange={() => handleStatusChange(article.enviar_a_produccion, index)}/>
                                                                     <span className="slider"></span>
                                                                 </label>
                                                             </div>
