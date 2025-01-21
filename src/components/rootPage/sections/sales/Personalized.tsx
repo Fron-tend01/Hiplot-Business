@@ -12,7 +12,7 @@ import { storeDv } from '../../../../zustand/Dynamic_variables'
 import Swal from 'sweetalert2'
 import SeeCamposPlantillas from './SeeCamposPlantillas'
 
-const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
+const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
   const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
 
   const setConceptView = storePersonalized(state => state.setConceptView)
@@ -565,20 +565,81 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   }
 
 
-  const handleAreasChange = (event: any, index: number) => {
-    const value = parseInt(event.target.value, 10);
-    console.log("Event target value:", value);
-    console.log("Index:", normalConcepts);
-    normalConcepts[index].id_area_produccion = value
+  const handleAreasChange = (event: React.ChangeEvent<HTMLSelectElement>, parentIndex: number) => {
+    const selectedAreaId = parseInt(event.target.value, 10);
+
+    const updatedConcepts = customConcepts.map((concept: any, index: number) => {
+      if (index === parentIndex) {
+        // Encuentra el elemento específico dentro de `concept.conceptos`.
+        const updatedConceptos = concept.conceptos.map((item: any) => {
+          if (item.id_identifair === concept.id_identifair) {
+            return {
+              ...item,
+              id_area_produccion: selectedAreaId, // Actualiza solo este objeto.
+            };
+          }
+          return item;
+        });
+
+        // Devuelve el concepto con el array actualizado.
+        return {
+          ...concept,
+          conceptos: updatedConceptos,
+        };
+      }
+      return concept; // Si no es el concepto objetivo, devuelve sin cambios.
+    });
+
+    setCustomConcepts(updatedConcepts);
   };
 
-  const handleStatusChange = (status: boolean, index: number) => {
-    const newStatus = status ? 0 : 1;
-    const updatedConcepts = [...normalConcepts];
-    updatedConcepts[index].enviar_a_produccion = newStatus;
-    updatedConcepts[index].status_produccion = newStatus;
-    setNormalConcepts(updatedConcepts);
+
+
+
+  const handleStatusChange = (conceptItem: any, i: any) => {    
+    let newCustomConcep = [...idItem.conceptos]
+
+    newCustomConcep[i].enviar_a_produccion = !newCustomConcep[i].enviar_a_produccion
+    // Actualizamos el estado con el array modificado
+    setCustomConcepts(newCustomConcep);
+    
+
+
+
   };
+  
+
+  console.log('customConceptView', customConceptView)
+
+
+  const updateSaleOrderConcept = async (article: any) => {
+    let data = {
+      id: article.id,
+      id_articulo: article.id_articulo,
+      produccion_interna: article.produccion_interna,
+      id_area_produccion: article.areas_produccion[0].id_area,
+      enviar_a_produccion: article.enviar_a_produccion,
+      cantidad: article.cantidad,
+      monto_urgencia: article.monto_urgencia,
+      monto_descuento: article.monto_descuento,
+      precio_unitario: article.precio_unitario,
+      id_unidad: article.id_unidad,
+      obs_produccion: article.obs_produccion,
+      obs_factura: article.obs_factura,
+      id_pers: article.id_pers,
+    }
+
+    try {
+      let response: any = await APIs.updateOvConcepto(data)
+      if (response.error) {
+        Swal.fire('Advertencia', response.mensaje, 'warning');
+      } else {
+        Swal.fire('Exito', response.mensaje, 'success');
+      }
+    } catch (error: any) {
+      Swal.fire('Error al actualizar el concepto', error, 'success');
+    }
+  }
 
 
   return (
@@ -923,7 +984,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
             ''
           }
           {personalizedModal == 'personalized_modal-sale-update' ?
-            <div className='table__personalized-update'>
+            <div className='table__modal-sale__personalized-update'>
               {customConceptView ? (
                 <div className='table__numbers'>
                   <p className='text'>Total de artículos</p>
@@ -934,12 +995,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
               )}
               <div className='table__head'>
                 <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
-                  {personalizedModal == 'personalized_modal-update' ?
-                    ''
-                    :
-                    <div className='th'>
-                    </div>
-                  }
+
                   <div className='th'>
                     <p>Artículo</p>
                   </div>
@@ -964,10 +1020,10 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
                       <div className='tbody__container'>
                         <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={concept.id}>
                           <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept()}>
-                            <p className='article'>{concept.codigo}-{concept.descripcion}</p>
+                            <p className='folio-identifier'>{concept.codigo}-{concept.descripcion}</p>
                           </div>
                           <div className='td'>
-                            <p className='amount'>{concept.cantidad}</p>
+                            <p className='amount-identifier'>{concept.cantidad}</p>
                           </div>
                           <div className='td'>
                             <p>{concept.name_unidad || concept.unidad}</p>
@@ -1015,16 +1071,27 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
                               <div>
                                 <label>Area</label>
                               </div>
-                              <select className="traditional__selector" onClick={(event) => handleAreasChange(event, index)}>
+                              <select
+                                className="traditional__selector"
+                                onChange={(event) => handleAreasChange(event, index)}
+                              >
                                 {concept?.areas_produccion?.map((item: any) => (
                                   <option key={item.id} value={item.id_area}>
                                     {item.nombre_area}
                                   </option>
                                 ))}
                               </select>
+
+
+
                             </div>
                           </div>
                           <div className='td'>
+                            {concept.enviar_a_produccion ? 
+                            <p>Es tgrue</p>
+                          :
+                          <p>No es tgrue</p>
+                          }
                             <div>
                               <div className=''>
                                 <label>Enviar producción</label>
@@ -1032,15 +1099,22 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
                               <label className="switch">
                                 <input
                                   type="checkbox"
-                                  checked={concept.status_produccion === 1}
+                                  checked={concept.enviar_a_produccion}
                                   onChange={() =>
-                                    handleStatusChange(concept.status_produccion === 1, index)
+                                    handleStatusChange(concept, index)
                                   }
                                 />
                                 <span className="slider"></span>
                               </label>
                             </div>
                           </div>
+                          {personalizedModal == 'personalized_modal-sale-update' ?
+                            <div className='td'>
+                              <button type='button' className='btn__general-purple' onClick={() => updateSaleOrderConcept(concept)}>Actualizar</button>
+                            </div>
+                            :
+                            ""
+                          }
                         </div>
                       </div>
                     )

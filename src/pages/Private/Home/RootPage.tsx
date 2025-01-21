@@ -90,15 +90,11 @@ const RootHome: React.FC = () => {
     };
 
 
-
-
-
-
     return (
         <div className='root__dashboard'>
             <div className={`sidebar ${activeSidebar ? 'close' : ''}`}>
                 <div className="logo__sidebar">
-                    {/* <img className='logo__image' src={Logo} alt="" /> */}
+                    <img className='logo__image' src={Logo} alt="" />
                     {/* <h2 className='title__logo'>Procura</h2> */}
                 </div>
                 <div className='arrow__sidebar' onClick={toggleMenu}>

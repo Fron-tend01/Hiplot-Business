@@ -557,26 +557,29 @@ const ModalSalesOrder: React.FC = () => {
     }
 
     const [idItem, setIdItem] = useState<any>()
+    const [indexItem, setIndexItem] = useState<any>()
 
-    const updateConceptSaleOrder = (concept: any) => {
+    const updateConceptSaleOrder = (concept: any, index: number) => {
         setPersonalizedModal('personalized_modal-sale-update')
+        console.log('concept', concept)
         setIdItem(concept);
+        setIndexItem(index)
         console.log(concept)
         // Obtener el valor actual del identificador
-        const currentIdentifier = storePersonalized.getState().identifier;
-        let newIdentifier = currentIdentifier;
+        // const currentIdentifier = storePersonalized.getState().identifier;
+        // let newIdentifier = currentIdentifier;
 
-        // Asignar identificadores únicos a cada concepto
-        concept.conceptos.forEach((element: any) => {
-            element.check = true;
-            element.id_identifier = ++newIdentifier; // Incrementar y asignar
-        });
+        // // Asignar identificadores únicos a cada concepto
+        // concept.conceptos.forEach((element: any) => {
+        //     element.check = true;
+        //     element.id_identifier = ++newIdentifier; // Incrementar y asignar
+        // });
 
-        // Actualizar el identificador global al último valor utilizado
-        storePersonalized.setState({ identifier: newIdentifier });
+        // // Actualizar el identificador global al último valor utilizado
+        // storePersonalized.setState({ identifier: newIdentifier });
 
         // Actualizar vistas con los conceptos personalizados
-        setCustomConceptView([...concept.conceptos, ...normalConcepts]);
+        setCustomConceptView([...concept.conceptos]);
         setCustomLocal(concept.conceptos);
 
     }
@@ -897,7 +900,7 @@ const ModalSalesOrder: React.FC = () => {
                                                         </div>
                                                         <div className='td'>
                                                             {article?.personalized ?
-                                                                <div onClick={() => updateConceptSaleOrder(article)} className='conept-icon'>
+                                                                <div onClick={() => updateConceptSaleOrder(article, index)} className='conept-icon'>
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z"/><path d="m17 16.5-5-3"/><path d="m17 16.5 4.74-2.85"/><path d="M17 16.5v5.17"/><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z"/><path d="M12 8 7.26 5.15"/><path d="m12 8 4.74-2.85"/><path d="M12 13.5V8"/></svg>
                                                                 </div>
                                                          
@@ -1007,9 +1010,9 @@ const ModalSalesOrder: React.FC = () => {
                                                                 <label className="switch">
                                                                     <input
                                                                         type="checkbox"
-                                                                        checked={article.status_produccion === 1}
+                                                                        checked={article.enviar_a_produccion}
                                                                         onChange={() =>
-                                                                            handleStatusChange(article.status_produccion === 1, index)
+                                                                            handleStatusChange(article.enviar_a_produccion, index)
                                                                         }
                                                                     />
                                                                     <span className="slider"></span>
@@ -1084,7 +1087,7 @@ const ModalSalesOrder: React.FC = () => {
                     }
                 </div>
                 <ArticleViewModal />
-                <Personalized idItem={idItem} />
+                <Personalized idItem={idItem} indexItem={indexItem} />
                 <SeeCamposPlantillas />
                 <Binnacle />
 
