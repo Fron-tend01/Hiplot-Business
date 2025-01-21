@@ -26,7 +26,7 @@ const SalesCard: React.FC = () => {
 
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
-  
+
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
 
   const setConceptView = storePersonalized(state => state.setConceptView)
@@ -130,7 +130,6 @@ const SalesCard: React.FC = () => {
 
 
   useEffect(() => {
-    console.log('statusArtiddddddddddddddddddddddcle', statusArticle)
   }, [statusArticle]);
 
 
@@ -183,6 +182,7 @@ const SalesCard: React.FC = () => {
   };
 
   const [prices, setPrices] = useState<any>(0)
+  const [descuento, setDescuento] = useState<number>(0)
 
 
 
@@ -196,14 +196,13 @@ const SalesCard: React.FC = () => {
 
   const [data, setData] = useState<any>()
 
-console.log('article', article)
 
   const get = async () => {
 
     const dataArticle = {
       id_articulo: article.id,
       id_grupo_us: selectedUserGroup,
-      id_unidad: selectedUnit.id,
+      id_unidad: selectedUnit.id_unidad,
       cantidad: amount,
       campos: article.plantilla_data.filter((x: any) => x.tipo == 'numero'),
       camposTxTVisual: article.plantilla_data.filter((x: any) => x.tipo == 'txtvisual'),
@@ -232,6 +231,7 @@ console.log('article', article)
 
       if (result.error == false) {
         setPrices(result.mensaje)
+        setDescuento(result.descuento_aplicado)
         return setData({
           id_pers: 0,
           front: true,
@@ -252,7 +252,8 @@ console.log('article', article)
           obs_factura: productionComments,
           monto_urgencia: 0,
           urgencia_monto: 0,
-          precio_unitario: result.mensaje,
+          descuento: result.descuento_aplicado,
+          precio_unitario: result.mensaje / amount,
 
           /////////////////////Para Orden de Requicicion //////////////////////////
 
@@ -287,22 +288,22 @@ console.log('article', article)
   const getPrices = async () => {
     if (amount > 0) {
       article.plantilla_data.forEach((x: any) => {
-        if (x.valor > 0) {
+        if (x.valor > 0 && x.tipo == 'numero') {
           get();
         }
       });
     }
+
   };
 
 
   const handleAmountChange = (e: any) => {
     setAmount(parseInt(e.target.value))
-    if (amount > 0) {
-      getPrices()
 
-    }
   }
-
+  useEffect(() => {
+    getPrices()
+  }, [amount])
 
 
   const addQua = () => {
@@ -311,13 +312,12 @@ console.log('article', article)
     newData.id_identifier = identifier + 1;
     setIdentifier(identifier + 1);
 
-
+    
     setNormalConcepts([...normalConcepts, newData])
     setConceptView([...conceptView, newData])
     setCustomConceptView([...customConceptView, newData])
   };
 
-  console.log('normalConcepts', normalConcepts)
 
 
   const addSaleOrder = () => {
@@ -335,7 +335,7 @@ console.log('article', article)
     setNormalConcepts([...normalConcepts, newData])
     setConceptView([...conceptView, newData])
     setCustomConceptView([...customConceptView, newData])
-  
+
   }
 
   const [productionComments, setproductionComments] = useState<string>('')
@@ -719,7 +719,7 @@ console.log('article', article)
                         <div className='price_x_unit'>
                           <div>
                             <p>{x.nombre}</p>
-                            <p className='result__price_x_unit'>: ${x.valor || '0'}</p>
+                            <p className='result__price_x_unit'>: {x.valor || '0'}</p>
                           </div>
                         </div>
                         : ''}
@@ -742,9 +742,15 @@ console.log('article', article)
           {statusArticle !== false ?
             <div className='row__three'>
               <div className='row__four'>
+              {descuento > 0 ? 
+                <div className='price_x_unit'>
+                  <p className='title__price_x_unit'>Descuento Aplicado:</p>
+                  <p className='result__price_x_unit'>$ {descuento}</p>
+                </div>
+              :''}
                 <div className='price_x_unit'>
                   <p className='title__price_x_unit'>Precio por unidad:</p>
-                  <p className='result__price_x_unit'>$ {prices !== 0 ? prices : 0 / amount !== 0 ? amount : 0}</p>
+                  <p className='result__price_x_unit'>$ {Number.isNaN(prices / amount)?0:(prices / amount) }</p>
                 </div>
                 <div className='total__price'>
                   <p className='title__total-price'>Precio total</p>

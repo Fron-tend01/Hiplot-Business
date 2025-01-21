@@ -297,38 +297,37 @@ const ModalCreate: React.FC = () => {
   }
 
 
-
   const undoConcepts = (concept: any) => {
-    // Primero, modificamos los conceptos
-    const updatedConcepts = concept.conceptos.map((element: any) => {
-      element.id_pers = 0;
-      element.id_identifier += identifier + 1;
-      return element;
-    });
-
+    // Crear una copia de los conceptos actualizados
+    const updatedConcepts = concept.conceptos.map((element:any) => ({
+      ...element,
+      id_pers: 0,
+      id_identifier: element.id_identifier + identifier + 1,
+    }));
+  
     // Actualizar el estado de normalConcepts
     setNormalConcepts([...normalConcepts, ...updatedConcepts]);
-    console.log('updatedConcepts', updatedConcepts)
-
-    // Filtrar y actualizar conceptView para eliminar los conceptos con el id_identifier especificado
-    const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
-    setConceptView([...deleteItem, ...concept.conceptos]);
-    concept.conceptos.forEach((element: any) => {
-      element.check = false
-    });
-    setCustomConceptView([...deleteItem, ...concept.conceptos])
-
-
+  
+    // Filtrar y actualizar conceptView
+    const deleteItem = conceptView.filter((x:any) => x.id_identifier !== concept.id_identifier);
+    setConceptView([...deleteItem, ...updatedConcepts]);
+  
+    // Crear una copia de los conceptos con check = false
+    const updatedConceptosWithCheck = concept.conceptos.map((element:any) => ({
+      ...element,
+      check: false,
+    }));
+  
+    // Actualizar el estado de customConceptView
+    setCustomConceptView([...deleteItem, ...updatedConceptosWithCheck]);
   };
-
-
-
-  console.log('conceptView', conceptView)
 
   const deleteArticle = (item: any, i: number) => {
     const filter = normalConcepts.filter((_: any, index: number) => index !== i)
     setNormalConcepts(filter)
-
+    const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
+    setConceptView(filter_view)
+    setCustomConceptView(filter_view)
     setDeleteConcepts([...deleteConcepts, item.id])
   }
 
@@ -390,8 +389,6 @@ const ModalCreate: React.FC = () => {
     setCustomLocal(concept.conceptos);
 
     // Debug
-    console.log('normalConcepts', normalConcepts);
-    console.log('concept', concept);
   }
 
 
@@ -428,12 +425,14 @@ const ModalCreate: React.FC = () => {
 
   //EFFECT PARA CALCULAR LOS TOTALES CUANDO CAMBIE NORMALCONCEPTS-----------------------------------------------------------------------------
   useEffect(() => {
+    console.log(normalConcepts);
+    
     const precios = normalConcepts.reduce(
       (acc: any, item: any) => ({
-        precio_unitario: acc.precio_unitario + (item.precio_unitario / item.cantidad || 0),
-        descuento: acc.descuento + (item.descuento || 0),
-        monto_urgencia: acc.monto_urgencia + (item.monto_urgencia || 0),
-        total: acc.total + (item.precio_total || 0),
+        precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
+        descuento: acc.descuento + (parseFloat(item.descuento) || 0),
+        monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
+        total: acc.total + (parseFloat(item.precio_total) || 0),
       }),
       { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0 }
     );
@@ -443,7 +442,22 @@ const ModalCreate: React.FC = () => {
     setTotal(precios.total);
 
   }, [normalConcepts])
+  // useEffect(() => {
+  //   const precios = customConcepts.reduce(
+  //     (acc: any, item: any) => ({
+  //       precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
+  //       descuento: acc.descuento + (parseFloat(item.descuento) || 0),
+  //       monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
+  //       total: acc.total + (parseFloat(item.precio_total) || 0),
+  //     }),
+  //     { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0 }
+  //   );
+  //   setSubtotal(precios.total + precios.descuento - precios.monto_urgencia);
+  //   setDescuento(precios.descuento);
+  //   setUrgencia(precios.monto_urgencia);
+  //   setTotal(precios.total);
 
+  // }, [customConcepts])
   // const cambioInputsPers = async (valor: number, index: number, key: string) => {
   //   const newConcept = [...normalConcepts];
   //   newConcept[index][key] = valor;
@@ -635,6 +649,7 @@ const ModalCreate: React.FC = () => {
                   <div>
                     <p>Total</p>
                   </div>
+
                 </div>
               </div>
               {conceptView ? (
@@ -665,7 +680,7 @@ const ModalCreate: React.FC = () => {
                             </div>
                             <div className='td'>
                               <div className='d-flex'>
-                                <p className='total'>$ {article.precio_total}</p>
+                                <p className='total'>$ {Number(article.precio_total).toFixed(2)}</p>
                                 <div className='see-concepts'>
                                   <button className='btn__general-purple' onClick={() => modalPersonalizedUpdate(article)}>Conceptos</button>
                                 </div>
@@ -695,33 +710,38 @@ const ModalCreate: React.FC = () => {
                               <p>{article.name_unidad || article.unidad}</p>
                             </div>
                             <div className='td'>
-                              <p className=''>$ {article.precio_total / article.cantidad}</p>
+                              <p className=''>$ {article.precio_unitario.toFixed(2)}</p>
                             </div>
                             <div className='td '>
                               {article.urgency ?
                                 <div className='container__total'>
-                                  <p className='total'>$ {article.precio_total}</p>
-                                  <p className='remove__urgency' title='urgencia'>(${parseFloat(article.monto_urgencia).toFixed(2)})</p>
+                                  <p className='total'>$ {article.precio_total.toFixed(2)}</p>
+                                  <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.monto_urgencia).toFixed(2)})</p>
                                 </div>
                                 :
                                 <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
                               }
+                              {article.descuento > 0 ?
+                                <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
+                                : ''}
                             </div>
 
                             <div className='td urgency'>
-                              {article?.urgency ?
-                                <div>
-                                  <button className='modal-create-quotations__tooltip-text no-urgency' type='button' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
-                                  </button>
-                                </div>
-                                :
-                                <div>
-                                  <button className='modal-create-quotations__tooltip-text yes-urgency' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)} type='button'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
-                                  </button>
-                                </div>
-                              }
+                              {article.descuento < 0 ?
+                                article?.urgency ?
+                                  <div>
+                                    <button className='modal-create-quotations__tooltip-text no-urgency' type='button' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                    </button>
+                                  </div>
+                                  :
+                                  <div>
+                                    <button className='modal-create-quotations__tooltip-text yes-urgency' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)} type='button'>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                    </button>
+                                  </div>
+                                : ''}
+
                             </div>
                             <div className='td'>
                               <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
