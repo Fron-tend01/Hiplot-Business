@@ -1,3 +1,10 @@
+.billing__modal-division > .row__one {
+    padding: 20px;
+    background-color: var(--cards-background);
+    border-radius: var(--general-card-border);
+}
+
+
 
 /*=================================================
  

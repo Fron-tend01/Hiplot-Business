@@ -789,6 +789,11 @@ getTotalPrice: async (data: any, customPath?: string) => {
       return ConfigurationAPIs.post(path, data)
     },
 
+    updateInvoice: async (data: any, customPath?: string) => {
+      const path = customPath || 'update_factura';
+      return ConfigurationAPIs.post(path, data)
+    },
+
  
    //////////////////////////////// General ///////////////////////////////////////
    getKeySat: async (data: any) => {

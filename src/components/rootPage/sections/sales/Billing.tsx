@@ -13,6 +13,7 @@ import useUserStore from '../../../../zustand/General'
 import { useSelectStore } from '../../../../zustand/Select'
 import Select from '../../Dynamic_Components/Select'
 import { usersRequests } from '../../../../fuctions/Users'
+import { storePersonalized } from '../../../../zustand/Personalized'
 const Billing: React.FC = () => {
 
     const setSubModal = storeArticles(state => state.setSubModal)
@@ -33,6 +34,13 @@ const Billing: React.FC = () => {
     const [Data, setData] = useState<any>([])
     const setDataUpdate = storeBilling(state => state.setDataUpdate)
     const setModoUpdate = storeBilling(state => state.setModoUpdate)
+    const setConceptView = storePersonalized(state => state.setConceptView)
+    const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+    const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
+    const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
+    const {identifier}: any = storePersonalized()
+
+
 
     const hoy = new Date();
     const haceUnaSemana = new Date();
@@ -95,10 +103,47 @@ const Billing: React.FC = () => {
         setData(result)
     }
     const modalUpdate = (dat: any) => {
-        setSubModal('billing__modal-update')
-        setDataUpdate(dat)
-        setModoUpdate(true)
-    }
+        setSubModal('billing__modal-update');
+    
+        // Obtener el identificador actual del store
+        const currentIdentifier = storePersonalized.getState().identifier;
+        let newIdentifier = currentIdentifier;
+    
+        // Actualizar los conceptos con un nuevo identificador y otras propiedades
+        const updatedConceptos = dat.conceptos.map((element: any) => ({
+            ...element,
+            check: false, // Ejemplo para marcar como seleccionado
+            id_identifier: ++newIdentifier, // Incrementar y asignar el nuevo identificador
+        }));
+    
+        // Actualizar los conceptos personalizados
+        const updatedConceptosPers = dat.conceptos_pers.map((element: any) => ({
+            ...element,
+            check: true, // Ejemplo para marcar como seleccionado
+            id_identifier: ++newIdentifier, // Incrementar y asignar el nuevo identificador
+        }));
+    
+        // Guardar el nuevo identificador en el store
+        storePersonalized.setState({ identifier: newIdentifier });
+    
+        // Actualizar el estado local
+        setDataUpdate({
+            ...dat,
+            conceptos: updatedConceptos,
+            conceptos_pers: updatedConceptosPers,
+        });
+    
+        // Combinar conceptos para la vista
+        setConceptView([...updatedConceptos, ...updatedConceptosPers]);
+        
+        setNormalConcepts(updatedConceptos)
+        setCustomConcepts(updatedConceptosPers);
+        setCustomConceptView(updatedConceptos);
+    
+        // Activar modo de actualización
+        setModoUpdate(true);
+    };
+    
     return (
         <div className='billing'>
             <div className='billing__container'>

@@ -16,7 +16,7 @@ import { clearLocalStorage } from '../../../utils/localStorage.utility';
 import useUserStore from '../../../zustand/General';
 import { PrivateRoutes, PublicRoutes } from '../../../models/routes';
 import Header from '../../../components/rootPage/Header/Header';
-import Logo from '../../../assets/HI SOFT LOGO-sv-02.svg'
+import Logo from '../../../assets/HI SOFT LOGO-12.svg'
 import APIs from '../../../services/services/APIs';
 
 const RootHome: React.FC = () => {
