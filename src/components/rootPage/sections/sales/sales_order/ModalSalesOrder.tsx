@@ -116,6 +116,7 @@ const ModalSalesOrder: React.FC = () => {
         normalConcepts.forEach((element: any) => {
             element.unidad = element.id_unidad
             element.total = element.precio_total
+            element.monto_descuento = element.descuento== null ? 0: element.descuento
             element.urgencia = element.monto_urgencia
             element.campos_plantilla.forEach((cp: any) => {
                 cp.valor = cp.valor.toString()
@@ -124,10 +125,12 @@ const ModalSalesOrder: React.FC = () => {
 
         if (customConcepts.length > 0) {
             customConcepts?.forEach((element: any) => {
+                element.id = 0
                 element.conceptos.forEach((x: any) => {
                     x.unidad = x.id_unidad
                     x.total = x.precio_total
                     x.urgencia = x.monto_urgencia
+                    x.monto_descuento = x.descuento== null ? 0: x.descuento
                     x.campos_plantilla.forEach((cp: any) => {
                         cp.valor = cp.valor.toString()
                     });
@@ -341,25 +344,45 @@ const ModalSalesOrder: React.FC = () => {
     //     setdUrgency(urgencyTotal)
     //     setdTotalGeneral(amountTotal - descountTotal + urgencyTotal)
     // }, [normalConcepts]);
+    const [subtotalf, setSubtotalf] = useState<number>(0)
+    const [urgenciaf, setUrgenciaf] = useState<number>(0)
+    const [totalf, setTotalf] = useState<number>(0)
     useEffect(() => {
         calcular_totales()
         calcular_tiempos_entrega()
-    }, [normalConcepts])
+    }, [normalConcepts, customConcepts])
     const calcular_totales = () => {
+
         const precios = normalConcepts.reduce(
             (acc: any, item: any) => ({
-                precio_unitario: acc.precio_unitario + (item.precio_unitario / item.cantidad || 0),
-                descuento: acc.descuento + (item.descuento || 0),
-                monto_urgencia: acc.monto_urgencia + (item.monto_urgencia || 0),
-                total: acc.total + (item.precio_total || 0),
+                precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
+                descuento: acc.descuento + (parseFloat(item.descuento) || 0),
+                monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
+                total: acc.total + (parseFloat(item.precio_total) || 0),
+                total_franquicia: acc.total_franquicia + (parseFloat(item.total_franquicia) || 0),
             }),
-            { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0 }
+            { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0, total_franquicia: 0 }
         );
-        setAmount(precios.total + precios.descuento - precios.monto_urgencia);
-        setdDiscount(precios.descuento)
-        setdUrgency(precios.monto_urgencia)
-        setdTotalGeneral(precios.total)
+        const preciospers = customConcepts.reduce(
+            (acc: any, item: any) => ({
+                precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
+                descuento: acc.descuento + (parseFloat(item.descuento) || 0),
+                monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
+                total: acc.total + (parseFloat(item.precio_total) || 0),
+                total_franquicia: acc.total_franquicia + (parseFloat(item.total_franquicia) || 0),
+            }),
+            { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0, total_franquicia: 0 }
+        );
+        setAmount(preciospers.total + preciospers.descuento - preciospers.monto_urgencia + precios.total + precios.descuento - precios.monto_urgencia);
+        setdDiscount(preciospers.descuento + precios.descuento);
+        setdUrgency(preciospers.monto_urgencia + precios.monto_urgencia);
+        setdTotalGeneral(preciospers.total + precios.total);
+
+        setSubtotalf(preciospers.total_franquicia + precios.total_franquicia);
+        setTotalf(preciospers.total_franquicia + precios.total_franquicia);
+
     }
+
     const getTicket = async () => {
         try {
             await APIs.getPdfPurchaseOrders(saleOrdersToUpdate.id);
@@ -871,17 +894,15 @@ const ModalSalesOrder: React.FC = () => {
                                                             <p>{article.name_unidad || article.unidad}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            ${article.precio_unitario / article.cantidad}
+                                                            <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
+                                                                <small style={{ color: 'red' }}>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small></p>
                                                         </div>
                                                         <div className='td'>
-                                                            {article.urgency ?
-                                                                <div className='d-flex'>
-                                                                    <p className='total-identifier'>$ {article.precio_total}</p>
-                                                                    <p className='urgency-identifier'>${parseFloat(article.monto_urgencia).toFixed(2)}</p>
-                                                                </div>
-                                                                :
-                                                                <p className='total-identifier'>$ {article.precio_total}</p>
-                                                            }
+                                                            <div className=''>
+                                                                <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                                                <p className='total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                                                    <small style={{ color: 'red' }}>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                                            </div>
                                                         </div>
                                                         <div className='td urgency'>
                                                             {article?.urgency ?
@@ -901,9 +922,9 @@ const ModalSalesOrder: React.FC = () => {
                                                         <div className='td'>
                                                             {article?.personalized ?
                                                                 <div onClick={() => updateConceptSaleOrder(article, index)} className='conept-icon'>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z"/><path d="m17 16.5-5-3"/><path d="m17 16.5 4.74-2.85"/><path d="M17 16.5v5.17"/><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z"/><path d="M12 8 7.26 5.15"/><path d="m12 8 4.74-2.85"/><path d="M12 13.5V8"/></svg>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
                                                                 </div>
-                                                         
+
                                                                 :
                                                                 ''
                                                             }
@@ -940,17 +961,32 @@ const ModalSalesOrder: React.FC = () => {
                                                             <p>{article.name_unidad || article.unidad}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            ${article.precio_unitario / article.cantidad}
+                                                            <p className=''>$ {article.precio_unitario.toFixed(2)} <br />
+                                                                {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                                                    <small style={{ color: 'red' }}>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
+                                                            </p>
                                                         </div>
                                                         <div className='td'>
+
                                                             {article.urgency ?
                                                                 <div className='d-flex'>
-                                                                    <p className='total-identifier'>$ {article.precio_total}</p>
-                                                                    <p className='urgency-identifier'>${parseFloat(article.monto_urgencia).toFixed(2)}</p>
+                                                                    <div>
+                                                                        <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                                                        <p className='total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                                                            <small style={{ color: 'red' }}>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                                                    </div>
                                                                 </div>
                                                                 :
-                                                                <p className='total-identifier'>$ {article.precio_total}</p>
+                                                                <div>
+                                                                    <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                                                    <p className='total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                                                        <small style={{ color: 'red' }}>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                                                </div>
+
                                                             }
+                                                            {article.descuento > 0 ?
+                                                                <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
+                                                                : ''}
                                                         </div>
                                                         <div className='td urgency'>
                                                             {article?.urgency ?
@@ -1011,7 +1047,7 @@ const ModalSalesOrder: React.FC = () => {
                                                                     <input
                                                                         type="checkbox"
                                                                         checked={article.enviar_a_produccion}
-                                                                        onChange={() => handleStatusChange(article.enviar_a_produccion, index)}/>
+                                                                        onChange={() => handleStatusChange(article.enviar_a_produccion, index)} />
                                                                     <span className="slider"></span>
                                                                 </label>
                                                             </div>
@@ -1062,8 +1098,29 @@ const ModalSalesOrder: React.FC = () => {
                                 </div>
                             </div>
                         </div>
+                        <div className='btns mt-1'>
+                            <div className='subtotal'>
+                                <div>
+                                    <p className='name'>Subtotal Franquicia</p>
+                                    <p className='value'>$ {subtotalf}</p>
+                                </div>
+                            </div>
 
+                            <div className='urgency'>
+                                <div>
+                                    <p className='name'>Urgencia Franquicia</p>
+                                    <p className='value'>$ {urgenciaf}</p>
+                                </div>
+                            </div>
+                            <div className='total'>
+                                <div>
+                                    <p className='name'>Total Franquicia</p>
+                                    <p className='value'>$ {totalf}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                     {modalSalesOrder !== '' ?
                         <div className='d-flex justify-content-center mt-3'>
                             <div>

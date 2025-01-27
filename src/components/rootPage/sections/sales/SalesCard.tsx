@@ -18,6 +18,7 @@ import APIs from '../../../../services/services/APIs';
 import { Toaster, toast } from 'sonner'
 import { storePersonalized } from '../../../../zustand/Personalized';
 import { storeQuotation } from '../../../../zustand/Quotation';
+import Swal from 'sweetalert2';
 
 
 const SalesCard: React.FC = () => {
@@ -33,7 +34,7 @@ const SalesCard: React.FC = () => {
   const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
 
-  const { normalConcepts, conceptView, customConceptView }: any = useStore(storePersonalized);
+  const { normalConcepts, conceptView, customConceptView, customConcepts }: any = useStore(storePersonalized);
 
   const setArticle = storeSaleCard(state => state.setArticle);
 
@@ -158,6 +159,8 @@ const SalesCard: React.FC = () => {
 
   const [selectUnits, setSelectUnits] = useState<boolean>(false);
   const [selectedUnit, setSelectedUnit] = useState<any>(null);
+  const [Adicional, setAdicional] = useState<any>(null);
+  const [AdicionalFranquicia, setAdicionalFranquicia] = useState<any>(null);
 
   const openSelectUnits = () => {
     setSelectUnits(!selectUnits);
@@ -184,7 +187,9 @@ const SalesCard: React.FC = () => {
 
   const [prices, setPrices] = useState<any>(0)
   const [descuento, setDescuento] = useState<number>(0)
-
+  const [pricesFranquicia, setPricesFranquicia] = useState<any>(0)
+  const [pricesFranquiciaAdicional, setPricesFranquiciaAdicional] = useState<any>(0)
+  const [descuentoFranquicia, setDescuentoFranquicia] = useState<number>(0)
 
 
   useEffect(() => {
@@ -199,6 +204,7 @@ const SalesCard: React.FC = () => {
 
 
   const get = async () => {
+
 
     const dataArticle = {
       id_articulo: article.id,
@@ -234,6 +240,33 @@ const SalesCard: React.FC = () => {
       if (result.error == false) {
         setPrices(result.mensaje)
         setDescuento(result.descuento_aplicado)
+        setAdicional(result.adicional)
+        let lista_precios_franquicia = 0
+        let precio_franq_tmp = 0
+        let precio_franq_adi_tmp = 0
+        if (article?.precios_franquicia != null && article?.precios_franquicia.length > 0) {
+          lista_precios_franquicia = article?.precios_franquicia[0].id_grupos_us
+          const dataArticleFranquicia = {
+            id_articulo: article.id,
+            id_grupo_us: lista_precios_franquicia,
+            id_unidad: selectedUnit.id_unidad,
+            id_usuario: user_id,
+            cantidad: amount,
+            campos: article.plantilla_data.filter((x: any) => x.tipo == 'numero'),
+            camposTxTVisual: article.plantilla_data.filter((x: any) => x.tipo == 'txtvisual'),
+            franquicia: true
+          };
+          const resultFranquicia: any = await APIs.getTotalPrice(dataArticleFranquicia);
+          if (!resultFranquicia.error) {
+            precio_franq_tmp = resultFranquicia.mensaje
+            precio_franq_adi_tmp = resultFranquicia?.adicional?.total
+
+            setPricesFranquicia(resultFranquicia.mensaje)
+            setPricesFranquiciaAdicional(resultFranquicia?.adicional?.total)
+            setDescuentoFranquicia(resultFranquicia.descuento_aplicado)
+            setAdicionalFranquicia(resultFranquicia.adicional)
+          }
+        }
         return setData({
           id_pers: 0,
           front: true,
@@ -256,7 +289,7 @@ const SalesCard: React.FC = () => {
           urgencia_monto: 0,
           descuento: result.descuento_aplicado,
           precio_unitario: result.mensaje / amount,
-
+          total_franquicia: precio_franq_tmp,
           /////////////////////Para Orden de Requicicion //////////////////////////
 
           urgencia: false,
@@ -307,36 +340,162 @@ const SalesCard: React.FC = () => {
     getPrices()
   }, [amount])
 
+  const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
 
   const addQua = () => {
 
-    const newData = { ...data };
-    newData.id_identifier = identifier + 1;
-    setIdentifier(identifier + 1);
 
+    if (Adicional != null) { //SI ADICIONAL TIENE ALGO SE DEBE CREAR EL PERSONALIZADO PARA ENVIARLO A COT/OV
+      //-------------------------------SIMULAR EL INGRESO DIRECTO A NORMALCONCEPTS
+      Swal.fire({
+        title: "Este concepto generará un personalizado ya que contiene un articulo adicional",
+        text: "Este concepto no se puede deshacer.",
+        showCancelButton: true,
+        icon: 'info',
+        confirmButtonText: "Aceptar",
+        denyButtonText: `Cancelar`
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const concepto_principal = { ...data };
+          const concepto_adicional = { ...Adicional };
 
-    setNormalConcepts([...normalConcepts, newData])
-    setConceptView([...conceptView, newData])
-    setCustomConceptView([...customConceptView, newData])
+          concepto_principal.id_identifier = identifier + 1;
+          concepto_principal.check = true
+          concepto_principal.precio_total -= concepto_adicional.total
+          concepto_principal.precio_unitario -= (concepto_adicional.total / concepto_adicional.cantidad)
+          concepto_principal.descuento -= concepto_adicional.descuento
+          concepto_principal.total_franquicia = pricesFranquiciaAdicional != null && !Number.isNaN(pricesFranquiciaAdicional) ? concepto_principal.total_franquicia - pricesFranquiciaAdicional : concepto_principal.total_franquicia
+          setIdentifier(identifier + 1);
+          concepto_adicional.id_identifier = concepto_principal.id_identifier + 1;
+          concepto_adicional.check = true
+          concepto_adicional.id = null
+          concepto_adicional.id_articulo = concepto_adicional.id_articulo_adicional
+          concepto_adicional.id_unidad = concepto_adicional.unidad
+          concepto_adicional.unidad = concepto_adicional.nombre_unidad
+          concepto_adicional.precio_total = concepto_adicional.total
+          concepto_adicional.precio_unitario = concepto_adicional.total / concepto_adicional.cantidad
+          concepto_adicional.total_franquicia = pricesFranquiciaAdicional
+          concepto_adicional.campos_plantilla = []
+
+          setIdentifier(identifier + 1);
+          //-------------------------------SIMULA LA CREACIÓN DEL PERSONALIZADO
+          const data_pers = {
+            descripcion: article.descripcion,
+            personalized: true,
+            codigo: article.codigo,
+            cantidad: amount,
+            unidad: selectedUnit.id_unidad,
+            name_unidad: selectedUnit.nombre,
+            clave_sat: parseFloat(article.clave_sat),
+            codigo_unidad_sat: 0,
+            precio_total: prices,
+            total_franquicia: pricesFranquicia,
+            con_adicional: true,
+            comentarios_produccion: productionComments,
+            comentarios_factura: billingComment,
+            conceptos: [concepto_principal, concepto_adicional],
+            id_identifier: identifier + 1
+          }
+          //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
+          setCustomConcepts([...customConcepts, data_pers])
+
+          setConceptView([...normalConcepts, data_pers])
+          setCustomConceptView(normalConcepts)
+        }
+      });
+
+    } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
+      const newData = { ...data };
+      newData.id_identifier = identifier + 1;
+      setIdentifier(identifier + 1);
+      setNormalConcepts([...normalConcepts, newData])
+      setConceptView([...conceptView, newData])
+      setCustomConceptView([...customConceptView, newData])
+
+    }
   };
 
 
 
   const addSaleOrder = () => {
-    const incrementIdentifier = storePersonalized.getState().incrementIdentifier;
-    const newData = { ...data };
-    newData.id_identifier = storePersonalized.getState().identifier + 1; // Usa el valor actual de identifier
-    incrementIdentifier();
 
-    if (dataSaleOrder !== undefined) {
-      setDataSaleOrder([...dataSaleOrder, newData])
-    } else {
-      setDataSaleOrder([data])
+    if (Adicional != null) { //SI ADICIONAL TIENE ALGO SE DEBE CREAR EL PERSONALIZADO PARA ENVIARLO A COT/OV
+      //-------------------------------SIMULAR EL INGRESO DIRECTO A NORMALCONCEPTS
+      Swal.fire({
+        title: "Este concepto generará un personalizado ya que contiene un articulo adicional",
+        text: "Este concepto no se puede deshacer.",
+        showCancelButton: true,
+        icon: 'info',
+        confirmButtonText: "Aceptar",
+        denyButtonText: `Cancelar`
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const concepto_principal = { ...data };
+          const concepto_adicional = { ...Adicional };
+
+          concepto_principal.id_identifier = identifier + 1;
+          concepto_principal.check = true
+          concepto_principal.precio_total -= concepto_adicional.total
+          concepto_principal.precio_unitario -= (concepto_adicional.total / concepto_adicional.cantidad)
+          concepto_principal.descuento -= concepto_adicional.descuento
+          concepto_principal.total_franquicia = pricesFranquiciaAdicional != null && !Number.isNaN(pricesFranquiciaAdicional) ? concepto_principal.total_franquicia - pricesFranquiciaAdicional : concepto_principal.total_franquicia
+          setIdentifier(identifier + 1);
+          concepto_adicional.id_identifier = concepto_principal.id_identifier + 1;
+          concepto_adicional.check = true
+          concepto_adicional.id = null
+          concepto_adicional.id_articulo = concepto_adicional.id_articulo_adicional
+          concepto_adicional.id_unidad = concepto_adicional.unidad
+          concepto_adicional.unidad = concepto_adicional.nombre_unidad
+          concepto_adicional.precio_total = concepto_adicional.total
+          concepto_adicional.precio_unitario = concepto_adicional.total / concepto_adicional.cantidad
+          concepto_adicional.total_franquicia = pricesFranquiciaAdicional
+          concepto_adicional.campos_plantilla = []
+
+          setIdentifier(identifier + 1);
+          //-------------------------------SIMULA LA CREACIÓN DEL PERSONALIZADO
+          const data_pers = {
+            descripcion: article.descripcion,
+            personalized: true,
+            codigo: article.codigo,
+            cantidad: amount,
+            unidad: selectedUnit.id_unidad,
+            name_unidad: selectedUnit.nombre,
+            clave_sat: parseFloat(article.clave_sat),
+            codigo_unidad_sat: 0,
+            precio_total: prices,
+            total_franquicia: pricesFranquicia,
+            con_adicional: true,
+            comentarios_produccion: productionComments,
+            comentarios_factura: billingComment,
+            conceptos: [concepto_principal, concepto_adicional],
+            id_identifier: identifier + 1
+          }
+          //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
+          setCustomConcepts([...customConcepts, data_pers])
+
+          setConceptView([...normalConcepts, data_pers])
+          setCustomConceptView(normalConcepts)
+        }
+      });
+
+    } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
+      const incrementIdentifier = storePersonalized.getState().incrementIdentifier;
+      const newData = { ...data };
+      newData.id_identifier = storePersonalized.getState().identifier + 1; // Usa el valor actual de identifier
+      incrementIdentifier();
+
+      if (dataSaleOrder !== undefined) {
+        setDataSaleOrder([...dataSaleOrder, newData])
+      } else {
+        setDataSaleOrder([data])
+      }
+
+      setNormalConcepts([...normalConcepts, newData])
+      setConceptView([...conceptView, newData])
+      setCustomConceptView([...customConceptView, newData])
+
+
     }
-
-    setNormalConcepts([...normalConcepts, newData])
-    setConceptView([...conceptView, newData])
-    setCustomConceptView([...customConceptView, newData])
 
   }
 
@@ -729,7 +888,7 @@ const SalesCard: React.FC = () => {
                       </div>
                     ))}
                   </div>
-                 
+
                 </>
                 :
                 <div className="card-sale__template__values">
@@ -741,6 +900,29 @@ const SalesCard: React.FC = () => {
                   </div>
                 </div>
               }
+              {Adicional != null ?
+                <table style={{ width: "100%", borderCollapse: "collapse", margin: "20px 0", fontSize: "10px", textAlign: "left" }}>
+                  <thead >
+                    <tr style={{ backgroundColor: "#f4f4f4", borderBottom: "2px solid #ddd" }}>
+                      <th style={{ padding: "5px", border: "1px solid #ddd" }}>Adicional</th>
+                      <th style={{ padding: "5px", border: "1px solid #ddd" }}>Cantidad</th>
+                      <th style={{ padding: "5px", border: "1px solid #ddd" }}>P/U</th>
+                      {Adicional.descuento > 0 ? <th style={{ padding: "5px", border: "1px solid #ddd" }}>Desc.</th> : ''}
+                      <th style={{ padding: "5px", border: "1px solid #ddd" }}>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ backgroundColor: "#fff", borderBottom: "1px solid #ddd" }}>
+                      <td style={{ padding: "5px", border: "1px solid #ddd" }}>{Adicional?.codigo}-{Adicional?.descripcion}</td>
+                      <td style={{ padding: "5px", border: "1px solid #ddd" }}>{Adicional?.cantidad}</td>
+                      <td style={{ padding: "5px", border: "1px solid #ddd" }}>${Adicional?.total / Adicional?.cantidad}</td>
+                      {Adicional.descuento > 0 ? <td style={{ padding: "5px", border: "1px solid #ddd" }}>{Adicional?.descuento}</td> : ''}
+                      <td style={{ padding: "5px", border: "1px solid #ddd" }}>${Adicional?.total}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                : ''}
 
             </div>
           </div>
@@ -763,6 +945,18 @@ const SalesCard: React.FC = () => {
                 </div>
 
               </div>
+              {article?.precios_franquicia != null && article?.precios_franquicia.length > 0 ? //FALTA VALIDAR EL PERMISO 
+                <div className='row__four'>
+                  <div className='price_x_unit'>
+                    <p className='title__price_x_unit'>Precio por unidad Franquicia:</p>
+                    <p className='result__price_x_unit'>$ {Number.isNaN(pricesFranquicia / amount) ? 0 : (pricesFranquicia / amount)}</p>
+                  </div>
+                  <div className='total__price'>
+                    <p className='title__total-price'>Precio total Franquicia</p>
+                    <p className='result__total-price'>$ {pricesFranquicia}</p>
+                  </div>
+                </div>
+                : ''}
               <div className='row__five'>
                 <div className='row__one'>
                 </div>
@@ -782,7 +976,7 @@ const SalesCard: React.FC = () => {
               </div>
             </div>
           }
-          <Prices />
+          <Prices id_grupo_us={selectedUserGroup} />
           {/* <AddQoutation /> */}
           <ToArrive />
           <Indications />
