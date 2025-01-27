@@ -79,6 +79,11 @@ const ModalCreate: React.FC = () => {
   const [descuento, setDescuento] = useState<number>(0)
   const [urgencia, setUrgencia] = useState<number>(0)
   const [total, setTotal] = useState<number>(0)
+
+  const [subtotalf, setSubtotalf] = useState<number>(0)
+  const [urgenciaf, setUrgenciaf] = useState<number>(0)
+  const [totalf, setTotalf] = useState<number>(0)
+
   const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
   const [, setDataSelects] = useState<any>([])
@@ -233,8 +238,8 @@ const ModalCreate: React.FC = () => {
 
 
 
-    if (personalized.length > 0) {
-      personalized?.forEach((element: any) => {
+    if (customConcepts.length > 0) {
+      customConcepts?.forEach((element: any) => {
         element.conceptos.forEach((x: any) => {
           x.unidad = x.id_unidad
           x.total = x.precio_total
@@ -260,6 +265,7 @@ const ModalCreate: React.FC = () => {
     };
 
 
+    // console.log(data);
 
     // return
 
@@ -299,25 +305,25 @@ const ModalCreate: React.FC = () => {
 
   const undoConcepts = (concept: any) => {
     // Crear una copia de los conceptos actualizados
-    const updatedConcepts = concept.conceptos.map((element:any) => ({
+    const updatedConcepts = concept.conceptos.map((element: any) => ({
       ...element,
       id_pers: 0,
       id_identifier: element.id_identifier + identifier + 1,
     }));
-  
+
     // Actualizar el estado de normalConcepts
     setNormalConcepts([...normalConcepts, ...updatedConcepts]);
-  
+
     // Filtrar y actualizar conceptView
-    const deleteItem = conceptView.filter((x:any) => x.id_identifier !== concept.id_identifier);
+    const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
     setConceptView([...deleteItem, ...updatedConcepts]);
-  
+
     // Crear una copia de los conceptos con check = false
-    const updatedConceptosWithCheck = concept.conceptos.map((element:any) => ({
+    const updatedConceptosWithCheck = concept.conceptos.map((element: any) => ({
       ...element,
       check: false,
     }));
-  
+
     // Actualizar el estado de customConceptView
     setCustomConceptView([...deleteItem, ...updatedConceptosWithCheck]);
   };
@@ -395,7 +401,7 @@ const ModalCreate: React.FC = () => {
 
 
 
-  const handleUrgencyChange = async (index: number) => {
+  const handleUrgencyChange = async (index: number) => { //FALTA APLICAR FRANQUICIA
     let data = {
       "id_articulo": normalConcepts[index].id_articulo,
       "id_sucursal": branch.id,
@@ -425,39 +431,36 @@ const ModalCreate: React.FC = () => {
 
   //EFFECT PARA CALCULAR LOS TOTALES CUANDO CAMBIE NORMALCONCEPTS-----------------------------------------------------------------------------
   useEffect(() => {
-    console.log(normalConcepts);
-    
     const precios = normalConcepts.reduce(
       (acc: any, item: any) => ({
         precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
         descuento: acc.descuento + (parseFloat(item.descuento) || 0),
         monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
         total: acc.total + (parseFloat(item.precio_total) || 0),
+        total_franquicia: acc.total_franquicia + (parseFloat(item.total_franquicia) || 0),
       }),
-      { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0 }
+      { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0, total_franquicia: 0 }
     );
-    setSubtotal(precios.total + precios.descuento - precios.monto_urgencia);
-    setDescuento(precios.descuento);
-    setUrgencia(precios.monto_urgencia);
-    setTotal(precios.total);
+    const preciospers = customConcepts.reduce(
+      (acc: any, item: any) => ({
+        precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
+        descuento: acc.descuento + (parseFloat(item.descuento) || 0),
+        monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
+        total: acc.total + (parseFloat(item.precio_total) || 0),
+        total_franquicia: acc.total_franquicia + (parseFloat(item.total_franquicia) || 0),
+      }),
+      { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0, total_franquicia: 0 }
+    );
+    setSubtotal(preciospers.total + preciospers.descuento - preciospers.monto_urgencia + precios.total + precios.descuento - precios.monto_urgencia);
+    setDescuento(preciospers.descuento + precios.descuento);
+    setUrgencia(preciospers.monto_urgencia + precios.monto_urgencia);
+    setTotal(preciospers.total + precios.total);
 
-  }, [normalConcepts])
-  // useEffect(() => {
-  //   const precios = customConcepts.reduce(
-  //     (acc: any, item: any) => ({
-  //       precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
-  //       descuento: acc.descuento + (parseFloat(item.descuento) || 0),
-  //       monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
-  //       total: acc.total + (parseFloat(item.precio_total) || 0),
-  //     }),
-  //     { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0 }
-  //   );
-  //   setSubtotal(precios.total + precios.descuento - precios.monto_urgencia);
-  //   setDescuento(precios.descuento);
-  //   setUrgencia(precios.monto_urgencia);
-  //   setTotal(precios.total);
+    setSubtotalf(preciospers.total_franquicia + precios.total_franquicia);
+    setTotalf(preciospers.total_franquicia + precios.total_franquicia);
 
-  // }, [customConcepts])
+
+  }, [normalConcepts, customConcepts])
   // const cambioInputsPers = async (valor: number, index: number, key: string) => {
   //   const newConcept = [...normalConcepts];
   //   newConcept[index][key] = valor;
@@ -676,15 +679,22 @@ const ModalCreate: React.FC = () => {
                               <p>{article.name_unidad || article.unidad}</p>
                             </div>
                             <div className='td'>
-                              <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)}</p>
+                              <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
+                                <small style={{ color: 'red' }}>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small></p>
                             </div>
                             <div className='td'>
                               <div className='d-flex'>
-                                <p className='total'>$ {Number(article.precio_total).toFixed(2)}</p>
+                                <div> 
+                                  <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                  <p className='total'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                    <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                </div>
                                 <div className='see-concepts'>
                                   <button className='btn__general-purple' onClick={() => modalPersonalizedUpdate(article)}>Conceptos</button>
                                 </div>
+
                               </div>
+
                             </div>
 
                             <div className='td urgency'>
@@ -710,16 +720,28 @@ const ModalCreate: React.FC = () => {
                               <p>{article.name_unidad || article.unidad}</p>
                             </div>
                             <div className='td'>
-                              <p className=''>$ {article.precio_unitario.toFixed(2)}</p>
+                              <p className=''>$ {article.precio_unitario.toFixed(2)} <br />
+                                {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                  <small style={{ color: 'red' }}>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
+                              </p>
                             </div>
                             <div className='td '>
                               {article.urgency ?
                                 <div className='container__total'>
-                                  <p className='total'>$ {article.precio_total.toFixed(2)}</p>
+                                  <div> 
+                                  <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                  <p className='total'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                    <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                </div>
                                   <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.monto_urgencia).toFixed(2)})</p>
                                 </div>
                                 :
-                                <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                <div> 
+                                  <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                  <p className='total'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                    <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                </div>
+
                               }
                               {article.descuento > 0 ?
                                 <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
@@ -784,6 +806,28 @@ const ModalCreate: React.FC = () => {
                 <div>
                   <p className='name'>Total</p>
                   <p className='value'>$ {total}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className='btns mt-1'>
+              <div className='subtotal'>
+                <div>
+                  <p className='name'>Subtotal Franquicia</p>
+                  <p className='value'>$ {subtotalf}</p>
+                </div>
+              </div>
+
+              <div className='urgency'>
+                <div>
+                  <p className='name'>Urgencia Franquicia</p>
+                  <p className='value'>$ {urgenciaf}</p>
+                </div>
+              </div>
+              <div className='total'>
+                <div>
+                  <p className='name'>Total Franquicia</p>
+                  <p className='value'>$ {totalf}</p>
                 </div>
               </div>
             </div>

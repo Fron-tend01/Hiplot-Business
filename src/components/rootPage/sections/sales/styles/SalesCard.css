@@ -1,6 +1,7 @@
 .conatiner__create_sale-card {
     display: grid;
     height: 100%;
+    overflow: auto;
 }
 
 

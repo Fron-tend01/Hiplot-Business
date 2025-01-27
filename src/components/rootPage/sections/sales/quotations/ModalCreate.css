@@ -392,6 +392,8 @@
 .table__quotations_modal .table__body .tbody>.td .total {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap; /* Permite que los hijos se ajusten en varias líneas */
+
     align-items: center;
     padding: 5px 10px;
     background-color: #5e35b031;
@@ -399,8 +401,14 @@
     font-weight: 600;
     /* outline: 2px solid var(--primary-100); */
     color: #6e34e2;
+    white-space: normal;
+    line-height: 1.5;
 }
-
+.table__quotations_modal .table__body .tbody>.td .total small {
+    display: inline-block; /* Forzar que se trate como un bloque en línea */
+    margin-top: 4px;       /* Añadir un pequeño margen superior */
+    color:red
+  }
 
 .table__quotations_modal .table__body .tbody .td .see-concepts {
     margin-left: 15px;

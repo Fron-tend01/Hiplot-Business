@@ -4,12 +4,12 @@ import { useStore } from 'zustand'
 import { storeSaleCard } from '../../../../../zustand/SaleCard'
 import './styles/Prices.css'
 
-const Prices: React.FC = () => {
+const Prices: React.FC<any> = ({ id_grupo_us }) => {
 
   const setModalSub = storeModals(state => state.setModalSub)
   const { modalSub }: any = useStore(storeModals)
   const { article }: any = useStore(storeSaleCard)
-
+  
   return (
     <div className={`overlay__sale-card_modal ${modalSub === 'prices_modal' ? 'active' : ''}`}>
       <div className={`popup__sale-card_modal ${modalSub === 'prices_modal' ? 'active' : ''}`}>
@@ -24,11 +24,11 @@ const Prices: React.FC = () => {
             <div>
               {article?.precios ? (
                 <div className='table__numbers'>
-                  <p className='text'>Total de sucursales</p>
+                  <p className='text'>Total de Precios</p>
                   <div className='quantities_tables'>{article?.precios?.length}</div>
                 </div>
               ) : (
-                <p>No hay sucursales</p>
+                <p>No hay Precios</p>
               )}
             </div>
             <div className='table__head'>
@@ -48,25 +48,55 @@ const Prices: React.FC = () => {
               </div>
             </div>
             <div className='table__body'>
-              {article?.precios?.map((item: any, index: number) => (
-                <div className='tbody__container' key={index}>
-                  <div className='tbody'>
-                    <div className='td'>
-                      {item.precios_ext[0].rango}
+              {article?.precios
+                ?.filter((item: any) => item.id_grupos_us === id_grupo_us) // Filtrar los elementos que coincidan
+                .map((item: any, index: number) => (
+                  <div className="tbody__container" key={index}>
+                    <div className="tbody">
+                      <div className="td">{item.precios_ext[0].rango}</div>
+                      <div className="td">{item.precios}</div>
+                      <div className="td">{item.precios_fyv}</div>
+                      <div className="td">{item.fecha}</div>
                     </div>
-                    <div className='td'>
-                      {item.precios}
+                  </div>
+                ))}
+
+            </div>
+            {article?.precios_franquicia != null ?
+              <>
+                <b>PRECIOS DE FRANQUICIA</b>
+                <div className='table__head'>
+                  <div className='thead'>
+                    <div className='th'>
+                      <p className=''>Rangos</p>
                     </div>
-                    <div className='td'>
-                      {item.precios_fyv}
+                    <div className='th'>
+                      <p className=''>Precios</p>
                     </div>
-                    <div className='td'>
-                    {item.fecha}
+                    <div className='th'>
+                      <p className=''>Precio Frente y Vuelta</p>
+                    </div>
+                    <div className='th'>
+                      <p className=''>Ultima Actualización</p>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+                <div className='table__body'>
+                  {article?.precios_franquicia.map((item: any, index: number) => (
+                      <div className="tbody__container" key={index}>
+                        <div className="tbody">
+                          <div className="td">{item.precios_ext[0].rango}</div>
+                          <div className="td">{item.precios}</div>
+                          <div className="td">{item.precios_fyv}</div>
+                          <div className="td">{item.fecha}</div>
+                        </div>
+                      </div>
+                    ))}
+
+                </div>
+              </>
+
+              : ''}
           </div>
         </div>
       </div>
