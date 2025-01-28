@@ -78,7 +78,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     setFreightComments(purchaseOrderToUpdate.comentarios_flete)
     setSelectedModalType(purchaseOrderToUpdate.tipo)
     await setConceptos(purchaseOrderToUpdate.conceptos)
-    console.log('conceptosordencompra',purchaseOrderToUpdate.conceptos);
+    console.log('conceptosordencompra', purchaseOrderToUpdate.conceptos);
   }
 
   useEffect(() => {
@@ -428,7 +428,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   };
 
 
- 
+
 
   const filterByRequest = async () => {
     const data = {
@@ -439,7 +439,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
       status: 0
     }
     const res = await getRequisition2(data)
-    setRequisitions(res)
+    setRequisitions(res.data)
   }
 
 
@@ -547,7 +547,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     try {
       if (purchaseOrderToUpdate) {
         const resultCreate: any = await APIs.updatePurchaseOrders(data);
-        if(resultCreate.error == true) {
+        if (resultCreate.error == true) {
           return Swal.fire('Advertencia', resultCreate.mensaje, 'warning');
         }
         const resultGet = await APIs.getPurchaseOrders(dataGet);
@@ -559,7 +559,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
         setModal('')
       } else {
         const result: any = await APIs.createPurchaseOrders(data);
-        if(result.error == true) {
+        if (result.error == true) {
           return Swal.fire('Advertencia', result.mensaje, 'warning');
         }
         const resultGet = await APIs.getPurchaseOrders(dataGet);
@@ -637,13 +637,13 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   const setUpdateToRequisition = storeRequisitions((state: any) => state.setUpdateToRequisition);
   const setConceptos_req = storeRequisitions((state: any) => state.setConcepts);
 
-  const reqxid = async (id:number) => {
+  const reqxid = async (id: number) => {
     const hoy = new Date()
     const fecha = hoy.toISOString().split('T')[0]
-      const resultRequisition = await getRequisition2({id:id, id_sucursal:0,id_usuario:user_id,desde:fecha,hasta:fecha})
-      return resultRequisition
+    const resultRequisition = await getRequisition2({ id: id, id_sucursal: 0, id_usuario: user_id, desde: fecha, hasta: fecha })
+    return resultRequisition
   }
-  const modalReq = async (art:any) => {
+  const modalReq = async (art: any) => {
     const req = await reqxid(art.id_requisicion || art.requisicion.id)
     setModalStateCreate('create')
     setUpdateToRequisition(req[0])
@@ -754,110 +754,110 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
             </div>
           </div>
           <div className='parchase-orders-modal_container'>
-            <div className='row'>
-              <div className='col-6'>
-                <Empresas_Sucursales modeUpdate={modoUpdate} empresaDyn={selectedModalCompany} sucursalDyn={selectedModalBranchOffice}
-                  setEmpresaDyn={setSelectedModalCompany} setSucursalDyn={setSelectedModalBranchOffice} all={false} blocked={modoUpdate ? true : undefined} />
-              </div>
-
-
-              <div className='dates__requisition col-2'>
-                <label className='label__general'>Fecha de llegada</label>
-                <div className='container_dates__requisition'>
-                  <Flatpickr
-                    className='date'
-                    options={{
-                      locale: Spanish,
-                      mode: "single", // Modo para seleccionar solo una fecha
-                      dateFormat: "Y-m-d" // Formato de fecha
-                    }}
-                    value={arrivalDate} // Valor del estado
-                    onChange={handleDateChange} // Manejo del cambio de fecha
-                    placeholder='Selecciona una fecha' // Placeholder
-                  />
-
-                  {/* <input className='' ref={inputRef} type="text" placeholder="Selecciona una fecha" /> */}
+            <div className='row__one'>
+              <div className='row'>
+                <div className='col-6'>
+                  <Empresas_Sucursales modeUpdate={modoUpdate} empresaDyn={selectedModalCompany} sucursalDyn={selectedModalBranchOffice}
+                    setEmpresaDyn={setSelectedModalCompany} setSucursalDyn={setSelectedModalBranchOffice} all={false} blocked={modoUpdate ? true : undefined} />
                 </div>
-              </div>
-              <div className='col-2'>
-                <label className='label__general'>Cotización</label>
-                {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
-                <input className='inputs__general' type="text" value={quoteComments} onChange={(e) => setQuoteComments(e.target.value)} placeholder='Cotización' />
-              </div>
-              <div className='col-2'>
-                <label className='label__general'>Factura</label>
-                {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
-                <input className='inputs__general' type="text" value={bill} onChange={(e) => setBill(e.target.value)} placeholder='Factura' />
-              </div>
-            </div>
-            <div className='row__two'>
-              <div className='select__container'>
-                <label className='label__general'>Tipo de compra</label>
-                <div className='select-btn__general'>
-                  <div className={`select-btn ${selectModalTypes ? 'active' : ''}`} onClick={openSelectModalTypes}>
-                    <p>{selectedModalType !== null ? typePurchase.find((s: { id: number }) => s.id === selectedModalType)?.name : 'Selecciona'}</p>
-                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                  </div>
-                  <div className={`content ${selectModalTypes ? 'active' : ''}`}>
-                    <ul className={`options ${selectModalTypes ? 'active' : ''}`} style={{ opacity: selectModalTypes ? '1' : '0' }}>
-                      {typePurchase && typePurchase.map((typePurchase: any) => (
-                        <li key={typePurchase.id} onClick={() => handleModalTypesChange(typePurchase)}>
-                          {typePurchase.name}
-                        </li>
-                      ))}
-                    </ul>
+                <div className='dates__requisition col-2'>
+                  <label className='label__general'>Fecha de llegada</label>
+                  <div className='container_dates__requisition'>
+                    <Flatpickr
+                      className='date'
+                      options={{
+                        locale: Spanish,
+                        mode: "single", // Modo para seleccionar solo una fecha
+                        dateFormat: "Y-m-d" // Formato de fecha
+                      }}
+                      value={arrivalDate} // Valor del estado
+                      onChange={handleDateChange} // Manejo del cambio de fecha
+                      placeholder='Selecciona una fecha' // Placeholder
+                    />
+
+                    {/* <input className='' ref={inputRef} type="text" placeholder="Selecciona una fecha" /> */}
                   </div>
                 </div>
-              </div>
-              <div className='select__container'>
-                <label className='label__general'>Proveedor flete</label>
-                <div className='select-btn__general'>
-                  <div className={`select-btn ${selectModalfreightProvider ? 'active' : ''}`} onClick={openSelectModalFreightProvider}>
-                    <p>{selectedModalfreightProvider ? suppliers?.find((s: { id: number }) => s.id === selectedModalfreightProvider)?.nombre_comercial : 'Selecciona'}</p>
-                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                  </div>
-                  <div className={`content ${selectModalfreightProvider ? 'active' : ''}`}>
-                    <ul className={`options ${selectModalfreightProvider ? 'active' : ''}`} style={{ opacity: selectModalfreightProvider ? '1' : '0' }}>
-                      {suppliers?.map((suppliers: any) => (
-                        <li key={suppliers.id} onClick={() => handleModalFreightProviderChange(suppliers)}>
-                          {suppliers.nombre_comercial}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                <div className='col-2'>
+                  <label className='label__general'>Cotización</label>
+                  {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
+                  <input className='inputs__general' type="text" value={quoteComments} onChange={(e) => setQuoteComments(e.target.value)} placeholder='Cotización' />
+                </div>
+                <div className='col-2'>
+                  <label className='label__general'>Factura</label>
+                  {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
+                  <input className='inputs__general' type="text" value={bill} onChange={(e) => setBill(e.target.value)} placeholder='Factura' />
                 </div>
               </div>
-              <div>
-                <label className='label__general'>Costo flete</label>
-                {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
-                <input className={`inputs__general ${warningInvoice}  ? 'warning' : ''}`} type="number" value={freightCost == '' ? 0 : freightCost} onChange={handleInputFreightCostChange} placeholder='Costo' />
-              </div>
-              <div>
-                <label className='label__general'>Sumar</label>
+              <div className='row__two'>
+                <div className='select__container'>
+                  <label className='label__general'>Tipo de compra</label>
+                  <div className='select-btn__general'>
+                    <div className={`select-btn ${selectModalTypes ? 'active' : ''}`} onClick={openSelectModalTypes}>
+                      <p>{selectedModalType !== null ? typePurchase.find((s: { id: number }) => s.id === selectedModalType)?.name : 'Selecciona'}</p>
+                      <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                    </div>
+                    <div className={`content ${selectModalTypes ? 'active' : ''}`}>
+                      <ul className={`options ${selectModalTypes ? 'active' : ''}`} style={{ opacity: selectModalTypes ? '1' : '0' }}>
+                        {typePurchase && typePurchase.map((typePurchase: any) => (
+                          <li key={typePurchase.id} onClick={() => handleModalTypesChange(typePurchase)}>
+                            {typePurchase.name}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div className='select__container'>
+                  <label className='label__general'>Proveedor flete</label>
+                  <div className='select-btn__general'>
+                    <div className={`select-btn ${selectModalfreightProvider ? 'active' : ''}`} onClick={openSelectModalFreightProvider}>
+                      <p>{selectedModalfreightProvider ? suppliers?.find((s: { id: number }) => s.id === selectedModalfreightProvider)?.nombre_comercial : 'Selecciona'}</p>
+                      <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                    </div>
+                    <div className={`content ${selectModalfreightProvider ? 'active' : ''}`}>
+                      <ul className={`options ${selectModalfreightProvider ? 'active' : ''}`} style={{ opacity: selectModalfreightProvider ? '1' : '0' }}>
+                        {suppliers?.map((suppliers: any) => (
+                          <li key={suppliers.id} onClick={() => handleModalFreightProviderChange(suppliers)}>
+                            {suppliers.nombre_comercial}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
                 <div>
-                  <label className="switch">
-                    <input type="checkbox" checked={freightCostActive} onChange={checkFreightCost} />
-                    <span className="slider"></span>
-                  </label>
+                  <label className='label__general'>Costo flete</label>
+                  {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
+                  <input className={`inputs__general ${warningInvoice}  ? 'warning' : ''}`} type="number" value={freightCost == '' ? 0 : freightCost} onChange={handleInputFreightCostChange} placeholder='Costo' />
+                </div>
+                <div>
+                  <label className='label__general'>Sumar</label>
+                  <div>
+                    <label className="switch">
+                      <input type="checkbox" checked={freightCostActive} onChange={checkFreightCost} />
+                      <span className="slider"></span>
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <label className='label__general'>Comentarios de flete</label>
+                  {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
+                  <input className={`inputs__general ${warningInvoice}  ? 'warning' : ''}`} type="text" value={freightComments} onChange={(e) => setFreightComments(e.target.value)} placeholder='Comentarios' />
                 </div>
               </div>
-              <div>
-                <label className='label__general'>Comentarios de flete</label>
-                {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
-                <input className={`inputs__general ${warningInvoice}  ? 'warning' : ''}`} type="text" value={freightComments} onChange={(e) => setFreightComments(e.target.value)} placeholder='Comentarios' />
-              </div>
-            </div>
-            <div className='row__three'>
-              <div>
-                <label className='label__general'>Comentarios de OC</label>
-                {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
-                <textarea className={`textarea__general ${warningInvoice}  ? 'warning' : ''}`} value={OComments} onChange={(e) => setOComments(e.target.value)} placeholder='Comentarios de la orden de compra'></textarea>
+              <div className='row__three'>
+                <div>
+                  <label className='label__general'>Comentarios de OC</label>
+                  {/* <div className='warning__general' style={styleWarningName}><small >Este campo es obligatorio</small></div> */}
+                  <textarea className={`textarea__general ${warningInvoice}  ? 'warning' : ''}`} value={OComments} onChange={(e) => setOComments(e.target.value)} placeholder='Comentarios de la orden de compra'></textarea>
+                </div>
               </div>
             </div>
             {typeModal ?
-              <p className='title'>Buscar Requisiciones</p>
+              <p className='title'>Buscar Requisición</p>
               :
-              <p className='title'>Articulos en Requisicion</p>
+              <p className='title'>Artículos en Requisición</p>
             }
             <div className='row__four'>
               {typeModal == 0 ?
@@ -889,7 +889,6 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                     </div>
                     <div className='container__search'>
                       <button className='btn__general-purple btn__container' type='button' onClick={searchFor}>
-                        Buscar
                         <svg className='svg' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg>
                       </button>
                     </div>
@@ -921,8 +920,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                   </div>
                 </div>
                 :
-                <>
-
+                <div className='conatiner__quotation'>
                   <div className='row'>
                     <div className='col-10'>
                       <div className='dates__requisition'>
@@ -953,11 +951,29 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                                 <p className='text'>No hay empresas</p>
                               )}
                             </div>
-                            <div className='table__head'>
+                            {/* <div className='table__head'>
                               <div className='thead'>
+                                <div className='thead'>
+                                  <div className='th'>
+                                    <p className=''>Artículo</p>
+                                  </div>
+                                  <div className='th'>
+                                    <p className=''>Cant</p>
+                                  </div>
+                                  <div className='th'>
+                                    <p className=''>Unidad</p>
+                                  </div>
+                                  <div className='th'>
+                                    <p className=''>Req</p>
+                                  </div>
+                                  <div className='th'>
+                                    <p className=''>P/U</p>
+                                  </div>
+                               
 
+                                </div>
                               </div>
-                            </div>
+                            </div> */}
                             {requisitions != undefined && requisitions.length > 0 ? (
                               <div className='table__body'>
                                 {requisitions.map((requisition: any, index: any) => (
@@ -967,7 +983,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                                         {requisition.serie}-{requisition.folio}-{requisition.anio}
                                       </div>
                                       <div className='td'>
-                                      {requisition.empresa}-({requisition.sucursal})
+                                        {requisition.empresa}-({requisition.sucursal})
                                       </div>
                                       <div className='td'>
                                         {requisition.fecha_creacion}
@@ -994,9 +1010,9 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                       </div>
                     </div>
                   </div>
-                </>
+                </div>
               }
-          <ModalRequisition />
+              <ModalRequisition />
 
               <div className=''>
                 <div className='table__modal_create_parchase-orders' >
@@ -1014,7 +1030,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                     <div className='table__head'>
                       <div className='thead'>
                         <div className='th'>
-                          <p className=''>Articulo</p>
+                          <p className=''>Artículo</p>
                         </div>
                         <div className='th'>
                           <p className=''>Cant</p>
@@ -1049,7 +1065,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                           <div className='tbody__container' key={index}>
                             <div className='tbody'>
                               <div className='td'>
-                                {article.codigo} - {article.descripcion}
+                                <p className='folio-identifier'>{article.codigo} - {article.descripcion}</p>
                               </div>
                               <div className='td'>
                                 <div>
@@ -1069,12 +1085,12 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                                 </div>
                               </div>
                               <div className='td'>
-                                    
-                                  {article.id_requisicion != undefined && article.id_requisicion != 0 ?
-                                     <button className='btn__general-gray' onClick={()=>modalReq(article)}><p>{article.folio_req || article?.requisicion?.folio}</p></button>
-                                    :
-                                    <p>N/A</p>
-                                  }
+
+                                {article.id_requisicion != undefined && article.id_requisicion != 0 ?
+                                  <button className='btn__general-gray' onClick={() => modalReq(article)}><p>{article.folio_req || article?.requisicion?.folio}</p></button>
+                                  :
+                                  <p>N/A</p>
+                                }
                                 {/* <Link to={`/${PrivateRoutes.PRIVATE}/Home/${PrivateRoutes.SHOPPING}/${PrivateRoutes.REQUISITION}`}>
                                   {article.id_requisicion != undefined && article.id_requisicion != 0 ?
                                     <p>{article.folio_req || article?.requisicion?.folio}</p>
@@ -1129,25 +1145,32 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
               </div>
             </div>
           </div>
+
           <div className='row__finally'>
-            <div className='conatiner__result_modal_purchase-order'>
-              <div>
-                <p className='title'>Subtotal</p>
-                <p className='result'>$ {subtotal.toFixed(2)}</p>
+            <div className='row__finally_btns'>
+              <div className='subtotal'>
+                <div>
+                  <p className='name'>Subtotal</p>
+                  <p className='value'>$ {subtotal.toFixed(2)}</p>
+                </div>
               </div>
-              <div>
-                <p className='title'>Descuento</p>
-                <p className='result'>$ {discount.toFixed(2)}</p>
+              <div className='discount'>
+                <div>
+                  <p className='name'>Descuento</p>
+                  <p className='value'>$ {discount.toFixed(2)}</p>
+                </div>
               </div>
-              <div>
-                <p className='title'>IVA</p>
-                {/* Si applyExtraDiscount es true, mostrar 16%, de lo contrario, mostrar el valor calculado */}
-                <p className='result'>{ivaTotal.toFixed(2)}</p>
+              <div className='urgency'>
+                <div>
+                  <p className='name'>Urgencia</p>
+                  <p className='value'>$ {ivaTotal.toFixed(2)}</p>
+                </div>
               </div>
-              <div>
-                <p className='title'>Total</p>
-                {/* Ajustar el cálculo del total basado en si applyExtraDiscount está marcado */}
-                <p className='result'>$ {total.toFixed(2)}</p>
+              <div className='total'>
+                <div>
+                  <p className='name'>Total</p>
+                  <p className='value'>$ {total}</p>
+                </div>
               </div>
             </div>
             <div className={`d-flex  ${modal == 'modal-purchase-orders-update' ? 'justify-content-between' : 'justify-content-center'}`}>

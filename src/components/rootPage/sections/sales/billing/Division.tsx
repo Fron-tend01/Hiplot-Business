@@ -16,7 +16,7 @@ const Division = () => {
 
     const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
     const setDeleteCustomConcepts = storePersonalized(state => state.setDeleteCustomConcepts)
-    const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
+
     const setConceptView = storePersonalized(state => state.setConceptView)
     const { customConcepts, conceptView, deleteCustomConcepts }: any = useStore(storePersonalized)
 

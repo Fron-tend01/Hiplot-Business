@@ -2,6 +2,25 @@
     display: grid;
     height: 100%;
     overflow: auto;
+
+	border-top: none;
+
+	overflow-y: auto;
+	transition-delay: 0.0s;
+
+	&::-webkit-scrollbar {
+		width: 5px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: var(--primary-color);
+		border-radius: 5px;
+		height: 100px;
+	}
+
+	&::-webkit-scrollbar-track {
+		/* Para modificar el background */
+	}
 }
 
 
@@ -34,7 +53,7 @@
 
 .conatiner__create_sale-card > .row__two {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     gap: 20px;
     transition-delay: 0.0s;
     &::-webkit-scrollbar {
@@ -352,31 +371,68 @@
     border-radius: 10px;
 }
 
+.card__images_container .images__card-sale__container {
+  height: 350px;
+} 
 
-.card__images_container > .images__container > .images {
-    width: 100%;
+
+.card__images_container .images__card-sale__container  .images__container  {
+  width: 100%;
+  height: 350px;
+
+}
+.card__images_container .images__card-sale__container .swiper-pagination  {
+  position: absolute;
+  bottom: 12px;
+  z-index: 1;
+
+}
+
+.swiper-button-prev, 
+.swiper-button-next {
+  background-color: var(--primary-color);
+  top: 330px !important;
+  width: 35px !important; 
+  height: 35px !important;
+  transition: opacity 0.3s ease;
+  background-color: var(--cards-background);
+  border-radius: 5px;
+  color: var(--text-color);
+  z-index: 10;
+}
+
+.swiper-button-prev {
+  left: 0 !important;
+}
+
+.swiper-button-next {
+  right: 0 !important;
+}
+
+.swiper-button-prev:hover, 
+.swiper-button-next:hover {
+  opacity: 1; /* Cambia la opacidad cuando el mouse está encima */
+}
+
+.swiper-button-prev::after, 
+.swiper-button-next::after {
+ font-size: 16px !important;
+}
+
+
+.card__images_container  .images__container  .images {
     height: 300px;
     background-size: cover;
     background-position: center;
     border-radius: 10px;
 }
 
-.card__images_container > .images__container > .pager {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
+.card__images_container  .images__container  .buttons-sale-card {
+  width: 100%;
+  height: 30px;
 }
 
-.card__images_container > .images__container > .pager > .item {
-    display: flex;
-    padding: 5px;
-    background-color: var(--cards-background);
-    border-radius: 5px;
-}
 
-.card__images_container > .images__container > .pager > .item > svg {
-    color: var(--text-color);
-}
 
 
 .card__images_container > .images-pulse-card {
@@ -401,6 +457,7 @@
 
 .card__images_container > .row__one {
     margin: 20px 0;
+    margin-top: 0;
 
 }
 
@@ -1022,3 +1079,197 @@
     height: 50px;
     border-radius: 5px;
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+/*************************************************************
+                    Tabla de Entradas
+ **************************************************************/
+
+.table__sale-card-additional {
+	display: grid;
+	overflow: hidden;
+	grid-template-rows: repeat(2, auto) 1fr;
+  margin-top: 20px;
+
+}
+
+
+.table__sale-card-additional .table__head {
+	display: flex;
+	width: 100%;
+	background-color: var(--table-color);
+	color: var(--text-table-color);
+
+}
+
+.table__sale-card-additional .table__head .thead {
+	display: flex;
+	width: 100%;
+	border: 2px solid var(--border-table-color);
+	border-bottom: none;
+	border-radius: 10px 10px 0 0;
+}
+
+.table__sale-card-additional .table__head .thead {
+	display: grid;
+	grid-template-columns: 2fr repeat(4, 1fr);
+	padding: 5px;
+	font-weight: 600;
+}
+
+.table__sale-card-additional .table__body {
+	border: 2px solid var(--border-table-color);
+	border-top: none;
+
+	overflow-y: auto;
+	transition-delay: 0.0s;
+
+	&::-webkit-scrollbar {
+		width: 5px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: var(--primary-color);
+		border-radius: 5px;
+		height: 100px;
+	}
+
+	&::-webkit-scrollbar-track {
+		/* Para modificar el background */
+	}
+}
+
+.table__sale-card-additional .tbody__container {
+	border-top: 2px solid var(--border-table-color);
+}
+
+.table__sale-card-additional .tbody__container:nth-child(even) {
+	background-color: var(--table-color);
+}
+
+.table__sale-card-additional .tbody__container:nth-child(odd) {
+	background-color: var(--two-table-color);
+}
+
+.table__sale-card-additional .tbody__container:first-child {
+	border-top: 2px solid var(--border-table-color);
+}
+
+.table__sale-card-additional .tbody__container:last-child {
+	border-bottom: none;
+	border-radius: 0 0 20px 20px;
+}
+
+
+.table__sale-card-additional .table__body .tbody {
+	display: flex;
+}
+
+.table__sale-card-additional .table__body .tbody {
+	display: grid;
+	grid-template-columns: 2fr repeat(4, 1fr);
+	padding: 10px;
+}
+
+.table__sale-card-additional .table__body .tbody .td {
+	display: flex;
+}
+
+.table__sale-card-additional .table__body .tbody .td .addicional {
+	display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #3d86c62c;
+  border-radius: 5px;
+  font-weight: 600;
+  /* outline: 2px solid var(--primary-100); */
+  color: var(--primary-100);
+}
+
+
+.table__sale-card-additional .table__body .tbody .td .addicional {
+	display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #3d86c62c;
+  border-radius: 5px;
+  font-weight: 600;
+  /* outline: 2px solid var(--primary-100); */
+  color: var(--primary-100);
+}
+
+.table__sale-card-additional .table__body .tbody .td .amount {
+	display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #ff91001f;
+  border-radius: 5px;
+  font-weight: 600;
+    /* outline: 2px solid var(--primary-100); */
+  color: #FF8F00;
+}
+
+
+.table__sale-card-additional .table__body .tbody .td .price {
+  display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #5c6c85;
+}
+
+.table__sale-card-additional .table__body .tbody .td .discount {
+	display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #ff52523a;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #FF5252;
+}
+
+.table__sale-card-additional .table__body .tbody .td .price_total {
+	display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #5e35b031;
+  border-radius: 5px;
+  font-weight: 600;
+  /* outline: 2px solid var(--primary-100); */
+  color: #6e34e2;
+}

@@ -175,8 +175,8 @@ const Users: React.FC = () => {
   const [grupos_eliminar, setGrupos_eliminar] = useState<any[]>([])
 
   const addUserGroups = () => {
-    console.log('ug',selectedUserGroup);
-    
+    console.log('ug', selectedUserGroup);
+
     if (selectedUserGroup != null) {
       if (!grupos_nuevos.includes(selectedUserGroup)) {
         setGruposNuevos([...grupos_nuevos, selectedUserGroup]);
@@ -196,7 +196,7 @@ const Users: React.FC = () => {
 
   const addUsers = () => {
     console.log(selectUser);
-    
+
     if (selectUser !== null) {
       if (!subordinados_nuevos.includes(selectUser)) {
         setSubordinadosNuevos([...subordinados_nuevos, selectUser]);
@@ -306,14 +306,14 @@ const Users: React.FC = () => {
       }
 
 
-      if (data_ext.sucursales_nuevas.length === 0 ) {
+      if (data_ext.sucursales_nuevas.length === 0) {
         setWarningSelectBranchOffices(true);
       } else {
         setWarningSelectBranchOffices(false);
       }
       console.log(data_ext);
-      
-      if (nombre === '' || email === '' || password === '' || selectedCompany === null || selectedBranchOffice === null || 
+
+      if (nombre === '' || email === '' || password === '' || selectedCompany === null || selectedBranchOffice === null ||
         selectedTypeUser === null || data_ext.grupos_nuevos.length === 0 || data_ext.sucursales_nuevas.length === 0) {
         return;
       }
@@ -563,8 +563,8 @@ const Users: React.FC = () => {
 
   const handleUpdateUsers = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-   //-------------------------------------------TIENE UN ERROR AL NO METER  SUCURSALES NUEVAS PONE LA VARIABLE = UN NUMERO 
-   //-------------------------------------------DEBE SER IGUAL A UN ARREGLO VACIOPARA QUE PASE POR BACK
+    //-------------------------------------------TIENE UN ERROR AL NO METER  SUCURSALES NUEVAS PONE LA VARIABLE = UN NUMERO 
+    //-------------------------------------------DEBE SER IGUAL A UN ARREGLO VACIOPARA QUE PASE POR BACK
     const tipo_us = selectedTypeUser
     const sucursalesNewTmp: any = []
     const areasNewTmp: any = []
@@ -645,42 +645,42 @@ const Users: React.FC = () => {
     }
     let data = {
       sucursal_id: selectedBranchOffice,
-      nombre:nombre,
-      email:email,
-      password:password,
-      celular:celular,
-      tipo_us:tipo_us,
-      sucursales_nuevas:sucursalesNewTmp,
-      sucursales_eliminar:sucursales_eliminar,
-      areas_nuevas:areasNewTmp,
-      areas_eliminar:areas_eliminar,
-      subordinados_nuevos:subordinados_nuevos,
-      subordinados_eliminar:subordinados_eliminar,
-      grupos_nuevos:grupos_nuevos,
-      grupos_eliminar:grupos_eliminar,
-      usuarios_comercial:addUsuariosComercial,
-      usuarios_comercial_eliminar:UsuariosComercialElim
-  
+      nombre: nombre,
+      email: email,
+      password: password,
+      celular: celular,
+      tipo_us: tipo_us,
+      sucursales_nuevas: sucursalesNewTmp,
+      sucursales_eliminar: sucursales_eliminar,
+      areas_nuevas: areasNewTmp,
+      areas_eliminar: areas_eliminar,
+      subordinados_nuevos: subordinados_nuevos,
+      subordinados_eliminar: subordinados_eliminar,
+      grupos_nuevos: grupos_nuevos,
+      grupos_eliminar: grupos_eliminar,
+      usuarios_comercial: addUsuariosComercial,
+      usuarios_comercial_eliminar: UsuariosComercialElim
+
     }
     // Si todos los campos están llenos, crear usuarios y obtener datos
-    await APIs.CreateAnyPut(data, "usuario_update/"+user)
-        .then(async (response: any) => {
-          if (!response.error) {
-            Swal.fire('Notificación', response.mensaje, 'success');
-            await getUsuarios()
-            setGrupos_eliminar([])
-            setSubordinadosNuevos([])
-            setSubordinados_eliminar([])
-            setSucursalesNuevas([])
-            setAreasNuevas([])
-            setUpdateBranchPermissions([])
-            setUpdateAreasPermissions([])
-            setModalUpdate(false)
-          } else {
-            Swal.fire('Notificación', response.mensaje, 'warning');
-            return
-          }
-        })
+    await APIs.CreateAnyPut(data, "usuario_update/" + user)
+      .then(async (response: any) => {
+        if (!response.error) {
+          Swal.fire('Notificación', response.mensaje, 'success');
+          await getUsuarios()
+          setGrupos_eliminar([])
+          setSubordinadosNuevos([])
+          setSubordinados_eliminar([])
+          setSucursalesNuevas([])
+          setAreasNuevas([])
+          setUpdateBranchPermissions([])
+          setUpdateAreasPermissions([])
+          setModalUpdate(false)
+        } else {
+          Swal.fire('Notificación', response.mensaje, 'warning');
+          return
+        }
+      })
     try {
 
     } catch {
@@ -763,14 +763,14 @@ const Users: React.FC = () => {
   const [UsuariosComercialElim, setUsuariosComercialElim] = useState<any>([])
 
   const agregarUsuariosParaComercial = () => {
-    const filter_us = usuariosComercial.filter((x:any)=> x.ContactID==UsuarioCSelected)[0]
+    const filter_us = usuariosComercial.filter((x: any) => x.ContactID == UsuarioCSelected)[0]
     const data = {
       id_empresa: selectedIds?.empresas_comercial?.id,
       empresa: selectedIds?.empresas_comercial?.razon_social,
       id_usuario: parseInt(UsuarioCSelected),
       usuario: filter_us.FirstName + ' ' + filter_us.LastNameFather + ' ' + filter_us.LastNameMother
     }
-    const exist = addUsuariosComercial.filter((x:any)=>x.id_empresa==selectedIds?.empresas_comercial?.id)
+    const exist = addUsuariosComercial.filter((x: any) => x.id_empresa == selectedIds?.empresas_comercial?.id)
     if (exist.length >= 1) {
       Swal.fire('Notificacion', 'Cada empresa solo puede tener un usuario de comercial enlazado', 'warning')
       return
@@ -792,16 +792,12 @@ const Users: React.FC = () => {
         <div className='create__users_btn-container'>
           <button className='btn__general-purple' onClick={modalCreate}>Crear nuevo usuario</button>
         </div>
-        <br />
-        <hr />
-        <div className=''>
+        <div className='row__one'>
           <label className='label__general'>Buscar:</label>
           <input className='inputs__general' type="text" placeholder='Ingresa un nombre de usuario a buscar y presiona enter...'
             value={searcher.nombre} onChange={(e) => DynamicVariables.updateAnyVar(setSearcher, "nombre", e.target.value)}
             onKeyUp={(event) => event.key === 'Enter' && getUsuarios()} />
         </div>
-        <hr />
-        <br />
         <div className={`overlay__users ${modal ? 'active' : ''}`}>
           <div className={`popup__users ${modal ? 'active' : ''}`}>
             <a href="#" className="btn-cerrar-popup__users" onClick={closeModalCreate}>
@@ -809,95 +805,97 @@ const Users: React.FC = () => {
             </a>
             <p className='title__modals'>Crear nuevo usuario</p>
             <form className='conatiner__create_users' onSubmit={handleCreateUsers}>
-              <div className='row'>
-                <div className='col-4 md-col-12'>
-                  <label className='label__general'>Nombre</label>
-                  <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder='Ingresa el nombre' />
-                </div>
-                <div className='col-4 md-col-12'>
-                  <label className='label__general'>Email</label>
-                  <div className='warning__general' style={styleWarningEmail}><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general ${warningEmail ? 'warning' : ''}`} type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Ingresa tu email' />
-                </div>
-                <div className='col-4 md-col-12'>
-                  <label className='label__general'>Celular</label>
-                  <div className='warning__general' style={styleWarningEmail}><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general ${warningEmail ? 'warning' : ''}`} type="text" value={celular} onChange={(e) => setCelular(e.target.value)} placeholder='Ingresa celular' />
-                </div>
-                <div className='col-4 md-col-12'>
-                  <label className='label__general'>Password</label>
-                  <div className='warning__general' style={styleWarningPassword}><small >Este campo es obligatorio</small></div>
-                  <div className={`container__password_users ${warningPassword ? 'warning' : ''}`}>
-                    <input className='input__password_users' type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Ingresa tu contraseña' />
-                    <svg onClick={() => setShowPassword(!showPassword)} className='see__password_users' xmlns="http://www.w3.org/2000/svg" height="25" width="25" viewBox="0 0 576 512"><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z" /></svg>
+              <div className='row__one'>
+                <div className='row'>
+                  <div className='col-4 md-col-12'>
+                    <label className='label__general'>Nombre</label>
+                    <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
+                    <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder='Ingresa el nombre' />
                   </div>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col-4 md-col-12'>
-                  <div className='select__container'>
-                    <label className='label__general'>Empresas</label>
-                    <div className='select-btn__general'>
-                      <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
-                        <p>{selectedCompany ? companiesXUsers.find((s: { id: number }) => s.id === selectedCompany)?.razon_social : 'Selecciona'}</p>
-                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                      </div>
-                      <div className={`content ${selectCompanies ? 'active' : ''}`}>
-                        <ul className={`options ${selectCompanies ? 'active' : ''}`} style={{ opacity: selectCompanies ? '1' : '0' }}>
-                          {companiesXUsers && companiesXUsers.map((company: any) => (
-                            <li key={uuidv4()} onClick={() => handleCompaniesChange(company)}>
-                              {company.razon_social}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                  <div className='col-4 md-col-12'>
+                    <label className='label__general'>Email</label>
+                    <div className='warning__general' style={styleWarningEmail}><small >Este campo es obligatorio</small></div>
+                    <input className={`inputs__general ${warningEmail ? 'warning' : ''}`} type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Ingresa tu email' />
+                  </div>
+                  <div className='col-4 md-col-12'>
+                    <label className='label__general'>Celular</label>
+                    <div className='warning__general' style={styleWarningEmail}><small >Este campo es obligatorio</small></div>
+                    <input className={`inputs__general ${warningEmail ? 'warning' : ''}`} type="text" value={celular} onChange={(e) => setCelular(e.target.value)} placeholder='Ingresa celular' />
+                  </div>
+                  <div className='col-4 md-col-12'>
+                    <label className='label__general'>Password</label>
+                    <div className='warning__general' style={styleWarningPassword}><small >Este campo es obligatorio</small></div>
+                    <div className={`container__password_users ${warningPassword ? 'warning' : ''}`}>
+                      <input className='input__password_users' type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Ingresa tu contraseña' />
+                      <svg onClick={() => setShowPassword(!showPassword)} className='see__password_users' xmlns="http://www.w3.org/2000/svg" height="25" width="25" viewBox="0 0 576 512"><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z" /></svg>
                     </div>
                   </div>
                 </div>
-                <div className='col-4 md-col-12'>
-                  <div className='select__container'>
-                    <label className='label__general'>Sucursales</label>
-                    <div className='select-btn__general'>
-                      <div className={`select-btn ${selectBranchOffices ? 'active' : ''}`} onClick={openSelectBranchOffices} >
-                        <p>{selectedBranchOffice ? branchOfficeXCompanies.find((s: { id: number }) => s.id === selectedBranchOffice)?.nombre : 'Selecciona'}</p>
-                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                      </div>
-                      <div className={`content ${selectBranchOffices ? 'active' : ''}`} >
-                        <ul className={`options ${selectBranchOffices ? 'active' : ''}`} style={{ opacity: selectBranchOffices ? '1' : '0' }}>
-                          {filteredBranchOffices.map((branchOffice: any) => (
-                            <li key={uuidv4()} onClick={() => handleBranchOfficesChange(branchOffice)}>
-                              {branchOffice.nombre}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className='col-4 md-col-12'>
-                  <div className='select__container'>
-                    <label className='label__general'>Tipo Usuario</label>
-                    <div className='select-btn__general'>
-                      <div className={`select-btn ${selectTypeUsers ? 'active' : ''}`} onClick={openSelectTypeUsers}>
-                        <p>{selectedTypeUser ? typesUsers.find((s: { id: number }) => s.id === selectedTypeUser)?.nombre : 'Selecciona'}</p>
-                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                      </div>
-                      <div className={`content ${selectTypeUsers ? 'active' : ''}`}>
-                        <ul className={`options ${selectTypeUsers ? 'active' : ''}`} style={{ opacity: selectTypeUsers ? '1' : '0' }}>
-                          {typesUsers.map((typeUser_id: any) => (
-                            <li key={uuidv4()} onClick={() => typesUsersChange(typeUser_id.id)}>
-                              {typeUser_id.nombre}
-                            </li>
-                          ))}
-                        </ul>
+                <div className='row'>
+                  <div className='col-4 md-col-12'>
+                    <div className='select__container'>
+                      <label className='label__general'>Empresas</label>
+                      <div className='select-btn__general'>
+                        <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
+                          <p>{selectedCompany ? companiesXUsers.find((s: { id: number }) => s.id === selectedCompany)?.razon_social : 'Selecciona'}</p>
+                          <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                        </div>
+                        <div className={`content ${selectCompanies ? 'active' : ''}`}>
+                          <ul className={`options ${selectCompanies ? 'active' : ''}`} style={{ opacity: selectCompanies ? '1' : '0' }}>
+                            {companiesXUsers && companiesXUsers.map((company: any) => (
+                              <li key={uuidv4()} onClick={() => handleCompaniesChange(company)}>
+                                {company.razon_social}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
+                  <div className='col-4 md-col-12'>
+                    <div className='select__container'>
+                      <label className='label__general'>Sucursales</label>
+                      <div className='select-btn__general'>
+                        <div className={`select-btn ${selectBranchOffices ? 'active' : ''}`} onClick={openSelectBranchOffices} >
+                          <p>{selectedBranchOffice ? branchOfficeXCompanies.find((s: { id: number }) => s.id === selectedBranchOffice)?.nombre : 'Selecciona'}</p>
+                          <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                        </div>
+                        <div className={`content ${selectBranchOffices ? 'active' : ''}`} >
+                          <ul className={`options ${selectBranchOffices ? 'active' : ''}`} style={{ opacity: selectBranchOffices ? '1' : '0' }}>
+                            {filteredBranchOffices.map((branchOffice: any) => (
+                              <li key={uuidv4()} onClick={() => handleBranchOfficesChange(branchOffice)}>
+                                {branchOffice.nombre}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-4 md-col-12'>
+                    <div className='select__container'>
+                      <label className='label__general'>Tipo Usuario</label>
+                      <div className='select-btn__general'>
+                        <div className={`select-btn ${selectTypeUsers ? 'active' : ''}`} onClick={openSelectTypeUsers}>
+                          <p>{selectedTypeUser ? typesUsers.find((s: { id: number }) => s.id === selectedTypeUser)?.nombre : 'Selecciona'}</p>
+                          <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                        </div>
+                        <div className={`content ${selectTypeUsers ? 'active' : ''}`}>
+                          <ul className={`options ${selectTypeUsers ? 'active' : ''}`} style={{ opacity: selectTypeUsers ? '1' : '0' }}>
+                            {typesUsers.map((typeUser_id: any) => (
+                              <li key={uuidv4()} onClick={() => typesUsersChange(typeUser_id.id)}>
+                                {typeUser_id.nombre}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+
                 </div>
-
-
-
               </div>
               <div className='row'>
                 <div className='col-6 md-col-12'>
@@ -1107,10 +1105,10 @@ const Users: React.FC = () => {
                   <Select dataSelects={companiesLocal} instanceId='empresas_comercial' nameSelect={'Empresas'}></Select>
                 </div>
                 <div className='col-5'>
-                <label className='label__general'>Usuario Comercial</label>
+                  <label className='label__general'>Usuario Comercial</label>
                   <select className={`inputs__general`}
                     onChange={(e) => setUsuarioCSelected(e.target.value)}>
-                      <option key={0}>Ninguno</option>
+                    <option key={0}>Ninguno</option>
                     {usuariosComercial?.map((option: any, i: number) => (
                       <option key={i} value={option.ContactID}>
                         {option.FirstName} {option.LastNameFather} {option.LastNameMother}
@@ -1130,7 +1128,7 @@ const Users: React.FC = () => {
                         {addUsuariosComercial.map((dat: any, index: number) => (
                           <div className='td' key={index}>
                             <li className='text'>
-                                {dat.empresa} - {dat.usuario}
+                              {dat.empresa} - {dat.usuario}
                             </li>
                             <button className='btn__delete_users' onClick={() => deleteUsuariosComercial(dat)}>Eliminar</button>
                           </div>
@@ -1151,9 +1149,11 @@ const Users: React.FC = () => {
         <div className='table__users' >
           <div>
             {usuarios ? (
-              <div>
-                <p>Tus Usuarios {usuarios.length}</p>
+              <div className='table__numbers'>
+                <p className='text'>Usuarios </p>
+                <div className='quantities_tables'>{usuarios.length}</div>
               </div>
+
             ) : (
               <p>No hay Usuarios</p>
             )}
@@ -1212,92 +1212,94 @@ const Users: React.FC = () => {
             </a>
             <h3 className='title__modals'>Actualizar usuario</h3>
             <form className='conatiner__create_users' onSubmit={handleUpdateUsers}>
-              <div className='row'>
-                <div className='col-4 md-col-6 sm-col-12'>
-                  <label className='label__general'>Nombre</label>
-                  <input className='inputs__general' type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder='Ingresa el nombre' />
-                </div>
-                <div className='col-4 md-col-6 sm-col-12'>
-                  <label className='label__general'>Email</label>
-                  <input className='inputs__general' type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Ingresa tu email' />
-                </div>
-                <div className='col-4 md-col-6 sm-col-12'>
-                  <label className='label__general'>Password</label>
-                  <div className='container__password_users'>
-                    <input className='input__password_users' type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Ingresa tu contraseña' />
-                    <svg onClick={() => setShowPassword(!showPassword)} className='see__password_users' xmlns="http://www.w3.org/2000/svg" fill='#162a9c' height="25" width="25" viewBox="0 0 576 512"><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z" /></svg>
+              <div className='row__one'>
+                <div className='row'>
+                  <div className='col-4 md-col-6 sm-col-12'>
+                    <label className='label__general'>Nombre</label>
+                    <input className='inputs__general' type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder='Ingresa el nombre' />
+                  </div>
+                  <div className='col-4 md-col-6 sm-col-12'>
+                    <label className='label__general'>Email</label>
+                    <input className='inputs__general' type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Ingresa tu email' />
+                  </div>
+                  <div className='col-4 md-col-6 sm-col-12'>
+                    <label className='label__general'>Password</label>
+                    <div className='container__password_users'>
+                      <input className='input__password_users' type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Ingresa tu contraseña' />
+                      <svg onClick={() => setShowPassword(!showPassword)} className='see__password_users' xmlns="http://www.w3.org/2000/svg" fill='#162a9c' height="25" width="25" viewBox="0 0 576 512"><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z" /></svg>
+                    </div>
+                  </div>
+                  <div className='col-4 md-col-12'>
+                    <label className='label__general'>Celular</label>
+                    <div className='warning__general' style={styleWarningEmail}><small >Este campo es obligatorio</small></div>
+                    <input className={`inputs__general ${warningEmail ? 'warning' : ''}`} type="text" value={celular} onChange={(e) => setCelular(e.target.value)} placeholder='Ingresa celular' />
                   </div>
                 </div>
-                <div className='col-4 md-col-12'>
-                  <label className='label__general'>Celular</label>
-                  <div className='warning__general' style={styleWarningEmail}><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general ${warningEmail ? 'warning' : ''}`} type="text" value={celular} onChange={(e) => setCelular(e.target.value)} placeholder='Ingresa celular' />
+                <div className='row'>
+                  <div className='col-4 md-col-12'>
+                    <div className='select__container'>
+                      <label className='label__general'>Empresas</label>
+                      <div className='select-btn__general'>
+                        <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
+                          <p>{selectedCompany ? companiesXUsers.find((s: { id: number }) => s.id === selectedCompany)?.razon_social : 'Selecciona'}</p>
+                          <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                        </div>
+                        <div className={`content ${selectCompanies ? 'active' : ''}`}>
+                          <ul className={`options ${selectCompanies ? 'active' : ''}`} style={{ opacity: selectCompanies ? '1' : '0' }}>
+                            {companiesXUsers && companiesXUsers.map((company: any) => (
+                              <li key={uuidv4()} onClick={() => handleCompaniesChange(company)}>
+                                {company.razon_social}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-4 md-col-12'>
+                    <div className='select__container'>
+                      <label className='label__general'>Sucursales</label>
+                      <div className='select-btn__general'>
+                        <div className={`select-btn ${selectBranchOffices ? 'active' : ''}`} onClick={openSelectBranchOffices} >
+                          <p>{selectedBranchOffice ? branchOfficeXCompanies.find((s: { id: number }) => s.id === selectedBranchOffice)?.nombre : 'Selecciona'}</p>
+                          <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                        </div>
+                        <div className={`content ${selectBranchOffices ? 'active' : ''}`} >
+                          <ul className={`options ${selectBranchOffices ? 'active' : ''}`} style={{ opacity: selectBranchOffices ? '1' : '0' }}>
+                            {filteredBranchOffices.map((branchOffice: any) => (
+                              <li key={uuidv4()} onClick={() => handleBranchOfficesChange(branchOffice)}>
+                                {branchOffice.nombre}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='col-4 md-col-12'>
+                    <div className='select__container'>
+                      <label className='label__general'>Tipo Usuario</label>
+                      <div className='select-btn__general'>
+                        <div className={`select-btn ${selectTypeUsers ? 'active' : ''}`} onClick={openSelectTypeUsers}>
+                          <p>{selectedTypeUser ? typesUsers.find((s: { id: number }) => s.id === selectedTypeUser)?.nombre : 'Selecciona'}</p>
+                          <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                        </div>
+                        <div className={`content ${selectTypeUsers ? 'active' : ''}`}>
+                          <ul className={`options ${selectTypeUsers ? 'active' : ''}`} style={{ opacity: selectTypeUsers ? '1' : '0' }}>
+                            {typesUsers.map((typeUser_id: any) => (
+                              <li key={uuidv4()} onClick={() => typesUsersChange(typeUser_id.id)}>
+                                {typeUser_id.nombre}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className='row'>
-                <div className='col-4 md-col-12'>
-                  <div className='select__container'>
-                    <label className='label__general'>Empresas</label>
-                    <div className='select-btn__general'>
-                      <div className={`select-btn ${selectCompanies ? 'active' : ''}`} onClick={openSelectCompanies}>
-                        <p>{selectedCompany ? companiesXUsers.find((s: { id: number }) => s.id === selectedCompany)?.razon_social : 'Selecciona'}</p>
-                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                      </div>
-                      <div className={`content ${selectCompanies ? 'active' : ''}`}>
-                        <ul className={`options ${selectCompanies ? 'active' : ''}`} style={{ opacity: selectCompanies ? '1' : '0' }}>
-                          {companiesXUsers && companiesXUsers.map((company: any) => (
-                            <li key={uuidv4()} onClick={() => handleCompaniesChange(company)}>
-                              {company.razon_social}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className='col-4 md-col-12'>
-                  <div className='select__container'>
-                    <label className='label__general'>Sucursales</label>
-                    <div className='select-btn__general'>
-                      <div className={`select-btn ${selectBranchOffices ? 'active' : ''}`} onClick={openSelectBranchOffices} >
-                        <p>{selectedBranchOffice ? branchOfficeXCompanies.find((s: { id: number }) => s.id === selectedBranchOffice)?.nombre : 'Selecciona'}</p>
-                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                      </div>
-                      <div className={`content ${selectBranchOffices ? 'active' : ''}`} >
-                        <ul className={`options ${selectBranchOffices ? 'active' : ''}`} style={{ opacity: selectBranchOffices ? '1' : '0' }}>
-                          {filteredBranchOffices.map((branchOffice: any) => (
-                            <li key={uuidv4()} onClick={() => handleBranchOfficesChange(branchOffice)}>
-                              {branchOffice.nombre}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className='col-4 md-col-12'>
-                  <div className='select__container'>
-                    <label className='label__general'>Tipo Usuario</label>
-                    <div className='select-btn__general'>
-                      <div className={`select-btn ${selectTypeUsers ? 'active' : ''}`} onClick={openSelectTypeUsers}>
-                        <p>{selectedTypeUser ? typesUsers.find((s: { id: number }) => s.id === selectedTypeUser)?.nombre : 'Selecciona'}</p>
-                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                      </div>
-                      <div className={`content ${selectTypeUsers ? 'active' : ''}`}>
-                        <ul className={`options ${selectTypeUsers ? 'active' : ''}`} style={{ opacity: selectTypeUsers ? '1' : '0' }}>
-                          {typesUsers.map((typeUser_id: any) => (
-                            <li key={uuidv4()} onClick={() => typesUsersChange(typeUser_id.id)}>
-                              {typeUser_id.nombre}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col-6 md-col-12'>
+                <div className='col-6 md-col-12 container__user_groups'>
                   <div className='users__form_row-three-left-one'>
                     <div className='select__container'>
                       <p className='label__general'>Grupos de usuarios</p>
@@ -1358,7 +1360,7 @@ const Users: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className='col-6 md-col-12'>
+                <div className='col-6 md-col-12 container__user'>
                   <div className='users__form_row-three-right-one'>
                     <div className='select__container'>
                       <label className='label__general'>Usuarios</label>
@@ -1495,10 +1497,10 @@ const Users: React.FC = () => {
                   <Select dataSelects={companiesLocal} instanceId='empresas_comercial' nameSelect={'Empresas'}></Select>
                 </div>
                 <div className='col-5'>
-                <label className='label__general'>Usuario Comercial</label>
+                  <label className='label__general'>Usuario Comercial</label>
                   <select className={`inputs__general`}
                     onChange={(e) => setUsuarioCSelected(e.target.value)}>
-                      <option key={0}>Ninguno</option>
+                    <option key={0}>Ninguno</option>
                     {usuariosComercial?.map((option: any, i: number) => (
                       <option key={i} value={option.ContactID}>
                         {option.FirstName} {option.LastNameFather} {option.LastNameMother}
@@ -1518,7 +1520,7 @@ const Users: React.FC = () => {
                         {addUsuariosComercial.map((dat: any, index: number) => (
                           <div className='td' key={index}>
                             <li className='text'>
-                                {dat.empresa} - {dat.usuario}
+                              {dat.empresa} - {dat.usuario}
                             </li>
                             <button className='btn__delete_users' onClick={() => deleteUsuariosComercial(dat)}>Eliminar</button>
                           </div>

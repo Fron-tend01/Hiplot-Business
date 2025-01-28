@@ -20,7 +20,7 @@ import SeeCamposPlantillas from '../SeeCamposPlantillas';
 import { storeDv } from '../../../../../zustand/Dynamic_variables';
 import { storeSaleOrder } from '../../../../../zustand/SalesOrder';
 import ModalSalesOrder from '../sales_order/ModalSalesOrder';
-
+import { toast } from 'sonner'
 
 
 
@@ -36,12 +36,12 @@ const ModalCreate: React.FC = () => {
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
   const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
+  const setDeleteCustomConcepts = storePersonalized(state => state.setDeleteCustomConcepts)
   const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
   const setCustomLocal = storePersonalized(state => state.setCustomLocal)
-
-
+  
   ////////////////// Personalized Variations////////////////////////////////// 
-  const { normalConcepts, deleteNormalConcepts, customConcepts, deleteCustomConcepts, conceptView, dataUpdate, personalized, personalizedModal }: any = useStore(storePersonalized)
+  const { normalConcepts, deleteNormalConcepts, customConcepts, deleteCustomConcepts, customConceptView, conceptView, dataUpdate, personalizedModal }: any = useStore(storePersonalized)
 
 
 
@@ -51,8 +51,6 @@ const ModalCreate: React.FC = () => {
   const setIdArticle = storeSaleCard(state => state.setIdArticle)
 
   const { dataGet }: any = useStore(storeQuotation);
-  const { identifier }: any = useStore(storePersonalized);
-  const setPersonalized = storePersonalized(state => state.setPersonalized)
 
   const setDataQuotation = storeSaleCard(state => state.setDataQuotation)
   const setModal = storeModals((state) => state.setModal);
@@ -70,7 +68,7 @@ const ModalCreate: React.FC = () => {
   const [company, setCompany] = useState<any>([])
   const [branch, setBranch] = useState<any>([])
 
-  const [deleteConcepts, setDeleteConcepts] = useState<any>([])
+
 
   const [name, setName] = useState<any>()
   const [comments, setComments] = useState<any>()
@@ -81,7 +79,7 @@ const ModalCreate: React.FC = () => {
   const [total, setTotal] = useState<number>(0)
 
   const [subtotalf, setSubtotalf] = useState<number>(0)
-  const [urgenciaf, setUrgenciaf] = useState<number>(0)
+  const [urgenciaf] = useState<number>(0)
   const [totalf, setTotalf] = useState<number>(0)
 
   const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
@@ -151,7 +149,7 @@ const ModalCreate: React.FC = () => {
     setComments(quatation.comentarios)
 
 
-    setPersonalized(quatation.conceptos_pers)
+
 
 
   }
@@ -304,38 +302,69 @@ const ModalCreate: React.FC = () => {
 
 
   const undoConcepts = (concept: any) => {
-    // Crear una copia de los conceptos actualizados
-    const updatedConcepts = concept.conceptos.map((element: any) => ({
-      ...element,
-      id_pers: 0,
-      id_identifier: element.id_identifier + identifier + 1,
-    }));
+    if (modal === 'create-modal__qoutation') {
+      const deleteItemCustomC = customConcepts.filter((x: any) => x.id_identifier !== concept.id_identifier);
+      setCustomConcepts(deleteItemCustomC)
+      const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
+      setConceptView([...deleteItem, ...concept.conceptos]);
+      setNormalConcepts([...normalConcepts, ...concept.conceptos])
+    } else {
+      const updatedConcepts = concept.conceptos.map((element: any) => ({
+        ...element,
+        id_pers: 0,
+        check: false,
+      }));
 
-    // Actualizar el estado de normalConcepts
-    setNormalConcepts([...normalConcepts, ...updatedConcepts]);
+      // Filtrar y actualizar conceptView
+      const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
+      setConceptView([...deleteItem, ...updatedConcepts]);
 
-    // Filtrar y actualizar conceptView
-    const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
-    setConceptView([...deleteItem, ...updatedConcepts]);
-
-    // Crear una copia de los conceptos con check = false
-    const updatedConceptosWithCheck = concept.conceptos.map((element: any) => ({
-      ...element,
-      check: false,
-    }));
-
-    // Actualizar el estado de customConceptView
-    setCustomConceptView([...deleteItem, ...updatedConceptosWithCheck]);
+      setNormalConcepts([...normalConcepts, ...updatedConcepts]);
+      setDeleteCustomConcepts([...deleteCustomConcepts, concept.id])
+    }
   };
 
-  const deleteArticle = (item: any, i: number) => {
-    const filter = normalConcepts.filter((_: any, index: number) => index !== i)
-    setNormalConcepts(filter)
-    const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
-    setConceptView(filter_view)
-    setCustomConceptView(filter_view)
-    setDeleteConcepts([...deleteConcepts, item.id])
+  const deleteNormalConcept = (item: any) => {
+    if (modal === 'create-modal__qoutation') {
+      const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
+      setConceptView(filter_view)
+
+      const filter_normal = normalConcepts.filter((c: any) => c.id_identifier !== item.id_identifier)
+      setNormalConcepts(filter_normal)
+      toast.success('Concepto eliminado')
+
+    } else {   
+      const filter = normalConcepts.filter((x: any) => x.id_identifier !== item.id_identifier)
+      setNormalConcepts(filter)
+      const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
+      setConceptView(filter_view)
+      setDeleteNormalConcepts([...deleteNormalConcepts, item.id])
+      toast.success('Concepto eliminado')
+    }
   }
+
+
+
+  const deleteCustomConcept = (item: any) => {
+    if (modal === 'create-modal__qoutation') {
+      const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
+      setConceptView(filter_view)
+
+      const filter_normal = customConcepts.filter((c: any) => c.id_identifier !== item.id_identifier)
+      setCustomConcepts(filter_normal)
+      toast.success('Concepto eliminado')
+    } else {
+      const filter = customConcepts.filter((c: any) => c.id_identifier !== item.id_identifier)
+      setCustomConcepts(filter)
+      const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
+      setConceptView(filter_view)
+      setCustomConceptView(filter_view)
+      setDeleteCustomConcepts([...deleteCustomConcepts, item.id])
+      toast.success('Concepto eliminado')
+
+    }
+  }
+
 
 
   useEffect(() => {
@@ -358,14 +387,17 @@ const ModalCreate: React.FC = () => {
 
     setDataQuotation([])
 
-
-
   }
+
+
+  console.log('normalConcepts', normalConcepts)
+  console.log('customConceptView', customConceptView)
 
 
   const modalPersonalized = () => {
 
     setPersonalizedModal('personalized_modal-quotation')
+    setCustomConceptView(normalConcepts)
 
   }
 
@@ -374,7 +406,12 @@ const ModalCreate: React.FC = () => {
   const [idItem, setIdItem] = useState<number>()
 
   const modalPersonalizedUpdate = (concept: any) => {
-    setPersonalizedModal('personalized_modal-quotation-update');
+    if (concept.con_adicional) {
+      setPersonalizedModal('personalized_modal-quotation-update-additional');
+    } else {
+      setPersonalizedModal('personalized_modal-quotation-update');
+    }
+
     setIdItem(concept);
 
     // Obtener el valor actual del identificador
@@ -387,11 +424,14 @@ const ModalCreate: React.FC = () => {
       element.id_identifier = ++newIdentifier; // Incrementar y asignar
     });
 
+    if (concept.con_adicional) {
+      setCustomConceptView(concept.conceptos);
+    } else {
+      setCustomConceptView([...concept.conceptos, ...normalConcepts]);
+    }
+
     // Actualizar el identificador global al último valor utilizado
     storePersonalized.setState({ identifier: newIdentifier });
-
-    // Actualizar vistas con los conceptos personalizados
-    setCustomConceptView([...concept.conceptos, ...normalConcepts]);
     setCustomLocal(concept.conceptos);
 
     // Debug
@@ -495,7 +535,7 @@ const ModalCreate: React.FC = () => {
             <p className='title__modals'>Actualizar cotización</p>
           }
         </div>
-
+        
         <div className='quotations__modal'>
           {modal == 'create-modal__qoutation' ?
             ''
@@ -652,7 +692,6 @@ const ModalCreate: React.FC = () => {
                   <div>
                     <p>Total</p>
                   </div>
-
                 </div>
               </div>
               {conceptView ? (
@@ -680,14 +719,14 @@ const ModalCreate: React.FC = () => {
                             </div>
                             <div className='td'>
                               <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
-                                <small style={{ color: 'red' }}>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small></p>
+                                <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small></p>
                             </div>
                             <div className='td'>
                               <div className='d-flex'>
-                                <div> 
+                                <div>
                                   <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                  <p className='total'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                    <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                  <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                    <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                 </div>
                                 <div className='see-concepts'>
                                   <button className='btn__general-purple' onClick={() => modalPersonalizedUpdate(article)}>Conceptos</button>
@@ -703,10 +742,16 @@ const ModalCreate: React.FC = () => {
                             <div className='td'>
                               <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
                             </div>
+                            {article.con_adicional ?
+                              <div className='td'>
+                                <button className='btn__general-danger' onClick={() => deleteCustomConcept(article)}>Eliminar</button>
+                              </div>
+                              :
+                              <div className='td'>
+                                <button className='btn__general-orange' onClick={() => undoConcepts(article)}>Deshacer</button>
+                              </div>
+                            }
 
-                            <div className='td'>
-                              <button className='btn__general-orange' onClick={() => undoConcepts(article)}>Deshacer</button>
-                            </div>
                           </div>
                           :
                           <div className='tbody'>
@@ -722,23 +767,23 @@ const ModalCreate: React.FC = () => {
                             <div className='td'>
                               <p className=''>$ {article.precio_unitario.toFixed(2)} <br />
                                 {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                  <small style={{ color: 'red' }}>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
+                                  <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
                               </p>
                             </div>
                             <div className='td '>
                               {article.urgency ?
                                 <div className='container__total'>
-                                  <div> 
-                                  <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                  <p className='total'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                    <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
-                                </div>
+                                  <div>
+                                    <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                    <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                      <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                  </div>
                                   <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.monto_urgencia).toFixed(2)})</p>
                                 </div>
                                 :
-                                <div> 
+                                <div>
                                   <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                  <p className='total'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                  <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
                                     <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                 </div>
 
@@ -763,13 +808,12 @@ const ModalCreate: React.FC = () => {
                                     </button>
                                   </div>
                                 : ''}
-
                             </div>
                             <div className='td'>
                               <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
                             </div>
                             <div className='td'>
-                              <button className='btn__general-danger' onClick={() => deleteArticle(article, index)}>Eliminar</button>
+                              <button className='btn__general-danger' onClick={() => deleteNormalConcept(article)}>Eliminar</button>
                             </div>
                           </div>
                         }

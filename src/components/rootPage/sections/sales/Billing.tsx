@@ -38,7 +38,7 @@ const Billing: React.FC = () => {
     const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
     const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
     const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
-    const {identifier}: any = storePersonalized()
+
 
 
 

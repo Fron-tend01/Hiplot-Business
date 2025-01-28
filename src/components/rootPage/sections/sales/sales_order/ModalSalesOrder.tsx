@@ -36,7 +36,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
-    const { normalConcepts, deleteNormalConcepts, customConcepts, deleteCustomConcepts, conceptView, identifier, personalized }: any = useStore(storePersonalized)
+    const { normalConcepts, customConcepts, conceptView, identifier, personalized }: any = useStore(storePersonalized)
 
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
 
@@ -296,19 +296,19 @@ const ModalSalesOrder: React.FC = () => {
         setSubModal('logbook__sales-order-modal')
     }
 
-    const handleObsBillChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
-        const value = e.target.value.trim();
-        const newConcept = [...normalConcepts];
-        newConcept[index].obs_factura = value;
-        setNormalConcepts(newConcept);
-    };
+    // const handleObsBillChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
+    //     const value = e.target.value.trim();
+    //     const newConcept = [...normalConcepts];
+    //     newConcept[index].obs_factura = value;
+    //     setNormalConcepts(newConcept);
+    // };
 
-    const handleObsProductionChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
-        const value = e.target.value.trim();
-        const newConcept = [...normalConcepts];
-        newConcept[index].obs_produccion = value;
-        setNormalConcepts(newConcept);
-    };
+    // const handleObsProductionChange = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
+    //     const value = e.target.value.trim();
+    //     const newConcept = [...normalConcepts];
+    //     newConcept[index].obs_produccion = value;
+    //     setNormalConcepts(newConcept);
+    // };
 
     const handleStatusChange = (status: boolean, index: number) => {
         const newStatus = status ? 0 : 1;
@@ -345,7 +345,7 @@ const ModalSalesOrder: React.FC = () => {
     //     setdTotalGeneral(amountTotal - descountTotal + urgencyTotal)
     // }, [normalConcepts]);
     const [subtotalf, setSubtotalf] = useState<number>(0)
-    const [urgenciaf, setUrgenciaf] = useState<number>(0)
+    const [urgenciaf] = useState<number>(0)
     const [totalf, setTotalf] = useState<number>(0)
     useEffect(() => {
         calcular_totales()
@@ -607,7 +607,7 @@ const ModalSalesOrder: React.FC = () => {
 
     }
 
-    const undoConcepts = (concept: any, i: number) => {
+    const undoConcepts = (concept: any) => {
         // Primero, modificamos los conceptos
         const updatedConcepts = concept.conceptos.map((element: any) => {
             element.id_pers = 0;
@@ -944,7 +944,7 @@ const ModalSalesOrder: React.FC = () => {
                                                             ""
                                                         } */}
                                                         <div className='td'>
-                                                            <div className='undo-icon' onClick={() => undoConcepts(article, index)}>
+                                                            <div className='undo-icon' onClick={() => undoConcepts(article)}>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
                                                             </div>
                                                         </div>

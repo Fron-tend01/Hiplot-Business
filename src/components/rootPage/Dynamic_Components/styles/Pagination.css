@@ -1,0 +1,64 @@
+.requisition  .row__pages {
+	display: flex;
+	justify-content: center;
+	margin-top: 20px;
+}
+
+.requisition .row__pages .items__container {
+	display: flex;
+	justify-content: center;
+	overflow-x: auto; /* Habilita el desplazamiento horizontal */
+	width: 400px; /* Asegúrate de que ocupe todo el ancho */
+
+}
+
+.requisition .row__pages .items__container > .button-prev {
+	width: 35px;
+    height: 35px;
+    transition: opacity 0.3s ease;
+    background-color: var(--cards-background);
+    border-radius: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+
+}
+
+.requisition .row__pages .items__container > .button-next {
+	width: 35px;
+    height: 35px;
+    transition: opacity 0.3s ease;
+    background-color: var(--cards-background);
+    border-radius: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+
+}
+
+.requisition .row__pages .items__container .items {
+	display: flex;
+	flex-wrap: nowrap; /* Evita que los elementos salten a una nueva línea */
+	width: max-content; /* Asegura que el contenedor tome el tamaño de su contenido */
+	overflow-x: auto; /* Permite el desplazamiento horizontal */
+}
+
+.requisition .row__pages .items__container .items > .item {
+	width: 35px;
+	height: 35px;
+	flex-shrink: 0; /* Evita que los elementos se encojan */
+	transition: opacity 0.3s ease;
+	background-color: var(--cards-background);
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 10px;
+  }
+  
+  .requisition .row__pages .items__container .items > .item.active {
+	background-color: var(--primary-color);
+	color: #FFF;
+  }

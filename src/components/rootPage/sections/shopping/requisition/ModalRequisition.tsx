@@ -59,12 +59,10 @@ const ModalRequisition: React.FC = () => {
 
   const [selectedModalCompany, setSelectedModalCompany] = useState<number | null>(null)
   const [selectedModalArea, setSelectedModalArea] = useState<number | null>(null)
-
+  const [selectedOption, setSelectedOption] = useState<any>(0);
   useEffect(() => {
-    if (updateToRequisition) {
-
-    }
-  }, [])
+    setSelectedOption(0)
+  }, [modalStateCreate])
 
   const fetch = async () => {
     const resultCompanies = await getCompaniesXUsers(user_id)
@@ -80,7 +78,7 @@ const ModalRequisition: React.FC = () => {
     }
   }
 
-  const [selectedOption, setSelectedOption] = useState<any>(0);
+ 
 
 
   console.log(updateToRequisition)
@@ -199,6 +197,7 @@ const ModalRequisition: React.FC = () => {
     setConcepts(newArticleStates);
   };
 
+  const [deleteConcepts, setDeleteConcepts] = useState<any>([])
 
 
   const handleCreateRequisition = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -215,7 +214,7 @@ const ModalRequisition: React.FC = () => {
       titulo: title,
       comentarios: comments,
       conceptos: concepts,
-
+      conceptos_elim: deleteConcepts
     };
 
 
@@ -237,7 +236,7 @@ const ModalRequisition: React.FC = () => {
             status: 0
           };
           const resultRequisition = await getRequisition(data)
-          setRequisitions(resultRequisition)
+          setRequisitions(resultRequisition.data)
           setModalStateCreate('')
         }
         setStateLoading(false)
@@ -262,7 +261,7 @@ const ModalRequisition: React.FC = () => {
             status: 0
           };
           const resultRequisition = await getRequisition(data)
-          setRequisitions(resultRequisition)
+          setRequisitions(resultRequisition.data)
           setModalStateCreate('')
         }
         setStateLoading(false)
@@ -277,6 +276,7 @@ const ModalRequisition: React.FC = () => {
   const deleteConcept = (item: any) => {
     const itemDelete = concepts.filter((x: number) => x !== item);
     setConcepts(itemDelete);
+    setDeleteConcepts([...deleteConcepts, item.id])
 
 
   };
@@ -493,7 +493,7 @@ const ModalRequisition: React.FC = () => {
                 <div className='table__head'>
                   <div className='thead'>
                     <div className='th'>
-                      <p className=''>Código</p>
+                      <p className=''>Artículos</p>
                     </div>
                     <div className='th'>
                       <p className=''>Cantidad</p>
@@ -515,8 +515,8 @@ const ModalRequisition: React.FC = () => {
                     {concepts.map((article: any, index: any) => (
                       <div className='tbody__container' key={index}>
                         <div className='tbody'>
-                          <div className='td code'>
-                            <p>{article.codigo}-{article.descripcion}</p>
+                          <div className='td'>
+                            <p className='folio-identifier'>{article.codigo}-{article.descripcion}</p>
                           </div>
                           <div className='td'>
                             <div>

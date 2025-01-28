@@ -166,8 +166,8 @@ const PurchaseOrders: React.FC = () => {
   return (
     <div className='purchase-order'>
       <div className='container__purchase-order'>
-        <div>
-          <div className='row'>
+        <div className='row__one'>
+          <div className='row__one'>
             <div className='col-8 md-col-12'>
               <Empresas_Sucursales modeUpdate={false} empresaDyn={selectedCompany} sucursalDyn={selectedBranchOffice}
                 setEmpresaDyn={setSelectedCompany} setSucursalDyn={setSelectedBranchOffice} all={true} />
@@ -285,18 +285,18 @@ const PurchaseOrders: React.FC = () => {
                   <div className='tbody__container' key={requisition.id} onClick={() => modalUpdate(requisition)}>
                     <div className='tbody'>
                       <div className='td'>
-                        <p>{requisition.serie}-{requisition.folio}-{requisition.anio}</p>
+                        <p className='folio-identifier'>{requisition.serie}-{requisition.folio}-{requisition.anio}</p>
                       </div>
                       <div className='td'>
-                        <p>{requisition.status == 0 ? <div className='active-status'><p>Activa</p></div> : ''}</p>
-                        <p>{requisition.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
+                        <p>{requisition.status == 0 ? <div className='active-identifier'><p>Activa</p></div> : ''}</p>
+                        <p>{requisition.status == 1 ? <div className='cancel-identifier'><p>Cancelada</p></div> : ''}</p>
                         <p>{requisition.status == 2 ? <div className='active-status'><p>Terminada</p></div> : ''}</p>
                       </div>
                       <div className='td'>
-                        <p>{requisition.fecha_creacion}</p>
+                        <p className='date-identifier'>{requisition.fecha_creacion}</p>
                       </div>
                       <div className='td'>
-                        <p>{requisition.usuario_crea}</p>
+                        <p className='user-identifier'>{requisition.usuario_crea}</p>
                       </div>
                       <div className='td'>
                         <p>{requisition.empresa}</p>

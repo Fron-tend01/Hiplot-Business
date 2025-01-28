@@ -75,7 +75,7 @@ const Differential: React.FC = () => {
     } 
 
     const resultArticle = await getArticlesDifferential(data)
-    console.log(resultArticle)
+
   
     let max;
     if (resultArticle[0].max_mins.find((x:any)=> x.id_sucursal == selectedBranchOffice)) {

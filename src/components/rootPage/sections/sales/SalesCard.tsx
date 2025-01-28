@@ -9,6 +9,10 @@ import { UserGroupsRequests } from '../../../../fuctions/UserGroups';
 import useUserStore from '../../../../zustand/General';
 import './styles/SalesCard.css';
 import Prices from './sales-sard_modals/Prices';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 import ToArrive from './sales-sard_modals/ToArrive';
 import Indications from './sales-sard_modals/Stocks';
@@ -19,6 +23,11 @@ import { Toaster, toast } from 'sonner'
 import { storePersonalized } from '../../../../zustand/Personalized';
 import { storeQuotation } from '../../../../zustand/Quotation';
 import Swal from 'sweetalert2';
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
+
+
 
 
 const SalesCard: React.FC = () => {
@@ -67,6 +76,7 @@ const SalesCard: React.FC = () => {
       proveedor: 0,
       materia_prima: 0,
       get_sucursales: false,
+      get_imagenes: true,
       // get_adicional: true,
       get_proveedores: false,
       get_max_mins: true,
@@ -160,7 +170,7 @@ const SalesCard: React.FC = () => {
   const [selectUnits, setSelectUnits] = useState<boolean>(false);
   const [selectedUnit, setSelectedUnit] = useState<any>(null);
   const [Adicional, setAdicional] = useState<any>(null);
-  const [AdicionalFranquicia, setAdicionalFranquicia] = useState<any>(null);
+  // const [AdicionalFranquicia, setAdicionalFranquicia] = useState<any>(null);
 
   const openSelectUnits = () => {
     setSelectUnits(!selectUnits);
@@ -189,7 +199,7 @@ const SalesCard: React.FC = () => {
   const [descuento, setDescuento] = useState<number>(0)
   const [pricesFranquicia, setPricesFranquicia] = useState<any>(0)
   const [pricesFranquiciaAdicional, setPricesFranquiciaAdicional] = useState<any>(0)
-  const [descuentoFranquicia, setDescuentoFranquicia] = useState<number>(0)
+
 
 
   useEffect(() => {
@@ -243,8 +253,9 @@ const SalesCard: React.FC = () => {
         setAdicional(result.adicional)
         let lista_precios_franquicia = 0
         let precio_franq_tmp = 0
-        let precio_franq_adi_tmp = 0
+      
         if (article?.precios_franquicia != null && article?.precios_franquicia.length > 0) {
+         
           lista_precios_franquicia = article?.precios_franquicia[0].id_grupos_us
           const dataArticleFranquicia = {
             id_articulo: article.id,
@@ -256,16 +267,19 @@ const SalesCard: React.FC = () => {
             camposTxTVisual: article.plantilla_data.filter((x: any) => x.tipo == 'txtvisual'),
             franquicia: true
           };
+  
           const resultFranquicia: any = await APIs.getTotalPrice(dataArticleFranquicia);
           if (!resultFranquicia.error) {
             precio_franq_tmp = resultFranquicia.mensaje
-            precio_franq_adi_tmp = resultFranquicia?.adicional?.total
+            // precio_franq_adi_tmp = resultFranquicia?.adicional?.total
 
             setPricesFranquicia(resultFranquicia.mensaje)
             setPricesFranquiciaAdicional(resultFranquicia?.adicional?.total)
-            setDescuentoFranquicia(resultFranquicia.descuento_aplicado)
-            setAdicionalFranquicia(resultFranquicia.adicional)
+           
+            // setAdicionalFranquicia(resultFranquicia.adicional)
           }
+        } else {
+
         }
         return setData({
           id_pers: 0,
@@ -571,45 +585,28 @@ const SalesCard: React.FC = () => {
         </div>
 
         <div className='conatiner__create_sale-card' onSubmit={handleCreateFamilies}>
-          {/* <div className='row__one'>
-            {article && (
-              <>
-                <p className='code'>{article.codigo}-{article.descripcion}</p>
-                {article.bajo_pedido == true ?
-                  <p className='option'>Bajo pedido</p>
-                  :
-                  ''}
-                {article.vender_sin_stock == true ?
-                  <p className='option'>Vender sin stock</p>
-                  :
-                  ''}
-                {article.desabasto == true ?
-                  <p className='option'>Desabasto</p>
-                  :
-                  ''}
-                {article.iva_excento == true ?
-                  <p className='option'>IVA excento</p>
-                  :
-                  ''}
-              </>
-            )}
-          </div> */}
-
           <div className='row__two'>
 
             <div className='card__images_container'>
               {statusArticle !== false ?
-                <div className='images__container'>
-                  <div className='images' style={{ backgroundImage: `url(${article?.imagen})` }}></div>
-                  <div className='pager'>
-                    <div className='item'>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6" /></svg>
-                    </div>
-                    <div className='item'>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6" /></svg>
-                    </div>
-                  </div>
+
+                <div className='images__card-sale__container'>
+                  <Swiper cssMode={true} navigation={true} pagination={true} mousewheel={true} keyboard={true} modules={[Navigation, Pagination, Mousewheel, Keyboard]} className="mySwiper">
+                    {article?.imagenes.map((image: any) => (
+                      <SwiperSlide>
+                        <div className='images__container'>
+                          <div className='images' style={{ backgroundImage: `url(${image?.img_base64})` }}>
+
+                          </div>
+                          <div className='buttons-sale-card'>
+                          </div>
+                        </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
                 </div>
+
+
                 :
                 <div className='images-pulse-card'></div>
               }
@@ -715,10 +712,6 @@ const SalesCard: React.FC = () => {
                         <div className='container'>
                           <svg onClick={() => toggleModal(index)} xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-palette"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" /></svg>
                         </div>
-                        {/* <p className="option" onClick={() => toggleModal(index)}>
-                     {x.combinacion}
-                   </p> */}
-                        {/* Mostrar combinación de opciones solo si el índice está activo */}
                         {activeIndex === index && (
                           <div className="combination_options">
                             {x.opciones.map((option: any) => (
@@ -900,29 +893,66 @@ const SalesCard: React.FC = () => {
                   </div>
                 </div>
               }
-              {Adicional != null ?
-                <table style={{ width: "100%", borderCollapse: "collapse", margin: "20px 0", fontSize: "10px", textAlign: "left" }}>
-                  <thead >
-                    <tr style={{ backgroundColor: "#f4f4f4", borderBottom: "2px solid #ddd" }}>
-                      <th style={{ padding: "5px", border: "1px solid #ddd" }}>Adicional</th>
-                      <th style={{ padding: "5px", border: "1px solid #ddd" }}>Cantidad</th>
-                      <th style={{ padding: "5px", border: "1px solid #ddd" }}>P/U</th>
-                      {Adicional.descuento > 0 ? <th style={{ padding: "5px", border: "1px solid #ddd" }}>Desc.</th> : ''}
-                      <th style={{ padding: "5px", border: "1px solid #ddd" }}>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr style={{ backgroundColor: "#fff", borderBottom: "1px solid #ddd" }}>
-                      <td style={{ padding: "5px", border: "1px solid #ddd" }}>{Adicional?.codigo}-{Adicional?.descripcion}</td>
-                      <td style={{ padding: "5px", border: "1px solid #ddd" }}>{Adicional?.cantidad}</td>
-                      <td style={{ padding: "5px", border: "1px solid #ddd" }}>${Adicional?.total / Adicional?.cantidad}</td>
-                      {Adicional.descuento > 0 ? <td style={{ padding: "5px", border: "1px solid #ddd" }}>{Adicional?.descuento}</td> : ''}
-                      <td style={{ padding: "5px", border: "1px solid #ddd" }}>${Adicional?.total}</td>
-                    </tr>
-                  </tbody>
-                </table>
+              {statusArticle !== false ?
+                <div>
+                  {Adicional != null ?
+                    <div className='table__sale-card-additional'>
+                      <div className='table__head'>
+                        <div className='thead'>
+                          <div className='th'>
+                            <p>Adicional</p>
+                          </div>
+                          <div className='th'>
+                            <p>Cantidad</p>
+                          </div>
+                          <div className='th'>
+                            <p>P/U</p>
+                          </div>
+                          {Adicional.descuento > 0 ?
+                            <div className='th'>
+                              <p>Des.</p>
+                            </div>
+                            :
+                            ''
+                          }
+                          <div className='th'>
+                            <p>Total</p>
+                          </div>
+                        </div>
+                      </div>
+                      {Adicional ? (
+                        <div className='table__body'>
+                          <div className='tbody__container' >
+                            <div className='tbody'>
+                              <div className='td'>
+                                <p className='addicional'>{Adicional?.codigo}-{Adicional?.descripcion}</p>
+                              </div>
+                              <div className='td'>
+                                <p className='amount'>{Adicional?.cantidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p className='price'>$ {Adicional?.total / Adicional?.cantidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p className='discount'>$ {Adicional?.descuento}</p>
+                              </div>
+                              <div className='td'>
+                                <p className='price_total'>$ {Adicional?.total}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text">Cargando datos...</p>
+                      )}
+                    </div>
 
-                : ''}
+                    : ''}
+                </div>
+                :
+                ''
+              }
+
 
             </div>
           </div>

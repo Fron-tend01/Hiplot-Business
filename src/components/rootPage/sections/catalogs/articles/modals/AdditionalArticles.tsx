@@ -26,7 +26,7 @@ const AdditionalArticles: React.FC = () => {
   const { getTemplatesxFields }: any = TemplatesRequests()
 
   const setIndex = storeDv(state => state.setIndex)
-  const { articulos }: any = useStore(storeDv)
+
 
 
 

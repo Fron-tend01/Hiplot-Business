@@ -1,3 +1,11 @@
+.differential {
+	padding: 20px;
+    background-color: var(--cards-background);
+    border-radius: var(--general-card-border);
+	margin-top: 20px;
+}
+
+
 .requisition-modal_container > .row__four {
 	display: flex;
 	justify-content: center;

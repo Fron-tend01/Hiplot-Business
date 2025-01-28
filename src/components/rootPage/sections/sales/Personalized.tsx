@@ -12,7 +12,7 @@ import { storeDv } from '../../../../zustand/Dynamic_variables'
 import Swal from 'sweetalert2'
 import SeeCamposPlantillas from './SeeCamposPlantillas'
 
-const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
+const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
 
   const setConceptView = storePersonalized(state => state.setConceptView)
@@ -25,8 +25,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
 
   const setCustomLocal = storePersonalized(state => state.setCustomLocal)
 
-  const { normalConcepts, deleteNormalConcepts, customConceptView, deleteCustomConcepts, customConcepts, conceptView, customLocal, personalizedModal, customData, dataUpdate, temporaryNormalConcepts }: any = useStore(storePersonalized)
-  const { modal }: any = useStore(storeModals)
+  const { normalConcepts, customConceptView, deleteCustomConcepts, customConcepts, conceptView, customLocal, personalizedModal, customData, dataUpdate }: any = useStore(storePersonalized)
   const { identifier }: any = useStore(storePersonalized)
 
 
@@ -52,33 +51,17 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
   }, [])
 
 
-  // console.log('normalConcepts', normalConcepts)
-  // console.log('deleteNormalConcepts', deleteNormalConcepts)
-
-  // console.log('customConcepts', customConcepts)
-  // console.log('deleteCustomConcepts', deleteCustomConcepts)
-
-
-  // console.log('conceptView', conceptView)
-  // console.log('customConceptView', customConceptView)
-
-
-  // console.log('customLocal', customLocal)
-
   const [articlesPersonalized, setArticlesPersonalized] = useState<any>([])
 
   const [setFilterPersonalized] = useState<any>([])
 
-  // useEffect(() => {
 
-  // }, [customConceptView])
 
-  const [item, setItem] = useState<any>()
 
 
 
   const addPersonalized = (item: any, index: number) => {
-    setItem(item)
+    
     console.log('custom local', customLocal)
     console.log('normalConcepts', normalConcepts)
     console.log('item', item)
@@ -438,13 +421,11 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
         id_identifier: identifier + 1
       }
 
+
+
+      let mixOfConcepts = [...normalConcepts, ...customConcepts]
+      setConceptView([...mixOfConcepts, data])
       setCustomConcepts([...customConcepts, data])
-
-      setConceptView([...normalConcepts, data])
-      setCustomConceptView(normalConcepts)
-
-
-
 
       setPersonalizedModal('')
       setFilterPersonalized([])
@@ -455,15 +436,26 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
     }
 
     if (personalizedModal == 'personalized_modal-quotation-update') {
-      const updatedConceptView = customConcepts.map((x: any) => {
 
+      let leght: any = null
+
+      const updatedConceptView = customConcepts.map((x: any) => {
         if (x.id_identifier === idItem.id_identifier) {
+          length = x.conceptos.leght
           return { ...x, conceptos: customLocal };
         }
         return x;
       });
 
-      setConceptView([...updatedConceptView, ...normalConcepts])
+      if(leght > 1) {
+        console.log('Se mantiene por que todavia le quedan conceptos', leght)
+      } else {
+        let filterDelete = conceptView.filter((x: any) => x.id_identifier !== idItem.id_identifier)
+        setCustomConcepts(filterDelete)
+        setConceptView(normalConcepts)
+      }
+
+    
       setCustomConcepts(updatedConceptView)
       setCustomConceptView(normalConcepts)
 
@@ -509,8 +501,13 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
 
       setCustomConcepts([...customConcepts, data])
 
-      setConceptView([...normalConcepts, data])
-      setCustomConceptView(normalConcepts)
+      let mixOfConcepts = [...normalConcepts, ...customConcepts]
+
+      console.log('customConcepts', customConcepts)
+      console.log('mixOfConcepts', mixOfConcepts)
+
+      setConceptView([...mixOfConcepts, data])
+    
 
       setPersonalizedModal('')
       setFilterPersonalized([])
@@ -526,6 +523,10 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
         }
         return x;
       });
+
+      console.log(updatedConceptView, updatedConceptView)
+      
+     
 
       setConceptView([...updatedConceptView, ...normalConcepts])
       setCustomConcepts(updatedConceptView)
@@ -666,6 +667,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
       }));
     }
     setPersonalizedModal('')
+    setCustomConceptView([])
 
   }
 
@@ -1036,6 +1038,91 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
             :
             ''
           }
+
+          {personalizedModal == 'personalized_modal-quotation-update-additional' ?
+            <div className='table__personalized-update-additional'>
+              {customConceptView ? (
+                <div className='table__numbers'>
+                  <p className='text'>Total de artículos</p>
+                  <div className='quantities_tables'>{customConceptView.length}</div>
+                </div>
+              ) : (
+                <p className="text">No hay empresas que mostras</p>
+              )}
+              <div className='table__head'>
+                <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
+                  <div className='th'>
+                    <p>Artículo</p>
+                  </div>
+                  <div className='th'>
+                    <p>Cantidad</p>
+                  </div>
+                  <div className='th'>
+                    <p>Unidad</p>
+                  </div>
+                </div>
+              </div>
+              {customConceptView ? (
+                <div className='table__body'>
+                  {customConceptView.map((concept: any, index: number) => {
+                    return (
+                      <div className='tbody__container'>
+                        <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={concept.id}>
+                          <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept()}>
+                            <p className='article'>{concept.codigo}-{concept.descripcion}</p>
+                          </div>
+                          <div className='td'>
+                            <p className='amount'>{concept.cantidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{concept.name_unidad || concept.unidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p className=''>$ {concept.precio_total / concept.cantidad}</p>
+                          </div>
+                          <div className='td '>
+                            {concept.urgency ?
+                              <div className='container__total'>
+                                <p className='total'>$ {concept.precio_total}</p>
+                                <p className='remove__urgency' title='urgencia'>(${concept.monto_urgencia})</p>
+                              </div>
+                              :
+                              <p className='total'>$ {concept.precio_total}</p>
+                            }
+                          </div>
+
+                          <div className='td urgency'>
+                            {concept?.urgency ?
+                              <div>
+                                <button className='modal-create-quotations__tooltip-text no-urgency' type='button' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                </button>
+                              </div>
+                              :
+                              <div>
+                                <button className='modal-create-quotations__tooltip-text yes-urgency' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)} type='button'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                </button>
+                              </div>
+                            }
+                          </div>
+                          <div className='td'>
+                            <button className='btn__general-purple' onClick={() => seeVerMas(index)}>Ver Más</button>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="text">Cargando datos...</p>
+              )}
+            </div>
+            :
+            ''
+          }
+
+          
 
           {personalizedModal == "personalized_modal-sale" ?
             <div className='table__personalized'>

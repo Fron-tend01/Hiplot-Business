@@ -8,12 +8,10 @@
 /////////////////////////////////////// ROW ONE ///////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////// */
 
-.quotations__modal>.row__one  {
-
-}
+.quotations__modal>.row__one {}
 
 
-.quotations__modal>.row__one .row__bts  {
+.quotations__modal>.row__one .row__bts {
     display: flex;
     justify-content: space-between;
 }
@@ -25,9 +23,10 @@
 /////////////////////////////////////// ROW TWO ///////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////// */
 
-.quotations__modal>.row__two  {
+.quotations__modal>.row__two {
     overflow: auto;
     margin: 20px 0;
+
     &::-webkit-scrollbar {
         width: 5px;
     }
@@ -38,13 +37,11 @@
         height: 100px;
     }
 
-    &::-webkit-scrollbar-track {
-        
-    }
+    &::-webkit-scrollbar-track {}
 }
 
 
-.quotations__modal>.row__two > .row__one {
+.quotations__modal>.row__two>.row__one {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     margin-top: 20px;
@@ -53,13 +50,13 @@
     border-radius: var(--general-card-border);
 }
 
-.quotations__modal>.row__two > .row__two .title {
+.quotations__modal>.row__two>.row__two .title {
     font-size: 16px;
     font-weight: 600;
     color: var(--text-color);
 }
 
-.quotations__modal > .row__two > .row__three {
+.quotations__modal>.row__two>.row__three {
     display: grid;
     grid-template-columns: 1fr auto 1fr auto auto auto;
     column-gap: 20px;
@@ -69,7 +66,7 @@
     margin-top: 20px;
 }
 
-.quotations__modal > .row__two .row__three .search-icon {
+.quotations__modal>.row__two .row__three .search-icon {
     background-color: var(--primary-color);
     padding: 8px;
     border-radius: 5px;
@@ -88,12 +85,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////// */
 
 
-.quotations__modal .row__three {
-   
-}
+.quotations__modal .row__three {}
 
 
-.quotations__modal .row__three > .btns {
+.quotations__modal .row__three>.btns {
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -272,6 +267,7 @@
     grid-template-rows: auto auto 1fr;
     height: auto;
     overflow: hidden;
+    border: 2px solid var(--border-table-color);
 }
 
 
@@ -311,9 +307,7 @@
         height: 100px;
     }
 
-    &::-webkit-scrollbar-track {
-        
-    }
+    &::-webkit-scrollbar-track {}
 }
 
 .table__quotations_modal .tbody__container {
@@ -392,7 +386,8 @@
 .table__quotations_modal .table__body .tbody>.td .total {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap; /* Permite que los hijos se ajusten en varias líneas */
+    flex-wrap: wrap;
+    /* Permite que los hijos se ajusten en varias líneas */
 
     align-items: center;
     padding: 5px 10px;
@@ -404,11 +399,23 @@
     white-space: normal;
     line-height: 1.5;
 }
-.table__quotations_modal .table__body .tbody>.td .total small {
-    display: inline-block; /* Forzar que se trate como un bloque en línea */
-    margin-top: 4px;       /* Añadir un pequeño margen superior */
-    color:red
-  }
+
+.table__quotations_modal .table__body .tbody>.td .total__franch {
+    display: inline-block;
+    /* Forzar que se trate como un bloque en línea */
+    margin-top: 4px;
+    /* Añadir un pequeño margen superior */
+    display: flex;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #6e34e2fd;
+    border-radius: 5px;
+    font-weight: 600;
+    color: #ffffff;
+
+}
 
 .table__quotations_modal .table__body .tbody .td .see-concepts {
     margin-left: 15px;
@@ -491,7 +498,7 @@
 }
 
 .table__quotations_modal .table__body .tbody:hover .td .total {
-    background-color: #5d35b0;
+    background-color:#6e34e2;
     color: #ffffff;
 }
 

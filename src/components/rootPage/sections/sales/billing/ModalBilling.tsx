@@ -49,7 +49,7 @@ const ModalBilling: React.FC = () => {
     // })
     const setSubModal = storeArticles(state => state.setSubModal)
     const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
-    const setCustomConcepts = storePersonalized((state) => state.setCustomConcepts);
+
     const setCustomConceptView = storePersonalized((state) => state.setCustomConceptView);
 
     const setConceptView = storePersonalized((state) => state.setConceptView);
@@ -365,10 +365,10 @@ const ModalBilling: React.FC = () => {
                 obs.push(element.id_ov);
             }
         }
-        let con = normalConcepts
+
         if (modoUpdate) {
-            const filter = normalConcepts.filter((x: any) => x.id_concepto_comercial == undefined)
-            con = filter
+            // const filter = normalConcepts.filter((x: any) => x.id_concepto_comercial == undefined)
+       
         }
         const data = {
             id: modoUpdate ? DataUpdate.id : 0,
@@ -440,18 +440,6 @@ const ModalBilling: React.FC = () => {
                 }
             });
         }
-    }
-    function removeCircularReferences(obj: any, seen = new WeakSet()) {
-        if (obj && typeof obj === "object") {
-            if (seen.has(obj)) {
-                return undefined; // Rompe el ciclo eliminando la referencia circular
-            }
-            seen.add(obj);
-            for (const key in obj) {
-                obj[key] = removeCircularReferences(obj[key], seen);
-            }
-        }
-        return obj;
     }
 
     const [title, setTitle] = useState<any>()
@@ -651,9 +639,7 @@ const ModalBilling: React.FC = () => {
         setCustomConceptView([...deleteItem, ...concept.conceptos])
     }
 
-    const personalized = () => {
-
-    }
+  
 
 
     const personalizedUpdate = (concept: any) => {
