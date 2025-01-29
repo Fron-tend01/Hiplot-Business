@@ -30,10 +30,11 @@ const ArticleViewModal = () => {
 
     const [families, setFamilies] = useState<any>([])
 
-    const [dataCollection, setDataCollection] = useState<any>()
 
     const fetch = async () => {
-        const resultFamilies = await getFamilies(user_id)
+        const resultFamilies:any = await getFamilies(user_id)
+        resultFamilies.unshift({ nombre: 'Todas', id: 0 });
+
         const data = {
             id: 0,
             activos: true,
@@ -51,6 +52,7 @@ const ArticleViewModal = () => {
             get_stock: false,
             get_web: false,
             get_unidades: false,
+            id_usuario:user_id,
         };
 
         const result = await getArticles(data);
@@ -119,7 +121,6 @@ const ArticleViewModal = () => {
 
             const result = await getArticles(data);
             setArticles(result);
-            setDataCollection(x)
         }
 
 
@@ -131,14 +132,14 @@ const ArticleViewModal = () => {
         const checked = e.target.checked;
         setIsChecked(checked); // Actualiza el estado con true o false
     };
-
+    const [selectedFamily, setSelectedFamily] = useState<number>(0)
     const search = async () => {
         const data = {
             id: 0,
             activos: true,
             nombre: inputs.name,
-            codigo: '',
-            familia: 0,
+            codigo: inputs.code,
+            familia: selectedFamily,
             proveedor: 0,
             materia_prima: 0,
             get_sucursales: false,
@@ -148,7 +149,7 @@ const ArticleViewModal = () => {
             get_areas_produccion: false,
             get_stock: false,
             coleccion: isChecked,
-            id_coleccion: isChecked ? dataCollection.id : 0,
+            // id_coleccion: isChecked ? dataCollection.id : 0,
             get_web: false,
             get_unidades: false
         };
@@ -158,14 +159,13 @@ const ArticleViewModal = () => {
     }
 
     const [selectUsers, setSelectUsers] = useState<boolean>(false);
-    const [selectUser, setSelectUser] = useState<number | null>(null)
 
     const openSelectUsers = () => {
         setSelectUsers(!selectUsers)
     }
 
-    const usersChange = (user: any) => {
-        setSelectUser(user.id)
+    const familyChange = (user: any) => {
+        setSelectedFamily(user.id)
         setSelectUsers(!selectUsers)
 
     }
@@ -197,7 +197,7 @@ const ArticleViewModal = () => {
                             <label className='label__general'>Familias</label>
                             <div className='select-btn__general'>
                                 <div className={`select-btn ${selectUsers ? 'active' : ''}`} onClick={openSelectUsers}>
-                                    <p>{selectUser ? families?.find((s: { id: number }) => s.id === selectUser)?.nombre : 'Selecciona'}</p>
+                                    <p>{selectedFamily ? families?.find((s: { id: number }) => s.id === selectedFamily)?.nombre : 'Selecciona'}</p>
                                     <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                                 </div>
                                 <div className={`content ${selectUsers ? 'active' : ''}`}>
@@ -207,7 +207,7 @@ const ArticleViewModal = () => {
                                         </div>
                                         {families?.filter((user: any) => user.nombre.toLowerCase().includes(userSearchTerm.toLowerCase()))
                                             .map((user: any) => (
-                                                <li key={user.id} onClick={() => usersChange(user)}>
+                                                <li key={user.id} onClick={() => familyChange(user)}>
                                                     {user.nombre}
                                                 </li>
                                             ))
