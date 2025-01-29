@@ -10,6 +10,8 @@ import ModalPurchaseOrders from './purchaseOrders/ModalPurchaseOrders';
 import APIs from '../../../../services/services/APIs';
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales';
 
+// import { storePagination } from '../../../../zustand/Pagination';
+
 const PurchaseOrders: React.FC = () => {
 
   const setModal = storePurchaseOrders(state => state.setModal)
@@ -17,6 +19,9 @@ const PurchaseOrders: React.FC = () => {
   const setDates = storePurchaseOrders(state => state.setDates)
   const setType = storePurchaseOrders(state => state.setType)
   const setPurchaseOrders = storePurchaseOrders(state => state.setPurchaseOrders)
+  
+  // const setTotalPages = storePagination((state: any) => state.setTotalPages);
+  // const setPage = storePagination((state: any) => state.setPage);
 
   const [series, setSeries] = useState<any>(null)
 
@@ -168,11 +173,11 @@ const PurchaseOrders: React.FC = () => {
       <div className='container__purchase-order'>
         <div className='row__one'>
           <div className='row__one'>
-            <div className='col-8 md-col-12'>
+            <div>
               <Empresas_Sucursales modeUpdate={false} empresaDyn={selectedCompany} sucursalDyn={selectedBranchOffice}
                 setEmpresaDyn={setSelectedCompany} setSucursalDyn={setSelectedBranchOffice} all={true} />
             </div>
-            <div className='col-4 md-col-12'>
+            <div>
               <div className='dates__requisition'>
                 <label className='label__general'>Fechas</label>
                 <div className='container_dates__requisition'>
@@ -313,6 +318,7 @@ const PurchaseOrders: React.FC = () => {
             <p>Cargando datos...</p>
           )}
         </div>
+        {/* <Pagination /> */}
       </div>
     </div>
   )

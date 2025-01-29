@@ -1,6 +1,7 @@
 .article__modal_create_modal_price_container {
     height: 100%;
-    padding: 5px;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
     overflow: auto;
     &::-webkit-scrollbar {
         width: 5px;
@@ -17,6 +18,13 @@
     }                    
 }
 
+
+.article__modal_create_modal_price_container .row__two {
+    padding: 20px;
+	background-color: var(--cards-background);
+	border-radius: var(--general-card-border);
+    margin-top: 20px;
+}
 
 /*=================================================
  
@@ -207,7 +215,7 @@
   
 
 .ranges__prices_container {
-    background-color: #2f3747;
+    background-color: #ffffff;
     padding: 10px;
     border-radius: 10px;
 }
@@ -224,14 +232,20 @@
 	text-align: justify;
 }
 
+.table__modal_prices_extra_modal_container .table {
+    border-radius: 10px;
+    background-color: var(--table-header-color);
+    border: 2px solid var(--border-table-color);
+	border-bottom: 2px solid var(--border-table-color);
+}
 
 .table__modal_prices_extra_modal_container .table__head {
     display: flex;
     width: 100%;
-    background-color: var(--table-color);
-    color: var(--text-table-color);
-    border-radius: 5px 5px 0 0;
+    border-radius: 10px 10px 0 0;
+
 }
+
 
 .table__modal_prices_extra_modal_container .table__head .thead {
     display: grid;
@@ -263,16 +277,30 @@
 }
 
 
-.table__modal_prices_extra_modal_container .tbody__container:nth-child(even) {
+  .table__modal_prices_extra_modal_container .table__branch-offices .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+	
+}
+
+.table__modal_prices_extra_modal_container .table__branch-offices .tbody__container:nth-child(even) {
     background-color: var(--table-color);
-    color: var(--text-table-color);
-  }
-  
-  .table__modal_prices_extra_modal_container .tbody__container:nth-child(odd) {
+}
+
+.table__modal_prices_extra_modal_container .table__branch-offices .tbody__container:nth-child(odd) {
     background-color: var(--two-table-color);
-    color: var(--text-table-color);
-   
-  }
+}
+
+.table__modal_prices_extra_modal_container .table__branch-offices .tbody__container:first-child {
+    border-top: none;
+}
+
+.table__modal_prices_extra_modal_container .table__branch-offices .tbody__container:last-child {
+    border-bottom: none;
+    border-radius: 0 0 10px 10px;
+}
+
+
+
 
   .table__modal_prices_extra_modal_container .table__body .tbody {
     display: flex;
@@ -286,10 +314,14 @@
 }
 
 .table__modal_prices_extra_modal_container .table__body .tbody:hover {
-    background-color: var(--secundary-color);
+    background-color: var(--table-hover-color);
     color: #fff;
 }
 
+.table__modal_prices_extra_modal_container .table__body .tbody .td {
+    display: flex;
+    align-items: center;
+}
 
 
 .table__modal_prices_extra_modal_container .area__edit_btn {

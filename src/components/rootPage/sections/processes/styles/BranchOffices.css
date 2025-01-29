@@ -139,7 +139,7 @@
     }
 
     &::-webkit-scrollbar-track {
-    /* Para modificar el background */
+   
     }
 }
 
@@ -162,9 +162,7 @@
     padding: 10px;
 }
 
-.table__branch-offices .table__body .tbody .td {
-    color: var(--text-color);
-}
+
 
 .table__branch-offices .table__body .tbody:hover {
     background-color: var(--secundary-color);

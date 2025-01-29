@@ -251,24 +251,24 @@ const ModalSalesOrder: React.FC = () => {
     }
 
 
-
-
-    const handleAreasChange = (event: any, index: number) => {
+    const handleAreasChange = (event: any, i: number) => {
         const value = parseInt(event.target.value, 10);
-        console.log("Event target value:", value);
-        console.log("Index:", normalConcepts);
-        normalConcepts[index].id_area_produccion = value
+        const updatedDataUpdate = conceptView.map((x: any, index :any) => {
+            if (index === i) {
+              return { ...x, id_area_produccion: value };
+            }
+            return x;
+          });
+        setConceptView(updatedDataUpdate)
     };
 
-
-
-
+   
     const updateSaleOrderConcept = async (article: any) => {
         let data = {
             id: article.id,
             id_articulo: article.id_articulo,
             produccion_interna: article.produccion_interna,
-            id_area_produccion: article.areas_produccion[0].id_area,
+            id_area_produccion: article.id_area_produccion,
             enviar_a_produccion: article.enviar_a_produccion,
             cantidad: article.cantidad,
             monto_urgencia: article.monto_urgencia,
@@ -1029,7 +1029,7 @@ const ModalSalesOrder: React.FC = () => {
                                                                 <div>
                                                                     <label>Area</label>
                                                                 </div>
-                                                                <select className="traditional__selector" onClick={(event) => handleAreasChange(event, index)}>
+                                                                <select className="traditional__selector" value={article.id_area_produccion} onChange={(event) => handleAreasChange(event, index)}>
                                                                     {article?.areas_produccion?.map((item: any) => (
                                                                         <option key={item.id} value={item.id_area}>
                                                                             {item.nombre_area}

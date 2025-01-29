@@ -11,7 +11,7 @@ import Select from '../../../../Dynamic_Components/Select'
 import { useSelectStore } from '../../../../../../zustand/Select'
 import Swal from 'sweetalert2';
 import { toast } from 'sonner'
-import { v4 as uuidv4 } from 'uuid'; 
+import { v4 as uuidv4 } from 'uuid';
 import './style/Prices.css'
 import APIs from '../../../../../../services/services/APIs'
 
@@ -41,7 +41,7 @@ const Prices: React.FC = () => {
 
   }, [articleByOne])
 
-  
+
 
   const { getRanges }: any = RangesRequests();
   const { getTemplates }: any = TemplatesRequests();
@@ -190,7 +190,7 @@ const Prices: React.FC = () => {
   const deleteFinalPrice = (item: any) => {
     const updated = prices.filter((x: any) => x !== item);
     setPrices(updated);
-    if(item.id !== null  ) {
+    if (item.id !== null) {
       setDeletePrices([...deletePrices, item.id])
     }
   };
@@ -299,7 +299,7 @@ const Prices: React.FC = () => {
   const handleUsersGroupsChange = (e: any, index: number) => {
     const newPrices = [...prices];
     newPrices[index].id_grupos_us = parseInt(e.target.value);
-    setPrices(newPrices); 
+    setPrices(newPrices);
   }
 
 
@@ -358,7 +358,7 @@ const Prices: React.FC = () => {
           <p className='title__modals'>Precios</p>
         </div>
         <form className='article__modal_create_modal_price_container'>
-          <div className='row'>
+          <div className='row row__one'>
             <div className='col-4'>
               <label className='label__general'>Precio</label>
               <div className='warning__general'><small >Este campo es obligatorio</small></div>
@@ -373,13 +373,6 @@ const Prices: React.FC = () => {
               <Select dataSelects={dataSelects} instanceId="grouspusers" nameSelect={'Grupo de usuario'} />
             </div>
             <div className='col-12 row'>
-              <div className='col-4 row'>
-                <div className='col-12'>
-                  <label className='label__general'>Observaciones</label>
-                  <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                  <textarea name="observations" className={`textarea__general`} value={inputs.observations} onChange={handleInputs} placeholder='Ingresa las observaciones' />
-                </div>
-              </div>
               <div className='col-8 row ranges__prices_container'>
                 <div className='col-10'>
                   <div className='select__container'>
@@ -415,16 +408,16 @@ const Prices: React.FC = () => {
                 </div>
                 <div className='col-12 table__modal_prices_extra_modal_container' >
                   <div>
-                    <div>
-                      {additionalsPrices ? (
-                        <div className='table__numbers'>
-                          <p className='text'>Total de rangos</p>
-                          <div className='quantities_tables'>{additionalsPrices.length}</div>
-                        </div>
-                      ) : (
-                        <p className='text'>No hay precios extra</p>
-                      )}
-                    </div>
+                    {additionalsPrices ? (
+                      <div className='table__numbers'>
+                        <p className='text'>Total de rangos</p>
+                        <div className='quantities_tables'>{additionalsPrices.length}</div>
+                      </div>
+                    ) : (
+                      <p className='text'>No hay precios extra</p>
+                    )}
+                  </div>
+                  <div className='table'>
                     <div className='table__head'>
                       <div className='thead'>
                         <div className='th'>
@@ -449,7 +442,7 @@ const Prices: React.FC = () => {
                           <div className='tbody__container' key={index}>
                             <div className='tbody'>
                               <div className='td'>
-                                {item?.rango_titulo }
+                                {item?.rango_titulo}
                               </div>
                               <div className='td'>
                                 <input className='inputs__general' type="text" placeholder='Orden' onChange={(e) => handleOrdenChange(e, index)} />
@@ -488,12 +481,21 @@ const Prices: React.FC = () => {
                   </div>
                 </div>
               </div>
+              <div className='col-4'>
+                <div>
+                  <label className='label__general'>Observaciones</label>
+                  <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                  <textarea name="observations" className={`textarea__general`} value={inputs.observations} onChange={handleInputs} placeholder='Ingresa las observaciones' />
+                </div>
+                <div className='mt-4 d-flex justify-content-center'>
+                  <button type='button' className='btn__general-purple' onClick={addPrices}>Agregar precio</button>
+                </div>
+              </div>
+
             </div>
           </div>
-          <div className='d-flex justify-content-center mt-4'>
-            <button type='button' className='btn__general-purple' onClick={addPrices}>Agregar</button>
-          </div>
-          <div className='row'>
+
+          <div className='row row__two'>
             <div className='col-5'>
               <Select dataSelects={dataSelectDe} instanceId="id_groupUserDe" nameSelect={'Del grupo'} />
             </div>
@@ -617,7 +619,7 @@ const Prices: React.FC = () => {
                                 <div className='tbody'>
                                   <div className='td'>
                                     <div className='td'>
-                                      <p>{item_two.rango_titulo|| item_two?.rango}</p>
+                                      <p>{item_two.rango_titulo || item_two?.rango}</p>
                                       {/* <div className='select__container'>
                                         <div className={`select-btn__general`}>
                                           <div className={`select-btn ${item_two.selected ? 'active' : ''}`} onClick={() => openselectsRangesTwo(index, index_two)}>

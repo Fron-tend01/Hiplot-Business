@@ -110,7 +110,7 @@ padding: 10px;
 	display: block;
 }
 
-.article__modal_save_modal_container .row__one {
+.article__modal_save_modal_container > .row__one {
 	display: grid;
     grid-template-columns: repeat(2, 1fr);
 	margin: 20px 0;
@@ -126,7 +126,22 @@ padding: 10px;
 	align-items: end;
 }
 
+.conatiner__articles-modal > .row__two {
+	display: block;
+	background-color: var(--cards-background);
+	border-radius: var(--general-card-border);
+	margin-top: 20px;
+}
 
+.conatiner__articles-modal > .row__two .title {
+	padding: 20px 20px 0 20px;
+}
+
+.conatiner__articles-modal > .row__two .row__one {
+
+	display: grid;
+	grid-template-columns: repeat(3, 1fr) repeat(3, 2fr);
+}
 
 
 /* 
@@ -612,7 +627,7 @@ padding: 10px;
 	visibility: visible;
 }
 
-.overlay__articles .header__modal {
+.overlay__articles > .header__modal {
 	position: relative;
     width: 100%;
     top: 0;
@@ -631,7 +646,6 @@ padding: 10px;
 	opacity: 0;
 	padding: 10px;
     overflow: hidden;
-
 }
 
 .popup__articles .btn-cerrar-popup__articles {
@@ -657,9 +671,15 @@ padding: 10px;
 
 
 .conatiner__articles-modal {
-	padding: 20px;
+	padding: 0 20px 20px 20px;
 }
+ 
 
+.conatiner__articles-modal .row__one {
+	padding: 20px;
+    background-color: var(--cards-background);
+    border-radius: var(--general-card-border);
+}
 
 
 
@@ -705,7 +725,7 @@ padding: 10px;
   
   .tooltip-text {
 	visibility: hidden;
-	background-color: #7546a0;
+	background-color: var(--primary-color);
 	color: #fff;
 	text-align: center;
 	border-radius: 4px;

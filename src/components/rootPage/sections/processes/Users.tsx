@@ -604,7 +604,7 @@ const Users: React.FC = () => {
     });
 
 
-    const password = ''
+  
 
     if (nombre === '') {
       setWarningNombre(true);

@@ -2,7 +2,7 @@
 	display: block;
 }
 
-.article__modal_branch-offices_save_modal_container .row__one {
+.article__modal_branch-offices_save_modal_container .row__one .row__one {
 	display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
 	margin: 20px 0;
@@ -10,7 +10,7 @@
 	align-items: end;
 }
 
-.article__modal_branch-offices_save_modal_container .row__two{
+.article__modal_branch-offices_save_modal_container .row__two {
 	display: grid;
     grid-template-columns: 1fr 150px 100px;
 	margin: 20px 0;
@@ -32,12 +32,18 @@
 	text-align: justify;
 }
 
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .table {
+    border: 2px solid var(--border-table-color);
+	border-radius: 20px;
+}
 
 .overlay__modal_branch-offices_creating_articles .table__branch-offices .table__head {
     display: flex;
     width: 100%;
-	background-color: var( --table-color);
-    border-radius: 5px 5px 0 0;
+	border-radius: 20px 20px 0 0;
+    background-color: var(--table-header-color);
+	border-bottom: 2px solid var(--border-table-color);
+
 }
 
 .overlay__modal_branch-offices_creating_articles .table__branch-offices .table__head .thead {
@@ -57,6 +63,7 @@
     overflow: hidden;
     overflow: auto;
     transition-delay: 0.0s;
+	
     &::-webkit-scrollbar {
         width: 5px;
     }
@@ -73,13 +80,28 @@
 }
 
 
+  .overlay__modal_branch-offices_creating_articles .table__branch-offices .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+	
+}
+
 .overlay__modal_branch-offices_creating_articles .table__branch-offices .tbody__container:nth-child(even) {
     background-color: var(--table-color);
-  }
-  
+}
+
 .overlay__modal_branch-offices_creating_articles .table__branch-offices .tbody__container:nth-child(odd) {
-	background-color: var(--two-table-color);
-  }
+    background-color: var(--two-table-color);
+}
+
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .tbody__container:first-child {
+    border-top: none;
+}
+
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .tbody__container:last-child {
+    border-bottom: none;
+    border-radius: 0 0 20px 20px;
+}
+
 
 .overlay__modal_branch-offices_creating_articles .table__branch-offices .table__body .tbody {
     display: flex;
@@ -91,21 +113,30 @@
     padding: 10px;
 }
 
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .table__body .tbody .td {
+    display: flex;
+}
+
 .overlay__modal_branch-offices_creating_articles .table__branch-offices .table__body .tbody:hover {
-    background-color: var(--secundary-color);
+    background-color: var(--table-hover-color);
     color: #fff;
 }
 
-.overlay__modal_branch-offices_creating_articles .types-users__edit_btn {
-	background-color: var(--primary-color);
-	color: #fff;
-	border: none;
-	padding: 5px 10px;
-	border-radius: var(--border-radius-general);
-	cursor: pointer;
-  }
 
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .table__body .tbody:hover > .td .cancel-identifier {
+	background-color: #ff5252;
+	color: #ffffff;
+}
 
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .table__body .tbody:hover .td .active-identifier {
+    background-color: #4CAF50;
+    color: #ffffff;
+}
+
+.overlay__modal_branch-offices_creating_articles .table__branch-offices .table__body .tbody:hover .td .btn__general-danger {
+    background-color: #ff5252;
+    color: #ffffff;
+}
 
 
 

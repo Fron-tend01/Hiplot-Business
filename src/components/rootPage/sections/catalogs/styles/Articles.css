@@ -15,7 +15,7 @@
     background-color: var(--background-sections);
 }
 
-.container__articles .row__one {
+.container__articles > .row__one {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	column-gap: 10px;
@@ -33,7 +33,7 @@
     margin: 0 20px;
 }
 
-.container__articles .row__two {
+.container__articles > .row__two {
 	display: flex;
 	justify-content: center;
 }

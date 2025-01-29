@@ -271,6 +271,7 @@
 }
 
 
+
 .table__quotations_modal .table__head {
     display: flex;
     width: 100%;
@@ -564,7 +565,7 @@
 
 .tooltip-text {
     visibility: hidden;
-    background-color: #7546a0;
+    background-color: var(--primary-color);
     color: #fff;
     text-align: center;
     border-radius: 4px;

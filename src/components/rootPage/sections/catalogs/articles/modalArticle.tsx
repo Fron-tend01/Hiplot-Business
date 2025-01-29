@@ -245,7 +245,7 @@ const modalArticle: React.FC = () => {
     console.log(articleToUpdate)
 
 
-    const handleCreateArticles = async (e:  React.MouseEvent<HTMLButtonElement>) => {
+    const handleCreateArticles = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         setStateLoading(true)
 
@@ -547,7 +547,7 @@ const modalArticle: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className='row'>
+                        <div className='row row__one'>
                             <div className='col-4'>
                                 <label className='label__general'>Código</label>
                                 <input className='inputs__general' type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder='Ingresa el código' />
@@ -625,36 +625,36 @@ const modalArticle: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-                        <br />
-                        <hr />
-                        <h4 className='label__general'>Información Adicional</h4>
-                        <hr />
-                        <div className='row row-small'>
-                            <div className='col-1'>
-                                <label className='label__general'>Base Max</label>
-                                <input className='inputs__general' type="number" value={baseMax === null ? '' : baseMax} onChange={handleInputBaseMaxChange} placeholder='Ingresa la base máxima' />
+                        <div className='row__two'>
+                            <div>
+                                <p className='title'>Información Adicional</p>
                             </div>
-                            <div className='col-1'>
-                                <label className='label__general'>Altura Max</label>
-                                <input className='inputs__general' type="number" value={maxHeight === null ? '' : maxHeight} onChange={handleInputMaxHeightChange} placeholder='Ingresa la altura máxima' />
-                            </div>
-                            <div className='col-1'>
-                                <label className='label__general'>Múltiplos</label>
-                                <input className='inputs__general' type="number" value={multiples === null ? '' : multiples} onChange={handleInputMultiplesChange} placeholder='Ingresa los múltiplos' />
-                            </div>
-                            <div className='col-3'>
-                                <label className='label__general'>Indicaciones de Ventas</label>
-                                <input className='inputs__general' type="text" value={salesInstructions} onChange={(e) => setsalesInstructions(e.target.value)} placeholder='Indicaciones de Ventas' />
-                            </div>
-                            <div className='col-3'>
-                                <label className='label__general'>Notas web</label>
-                                <input className='inputs__general' type="text" value={webNotes} onChange={(e) => setwebNotes(e.target.value)} placeholder='Notas web' />
-                            </div>
-                            <div className='col-3'>
-                                <label className='label__general'>Condiciones de compra</label>
-                                <input className='inputs__general' type="text" value={purchaseConditions} onChange={(e) => setPurchaseConditions(e.target.value)} placeholder='Condiciones de compra' />
+                            <div className='row row__one'>
+                                <div>
+                                    <label className='label__general'>Base Max</label>
+                                    <input className='inputs__general' type="number" value={baseMax === null ? '' : baseMax} onChange={handleInputBaseMaxChange} placeholder=' Base máxima' />
+                                </div>
+                                <div>
+                                    <label className='label__general'>Altura Max</label>
+                                    <input className='inputs__general' type="number" value={maxHeight === null ? '' : maxHeight} onChange={handleInputMaxHeightChange} placeholder='Altura máxima' />
+                                </div>
+                                <div>
+                                    <label className='label__general'>Múltiplos</label>
+                                    <input className='inputs__general' type="number" value={multiples === null ? '' : multiples} onChange={handleInputMultiplesChange} placeholder='Múltiplos' />
+                                </div>
+                                <div>
+                                    <label className='label__general'>Indicaciones de Ventas</label>
+                                    <input className='inputs__general' type="text" value={salesInstructions} onChange={(e) => setsalesInstructions(e.target.value)} placeholder='Indicaciones de Ventas' />
+                                </div>
+                                <div>
+                                    <label className='label__general'>Notas web</label>
+                                    <input className='inputs__general' type="text" value={webNotes} onChange={(e) => setwebNotes(e.target.value)} placeholder='Notas web' />
+                                </div>
+                                <div>
+                                    <label className='label__general'>Condiciones de compra</label>
+                                    <input className='inputs__general' type="text" value={purchaseConditions} onChange={(e) => setPurchaseConditions(e.target.value)} placeholder='Condiciones de compra' />
+                                </div>
                             </div>
                         </div>
                         <div className='row row-small mt-3 mb-3'>

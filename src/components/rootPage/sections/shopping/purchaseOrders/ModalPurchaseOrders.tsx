@@ -705,6 +705,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                       <div className='col-6 md-col-12'>
                         <span className='text'>Empresa: <b>{purchaseOrderToUpdate?.empresa}</b></span><br />
                         <span className='text'>Sucursal: <b>{purchaseOrderToUpdate?.sucursal}</b></span><br />
+                        <span className='text'>Tipo: <b>{purchaseOrderToUpdate?.tipo == 0 ? 'Normal' : 'Diferencial'}</b></span><br />
                       </div>
                     </div>
                     <div className='row'>
@@ -720,39 +721,43 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
             :
             ''
           }
-
-          <div className='row__check'>
-            <div className='container__checkbox_purchas-order'>
-              <div className='checkbox__purchas-order'>
-                <label className="checkbox__container_general">
-                  <input
-                    className='checkbox'
-                    type="checkbox"
-                    value={0}
-                    checked={typeModal === 0}
-                    onChange={handleModalType}
-                    onClick={() => handleCheckboxClick(0)}
-                  />
-                  <span className="checkmark__general"></span>
-                </label>
-                <p className='title__checkbox text'>Directa</p>
-              </div>
-              <div className='checkbox__purchas-order'>
-                <label className="checkbox__container_general">
-                  <input
-                    className='checkbox'
-                    type="checkbox"
-                    value={1}
-                    checked={typeModal === 1}
-                    onChange={handleModalType}
-                    onClick={() => handleCheckboxClick(1)}
-                  />
-                  <span className="checkmark__general"></span>
-                </label>
-                <p className='title__checkbox text'>Por requisición</p>
+          {modoUpdate ?
+            ''
+            :
+            <div className='row__check'>
+              <div className='container__checkbox_purchas-order'>
+                <div className='checkbox__purchas-order'>
+                  <label className="checkbox__container_general">
+                    <input
+                      className='checkbox'
+                      type="checkbox"
+                      value={0}
+                      checked={typeModal === 0}
+                      onChange={handleModalType}
+                      onClick={() => handleCheckboxClick(0)}
+                    />
+                    <span className="checkmark__general"></span>
+                  </label>
+                  <p className='title__checkbox text'>Directa</p>
+                </div>
+                <div className='checkbox__purchas-order'>
+                  <label className="checkbox__container_general">
+                    <input
+                      className='checkbox'
+                      type="checkbox"
+                      value={1}
+                      checked={typeModal === 1}
+                      onChange={handleModalType}
+                      onClick={() => handleCheckboxClick(1)}
+                    />
+                    <span className="checkmark__general"></span>
+                  </label>
+                  <p className='title__checkbox text'>Por requisición</p>
+                </div>
               </div>
             </div>
-          </div>
+          }
+
           <div className='parchase-orders-modal_container'>
             <div className='row__one'>
               <div className='row'>

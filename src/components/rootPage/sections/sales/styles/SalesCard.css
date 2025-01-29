@@ -85,7 +85,7 @@
 }
 
 .conatiner__create_sale-card > .row__two > .row__one .row__two {
-    padding: 20px;
+  padding: 20px;
 	background-color: var(--cards-background);
 	border-radius: var(--general-card-border);
 }

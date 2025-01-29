@@ -14,6 +14,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
+
 import ToArrive from './sales-sard_modals/ToArrive';
 import Indications from './sales-sard_modals/Stocks';
 import DeliveryTimes from './sales-sard_modals/DeliveryTimes';
@@ -258,7 +259,7 @@ const SalesCard: React.FC = () => {
          
           lista_precios_franquicia = article?.precios_franquicia[0].id_grupos_us
           const dataArticleFranquicia = {
-            id_articulo: article.id,
+            id_articulo: article.id,    
             id_grupo_us: lista_precios_franquicia,
             id_unidad: selectedUnit.id_unidad,
             id_usuario: user_id,
@@ -427,6 +428,7 @@ const SalesCard: React.FC = () => {
       setCustomConceptView([...customConceptView, newData])
 
     }
+    toast.success('Artículo agregado')
   };
 
 
@@ -507,9 +509,8 @@ const SalesCard: React.FC = () => {
       setNormalConcepts([...normalConcepts, newData])
       setConceptView([...conceptView, newData])
       setCustomConceptView([...customConceptView, newData])
-
-
     }
+    toast.success('Artículo agregado')
 
   }
 

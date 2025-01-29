@@ -17,6 +17,13 @@
     
 }
 
+.container__purchase-order > .row__one > .row__one {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    column-gap: 10px;
+    
+}
+
 .container__purchase-order > .row__one {
     padding: 20px;
     background-color: var(--cards-background);
