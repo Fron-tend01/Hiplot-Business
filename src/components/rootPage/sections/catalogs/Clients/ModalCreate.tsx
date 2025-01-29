@@ -21,55 +21,55 @@ const ModalCreate = () => {
 
     const [pj] = useState<any>([
         {
-            id: 0,
+            id: 0, //1 en hb1
             nombre: 'Persona Moral'
         },
         {
-            id: 1,
+            id: 1, //2 en hb1
             nombre: 'Persona Fisica'
         }
     ])
     const [divisas] = useState<any>([
         {
-            id: 0,
+            id: 1,
             nombre: 'Peso Mexicano'
         },
         {
-            id: 1,
+            id: 2,
             nombre: 'US Dolar'
         },
         {
-            id: 2,
+            id: 3,
             nombre: 'Euro'
         }
     ])
     const [categorias] = useState<any>([
         {
-            id: 0,
+            id: 1,
             nombre: 'Empresa'
         },
         {
-            id: 1,
+            id: 2,
             nombre: 'Publico en General'
         },
         {
-            id: 2,
+            id: 3,
             nombre: 'Gobierno'
         },
         {
-            id: 3,
+            id: 4,
             nombre: 'Cliente por Identificar'
         },
         {
-            id: 4,
+            id: 5,
             nombre: 'Parte Relacionada'
         },
         {
-            id: 5,
+            id: 6,
             nombre: 'Socio, accionista o representante legal'
         },
         {
-            id: 6,
+            id: 7,
             nombre: 'Otro'
         }
     ])
