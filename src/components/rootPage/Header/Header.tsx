@@ -4,29 +4,52 @@ import React, { useState } from 'react';
 import { useThemeStore } from '../../../zustand/ThemeStore';
 import './Header.css';
 import NotificationIcon from './NotificationIcon';
+import Swal from 'sweetalert2';
 
 const Header: React.FC = () => {
 
   const { toggleTheme } = useThemeStore();
-  const [showUsers, setShowUsers] = useState<boolean>(false);
+  const [showUsers] = useState<boolean>(false);
 
   const toggleUsersDisplay = () => {
-    setShowUsers(!showUsers);
+    // setShowUsers(!showUsers);
+     Swal.fire({
+        title: "Sección en desarrollo",
+        text: "Estamos trabajando para mejorar esta funcionalidad. Próximamente estará disponible.",
+        icon: "info",
+      });
   };
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
-  const activeMode = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+
 
   const handleClick = () => {
-    document.body.classList.toggle("darkmode");
-    toggleTheme()
-    setIsDarkMode(!isDarkMode);
-    activeMode();
+    if (!isDarkMode) {
+      Swal.fire({
+        title: "Modo oscuro en versión beta",
+        text: "En esta versión, el contraste de algunos colores aún no está completamente optimizado para la visualización.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, activar modo oscuro",
+        cancelButtonText: "Cancelar"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.body.classList.toggle("darkmode"); // Se cambia solo si acepta
+          toggleTheme();
+          setIsDarkMode((prev) => !prev);
+        }
+      });
+    } else {
+      document.body.classList.toggle("darkmode");
+      toggleTheme();
+      setIsDarkMode((prev) => !prev);
+    }
   };
-
+  
+  
   // const [notifications, setNotifications] = useState<string[]>([]);
   // const wsUrl = "ws://hiplot.dyndns.org:84/api_dev/ws/notify"; // URL del WebSocket en el backend
   // const socketRef = useRef<WebSocket | null>(null); // Referencia para el WebSocket

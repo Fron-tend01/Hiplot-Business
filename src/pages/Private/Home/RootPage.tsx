@@ -27,6 +27,8 @@ const RootHome: React.FC = () => {
 
     const { resetUser, UserKey }: any = useUserStore()
 
+    const [active, setActive] = useState<string>('dashboard')
+
     const [permisos, setPermisos] = useState<any>()
 
     useEffect(() => {
@@ -45,9 +47,9 @@ const RootHome: React.FC = () => {
     }
 
 
-    const toggleSubMenu = (index: any) => {
+    const toggleSubMenu = (index: any, type: string) => {
         setActiveMenuIndex((prevIndex) => (prevIndex === index ? null : index));
-
+        setActive(type)
     };
     const sales = {
         backgroundColor: activeMenuIndex === 1 && activeSidebar === true ? '#3D85C6' : ''
@@ -102,13 +104,14 @@ const RootHome: React.FC = () => {
                 </div>
                 <ul className='nav__items'>
                     <div className={`nav__item ${activeMenuIndex === 0 ? 'activeMenu' : ''}`} >
-                        <AnchorTag className='nav__link active' onClick={() => toggleSubMenu(0)} to={`${PrivateRoutes.SALES}`}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-layout-dashboard"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 3a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2zm0 12a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-2a2 2 0 0 1 2 -2zm10 -4a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2zm0 -8a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-2a2 2 0 0 1 2 -2z" /></svg>                            <span>Dashboard</span>
+                        <AnchorTag className={`nav__link ${active == 'dashboard' ? 'active' : ''}`} onClick={(e) =>  { e.preventDefault(); toggleSubMenu(0, 'dashboard') }} to={`${PrivateRoutes.SALES}`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-layout-dashboard"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 3a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2zm0 12a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-2a2 2 0 0 1 2 -2zm10 -4a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2zm0 -8a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-2a2 2 0 0 1 2 -2z" /></svg>
+                            <span>Dashboard</span>
                         </AnchorTag>
                     </div>
                     {permisos && permisos.VENTA.length ?
                         <div className={`nav__item ${activeMenuIndex === 1 ? 'activeMenu' : ''}`} >
-                            <AnchorTag className='nav__link' style={sales} onClick={(e) => { e.preventDefault(); toggleSubMenu(1) }} to={`${PrivateRoutes.SALES}`}>
+                            <AnchorTag className={`nav__link ${active == 'sales' ? 'active' : ''}`} style={sales} onClick={(e) => { e.preventDefault(); toggleSubMenu(1, 'sales') }} to={`${PrivateRoutes.SALES}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-tag"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M11.172 2a3 3 0 0 1 2.121 .879l7.71 7.71a3.41 3.41 0 0 1 0 4.822l-5.592 5.592a3.41 3.41 0 0 1 -4.822 0l-7.71 -7.71a3 3 0 0 1 -.879 -2.121v-5.172a4 4 0 0 1 4 -4zm-3.672 3.5a2 2 0 0 0 -1.995 1.85l-.005 .15a2 2 0 1 0 2 -2" /></svg>
                                 <span>Ventas</span>
                                 <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
@@ -117,19 +120,19 @@ const RootHome: React.FC = () => {
                                 {permisos.VENTA && permisos.VENTA.map((permiso: any, index: any) => {
                                     if (permiso.titulo == "COTIZACION") {
                                         return (
-                                            <AnchorTag key={index} className='sub__menu-link' to={`${PrivateRoutes.SALES}/${PrivateRoutes.QUOTATION}`}>
+                                            <AnchorTag key={index} className='sub__menu-link' onClick={() => toggleSubMenu(1, 'sales')}  to={`${PrivateRoutes.SALES}/${PrivateRoutes.QUOTATION}`}>
                                                 <span>Cotización</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "ORDEN_VENTA") {
                                         return (
-                                            <AnchorTag key={index} className='sub__menu-link' to={`${PrivateRoutes.SALES}/${PrivateRoutes.SALESORDER}`}>
+                                            <AnchorTag key={index} className='sub__menu-link' onClick={() => toggleSubMenu(1, 'sales')} to={`${PrivateRoutes.SALES}/${PrivateRoutes.SALESORDER}`}>
                                                 <span>Orden de venta</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "FACTURA") {
                                         return (
-                                            <AnchorTag key={index} className='sub__menu-link' to={`${PrivateRoutes.SALES}/${PrivateRoutes.BILLING}`}>
+                                            <AnchorTag key={index} className='sub__menu-link' onClick={() => toggleSubMenu(1, 'sales')} to={`${PrivateRoutes.SALES}/${PrivateRoutes.BILLING}`}>
                                                 <span>Facturacion</span>
                                             </AnchorTag>
                                         );
@@ -144,7 +147,7 @@ const RootHome: React.FC = () => {
                     }
                     {permisos && permisos.COMPRA.length > 0 ?
                         <div className={`nav__item ${activeMenuIndex === 2 ? 'activeMenu' : ''}`}>
-                            <AnchorTag className='nav__link' style={shopping} onClick={(e) => { e.preventDefault(); toggleSubMenu(2) }} to={`${PrivateRoutes.SHOPPING}`}>
+                            <AnchorTag className={`nav__link ${active == 'shopping' ? 'active' : ''}`} style={shopping} onClick={(e) => {e.preventDefault(); toggleSubMenu(2, 'shopping') }} to={`${PrivateRoutes.SHOPPING}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-shopping-cart"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6 2a1 1 0 0 1 .993 .883l.007 .117v1.068l13.071 .935a1 1 0 0 1 .929 1.024l-.01 .114l-1 7a1 1 0 0 1 -.877 .853l-.113 .006h-12v2h10a3 3 0 1 1 -2.995 3.176l-.005 -.176l.005 -.176c.017 -.288 .074 -.564 .166 -.824h-5.342a3 3 0 1 1 -5.824 1.176l-.005 -.176l.005 -.176a3.002 3.002 0 0 1 1.995 -2.654v-12.17h-1a1 1 0 0 1 -.993 -.883l-.007 -.117a1 1 0 0 1 .883 -.993l.117 -.007h2zm0 16a1 1 0 1 0 0 2a1 1 0 0 0 0 -2zm11 0a1 1 0 1 0 0 2a1 1 0 0 0 0 -2z" /></svg>
                                 <span>Compras</span>
                                 <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
@@ -153,13 +156,13 @@ const RootHome: React.FC = () => {
                                 {permisos.COMPRA && permisos.COMPRA.map((permiso: any, index: number) => {
                                     if (permiso.titulo == "REQUISICIONES") {
                                         return (
-                                            <AnchorTag key={index} className='sub__menu-link' to={`${PrivateRoutes.SHOPPING}/${PrivateRoutes.REQUISITION}`}>
+                                            <AnchorTag key={index} className='sub__menu-link' onClick={() => toggleSubMenu(2, 'shopping')} to={`${PrivateRoutes.SHOPPING}/${PrivateRoutes.REQUISITION}`}>
                                                 <span>Requisición</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "ORDEN_COMPRA") {
                                         return (
-                                            <AnchorTag key={index} className='sub__menu-link' to={`${PrivateRoutes.SHOPPING}/${PrivateRoutes.PURCHASEORDERS}`}>
+                                            <AnchorTag key={index} className='sub__menu-link' onClick={() => toggleSubMenu(2, 'shopping')} to={`${PrivateRoutes.SHOPPING}/${PrivateRoutes.PURCHASEORDERS}`}>
                                                 <span>Ordenes de compra</span>
                                             </AnchorTag>
                                         );
@@ -175,7 +178,7 @@ const RootHome: React.FC = () => {
                     }
                     {permisos && permisos.ALM.length > 0 ?
                         <div className={`nav__item ${activeMenuIndex === 3 ? 'activeMenu' : ''}`}>
-                            <AnchorTag className='nav__link' style={store} onClick={(e) => { e.preventDefault(); toggleSubMenu(3) }} to={`${PrivateRoutes.WAREHOUSES}`}>
+                            <AnchorTag className={`nav__link ${active == 'store' ? 'active' : ''}`} style={store} onClick={(e) => { e.preventDefault(); toggleSubMenu(3, 'store') }} to={`${PrivateRoutes.WAREHOUSES}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-stack-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M20.894 15.553a1 1 0 0 1 -.447 1.341l-8 4a1 1 0 0 1 -.894 0l-8 -4a1 1 0 0 1 .894 -1.788l7.553 3.774l7.554 -3.775a1 1 0 0 1 1.341 .447m0 -4a1 1 0 0 1 -.447 1.341l-8 4a1 1 0 0 1 -.894 0l-8 -4a1 1 0 0 1 .894 -1.788l7.552 3.775l7.554 -3.775a1 1 0 0 1 1.341 .447m-8.887 -8.552q .056 0 .111 .007l.111 .02l.086 .024l.012 .006l.012 .002l.029 .014l.05 .019l.016 .009l.012 .005l8 4a1 1 0 0 1 0 1.788l-8 4a1 1 0 0 1 -.894 0l-8 -4a1 1 0 0 1 0 -1.788l8 -4l.011 -.005l.018 -.01l.078 -.032l.011 -.002l.013 -.006l.086 -.024l.11 -.02l.056 -.005z" /></svg>
                                 <span>Almacen</span>
                                 <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
@@ -184,37 +187,37 @@ const RootHome: React.FC = () => {
                                 {permisos.ALM && permisos.ALM.map((permiso: any) => {
                                     if (permiso.titulo == "ALMACENES") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.STORE}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(3, 'store')} to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.STORE}`}>
                                                 <span>Almacen</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "ENTRADA") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.TICKETS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(3, 'store')} to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.TICKETS}`}>
                                                 <span>Entradas</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "SALIDA") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.DEPARTURES}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(3, 'store')} to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.DEPARTURES}`}>
                                                 <span>Salidas</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "PEDIDO") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.ORDERS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(3, 'store')} to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.ORDERS}`}>
                                                 <span>Pedidos</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "TRASPASO") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.TRANSFERS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(3, 'store')} to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.TRANSFERS}`}>
                                                 <span>Traspasos</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "PEDIDO_FRANQUICIA") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.PEDIDOFRANQUICIA}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(3, 'store')} to={`${PrivateRoutes.WAREHOUSES}/${PrivateRoutes.PEDIDOFRANQUICIA}`}>
                                                 <span>Pedidos Franquicia</span>
                                             </AnchorTag>
                                         );
@@ -229,8 +232,8 @@ const RootHome: React.FC = () => {
                     }
                     {permisos && permisos.PRO.length > 0 ?
                         <div className={`nav__item ${activeMenuIndex === 6 ? 'activeMenu' : ''}`}>
-                            <AnchorTag className='nav__link' style={production} onClick={(e) => { toggleSubMenu(6); e.preventDefault(); }} to={`${PrivateRoutes.PRODUCTION}`}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-asset"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M19 2a3 3 0 0 1 2.86 3.91l-.107 .291l-.046 .093q -.061 .128 -.134 .25l-6.476 11.909a1 1 0 0 1 -.066 .104a7 7 0 0 1 -13.031 -3.557l.004 -.24a7 7 0 0 1 3.342 -5.732l.256 -.15l11.705 -6.355q .18 -.123 .378 -.22l.215 -.096l.136 -.048c.302 -.103 .627 -.159 .964 -.159m-10 10a3 3 0 0 0 -2.995 2.824l-.005 .176a3 3 0 1 0 3 -3m7.04 -6.512l-5.12 2.778a7.01 7.01 0 0 1 4.816 4.824l2.788 -5.128a3 3 0 0 1 -2.485 -2.474m2.961 -1.488a1 1 0 0 0 -.317 .051l-.31 .17a1 1 0 1 0 1.465 1.325l.072 -.13a1 1 0 0 0 -.91 -1.416" /></svg>
+                            <AnchorTag className={`nav__link ${active == 'production' ? 'active' : ''}`} style={production} onClick={(e) => { toggleSubMenu(6, 'production'); e.preventDefault(); }} to={`${PrivateRoutes.PRODUCTION}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-asset"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M19 2a3 3 0 0 1 2.86 3.91l-.107 .291l-.046 .093q -.061 .128 -.134 .25l-6.476 11.909a1 1 0 0 1 -.066 .104a7 7 0 0 1 -13.031 -3.557l.004 -.24a7 7 0 0 1 3.342 -5.732l.256 -.15l11.705 -6.355q .18 -.123 .378 -.22l.215 -.096l.136 -.048c.302 -.103 .627 -.159 .964 -.159m-10 10a3 3 0 0 0 -2.995 2.824l-.005 .176a3 3 0 1 0 3 -3m7.04 -6.512l-5.12 2.778a7.01 7.01 0 0 1 4.816 4.824l2.788 -5.128a3 3 0 0 1 -2.485 -2.474m2.961 -1.488a1 1 0 0 0 -.317 .051l-.31 .17a1 1 0 1 0 1.465 1.325l.072 -.13a1 1 0 0 0 -.91 -1.416" /></svg>
                                 <span>Produccion</span>
                                 <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
                             </AnchorTag>
@@ -238,13 +241,13 @@ const RootHome: React.FC = () => {
                                 {permisos.PRO && permisos.PRO.map((permiso: any) => {
                                     if (permiso.titulo == "PRODUCCION") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.PRODUCTION}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(6, 'production')} to={`${PrivateRoutes.PRODUCTION}`}>
                                                 <span>Produccion</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "VALES") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.PRODUCTION}/${PrivateRoutes.VALES}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(6, 'production')} to={`${PrivateRoutes.PRODUCTION}/${PrivateRoutes.VALES}`}>
                                                 <span>Vales</span>
                                             </AnchorTag>
                                         );
@@ -259,87 +262,88 @@ const RootHome: React.FC = () => {
                     }
                     {permisos && permisos.CATAL.length > 0 ?
                         <div className={`nav__item ${activeMenuIndex === 4 ? 'activeMenu' : ''}`}>
-                            <AnchorTag className='nav__link' style={catalogue} onClick={(e) => { e.preventDefault(); toggleSubMenu(4) }} to={`${PrivateRoutes.CATALOGUE}`}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 3a1 1 0 0 1 .608 .206l.1 .087l2.706 2.707h6.586a3 3 0 0 1 2.995 2.824l.005 .176v8a3 3 0 0 1 -2.824 2.995l-.176 .005h-14a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-11a3 3 0 0 1 2.824 -2.995l.176 -.005h4z" /></svg>                                <span>Catalágos</span>
+                            <AnchorTag className={`nav__link ${active == 'catalogue' ? 'active' : ''}`} style={catalogue} onClick={(e) => { e.preventDefault(); toggleSubMenu(4, 'catalogue')}} to={`${PrivateRoutes.CATALOGUE}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 3a1 1 0 0 1 .608 .206l.1 .087l2.706 2.707h6.586a3 3 0 0 1 2.995 2.824l.005 .176v8a3 3 0 0 1 -2.824 2.995l-.176 .005h-14a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-11a3 3 0 0 1 2.824 -2.995l.176 -.005h4z" /></svg>
+                                <span>Catalágos</span>
                                 <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
                             </AnchorTag>
                             <div className='sub__menu '>
                                 {permisos.CATAL && permisos.CATAL.map((permiso: any) => {
                                     if (permiso.titulo == "ARTICULOS") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.ARTICLES}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.ARTICLES}`}>
                                                 <span>Articulos</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "FAMILIAS") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.FAMILIES}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.FAMILIES}`}>
                                                 <span>Familias</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "PROVEEDORES") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.SUPPLIERS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.SUPPLIERS}`}>
                                                 <span>Proveedores</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "PLANTILLAS") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.TEMPLATES}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.TEMPLATES}`}>
                                                 <span>Plantillas</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "RANGOS") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.RANKS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.RANKS}`}>
                                                 <span>Rangos</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "UNIDAD") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.UNITS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.UNITS}`}>
                                                 <span>Unidades</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "TIPO_COBRO") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.TYPEOFPAYMENT}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.TYPEOFPAYMENT}`}>
                                                 <span>Tipo de cobro</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "COMBINACIONES") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.COMBINATIONS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.COMBINATIONS}`}>
                                                 <span>Combinaciones</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "COLECCIONES") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.COLECCIONES}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.COLECCIONES}`}>
                                                 <span>Colecciones</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "CLIENTES") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.CUSTOMERS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.CUSTOMERS}`}>
                                                 <span>Clientes</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "TIEMPOS_ENTREGA") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.TIEMPOSENTREGA}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.TIEMPOSENTREGA}`}>
                                                 <span>Tiempos Entrega</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "LISTA_FRANQUICIAS") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.LISTASFRANQUICIAS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.LISTASFRANQUICIAS}`}>
                                                 <span>Listas Franquicias</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "DESCUENTOS") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.DESCUENTOS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.DESCUENTOS}`}>
                                                 <span>Descuentos</span>
                                             </AnchorTag>
                                         );
@@ -354,7 +358,7 @@ const RootHome: React.FC = () => {
                     }
                     {permisos && permisos.CONFIG.length > 0 ?
                         <div className={`nav__item ${activeMenuIndex === 5 ? 'activeMenu' : ''}`}>
-                            <AnchorTag className='nav__link' style={processes} onClick={(e) => { e.preventDefault(); toggleSubMenu(5) }} to={`${PrivateRoutes.PROCESSOS}`}>
+                            <AnchorTag className={`nav__link ${active == 'processes' ? 'active' : ''}`} style={processes} onClick={(e) => { e.preventDefault(); toggleSubMenu(5, 'processes')}} to={`${PrivateRoutes.PROCESSOS}`}>
                             <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-clipboard"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17.997 4.17a3 3 0 0 1 2.003 2.83v12a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 2.003 -2.83a4 4 0 0 0 3.997 3.83h4a4 4 0 0 0 3.98 -3.597zm-3.997 -2.17a2 2 0 1 1 0 4h-4a2 2 0 1 1 0 -4z" /></svg>
                                 <span>Procesos</span>
                                 <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
@@ -363,49 +367,49 @@ const RootHome: React.FC = () => {
                                 {permisos.CONFIG && permisos.CONFIG.map((permiso: any) => {
                                     if (permiso.titulo == "USUARIOS") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.USUARIOS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(5, 'processes')} to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.USUARIOS}`}>
                                                 <span>Usuarios</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "TIPOS_USUARIO") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.TIPOSDEUSUARIOS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(5, 'processes')} to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.TIPOSDEUSUARIOS}`}>
                                                 <span>Tipos de Us</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "EMPRESAS") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.COMPANIES}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(5, 'processes')} to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.COMPANIES}`}>
                                                 <span>Empresas</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "SUCURSALES") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.BRANCHOFFCIES}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(5, 'processes')} to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.BRANCHOFFCIES}`}>
                                                 <span>Sucursales</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "AREAS") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.AREAS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(5, 'processes')} to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.AREAS}`}>
                                                 <span>Areas</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "SERIES") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.SERIES}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(5, 'processes')} to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.SERIES}`}>
                                                 <span>Series</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "GRUPOS_USUARIO") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.GRUPOSDEUSUARIOS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(5, 'processes')} to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.GRUPOSDEUSUARIOS}`}>
                                                 <span>Grupos de Us</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "URGENCIA") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.URGENCIAS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(5, 'processes')} to={`${PrivateRoutes.PROCESSOS}/${PrivateRoutes.URGENCIAS}`}>
                                                 <span>Urgencias</span>
                                             </AnchorTag>
                                         );
