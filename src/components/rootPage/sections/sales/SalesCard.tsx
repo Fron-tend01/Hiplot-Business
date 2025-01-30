@@ -31,7 +31,7 @@ import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
 
 
 
-const SalesCard: React.FC = ({idA}: any) => {
+const SalesCard: React.FC = ({ idA }: any) => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id;
 
@@ -66,6 +66,7 @@ const SalesCard: React.FC = ({idA}: any) => {
   const { getArticles }: any = articleRequests();
 
   const [billingComment, setBillingComment] = useState<any>('')
+  const [opciones, setOpciones] = useState<any>(null);
 
   const fetch = async () => {
     const data = {
@@ -113,10 +114,13 @@ const SalesCard: React.FC = ({idA}: any) => {
         }));
 
         setArticle(response[0]);
+        setOpciones(response[0].opciones_de_variacion2)
       }
 
       const resultUsers = await getUserGroups(user_id);
       if (resultUsers) {
+        console.log('ENTRANDO A ASIGNAR LOS UP', resultUsers);
+
         setUsersGroups(resultUsers);
         setSelectedUserGroup(resultUsers[0].id);
       }
@@ -577,7 +581,113 @@ const SalesCard: React.FC = ({idA}: any) => {
     setStatusArticle(false)
   }
 
+  const handleSelect = (combinacionIndex: number, optionId: number) => {
+    setOpciones((prevOpciones: any) =>
+      prevOpciones.map((grupo: any, i: number) =>
+        i === combinacionIndex
+          ? {
+            ...grupo,
+            opciones: grupo.opciones.map((option: any) => ({
+              ...option,
+              selected: option.id === optionId
+            }))
+          }
+          : grupo
+      )
+    );
+  };
 
+  useEffect(() => {
+    console.log(opciones);
+
+  }, [opciones])
+
+  const BuscarArticuloPorCombinacion = () => {
+    // Obtener todas las opciones seleccionadas
+    const selectedIds = opciones.flatMap((grupo:any) =>
+      grupo.opciones.filter((option:any) => option.selected).map((option:any) => option.id)
+    );
+
+    // Verificar si hay alguna combinación donde todos los selected sean false
+    const hasInvalidCombination = opciones.some((grupo:any) =>
+      grupo.opciones.every((option:any) => !option.selected)
+    );
+
+    if (hasInvalidCombination) {
+      Swal.fire('Notificacion', 'Es necesario seleccionar una opción de cada combinación', 'info')
+      return;
+    }
+
+    console.log("IDs seleccionados:", selectedIds);
+
+    fetch2(selectedIds)
+  }
+const fetch2 = async (selectedIds:any[]) => {
+    const data = {
+      id: 0,
+      activos: true,
+      nombre: '',
+      codigo: '',
+      familia: 0,
+      proveedor: 0,
+      materia_prima: 0,
+      get_sucursales: false,
+      get_imagenes: true,
+      // get_adicional: true,
+      get_proveedores: false,
+      get_max_mins: true,
+      get_precios: true,
+      get_combinaciones: true,
+      get_plantilla_data: true,
+      get_areas_produccion: true,
+      get_tiempos_entrega: true,
+      get_componentes: true,
+      get_stock: true,
+      get_web: true,
+      for_ventas: true,
+      get_unidades: true,
+      id_usuario: user_id,
+      por_combinacion:true,
+      opciones:selectedIds
+    };
+
+    try {
+      // Obtener artículos
+      const response: any = await APIs.getArticles(data);
+      if (response && response.length > 0) {
+        const plantilla_data = response[0].plantilla_data || []; // Inicializar como un arreglo vacío
+        const id_plantillas_art_campos = [];
+
+        for (let i = 0; i < plantilla_data.length; i++) {
+          const id = plantilla_data[i].id;
+          id_plantillas_art_campos.push(id);
+        }
+
+        // Asegúrate de que plantilla_data siga siendo un arreglo
+        response[0].plantilla_data = plantilla_data.map((item: any) => ({
+          ...item,
+          id_plantillas_art_campos: item.id,
+        }));
+
+        setArticle(response[0]);
+        setOpciones(response[0].opciones_de_variacion2)
+      }
+
+      const resultUsers = await getUserGroups(user_id);
+      if (resultUsers) {
+        console.log('ENTRANDO A ASIGNAR LOS UP', resultUsers);
+
+        setUsersGroups(resultUsers);
+        setSelectedUserGroup(resultUsers[0].id);
+      }
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      // Cambia el estado después de completar todo el proceso
+      setStatusArticle(true);
+    }
+  };
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' ? 'active' : ''}`}>
       <Toaster expand={true} position="top-right" richColors />
@@ -725,23 +835,36 @@ const SalesCard: React.FC = ({idA}: any) => {
             <div className='row__one'>
               {statusArticle !== false ?
                 <div>
+                  <br />
                   <div className="combinaciones">
-                    {article?.opciones_de_variacion?.map((x: any, index: any) => (
+                    {opciones?.map((x: any, index: any) => (
                       <div className='combinaciones__container' key={index}>
-                        <div className='container'>
-                          <svg onClick={() => toggleModal(index)} xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-palette"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor" /><circle cx="17.5" cy="10.5" r=".5" fill="currentColor" /><circle cx="8.5" cy="7.5" r=".5" fill="currentColor" /><circle cx="6.5" cy="12.5" r=".5" fill="currentColor" /><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" /></svg>
+                        <div className='container' onClick={() => toggleModal(index)}>
+                          {x.combinacion}
                         </div>
                         {activeIndex === index && (
                           <div className="combination_options">
                             {x.opciones.map((option: any) => (
-                              <div key={option.id}>
-                                <p onClick={() => combinacion(option)}>{option.nombre}</p>
+                              <div key={option.id} onClick={() => handleSelect(index, option.id)}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "10px",
+                                  cursor: "pointer",
+                                  backgroundColor: option.selected ? "#4CAF50" : "transparent",  // 🟢 Cambia de color si está seleccionado
+                                  color: option.selected ? "white" : "black",  // 🟢 Texto blanco si está seleccionado
+                                  padding: "5px",
+                                  borderRadius: "5px"
+                                }}>
+                                <p>{option.nombre}</p>
                               </div>
                             ))}
                           </div>
                         )}
                       </div>
                     ))}
+                    <button style={{borderRadius:'8px'}} onClick={BuscarArticuloPorCombinacion}>Buscar</button>
+
                   </div>
                 </div>
                 :

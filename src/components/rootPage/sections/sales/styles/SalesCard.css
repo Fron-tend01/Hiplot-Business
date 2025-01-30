@@ -710,7 +710,20 @@
     color: var(--text-white);
 
 }
+.btn-buscar {
+  margin-top: 20px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
 
+.btn-buscar:hover {
+  background-color: #0056b3;
+}
 
 
 .conatiner__create_sale-card .combination_options {
@@ -720,7 +733,7 @@
     min-height: 100px;
     min-width: 400px;
     max-width: 800px;
-    background-color: var(--background-select-content);
+    background-color: #cbcbcb;
     z-index: 2;
     margin-top: 10px;
 }
