@@ -53,10 +53,10 @@ const Prices: React.FC<any> = ({ id_grupo_us }) => {
                 .map((item: any, index: number) => (
                   <div className="tbody__container" key={index}>
                     <div className="tbody">
-                      <div className="td">{item.precios_ext[0].rango}</div>
-                      <div className="td">{item.precios}</div>
-                      <div className="td">{item.precios_fyv}</div>
-                      <div className="td">{item.fecha}</div>
+                      <div className="td">{item?.precios_ext[0]?.rango}</div>
+                      <div className="td">{item?.precios}</div>
+                      <div className="td">{item?.precios_fyv}</div>
+                      <div className="td">{item?.fecha}</div>
                     </div>
                   </div>
                 ))}
@@ -85,10 +85,10 @@ const Prices: React.FC<any> = ({ id_grupo_us }) => {
                   {article?.precios_franquicia.map((item: any, index: number) => (
                       <div className="tbody__container" key={index}>
                         <div className="tbody">
-                          <div className="td">{item.precios_ext[0].rango}</div>
-                          <div className="td">{item.precios}</div>
-                          <div className="td">{item.precios_fyv}</div>
-                          <div className="td">{item.fecha}</div>
+                          <div className="td">{item?.precios_ext[0]?.rango}</div>
+                          <div className="td">{item?.precios}</div>
+                          <div className="td">{item?.precios_fyv}</div>
+                          <div className="td">{item?.fecha}</div>
                         </div>
                       </div>
                     ))}

@@ -254,12 +254,12 @@ const SalesCard: React.FC = () => {
         setAdicional(result.adicional)
         let lista_precios_franquicia = 0
         let precio_franq_tmp = 0
-      
+
         if (article?.precios_franquicia != null && article?.precios_franquicia.length > 0) {
-         
+
           lista_precios_franquicia = article?.precios_franquicia[0].id_grupos_us
           const dataArticleFranquicia = {
-            id_articulo: article.id,    
+            id_articulo: article.id,
             id_grupo_us: lista_precios_franquicia,
             id_unidad: selectedUnit.id_unidad,
             id_usuario: user_id,
@@ -268,7 +268,7 @@ const SalesCard: React.FC = () => {
             camposTxTVisual: article.plantilla_data.filter((x: any) => x.tipo == 'txtvisual'),
             franquicia: true
           };
-  
+
           const resultFranquicia: any = await APIs.getTotalPrice(dataArticleFranquicia);
           if (!resultFranquicia.error) {
             precio_franq_tmp = resultFranquicia.mensaje
@@ -276,7 +276,7 @@ const SalesCard: React.FC = () => {
 
             setPricesFranquicia(resultFranquicia.mensaje)
             setPricesFranquiciaAdicional(resultFranquicia?.adicional?.total)
-           
+
             // setAdicionalFranquicia(resultFranquicia.adicional)
           }
         } else {
@@ -337,11 +337,17 @@ const SalesCard: React.FC = () => {
 
   const getPrices = async () => {
     if (amount > 0) {
-      article.plantilla_data.forEach((x: any) => {
-        if (x.valor > 0 && x.tipo == 'numero') {
-          get();
-        }
-      });
+      let numbrs = article.plantilla_data.filter((x: any) => x.tipo == 'numero')
+      if (numbrs.length > 0) {
+        article.plantilla_data.forEach((x: any) => {
+          if (x.valor > 0 && x.tipo == 'numero') {
+            get();
+          }
+        });
+      } else {
+        get()
+      }
+
     }
 
   };
@@ -648,7 +654,7 @@ const SalesCard: React.FC = () => {
                     <button className='btn__general-purple' type='button' onClick={() => setModalSub('to-arrive_modal')}>
                       <svg className="icon icon-tabler icons-tabler-outline icon-tabler-truck-delivery" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" /><path d="M3 9l4 0" /></svg>
                     </button>
-                    <span className="sale__card-tooltip-text">Por llegar</span>
+                    <span className="sale__card-tooltip-text">INDICACIONES</span>
                   </div>
                   <div className='btn__sale__card-tooltip-container'>
                     <button className='btn__general-purple' type='button' onClick={() => setModalSub('delivery-time_modal')}>
@@ -668,22 +674,34 @@ const SalesCard: React.FC = () => {
               }
               {statusArticle !== false ?
                 <div className='row__three'>
-                  <div className='desabasto'>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
-                    <p>Desbasto</p>
-                  </div>
-                  <div className='bajo-pedido'>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-truck"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18H9" /><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" /><circle cx="17" cy="18" r="2" /><circle cx="7" cy="18" r="2" /></svg>
-                    <p>Bajo Pedido</p>
-                  </div>
-                  <div className='vender-sin-stock'>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
-                    <p>Vender sin Stock</p>
-                  </div>
-                  <div className='ultima-piezas'>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-clock-3"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16.5 12" /></svg>
-                    <p>Ultimas Piezas</p>
-                  </div>
+                  {article.desabasto ?
+                    <div className='desabasto'>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+                      <p>Desbasto</p>
+                    </div>
+                    : ''}
+                  {article.bajo_pedido ?
+                    <div className='bajo-pedido'>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-truck"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18H9" /><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" /><circle cx="17" cy="18" r="2" /><circle cx="7" cy="18" r="2" /></svg>
+                      <p>Bajo Pedido</p>
+                    </div>
+                    : ''}
+                  {article.vender_sin_stock ?
+                    <div className='vender-sin-stock'>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
+                      <p>Vender sin Stock</p>
+                    </div>
+                    : ''}
+                  {article.ultimas_piezas ?
+                    <div className='ultima-piezas'>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-clock-3"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16.5 12" /></svg>
+                      <p>Ultimas Piezas</p>
+                    </div>
+                    : ''}
+
+
+
+
                 </div>
                 :
                 <div className="card-sale__pulse__labels">

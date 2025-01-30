@@ -48,10 +48,10 @@ const Stocks: React.FC = () => {
                 <div className='tbody__container' key={index}>
                   <div className='tbody'>
                     <div className='td'>
-                      {item.nombre}
+                      {item?.nombre}
                     </div>
                     <div className='td'>
-                      {item.stock}-{unidad.nombre}
+                      {item?.stock}-{unidad?.nombre}
                     </div>
                   </div>
                 </div>
