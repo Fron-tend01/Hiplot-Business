@@ -99,7 +99,7 @@ const Articles: React.FC = () => {
       familia: 0,
       proveedor: 0,
       page: 1,
-      materia_prima: 0,
+      materia_prima:typeServive ,
       get_sucursales: true,
       get_proveedores: true,
       get_max_mins: true,
@@ -146,7 +146,7 @@ const Articles: React.FC = () => {
 
   };
 
-  const [typeServive, setTypeService] = useState<any>(0)
+  const [typeServive, setTypeService] = useState<any>(1)
   const [typeActive, setTypeActive] = useState<any>(1)
 
   const [warningSelectCompany] = useState<boolean>(false)
@@ -167,7 +167,8 @@ const Articles: React.FC = () => {
       get_plantilla_data: false,
       get_stock: false,
       get_web: false,
-      get_unidades: false
+      get_unidades: false,
+      page: 1
     };
     setTypeService(value)
 
@@ -195,7 +196,9 @@ const Articles: React.FC = () => {
       get_plantilla_data: false,
       get_stock: false,
       get_web: false,
-      get_unidades: false
+      get_unidades: false,
+      page: 1
+
     };
     setTypeActive(value)
 
@@ -232,8 +235,11 @@ const Articles: React.FC = () => {
       console.log('Error')
     }
   }
+  const [page, setPage] = useState<number>(1)
 
-
+  useEffect(() => {
+    searchArticle();
+  }, [page]);
 
   return (
     <div className='articles'>
@@ -270,14 +276,14 @@ const Articles: React.FC = () => {
           <div className='container__checkbox_articles'>
             <div className='checkbox__articles'>
               <label className="checkbox__container_general">
-                <input className='checkbox' type="checkbox" checked={typeServive == 0 ? true : false} onChange={() => handleTypeArticleChange(0)} />
+                <input className='checkbox' type="checkbox" checked={typeServive == 1 ? true : false} onChange={() => handleTypeArticleChange(1)} />
                 <span className="checkmark__general"></span>
               </label>
               <p className='text'>Servicio</p>
             </div>
             <div className='checkbox__articles'>
               <label className="checkbox__container_general">
-                <input className='checkbox' type="checkbox" checked={typeServive == 1 ? true : false} onChange={() => handleTypeArticleChange(1)} />
+                <input className='checkbox' type="checkbox" checked={typeServive == 0 ? true : false} onChange={() => handleTypeArticleChange(0)} />
                 <span className="checkmark__general"></span>
               </label>
               <p className='text'>Materia</p>
@@ -299,7 +305,7 @@ const Articles: React.FC = () => {
               <p className='text'>Desactivados</p>
             </div>
           </div>
-    
+
         </div>
         <div className='row__three mt-4'>
           <div>
@@ -362,10 +368,10 @@ const Articles: React.FC = () => {
         </div>
         <div className='d-flex justify-content-between mt-4'>
           <div>
-            <button className='btn__general-purple'>Anterior</button>
+            <button className='btn__general-purple' onClick={()=>setPage(page-1)} disabled={page==1}>Anterior</button>
           </div>
           <div>
-            <button className='btn__general-purple'>Siguente</button>
+            <button className='btn__general-purple' onClick={()=>setPage(page-1)} disabled={page==1}>Siguente</button>
           </div>
         </div>
       </div>

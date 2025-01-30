@@ -29,6 +29,7 @@ const ArticleViewModal = () => {
     const [articles, setArticles] = useState<any>([]);
 
     const [families, setFamilies] = useState<any>([])
+    const [page, setPage] = useState<number>(1)
 
 
     const fetch = async () => {
@@ -41,6 +42,7 @@ const ArticleViewModal = () => {
     useEffect(() => {
         if (modalArticleView =='article-view__modal') {
             fetch();
+            setPage(1)
         }
 
     }, [modalArticleView]);
@@ -59,18 +61,7 @@ const ArticleViewModal = () => {
             [name]: value
         }));
     };
-
     const modal = async (x: any) => {
-        // if(article?.id == x.id) {
-        //     setStatusArticle(true)
-        //     console.log('no')
-        // } else {
-        //     setStatusArticle(false)
-        //     console.log('si ')
-        // }
-
-        console.log('article', article)
-        console.log('x', x)
 
         setStatusArticle(false)
        
@@ -96,7 +87,9 @@ const ArticleViewModal = () => {
                 id_coleccion: x.id,
                 get_stock: false,
                 get_web: false,
-                get_unidades: false
+                get_unidades: false,
+                for_vendedor:true,
+                page:page
             };
 
             const result = await getArticles(data);
@@ -131,7 +124,9 @@ const ArticleViewModal = () => {
             coleccion: isChecked,
             // id_coleccion: isChecked ? dataCollection.id : 0,
             get_web: false,
-            get_unidades: false
+            get_unidades: false,
+            for_vendedor:true,
+            page:page
         };
 
         const result = await getArticles(data);
@@ -151,6 +146,10 @@ const ArticleViewModal = () => {
     }
     const [userSearchTerm, setUserSearchTerm] = useState<string>('');
 
+    useEffect(() => {
+            search();
+    }, [page]);
+
     return (
         <div className={`overlay__article-view__modal ${modalArticleView == 'article-view__modal' ? 'active' : ''}`}>
             <div className={`popup__article-view__modal ${modalArticleView == 'article-view__modal' ? 'active' : ''}`}>
@@ -165,12 +164,14 @@ const ArticleViewModal = () => {
                         <div>
                             <label className='label__general'>Código</label>
                             <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                            <input className='inputs__general' type='text' name='code' value={inputs.code} onChange={handleInputChange} placeholder='Ingresa el código' />
+                            <input className='inputs__general' type='text' name='code' value={inputs.code} onChange={handleInputChange}
+                            onKeyDown={(e) => {if (e.key === "Enter") {setPage((prev) => (prev === 1 ? 0 : 1));}}}  placeholder='Ingresa el código' />
                         </div>
                         <div>
                             <label className='label__general'>Nombre</label>
                             <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                            <input className='inputs__general' type='text' name='name' value={inputs.name} onChange={handleInputChange} placeholder='Ingresa el nombre' />
+                            <input className='inputs__general' type='text' name='name' value={inputs.name}  onChange={handleInputChange} 
+                            onKeyDown={(e) => {if (e.key === "Enter") {setPage((prev) => (prev === 1 ? 0 : 1));}}}  placeholder='Ingresa el nombre' />
                         </div>
                         <div className='select__container'>
                             <label className='label__general'>Familias</label>
@@ -208,7 +209,7 @@ const ArticleViewModal = () => {
                             <p className='text'>Colección</p>
                         </div>
                         <div>
-                            <button className='btn__general-purple' onClick={search}>Buscar</button>
+                            <button className='btn__general-purple' onClick={()=>{search();setPage(1)}}>Buscar</button>
                         </div>
                     </div>
                     <div className='row__two'>
@@ -264,6 +265,17 @@ const ArticleViewModal = () => {
                             </div>
                         ))}
                     </div>
+                <div className='row'>
+                    <div className='col-1'>
+                        <button className='btn__general-primary' onClick={()=>setPage(page-1)} disabled={page==1}>ANTERIOR</button>
+                    </div>
+                    <div className='col-10'>
+
+                    </div>
+                    <div className='col-1'>
+                        <button className='btn__general-primary' onClick={()=>setPage(page+1)}>SIGUIENTE</button>
+                    </div>
+                </div>
                 </div>
                 <SalesCard />
             </div>
