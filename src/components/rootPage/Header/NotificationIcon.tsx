@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 
 const NotificationIcon: React.FC = () => {
     // Estado para controlar si las notificaciones están visibles
-    const [showNotifications, setShowNotifications] = useState(false);
+    const [showNotifications] = useState(false);
   
     // Lista de notificaciones
     const notifications = [

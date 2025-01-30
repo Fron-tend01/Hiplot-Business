@@ -135,8 +135,6 @@ const modalArticle: React.FC = () => {
         fetchData();
     }, [satKeyTerm]);
 
-    console.log(selectedSatKey)
-
 
     ////////// Selects //////////////
     const [selectFamilies, setSelectFamilies] = useState<any>()
@@ -242,8 +240,6 @@ const modalArticle: React.FC = () => {
 
 
 
-    console.log(articleToUpdate)
-
 
     const handleCreateArticles = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
@@ -335,7 +331,8 @@ const modalArticle: React.FC = () => {
             get_plantilla_data: false,
             get_stock: false,
             get_web: false,
-            get_unidades: false
+            get_unidades: false,
+            page: 1
         };
 
         try {

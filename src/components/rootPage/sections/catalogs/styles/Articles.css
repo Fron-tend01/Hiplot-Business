@@ -8,9 +8,9 @@
     border-radius: 10px;
 	display: grid;
     height: 100%;
-    grid-template-rows: repeat(2, auto) 1fr auto;
+    grid-template-rows: repeat(3, auto) 1fr auto;
     overflow: hidden;
-  
+
 }
 
 .container__articles > .row__one {

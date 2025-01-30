@@ -37,7 +37,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
-    const { normalConcepts, deleteNormalConcepts, customConcepts, conceptView, identifier, personalized }: any = useStore(storePersonalized)
+    const { normalConcepts, customConcepts, conceptView, identifier, personalized }: any = useStore(storePersonalized)
 
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
 

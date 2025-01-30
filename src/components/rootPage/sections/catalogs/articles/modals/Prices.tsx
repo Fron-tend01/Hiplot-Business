@@ -195,7 +195,6 @@ const Prices: React.FC = () => {
     }
   };
 
-  console.log(selectedIds)
 
   const addPrices = () => {
 
@@ -346,7 +345,7 @@ const Prices: React.FC = () => {
     prices[index].precios_ext[index_two].id_plantilla = value;
   }
 
-  console.log(prices)
+
 
   return (
     <div className={`overlay__modal_prices_creating_articles ${subModal == 'modal-prices' ? 'active' : ''}`}>
