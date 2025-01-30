@@ -146,6 +146,8 @@ const ArticleViewModal = () => {
 
     useEffect(() => {
             search();
+            console.log('page',);
+            
     }, [page]);
 
     return (
@@ -163,13 +165,13 @@ const ArticleViewModal = () => {
                             <label className='label__general'>Código</label>
                             <div className='warning__general'><small>Este campo es obligatorio</small></div>
                             <input className='inputs__general' type='text' name='code' value={inputs.code} onChange={handleInputChange}
-                            onKeyDown={(e) => {if (e.key === "Enter") {setPage((prev) => (prev === 1 ? 0 : 1));}}}  placeholder='Ingresa el código' />
+                            onKeyDown={(e) => {if (e.key === "Enter") {setPage(1)}}}  placeholder='Ingresa el código' />
                         </div>
                         <div>
                             <label className='label__general'>Nombre</label>
                             <div className='warning__general'><small>Este campo es obligatorio</small></div>
                             <input className='inputs__general' type='text' name='name' value={inputs.name}  onChange={handleInputChange} 
-                            onKeyDown={(e) => {if (e.key === "Enter") {setPage((prev) => (prev === 1 ? 0 : 1));}}}  placeholder='Ingresa el nombre' />
+                            onKeyDown={(e) => {if (e.key === "Enter") {setPage(1)}}}  placeholder='Ingresa el nombre' />
                         </div>
                         <div className='select__container'>
                             <label className='label__general'>Familias</label>
