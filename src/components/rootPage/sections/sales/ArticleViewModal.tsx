@@ -16,6 +16,7 @@ const ArticleViewModal = () => {
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
     const setStatusArticle = storeSaleCard(state => state.setStatusArticle);
+    
 
     const { modalArticleView }: any = useStore(storeArticleView)
 
