@@ -22,22 +22,23 @@ const SalesOrder: React.FC = () => {
     const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
     const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
     const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
+    
 
 
     const { getUsers }: any = usersRequests()
     const [users, setUsers] = useState<any>()
 
     const { getSaleOrders }: any = saleOrdersRequests()
-    const [saleOrders, setSaleOrders] = useState<any>([])
-
-
+    const { saleOrders  }: any = storeSaleOrder()
 
     const { getSeriesXUser }: any = seriesRequests()
     const [series, setSeries] = useState<any>([])
-
     const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
-
+    const setDataGet = storeSaleOrder(state => state.setDataGet)
+    const setSaleOrders = storeSaleOrder(state => state.setSaleOrders)
     const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
+
+    
 
 
 
@@ -79,12 +80,14 @@ const SalesOrder: React.FC = () => {
             id_sucursal: branchOffices?.id,
             id_serie: selectedIds?.series?.id,
             id_cliente: client,
-            desde: dates[0],
-            hasta: dates[1],
+            desde:  haceUnaSemana.toISOString().split('T')[0],
+            hasta:  hoy.toISOString().split('T')[0],
             id_usuario: user_id,
             id_vendedor: selectedIds?.users?.id,
             status: 0
         }
+
+        setDataGet(dataSaleOrders)
 
         const result = await getSaleOrders(dataSaleOrders)
         setSaleOrders(result)
@@ -118,9 +121,9 @@ const SalesOrder: React.FC = () => {
         fetch()
     }, [])
     useEffect(() => {
-        if (modalSalesOrder == '') {
-            search()
-        }
+        // if (modalSalesOrder == '') {
+        //     search()
+        // }
     }, [modalSalesOrder])
     const search = async () => {
         const dataSaleOrders = {

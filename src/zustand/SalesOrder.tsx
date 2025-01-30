@@ -11,6 +11,12 @@ interface StoreState {
     dataSaleOrder: any;
     setDataSaleOrder: (x: any) => void;
 
+    saleOrders: any;
+    setSaleOrders: (x: any) => void;
+
+    dataGet: any;
+    setDataGet: (x: any) => void;
+
     saleOrdersToUpdate: any;
     setSaleOrdersToUpdate: (x: any) => void;
     
@@ -24,6 +30,12 @@ export const storeSaleOrder = create<StoreState>((set) => ({
 
     dataSaleOrder: [],       
     setDataSaleOrder: (x) => set({dataSaleOrder: x}),
+
+    saleOrders: [],       
+    setSaleOrders: (x) => set({saleOrders: x}),
+
+    dataGet: {},       
+    setDataGet: (x) => set({dataGet: x}),
 
     saleOrdersToUpdate: [],       
     setSaleOrdersToUpdate: (x) => set({saleOrdersToUpdate: x}),

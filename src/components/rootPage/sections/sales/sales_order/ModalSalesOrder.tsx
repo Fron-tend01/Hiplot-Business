@@ -18,6 +18,7 @@ import { storeDv } from '../../../../../zustand/Dynamic_variables'
 import { storeModals } from '../../../../../zustand/Modals'
 import SeeCamposPlantillas from '../SeeCamposPlantillas'
 import Binnacle from './components/Binnacle'
+import { saleOrdersRequests } from '../../../../../fuctions/SaleOrders'
 
 const ModalSalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -38,14 +39,13 @@ const ModalSalesOrder: React.FC = () => {
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
     const { normalConcepts, customConcepts, conceptView, identifier, personalized }: any = useStore(storePersonalized)
-
+    const { dataGet }: any = useStore(storeSaleOrder)
+    const setSaleOrders = storeSaleOrder((state) => state.setSaleOrders);
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
 
     const setPersonalized = storePersonalized((state) => state.setPersonalized);
 
     const setCustomData = storePersonalized((state) => state.setCustomData);
-
-
 
     const setDataSaleOrder = storeSaleOrder((state) => state.setDataSaleOrder);
     const setSubModal = storeSaleOrder((state) => state.setSubModal);
@@ -61,6 +61,8 @@ const ModalSalesOrder: React.FC = () => {
     const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
     const { modalSalesOrder }: any = useStore(storeSaleOrder)
 
+
+    const { getSaleOrders }: any = saleOrdersRequests()
 
 
 
@@ -96,8 +98,15 @@ const ModalSalesOrder: React.FC = () => {
                 .join(" ")
                 .slice(0, 16) || "";
 
-        setDates(updatedDates.slice(0, 2)); // Garantizar que el estado tenga solo dos elementos
+        setDates(updatedDates.slice(0, 2)); 
     };
+
+    useEffect(() => {
+        setDates([
+        haceUnaSemana.toISOString().split('T')[0],
+        hoy.toISOString().split('T')[0]
+    ]);
+    }, [])
 
     useEffect(() => {
         if (modalSalesOrder == 'sale-order__modal-update') {
@@ -117,7 +126,7 @@ const ModalSalesOrder: React.FC = () => {
         normalConcepts.forEach((element: any) => {
             element.unidad = element.id_unidad
             element.total = element.precio_total
-            element.monto_descuento = element.descuento== null ? 0: element.descuento
+            element.monto_descuento = element.descuento == null ? 0 : element.descuento
             element.urgencia = element.monto_urgencia
             element.campos_plantilla.forEach((cp: any) => {
                 cp.valor = cp.valor.toString()
@@ -131,7 +140,7 @@ const ModalSalesOrder: React.FC = () => {
                     x.unidad = x.id_unidad
                     x.total = x.precio_total
                     x.urgencia = x.monto_urgencia
-                    x.monto_descuento = x.descuento== null ? 0: x.descuento
+                    x.monto_descuento = x.descuento == null ? 0 : x.descuento
                     x.campos_plantilla.forEach((cp: any) => {
                         cp.valor = cp.valor.toString()
                     });
@@ -159,11 +168,29 @@ const ModalSalesOrder: React.FC = () => {
             } else {
                 Swal.fire('Orden de compra creada exitosamente', result.mensaje, 'success');
             }
+            const dataSaleOrders = {
+                folio: 0,
+                id_sucursal: branchOffices.id,
+                id_serie: 0,
+                id_cliente: dataGet,
+                desde: dataGet.desde,
+                hasta: dataGet.hasta,
+                id_usuario: dataGet.id_usuario,
+                id_vendedor: 0,
+                status: 0
+            }
+
+            const resultData = await getSaleOrders(dataSaleOrders)
+            setSaleOrders(resultData)
+            setModalSalesOrder('')
 
         } catch (error) {
             console.error("Error al crear la orden de compra:", error);
             Swal.fire('Hubo un error al crear la orden de compra', '', 'error');
         }
+
+
+
     }
 
 
@@ -186,16 +213,16 @@ const ModalSalesOrder: React.FC = () => {
 
     const deleteArticle = (item: any) => {
         const filter = normalConcepts.filter((x: any) => x.id_identifier !== item.id_identifier)
-        const filterConceptView = conceptView.filter((x: any) => x.id_identifier !== item.id_identifier) 
+        const filterConceptView = conceptView.filter((x: any) => x.id_identifier !== item.id_identifier)
         setNormalConcepts(filter);
         setConceptView(filterConceptView)
         setCustomData(filter);
-        if(item.id) {
-            
+        if (item.id) {
+
         } else {
             setDeleteNormalConcepts([...normalConcepts, item.id])
         }
-       
+
     }
 
     const SaleOrderStatus = () => {
@@ -262,16 +289,16 @@ const ModalSalesOrder: React.FC = () => {
 
     const handleAreasChange = (event: any, i: number) => {
         const value = parseInt(event.target.value, 10);
-        const updatedDataUpdate = conceptView.map((x: any, index :any) => {
+        const updatedDataUpdate = conceptView.map((x: any, index: any) => {
             if (index === i) {
-              return { ...x, id_area_produccion: value };
+                return { ...x, id_area_produccion: value };
             }
             return x;
         });
 
-        const updatedNormalConcepts = normalConcepts.map((x: any, index :any) => {
+        const updatedNormalConcepts = normalConcepts.map((x: any, index: any) => {
             if (index === i) {
-              return { ...x, id_area_produccion: value };
+                return { ...x, id_area_produccion: value };
             }
             return x;
         });
@@ -279,7 +306,7 @@ const ModalSalesOrder: React.FC = () => {
         setNormalConcepts(updatedNormalConcepts)
     };
 
-   
+
     const updateSaleOrderConcept = async (article: any) => {
         let data = {
             id: article.id,
@@ -304,6 +331,22 @@ const ModalSalesOrder: React.FC = () => {
             } else {
                 Swal.fire('Exito', response.mensaje, 'success');
             }
+
+            const dataSaleOrders = {
+                folio: 0,
+                id_sucursal: branchOffices.id,
+                id_serie: 0,
+                id_cliente: dataGet,
+                desde: dataGet.desde,
+                hasta: dataGet.hasta,
+                id_usuario: dataGet.id_usuario,
+                id_vendedor: 0,
+                status: 0
+            }
+
+            const resultData = await getSaleOrders(dataSaleOrders)
+            setSaleOrders(resultData)
+            setModalSalesOrder('')
         } catch (error: any) {
             Swal.fire('Error al actualizar el concepto', error, 'success');
         }
@@ -336,7 +379,7 @@ const ModalSalesOrder: React.FC = () => {
         updatedConceptsView[index].enviar_a_produccion = newStatus;
         setNormalConcepts(updatedConceptsView);
         setNormalConcepts(updatedConcepts);
-      };
+    };
 
     console.log(conceptView)
 
@@ -583,6 +626,21 @@ const ModalSalesOrder: React.FC = () => {
                     Swal.fire('Notificación', response.mensaje, 'success');
                 }
             })
+            const dataSaleOrders = {
+                folio: 0,
+                id_sucursal: branchOffices.id,
+                id_serie: 0,
+                id_cliente: dataGet,
+                desde: dataGet.desde,
+                hasta: dataGet.hasta,
+                id_usuario: dataGet.id_usuario,
+                id_vendedor: 0,
+                status: 0
+            }
+          
+            const resultData = await getSaleOrders(dataSaleOrders)
+            setSaleOrders(resultData)
+            setModalSalesOrder('')
     }
     const [urgenciaG, setUrgenciaG] = useState<boolean>(false)
     const urgenciaGlobal = async (urg: boolean) => {
@@ -649,6 +707,12 @@ const ModalSalesOrder: React.FC = () => {
 
 
     };
+
+
+    const modalPersonalized = () => {
+        setPersonalizedModal('personalized_modal-sale')
+        setCustomConceptView(normalConcepts)
+    }
 
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
@@ -854,7 +918,7 @@ const ModalSalesOrder: React.FC = () => {
                                             :
                                             <button type='button' className='btn__general-orange mr-4' onClick={() => urgenciaGlobal(true)}>Agregar Urgencia a Orden</button>
                                         }
-                                        <button type='button' className='btn__general-purple' onClick={() => setPersonalizedModal('personalized_modal-sale')}>Personalizados</button>
+                                        <button type='button' className='btn__general-purple' onClick={modalPersonalized}>Personalizados</button>
                                     </div>
                                     <div className='btn__search__articles'>
                                         <svg xmlns="http://www.w3.org/2000/svg" onClick={() => setModalArticleView('article-view__modal')} width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
