@@ -25,7 +25,7 @@ const Articles: React.FC = () => {
   const { families, getFamilies }: any = storeFamilies()
 
   const { getArticles }: any = articleRequests()
-  
+
   const setArticleByOne = storeArticles((state: any) => state.setArticleByOne);
 
   // const modalLoading = storeArticles((state: any) => state.modalLoading);
@@ -234,7 +234,7 @@ const Articles: React.FC = () => {
   }
 
 
-  
+
   return (
     <div className='articles'>
       <Toaster expand={true} position="top-right" richColors />
@@ -267,8 +267,6 @@ const Articles: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-        <div className='d-flex justify-content-around my-4'>
           <div className='container__checkbox_articles'>
             <div className='checkbox__articles'>
               <label className="checkbox__container_general">
@@ -301,8 +299,9 @@ const Articles: React.FC = () => {
               <p className='text'>Desactivados</p>
             </div>
           </div>
+    
         </div>
-        <div className='row__three'>
+        <div className='row__three mt-4'>
           <div>
             <button className='btn__general-purple' onClick={searchArticle}>Buscar</button>
           </div>
@@ -311,17 +310,17 @@ const Articles: React.FC = () => {
           </div>
         </div>
         <ModalArticle />
-        <div className='table__articles' >
-          <div>
-            {articlesInGlobal ? (
-              <div className='table__numbers'>
-                <p className='text'>Total de artículos</p>
-                <div className='quantities_tables'>{articlesInGlobal.length}</div>
-              </div>
-            ) : (
-              <p className='text'>No hay empresas</p>
+        <div>
+          {articlesInGlobal ? (
+            <div className='table__numbers'>
+              <p className='text'>Total de artículos</p>
+              <div className='quantities_tables'>{articlesInGlobal.length}</div>
+            </div>
+          ) : (
+            <p className='text'>No hay empresas</p>
           )}
-          </div>
+        </div>
+        <div className='table__articles' >
           <div className='table__head'>
             <div className='thead'>
               <div className='th'>
@@ -359,6 +358,7 @@ const Articles: React.FC = () => {
           ) : (
             <p className='text'>Cargando datos...</p>
           )}
+
         </div>
         <div className='d-flex justify-content-between mt-4'>
           <div>

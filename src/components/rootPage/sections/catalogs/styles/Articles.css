@@ -1,8 +1,6 @@
 .articles {
     display: grid;
 	height: 90vh;
-    padding: 20px;
-    
 }
 
 .container__articles {
@@ -10,15 +8,18 @@
     border-radius: 10px;
 	display: grid;
     height: 100%;
-    grid-template-rows: repeat(3, auto) 1fr auto;
+    grid-template-rows: repeat(2, auto) 1fr auto;
     overflow: hidden;
-    background-color: var(--background-sections);
+  
 }
 
 .container__articles > .row__one {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	column-gap: 10px;
+    background-color: var(--cards-background);
+	border-radius: var(--general-card-border);
+    padding: 20px;
 }
 
 .container__checkbox_articles {
@@ -154,20 +155,24 @@
     display: grid;
     height: 100%;
     grid-template-rows: repeat(3, auto) 1fr;
-    overflow: auto;
+    overflow: hidden;
+    border-radius: 20px;
+    background-color: var(--table-header-color);
+    border: 2px solid var(--border-table-color);
+ 
 }
+
 
 
 .table__articles .table__head {
     display: flex;
     width: 100%;
-	background-color: var( --table-color);
-    border-radius: 5px 5px 0 0;
 }
 
 .table__articles .table__head .thead {
    display: flex;
    width: 100%;
+  
 }
 
 .table__articles .table__head .thead {
@@ -181,7 +186,6 @@
 .table__articles .table__body {
 	height: 100%;
 	overflow-y: scroll;
-    overflow: hidden;
     overflow: auto;
     transition-delay: 0.0s;
     &::-webkit-scrollbar {
@@ -200,13 +204,30 @@
 }
 
 
+
+  .table__articles .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
+
 .table__articles .tbody__container:nth-child(even) {
     background-color: var(--table-color);
-  }
-  
+}
+
 .table__articles .tbody__container:nth-child(odd) {
     background-color: var(--two-table-color);
-  }
+}
+
+.table__articles .tbody__container:first-child {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table__articles .tbody__container:last-child {
+    border-bottom: none;
+    border-radius: 0 0 20px 20px;
+}
+
+
+
 
 .table__articles .table__body .tbody {
     display: flex;
@@ -218,13 +239,11 @@
     padding: 10px;
 }
 
-.table__articles .table__body .tbody .td {
-    color: var(--text-color);
-}
+
 
 
 .table__articles .table__body .tbody:hover {
-    background-color: var(--secundary-color);
+   background-color: var(--table-hover-color);
     color: #fff;
 }
 
