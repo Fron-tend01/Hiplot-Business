@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import './NotificationIcon.css';
+import Swal from 'sweetalert2';
 
 const NotificationIcon: React.FC = () => {
     // Estado para controlar si las notificaciones están visibles
@@ -13,8 +14,14 @@ const NotificationIcon: React.FC = () => {
   
     // Manejar el clic en el ícono de la campana para mostrar/ocultar las notificaciones
     const toggleNotifications = () => {
-      setShowNotifications(prevState => !prevState); // Alterna la visibilidad
+      Swal.fire({
+        title: "Sección en desarrollo",
+        text: "Estamos trabajando para mejorar esta funcionalidad. Próximamente estará disponible.",
+        icon: "info",
+      });
+      // setShowNotifications(prevState => !prevState); // Alterna la visibilidad
     };
+
   
     return (
       <div className="notification-container">

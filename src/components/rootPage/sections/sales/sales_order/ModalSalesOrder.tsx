@@ -32,11 +32,12 @@ const ModalSalesOrder: React.FC = () => {
     const setCustomLocal = storePersonalized((state) => state.setCustomLocal);
 
     const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
+    const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
 
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
-    const { normalConcepts, customConcepts, conceptView, identifier, personalized }: any = useStore(storePersonalized)
+    const { normalConcepts, deleteNormalConcepts, customConcepts, conceptView, identifier, personalized }: any = useStore(storePersonalized)
 
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
 
@@ -183,10 +184,18 @@ const ModalSalesOrder: React.FC = () => {
 
 
 
-    const deleteArticle = (_: any, i: number) => {
-        const filter = normalConcepts.filter((_: any, index: number) => index !== i)
-        setNormalConcepts(filter)
+    const deleteArticle = (item: any) => {
+        const filter = normalConcepts.filter((x: any) => x.id_identifier !== item.id_identifier)
+        const filterConceptView = conceptView.filter((x: any) => x.id_identifier !== item.id_identifier) 
+        setNormalConcepts(filter);
+        setConceptView(filterConceptView)
         setCustomData(filter);
+        if(item.id) {
+            
+        } else {
+            setDeleteNormalConcepts([...normalConcepts, item.id])
+        }
+       
     }
 
     const SaleOrderStatus = () => {
@@ -258,8 +267,16 @@ const ModalSalesOrder: React.FC = () => {
               return { ...x, id_area_produccion: value };
             }
             return x;
-          });
+        });
+
+        const updatedNormalConcepts = normalConcepts.map((x: any, index :any) => {
+            if (index === i) {
+              return { ...x, id_area_produccion: value };
+            }
+            return x;
+        });
         setConceptView(updatedDataUpdate)
+        setNormalConcepts(updatedNormalConcepts)
     };
 
    
@@ -310,15 +327,18 @@ const ModalSalesOrder: React.FC = () => {
     //     setNormalConcepts(newConcept);
     // };
 
-    const handleStatusChange = (status: boolean, index: number) => {
-        const newStatus = status ? 0 : 1;
+    const handleStatusChange = (status: number, index: number) => {
+        const newStatus = !status;
+        console.log(index);
         const updatedConcepts = [...normalConcepts];
+        const updatedConceptsView = [...conceptView];
         updatedConcepts[index].enviar_a_produccion = newStatus;
-        updatedConcepts[index].status_produccion = newStatus;
+        updatedConceptsView[index].enviar_a_produccion = newStatus;
+        setNormalConcepts(updatedConceptsView);
         setNormalConcepts(updatedConcepts);
-    };
+      };
 
-
+    console.log(conceptView)
 
 
     const [amount, setAmount] = useState<any>(0)
@@ -963,7 +983,7 @@ const ModalSalesOrder: React.FC = () => {
                                                         <div className='td'>
                                                             <p className=''>$ {article.precio_unitario.toFixed(2)} <br />
                                                                 {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                                                    <small style={{ color: 'red' }}>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
+                                                                    <small >PUF: ${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
                                                             </p>
                                                         </div>
                                                         <div className='td'>
@@ -973,14 +993,14 @@ const ModalSalesOrder: React.FC = () => {
                                                                     <div>
                                                                         <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
                                                                         <p className='total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                                                            <small style={{ color: 'red' }}>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                                                            <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                                                     </div>
                                                                 </div>
                                                                 :
                                                                 <div>
                                                                     <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                                                    <p className='total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                                                        <small style={{ color: 'red' }}>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                                                    <p className='total-identifier mt-2'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                                                        <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                                                 </div>
 
                                                             }
@@ -1007,7 +1027,7 @@ const ModalSalesOrder: React.FC = () => {
 
                                                         <div className='td'>
                                                             {saleOrdersToUpdate.status != 1 ?
-                                                                <div className='cancel-icon' onClick={() => deleteArticle(article, index)} title='Cancelar concepto'>
+                                                                <div className='cancel-icon' onClick={() => deleteArticle(article)} title='Cancelar concepto'>
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
                                                                 </div>
 
@@ -1020,7 +1040,7 @@ const ModalSalesOrder: React.FC = () => {
                                                             </div>
                                                         </div>
                                                         <div className='td'>
-                                                            <div className='delete-icon' onClick={() => deleteArticle(article, index)} title='Eliminar concepto'>
+                                                            <div className='delete-icon' onClick={() => deleteArticle(article)} title='Eliminar concepto'>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                                             </div>
                                                         </div>

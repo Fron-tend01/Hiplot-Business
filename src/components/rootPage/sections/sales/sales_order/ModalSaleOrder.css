@@ -499,6 +499,8 @@
 
 .table__sales_modal .table__body .tbody > .td .traditional__selector {
 	background-color: var(--cards-background);
+	max-width: 200px;
+	overflow: hidden;
 }
 
 .table__sales_modal .table__body .tbody > .td .urgency-identifier {
