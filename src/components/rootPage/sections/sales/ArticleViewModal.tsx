@@ -59,14 +59,21 @@ const ArticleViewModal = () => {
             [name]: value
         }));
     };
-    const modal = async (x: any) => {
 
-        setStatusArticle(false)
-       
+
+    const [idA, setIdA] = useState<any>(null);
+    const [i, setI] = useState(0);
+
+ 
+    const modal = async (x: any) => {
+        setStatusArticle(false);
         if (x.id_familia) {
-            setIdArticle(x.id)
-            setModalSalesCard('sale-card')
-            console.log(x)
+            setIdArticle(x.id);
+            setIdA(i)
+            let newi = i + 1;
+            setI(newi);
+            setModalSalesCard('sale-card');
+
         } else {
             const data = {
                 id: 0,
@@ -86,17 +93,14 @@ const ArticleViewModal = () => {
                 get_stock: false,
                 get_web: false,
                 get_unidades: false,
-                for_vendedor:true,
-                page:page
+                for_vendedor: true,
+                page: page,
             };
 
             const result = await getArticles(data);
             setArticles(result);
         }
-
-
-    }
-
+    };
     const [isChecked, setIsChecked] = useState(true);
 
     const handlecollectionsOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -277,7 +281,7 @@ const ArticleViewModal = () => {
                     </div>
                 </div>
                 </div>
-                <SalesCard />
+                <SalesCard idA={idA} />
             </div>
         </div>
 

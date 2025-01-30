@@ -31,7 +31,7 @@ import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
 
 
 
-const SalesCard: React.FC = () => {
+const SalesCard: React.FC = ({idA}: any) => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id;
 
@@ -134,12 +134,12 @@ const SalesCard: React.FC = () => {
 
 
   useEffect(() => {
-    if (modalSalesCard !== '') {
+    if (modalSalesCard === 'sale-card') {
       fetch();
     }
 
 
-  }, [modalSalesCard]);
+  }, [idA]);
 
 
   useEffect(() => {
