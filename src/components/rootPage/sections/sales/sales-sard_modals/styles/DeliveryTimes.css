@@ -9,25 +9,45 @@
 
 
 
+
 .table__delivery-times-sale-card-client {
     margin-top: 20px;
     border-radius: 10px;
 	text-align: justify;
 }
 
+.table__delivery-times-sale-card-client .title__table_clients {
+    display: flex;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #3d86c6;
+    border-radius: 5px;
+    font-weight: 600;
+    color: #fff;
+}
 
-.table__delivery-times-sale-card-client .table__head {
+
+.table__delivery-times-sale-card-client > .table {
+    border-radius: 10px;
+    border: 2px solid var(--border-table-color);
+}
+
+.table__delivery-times-sale-card-client > .table__head {
     display: flex;
     width: 100%;
 	background-color: var( --table-color);
-    border-radius: 5px 5px 0 0;
+    border-radius: 10px 10px 0 0;
 }
 
-.table__delivery-times-sale-card-client .table__head .thead {  background-color: var(--table-color);
+.table__delivery-times-sale-card-client .table__head .thead {
+    background-color: var(--table-color);
     color: var(--text-table-color);
    display: flex;
    width: 100%;
    column-gap: 20px;
+   border-radius: 10px 10px 0 0;
 }
 
 .table__delivery-times-sale-card-client .table__head .thead {
@@ -57,14 +77,26 @@
 }
 
 
+  .table__delivery-times-sale-card-client .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
+
 .table__delivery-times-sale-card-client .tbody__container:nth-child(even) {
-  	color: var(--text-table-color);
-  }
-  
+    background-color: var(--table-color);
+}
+
 .table__delivery-times-sale-card-client .tbody__container:nth-child(odd) {
-	background-color: var(--two-table-color);
-    color: var(--text-table-color);
-  }
+    background-color: var(--two-table-color);
+}
+
+.table__delivery-times-sale-card-client .tbody__container:first-child {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table__delivery-times-sale-card-client .tbody__container:last-child {
+    border-bottom: none;
+    border-radius: 0 0 20px 20px;
+}
 
 .table__delivery-times-sale-card-client .table__body .tbody {
     display: flex;
@@ -93,6 +125,17 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
   
 .table__delivery-times-sale-card-produc {
     margin-top: 20px;
@@ -100,12 +143,27 @@
 	text-align: justify;
 }
 
+.table__delivery-times-sale-card-produc .title__table_production {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #ff9100;
+    border-radius: 5px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.table__delivery-times-sale-card-produc .table {
+    border-radius: 10px;
+    border: 2px solid var(--border-table-color);
+}
 
 .table__delivery-times-sale-card-produc .table__head {
     display: flex;
     width: 100%;
 	background-color: var( --table-color);
-    border-radius: 5px 5px 0 0;
+    border-radius: 10px 10px 0 0;
 }
 
 .table__delivery-times-sale-card-produc .table__head .thead {  background-color: var(--table-color);
@@ -113,6 +171,7 @@
    display: flex;
    width: 100%;
    column-gap: 20px;
+   border-radius: 10px 10px 0 0;
 }
 
 .table__delivery-times-sale-card-produc .table__head .thead {
@@ -142,14 +201,24 @@
 }
 
 
+  .table__delivery-times-sale-card-produc .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
+
 .table__delivery-times-sale-card-produc .tbody__container:nth-child(even) {
-  	color: var(--text-table-color);
-  }
-  
+    background-color: var(--table-color);
+}
+
 .table__delivery-times-sale-card-produc .tbody__container:nth-child(odd) {
-	background-color: var(--two-table-color);
-    color: var(--text-table-color);
-  }
+    background-color: var(--two-table-color);
+}
+
+.table__delivery-times-sale-card-produc .tbody__container:first-child {
+    border-top: 2px solid var(--border-table-color);
+}
+
+
+
 
 .table__delivery-times-sale-card-produc .table__body .tbody {
     display: flex;

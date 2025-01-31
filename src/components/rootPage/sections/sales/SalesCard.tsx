@@ -117,13 +117,6 @@ const SalesCard: React.FC = ({ idA }: any) => {
         setOpciones(response[0].opciones_de_variacion2)
       }
 
-      const resultUsers = await getUserGroups(user_id);
-      if (resultUsers) {
-        console.log('ENTRANDO A ASIGNAR LOS UP', resultUsers);
-
-        setUsersGroups(resultUsers);
-        setSelectedUserGroup(resultUsers[0].id);
-      }
 
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -145,9 +138,20 @@ const SalesCard: React.FC = ({ idA }: any) => {
 
   }, [idA]);
 
+  const fetchUser = async () => {
+
+    const resultUsers = await getUserGroups(user_id);
+    if (resultUsers) {
+      console.log('ENTRANDO A ASIGNAR LOS UP', resultUsers);
+
+      setUsersGroups(resultUsers);
+      setSelectedUserGroup(resultUsers[0].id);
+    }
+  }
 
   useEffect(() => {
-  }, [statusArticle]);
+    fetchUser()
+  }, [idA]);
 
 
   // useEffect(() => {
@@ -604,13 +608,13 @@ const SalesCard: React.FC = ({ idA }: any) => {
 
   const BuscarArticuloPorCombinacion = () => {
     // Obtener todas las opciones seleccionadas
-    const selectedIds = opciones.flatMap((grupo:any) =>
-      grupo.opciones.filter((option:any) => option.selected).map((option:any) => option.id)
+    const selectedIds = opciones.flatMap((grupo: any) =>
+      grupo.opciones.filter((option: any) => option.selected).map((option: any) => option.id)
     );
 
     // Verificar si hay alguna combinación donde todos los selected sean false
-    const hasInvalidCombination = opciones.some((grupo:any) =>
-      grupo.opciones.every((option:any) => !option.selected)
+    const hasInvalidCombination = opciones.some((grupo: any) =>
+      grupo.opciones.every((option: any) => !option.selected)
     );
 
     if (hasInvalidCombination) {
@@ -622,7 +626,7 @@ const SalesCard: React.FC = ({ idA }: any) => {
 
     fetch2(selectedIds)
   }
-const fetch2 = async (selectedIds:any[]) => {
+  const fetch2 = async (selectedIds: any[]) => {
     const data = {
       id: 0,
       activos: true,
@@ -647,9 +651,9 @@ const fetch2 = async (selectedIds:any[]) => {
       for_ventas: true,
       get_unidades: true,
       id_usuario: user_id,
-      por_combinacion:true,
-      opciones:selectedIds,
-      id_articulo_variacion:article.id
+      por_combinacion: true,
+      opciones: selectedIds,
+      id_articulo_variacion: article.id
     };
 
     try {
@@ -837,36 +841,40 @@ const fetch2 = async (selectedIds:any[]) => {
               {statusArticle !== false ?
                 <div>
                   <br />
-                  <div className="combinaciones">
-                    {opciones?.map((x: any, index: any) => (
-                      <div className='combinaciones__container' key={index}>
-                        <div className='container' onClick={() => toggleModal(index)}>
-                          {x.combinacion}
-                        </div>
-                        {activeIndex === index && (
-                          <div className="combination_options">
-                            {x.opciones.map((option: any) => (
-                              <div key={option.id} onClick={() => handleSelect(index, option.id)}
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "10px",
-                                  cursor: "pointer",
-                                  backgroundColor: option.selected ? "#4CAF50" : "transparent",  // 🟢 Cambia de color si está seleccionado
-                                  color: option.selected ? "white" : "black",  // 🟢 Texto blanco si está seleccionado
-                                  padding: "5px",
-                                  borderRadius: "5px"
-                                }}>
-                                <p>{option.nombre}</p>
-                              </div>
-                            ))}
+                  {opciones !== null ?
+                    <div className="combinaciones">
+                      {opciones?.map((x: any, index: any) => (
+                        <div className='combinaciones__container' key={index}>
+                          <div className='container' onClick={() => toggleModal(index)}>
+                            {x.combinacion}
                           </div>
-                        )}
-                      </div>
-                    ))}
-                    <button style={{borderRadius:'8px'}} onClick={BuscarArticuloPorCombinacion}>Buscar</button>
+                          {activeIndex === index && (
+                            <div className="combination_options">
+                              {x.opciones.map((option: any) => (
+                                <div key={option.id} onClick={() => handleSelect(index, option.id)}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "10px",
+                                    cursor: "pointer",
+                                    backgroundColor: option.selected ? "#4CAF50" : "transparent",  // 🟢 Cambia de color si está seleccionado
+                                    color: option.selected ? "white" : "black",  // 🟢 Texto blanco si está seleccionado
+                                    padding: "5px",
+                                    borderRadius: "5px"
+                                  }}>
+                                  <p>{option.nombre}</p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      <button style={{ borderRadius: '8px' }} onClick={BuscarArticuloPorCombinacion}>Buscar</button>
+                    </div>
+                    :
+                    ''
+                  }
 
-                  </div>
                 </div>
                 :
                 <div className="card-sale__pulse__combinations mt-4">

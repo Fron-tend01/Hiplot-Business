@@ -6,23 +6,28 @@
 .franchise__orders_container {
   display: grid;
 	grid-template-rows: auto auto 1fr;
-	background-color: var(--background-sections);
-	padding: 20px ;
+
 	border-radius: 10px;
   overflow: hidden;
 }
 
 .franchise__orders_container .row__one {
-  
+  padding: 20px;
+  background-color: var(--cards-background);
+  border-radius: var(--general-card-border);
 }
 
-.franchise__orders_container > .row__one > .row__two {
+.franchise__orders_container > .row__one > .row__one > .row__two {
     display: grid;
     grid-template-columns: 2fr 4fr auto;
     column-gap: 20px;
 }
 
-
+.container__row_test {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr) auto;
+  column-gap: 10px;
+}
 
 .franchise__orders_container > .row__two {
   display: grid;
@@ -77,6 +82,7 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
+  z-index: 1;
 }
 
 .overlay__modal__franchise-orders.active {
@@ -149,8 +155,8 @@
 .table__modal .table__head {
     display: flex;
     width: 100%;
-    background-color: var( --table-color);
-    border-radius: 5px 5px 0 0;
+    border-radius: 20px 20px 0 0;
+    background-color: var(--table-header-color);
 }
 
 .table__modal .table__head .thead {
@@ -188,13 +194,28 @@
 }
 
 
+
+  .table__modal .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
+
 .table__modal .tbody__container:nth-child(even) {
     background-color: var(--table-color);
-  }
-  
+}
+
 .table__modal .tbody__container:nth-child(odd) {
     background-color: var(--two-table-color);
-  }
+}
+
+.table__modal .tbody__container:first-child {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table__modal .tbody__container:last-child {
+    border-bottom: none;
+    border-radius: 0 0 20px 20px;
+}
+
 
 .table__modal .table__body .tbody {
     display: flex;
@@ -228,12 +249,17 @@
 overflow: auto;
 }
 
+.table__franchise__orders > .table {
+  border-radius: 10px;
+  border: 2px solid var(--border-table-color);
+}
+
 
 .table__franchise__orders .table__head {
   display: flex;
   width: 100%;
   background-color: var( --table-color);
-  border-radius: 5px 5px 0 0;
+  border-radius: 10px 10px 0 0;
 }
 
 .table__franchise__orders .table__head .thead {
@@ -271,6 +297,11 @@ height: 100%;
 }
 
 
+
+.table__franchise__orders .tbody__container {
+  border-top: 2px solid var(--border-table-color);
+}
+
 .table__franchise__orders .tbody__container:nth-child(even) {
   background-color: var(--table-color);
 }
@@ -278,6 +309,17 @@ height: 100%;
 .table__franchise__orders .tbody__container:nth-child(odd) {
   background-color: var(--two-table-color);
 }
+
+.table__franchise__orders .tbody__container:first-child {
+  border-top: 2px solid var(--border-table-color);
+}
+
+.table__franchise__orders .tbody__container:last-child {
+  border-bottom: none;
+  border-radius: 0 0 20px 20px;
+}
+
+
 
 .table__franchise__orders .table__body .tbody {
   display: flex;
@@ -289,15 +331,16 @@ height: 100%;
   padding: 10px;
 }
 
-.table__franchise__orders .table__body .tbody .td {
+.table__franchise__orders .table__body .tbody {
   color: var(--text-color);
 }
 
 
 .table__franchise__orders .table__body .tbody:hover {
-  background-color: var(--secundary-color);
+  background-color: var(--table-hover-color);
   color: #fff;
 }
+
 
 
 

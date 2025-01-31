@@ -519,80 +519,67 @@ const PedidoFranquicias = () => {
     <div className='franchise__orders'>
       <div className='franchise__orders_container'>
         <div className='row__one'>
-          <div className='row'>
-            <div className='col-8'>
-              <Empresas_Sucursales modeUpdate={false} empresaDyn={franquiciaSearcher} sucursalDyn={sucursalFSearcher}
-                setEmpresaDyn={setFranquiciaSearcher} setSucursalDyn={setSucursalFSearcher}></Empresas_Sucursales>
-            </div>
-            <div className='col-4'>
-              <Select dataSelects={proveedorSearcher} instanceId='proveedorSearcher' nameSelect={'Proveedor'}></Select>
-            </div>
-          </div>
-          <div className='row__two'>
-            <div className=''>
-              <label className='label__general'>Fechas</label>
-              <div className='container_dates__requisition'>
-                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
+          <div className='row__one'>
+            <div className='row'>
+              <div className='col-6'>
+                <Empresas_Sucursales modeUpdate={false} empresaDyn={franquiciaSearcher} sucursalDyn={sucursalFSearcher}
+                  setEmpresaDyn={setFranquiciaSearcher} setSucursalDyn={setSucursalFSearcher}></Empresas_Sucursales>
+              </div>
+              <div className='col-3'>
+                <Select dataSelects={proveedorSearcher} instanceId='proveedorSearcher' nameSelect={'Proveedor'}></Select>
+              </div>
+              <div className='col-3'>
+                <label className='label__general'>Fechas</label>
+                <div className='container_dates__requisition'>
+                  <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                </div>
               </div>
             </div>
-            <div className=' container__checkbox_orders'>
-              <div className=' checkbox__orders'>
-                <label className="checkbox__container_general">
-                  <input className='checkbox' type="radio" name="requisitionStatus" checked={searcher.status == 0 ? true : false} onChange={() => handleClick(0)} />
-                  <span className="checkmark__general"></span>
-                </label>
-                <p className='title__checkbox text'>Activo</p>
+            <div className='row__two'>
+              <div className=' container__checkbox_orders'>
+                <div className=' checkbox__orders'>
+                  <label className="checkbox__container_general">
+                    <input className='checkbox' type="radio" name="requisitionStatus" checked={searcher.status == 0 ? true : false} onChange={() => handleClick(0)} />
+                    <span className="checkmark__general"></span>
+                  </label>
+                  <p className='title__checkbox text'>Activo</p>
+                </div>
+                <div className=' checkbox__orders'>
+                  <label className="checkbox__container_general">
+                    <input className='checkbox' type="radio" name="requisitionStatus" value={searcher.status} onChange={() => handleClick(1)} />
+                    <span className="checkmark__general"></span>
+                  </label>
+                  <p className='title__checkbox text'>Cancelados</p>
+                </div>
+                <div className=' checkbox__orders'>
+                  <label className="checkbox__container_general">
+                    <input className='checkbox' type="radio" name="requisitionStatus" value={searcher.status} onChange={() => handleClick(2)} />
+                    <span className="checkmark__general"></span>
+                  </label>
+                  <p className='title__checkbox text'>Terminados</p>
+                </div>
               </div>
-              <div className=' checkbox__orders'>
-                <label className="checkbox__container_general">
-                  <input className='checkbox' type="radio" name="requisitionStatus" value={searcher.status} onChange={() => handleClick(1)} />
-                  <span className="checkmark__general"></span>
-                </label>
-                <p className='title__checkbox text'>Cancelados</p>
+              <div className='container__row_test'>
+                <div className=''>
+                  <Select dataSelects={series} instanceId='serieSearcher' nameSelect={'Series'}></Select>
+                </div>
+                <div className=''>
+                  <div>
+                    <label className='label__general'>Folio</label>
+                    <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                    <input className={`inputs__general`} type="text" value={searcher.folio} onChange={(e) => DynamicVariables.updateAnyVar(setSearcher, "folio", parseInt(e.target.value))} placeholder='Ingresa el folio' />
+                  </div>
+                </div>
+                <div className='d-flex justify-content-center align-items-end'>
+                  <button className='btn__general-purple' onClick={() => Modal(false, 0)}>Buscar</button>
+                </div>
               </div>
-              <div className=' checkbox__orders'>
-                <label className="checkbox__container_general">
-                  <input className='checkbox' type="radio" name="requisitionStatus" value={searcher.status} onChange={() => handleClick(2)} />
-                  <span className="checkmark__general"></span>
-                </label>
-                <p className='title__checkbox text'>Terminados</p>
-              </div>
-            </div>
-            <div className='d-flex justify-content-end align-items-end'>
-              <button className='btn__general-purple' onClick={() => getData()}>Buscar</button>
-            </div>
-          </div>
-        </div>
-        <div className='row__two'>
-          <div className=''>
-            <Select dataSelects={series} instanceId='serieSearcher' nameSelect={'Series'}></Select>
-          </div>
-          <div className=''>
-            <div>
-              <label className='label__general'>Folio</label>
-              <div className='warning__general'><small >Este campo es obligatorio</small></div>
-              <input className={`inputs__general`} type="text" value={searcher.folio} onChange={(e) => DynamicVariables.updateAnyVar(setSearcher, "folio", parseInt(e.target.value))} placeholder='Ingresa el folio' />
             </div>
           </div>
           <div className='d-flex justify-content-center align-items-end'>
-            <button className='btn__general-purple' onClick={() => Modal(false, 0)}>Buscar</button>
+            <button className='btn__general-purple' onClick={() => getData()}>Buscar</button>
           </div>
         </div>
-
-        {/* <div className='col-1' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-            {modoXfolio ?
-              <div title='FILTRADO GENERAL'>
-
-                <svg onClick={() => { setModoXfolio(!modoXfolio); DynamicVariables.updateAnyVar(setSearcher, "id_serie", 0) }} style={{ cursor: 'pointer' }} width={30} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" /></svg>
-              </div>
-              :
-              <div title='FILTRADO POR SERIE'>
-                <svg onClick={() => { setModoXfolio(!modoXfolio); DynamicVariables.updateAnyVar(setSearcher, "id_serie", 0) }} style={{ cursor: 'pointer' }} width={30} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" /></svg>
-
-              </div>
-            }
-          </div> */}
-
         <div className='row my-4'>
           <div className='col-12'>
             <div className='btns__create'>
@@ -611,6 +598,7 @@ const PedidoFranquicias = () => {
               <p></p>
             )}
           </div>
+          <div className='table'>
           <div className='table__head'>
             <div className='thead'>
               <div className='th'>
@@ -675,9 +663,11 @@ const PedidoFranquicias = () => {
               })}
             </div>
           ) : (
-            <p className="mt-3">No hay entradas que mostrar</p>
+            // <p className="mt-3">No hay entradas que mostrar</p>
+            ''
           )}
         </div>
+          </div>
 
 
         {/* -------------------------------------------------------------MODALES----------------------------------------------------------------------------- */}
@@ -749,9 +739,9 @@ const PedidoFranquicias = () => {
                 </div>
               </div>
               :
-              <div>
+              <div className='franchise__orders'>
                 <p className='title__modals'><b>Crear Pedido de Franquicia</b></p>
-                <div className='row'>
+                <div className='row row__one'>
                   <div className='col-8 md-col-8 sm-col-12'>
                     <Empresas_Sucursales modeUpdate={modoUpdate} empresaDyn={franquicia} sucursalDyn={sucursalF}
                       setEmpresaDyn={setFranquicia} setSucursalDyn={setSucursalF}></Empresas_Sucursales>
@@ -773,7 +763,7 @@ const PedidoFranquicias = () => {
                       get_unidades={true} get_stock={true} />
                     <br />
                     <div className=' '>
-                      <div>
+                      {/* <div>
                         {articulos.length >= 1 ? (
                           <div>
                             <p className='text'>Articulos en la Lista ({articulos.length})</p>
@@ -781,7 +771,7 @@ const PedidoFranquicias = () => {
                         ) : (
                           <p className='text'>No hay Articulos</p>
                         )}
-                      </div>
+                      </div> */}
                       <table style={{ width: "100%", borderCollapse: "collapse" }}>
                         <thead className="table__head">
                           <tr className="thead">

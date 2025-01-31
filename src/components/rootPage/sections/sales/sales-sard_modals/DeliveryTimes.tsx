@@ -37,41 +37,43 @@ const DeliveryTimes: React.FC = () => {
             <div>
               {article?.tiempos_entrega ? (
                 <div className='table__numbers'>
-                  <p className='text'>Cliente </p>
+                  <p className='title__table_clients'>Cliente </p>
                 </div>
               ) : (
                 <p>No hay sucursales</p>
               )}
             </div>
-            <div className='table__head'>
-              <div className='thead'>
-                <div className='th'>
-                  <p className=''>Rango</p>
-                </div>
-                <div className='th'>
-                  <p className=''>Día receptcio</p>
-                </div>
-                <div className='th'>
-                  <p className=''>Día entrega</p>
-                </div>
-              </div>
-            </div>
-            <div className='table__body'>
-              {client?.map((item: any, index: number) => (
-                <div className='tbody__container' key={index}>
-                  <div className='tbody'>
-                    <div className='td'>
-                      {`${item.titulo}-${item.sucursal}`}
-                    </div>
-                    <div className='td'>
-                      {item.dia_recepcion} de {item.hora_inicial_recepcion} a {item.hora_final_recepcion}
-                    </div>
-                    <div className='td'>
-                      {item.entrega}
-                    </div>
+            <div className='table'>
+              <div className='table__head'>
+                <div className='thead'>
+                  <div className='th'>
+                    <p className=''>Rango</p>
+                  </div>
+                  <div className='th'>
+                    <p className=''>Día receptcio</p>
+                  </div>
+                  <div className='th'>
+                    <p className=''>Día entrega</p>
                   </div>
                 </div>
-              ))}
+              </div>
+              <div className='table__body'>
+                {client?.map((item: any, index: number) => (
+                  <div className='tbody__container' key={index}>
+                    <div className='tbody'>
+                      <div className='td'>
+                        {`${item.titulo}-${item.sucursal}`}
+                      </div>
+                      <div className='td'>
+                        {item.dia_recepcion} de {item.hora_inicial_recepcion} a {item.hora_final_recepcion}
+                      </div>
+                      <div className='td'>
+                        {item.entrega}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
           </div>
@@ -79,39 +81,41 @@ const DeliveryTimes: React.FC = () => {
             <div>
               {article?.tiempos_entrega ? (
                 <div className='table__numbers'>
-                  <p className='text'>Produccion</p>
+                  <p className='title__table_production'>Produccion</p>
                 </div>
               ) : (
                 <p>No hay sucursales</p>
               )}
             </div>
-            <div className='table__head'>
-              <div className='thead'>
-                <div className='th'>
-                  <p className=''>Rango</p>
-                </div>
-                <div className='th'>
-                  <p className=''>Día receptcio</p>
-                </div>
-                <div className='th'>
-                  <p className=''>Día entrega</p>
-                </div>
-              </div>
-            </div>
-            <div className='table__body'>
-              {customer?.map((item: any, index: number) => (
-                <div className='tbody__container' key={index}>
-                  <div className='tbody'>
-                    <div className='td'>
-                      {`${item.titulo}-${item.sucursal}`}
-                    </div>
-                    <div className='td'>
-                      {item.dia_recepcion} de {item.hora_inicial_recepcion} a {item.hora_final_recepcion}
-                    </div>
-                    {item.entrega}
+            <div className='table'>
+              <div className='table__head'>
+                <div className='thead'>
+                  <div className='th'>
+                    <p className=''>Rango</p>
+                  </div>
+                  <div className='th'>
+                    <p className=''>Día receptcio</p>
+                  </div>
+                  <div className='th'>
+                    <p className=''>Día entrega</p>
                   </div>
                 </div>
-              ))}
+              </div>
+              <div className='table__body'>
+                {customer?.map((item: any, index: number) => (
+                  <div className='tbody__container' key={index}>
+                    <div className='tbody'>
+                      <div className='td'>
+                        {`${item.titulo}-${item.sucursal}`}
+                      </div>
+                      <div className='td'>
+                        {item.dia_recepcion} de {item.hora_inicial_recepcion} a {item.hora_final_recepcion}
+                      </div>
+                      {item.entrega}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
           </div>

@@ -9,7 +9,7 @@ const Prices: React.FC<any> = ({ id_grupo_us }) => {
   const setModalSub = storeModals(state => state.setModalSub)
   const { modalSub }: any = useStore(storeModals)
   const { article }: any = useStore(storeSaleCard)
-  
+
   return (
     <div className={`overlay__sale-card_modal ${modalSub === 'prices_modal' ? 'active' : ''}`}>
       <div className={`popup__sale-card_modal ${modalSub === 'prices_modal' ? 'active' : ''}`}>
@@ -20,7 +20,7 @@ const Prices: React.FC<any> = ({ id_grupo_us }) => {
         </a>
         <p className='title__modals'>Precios</p>
         <div className='conatiner__create_sale-card' >
-          <div className='table__branch-offices-sale-card' >
+          <div className='table__prices-sale-card' >
             <div>
               {article?.precios ? (
                 <div className='table__numbers'>
@@ -31,36 +31,45 @@ const Prices: React.FC<any> = ({ id_grupo_us }) => {
                 <p>No hay Precios</p>
               )}
             </div>
-            <div className='table__head'>
-              <div className='thead'>
-                <div className='th'>
-                  <p className=''>Rangos</p>
-                </div>
-                <div className='th'>
-                  <p className=''>Precios</p>
-                </div>
-                <div className='th'>
-                  <p className=''>Precio Frente y Vuelta</p>
-                </div>
-                <div className='th'>
-                  <p className=''>Ultima Actualización</p>
+            <div className='table'>
+              <div className='table__head'>
+                <div className='thead'>
+                  <div className='th'>
+                    <p className=''>Rangos</p>
+                  </div>
+                  <div className='th'>
+                    <p className=''>Precios</p>
+                  </div>
+                  <div className='th'>
+                    <p className=''>Precio Frente y Vuelta</p>
+                  </div>
+                  <div className='th'>
+                    <p className=''>Ultima Actualización</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className='table__body'>
-              {article?.precios
-                ?.filter((item: any) => item.id_grupos_us === id_grupo_us) // Filtrar los elementos que coincidan
-                .map((item: any, index: number) => (
-                  <div className="tbody__container" key={index}>
-                    <div className="tbody">
-                      <div className="td">{item?.precios_ext[0]?.rango}</div>
-                      <div className="td">{item?.precios}</div>
-                      <div className="td">{item?.precios_fyv}</div>
-                      <div className="td">{item?.fecha}</div>
+              <div className='table__body'>
+                {article?.precios
+                  ?.filter((item: any) => item.id_grupos_us === id_grupo_us) // Filtrar los elementos que coincidan
+                  .map((item: any, index: number) => (
+                    <div className="tbody__container" key={index}>
+                      <div className="tbody">
+                        <div className="td">
+                          <p className='ranges'>{item?.precios_ext[0]?.rango}</p>
+                        </div>
+                        <div className="td">
+                          <p className='price'>{item?.precios}</p>
+                        </div>
+                        <div className="td">
+                          <p className='price'>{item?.precios_fyv}</p>
+                        </div>
+                        <div className="td">
+                          <p>{item?.fecha}</p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
-
+                  ))}
+              </div>
             </div>
             {article?.precios_franquicia != null ?
               <>
@@ -83,15 +92,23 @@ const Prices: React.FC<any> = ({ id_grupo_us }) => {
                 </div>
                 <div className='table__body'>
                   {article?.precios_franquicia.map((item: any, index: number) => (
-                      <div className="tbody__container" key={index}>
-                        <div className="tbody">
-                          <div className="td">{item?.precios_ext[0]?.rango}</div>
-                          <div className="td">{item?.precios}</div>
-                          <div className="td">{item?.precios_fyv}</div>
-                          <div className="td">{item?.fecha}</div>
+                    <div className="tbody__container" key={index}>
+                      <div className="tbody">
+                        <div className="td">
+                          <p className='ranges'>{item?.precios_ext[0]?.rango}</p>
+                        </div>
+                        <div className="td">
+                          <p className='price'>{item?.precios}</p>
+                        </div>
+                        <div className="td">
+                          <p className='price'>{item?.precios_fyv}</p>
+                        </div>
+                        <div className="td">
+                          <p>{item?.fecha}</p>
                         </div>
                       </div>
-                    ))}
+                    </div>
+                  ))}
 
                 </div>
               </>

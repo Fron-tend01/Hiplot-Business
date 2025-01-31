@@ -26,13 +26,14 @@ const Stocks: React.FC = () => {
             <div>
               {article?.stock ? (
                 <div className='table__numbers'>
-                  <p className='text'>Total de sucursales</p>
+                  <p className='text'>Total de almacenes</p>
                   <div className='quantities_tables'>{article?.stock?.length}</div>
                 </div>
               ) : (
                 <p>No hay sucursales</p>
               )}
             </div>
+            <div className='table'>
             <div className='table__head'>
               <div className='thead'>
                 <div className='th'>
@@ -48,14 +49,15 @@ const Stocks: React.FC = () => {
                 <div className='tbody__container' key={index}>
                   <div className='tbody'>
                     <div className='td'>
-                      {item?.nombre}
+                      <p className='name__store'>{item?.nombre}</p>
                     </div>
                     <div className='td'>
-                      {item?.stock}-{unidad?.nombre}
+                      <p className='stock'>{item?.stock}-{unidad?.nombre}</p>
                     </div>
                   </div>
                 </div>
               ))}
+            </div>
             </div>
           </div>
         </div>

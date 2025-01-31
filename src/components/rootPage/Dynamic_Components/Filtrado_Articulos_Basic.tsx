@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { articleRequests } from '../../../fuctions/Articles';
 import useUserStore from '../../../zustand/General';
 import { storeFamilies } from '../../../zustand/Families';
+import './styles/Filtrado_Articulos_Basic.css'
 
 interface FiltradoArticulosBasicProps {
   get_sucursales?: boolean;
@@ -170,7 +171,7 @@ interface FiltradoArticulosBasicProps {
         }
     }
     return (
-        <div>
+        <div className='filter__article__basic'>
             <div className='row'>
                 <div className='col-4 md-col-6 sm-col-12 '>
                     <div className='select__container'>

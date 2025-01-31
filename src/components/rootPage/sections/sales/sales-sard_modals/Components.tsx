@@ -30,35 +30,37 @@ const Components: React.FC = () => {
                 <p>No hay sucursales</p>
               )}
             </div>
-            <div className='table__head'>
-              <div className='thead'>
-                <div className='th'>
-                  <p className=''>Articulo</p>
-                </div>
-                <div className='th'>
-                  <p className=''>Cantidad</p>
-                </div>
-                <div className='th'>
-                  <p className=''>comentarios</p>
-                </div>
-              </div>
-            </div>
-            <div className='table__body'>
-              {article?.componentes?.map((item: any, index: number) => (
-                <div className='tbody__container' key={index}>
-                  <div className='tbody'>
-                    <div className='td'>
-                      {`${item.codigo}-${item.descripcion}`}
-                    </div>
-                    <div className='td'>
-                      {item.cantidad}
-                    </div>
-                    <div className='td'>
-                      {item.comentarios}
-                    </div>
+            <div className='table'>
+              <div className='table__head'>
+                <div className='thead'>
+                  <div className='th'>
+                    <p className=''>Articulo</p>
+                  </div>
+                  <div className='th'>
+                    <p className=''>Cantidad</p>
+                  </div>
+                  <div className='th'>
+                    <p className=''>comentarios</p>
                   </div>
                 </div>
-              ))}
+              </div>
+              <div className='table__body'>
+                {article?.componentes?.map((item: any, index: number) => (
+                  <div className='tbody__container' key={index}>
+                    <div className='tbody'>
+                      <div className='td'>
+                        {`${item.codigo}-${item.descripcion}`}
+                      </div>
+                      <div className='td'>
+                        {item.cantidad}
+                      </div>
+                      <div className='td'>
+                        {item.comentarios}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
           </div>

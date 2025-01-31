@@ -6,12 +6,16 @@
 	text-align: justify;
 }
 
+.table__components-sale-card .table {
+    border-radius: 10px;
+    border: 2px solid var(--border-table-color);
+}
 
 .table__components-sale-card .table__head {
     display: flex;
     width: 100%;
 	background-color: var( --table-color);
-    border-radius: 5px 5px 0 0;
+    border-radius: 10px 10px 0 0;
 }
 
 .table__components-sale-card .table__head .thead {  background-color: var(--table-color);
@@ -19,6 +23,7 @@
    display: flex;
    width: 100%;
    column-gap: 20px;
+   border-radius: 10px 10px 0 0;
 }
 
 .table__components-sale-card .table__head .thead {

@@ -1,46 +1,44 @@
-
-
- /*************************************************************
+/*************************************************************
                     Modal de crear sucursales
  **************************************************************/
 
 
-  
- .overlay__sale-card_modal {
-	background: rgba(0,0,0,.3);
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	align-items: center;
-	justify-content: center;
-	display: flex;
-	visibility: hidden;
+
+.overlay__sale-card_modal {
+    background: rgba(0, 0, 0, .3);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    visibility: hidden;
 }
 
 .overlay__sale-card_modal.active {
-	visibility: visible;
+    visibility: visible;
 }
 
 .popup__sale-card_modal {
-	background-color: var(--background-modal);
-	border-radius: 5px;
-	padding: 20px;
-	width: 80%;
-	height: 80%;
-	transition: .3s ease all;
-	transform: scale(0.7);
-	opacity: 0;
+    background-color: var(--background-modal);
+    border-radius: 5px;
+    padding: 20px;
+    width: 80%;
+    height: 80%;
+    transition: .3s ease all;
+    transform: scale(0.7);
+    opacity: 0;
 }
 
 .popup__sale-card_modal .btn-cerrar-popup__sale-card_modal {
-	font-size: 16px;
-	line-height: 16px;
-	display: block;
-	text-align: right;
-	transition: .3s ease all;
-	color: #BBBBBB;
+    font-size: 16px;
+    line-height: 16px;
+    display: block;
+    text-align: right;
+    transition: .3s ease all;
+    color: #BBBBBB;
     position: absolute;
     right: 15px;
     top: 15px;
@@ -51,7 +49,10 @@
 /* ------------------------- */
 /* ANIMACIONES */
 /* ------------------------- */
-.popup__sale-card_modal.active {	transform: scale(1); opacity: 1; }
+.popup__sale-card_modal.active {
+    transform: scale(1);
+    opacity: 1;
+}
 
 
 
@@ -59,86 +60,139 @@
 
 
 
-.table__branch-offices-sale-card {
+.table__prices-sale-card {
     margin-top: 20px;
     border-radius: 10px;
-	text-align: justify;
+    text-align: justify;
+}
+
+.table__prices-sale-card .table {
+    border-radius: 10px;
+    border: 2px solid var(--border-table-color);
 }
 
 
-.table__branch-offices-sale-card .table__head {
+.table__prices-sale-card .table__head {
     display: flex;
     width: 100%;
-	background-color: var( --table-color);
-    border-radius: 5px 5px 0 0;
+    background-color: var(--table-color);
+    border-radius: 10px 10px 0 0;
 }
 
-.table__branch-offices-sale-card .table__head .thead {  background-color: var(--table-color);
+.table__prices-sale-card .table__head .thead {
+    background-color: var(--table-color);
     color: var(--text-table-color);
-   display: flex;
-   width: 100%;
-   column-gap: 20px;
+    display: flex;
+    width: 100%;
+    column-gap: 20px;
+    border-radius: 10px 10px 0 0;
 }
 
-.table__branch-offices-sale-card .table__head .thead {
+.table__prices-sale-card .table__head .thead {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     padding: 10px;
     font-weight: 600;
 }
 
-.table__branch-offices-sale-card .table__body {
-	height: 200px;
+.table__prices-sale-card .table__body {
+    height: 200px;
     overflow: hidden;
     overflow: auto;
     transition-delay: 0.0s;
+
     &::-webkit-scrollbar {
         width: 5px;
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: #1F319D; 
+        background-color: var(--primary-color);
         border-radius: 5px;
         height: 100px;
     }
 
     &::-webkit-scrollbar-track {
-    /* Para modificar el background */
+        /* Para modificar el background */
     }
 }
 
 
-.table__branch-offices-sale-card .tbody__container:nth-child(even) {
-  	color: var(--text-table-color);
-  }
-  
-.table__branch-offices-sale-card .tbody__container:nth-child(odd) {
-	background-color: var(--two-table-color);
-    color: var(--text-table-color);
-  }
 
-.table__branch-offices-sale-card .table__body .tbody {
+
+.table__prices-sale-card .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table__prices-sale-card .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+}
+
+.table__prices-sale-card .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+.table__prices-sale-card .tbody__container:first-child {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table__prices-sale-card .tbody__container:last-child {
+    border-bottom: none;
+    border-radius: 0 0 20px 20px;
+}
+
+
+
+
+.table__prices-sale-card .table__body .tbody {
     display: flex;
 }
 
-.table__branch-offices-sale-card .table__body .tbody {
+.table__prices-sale-card .table__body .tbody {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     padding: 10px;
-	column-gap: 20px;
+    column-gap: 20px;
 }
 
-.table__branch-offices-sale-card .table__body .tbody:hover {
-    background-color: var(--secundary-color);
+
+.table__prices-sale-card .table__body .tbody .td {
+    display: flex;
+}
+
+.table__prices-sale-card .table__body .tbody .td > .ranges {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #ff91001f;
+    border-radius: 5px;
+    font-weight: 600;
+    color: #FF8F00;
+}
+
+.table__prices-sale-card .table__body .tbody .td > .price {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #5e35b031;
+    border-radius: 5px;
+    font-weight: 600;
+    color: #6e34e2;
+}
+
+
+.table__prices-sale-card .table__body .tbody:hover .td > .ranges {
+    background-color: #FF8F00;
+    color: #ffffff;
+}
+
+.table__prices-sale-card .table__body .tbody:hover .td > .price {
+    background-color:#6e34e2;
+    color: #ffffff;
+}
+
+.table__prices-sale-card .table__body .tbody:hover {
+    background-color: var(--table-hover-color);
     color: #fff;
 }
-
-.types-users__edit_btn {
-	background-color: var(--primary-color);
-	color: #fff;
-	border: none;
-	padding: 5px 10px;
-	border-radius: var(--border-radius-general);
-	cursor: pointer;
-  }
-

@@ -1,0 +1,5 @@
+.filter__article__basic {
+    padding: 20px;
+    background-color: var(--cards-background);
+    border-radius: var(--general-card-border);
+}
