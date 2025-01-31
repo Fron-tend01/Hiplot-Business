@@ -37,6 +37,18 @@
     justify-content: space-between;
 }
 
+.icon__search-btn {
+    display: flex;
+    height: 40px;
+    width: 40px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    background-color: var(--backgorund-header-icons);
+    cursor: pointer;
+    color: #848a90;
+}
+
 /* .conatiner__users {
     position: relative;
     background-color: #ffffff; 

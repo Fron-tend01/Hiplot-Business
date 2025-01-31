@@ -5,13 +5,15 @@ import { useThemeStore } from '../../../zustand/ThemeStore';
 import './Header.css';
 import NotificationIcon from './NotificationIcon';
 import Swal from 'sweetalert2';
-import { storeArticleView } from '../../../zustand/ArticleView';
 import ArticleViewModal from '../sections/sales/ArticleViewModal';
+import { storeArticleView } from '../../../zustand/ArticleView';
 
 const Header: React.FC = () => {
 
   const { toggleTheme } = useThemeStore();
   const [showUsers] = useState<boolean>(false);
+
+  const setModalArticleView = storeArticleView((state) => state.setModalArticleView);
 
   const toggleUsersDisplay = () => {
     // setShowUsers(!showUsers);
@@ -50,7 +52,6 @@ const Header: React.FC = () => {
       setIsDarkMode((prev) => !prev);
     }
   };
-  const setModalArticleView = storeArticleView(state => state.setModalArticleView)
 
 
   // const [notifications, setNotifications] = useState<string[]>([]);
@@ -112,16 +113,15 @@ const Header: React.FC = () => {
   return (
     <div className='hero'>
       <div className='container__hero'>
-        <div >
+        <div>
           <div className={`inputs__general_icons`}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
             <input className='inputs__generic' placeholder='Ejemplo@gmail.com' />
           </div>
         </div>
         <div className='nav__hero'>
-          <div title='CATALOGO DE ARTICULOS'>
-            <svg xmlns="http://www.w3.org/2000/svg" onClick={() => setModalArticleView('article-view__modal')} width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
-
+          <div className='icon__search-btn'>
+            <svg onClick={() => setModalArticleView('article-view__modal')} xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" className="d-flex lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
           </div>
           <div>
             <div className="btn__mode" onClick={handleClick}>
@@ -161,13 +161,11 @@ const Header: React.FC = () => {
                 )}
               </div>
             </div> */}
-
           <div className='container__bell'>
             <small className='number__bell'>1</small>
             <NotificationIcon></NotificationIcon>
             {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" fill='#123456'   viewBox="0 0 448 512"><path d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z"/></svg> */}
           </div>
-
           <div className={`conatiner__users ${showUsers ? '' : 'active'}`}>
             <div className='conatiner__users_svg'>
               <svg onClick={toggleUsersDisplay} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
@@ -189,7 +187,6 @@ const Header: React.FC = () => {
         </div>
       </div>
       <ArticleViewModal />
-
     </div>
   )
 }
