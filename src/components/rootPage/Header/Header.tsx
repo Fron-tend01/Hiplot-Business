@@ -5,6 +5,8 @@ import { useThemeStore } from '../../../zustand/ThemeStore';
 import './Header.css';
 import NotificationIcon from './NotificationIcon';
 import Swal from 'sweetalert2';
+import { storeArticleView } from '../../../zustand/ArticleView';
+import ArticleViewModal from '../sections/sales/ArticleViewModal';
 
 const Header: React.FC = () => {
 
@@ -13,11 +15,11 @@ const Header: React.FC = () => {
 
   const toggleUsersDisplay = () => {
     // setShowUsers(!showUsers);
-     Swal.fire({
-        title: "Sección en desarrollo",
-        text: "Estamos trabajando para mejorar esta funcionalidad. Próximamente estará disponible.",
-        icon: "info",
-      });
+    Swal.fire({
+      title: "Sección en desarrollo",
+      text: "Estamos trabajando para mejorar esta funcionalidad. Próximamente estará disponible.",
+      icon: "info",
+    });
   };
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
@@ -48,8 +50,9 @@ const Header: React.FC = () => {
       setIsDarkMode((prev) => !prev);
     }
   };
-  
-  
+  const setModalArticleView = storeArticleView(state => state.setModalArticleView)
+
+
   // const [notifications, setNotifications] = useState<string[]>([]);
   // const wsUrl = "ws://hiplot.dyndns.org:84/api_dev/ws/notify"; // URL del WebSocket en el backend
   // const socketRef = useRef<WebSocket | null>(null); // Referencia para el WebSocket
@@ -109,13 +112,17 @@ const Header: React.FC = () => {
   return (
     <div className='hero'>
       <div className='container__hero'>
-        <div>
+        <div >
           <div className={`inputs__general_icons`}>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
             <input className='inputs__generic' placeholder='Ejemplo@gmail.com' />
           </div>
         </div>
         <div className='nav__hero'>
+          <div title='CATALOGO DE ARTICULOS'>
+            <svg xmlns="http://www.w3.org/2000/svg" onClick={() => setModalArticleView('article-view__modal')} width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
+
+          </div>
           <div>
             <div className="btn__mode" onClick={handleClick}>
               <div className="btn__indicator">
@@ -125,14 +132,14 @@ const Header: React.FC = () => {
                       {/* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#5d35b0" viewBox="0 0 384 512">
                         <path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z" />
                       </svg> */}
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="ucide lucide-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="ucide lucide-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg>
                     </div>
                   ) : (
                     <div className={`container__svg-mode ${isDarkMode ? 'active' : ''}`}>
                       {/* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#f39f18" viewBox="0 0 24 24" >
                         <path d="M6.993 12c0 2.761 2.246 5.007 5.007 5.007s5.007-2.246 5.007-5.007S14.761 6.993 12 6.993 6.993 9.239 6.993 12zM12 8.993c1.658 0 3.007 1.349 3.007 3.007S13.658 15.007 12 15.007 8.993 13.658 8.993 12 10.342 8.993 12 8.993zM10.998 19h2v3h-2zm0-17h2v3h-2zm-9 9h3v2h-3zm17 0h3v2h-3zM4.219 18.363l2.12-2.122 1.415 1.414-2.12 2.122zM16.24 6.344l2.122-2.122 1.414 1.414-2.122 2.122zM6.342 7.759 4.22 5.637l1.415-1.414 2.12 2.122zm13.434 10.605-1.414 1.414-2.122-2.122 1.414-1.414z"></path>
                       </svg> */}
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sun"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sun"><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" /></svg>
                     </div>
                   )}
                 </div>
@@ -154,11 +161,13 @@ const Header: React.FC = () => {
                 )}
               </div>
             </div> */}
+
           <div className='container__bell'>
             <small className='number__bell'>1</small>
             <NotificationIcon></NotificationIcon>
             {/* <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" fill='#123456'   viewBox="0 0 448 512"><path d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z"/></svg> */}
           </div>
+
           <div className={`conatiner__users ${showUsers ? '' : 'active'}`}>
             <div className='conatiner__users_svg'>
               <svg onClick={toggleUsersDisplay} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
@@ -179,6 +188,8 @@ const Header: React.FC = () => {
           </div>
         </div>
       </div>
+      <ArticleViewModal />
+
     </div>
   )
 }
