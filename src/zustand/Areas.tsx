@@ -22,9 +22,9 @@ export const storeAreas = create<StoreState>((set) => ({
 
    // Areas
 
-   createAreas: async (sucursal_id: number, nombre: string, produccion: boolean, id_usuario: number,) => {
+   createAreas: async (sucursal_id: number, nombre: string, produccion: boolean, id_usuario: number, paf: boolean) => {
     try {
-      const response = await APIs.createAreas(sucursal_id, nombre, produccion, id_usuario);
+      const response = await APIs.createAreas(sucursal_id, nombre, produccion, id_usuario, paf);
       Swal.fire('Area creada exitosamente', '', 'success');
       console.log('Area creada', response)
 
@@ -43,9 +43,9 @@ export const storeAreas = create<StoreState>((set) => ({
     }
   },
   
-  updateAreas: async (id: number, sucursal_id: number, nombre: string, produccion: boolean, id_usuario: number,) => {
+  updateAreas: async (id: number, sucursal_id: number, nombre: string, produccion: boolean, id_usuario: number,paf: boolean,) => {
     try {
-      await APIs.apdateAreas(id, sucursal_id, nombre, produccion, id_usuario)
+      await APIs.apdateAreas(id, sucursal_id, nombre, produccion, id_usuario, paf)
       Swal.fire('Area actualizada exitosamente', '', 'success');
     } catch (error) {
       Swal.fire('Error', 'Hubo un error al actualizar la area', 'error');

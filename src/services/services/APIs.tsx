@@ -49,9 +49,9 @@ const APIs = {
   
   // Areas
 
-  createAreas: async (sucursal_id: number, nombre: string, produccion: boolean, id_usuario: number, customPath?: string) => {
+  createAreas: async (sucursal_id: number, nombre: string, produccion: boolean, id_usuario: number, paf: boolean, customPath?: string) => {
     const path = customPath || 'area_create';
-    return ConfigurationAPIs.post(path, {sucursal_id, nombre, produccion, id_usuario})
+    return ConfigurationAPIs.post(path, {sucursal_id, nombre, produccion, id_usuario,paf})
   },
 
 
@@ -60,9 +60,9 @@ const APIs = {
     return ConfigurationAPIs.get(path)
   },
 
-  apdateAreas:  async (id: number, sucursal_id: number, nombre: string, produccion: boolean, id_usuario: number, customPath?: string) => {
+  apdateAreas:  async (id: number, sucursal_id: number, nombre: string, produccion: boolean, id_usuario: number,paf: boolean, customPath?: string) => {
     const path = customPath || `area_update/${id}`;
-    return ConfigurationAPIs.put(path, {id, sucursal_id, nombre, produccion, id_usuario})
+    return ConfigurationAPIs.put(path, {id, sucursal_id, nombre, produccion, id_usuario,paf})
   },
 
   getAreasXBranchOfficesXUsers: async (sucursal_id: number, user_id: number, customPath?: string) => {

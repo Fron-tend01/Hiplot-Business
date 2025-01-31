@@ -648,7 +648,8 @@ const fetch2 = async (selectedIds:any[]) => {
       get_unidades: true,
       id_usuario: user_id,
       por_combinacion:true,
-      opciones:selectedIds
+      opciones:selectedIds,
+      id_articulo_variacion:article.id
     };
 
     try {

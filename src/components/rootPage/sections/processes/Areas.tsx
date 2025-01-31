@@ -14,6 +14,7 @@ interface BranchOffices {
   empresa: string;
   sucursal: string
   produccion: boolean
+  paf: boolean
 }
 
 const Areas: React.FC = () => {
@@ -78,7 +79,7 @@ const Areas: React.FC = () => {
     }
 
     try {
-      await createAreas(selectedBranchOffice, nombre, produccion, user_id)
+      await createAreas(selectedBranchOffice, nombre, produccion, user_id, paf)
       getAreasXBranchOfficesXUsers(0, user_id)
       setModalState(false)
     } catch (error) {
@@ -140,6 +141,7 @@ const Areas: React.FC = () => {
   /* ================================================= Modal Update ==========================================================*/
 
   const [produccion, setProduccion] = useState<boolean>(false);
+  const [paf, setPaf] = useState<boolean>(false);
 
   const modalUpdate = async (area: any) => {
     setarea_id(area.id)
@@ -147,6 +149,7 @@ const Areas: React.FC = () => {
     await setSelectedCompany(area.empresa_id)
     await setSelectedBranchOffice(area.sucursal_id)
     setProduccion(area.produccion)
+    setPaf(area.paf)
     setModalStateUpdate(!modalStateUpdate)
     console.log(area.sucursal_id)
   }
@@ -160,12 +163,14 @@ const Areas: React.FC = () => {
     setProduccion(event.target.checked);
   };
 
-
+  const handlePafChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPaf(event.target.checked);
+  };
   const handleUpdateAreas = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
   
-      await updateAreas(area_id, selectedBranchOffice, name, produccion, user_id)
+      await updateAreas(area_id, selectedBranchOffice, name, produccion, user_id, paf)
       setModalStateUpdate(false)
       await getAreasXBranchOfficesXUsers(0, user_id)
       
@@ -246,6 +251,15 @@ const Areas: React.FC = () => {
                 <div className='checkbox__general checkbox__areas'>
                   <label className="switch">
                   <input type="checkbox" checked={produccion} onChange={handleProduccionChange} />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label className='label__general'>Pedido Almacen Franquicia (PAF)</label>
+                <div className='checkbox__general checkbox__areas'>
+                  <label className="switch">
+                  <input type="checkbox" checked={paf} onChange={handlePafChange} />
                     <span className="slider"></span>
                   </label>
                 </div>
@@ -378,6 +392,15 @@ const Areas: React.FC = () => {
                     </label>
                   </div>
                 </div>
+                <div>
+                <label className='label__general'>Pedido Almacen Franquicia (PAF)</label>
+                <div className='checkbox__general checkbox__areas'>
+                  <label className="switch">
+                  <input type="checkbox" checked={paf} onChange={handlePafChange} />
+                    <span className="slider"></span>
+                  </label>
+                </div>
+              </div>
                 <div className='container__araes_btn_modal_container'>
                   <div>
                     <input className='btn__general-purple' type='submit' value="Editar área" />
