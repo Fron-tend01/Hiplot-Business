@@ -76,6 +76,17 @@
 }
 
 
+.search__sale-card {
+  padding: 7px 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--accent-100);
+  color: #fff;
+  cursor: pointer;
+} 
+
 
 
 .conatiner__create_sale-card > .row__two > .row__one .row__one{
@@ -680,7 +691,7 @@
    
 }
 
-.conatiner__create_sale-card .combinaciones > .combinaciones__container > .container {
+.conatiner__create_sale-card .combinaciones > .combinaciones__container > .container__combination {
    padding: 5px;
    border-radius: 5px;
    background-color: #3081c9;
@@ -733,7 +744,8 @@
     min-height: 100px;
     min-width: 400px;
     max-width: 800px;
-    background-color: #cbcbcb;
+    background-color: #fff;
+    border: 2px solid var(--border-table-color);
     z-index: 2;
     margin-top: 10px;
 }
