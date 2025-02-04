@@ -13,15 +13,18 @@ const DeliveryTimes: React.FC = () => {
   const [customer, setCustomer] = useState<any>()
 
 
-  const filterClient = article?.tiempos_entrega.filter((x: any) => x.tipo == 1);
-  const filterCustomer = article?.tiempos_entrega.filter((x: any) => x.tipo == 2);
+  const filterCustomer = article?.tiempos_entrega.filter((x: any) => x.tipo == 1);
+  const filterClient = article?.tiempos_entrega.filter((x: any) => x.tipo == 2);
+
+
 
   useEffect(() => {
-    setClient(filterClient)
-    setCustomer(filterCustomer)
-  }, [])
+    if (modalSub == 'delivery-time_modal') {
 
-
+      setClient(filterClient)
+      setCustomer(filterCustomer)
+    }
+  }, [modalSub])
 
   return (
     <div className={`overlay__delivery-times_modal-sale-card ${modalSub === 'delivery-time_modal' ? 'active' : ''}`}>
@@ -50,10 +53,10 @@ const DeliveryTimes: React.FC = () => {
                     <p className=''>Rango</p>
                   </div>
                   <div className='th'>
-                    <p className=''>Día receptcio</p>
+                    <p className=''>Recepción</p>
                   </div>
                   <div className='th'>
-                    <p className=''>Día entrega</p>
+                    <p className=''>Entrega</p>
                   </div>
                 </div>
               </div>
@@ -68,7 +71,7 @@ const DeliveryTimes: React.FC = () => {
                         {item.dia_recepcion} de {item.hora_inicial_recepcion} a {item.hora_final_recepcion}
                       </div>
                       <div className='td'>
-                        {item.entrega}
+                        {item.entrega} a las {item.hora_entrega}
                       </div>
                     </div>
                   </div>
@@ -94,10 +97,10 @@ const DeliveryTimes: React.FC = () => {
                     <p className=''>Rango</p>
                   </div>
                   <div className='th'>
-                    <p className=''>Día receptcio</p>
+                    <p className=''>Recepción</p>
                   </div>
                   <div className='th'>
-                    <p className=''>Día entrega</p>
+                    <p className=''>Entrega</p>
                   </div>
                 </div>
               </div>
@@ -111,8 +114,8 @@ const DeliveryTimes: React.FC = () => {
                       <div className='td'>
                         {item.dia_recepcion} de {item.hora_inicial_recepcion} a {item.hora_final_recepcion}
                       </div>
-                      {item.entrega}
-                    </div>
+                      {item.entrega} a las {item.hora_entrega}
+                      </div>
                   </div>
                 ))}
               </div>

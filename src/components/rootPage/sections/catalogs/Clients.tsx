@@ -23,6 +23,7 @@ const Clients: React.FC = () => {
   const setClientToUpdate = storeClients(state => state.setClientToUpdate)
 
   const [clients, setClients] = useState<any>([])
+  const [page, setPage] = useState<number>(1)
   const setModal = storeModals(state => state.setModal)
   const { modal }: any = storeModals()
   const fetch = async () => {
@@ -49,7 +50,8 @@ const Clients: React.FC = () => {
     const data = {
         id_sucursal: selectedBranchOffice,
         id_usuario: user_id,
-        nombre: name
+        nombre: name,
+        page:page
       }
 
       const resultCLients = await getClients(data)
@@ -102,7 +104,9 @@ const Clients: React.FC = () => {
 
   }
 
-  
+     useEffect(() => {
+        searchClient();
+      }, [page]);
 
   return (
     <div className='customers'>
@@ -221,6 +225,17 @@ const Clients: React.FC = () => {
                   )}
               </div>
             </div>
+            <div className='row'>
+                    <div className='col-1'>
+                        <button className='btn__general-primary' onClick={()=>{setPage(page-1)}} disabled={page==1}>ANTERIOR</button>
+                    </div>
+                    <div className='col-10'>
+
+                    </div>
+                    <div className='col-1'>
+                        <button className='btn__general-primary' onClick={()=>{setPage(page+1)}}>SIGUIENTE</button>
+                    </div>
+                </div>
         </div>
     </div>
   )

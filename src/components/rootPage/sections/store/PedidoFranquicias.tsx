@@ -82,6 +82,7 @@ const PedidoFranquicias = () => {
   { nombre: 'comentarios', tipo: '' }, { nombre: 'unidad_bool', tipo: false }, { nombre: 'unidad_sel', tipo: 0 }, { nombre: 'precio_unitario', tipo: 0 }, { nombre: 'total', tipo: 0 }])
 
   const selectData: any = useSelectStore(state => state.selectedIds)
+  const setSelectData = useSelectStore(state => state.setSelectedId)
 
 
   const [modal, setModal] = useState<string>('')
@@ -93,7 +94,6 @@ const PedidoFranquicias = () => {
 
   const [data, setData] = useState<any>(null)
   const [articulos, setArticulos] = useState<any[]>([])
-  const { getCompaniesXUsers }: any = companiesRequests()
 
   const handleDateChange = (fechasSeleccionadas: any) => {
     if (fechasSeleccionadas.length === 2) {
@@ -126,8 +126,8 @@ const PedidoFranquicias = () => {
     const result = await APIs.CreateAny(searcher, "pedido_franquicia/get")
     setData(result)
   }
-  const getEmpresas = async () => {
-    const resultCompanies = await getCompaniesXUsers(user_id)
+  const getEmpresas = async (id_fr:number) => {
+    const resultCompanies:any = await APIs.GetAny("get_proveedor_franquicia/"+ id_fr)
     setProveedor({
       selectName: 'Proveedor',
       dataSelect: resultCompanies,
@@ -138,10 +138,11 @@ const PedidoFranquicias = () => {
       dataSelect: resultCompanies,
       options: 'razon_social'
     })
+    setSelectData('proveedorSearcher', resultCompanies[0])
+    setSelectData('proveedor', resultCompanies[0])
   }
 
   const fetch = async () => {
-    await getEmpresas()
     // await getData()
     const resultSerie = await getSeriesXUser({ tipo_ducumento: 10, id: user_id })
     setSeries({
@@ -157,6 +158,9 @@ const PedidoFranquicias = () => {
   useEffect(() => {
     fetch()
   }, [])
+  useEffect(() => {
+    getEmpresas(franquicia.id)
+  }, [franquicia])
   const traer_alm_pred_prov = async (index: any) => {
     const data = {
       id_empresa: selectData?.proveedor?.id,
@@ -500,7 +504,7 @@ const PedidoFranquicias = () => {
   }
 
   const getPDF = async () => {
-    window.open('https://hiplotbusiness.com/api_dev/pdf_pedido_franquicia/' + pfMu.id, '_blank');
+    window.open('http://hiplot.dyndns.org:84/api_dev/pdf_pedido_franquicia/' + pfMu.id, '_blank');
   }
   const obtenerPrecioPorCantidadYUnidad = (articulo: any, cantidad: number, id_unidad: number) => {
     for (const precio of articulo.precios) {

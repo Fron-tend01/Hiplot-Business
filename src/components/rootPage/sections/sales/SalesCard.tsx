@@ -294,11 +294,12 @@ const SalesCard: React.FC = ({ idA }: any) => {
           id_pers: 0,
           front: true,
           id_articulo: article.id,
-          produccion_interna: true,
+          id_familia: article.id_familia,
+          produccion_interna: false,
           id_area_produccion: article.areas_produccion[0].id_area,
           enviar_a_produccion: false,
           personalized: false,
-          check: false,
+          check: true,
           status: 0,
           descripcion: article.descripcion,
           codigo: article.codigo,
@@ -513,6 +514,7 @@ const SalesCard: React.FC = ({ idA }: any) => {
       const newData = { ...data };
       newData.id_identifier = storePersonalized.getState().identifier + 1; // Usa el valor actual de identifier
       incrementIdentifier();
+      console.log('data', data);
 
       if (dataSaleOrder !== undefined) {
         setDataSaleOrder([...dataSaleOrder, newData])
@@ -769,13 +771,13 @@ const SalesCard: React.FC = ({ idA }: any) => {
                     <button className='btn__general-purple' type='button' onClick={() => setModalSub('to-arrive_modal')}>
                       <svg className="icon icon-tabler icons-tabler-outline icon-tabler-truck-delivery" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" /><path d="M3 9l4 0" /></svg>
                     </button>
-                    <span className="sale__card-tooltip-text">INDICACIONES</span>
+                    <span className="sale__card-tooltip-text">Indicaciones</span>
                   </div>
                   <div className='btn__sale__card-tooltip-container'>
                     <button className='btn__general-purple' type='button' onClick={() => setModalSub('delivery-time_modal')}>
                       <svg className="icon icon-tabler icons-tabler-outline icon-tabler-clock-hour-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7v5" /><path d="M12 12l2 -3" /></svg>
                     </button>
-                    <span className="sale__card-tooltip-text">Por llegar</span>
+                    <span className="sale__card-tooltip-text">Tiempos de Entrega</span>
                   </div>
                   <div className='btn__sale__card-tooltip-container'>
                     <button className='btn__general-purple' type='button' onClick={() => setModalSub('components_modal')}>

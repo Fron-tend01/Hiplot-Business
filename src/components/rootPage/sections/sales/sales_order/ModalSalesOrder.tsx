@@ -98,14 +98,14 @@ const ModalSalesOrder: React.FC = () => {
                 .join(" ")
                 .slice(0, 16) || "";
 
-        setDates(updatedDates.slice(0, 2)); 
+        setDates(updatedDates.slice(0, 2));
     };
 
     useEffect(() => {
         setDates([
-        haceUnaSemana.toISOString().split('T')[0],
-        hoy.toISOString().split('T')[0]
-    ]);
+            haceUnaSemana.toISOString().split('T')[0],
+            hoy.toISOString().split('T')[0]
+        ]);
     }, [])
 
     useEffect(() => {
@@ -280,7 +280,14 @@ const ModalSalesOrder: React.FC = () => {
         }
 
         try {
-            await APIs.createSaleOrderProduction(data)
+            APIs.createSaleOrderProduction(data).then((resp:any) => {
+                if (resp.error) {
+                    Swal.fire('Notificación', resp.mensaje, 'warning')
+                }else {
+                    Swal.fire('Notificación', resp.mensaje, 'success')
+                    setModalProduction('')
+                }
+            })
         } catch (error) {
 
         }
@@ -411,9 +418,10 @@ const ModalSalesOrder: React.FC = () => {
     const [urgenciaf] = useState<number>(0)
     const [totalf, setTotalf] = useState<number>(0)
     useEffect(() => {
+
         calcular_totales()
         calcular_tiempos_entrega()
-    }, [normalConcepts, customConcepts])
+    }, [normalConcepts, customConcepts, branchOffices])
     const calcular_totales = () => {
 
         const precios = normalConcepts.reduce(
@@ -626,21 +634,21 @@ const ModalSalesOrder: React.FC = () => {
                     Swal.fire('Notificación', response.mensaje, 'success');
                 }
             })
-            const dataSaleOrders = {
-                folio: 0,
-                id_sucursal: branchOffices.id,
-                id_serie: 0,
-                id_cliente: dataGet,
-                desde: dataGet.desde,
-                hasta: dataGet.hasta,
-                id_usuario: dataGet.id_usuario,
-                id_vendedor: 0,
-                status: 0
-            }
-          
-            const resultData = await getSaleOrders(dataSaleOrders)
-            setSaleOrders(resultData)
-            setModalSalesOrder('')
+        const dataSaleOrders = {
+            folio: 0,
+            id_sucursal: branchOffices.id,
+            id_serie: 0,
+            id_cliente: dataGet,
+            desde: dataGet.desde,
+            hasta: dataGet.hasta,
+            id_usuario: dataGet.id_usuario,
+            id_vendedor: 0,
+            status: 0
+        }
+
+        const resultData = await getSaleOrders(dataSaleOrders)
+        setSaleOrders(resultData)
+        setModalSalesOrder('')
     }
     const [urgenciaG, setUrgenciaG] = useState<boolean>(false)
     const urgenciaGlobal = async (urg: boolean) => {
@@ -735,7 +743,26 @@ const ModalSalesOrder: React.FC = () => {
                                     <p className='title__modals'>Enviar a produccion</p>
                                 </div>
                                 <div className='sale-order_production__modal_articles'>
-                                    <div>
+                                    <section className="listSaleOrder">
+                                        <div className="alertSaleOrder" role="alert">
+                                            Verificar tiempos de entrega o consultar con producción antes de enviar
+                                        </div>
+                                        <div className="itemDividerSaleOrder">Fecha Entrega Producción</div>
+                                        <div className="itemSaleOrder">
+                                            <span className="dateSaleOrder">{dataProduction?.fecha_produccion}</span>
+                                            <span className="timeSaleOrder">{dataProduction?.hora_produccion}</span>
+                                        </div>
+                                    </section>
+
+                                    <section className="listSaleOrder">
+                                        <div className="itemDividerSaleOrder">Fecha Entrega Cliente</div>
+                                        <div className="itemSaleOrder">
+                                            <span className="dateSaleOrder">{dataProduction?.fecha_cliente}</span>
+                                            <span className="timeSaleOrder">{dataProduction?.hora_cliente}</span>
+                                        </div>
+                                    </section>
+
+                                    {/* <div>
                                         <div className='d-flex'>
                                             <p>Fecha de entrega cliente</p>
                                             <p className='mx-4'>{dataProduction?.fecha_cliente}</p>
@@ -748,7 +775,7 @@ const ModalSalesOrder: React.FC = () => {
                                             <p>Hora de produccion</p>
                                             <p className='mx-4'>{dataProduction?.fecha_produccion}</p>
                                         </div>
-                                    </div>
+                                    </div> */}
                                     <div className='d-flex justify-content-center mt-3'>
                                         <button className='btn__general-purple' onClick={sendProduction} >Mandar a producción </button>
                                     </div>
