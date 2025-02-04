@@ -448,32 +448,26 @@ const ModalBilling: React.FC = () => {
 
 
     const handleCheckboxChange = (value: number) => {
-        // console.log(value);
-
         setType(value);
     };
 
-
-
-    console.log('identifier', identifier)
     const handleAddConceptsChange = (order: any) => {
-
-    console.log('order', order)
-
+        console.log('order', order);
+    
         let newIdentifier = identifier;
         let copy_totals = { ...totals };
-
-        order.conceptos.forEach((el: any) => {
+    
+        let newConcepts = order.conceptos.map((el: any) => {
             el.orden = {
                 serie: order.serie,
                 folio: order.folio,
                 anio: order.anio,
             };
+
             el.id_identifier = newIdentifier;
-            newIdentifier++; // Incrementar el identificador para el siguiente elemento
-            // el.precio_unitario = el.total / el.cantidad
-            // De ser necesario falta sumar la urgencia y restar el descuento
-            if (type == 2) {
+            newIdentifier++;
+    
+            if (type === 2) {
                 copy_totals.subtotal += parseFloat(el.total);
                 copy_totals.total += parseFloat(el.total);
             } else {
@@ -481,17 +475,40 @@ const ModalBilling: React.FC = () => {
                 copy_totals.total += parseFloat(el.total_restante);
                 copy_totals.urgencia += parseFloat(el.monto_urgencia);
             }
+
+            return el;
         });
-
+    
+        let newConceptsPers = order.conceptos_pers.map((el: any) => {
+            el.orden = {
+                serie: order.serie,
+                folio: order.folio,
+                anio: order.anio,
+            };
+            el.id_identifier = newIdentifier;
+            newIdentifier++; // Incrementar el identificador para el siguiente elemento
+    
+            if (type === 2) {
+                copy_totals.subtotal += parseFloat(el.total);
+                copy_totals.total += parseFloat(el.total);
+            } else {
+                copy_totals.subtotal += parseFloat(el.total_restante) - parseFloat(el.monto_urgencia);
+                copy_totals.total += parseFloat(el.total_restante);
+                copy_totals.urgencia += parseFloat(el.monto_urgencia);
+            }
+            return el;
+        });
+    
+        let totalConcepts = [...newConcepts, ...newConceptsPers];
+    
         setTotals(copy_totals);
-        setNormalConcepts([...normalConcepts, ...order.conceptos]);
-        setConceptView([...conceptView, ...order.conceptos]);
-        setCustomConceptView([...customConceptView, ...order.conceptos]);
-        setConcepts([...concepts, ...order.conceptos]);
-        setDataBillign([...dataBillign, ...order.conceptos]);
-        setIdentifier(newIdentifier); // Actualizar el identificador al final
+        setNormalConcepts([...normalConcepts, ...newConcepts]);
+        setConceptView([...conceptView, ...totalConcepts]);
+        setCustomConceptView([...customConceptView, ...newConceptsPers]);
+        setDataBillign([...dataBillign, ...totalConcepts]);
+        setIdentifier(newIdentifier);
     };
-
+    
 
 
     const handleAddDivisionChange = (concept: any) => {
@@ -569,8 +586,12 @@ const ModalBilling: React.FC = () => {
                 DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total_restante))
                 DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total_restante))
             }
-            const filter = concepts.filter((x: number) => x !== c);
-            setConcepts(filter);
+            const filter = conceptView.filter((x: any) => x.id_identifier !== c.id_identifier);
+            setConceptView(filter);
+
+            const filterNormal = normalConcepts.filter((x: any) => x.id_identifier !== c.id_identifier);
+            setNormalConcepts(filterNormal);
+            
         } else {
             if (c.id_concepto_comercial != undefined) {
                 Swal.fire({

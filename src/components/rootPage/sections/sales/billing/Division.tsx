@@ -61,16 +61,15 @@ const Division = () => {
     }, [])
 
     const handleUnitPriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const a = division.precio_unitario
-        const x = divisiones.length
+        const a = division.precio_unitario;
+        const x = divisiones.length;
         const c: any = e.target.value;
         const f = a - c;
 
         if (x > 1) {
             const g = f / (x - 1);
-
             const nuevasDivisiones = divisiones.map((division, i) => {
-                if (i === index) {
+                if (i == index) {
                     return {
                         ...division,
                         precio_unitario: c
@@ -82,14 +81,9 @@ const Division = () => {
                     };
                 }
             });
-
             setDivisiones(nuevasDivisiones);
-
         }
-
     }
-
-
 
     const handleTotalPriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: any) => {
         const a = division.total_concepto
@@ -118,7 +112,7 @@ const Division = () => {
         }
     }
 
-
+    console.log('division', division)
 
     const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -139,19 +133,16 @@ const Division = () => {
                 for (let i = 0; i < num; i++) {
                     // Crear una copia profunda del objeto para evitar mutaciones
                     const divisionCopy = { ...division };
-                  
                     
-            
                     // Dividir las propiedades de manera segura
                     divisionCopy.total_total = division.total_total / num;
                     divisionCopy.precio_total = division.precio_total / num;
                     divisionCopy.concept = true;
-                    
                     divisionCopy.id = 0;
     
                     // Calcular el precio unitario para cada división
                     divisionCopy.precio_unitario = divisionCopy.precio_total / divisionCopy.cantidad;
-    
+                    
                     // Dividir cantidad, ajustando si no es divisible de forma exacta
                     if (division.cantidad % num !== 0 && i === num - 1) {
                         // Ajustar la cantidad en la última iteración para compensar el residuo
@@ -159,12 +150,15 @@ const Division = () => {
                     } else {
                         divisionCopy.cantidad = Math.floor(division.cantidad / num);
                     }
+
+                   if(divisionCopy?.conceptos?.length > 0 || divisionCopy?.conceptos_pers?.length > 0) {
                     divisionCopy.conceptos.forEach((x: any) => {
                         x.total = divisionCopy?.precio_real / newDivisiones?.length
                         x.cantidad = divisionCopy?.cantidad / newDivisiones?.length
                         x.pers_div = true;
                     });
 
+                   }
 
                     // Calcular el precio unitario después del ajuste de cantidad
                     setUnitPrice(divisionCopy.precio_total / divisionCopy.cantidad);
@@ -185,14 +179,7 @@ const Division = () => {
         }
     };
     
-
-
-
-
     console.log('customConcepts', customConcepts)
-
-
-
 
     return (
         <div className={`overlay__billing__modal-division ${modalSub == 'billing__modal-division' ? 'active' : ''}`}>
