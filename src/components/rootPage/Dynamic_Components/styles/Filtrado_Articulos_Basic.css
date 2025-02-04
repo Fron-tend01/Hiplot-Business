@@ -3,3 +3,10 @@
     background-color: var(--cards-background);
     border-radius: var(--general-card-border);
 }
+
+
+.filter__article__basic > .row__one {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) auto;
+    column-gap: 20px;
+}

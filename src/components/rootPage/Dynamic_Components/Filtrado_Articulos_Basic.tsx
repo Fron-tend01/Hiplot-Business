@@ -172,8 +172,8 @@ interface FiltradoArticulosBasicProps {
     }
     return (
         <div className='filter__article__basic'>
-            <div className='row'>
-                <div className='col-4 md-col-6 sm-col-12 '>
+            <div className='row__one'>
+                <div>
                     <div className='select__container'>
                         <label className='label__general'>Buscar por</label>
                         <div className='select-btn__general'>
@@ -194,14 +194,14 @@ interface FiltradoArticulosBasicProps {
                     </div>
                 </div>
                 {selectedSearch != 2 ?
-                    <div className='col-6 md-col-6 sm-col-12 '>
+                    <div>
                         <div>
                             <label className='label__general'>Escribe el {selectedSearch==0?'Código':'Nombre'}</label>
                             <input className='inputs__general' type='text' value={nameBy} onChange={(e) => setNameBy(e.target.value)} placeholder='Ingresa el nombre' onKeyUp={searchFor} />
                         </div>
                     </div>
                     :
-                    <div className='col-6 md-col-6 sm-col-12 '>
+                    <div>
                         <div className='select__container'>
                             <label className='label__general'>Familia</label>
                             <div className='select-btn__general'>
@@ -224,7 +224,7 @@ interface FiltradoArticulosBasicProps {
                     </div>
 
                 }
-                <div className='col-2 md-col-6 sm-col-12 d-flex align-items-end'>
+                <div className='d-flex align-items-end'>
                     <button className='btn__general-purple' type='button' onClick={searchFor}>Buscar</button>
                 </div>
             </div>

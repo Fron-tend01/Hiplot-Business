@@ -1105,6 +1105,7 @@ html, body {
   font-weight: 600;
   color: #FF8F00;
 }
+
 .user-identifier {
   display: flex;
   padding: 5px;
@@ -1115,8 +1116,7 @@ html, body {
   border-radius: 5px;
   font-weight: 600;
   color: #5c6c85;
-} 
-
+}
 
 .date-identifier {
   display: flex;

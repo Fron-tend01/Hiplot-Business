@@ -407,3 +407,285 @@ height: 100%;
   .slideRight {
     animation: slideToRight 1s ease-in-out;
   }
+
+
+
+  .table__franchise_orders_modal {
+    border-radius: 10px;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    height: auto;
+    overflow: hidden;
+    border: 2px solid var(--border-table-color);
+    margin-top: 20px;
+    text-align: left;
+}
+
+
+
+.table__franchise_orders_modal .table__head {
+    display: flex;
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    background-color: var(--table-header-color);
+}
+
+.table__franchise_orders_modal .table__head .thead {
+    display: flex;
+    width: 100%;
+}
+
+.table__franchise_orders_modal .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr) 50px 100px 100px;
+    padding: 10px;
+    font-weight: 600;
+    column-gap: 20px;
+}
+
+.table__franchise_orders_modal .table__body {
+    height: 100%;
+    overflow-y: auto;
+    max-height: 500px;
+    transition-delay: 0.0s;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color);
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {}
+}
+
+.table__franchise_orders_modal .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table__franchise_orders_modal .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+}
+
+.table__franchise_orders_modal .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+.table__franchise_orders_modal .tbody__container:first-child {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table__franchise_orders_modal .tbody__container:last-child {
+    border-bottom: none;
+    border-radius: 0 0 20px 20px;
+}
+
+
+
+
+.table__franchise_orders_modal .table__body .tbody {
+    display: flex;
+}
+
+.table__franchise_orders_modal .table__body .tbody.personalized {
+    border: 2px solid var(--primary-color);
+}
+
+.table__franchise_orders_modal .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr) 50px 100px 100px;
+    padding: 10px;
+    column-gap: 20px;
+
+}
+
+
+.table__franchise_orders_modal .table__body .tbody>.td {
+    display: flex;
+    align-items: center;
+}
+
+.table__franchise_orders_modal .table__body .tbody>.td .article {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #3d86c62c;
+    border-radius: 5px;
+    font-weight: 600;
+    /* outline: 2px solid var(--primary-100); */
+    color: var(--primary-100);
+}
+
+.table__franchise_orders_modal .table__body .tbody>.td .amount {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #ff91001f;
+    border-radius: 5px;
+    font-weight: 600;
+    /* outline: 2px solid var(--primary-100); */
+    color: #FF8F00;
+
+
+}
+
+.table__franchise_orders_modal .table__body .tbody>.td .total {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    /* Permite que los hijos se ajusten en varias líneas */
+
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #5e35b031;
+    border-radius: 5px;
+    font-weight: 600;
+    /* outline: 2px solid var(--primary-100); */
+    color: #6e34e2;
+    white-space: normal;
+    line-height: 1.5;
+}
+
+.table__franchise_orders_modal .table__body .tbody>.td .total__franch {
+    display: inline-block;
+    /* Forzar que se trate como un bloque en línea */
+    margin-top: 4px;
+    /* Añadir un pequeño margen superior */
+    display: flex;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #6e34e2fd;
+    border-radius: 5px;
+    font-weight: 600;
+    color: #ffffff;
+
+}
+
+.table__franchise_orders_modal .table__body .tbody .td .see-concepts {
+    margin-left: 15px;
+}
+
+
+.table__franchise_orders_modal .table__body .tbody>.td>.container__total {
+    display: flex;
+    align-items: center;
+}
+
+.table__franchise_orders_modal .table__body .tbody>.td .urgency {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #ff91001f;
+    border-radius: 5px;
+    font-weight: 600;
+    /* outline: 2px solid var(--primary-100); */
+    color: #FF8F00;
+    margin-left: 10px;
+}
+
+.table__franchise_orders_modal .table__body .tbody>.td .remove__urgency {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #d32f2f27;
+    border-radius: 5px;
+    font-weight: 600;
+    /* outline: 2px solid var(--primary-100); */
+    color: #D32F2F;
+    margin-left: 10px;
+}
+
+
+
+
+
+.table__franchise_orders_modal .table__body .tbody>.td.urgency .yes-urgency>svg {
+    color: #FF8F00;
+}
+
+.table__franchise_orders_modal .table__body .tbody>.td.urgency .no-urgency>svg {
+    color: #D32F2F;
+}
+
+.table__franchise_orders_modal .table__body .tbody>.td .inputs__general {
+    margin-top: 0;
+}
+
+
+.table__franchise_orders_modal .table__body .tbody>.td .add_urgency {
+    background-color: var(--orange-color);
+    border-radius: 5px;
+    color: #fff;
+    padding: 3px 0;
+    border: none;
+    cursor: pointer;
+}
+
+
+
+.table__franchise_orders_modal .table__body .tbody:hover {
+    background-color: var(--table-hover-color);
+    color: #fff;
+}
+
+
+.table__franchise_orders_modal .table__body .tbody:hover .td>.article {
+    background-color: #3d86c6;
+    color: #ffffff;
+}
+
+.table__franchise_orders_modal .table__body .tbody:hover .td>.amount {
+    background-color: #FF8F00;
+    color: #ffffff;
+}
+
+.table__franchise_orders_modal .table__body .tbody:hover .td .total {
+    background-color:#6e34e2;
+    color: #ffffff;
+}
+
+
+/* .table__franchise_orders_modal .table__body .tbody:hover .td .yes-urgency {
+    background-color: #FF8F00;
+}
+
+.table__franchise_orders_modal .table__body .tbody:hover .td .no-urgency {
+    background-color: #D32F2F;
+}
+
+.table__franchise_orders_modal .table__body .tbody:hover .td .yes-urgency svg {
+    color: #ffffff;
+}
+
+.table__franchise_orders_modal .table__body .tbody:hover .td .no-urgency svg {
+    color: #ffffff;
+} */
+
+
+
+
+
+
+.modal-create-quotations__tooltip-text.no-urgency {
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: #d32f2f27;
+}
+
+.modal-create-quotations__tooltip-text.yes-urgency {
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: #ff91002f;
+}
