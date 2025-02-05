@@ -454,16 +454,15 @@ const ModalBilling: React.FC = () => {
     const handleAddConceptsChange = (order: any) => {
         console.log('order', order);
     
-        let newIdentifier = identifier;
+        let newIdentifier = identifier + 1;
         let copy_totals = { ...totals };
-    
+        
         let newConcepts = order.conceptos.map((el: any) => {
             el.orden = {
                 serie: order.serie,
                 folio: order.folio,
                 anio: order.anio,
             };
-
             el.id_identifier = newIdentifier;
             newIdentifier++;
     
@@ -475,7 +474,6 @@ const ModalBilling: React.FC = () => {
                 copy_totals.total += parseFloat(el.total_restante);
                 copy_totals.urgencia += parseFloat(el.monto_urgencia);
             }
-
             return el;
         });
     
@@ -486,7 +484,7 @@ const ModalBilling: React.FC = () => {
                 anio: order.anio,
             };
             el.id_identifier = newIdentifier;
-            newIdentifier++; // Incrementar el identificador para el siguiente elemento
+            newIdentifier++;
     
             if (type === 2) {
                 copy_totals.subtotal += parseFloat(el.total);
@@ -576,16 +574,19 @@ const ModalBilling: React.FC = () => {
 
     }, [selectedIds?.customers])
 
+    console.log('conceptView', conceptView)
+
     const deleteConceptos = (c: any) => {
+        console.log('c', c)
         if (!modoUpdate) {
             if (type == 2) {
                 DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total))
                 DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
-
             } else {
                 DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total_restante))
                 DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total_restante))
             }
+
             const filter = conceptView.filter((x: any) => x.id_identifier !== c.id_identifier);
             setConceptView(filter);
 
