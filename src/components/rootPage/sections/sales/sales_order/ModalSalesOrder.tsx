@@ -99,6 +99,7 @@ const ModalSalesOrder: React.FC = () => {
                 .slice(0, 16) || "";
 
         setDates(updatedDates.slice(0, 2));
+        setmodify_te(1)
     };
 
     useEffect(() => {
@@ -112,6 +113,10 @@ const ModalSalesOrder: React.FC = () => {
         if (modalSalesOrder == 'sale-order__modal-update') {
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setNormalConcepts(saleOrdersToUpdate?.conceptos)
+            setDates([
+                saleOrdersToUpdate.fecha_entrega_cliente,
+                saleOrdersToUpdate.fecha_entrega_produccion,
+            ]);
         }
     }, [saleOrdersToUpdate])
 
@@ -254,7 +259,6 @@ const ModalSalesOrder: React.FC = () => {
 
     const SaleOrderProduction = async () => {
         setModalProduction('sale-order-production__modal')
-        console.log(modalProduction)
 
         let data = {
             articulos: saleOrdersToUpdate.conceptos,
@@ -263,6 +267,8 @@ const ModalSalesOrder: React.FC = () => {
 
         try {
             let response = await APIs.calculateSalesDeliveryDime(data)
+            console.log('saleOrdersToUpdate',saleOrdersToUpdate);
+            
             setDataProduction(response)
         } catch (error) {
 
@@ -360,6 +366,7 @@ const ModalSalesOrder: React.FC = () => {
     }
 
     const binnacleModal = () => {
+
         setSubModal('logbook__sales-order-modal')
     }
 
@@ -388,9 +395,6 @@ const ModalSalesOrder: React.FC = () => {
         setNormalConcepts(updatedConcepts);
     };
 
-    console.log(conceptView)
-
-
     const [amount, setAmount] = useState<any>(0)
     const [discount, setdDiscount] = useState<any>(0)
     const [urgency, setdUrgency] = useState<any>(0)
@@ -417,11 +421,16 @@ const ModalSalesOrder: React.FC = () => {
     const [subtotalf, setSubtotalf] = useState<number>(0)
     const [urgenciaf] = useState<number>(0)
     const [totalf, setTotalf] = useState<number>(0)
+    const [modify_te, setmodify_te] = useState<number>(0)
     useEffect(() => {
 
         calcular_totales()
-        calcular_tiempos_entrega()
-    }, [normalConcepts, customConcepts, branchOffices])
+        if (modalSalesOrder != 'sale-order__modal-update') {
+            calcular_tiempos_entrega()
+
+        }
+
+    }, [normalConcepts, customConcepts, branchOffices, modalSalesOrder])
     const calcular_totales = () => {
 
         const precios = normalConcepts.reduce(
@@ -520,7 +529,6 @@ const ModalSalesOrder: React.FC = () => {
 
             normales.forEach((n: any) => {
                 conceptos_a_enviar.push(n)
-                console.log('Push en foreach a n', n);
 
             });
 
@@ -703,7 +711,6 @@ const ModalSalesOrder: React.FC = () => {
 
         // Actualizar el estado de normalConcepts
         setNormalConcepts([...normalConcepts, ...updatedConcepts]);
-        console.log('updatedConcepts', updatedConcepts)
 
         // Filtrar y actualizar conceptView para eliminar los conceptos con el id_identifier especificado
         const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);

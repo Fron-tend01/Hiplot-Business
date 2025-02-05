@@ -104,18 +104,21 @@ const PedidoFranquicias = () => {
   };
 
   const Modal = (modoUpdate: boolean, data: any) => {
-    setModal('modal__franchise-request_update')
     setPf(pfClear)
     setArticulos([])
     if (modoUpdate) {
+      setModal('modal__franchise-request_update')
       setPfMu(data)
       console.log(pfMu);
       // // // //LLENAR LA VARIABLES ARRAY
       // data.articulos.forEach((element: any) => {
       //   DynamicVariables.addObjectInArrayRepeat(element, setArticulos)
       // });
+
+      setModal('modal__franchise-request_update')
       setModoUpdate(true)
     } else {
+      setModal('modal__franchise-request_create')
       setModoUpdate(false)
     }
   }
@@ -126,8 +129,8 @@ const PedidoFranquicias = () => {
     const result = await APIs.CreateAny(searcher, "pedido_franquicia/get")
     setData(result)
   }
-  const getEmpresas = async (id_fr:number) => {
-    const resultCompanies:any = await APIs.GetAny("get_proveedor_franquicia/"+ id_fr)
+  const getEmpresas = async (id_fr: number) => {
+    const resultCompanies: any = await APIs.GetAny("get_proveedor_franquicia/" + id_fr)
     setProveedor({
       selectName: 'Proveedor',
       dataSelect: resultCompanies,
@@ -575,19 +578,19 @@ const PedidoFranquicias = () => {
                   </div>
                 </div>
                 <div className='d-flex justify-content-center align-items-end'>
-                  <button className='btn__general-purple' onClick={() => Modal(false, 0)}>Buscar</button>
+                  <button className='btn__general-purple' onClick={() => getData()}>Buscar</button>
                 </div>
               </div>
             </div>
           </div>
-          <div className='d-flex justify-content-center align-items-end'>
+          {/* <div className='d-flex justify-content-center align-items-end'>
             <button className='btn__general-purple' onClick={() => getData()}>Buscar</button>
-          </div>
+          </div> */}
         </div>
         <div className='row my-4'>
           <div className='col-12'>
             <div className='btns__create'>
-              <button className='btn__general-purple' onClick={() => setModal('modal__franchise-request_create')}>Realizar Pedido de Franquicia</button>
+              <button className='btn__general-purple' onClick={() => Modal(false, 0)}>Realizar Pedido de Franquicia</button>
             </div>
           </div>
         </div>
@@ -692,12 +695,15 @@ const PedidoFranquicias = () => {
                       <div className='col-6 md-col-12'>
                         <span className='text'>Creado por: <b>{pfMu.usuario_crea}</b></span><br />
                         <span className='text'>Fecha de Creación: <b>{pfMu.fecha}</b></span><br />
+                        <button className='btn__general-orange' type='button' onClick={getPDF}>PDF</button>
 
                       </div>
                       <div className='col-6 md-col-12'>
                         <span className='text'>Empresa: <b>{pfMu.empresa}</b></span><br />
                         <span className='text'>Sucursal: <b>{pfMu.sucursal}</b></span><br />
-                        <span className='text'>Proveedor: <b>{pfMu.proveedor}</b></span>
+                        <span className='text'>Proveedor: <b>{pfMu.proveedor}</b></span> <br />
+                        <button className='btn__general-danger' type='button' onClick={cancelarPf}>Cancelar</button>
+
                       </div>
                     </div>
                     <div className='row'>
@@ -708,10 +714,10 @@ const PedidoFranquicias = () => {
                     </div>
                   </div>
                 </div>
-                <div className="table__requisicion">
-                  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                    <thead className="table__head">
-                      <tr className="thead">
+                <div className="table__paf-requisicion">
+                  <table>
+                    <thead className="table__paf-head">
+                      <tr>
                         <th>Articulo</th>
                         <th>Unidad</th>
                         <th>Cantidad</th>
@@ -720,10 +726,10 @@ const PedidoFranquicias = () => {
                         <th>Comentarios</th>
                       </tr>
                     </thead>
-                    <tbody className="table__body">
+                    <tbody className="table__paf-body">
                       {pfMu.conceptos && pfMu.conceptos.length > 0 ? (
-                        pfMu.conceptos?.map((concept: any, index: number) => (
-                          <tr className="tbody__container" key={index}>
+                        pfMu.conceptos.map((concept: any, index: number) => (
+                          <tr className="tbody__paf-container" key={index}>
                             <td>{concept.codigo}-{concept.descripcion}</td>
                             <td>{concept.unidad}</td>
                             <td>{concept.cantidad}</td>
@@ -734,7 +740,7 @@ const PedidoFranquicias = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={10} style={{ textAlign: "center" }}>
+                          <td colSpan={6} className="table__paf-no-data">
                             No hay requisiciones disponibles
                           </td>
                         </tr>
@@ -742,6 +748,7 @@ const PedidoFranquicias = () => {
                     </tbody>
                   </table>
                 </div>
+
               </div>
               :
               <div className='franchise__orders'>
@@ -854,13 +861,8 @@ const PedidoFranquicias = () => {
                   </div>
                 </div>
                 <div className='d-flex justify-content-between mt-3'>
-                  {modal == 'modal__franchise-request_update' ?
-                    <div>
-                      <button className='btn__general-orange' type='button' onClick={getPDF}>PDF</button>
-                    </div>
-                    :
-                    ''
-                  }
+
+
 
                   {/* <button className='btn__general-purple d-flex align-items-center' onClick={handleCreateRequisition} disabled={updateToRequisition && updateToRequisition.status == 2}>
                 {updateToRequisition ? `${stateLoading ? 'Actualizando requisición' : 'Actualizar requisición'}` : `${stateLoading ? 'Creando requisición' : 'Crear requisición'}`}
@@ -868,12 +870,7 @@ const PedidoFranquicias = () => {
               </button> */}
                   <>
                     <button className='btn__general-purple d-flex align-items-center' onClick={(e) => create(e)}>Guardar</button>
-                    {modal == 'modal__franchise-request_update' ?
-                      <div>
-                        <button className='btn__general-danger' type='button' onClick={cancelarPf}>Cancelar</button>
-                      </div>
-                      :
-                      ''}
+
                   </>
                 </div>
               </div>

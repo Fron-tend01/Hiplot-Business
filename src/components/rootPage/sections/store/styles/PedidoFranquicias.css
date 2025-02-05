@@ -103,7 +103,7 @@
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
-
+  overflow:scroll
 }
 
 .popup__modal__franchise-orders .btn-cerrar-popup__modal__franchise-orders {
@@ -688,4 +688,55 @@ height: 100%;
     padding: 5px 10px;
     border-radius: 5px;
     background-color: #ff91002f;
+}
+
+
+.table__paf-requisicion {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+}
+
+.table__paf-requisicion table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table__paf-head {
+  background-color: #3d85c6;
+  color: white;
+  text-transform: uppercase;
+}
+
+.table__paf-head th {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #3d85c6;
+}
+
+.table__paf-body tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.table__paf-body tr:hover {
+  background-color: #e2e6ea;
+}
+
+.table__paf-body td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.table__paf-body .tbody__paf-container td {
+  white-space: nowrap;
+}
+
+.table__paf-no-data {
+  text-align: center;
+  font-weight: bold;
+  color: #6c757d;
+  padding: 20px;
 }
