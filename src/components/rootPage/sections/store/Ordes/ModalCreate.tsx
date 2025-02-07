@@ -87,17 +87,22 @@ const ModalCreate = () => {
 
         // Obtener los valores relevantes de `concepts`
         const stocks = concepts[index].stock;
-        const almacenPredeterminado = concepts[index].almacenes_predeterminados.filter((x: any) => x.id_sucursal == branchOffices?.id)[0];
+        let almacenPredeterminado = concepts[index].almacenes_predeterminados.filter((x: any) => x.id_sucursal == branchOffices?.id)[0];
+        if (LPAs?.dataSelect.length > 0) {
+            almacenPredeterminado = {id: LPAs?.dataSelect[0]?.id_almacen}
+        }
         if (almacenPredeterminado == undefined) {
             Swal.fire('Notificacion', 'La sucursal seleccionada no tiene un almacen configurado para el articulo '
                 + concepts[index].codigo + ' - ' + concepts[index].descripcion, 'warning')
             return
         }
+
         // Filtrar el stock para obtener el almacen correspondiente
         const filter = stocks.filter((x: any) => x.id === almacenPredeterminado.id);
 
         // Verificar si el almacen existe y tiene stock disponible
 
+        debugger
         if (filter) {
             const equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == concepts[index].unidad)
             console.log('value', value);
@@ -274,7 +279,7 @@ const ModalCreate = () => {
                             <textarea className={`textarea__general`} value={OPcomments} onChange={(e) => setOPcomments(e.target.value)} placeholder='Comentarios' />
                         </div>
                     </div>
-                    {LPAs?.length == 0 ?
+                    {LPAs?.dataSelect?.length == 0 ?
                         selectedOption == 0 ?
                             <Direct />
                             :

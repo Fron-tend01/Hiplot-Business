@@ -314,7 +314,7 @@ const Users: React.FC = () => {
       console.log(data_ext);
 
       if (nombre === '' || email === '' || password === '' || selectedCompany === null || selectedBranchOffice === null ||
-        selectedTypeUser === null || data_ext.grupos_nuevos.length === 0 || data_ext.sucursales_nuevas.length === 0) {
+        selectedTypeUser === null || data_ext.sucursales_nuevas.length === 0) {
         return;
       }
 
@@ -472,7 +472,7 @@ const Users: React.FC = () => {
     setNombre(user.nombre);
     setEmail(user.email);
     setCelular(user.celular);
-    setPassword(user.password);
+    // setPassword(user.password);
     setSelectedCompany(user.empresa_id);
     getBranchOfficeXCompanies(user.empresa_id);
     setSelectedBranchOffice(user.sucursal_id);
@@ -1042,8 +1042,8 @@ const Users: React.FC = () => {
                   {warningSelectBranchOffices ? <div className='warning__general'><small >Por favor, asegúrate de seleccionar una sucursal y un área.</small></div> : ''}
                 </div>
                 <div className='btns__branchOffices' >
-                  {branchOfficeXCompanies.map((office: any) => (
-                    <div key={office.id}>
+                  {branchOfficeXCompanies.map((office: any, i:number) => (
+                    <div key={i}>
                       <div className='btn'>
                         <button className='btn__general-purple' type='button' onClick={() => toggleModal(office.id)}>{office.nombre}</button>
                       </div>
@@ -1072,8 +1072,8 @@ const Users: React.FC = () => {
                               <div className='conatiner__areas_permissions'>
                                 <svg className='sort-up' xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 320 512"><path d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z" /></svg>
                                 <div className='areas__permissions'>
-                                  {areasXBranchOfficesXUsers.filter((area: any) => area.sucursal_id === office.id).map((area: any) => (
-                                    <div key={uuidv4()}>
+                                  {areasXBranchOfficesXUsers.filter((area: any) => area.sucursal_id === office.id).map((area: any, ii:number) => (
+                                    <div key={ii}>
                                       <p className='text'>{area.nombre}</p>
                                       <label className="switch">
                                         <input
