@@ -877,7 +877,7 @@ const ModalSalesOrder: React.FC = () => {
                                     {modalSalesOrder !== 'sale-order__modal-update' ?
                                         <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
                                         :
-                                        <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                                        <Empresas_Sucursales modeUpdate={true} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
                                     }
                                 </div>
                             </div>

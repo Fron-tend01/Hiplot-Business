@@ -345,7 +345,9 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
           const existItem = normalConcepts.find((x: any) => x.id_identifier == item.id_identifier)
           const deleteItem = normalConcepts.filter((xx: any) => xx.id_identifier !== existItem.id_identifier)
           setNormalConcepts(deleteItem)
-          setDeleteNormalConcepts([...deleteCustomConcepts, existItem])
+          if(existItem.id) {
+            setDeleteNormalConcepts([...deleteCustomConcepts, existItem.id])
+          }
           setCustomLocal([...customLocal, existItem])
 
           console.log('customLocal', customLocal)

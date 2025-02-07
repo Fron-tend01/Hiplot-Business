@@ -482,6 +482,44 @@
 
 
 
+.table__quotations_modal .table__body .tbody:hover>.td .urgency-true-icon {
+	background-color: #ff9100;
+	color: #ffffff;
+}
+
+.table__quotations_modal .table__body .tbody:hover>.td .urgency-false-icon {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+.table__quotations_modal .table__body .tbody:hover>.td .conept-icon {
+	background-color: #3D85C6;
+	color: #ffffff;
+}
+
+.table__quotations_modal .table__body .tbody:hover>.td .cancel-icon {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+.table__quotations_modal .table__body .tbody:hover>.td .see-icon {
+	background-color: #3D85C6;
+	color: #ffffff;
+}
+
+
+.table__quotations_modal .table__body .tbody:hover>.td .delete-icon {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+.table__quotations_modal .table__body .tbody:hover>.td .undo-icon {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+
+
 .table__quotations_modal .table__body .tbody:hover {
     background-color: var(--table-hover-color);
     color: #fff;
