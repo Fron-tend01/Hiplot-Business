@@ -27,7 +27,7 @@ const ModalProduction: React.FC = () => {
 
     }
 
-      const setModalSubSub = storeModals((state) => state.setModalSubSub);
+    const setModalSubSub = storeModals((state) => state.setModalSubSub);
 
 
     const [areasGral, setAreasGral] = useState<any>()
@@ -38,7 +38,7 @@ const ModalProduction: React.FC = () => {
             const uniqueAreas = new Set<string>(); // Usamos Set para almacenar las áreas como cadenas JSON
 
             productionToUpdate?.conceptos?.forEach((element: any) => {
-           
+
 
                 element?.areas_produccion.forEach((area: any) => {
                     const areaStr = JSON.stringify({
@@ -227,6 +227,10 @@ const ModalProduction: React.FC = () => {
                                         <span className='text'>Creado por: <b>{productionToUpdate.usuario_crea}</b></span><br />
                                         <span className='text'>Fecha envio producción: <b>{productionToUpdate.fecha_creacion}</b></span><br />
                                         <span className='text'>Fecha Entrega: <b>{productionToUpdate.fecha_creacion}</b></span><br />
+                                        {productionToUpdate.motivo_modify_te != 0 ?
+                                                <b  className='text' style={{ color: 'red' }} title='Esta leyenda aparece cuando las fechas son ingresadas de forma manual'>
+                                                    Esta orden tiene Fechas de Entrega Modificadas</b>
+                                            : ''}
                                         <p>{productionToUpdate.status == 0 ? <b style={{ color: 'green' }}>ACTIVO</b> :
                                             productionToUpdate.status == 1 ? <b style={{ color: 'red' }}>CANCELADO</b> :
                                                 productionToUpdate.status == 2 ? <b style={{ color: 'blue' }}>TERMINADO</b> : <b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
@@ -255,7 +259,7 @@ const ModalProduction: React.FC = () => {
                                             <div className='d-flex align-items-end'>
                                                 <button className='btn__general-purple' onClick={sendAreas}>Enviar</button>
                                             </div>
-                                            
+
                                         </div>
                                         <div>
                                             <button className='btn__general-primary'>Enviar a sucursal</button>
@@ -321,10 +325,10 @@ const ModalProduction: React.FC = () => {
                                                 </div>
                                                 <div className='td'>
                                                     {article.monto_urgencia != undefined && article.monto_urgencia > 0 ?
-                                                    <div className='d-flex'>
-                                                        <p className='total-identifier'>$ {article.total}</p>
-                                                        <p>${article.monto_urgencia}</p>
-                                                    </div>
+                                                        <div className='d-flex'>
+                                                            <p className='total-identifier'>$ {article.total}</p>
+                                                            <p>${article.monto_urgencia}</p>
+                                                        </div>
                                                         :
                                                         <p className='total-identifier'>$ {article.total}</p>}
                                                 </div>
@@ -370,7 +374,7 @@ const ModalProduction: React.FC = () => {
                                                         <button className='btn__general-danger' type='button' onClick={() => cancelarConcepto(article, index)}>Cancelar Concepto</button>
                                                     </div>
                                                 </div>
-                                        
+
                                             </div>
                                         </div>
                                     )

@@ -347,7 +347,13 @@ const RootHome: React.FC = () => {
                                                 <span>Descuentos</span>
                                             </AnchorTag>
                                         );
-                                    } else {
+                                    } else if (permiso.titulo == "LISTAS_PRODUCTOS_APROBADOS") {
+                                        return (
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(4, 'catalogue')} to={`${PrivateRoutes.CATALOGUE}/${PrivateRoutes.LISTAS_PRODUCTOS_APROBADOS}`}>
+                                                <span>Listas Productos Aprobados</span>
+                                            </AnchorTag>
+                                        );
+                                    }else {
                                         return null;
                                     }
                                 })}

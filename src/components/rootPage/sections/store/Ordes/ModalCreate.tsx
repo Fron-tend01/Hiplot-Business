@@ -13,13 +13,16 @@ import { useSelectStore } from "../../../../../zustand/Select";
 import { useStore } from "zustand";
 import { storeModals } from "../../../../../zustand/Modals";
 import ByOP from "./types/ByOP";
+import APIs from "../../../../../services/services/APIs";
+import LoadingInfo from "../../../../loading/LoadingInfo";
+import { storeArticles } from "../../../../../zustand/Articles";
 
 
 const ModalCreate = () => {
     const userState = useUserStore(state => state.user);
     const user_id = userState.id
 
-    const { getOrdedrs, dates }: any = storeOrdes();
+    const { getOrdedrs, dates, LPAs }: any = storeOrdes();
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
     const setConcepts = storeOrdes(state => state.setConcepts)
     const { concepts } = useStore(storeOrdes)
@@ -98,10 +101,10 @@ const ModalCreate = () => {
         if (filter) {
             const equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == concepts[index].unidad)
             console.log('value', value);
-            console.log('canti', equivalencias[0].cantidad);
+            // console.log('canti', equivalencias[0].cantidad);  
 
             if (value > equivalencias[0].cantidad) {
-                const newArticleStates = [...concepts];
+                const newArticleStates = [...concepts]; 
                 newArticleStates[index].cantidad = 0;
                 setConcepts(newArticleStates);
                 Swal.fire({
@@ -162,6 +165,11 @@ const ModalCreate = () => {
             status: 0
 
         }
+        concepts.forEach((el:any) => {
+            if (el.unidad != null && el.unidad != undefined) {
+                el.id_unidad = el.unidad
+            }
+        });
         try {
             await createOrders({ id_area, id_sucursal, id_usuario_crea, status: 0, comentarios, conceptos: concepts })
             await getOrdedrs(data)
@@ -192,6 +200,37 @@ const ModalCreate = () => {
         const filter = concepts.filter((_: any, index: number) => index !== indexConcept)
         setConcepts(filter)
     }
+    const selectData: any = useSelectStore(state => state.selectedIds)
+    const modalLoading = storeArticles((state: any) => state.modalLoading);
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
+
+    useEffect(() => {
+        if (selectData?.LPASelected) {
+            setModalLoading(true)
+
+            APIs.CreateAny({ id: selectData?.LPASelected.id, id_usuario: user_id, for_pedido: 1 }, "getLPAArticulos")
+                .then(async (response: any) => {
+                    setModalLoading(false)
+                    setConcepts(response)
+
+                }).catch((error: any) => {
+                    if (error.response) {
+                        if (error.response.status === 409) {
+                            setModalLoading(false)
+                            Swal.fire(error.mensaje, '', 'warning');
+
+                        } else {
+                            setModalLoading(false)
+                            Swal.fire('Error al actualizar', '', 'error');
+                        }
+                    } else {
+                        setModalLoading(false)
+                        Swal.fire('Error de conexión.', '', 'error');
+                    }
+                })
+
+        }
+    }, [selectData])
 
     return (
         <div className={`overlay__orders ${modal == 'modal-create-pedido' ? 'active' : ''}`}>
@@ -210,13 +249,15 @@ const ModalCreate = () => {
                                 </label>
                                 <p className='text'>Directa</p>
                             </div>
-                            <div className='checkbox__tickets' >
-                                <label className="checkbox__container_general">
-                                    <input className='checkbox' type="radio"  value="PorOC" checked={selectedOption == 1} onChange={handleOptionChange} />
-                                    <span className="checkmark__general"></span>
-                                </label>
-                                <p className='text'>Por OP</p>
-                            </div>
+                            {LPAs?.length == 0 ?
+                                <div className='checkbox__tickets' >
+                                    <label className="checkbox__container_general">
+                                        <input className='checkbox' type="radio" value="PorOC" checked={selectedOption == 1} onChange={handleOptionChange} />
+                                        <span className="checkmark__general"></span>
+                                    </label>
+                                    <p className='text'>Por OP</p>
+                                </div>
+                                : ''}
                         </div>
                     </div>
                     <div className='row'>
@@ -233,10 +274,14 @@ const ModalCreate = () => {
                             <textarea className={`textarea__general`} value={OPcomments} onChange={(e) => setOPcomments(e.target.value)} placeholder='Comentarios' />
                         </div>
                     </div>
-                    {selectedOption == 0 ?
-                        <Direct />
+                    {LPAs?.length == 0 ?
+                        selectedOption == 0 ?
+                            <Direct />
+                            :
+                            <ByOP />
+
                         :
-                        <ByOP />
+                        <Select dataSelects={LPAs} instanceId='LPASelected' nameSelect={'Lista Productos Aprobados'}></Select>
                     }
                     <div className='table__modal_create_orders' >
                         <div>
@@ -379,6 +424,10 @@ const ModalCreate = () => {
                     </div>
                 </form>
             </div>
+            {modalLoading == true ? (
+                <LoadingInfo />
+            ) :
+                ''}
         </div>
     )
 }
