@@ -7,7 +7,6 @@ import "./styles/PedidoFranquicias.css"
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales';
 import Filtrado_Articulos_Basic from '../../Dynamic_Components/Filtrado_Articulos_Basic';
 import Select from '../../Dynamic_Components/Select';
-import { companiesRequests } from '../../../../fuctions/Companies';
 import { useSelectStore } from '../../../../zustand/Select';
 import useUserStore from '../../../../zustand/General';
 import Flatpickr from "react-flatpickr";

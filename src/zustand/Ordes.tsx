@@ -11,6 +11,9 @@ interface StoreState {
 
     dates: any;
     setDates: (x: any) => void;
+
+    LPAs: any;
+    setLPAs: (x: any) => void;
 }
 
 export const storeOrdes = create<StoreState>((set) => ({
@@ -22,6 +25,8 @@ export const storeOrdes = create<StoreState>((set) => ({
     dates: [],
     setDates: (x) => set({dates: x}),
 
+    LPAs: [],
+    setLPAs: (x) => set({LPAs: x}),
     // Almacen
  
     createOrders: async (data: any) => {

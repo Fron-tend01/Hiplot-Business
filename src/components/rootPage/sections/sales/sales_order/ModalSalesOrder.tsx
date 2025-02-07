@@ -117,6 +117,13 @@ const ModalSalesOrder: React.FC = () => {
                 saleOrdersToUpdate.fecha_entrega_cliente,
                 saleOrdersToUpdate.fecha_entrega_produccion,
             ]);
+            setDataProduction({
+                "fecha_produccion": saleOrdersToUpdate.fecha_entrega_produccion,
+                "hora_produccion": saleOrdersToUpdate.hora_entrega_produccion,
+                "fecha_cliente":  saleOrdersToUpdate.fecha_entrega_cliente,
+                "hora_cliente":  saleOrdersToUpdate.hora_entrega_cliente,
+                "sin_tiempos": false
+            })
         }
     }, [saleOrdersToUpdate])
 
@@ -157,6 +164,7 @@ const ModalSalesOrder: React.FC = () => {
             id_cliente: selectedIds.clients.id,
             id_usuario_crea: user_id,
             titulo: title,
+            motivo_modify_te: modify_te,
             id_cotizacion_relacionada: idCotizacion,
             hora_entrega_produccion: timePartOne,
             fecha_entrega_produccion: datePartOne,
@@ -171,24 +179,9 @@ const ModalSalesOrder: React.FC = () => {
             if (result.error == true) {
                 return Swal.fire('Advertencia', result.mensaje, 'warning');
             } else {
-                Swal.fire('Orden de compra creada exitosamente', result.mensaje, 'success');
+                Swal.fire('Notificacion', result.mensaje, 'success');
+                search()
             }
-            const dataSaleOrders = {
-                folio: 0,
-                id_sucursal: branchOffices.id,
-                id_serie: 0,
-                id_cliente: dataGet,
-                desde: dataGet.desde,
-                hasta: dataGet.hasta,
-                id_usuario: dataGet.id_usuario,
-                id_vendedor: 0,
-                status: 0
-            }
-
-            const resultData = await getSaleOrders(dataSaleOrders)
-            setSaleOrders(resultData)
-            setModalSalesOrder('')
-
         } catch (error) {
             console.error("Error al crear la orden de compra:", error);
             Swal.fire('Hubo un error al crear la orden de compra', '', 'error');
@@ -259,18 +252,13 @@ const ModalSalesOrder: React.FC = () => {
 
     const SaleOrderProduction = async () => {
         setModalProduction('sale-order-production__modal')
-
-        let data = {
-            articulos: saleOrdersToUpdate.conceptos,
-            id_sucursal: saleOrdersToUpdate.id_sucursal
-        }
-
-        try {
+        if (!modify_te) {
+            let data = {
+                articulos: saleOrdersToUpdate.conceptos,
+                id_sucursal: saleOrdersToUpdate.id_sucursal
+            }
             let response = await APIs.calculateSalesDeliveryDime(data)
-            console.log('saleOrdersToUpdate',saleOrdersToUpdate);
-            
             setDataProduction(response)
-        } catch (error) {
 
         }
     }
@@ -286,10 +274,10 @@ const ModalSalesOrder: React.FC = () => {
         }
 
         try {
-            APIs.createSaleOrderProduction(data).then((resp:any) => {
+            APIs.createSaleOrderProduction(data).then((resp: any) => {
                 if (resp.error) {
                     Swal.fire('Notificación', resp.mensaje, 'warning')
-                }else {
+                } else {
                     Swal.fire('Notificación', resp.mensaje, 'success')
                     setModalProduction('')
                 }
@@ -345,21 +333,7 @@ const ModalSalesOrder: React.FC = () => {
                 Swal.fire('Exito', response.mensaje, 'success');
             }
 
-            const dataSaleOrders = {
-                folio: 0,
-                id_sucursal: branchOffices.id,
-                id_serie: 0,
-                id_cliente: dataGet,
-                desde: dataGet.desde,
-                hasta: dataGet.hasta,
-                id_usuario: dataGet.id_usuario,
-                id_vendedor: 0,
-                status: 0
-            }
-
-            const resultData = await getSaleOrders(dataSaleOrders)
-            setSaleOrders(resultData)
-            setModalSalesOrder('')
+            search()
         } catch (error: any) {
             Swal.fire('Error al actualizar el concepto', error, 'success');
         }
@@ -500,13 +474,16 @@ const ModalSalesOrder: React.FC = () => {
             saleOrdersToUpdate.fecha_entrega_cliente + ' ' + saleOrdersToUpdate.hora_entrega_cliente])
             setTitle(saleOrdersToUpdate.titulo)
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
+            setmodify_te(saleOrdersToUpdate.motivo_modify_te)
             setCompanies({ id: saleOrdersToUpdate.id_empresa })
             setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
             setSelectedIds('clients', saleOrdersToUpdate.id_cliente)
+            console.log('saleOrdersToUpdate', saleOrdersToUpdate);
+
             const data = {
                 id_sucursal: saleOrdersToUpdate.id_sucursal,
                 id_usuario: user_id,
-                nombre: saleOrdersToUpdate.rfc
+                nombre: saleOrdersToUpdate.razon_social
             }
             getClients(data).then((response: any) => {
                 setClients({
@@ -553,6 +530,7 @@ const ModalSalesOrder: React.FC = () => {
             .then(async (response: any) => {
                 setDataProduction(response)
                 setDates([response.fecha_produccion + ' ' + response.hora_produccion, response.fecha_cliente + ' ' + response.hora_cliente])
+                setmodify_te(0)
             })
     }
     const setModalSub = storeModals((state) => state.setModalSub);
@@ -642,21 +620,7 @@ const ModalSalesOrder: React.FC = () => {
                     Swal.fire('Notificación', response.mensaje, 'success');
                 }
             })
-        const dataSaleOrders = {
-            folio: 0,
-            id_sucursal: branchOffices.id,
-            id_serie: 0,
-            id_cliente: dataGet,
-            desde: dataGet.desde,
-            hasta: dataGet.hasta,
-            id_usuario: dataGet.id_usuario,
-            id_vendedor: 0,
-            status: 0
-        }
 
-        const resultData = await getSaleOrders(dataSaleOrders)
-        setSaleOrders(resultData)
-        setModalSalesOrder('')
     }
     const [urgenciaG, setUrgenciaG] = useState<boolean>(false)
     const urgenciaGlobal = async (urg: boolean) => {
@@ -727,6 +691,25 @@ const ModalSalesOrder: React.FC = () => {
     const modalPersonalized = () => {
         setPersonalizedModal('personalized_modal-sale')
         setCustomConceptView(normalConcepts)
+    }
+    const search = async () => {
+        const dataSaleOrders = {
+            folio: 0,
+            id_sucursal: branchOffices.id,
+            id_serie: 0,
+            id_cliente: dataGet,
+            desde: dataGet.desde,
+            hasta: dataGet.hasta,
+            id_usuario: dataGet.id_usuario,
+            id_vendedor: 0,
+            status: 0,
+            page: 1
+        }
+
+        const resultData = await getSaleOrders(dataSaleOrders)
+        setSaleOrders(resultData)
+        setModalSalesOrder('')
+
     }
 
     return (
@@ -894,7 +877,7 @@ const ModalSalesOrder: React.FC = () => {
                                     {modalSalesOrder !== 'sale-order__modal-update' ?
                                         <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
                                         :
-                                        <Empresas_Sucursales modeUpdate={true} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                                        <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
                                     }
                                 </div>
                             </div>
@@ -916,7 +899,14 @@ const ModalSalesOrder: React.FC = () => {
                                     <input className='inputs__general' type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el titulo' />
                                 </div>
                             </div>
+
                             <div className='row my-4'>
+                                {modify_te != 0 ?
+                                    <div className='col-12'>
+                                        <b style={{ color: 'red' }} title='Esta leyenda aparece cuando las fechas son ingresadas de forma manual'>
+                                            Esta orden tiene Fechas de Entrega Modificadas</b>
+                                    </div>
+                                    : ''}
                                 <div className="col-6 sale-order__input_container d-flex align-items-center">
                                     <p className="label__general">Fecha de entrega a producción</p>
                                     <div className="container_dates__requisition">

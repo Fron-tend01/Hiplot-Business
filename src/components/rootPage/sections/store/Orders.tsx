@@ -14,6 +14,8 @@ import './styles/Orders.css'
 import ModalUpdate from "./Ordes/ModalUpdate";
 import Empresas_Sucursales from "../../Dynamic_Components/Empresas_Sucursales";
 import { storeModals } from "../../../../zustand/Modals";
+import APIs from "../../../../services/services/APIs";
+import Select from "../../Dynamic_Components/Select";
 
 const Departures: React.FC = () => {
 
@@ -26,6 +28,7 @@ const Departures: React.FC = () => {
     const user_id = userState.id
 
     const setDates = storeOrdes(state => state.setDates)
+    const setLPAs = storeOrdes(state => state.setLPAs)
 
     const setModal = storeModals(state => state.setModal)
     
@@ -51,15 +54,31 @@ const Departures: React.FC = () => {
 
 
 
+  const [series, setSeries] = useState<any>([])
 
 
     const fecth = async () => {
+        APIs.CreateAny({ id_usuario: user_id, for_pedido:1, light:true }, "getLPA")
+        .then(async (response: any) => {
+            setLPAs({
+                selectName: 'Lista Productos Aprobados',
+                dataSelect: response,
+                options: 'nombre'
+            })
+        })
         setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
         await getCompaniesXUsers(user_id)
         await getBranchOfficeXCompanies(0, user_id)
-        await getSeriesXUser(user_id)
-        await getSuppliers('', true, user_id)
+        const resultSeries = await getSeriesXUser({id: user_id,tipo_ducumento: 3,})
+        resultSeries.unshift({ nombre: 'Ninguna', id: 0 });
+        setSeries({
+          selectName: 'Series',
+          options: 'nombre',
+          dataSelect: resultSeries
+        })
+        getSuppliers('', true, user_id)
         await getOrdedrs({ id_usuario, id_sucursal: branchOffices.id, desde, hasta, status, })
+        
     }
 
 
@@ -104,7 +123,9 @@ const Departures: React.FC = () => {
         await getOrdedrs(data)
     }
 
-
+    const modalCreate = () => {
+        setModal('modal-create-pedido')
+    }
     return (
         <div className="orders">
             <div className="orders__container">
@@ -120,7 +141,8 @@ const Departures: React.FC = () => {
                     </div>
                 </div>
                 <div className="row__two">
-                    {/* <Select instanceId="series" nameSelect={'Series'} /> */}
+                    <Select  dataSelects={series}  instanceId="serieSelected" nameSelect={'Series'} />
+
                     <div>
                         <label className='label__general'>Folio</label>
                         <div className='warning__general'><small >Este campo es obligatorio</small></div>
@@ -159,7 +181,7 @@ const Departures: React.FC = () => {
                             <button className="btn__general-purple">Excel</button>
                         </div>
                         <div>
-                            <button className="btn__general-purple" onClick={() => setModal('modal-create-pedido')}>Nueva entrada</button>
+                            <button className="btn__general-purple" onClick={() => modalCreate()}>Nueva entrada</button>
                         </div>
                     </div>
                 </div>

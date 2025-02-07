@@ -15,6 +15,7 @@ import Clients from "../../../components/rootPage/sections/catalogs/Clients";
 import TiemposEntrega from "../../../components/rootPage/sections/catalogs/TiemposEntrega";
 import ListasFranquicias from "../../../components/rootPage/sections/catalogs/ListasFranquicias";
 import Descuentos from "../../../components/rootPage/sections/catalogs/Descuentos";
+import ListasProductosAprobados from "../../../components/rootPage/sections/catalogs/ListasProductosAprobados";
 
 
 const RouteCatalogue: React.FC = () => {
@@ -33,6 +34,7 @@ const RouteCatalogue: React.FC = () => {
       <Route path={`/${PrivateRoutes.TIEMPOSENTREGA}`} element={<TiemposEntrega />}/>
       <Route path={`/${PrivateRoutes.LISTASFRANQUICIAS}`} element={<ListasFranquicias />}/>
       <Route path={`/${PrivateRoutes.DESCUENTOS}`} element={<Descuentos />}/>
+      <Route path={`/${PrivateRoutes.LISTAS_PRODUCTOS_APROBADOS}`} element={<ListasProductosAprobados />}/>
 
     </Routes>
   );

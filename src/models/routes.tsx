@@ -37,6 +37,7 @@ export const PublicRoutes = {
     TIEMPOSENTREGA: 'TiemposEntrega',
     LISTASFRANQUICIAS: 'ListasFranquicias',
     DESCUENTOS: 'descuentos',
+    LISTAS_PRODUCTOS_APROBADOS: 'listaspa',
     // Almacen//characteristics
     STORE: 'store',
     TICKETS: 'tickets',

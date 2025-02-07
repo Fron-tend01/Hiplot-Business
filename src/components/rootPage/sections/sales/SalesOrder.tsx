@@ -13,6 +13,8 @@ import { usersRequests } from '../../../../fuctions/Users'
 import { useSelectStore } from '../../../../zustand/Select'
 import { useStore } from 'zustand'
 import { storePersonalized } from '../../../../zustand/Personalized'
+import { storeArticles } from '../../../../zustand/Articles'
+import LoadingInfo from '../../../loading/LoadingInfo'
 
 const SalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -22,14 +24,14 @@ const SalesOrder: React.FC = () => {
     const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
     const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
     const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
-    
+
 
 
     const { getUsers }: any = usersRequests()
     const [users, setUsers] = useState<any>()
 
     const { getSaleOrders }: any = saleOrdersRequests()
-    const { saleOrders  }: any = storeSaleOrder()
+    const { saleOrders }: any = storeSaleOrder()
 
     const { getSeriesXUser }: any = seriesRequests()
     const [series, setSeries] = useState<any>([])
@@ -38,7 +40,7 @@ const SalesOrder: React.FC = () => {
     const setSaleOrders = storeSaleOrder(state => state.setSaleOrders)
     const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
-    
+
 
 
 
@@ -75,22 +77,23 @@ const SalesOrder: React.FC = () => {
 
     const fetch = async () => {
 
-        const dataSaleOrders = {
-            folio: fol,
-            id_sucursal: branchOffices?.id,
-            id_serie: selectedIds?.series?.id,
-            id_cliente: client,
-            desde:  haceUnaSemana.toISOString().split('T')[0],
-            hasta:  hoy.toISOString().split('T')[0],
-            id_usuario: user_id,
-            id_vendedor: selectedIds?.users?.id,
-            status: 0
-        }
+        // const dataSaleOrders = {
+        //     folio: fol,
+        //     id_sucursal: branchOffices?.id,
+        //     id_serie: selectedIds?.series?.id,
+        //     id_cliente: client,
+        //     desde:  haceUnaSemana.toISOString().split('T')[0],
+        //     hasta:  hoy.toISOString().split('T')[0],
+        //     id_usuario: user_id,
+        //     id_vendedor: selectedIds?.users?.id,
+        //     status: 0,
+        //     page:1
+        // }
 
-        setDataGet(dataSaleOrders)
+        // setDataGet(dataSaleOrders)
 
-        const result = await getSaleOrders(dataSaleOrders)
-        setSaleOrders(result)
+        // const result = await getSaleOrders(dataSaleOrders)
+        // setSaleOrders(result)
 
         const data = {
             nombre: '',
@@ -114,6 +117,7 @@ const SalesOrder: React.FC = () => {
             options: 'nombre',
             dataSelect: resultSeries
         })
+        search()
     }
     const { modalSalesOrder }: any = useStore(storeSaleOrder)
 
@@ -126,19 +130,23 @@ const SalesOrder: React.FC = () => {
         // }
     }, [modalSalesOrder])
     const search = async () => {
+        setModalLoading(true)
         const dataSaleOrders = {
             folio: fol,
             id_sucursal: branchOffices.id,
-            id_serie: selectedIds?.series?.id,
+            id_serie: selectedIds?.serie?.id,
             id_cliente: client,
             desde: dates[0],
             hasta: dates[1],
             id_usuario: user_id,
             id_vendedor: selectedIds?.users?.id,
-            status: type
+            status: type,
+            page: page
         }
         const result = await getSaleOrders(dataSaleOrders)
-        console.log('ssd')
+        setModalLoading(false)
+
+        setDataGet(dataSaleOrders)
         setSaleOrders(result)
     }
 
@@ -172,11 +180,18 @@ const SalesOrder: React.FC = () => {
     const handleClick = (value: any) => {
         setType(value)
     };
+    const [page, setPage] = useState<number>(1)
+    const modalLoading = storeArticles((state: any) => state.modalLoading);
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
+    useEffect(() => {
+        search();
 
+    }, [page]);
     return (
         <div className='sales__order'>
             <div className='sales__order_container'>
+
                 <div className='row__one'>
                     <div className='row'>
                         <div className='col-8'>
@@ -238,6 +253,7 @@ const SalesOrder: React.FC = () => {
                     </div>
                 </div>
                 <Modal />
+
                 <div className='table__sale-orders'>
                     {saleOrders ? (
                         <div className='table__numbers'>
@@ -329,7 +345,24 @@ const SalesOrder: React.FC = () => {
                         <p className="text">Cargando datos...</p>
                     )}
                 </div>
+
+
+                <div className='row'>
+                    <div className='col-1'>
+                        <button className='btn__general-primary' onClick={() => setPage(page - 1)} disabled={page == 1}>ANTERIOR</button>
+                    </div>
+                    <div className='col-10'>
+
+                    </div>
+                    <div className='col-1'>
+                        <button className='btn__general-primary' onClick={() => setPage(page + 1)}>SIGUIENTE</button>
+                    </div>
+                </div>
             </div>
+            {modalLoading == true ? (
+                <LoadingInfo />
+            ) :
+                ''}
         </div>
     )
 }
