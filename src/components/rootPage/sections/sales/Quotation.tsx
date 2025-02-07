@@ -24,6 +24,7 @@ const Quotation: React.FC = () => {
   ////////////////// Personalized Variations////////////////////////////////// 
   const setConceptView = storePersonalized(state => state.setConceptView)
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+  const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
   const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
@@ -40,6 +41,8 @@ const Quotation: React.FC = () => {
   const setQuotesData = storeQuotation(state => state.setQuotesData);
   const { quotesData }: any = useStore(storeQuotation)
 
+  const { normalConceptsView }: any = useStore(storePersonalized)
+  
   const { getUsers }: any = usersRequests()
 
   const [users, setUsers] = useState<any>()
@@ -191,7 +194,7 @@ const Quotation: React.FC = () => {
     setCustomConcepts(quotation.conceptos_pers);
     setNormalConcepts(quotation.conceptos);
     setCustomConceptView(quotation.conceptos);
-  
+    setNormalConceptsView(quotation.conceptos);
     // Actualiza otros estados relacionados con la cotización
     setQuatation(quotation);
     setPersonalized(quotation);
@@ -199,7 +202,7 @@ const Quotation: React.FC = () => {
   
   
 
-
+console.log('normalConceptsView')
 
 
 
