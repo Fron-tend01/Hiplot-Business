@@ -748,7 +748,6 @@ const PedidoFranquicias = () => {
                     </tbody>
                   </table>
                 </div>
-
               </div>
               :
               <div className='franchise__orders'>
@@ -762,7 +761,6 @@ const PedidoFranquicias = () => {
                     <Select dataSelects={proveedor} instanceId='proveedor' nameSelect={'Proveedor'}></Select>
                   </div>
                 </div>
-
                 <div className='row'>
                   <div className='col-12'>
                     <br />
@@ -770,7 +768,6 @@ const PedidoFranquicias = () => {
                     <label className='label__general'>AGREGAR ARTICULOS</label>
                     <hr />
                     <br />
-
                     <Filtrado_Articulos_Basic set_article_local={setArticulos} campos_ext={campos_ext} id_empresa_proveedor={selectData?.proveedor?.id} id_sucursal_franquicia={sucursalF.id}
                       get_unidades={true} get_stock={true} />
                     <div className='table__franchise_orders_modal'>

@@ -8,6 +8,9 @@ interface SelectStore {
   normalConcepts: any[];
   setNormalConcepts: (x: any) => void;
 
+  normalConceptsView: any[];
+  setNormalConceptsView: (x: any) => void;
+
   deleteNormalConcepts: any[];
   setDeleteNormalConcepts: (x: any) => void;
 
@@ -74,6 +77,9 @@ export const storePersonalized = create<SelectStore>((set) => ({
 
   normalConcepts: [],
   setNormalConcepts: (x) => set({ normalConcepts: x }),
+
+  normalConceptsView: [],
+  setNormalConceptsView: (x) => set({ normalConceptsView: x }),
 
   deleteNormalConcepts: [],
   setDeleteNormalConcepts: (x) => set({ deleteNormalConcepts: x }),

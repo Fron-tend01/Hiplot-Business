@@ -39,12 +39,13 @@ const SalesCard: React.FC = ({ idA }: any) => {
 
 
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+  const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
 
   const setConceptView = storePersonalized(state => state.setConceptView)
   const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
 
-  const { normalConcepts, conceptView, customConceptView, customConcepts }: any = useStore(storePersonalized);
+  const { normalConcepts, conceptView, customConceptView, customConcepts, normalConceptsView }: any = useStore(storePersonalized);
 
   const setArticle = storeSaleCard(state => state.setArticle);
 
@@ -299,7 +300,7 @@ const SalesCard: React.FC = ({ idA }: any) => {
           id_area_produccion: article.areas_produccion[0].id_area,
           enviar_a_produccion: false,
           personalized: false,
-          check: true,
+          check: false,
           status: 0,
           descripcion: article.descripcion,
           codigo: article.codigo,
@@ -372,6 +373,7 @@ const SalesCard: React.FC = ({ idA }: any) => {
 
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
 
+
   const addQua = () => {
 
 
@@ -390,14 +392,13 @@ const SalesCard: React.FC = ({ idA }: any) => {
           const concepto_adicional = { ...Adicional };
 
           concepto_principal.id_identifier = identifier + 1;
-          concepto_principal.check = true
           concepto_principal.precio_total -= concepto_adicional.total
           concepto_principal.precio_unitario -= (concepto_adicional.total / concepto_adicional.cantidad)
           concepto_principal.descuento -= concepto_adicional.descuento
           concepto_principal.total_franquicia = pricesFranquiciaAdicional != null && !Number.isNaN(pricesFranquiciaAdicional) ? concepto_principal.total_franquicia - pricesFranquiciaAdicional : concepto_principal.total_franquicia
           setIdentifier(identifier + 1);
           concepto_adicional.id_identifier = concepto_principal.id_identifier + 1;
-          concepto_adicional.check = true
+          concepto_adicional.check = false
           concepto_adicional.id = null
           concepto_adicional.id_articulo = concepto_adicional.id_articulo_adicional
           concepto_adicional.id_unidad = concepto_adicional.unidad
@@ -439,6 +440,7 @@ const SalesCard: React.FC = ({ idA }: any) => {
       newData.id_identifier = identifier + 1;
       setIdentifier(identifier + 1);
       setNormalConcepts([...normalConcepts, newData])
+      setNormalConceptsView([...normalConceptsView, newData])
       setConceptView([...conceptView, newData])
       setCustomConceptView([...customConceptView, newData])
 
@@ -697,7 +699,7 @@ const SalesCard: React.FC = ({ idA }: any) => {
   };
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' ? 'active' : ''}`}>
-      <Toaster expand={true} position="top-right" richColors />
+      {/* <Toaster expand={true} position="top-right" richColors /> */}
       <div className={`popup__sale-card ${modalSalesCard === 'sale-card' ? 'active' : ''}`}>
         <div className='header__modal'>
           <a href="#" className="btn-cerrar-popup__sale-card" onClick={modal}>
@@ -707,20 +709,17 @@ const SalesCard: React.FC = ({ idA }: any) => {
           </a>
           <p className='title__modals'>Ficha</p>
         </div>
-
         <div className='conatiner__create_sale-card' onSubmit={handleCreateFamilies}>
           <div className='row__two'>
-
             <div className='card__images_container'>
               {statusArticle !== false ?
-
                 <div className='images__card-sale__container'>
                   <Swiper cssMode={true} navigation={true} pagination={true} mousewheel={true} keyboard={true} modules={[Navigation, Pagination, Mousewheel, Keyboard]} className="mySwiper">
                     {article?.imagenes.map((image: any) => (
                       <SwiperSlide>
                         <div className='images__container'>
                           <div className='images' style={{ backgroundImage: `url(${image?.img_base64})` }}>
-
+                            
                           </div>
                           <div className='buttons-sale-card'>
                           </div>
@@ -729,8 +728,6 @@ const SalesCard: React.FC = ({ idA }: any) => {
                     ))}
                   </Swiper>
                 </div>
-
-
                 :
                 <div className='images-pulse-card'></div>
               }

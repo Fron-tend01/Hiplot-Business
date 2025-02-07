@@ -29,7 +29,7 @@ const ModalCreate: React.FC = () => {
   const user_id = userState.id
   const setModalArticleView = storeArticleView((state) => state.setModalArticleView);
   const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
-
+  const setNormalConceptsView = storePersonalized((state) => state.setNormalConceptsView);
   // Temporal
 
   const setConceptView = storePersonalized(state => state.setConceptView)
@@ -41,7 +41,7 @@ const ModalCreate: React.FC = () => {
   const setCustomLocal = storePersonalized(state => state.setCustomLocal)
   
   ////////////////// Personalized Variations////////////////////////////////// 
-  const { normalConcepts, deleteNormalConcepts, customConcepts, deleteCustomConcepts, customConceptView, conceptView, dataUpdate, personalizedModal }: any = useStore(storePersonalized)
+  const { normalConcepts, deleteNormalConcepts, customConcepts, deleteCustomConcepts, customConceptView, conceptView, dataUpdate, personalizedModal, normalConceptsView }: any = useStore(storePersonalized)
 
 
 
@@ -302,12 +302,15 @@ const ModalCreate: React.FC = () => {
 
 
   const undoConcepts = (concept: any) => {
+    const deleteItemCustomC = customConcepts.filter((x: any) => x.id_identifier !== concept.id_identifier);
     if (modal === 'create-modal__qoutation') {
-      const deleteItemCustomC = customConcepts.filter((x: any) => x.id_identifier !== concept.id_identifier);
+     
       setCustomConcepts(deleteItemCustomC)
       const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
-      setConceptView([...deleteItem, ...concept.conceptos]);
+      let data = [...normalConcepts, ...deleteItemCustomC]
+      setConceptView([...data, ...concept.conceptos]);
       setNormalConcepts([...normalConcepts, ...concept.conceptos])
+      setNormalConceptsView([...normalConcepts, ...concept.conceptos])
     } else {
       const updatedConcepts = concept.conceptos.map((element: any) => ({
         ...element,
@@ -317,8 +320,11 @@ const ModalCreate: React.FC = () => {
 
       // Filtrar y actualizar conceptView
       const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
-      setConceptView([...deleteItem, ...updatedConcepts]);
 
+
+      let data = [...normalConcepts, ...deleteItemCustomC]
+      setConceptView([...data, ...updatedConcepts]);
+      setNormalConceptsView([...normalConcepts, ...updatedConcepts])
       setNormalConcepts([...normalConcepts, ...updatedConcepts]);
       setDeleteCustomConcepts([...deleteCustomConcepts, concept.id])
     }
@@ -395,10 +401,11 @@ const ModalCreate: React.FC = () => {
 
 
   const modalPersonalized = () => {
-
     setPersonalizedModal('personalized_modal-quotation')
-    setCustomConceptView(normalConcepts)
-
+    normalConceptsView.forEach((element: any) => {
+      element.check = false;
+    });
+    setCustomConceptView(normalConceptsView)
   }
 
 
@@ -427,7 +434,7 @@ const ModalCreate: React.FC = () => {
     if (concept.con_adicional) {
       setCustomConceptView(concept.conceptos);
     } else {
-      setCustomConceptView([...concept.conceptos, ...normalConcepts]);
+      setCustomConceptView([...concept.conceptos, ...normalConceptsView]);
     }
 
     // Actualizar el identificador global al último valor utilizado
@@ -438,6 +445,7 @@ const ModalCreate: React.FC = () => {
   }
 
 
+  console.log('normalConceptsView', normalConceptsView)
 
 
 
@@ -517,7 +525,7 @@ const ModalCreate: React.FC = () => {
       // Abrimos el PDF en una nueva pestaña
       window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_cotizacion/${quatation.id}`, '_blank');
     } catch (error) {
-      console.log(error);
+      console.log(error);      
     }
   }
   return (

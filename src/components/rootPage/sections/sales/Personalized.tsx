@@ -17,7 +17,8 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
   const setConceptView = storePersonalized(state => state.setConceptView)
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
-
+  
+  const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
   const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
 
@@ -55,16 +56,9 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
   const [setFilterPersonalized] = useState<any>([])
 
-
-
-
-
-
   const addPersonalized = (item: any, index: number) => {
     
-    console.log('custom local', customLocal)
-    console.log('normalConcepts', normalConcepts)
-    console.log('item', item)
+
 
     if (personalizedModal === 'create-modal__qoutation') {
       if (personalizedModal == 'personalized_modal-quotation') {
@@ -109,13 +103,11 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
             if (x.id_identifier === item.id_identifier) {
               return { ...x, check: false };
             } else {
-
+              
             }
             return x;
           });
           setCustomConceptView(updatedDataUpdate);
-
-
 
           const newNormalConcept = customLocal.map((x: any) => {
             //////////////////// Solo para cambiar el check //////////////////
@@ -124,13 +116,13 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
             }
             return x;
           });
-          const addItem = newNormalConcept.find((xx: any) => xx.id_identifier == item.id_identifier)
+          // const addItem = newNormalConcept.find((xx: any) => xx.id_identifier == item.id_identifier)
 
-          setCustomConceptView(updatedDataUpdate);
-          setNormalConcepts([...normalConcepts, addItem])
+          // setCustomConceptView(updatedDataUpdate);
+          setNormalConcepts(newNormalConcept)
 
-          const deleteItem = customLocal.filter((xx: any) => xx.id_identifier !== addItem.id_identifier)
-          setCustomLocal(deleteItem)
+          // const deleteItem = customLocal.filter((xx: any) => xx.id_identifier !== addItem.id_identifier)
+          // setCustomLocal(deleteItem)
 
 
 
@@ -228,8 +220,6 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
           const deleteItem = customLocal.filter((xx: any) => xx.id_identifier !== addItem.id_identifier)
           setCustomLocal(deleteItem)
-
-
 
           console.log('customLocal', customLocal)
           console.log('normalConcepts', normalConcepts)
@@ -392,6 +382,32 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
     }
   }, [personalizedModal])
 
+  console.log('normalConcepts', normalConcepts)
+  console.log('customConcepts', customConcepts)
+  console.log('conceptView', conceptView)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   const createPersonalized = async () => {
@@ -401,9 +417,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
     });
 
 
-
     if (personalizedModal == 'personalized_modal-quotation') {
-
 
       const data = {
         descripcion: inpust.descripcion,
@@ -421,12 +435,10 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         id_identifier: identifier + 1
       }
 
-
-
       let mixOfConcepts = [...normalConcepts, ...customConcepts]
       setConceptView([...mixOfConcepts, data])
       setCustomConcepts([...customConcepts, data])
-
+      setNormalConceptsView(normalConcepts)
       setPersonalizedModal('')
       setFilterPersonalized([])
       setArticlesPersonalized([])
@@ -436,9 +448,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
     }
 
     if (personalizedModal == 'personalized_modal-quotation-update') {
-
       let leght: any = null
-
       const updatedConceptView = customConcepts.map((x: any) => {
         if (x.id_identifier === idItem.id_identifier) {
           length = x.conceptos.leght
@@ -446,7 +456,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         }
         return x;
       });
-
+   
       if(leght > 1) {
         console.log('Se mantiene por que todavia le quedan conceptos', leght)
       } else {
@@ -455,7 +465,9 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         setConceptView(normalConcepts)
       }
 
-    
+      setConceptView([...normalConcepts, ...updatedConceptView])
+
+      setNormalConceptsView(normalConcepts)
       setCustomConcepts(updatedConceptView)
       setCustomConceptView(normalConcepts)
 
@@ -660,14 +672,16 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         ...prev,
         descripcion: '',
         codigo: '',
-        cantidad: '',
-        precio_total: '',
+        cantidad: 0,
+        precio_total: 0,
         comentarios_produccion: '',
         comentarios_factura: '',
       }));
     }
     setPersonalizedModal('')
     setCustomConceptView([])
+    setCustomConceptView([])
+    setCustomLocal([])
 
   }
 

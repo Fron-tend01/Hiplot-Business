@@ -433,7 +433,7 @@ const ModalSalesOrder: React.FC = () => {
     }, [normalConcepts, customConcepts, branchOffices, modalSalesOrder])
     const calcular_totales = () => {
 
-        const precios = normalConcepts.reduce(
+        const precios = normalConcepts?.reduce(
             (acc: any, item: any) => ({
                 precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
                 descuento: acc.descuento + (parseFloat(item.descuento) || 0),
