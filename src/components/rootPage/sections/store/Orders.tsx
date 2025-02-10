@@ -181,7 +181,7 @@ const Departures: React.FC = () => {
                             <button className="btn__general-purple">Excel</button>
                         </div>
                         <div>
-                            <button className="btn__general-purple" onClick={() => modalCreate()}>Nueva entrada</button>
+                            <button className="btn__general-purple" onClick={() => modalCreate()}>Nuevo pedido</button>
                         </div>
                     </div>
                 </div>

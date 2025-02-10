@@ -41,7 +41,7 @@ const Quotation: React.FC = () => {
   const setQuotesData = storeQuotation(state => state.setQuotesData);
   const { quotesData }: any = useStore(storeQuotation)
 
-  const { normalConceptsView }: any = useStore(storePersonalized)
+
   
   const { getUsers }: any = usersRequests()
 

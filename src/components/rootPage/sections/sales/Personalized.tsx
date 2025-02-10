@@ -11,13 +11,18 @@ import { storeModals } from '../../../../zustand/Modals'
 import { storeDv } from '../../../../zustand/Dynamic_variables'
 import Swal from 'sweetalert2'
 import SeeCamposPlantillas from './SeeCamposPlantillas'
+import { storeSaleOrder } from '../../../../zustand/SalesOrder'
 
 const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
 
   const setConceptView = storePersonalized(state => state.setConceptView)
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
-  
+
+  const { modalSalesOrder }: any = useStore(storeSaleOrder)
+
+  const setSelectedId = useSelectStore((state) => state.setSelectedId);
+
   const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
   const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
@@ -52,12 +57,14 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   }, [])
 
 
+
+
   const [articlesPersonalized, setArticlesPersonalized] = useState<any>([])
 
   const [setFilterPersonalized] = useState<any>([])
 
   const addPersonalized = (item: any, index: number) => {
-    
+
 
 
     if (personalizedModal === 'create-modal__qoutation') {
@@ -103,7 +110,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
             if (x.id_identifier === item.id_identifier) {
               return { ...x, check: false };
             } else {
-              
+
             }
             return x;
           });
@@ -345,7 +352,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
           const existItem = normalConcepts.find((x: any) => x.id_identifier == item.id_identifier)
           const deleteItem = normalConcepts.filter((xx: any) => xx.id_identifier !== existItem.id_identifier)
           setNormalConcepts(deleteItem)
-          if(existItem.id) {
+          if (existItem.id) {
             setDeleteNormalConcepts([...deleteCustomConcepts, existItem.id])
           }
           setCustomLocal([...customLocal, existItem])
@@ -411,7 +418,6 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
 
 
-
   const createPersonalized = async () => {
     let total = 0;
     articlesPersonalized.forEach((element: any) => {
@@ -451,15 +457,31 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
     if (personalizedModal == 'personalized_modal-quotation-update') {
       let leght: any = null
-      const updatedConceptView = customConcepts.map((x: any) => {
+
+       const updatedConceptView = customConcepts.map((x: any) => {
+
         if (x.id_identifier === idItem.id_identifier) {
           length = x.conceptos.leght
-          return { ...x, conceptos: customLocal };
+          return {
+            ...x,
+            // conceptos: customLocal,
+            descripcion: inpust.descripcion,
+            codigo: inpust.codigo,
+            cantidad: inpust.cantidad,
+            unidad: selectedIds?.units?.id,
+            name_unidad: selectedIds?.units?.nombre,
+            clave_sat: parseInt(selectedSatKey.Clave),
+            precio_total: inpust.precio_total,
+            comentarios_produccion: inpust.comentarios_produccion,
+            comentarios_factura: inpust.comentarios_factura,
+            conceptos: customLocal
+          };
         }
         return x;
       });
    
-      if(leght > 1) {
+
+      if (leght > 1) {
         console.log('Se mantiene por que todavia le quedan conceptos', leght)
       } else {
         let filterDelete = conceptView.filter((x: any) => x.id_identifier !== idItem.id_identifier)
@@ -473,24 +495,10 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
       setCustomConcepts(updatedConceptView)
       setCustomConceptView(normalConcepts)
 
-
       setPersonalizedModal('')
       return
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -519,33 +527,60 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
       console.log('customConcepts', customConcepts)
       console.log('mixOfConcepts', mixOfConcepts)
-
       setConceptView([...mixOfConcepts, data])
-    
-
+      
       setPersonalizedModal('')
       setFilterPersonalized([])
       setArticlesPersonalized([])
       return
-
     }
     if (personalizedModal == 'personalized_modal-sale-update') {
-      const updatedConceptView = customConcepts.map((x: any) => {
+      // const updatedConceptView = customConcepts.map((x: any) => {
+      //   if (x.id_identifier === idItem.id_identifier) {
+      //     return {
+      //       ...x,
+      //       // conceptos: customLocal,
+      //       descripcion: inpust.descripcion,
+      //       codigo: inpust.codigo,
+      //       cantidad: inpust.cantidad,
+      //       unidad: selectedIds?.units?.id,
+      //       name_unidad: selectedIds?.units?.nombre,
+      //       clave_sat: parseInt(selectedSatKey.Clave),
+      //       precio_total: inpust.precio_total,
+      //       comentarios_produccion: inpust.comentarios_produccion,
+      //       comentarios_factura: inpust.comentarios_factura
+      //     };
+      //   }
+      //   return x;
+      // });
 
-        if (x.id_identifier === idItem.id_identifier) {
-          return { ...x, conceptos: customLocal };
-        }
-        return x;
-      });
+      let data = {
+        id: idItem.id,
+        descripcion: inpust.descripcion,
+        codigo: inpust.codigo,
+        cantidad: inpust.cantidad,
+        unidad: selectedIds?.units?.id,
+        precio_total: inpust.precio_total,
+        clave_sat: selectedSatKey?.Clave ? parseInt(selectedSatKey.Clave) : idItem.clave_sat,
+        comentarios_produccion: inpust.comentarios_produccion,
+        comentarios_factura: inpust.comentarios_factura,
+        conceptos: []
+      }
 
-      console.log(updatedConceptView, updatedConceptView)
-      
-     
 
-      setConceptView([...updatedConceptView, ...normalConcepts])
-      setCustomConcepts(updatedConceptView)
-      setCustomConceptView(normalConcepts)
+      // console.log(updatedConceptView, updatedConceptView)
 
+
+
+      // setConceptView([...updatedConceptView, ...normalConcepts])
+      // setCustomConcepts(updatedConceptView)
+
+      let response: any = await APIs.updateConceptsPersonalizedOrder(data)
+      if (response.error) {
+        Swal.fire('Notificación', response.mensaje, 'info');
+      } else {
+        Swal.fire('Notificación', response.mensaje, 'success');
+      }
       setPersonalizedModal('')
       return
     }
@@ -616,6 +651,9 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
 
     // await setDataPersonalized(filteredData);
+
+
+
 
 
 
@@ -794,6 +832,27 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
     }
   }
 
+  console.log('idItem', idItem)
+
+  useEffect(() => {
+    if (idItem) {
+      setSelectedId('units', { id: idItem.unidad });
+ 
+      setInputs({
+        descripcion: idItem.descripcion,
+        codigo: idItem.codigo,
+        clave_sat: selectedSatKey?.Clave ? parseInt(selectedSatKey.Clave) : idItem.clave_sat,
+        unidad: selectedIds?.units?.id,
+        cantidad: idItem.cantidad,
+        precio_total: idItem.precio_total,
+        codigo_unidad_sat: idItem.codigo_unidad_sat,
+        comentarios_produccion: idItem.comentarios_produccion,
+        comentarios_factura: idItem.comentarios_factura
+      });
+    }
+  }, [personalizedModal]);
+
+
 
   return (
     <div className={`overlay__personalized_modal ${modalStatus ? 'active' : ''}`}>
@@ -843,7 +902,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
                 <div className={`select-btn__general`}>
                   <div className={`select-btn ${selectsSatKey ? 'active' : ''}`} onClick={openselectsSatKey}>
                     <div className='select__container_title'>
-                      <p>{selectedSatKey ? satKey.find((s: { ID: number }) => s.ID === selectedSatKey.ID)?.Clave : 'Selecciona'}</p>
+                      <p>{selectedSatKey ? satKey.find((s: { ID: number }) => s.ID === selectedSatKey.ID)?.Clave : `${idItem?.clave_sat ? idItem?.clave_sat : 'Selecciona'}`}</p>
                     </div>
                     <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                   </div>
@@ -1138,9 +1197,9 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
             ''
           }
 
-          
 
-          {personalizedModal == "personalized_modal-sale" ?
+
+          {/* {personalizedModal == "personalized_modal-sale" ?
             <div className='table__personalized'>
               {customData ? (
                 <div className='table__numbers'>
@@ -1220,151 +1279,401 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
             </div>
             :
             ''
-          }
-          {personalizedModal == 'personalized_modal-sale-update' ?
-            <div className='table__modal-sale__personalized-update'>
-              {customConceptView ? (
-                <div className='table__numbers'>
-                  <p className='text'>Total de artículos</p>
-                  <div className='quantities_tables'>{customConceptView.length}</div>
-                </div>
-              ) : (
-                <p className="text">No hay empresas que mostras</p>
-              )}
-              <div className='table__head'>
-                <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
-
-                  <div className='th'>
-                    <p>Artículo</p>
-                  </div>
-                  <div className='th'>
-                    <p>Cantidad</p>
-                  </div>
-                  <div className='th'>
-                    <p>Unidad</p>
-                  </div>
-                  <div className='th'>
-                    <p>P/U</p>
-                  </div>
-                  <div className='th'>
-                    <p>Total</p>
-                  </div>
-                </div>
-              </div>
-              {customConceptView ? (
-                <div className='table__body'>
-                  {customConceptView.map((concept: any, index: number) => {
-                    return (
-                      <div className='tbody__container'>
-                        <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={concept.id}>
-                          <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept()}>
-                            <p className='folio-identifier'>{concept.codigo}-{concept.descripcion}</p>
-                          </div>
-                          <div className='td'>
-                            <p className='amount-identifier'>{concept.cantidad}</p>
-                          </div>
-                          <div className='td'>
-                            <p>{concept.name_unidad || concept.unidad}</p>
-                          </div>
-                          <div className='td'>
-                            <p className=''>$ {concept.precio_total / concept.cantidad}</p>
-                          </div>
-                          <div className='td'>
-                            {concept.urgency ?
-                              <div className='d-flex'>
-                                <p className='total-identifier'>$ {concept.precio_total}</p>
-                                <p className='urgency-identifier'>${parseFloat(concept.monto_urgencia).toFixed(2)}</p>
-                              </div>
-                              :
-                              <p className='total-identifier'>$ {concept.precio_total}</p>
-                            }
-                          </div>
-                          <div className='td urgency'>
-                            {concept?.urgency ?
-                              <div>
-                                <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
-                                </div>
-                              </div>
-                              :
-                              <div>
-                                <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
-                                </div>
-                              </div>
-                            }
-                          </div>
-                          <div className='td'>
-                            <div className='cancel-icon' onClick={() => deleteArticle(concept, index)} title='Cancelar concepto'>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
-                            </div>
-                          </div>
-                          <div className='td'>
-                            <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
-                            </div>
-                          </div>
-                          <div className='td'>
-                            <div className='send-areas'>
-                              <div>
-                                <label>Area</label>
-                              </div>
-                              <select
-                                className="traditional__selector"
-                                onChange={(event) => handleAreasChange(event, index)}
-                              >
-                                {concept?.areas_produccion?.map((item: any) => (
-                                  <option key={item.id} value={item.id_area}>
-                                    {item.nombre_area}
-                                  </option>
-                                ))}
-                              </select>
-
-
-
-                            </div>
-                          </div>
-                          <div className='td'>
-                            {concept.enviar_a_produccion ?
-                              <p>Es tgrue</p>
-                              :
-                              <p>No es tgrue</p>
-                            }
-                            <div>
-                              <div className=''>
-                                <label>Enviar producción</label>
-                              </div>
-                              <label className="switch">
-                                <input
-                                  type="checkbox"
-                                  checked={concept.enviar_a_produccion}
-                                  onChange={() =>
-                                    handleStatusChange(concept, index)
-                                  }
-                                />
-                                <span className="slider"></span>
-                              </label>
-                            </div>
-                          </div>
-                          {personalizedModal == 'personalized_modal-sale-update' ?
-                            <div className='td'>
-                              <button type='button' className='btn__general-purple' onClick={() => updateSaleOrderConcept(concept)}>Actualizar</button>
-                            </div>
-                            :
-                            ""
-                          }
+          } */}
+          {modalSalesOrder == 'sale-order__modal' ?
+            <>
+              {personalizedModal == "personalized_modal-sale" ?
+                <div className='table__personalized'>
+                  {customData ? (
+                    <div className='table__numbers'>
+                      <p className='text'>Total de artículos</p>
+                      <div className='quantities_tables'>{customData.length}</div>
+                    </div>
+                  ) : (
+                    <p className="text">No hay empresas que mostras</p>
+                  )}
+                  <div className='table__head'>
+                    <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
+                      {personalizedModal == 'personalized_modal-update' ?
+                        ''
+                        :
+                        <div className='th'>
                         </div>
+                      }
+                      <div className='th'>
+                        <p>Artículo</p>
                       </div>
-                    )
-                  })}
+                      <div className='th'>
+                        <p>Cantidad</p>
+                      </div>
+                      <div className='th'>
+                        <p>Unidad</p>
+                      </div>
+                    </div>
+                  </div>
+                  {customConceptView ? (
+                    <div className='table__body'>
+                      {customConceptView.map((quotation: any, index: number) => {
+                        return (
+                          <div className='tbody__container'>
+                            <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={quotation.id}>
+                              {personalizedModal == 'personalized_modal-update' ?
+                                ''
+                                :
+                                <div className='td'>
+                                  <div className="td">
+                                    <label className="custom-checkbox">
+                                      <input
+                                        type="checkbox"
+                                        checked={customConceptView[index]?.check || false}
+                                        onChange={() => addPersonalized(quotation, index)}
+                                      />
+                                      <span className="checkmark"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                              }
+
+                              <div className='td'>
+                                <div className='article'>
+                                  <p>{quotation.codigo}-{quotation.descripcion}</p>
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <div>
+                                  <p>{quotation.cantidad}</p>
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <div>
+                                  <p>{quotation.name_unidad}</p>
+                                </div>
+                              </div>
+                              <div className='td'>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text">Cargando datos...</p>
+                  )}
                 </div>
-              ) : (
-                <p className="text">Cargando datos...</p>
-              )}
-            </div>
+                :
+                <div className='table__personalized'>
+                  {customData ? (
+                    <div className='table__numbers'>
+                      <p className='text'>Total de artículos</p>
+                      <div className='quantities_tables'>{customData.length}</div>
+                    </div>
+                  ) : (
+                    <p className="text">No hay empresas que mostras</p>
+                  )}
+                  <div className='table__head'>
+                    <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
+                      {personalizedModal == 'personalized_modal-update' ?
+                        ''
+                        :
+                        <div className='th'>
+                        </div>
+                      }
+                      <div className='th'>
+                        <p>Artículo</p>
+                      </div>
+                      <div className='th'>
+                        <p>Cantidad</p>
+                      </div>
+                      <div className='th'>
+                        <p>Unidad</p>
+                      </div>
+                    </div>
+                  </div>
+                  {customConceptView ? (
+                    <div className='table__body'>
+                      {customConceptView.map((quotation: any, index: number) => {
+                        return (
+                          <div className='tbody__container'>
+                            <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={quotation.id}>
+                              {personalizedModal == 'personalized_modal-update' ?
+                                ''
+                                :
+                                <div className='td'>
+                                  <div className="td">
+                                    <label className="custom-checkbox">
+                                      <input
+                                        type="checkbox"
+                                        checked={customConceptView[index]?.check || false}
+                                        onChange={() => addPersonalized(quotation, index)}
+                                      />
+                                      <span className="checkmark"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                              }
+
+                              <div className='td'>
+                                <div className='article'>
+                                  <p>{quotation.codigo}-{quotation.descripcion}</p>
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <div>
+                                  <p>{quotation.cantidad}</p>
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <div>
+                                  <p>{quotation.name_unidad}</p>
+                                </div>
+                              </div>
+                              <div className='td'>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text">Cargando datos...</p>
+                  )}
+                </div>
+              }
+            </>
             :
-            ''
+            ""
           }
+
+
+          {modalSalesOrder == 'sale-order__modal-update' ?
+            <>
+              {personalizedModal == "personalized_modal-sale" ?
+                <div className='table__personalized'>
+                  {customData ? (
+                    <div className='table__numbers'>
+                      <p className='text'>Total de artículos</p>
+                      <div className='quantities_tables'>{customData.length}</div>
+                    </div>
+                  ) : (
+                    <p className="text">No hay empresas que mostras</p>
+                  )}
+                  <div className='table__head'>
+                    <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
+                      {personalizedModal == 'personalized_modal-update' ?
+                        ''
+                        :
+                        <div className='th'>
+                        </div>
+                      }
+                      <div className='th'>
+                        <p>Artículo</p>
+                      </div>
+                      <div className='th'>
+                        <p>Cantidad</p>
+                      </div>
+                      <div className='th'>
+                        <p>Unidad</p>
+                      </div>
+                    </div>
+                  </div>
+                  {customConceptView ? (
+                    <div className='table__body'>
+                      {customConceptView.map((quotation: any, index: number) => {
+                        return (
+                          <div className='tbody__container'>
+                            <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={quotation.id}>
+                              {personalizedModal == 'personalized_modal-update' ?
+                                ''
+                                :
+                                <div className='td'>
+                                  <div className="td">
+                                    <label className="custom-checkbox">
+                                      <input
+                                        type="checkbox"
+                                        checked={customConceptView[index]?.check || false}
+                                        onChange={() => addPersonalized(quotation, index)}
+                                      />
+                                      <span className="checkmark"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                              }
+
+                              <div className='td'>
+                                <div className='article'>
+                                  <p>{quotation.codigo}-{quotation.descripcion}</p>
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <div>
+                                  <p>{quotation.cantidad}</p>
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <div>
+                                  <p>{quotation.name_unidad}</p>
+                                </div>
+                              </div>
+                              <div className='td'>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text">Cargando datos...</p>
+                  )}
+                </div>
+                :
+                <div className='table__modal-sale__personalized-update'>
+                  {customConceptView ? (
+                    <div className='table__numbers'>
+                      <p className='text'>Total de artículos</p>
+                      <div className='quantities_tables'>{customConceptView.length}</div>
+                    </div>
+                  ) : (
+                    <p className="text">No hay empresas que mostras</p>
+                  )}
+                  <div className='table__head'>
+                    <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
+
+                      <div className='th'>
+                        <p>Artículo</p>
+                      </div>
+                      <div className='th'>
+                        <p>Cantidad</p>
+                      </div>
+                      <div className='th'>
+                        <p>Unidad</p>
+                      </div>
+                      <div className='th'>
+                        <p>P/U</p>
+                      </div>
+                      <div className='th'>
+                        <p>Total</p>
+                      </div>
+                    </div>
+                  </div>
+                  {customConceptView ? (
+                    <div className='table__body'>
+                      {customConceptView.map((concept: any, index: number) => {
+                        return (
+                          <div className='tbody__container'>
+                            <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={concept.id}>
+                              <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept()}>
+                                <p className='folio-identifier'>{concept.codigo}-{concept.descripcion}</p>
+                              </div>
+                              <div className='td'>
+                                <p className='amount-identifier'>{concept.cantidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p>{concept.name_unidad || concept.unidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p className=''>$ {concept.precio_total / concept.cantidad}</p>
+                              </div>
+                              <div className='td'>
+                                {concept.urgency ?
+                                  <div className='d-flex'>
+                                    <p className='total-identifier'>$ {concept.precio_total}</p>
+                                    <p className='urgency-identifier'>${parseFloat(concept.monto_urgencia).toFixed(2)}</p>
+                                  </div>
+                                  :
+                                  <p className='total-identifier'>$ {concept.precio_total}</p>
+                                }
+                              </div>
+                              <div className='td urgency'>
+                                {concept?.urgency ?
+                                  <div>
+                                    <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                    </div>
+                                  </div>
+                                  :
+                                  <div>
+                                    <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+                              <div className='td'>
+                                <div className='cancel-icon' onClick={() => deleteArticle(concept, index)} title='Cancelar concepto'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <div className='send-areas'>
+                                  <div>
+                                    <label>Area</label>
+                                  </div>
+                                  <select
+                                    className="traditional__selector"
+                                    onChange={(event) => handleAreasChange(event, index)}
+                                  >
+                                    {concept?.areas_produccion?.map((item: any) => (
+                                      <option key={item.id} value={item.id_area}>
+                                        {item.nombre_area}
+                                      </option>
+                                    ))}
+                                  </select>
+
+
+
+                                </div>
+                              </div>
+                              <div className='td'>
+                                {concept.enviar_a_produccion ?
+                                  <p>Es tgrue</p>
+                                  :
+                                  <p>No es tgrue</p>
+                                }
+                                <div>
+                                  <div className=''>
+                                    <label>Enviar producción</label>
+                                  </div>
+                                  <label className="switch">
+                                    <input
+                                      type="checkbox"
+                                      checked={concept.enviar_a_produccion}
+                                      onChange={() =>
+                                        handleStatusChange(concept, index)
+                                      }
+                                    />
+                                    <span className="slider"></span>
+                                  </label>
+                                </div>
+                              </div>
+                              {personalizedModal == 'personalized_modal-sale-update' ?
+                                <div className='td'>
+                                  <button type='button' className='btn__general-purple' onClick={() => updateSaleOrderConcept(concept)}>Actualizar</button>
+                                </div>
+                                :
+                                ""
+                              }
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text">Cargando datos...</p>
+                  )}
+                </div>
+              }</>
+            :
+            ""
+
+
+          }
+
+
 
 
 

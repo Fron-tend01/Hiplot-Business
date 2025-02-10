@@ -79,7 +79,7 @@ const ArticleView = () => {
                     </div>
                 </div>
                 <div className='row__two'>
-                    {articles.map((x: any) => (
+                    {articles?.map((x: any) => (
                         <div className='item' key={x.id} onClick={() => modal(x)}>
                             <div className='img' style={{ backgroundImage: `url(${x.imagen})` }}>
                                

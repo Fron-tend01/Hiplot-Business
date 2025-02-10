@@ -84,11 +84,11 @@ const Direct: React.FC = () => {
 
     return (
         <div className='conatiner__direct mt-4'>
-            <div className='add-client__container'>
+            {/* <div className='add-client__container'>
                 <div className='col-12  title '>
                     <p>Agregar Articulos</p>
                 </div>
-            </div>
+            </div> */}
             <div className='row__one'>
                 <Select dataSelects={selectSearchFor} nameSelect={'Buscar por'} instanceId='type' />
 

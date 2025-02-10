@@ -15,6 +15,7 @@ import { useStore } from 'zustand'
 import { storePersonalized } from '../../../../zustand/Personalized'
 import { storeArticles } from '../../../../zustand/Articles'
 import LoadingInfo from '../../../loading/LoadingInfo'
+import { Toaster } from 'sonner'
 
 const SalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -191,7 +192,7 @@ const SalesOrder: React.FC = () => {
     return (
         <div className='sales__order'>
             <div className='sales__order_container'>
-
+                <Toaster expand={true} position="top-right" richColors />
                 <div className='row__one'>
                     <div className='row'>
                         <div className='col-8'>

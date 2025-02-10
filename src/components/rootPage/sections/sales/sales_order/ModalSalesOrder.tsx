@@ -120,8 +120,8 @@ const ModalSalesOrder: React.FC = () => {
             setDataProduction({
                 "fecha_produccion": saleOrdersToUpdate.fecha_entrega_produccion,
                 "hora_produccion": saleOrdersToUpdate.hora_entrega_produccion,
-                "fecha_cliente":  saleOrdersToUpdate.fecha_entrega_cliente,
-                "hora_cliente":  saleOrdersToUpdate.hora_entrega_cliente,
+                "fecha_cliente": saleOrdersToUpdate.fecha_entrega_cliente,
+                "hora_cliente": saleOrdersToUpdate.hora_entrega_cliente,
                 "sin_tiempos": false
             })
         }
@@ -623,6 +623,7 @@ const ModalSalesOrder: React.FC = () => {
 
     }
     const [urgenciaG, setUrgenciaG] = useState<boolean>(false)
+
     const urgenciaGlobal = async (urg: boolean) => {
         setUrgenciaG(urg)
         const normal = normalConcepts.map((x: any, index: number) => ({ ...x, originalIndex: index }))
@@ -637,7 +638,7 @@ const ModalSalesOrder: React.FC = () => {
         });
     }
 
-    const [idItem, setIdItem] = useState<any>()
+    const [idItem, setIdItem] = useState<any>(null)
     const [indexItem, setIndexItem] = useState<any>()
 
     const updateConceptSaleOrder = (concept: any, index: number) => {
@@ -647,45 +648,48 @@ const ModalSalesOrder: React.FC = () => {
         setIndexItem(index)
         console.log(concept)
         // Obtener el valor actual del identificador
-        // const currentIdentifier = storePersonalized.getState().identifier;
-        // let newIdentifier = currentIdentifier;
+        const currentIdentifier = storePersonalized.getState().identifier;
+        let newIdentifier = currentIdentifier;
 
         // // Asignar identificadores únicos a cada concepto
-        // concept.conceptos.forEach((element: any) => {
-        //     element.check = true;
-        //     element.id_identifier = ++newIdentifier; // Incrementar y asignar
-        // });
+        concept.conceptos.forEach((element: any) => {
+            element.check = true;
+            element.id_identifier = ++newIdentifier; // Incrementar y asignar
+        });
 
         // // Actualizar el identificador global al último valor utilizado
         // storePersonalized.setState({ identifier: newIdentifier });
 
         // Actualizar vistas con los conceptos personalizados
-        setCustomConceptView([...concept.conceptos]);
+        if(modalSalesOrder == 'sale-order__modal') {
+            setCustomConceptView([...concept.conceptos, ...normalConcepts]);
+        } else {
+            setCustomConceptView(concept.conceptos);
+        }
         setCustomLocal(concept.conceptos);
-
     }
 
-    const undoConcepts = (concept: any) => {
-        // Primero, modificamos los conceptos
-        const updatedConcepts = concept.conceptos.map((element: any) => {
-            element.id_pers = 0;
-            element.id_identifier += identifier + 1;
-            return element;
-        });
+    // const undoConcepts = (concept: any) => {
+    //     // Primero, modificamos los conceptos
+    //     const updatedConcepts = concept.conceptos.map((element: any) => {
+    //         element.id_pers = 0;
+    //         element.id_identifier += identifier + 1;
+    //         return element;
+    //     });
 
-        // Actualizar el estado de normalConcepts
-        setNormalConcepts([...normalConcepts, ...updatedConcepts]);
+    //     // Actualizar el estado de normalConcepts
+    //     setNormalConcepts([...normalConcepts, ...updatedConcepts]);
 
-        // Filtrar y actualizar conceptView para eliminar los conceptos con el id_identifier especificado
-        const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
-        setConceptView([...deleteItem, ...concept.conceptos]);
-        concept.conceptos.forEach((element: any) => {
-            element.check = false
-        });
-        setCustomConceptView([...deleteItem, ...concept.conceptos])
+    //     // Filtrar y actualizar conceptView para eliminar los conceptos con el id_identifier especificado
+    //     const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
+    //     setConceptView([...deleteItem, ...concept.conceptos]);
+    //     concept.conceptos.forEach((element: any) => {
+    //         element.check = false
+    //     });
+    //     setCustomConceptView([...deleteItem, ...concept.conceptos])
 
 
-    };
+    // };
 
 
     const modalPersonalized = () => {
@@ -932,24 +936,28 @@ const ModalSalesOrder: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className='row my-4'>
-                            <div className='col-12 d-flex align-items-center justify-content-between'>
-                                <p className='title__concepts'>Conceptos</p>
-                                <div className='d-flex align-items-center'>
-                                    <div className='mx-4'>
-                                        {urgenciaG ?
-                                            <button type='button' className='btn__general-success mr-4' onClick={() => urgenciaGlobal(false)}>Remover Urgencias</button>
-                                            :
-                                            <button type='button' className='btn__general-orange mr-4' onClick={() => urgenciaGlobal(true)}>Agregar Urgencia a Orden</button>
-                                        }
-                                        <button type='button' className='btn__general-purple' onClick={modalPersonalized}>Personalizados</button>
-                                    </div>
-                                    <div className='btn__search__articles'>
-                                        <svg xmlns="http://www.w3.org/2000/svg" onClick={() => setModalArticleView('article-view__modal')} width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
+                        {modalSalesOrder == 'sale-order__modal' ?
+                            <div className='row my-4'>
+                                <div className='col-12 d-flex align-items-center justify-content-between'>
+                                    <p className='title__concepts'>Conceptos</p>
+                                    <div className='d-flex align-items-center'>
+                                        <div className='mx-4'>
+                                            {urgenciaG ?
+                                                <button type='button' className='btn__general-success mr-4' onClick={() => urgenciaGlobal(false)}>Remover Urgencias</button>
+                                                :
+                                                <button type='button' className='btn__general-orange mr-4' onClick={() => urgenciaGlobal(true)}>Agregar Urgencia a Orden</button>
+                                            }
+                                            <button type='button' className='btn__general-purple' onClick={modalPersonalized}>Personalizados</button>
+                                        </div>
+                                        <div className='btn__search__articles'>
+                                            <svg xmlns="http://www.w3.org/2000/svg" onClick={() => setModalArticleView('article-view__modal')} width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            :
+                            ''
+                        }
                         <div className='table__sales_modal'>
                             {conceptView ? (
                                 <div className='table__numbers'>
@@ -1032,7 +1040,6 @@ const ModalSalesOrder: React.FC = () => {
                                                                 <div onClick={() => updateConceptSaleOrder(article, index)} className='conept-icon'>
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
                                                                 </div>
-
                                                                 :
                                                                 ''
                                                             }
@@ -1051,11 +1058,11 @@ const ModalSalesOrder: React.FC = () => {
                                                             :
                                                             ""
                                                         } */}
-                                                        <div className='td'>
+                                                        {/* <div className='td'>
                                                             <div className='undo-icon' onClick={() => undoConcepts(article)}>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
                                                             </div>
-                                                        </div>
+                                                        </div> */}
                                                     </div>
                                                     :
                                                     <div className='tbody'>

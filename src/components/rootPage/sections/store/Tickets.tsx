@@ -149,12 +149,12 @@ const Tickets = () => {
         getTickets(data)
     }
     useEffect(() => {
-       searchTicket()
+        searchTicket()
     }, [page])
     return (
         <div className="tickets">
             <div className="tickets__container">
-                <div className="row">
+                <div className="row row__one">
                     <div className="col-8 md-col-12">
                         <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} all={true} />
                     </div>
@@ -173,7 +173,7 @@ const Tickets = () => {
                         <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(parseInt(e.target.value))} placeholder='Ingresa el folio' />
                     </div>
                     <div className="col-4 md-col-12 d-flex justify-content-center align-items-end">
-                        <button className="btn__general-purple" onClick={()=>setPage(1)}>Buscar</button>
+                        <button className="btn__general-purple" onClick={() => setPage(1)}>Buscar</button>
                         <button className="btn__general-orange mx-3" onClick={excel}>Excel</button>
                         <button className="btn__general-purple" onClick={() => setModalTickets('modal-create_ticket')}>Nueva entrada</button>
                         {/* <Select dataSelects={suppliers} instanceId="proveedores"  nameSelect={'Proveedores'}/> */}
@@ -189,18 +189,18 @@ const Tickets = () => {
                         <ModalUpdate updateTickets={updateTickets} />
                     </div>
                 </div>
-        
-                    <div className='table__tickets mt-4'>
-                        <div>
-                            {tickets ? (
-                                <div className='table__numbers'>
-                                    <p className='text'>Total de entradas</p>
-                                    <div className='quantities_tables'>{tickets.length}</div>
-                                </div>
-                            ) : (
-                                <p></p>
-                            )}
-                        </div>
+                <div className='table__tickets mt-4'>
+                    <div>
+                        {tickets ? (
+                            <div className='table__numbers'>
+                                <p className='text'>Total de entradas</p>
+                                <div className='quantities_tables'>{tickets.length}</div>
+                            </div>
+                        ) : (
+                            <p></p>
+                        )}
+                    </div>
+                    <div className="table">
                         <div className='table__head'>
                             <div className='thead'>
                                 <div className='th'>
@@ -226,14 +226,14 @@ const Tickets = () => {
                                     return (
                                         <div className='tbody__container' key={index} onClick={() => modalUpdate(ticket)}>
                                             <div className='tbody'>
-                                                <div className='td code'>
-                                                    <p>{ticket.serie}-{ticket.folio}-{ticket.anio}</p>
-                                                </div>
-                                                <div className='td date'>
-                                                    <p>{ticket.fecha_creacion.split('T')[0]}</p>
+                                                <div className='td'>
+                                                    <p className="folio-identifier">{ticket.serie}-{ticket.folio}-{ticket.anio}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>{ticket.usuario_crea}</p>
+                                                    <p className="date-identifier">{ticket.fecha_creacion.split('T')[0]}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p className="user-identifier">{ticket.usuario_crea}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <p>{ticket.empresa}</p>
@@ -253,14 +253,15 @@ const Tickets = () => {
                             <p className="mt-3">No hay entradas que mostrar</p>
                         )}
                     </div>
-           
+                </div>
+
                 <div className='d-flex justify-content-between mt-4'>
                     <div>
-                        <button className='btn__general-purple' onClick={()=>{setPage(page-1)}}
-                            disabled={page==1}>Anterior</button>
+                        <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
+                            disabled={page == 1}>Anterior</button>
                     </div>
                     <div>
-                        <button className='btn__general-purple' onClick={()=>{setPage(page+1)}}>Siguente</button>
+                        <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
                     </div>
                 </div>
             </div>
