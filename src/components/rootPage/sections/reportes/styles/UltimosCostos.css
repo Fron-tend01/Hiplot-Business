@@ -1,0 +1,136 @@
+.ultimosCostos {
+    display: grid;
+    padding: 20px;
+}
+
+.ultimosCostos__container {
+    display: grid;
+	grid-template-rows: auto auto 1fr;
+	height: 100%;
+	background-color: var(--background-sections);
+	padding: 20px ;
+	border-radius: 10px;
+    overflow: hidden;
+}
+
+
+.table__ultimosCostos {
+    margin-top: 20px;
+    border-radius: 10px;
+    grid-column: 1 / span 2;
+
+}
+
+
+.table__ultimosCostos .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__ultimosCostos .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__ultimosCostos .table__head .thead {
+    display: grid;
+    grid-template-columns: 2fr 1fr 100px;
+    padding: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+}
+
+.table__ultimosCostos .table__body {
+	max-height: 150px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__ultimosCostos .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+  }
+  
+.table__ultimosCostos .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+  .table__ultimosCostos .table__body .tbody {
+    display: flex;
+}
+
+.table__ultimosCostos .table__body .tbody {
+    display: grid;
+    grid-template-columns: 2fr 1fr 100px;
+    padding: 10px;
+}
+
+.table__ultimosCostos .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+.table__ultimosCostos .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+/* -------------------------------------------------- */
+.ultimosCostosData__container {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .ultimosCostosData__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    min-width: 900px;
+  }
+  
+  .ultimosCostosData__table th,
+  .ultimosCostosData__table td {
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    text-align: left;
+  }
+  
+  .ultimosCostosData__table thead {
+    background-color: #343a40;
+    color: #fff;
+  }
+  
+  .ultimosCostosData__table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .ultimosCostosData__table tbody tr:hover {
+    background-color: #e9ecef;
+  }
+  
+  .ultimosCostosData__table th {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .ultimosCostosData__no-data {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+    color: #888;
+  }
+  

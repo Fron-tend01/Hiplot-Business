@@ -69,8 +69,11 @@ const MinimalCharges: React.FC = () => {
     }
 
     useEffect(() => {
-        fetch()
-    }, [])
+        if (subModal == 'modal-minimal-charges') {
+            fetch()
+
+        }
+    }, [subModal])
 
    const selectData: any = useSelectStore(state => state.selectedIds)
  

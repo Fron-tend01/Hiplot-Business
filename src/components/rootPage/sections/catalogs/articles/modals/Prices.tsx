@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { storeArticles } from '../../../../../../zustand/Articles'
 import { UserGroupsRequests } from '../../../../../../fuctions/UserGroups'
 import { RangesRequests } from '../../../../../../fuctions/Ranges'
-import TemplatesRequests from '../../../../../../fuctions/Templates'
 import useUserStore from '../../../../../../zustand/General'
 import { storeModals } from '../../../../../../zustand/Modals'
 import History from './Prices/History'
@@ -14,6 +13,7 @@ import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid';
 import './style/Prices.css'
 import APIs from '../../../../../../services/services/APIs'
+import DynamicVariables from '../../../../../../utils/DynamicVariables'
 
 const Prices: React.FC = () => {
   const userState = useUserStore(state => state.user);
@@ -44,7 +44,6 @@ const Prices: React.FC = () => {
 
 
   const { getRanges }: any = RangesRequests();
-  const { getTemplates }: any = TemplatesRequests();
   const { getUserGroups }: any = UserGroupsRequests();
   const [templates, setTemplates] = useState<any>();
   const [ranges, setRanges] = useState<any>();
@@ -56,7 +55,8 @@ const Prices: React.FC = () => {
     try {
       const resultRanges = await getRanges(data);
       setRanges(resultRanges)
-      const resultTemplates = await getTemplates(user_id);
+      const resultTemplates: any = await APIs.GetAny("get_campos_plantillas/get");
+      resultTemplates.unshift({ "id": 0, "nombre": 'Ninguno' })
       setTemplates(resultTemplates)
       const resultUserGroups = await getUserGroups(user_id);
       setUsersGroups(resultUserGroups)
@@ -114,9 +114,12 @@ const Prices: React.FC = () => {
 
 
   useEffect(() => {
-    fetch();
+    if (subModal == 'modal-prices') {
 
-  }, []);
+      fetch();
+    }
+
+  }, [subModal]);
 
   const setSubModal = storeArticles(state => state.setSubModal);
 
@@ -301,7 +304,11 @@ const Prices: React.FC = () => {
     setPrices(newPrices);
   }
 
-
+  const handlePricesComent = (e: any, index: number) => {
+    const newPrices = [...prices];
+    newPrices[index].comentarios = e.target.value;
+    setPrices(newPrices);
+  }
 
 
   const handleOrderChange = (e: React.ChangeEvent<HTMLInputElement>, index: number, index_two: number) => {
@@ -342,7 +349,7 @@ const Prices: React.FC = () => {
 
   const handleTemplatesChange = (e: any, index: number, index_two: number) => {
     const value = e.target.value;
-    prices[index].precios_ext[index_two].id_plantilla = value;
+    prices[index].precios_ext[index_two].variable_pc = value;
   }
 
 
@@ -426,7 +433,7 @@ const Prices: React.FC = () => {
                           <p className=''>Orden</p>
                         </div>
                         <div className='th'>
-                          <p className=''>Plantillas</p>
+                          <p className=''>Campo</p>
                         </div>
                         <div className='th'>
                           <p className=''>Agrupacion</p>
@@ -522,13 +529,13 @@ const Prices: React.FC = () => {
                   <p className=''>Precio</p>
                 </div>
                 <div className='th'>
-                  <p className=''>Frente y vuelta</p>
+                  <p className=''>FyV</p>
                 </div>
                 <div className='th'>
                   <p>Grupos de usuarios</p>
                 </div>
                 <div className='th'>
-                  <p>Observaciones</p>
+                  <p>Condiciones</p>
                 </div>
                 <div className='th'>
 
@@ -571,7 +578,50 @@ const Prices: React.FC = () => {
                         </select>
                       </div> */}
                       <div className='td'>
-                        <input className='inputs__general' type="text" value={item.precios_fyv} placeholder='Frente y vuelta' onChange={(e) => handlePricesFVChange(e, index)} />
+                        <div className='precios_ext-modal_container'>
+                         
+                          {/* <div className='precios_ext-table_head'> */}
+                            <div className='precios_ext-thead'>
+                              <div className='precios_ext-th'><p>Rangos</p></div>
+                              <div className='precios_ext-th'><p>Campo</p></div>
+                              <div className='precios_ext-th'><p>Orden</p></div>
+                              <div className='precios_ext-th'><p>Agrupación</p></div>
+                            </div>
+                          {/* </div> */}
+                          {item.precios_ext?.length > 0 ? (
+                            <div className='precios_ext-table_body'>
+                              {item.precios_ext?.map((item_two: any, index_two: any) => (
+                                <div className='precios_ext-tbody_container' key={index_two}>
+                                  <div className='precios_ext-tbody'>
+                                    <div className='precios_ext-td'>
+                                      <p>{item_two.rango_titulo || item_two?.rango}</p>
+                                    </div>
+                                    <div className='precios_ext-td'>
+                                      <select className='precios_ext-selector' onChange={(e) => handleTemplatesChange(e, index, index_two)} value={item_two.variable_pc}>
+                                        {templates?.map((item: any) => (
+                                          <option key={item.id} value={item.id}>{item.nombre}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className='precios_ext-td'>
+                                      <input className='precios_ext-input' type="number" placeholder='Orden' value={item.orden} onChange={(e) => handleOrderChange(e, index, index_two)} />
+                                    </div>
+                                    <div className='precios_ext-td'>
+                                      <label className="precios_ext-switch">
+                                        <input type="checkbox" checked={item.agrupar} onChange={() => handleGroupChange(index, index_two)} />
+                                        <span className="precios_ext-slider"></span>
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className='precios_ext-text'>No hay precios que mostrar</p>
+                          )}
+                        </div>
+
+                        <input className='inputs__general' type="text" value={item.observaciones} placeholder='Escribe tus observaciones' onChange={(e) => handlePricesComent(e, index)} />
                       </div>
                       <div className='td'>
                         <button className='btn__general-purple' type='button' onClick={() => seeHistory(item)}>Historial</button>
@@ -579,9 +629,9 @@ const Prices: React.FC = () => {
                       <div className='td'>
                         <button className='btn__general-danger' type='button' onClick={() => deleteFinalPrice(item)}>Eliminar</button>
                       </div>
-                      <div className='td'>
+                      {/* <div className='td'>
                         <svg onClick={() => dropDown(index)} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" stroke-linecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-down"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6 9l6 6l6 -6" /></svg>
-                      </div>
+                      </div> */}
                     </div>
                     <div className={`table_drop-down ${activeDrop == index ? 'active' : ''}`}>
                       <div className='article__modal_prices-ext_modal_container' >
@@ -601,7 +651,7 @@ const Prices: React.FC = () => {
                               <p className=''>Rangos</p>
                             </div>
                             <div className='th'>
-                              <p className=''>Plantilla</p>
+                              <p className=''>Campo</p>
                             </div>
                             <div className='th'>
                               <p className=''>Order</p>
@@ -642,7 +692,7 @@ const Prices: React.FC = () => {
                                     </div>
                                   </div>
                                   <div className='td'>
-                                    <select className='traditional__selector' onChange={(e) => handleTemplatesChange(e, index, index_two)} value={item.id_plantilla} >
+                                    <select className='traditional__selector' onChange={(e) => handleTemplatesChange(e, index, index_two)} value={item_two.variable_pc} >
                                       {templates && templates.map((item: any) => (
                                         <option key={item.id} value={item.id}>
                                           {item.nombre}

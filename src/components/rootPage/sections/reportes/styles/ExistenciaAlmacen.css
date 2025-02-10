@@ -1,0 +1,167 @@
+.existenciaAlmacen {
+    display: grid;
+    padding: 20px;
+}
+
+.existenciaAlmacen__container {
+    display: grid;
+	grid-template-rows: auto auto 1fr;
+	height: 100%;
+	background-color: var(--background-sections);
+	padding: 20px ;
+	border-radius: 10px;
+    overflow: hidden;
+}
+
+
+.table__existenciaAlmacen {
+    margin-top: 20px;
+    border-radius: 10px;
+    grid-column: 1 / span 2;
+
+}
+
+
+.table__existenciaAlmacen .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__existenciaAlmacen .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__existenciaAlmacen .table__head .thead {
+    display: grid;
+    grid-template-columns: 2fr 1fr 100px;
+    padding: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+}
+
+.table__existenciaAlmacen .table__body {
+	max-height: 150px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__existenciaAlmacen .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+  }
+  
+.table__existenciaAlmacen .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+  .table__existenciaAlmacen .table__body .tbody {
+    display: flex;
+}
+
+.table__existenciaAlmacen .table__body .tbody {
+    display: grid;
+    grid-template-columns: 2fr 1fr 100px;
+    padding: 10px;
+}
+
+.table__existenciaAlmacen .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+.table__existenciaAlmacen .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+/* -------------------------------------------------- */
+.table__existenciaAlmacenData {
+    margin-top: 20px;
+    border-radius: 10px;
+    grid-column: 1 / span 1;
+
+}
+
+
+.table__existenciaAlmacenData .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__existenciaAlmacenData .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__existenciaAlmacenData .table__head .thead {
+    display: grid;
+    grid-template-columns: 2fr repeat(3,1fr);
+    padding: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+}
+
+.table__existenciaAlmacenData .table__body {
+	max-height: 150px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__existenciaAlmacenData .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+  }
+  
+.table__existenciaAlmacenData .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+  .table__existenciaAlmacenData .table__body .tbody {
+    display: flex;
+}
+
+.table__existenciaAlmacenData .table__body .tbody {
+    display: grid;
+    grid-template-columns:  2fr repeat(3,1fr);
+    padding: 10px;
+}
+
+.table__existenciaAlmacenData .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+.table__existenciaAlmacenData .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}

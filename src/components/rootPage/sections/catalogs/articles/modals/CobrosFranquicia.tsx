@@ -57,9 +57,12 @@ const CobrosFranquicia: React.FC = () => {
 
     }
     useEffect(() => {
-        fetch()
+        if(subModal == 'modal-cobros-franquicia'){
+            fetch()
+
+        }
        
-    }, [])
+    }, [subModal])
     const addCobroFranquicia = () => {
         const exist = cobros_franquicia.filter((x: any) => x.id_empresa == selectData.franquicia.id && x.id_empresa_proveedor == selectData.proveedor.id && x.id_grupo_us == selectData.grupo_us.id)
         if (selectData.franquicia==undefined || selectData.proveedor== undefined || selectData.grupo_us== undefined) {

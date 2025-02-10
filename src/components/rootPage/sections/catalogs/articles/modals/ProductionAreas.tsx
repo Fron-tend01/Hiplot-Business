@@ -41,16 +41,18 @@ const ProductionAreas: React.FC = () => {
       dataSelect: resultAreas
     })
   }
+  const { subModal, areas }: any = useStore(storeArticles)
 
   useEffect(() => {
-    fetch()
-  }, [])
+    if (subModal == 'article-modal_areas-production') {
+      fetch()
+    }
+  }, [subModal])
 
   
 
   const [branchOffices, setBranchOffices] = useState<any>([])
 
-  const { subModal, areas }: any = useStore(storeArticles)
 
   const addAreas = () => {
 

@@ -71,10 +71,11 @@ const Templates: React.FC = () => {
 
     // Crear un nuevo objeto que combine nuevaEmpresa y nuevoTipo
     console.log(selectData.selectTypePayment);
-    
+
     const nuevoRegistro: any = {
       nombre: nameType,
       tipo: selectedInputType,
+      pupred: checkPred,
       id_plantilla: 0,
       if_id_tipo_cobro: selectData.selectTypePayment == undefined ? 0 : selectData.selectTypePayment.id
     };
@@ -191,6 +192,7 @@ const Templates: React.FC = () => {
 
   const [selectedInputType, setSelectedInputType] = useState<any>(null);
   const [selectInputTypes, setSelectInputTypes] = useState<boolean>(false);
+  const [checkPred, setCheckPred] = useState<boolean>(false);
 
 
   const openSelectTypes = () => {
@@ -261,10 +263,18 @@ const Templates: React.FC = () => {
                 <div className='col-12 title'>
                   <p>Agregar Campos</p>
                 </div>
-                <div className='col-6 md-col-12'>
+                <div className='col-4 md-col-12'>
                   <label className='label__general'>Nombre</label>
                   <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
                   <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={nameType} onChange={(e) => setNameType(e.target.value)} placeholder='Ingresa el nombre' />
+                </div>
+                <div className='col-2 md-col-12' title='Si marcas esta opción, al buscar el P/U se usará el valor de este campo' >
+                  <label className='label__general'>P/U Pred.</label>
+                  <label className="switch">
+                    <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="checkbox" checked={checkPred} onChange={(e) => setCheckPred(e.target.checked)} />
+
+                    <span className="slider"></span>
+                  </label>
                 </div>
                 <div className='col-6 md-col-12'>
                   <div className='select__container'>
@@ -279,9 +289,9 @@ const Templates: React.FC = () => {
                           {Object.keys(types)
                             .filter(key => {
                               if (key === 'txtvisual' && !modoUpdate) {
-                                return false; 
+                                return false;
                               }
-                              return true; 
+                              return true;
                             })
                             .map(key => (
                               <li key={key} value={key} onClick={() => TypesChange(key)}>
@@ -333,10 +343,10 @@ const Templates: React.FC = () => {
                       <div className='tbody__container' key={index}>
                         <div className='tbody'>
                           <div className='td'>
-                            {item.nombre}
+                            {item.nombre} {item.pupred ? '(P/U PRED ACTIVO)':''}
                           </div>
                           <div className='td'>
-                            {item.tipo} {item.plantilla!=null ? ' // TP: ('+item.plantilla+')': ''}
+                            {item.tipo} {item.plantilla != null ? ' // TP: (' + item.plantilla + ')' : ''}
                           </div>
                           <div className='td'>
                             <button className='btn__delete_users' type='button' onClick={() => deleteUser(index)}>Eliminar</button>

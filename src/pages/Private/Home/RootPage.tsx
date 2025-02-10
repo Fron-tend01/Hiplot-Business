@@ -18,6 +18,7 @@ import { PrivateRoutes, PublicRoutes } from '../../../models/routes';
 import Header from '../../../components/rootPage/Header/Header';
 import Logo from '../../../assets/HI SOFT LOGO-12.svg'
 import APIs from '../../../services/services/APIs';
+import RouteReportes from '../../../routes/sections/processes/RouteReportes';
 
 const RootHome: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -73,7 +74,9 @@ const RootHome: React.FC = () => {
     const production = {
         backgroundColor: activeMenuIndex === 6 && activeSidebar === true ? '#3D85C6' : ''
     }
-
+    const reportes = {
+        backgroundColor: activeMenuIndex === 7 && activeSidebar === true ? '#3D85C6' : ''
+    }
 
     const toggleMenu = () => {
         setActiveSidebar(!activeSidebar)
@@ -104,7 +107,7 @@ const RootHome: React.FC = () => {
                 </div>
                 <ul className='nav__items'>
                     <div className={`nav__item ${activeMenuIndex === 0 ? 'activeMenu' : ''}`} >
-                        <AnchorTag className={`nav__link ${active == 'dashboard' ? 'active' : ''}`} onClick={(e) =>  { e.preventDefault(); toggleSubMenu(0, 'dashboard') }} to={`${PrivateRoutes.SALES}`}>
+                        <AnchorTag className={`nav__link ${active == 'dashboard' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); toggleSubMenu(0, 'dashboard') }} to={`${PrivateRoutes.SALES}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-layout-dashboard"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 3a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2zm0 12a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-2a2 2 0 0 1 2 -2zm10 -4a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2zm0 -8a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-2a2 2 0 0 1 2 -2z" /></svg>
                             <span>Dashboard</span>
                         </AnchorTag>
@@ -120,7 +123,7 @@ const RootHome: React.FC = () => {
                                 {permisos.VENTA && permisos.VENTA.map((permiso: any, index: any) => {
                                     if (permiso.titulo == "COTIZACION") {
                                         return (
-                                            <AnchorTag key={index} className='sub__menu-link' onClick={() => toggleSubMenu(1, 'sales')}  to={`${PrivateRoutes.SALES}/${PrivateRoutes.QUOTATION}`}>
+                                            <AnchorTag key={index} className='sub__menu-link' onClick={() => toggleSubMenu(1, 'sales')} to={`${PrivateRoutes.SALES}/${PrivateRoutes.QUOTATION}`}>
                                                 <span>Cotización</span>
                                             </AnchorTag>
                                         );
@@ -147,7 +150,7 @@ const RootHome: React.FC = () => {
                     }
                     {permisos && permisos.COMPRA.length > 0 ?
                         <div className={`nav__item ${activeMenuIndex === 2 ? 'activeMenu' : ''}`}>
-                            <AnchorTag className={`nav__link ${active == 'shopping' ? 'active' : ''}`} style={shopping} onClick={(e) => {e.preventDefault(); toggleSubMenu(2, 'shopping') }} to={`${PrivateRoutes.SHOPPING}`}>
+                            <AnchorTag className={`nav__link ${active == 'shopping' ? 'active' : ''}`} style={shopping} onClick={(e) => { e.preventDefault(); toggleSubMenu(2, 'shopping') }} to={`${PrivateRoutes.SHOPPING}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-shopping-cart"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6 2a1 1 0 0 1 .993 .883l.007 .117v1.068l13.071 .935a1 1 0 0 1 .929 1.024l-.01 .114l-1 7a1 1 0 0 1 -.877 .853l-.113 .006h-12v2h10a3 3 0 1 1 -2.995 3.176l-.005 -.176l.005 -.176c.017 -.288 .074 -.564 .166 -.824h-5.342a3 3 0 1 1 -5.824 1.176l-.005 -.176l.005 -.176a3.002 3.002 0 0 1 1.995 -2.654v-12.17h-1a1 1 0 0 1 -.993 -.883l-.007 -.117a1 1 0 0 1 .883 -.993l.117 -.007h2zm0 16a1 1 0 1 0 0 2a1 1 0 0 0 0 -2zm11 0a1 1 0 1 0 0 2a1 1 0 0 0 0 -2z" /></svg>
                                 <span>Compras</span>
                                 <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
@@ -260,9 +263,37 @@ const RootHome: React.FC = () => {
                         :
                         ''
                     }
+                    {permisos && permisos?.REPORTES?.length > 0 ?
+                        <div className={`nav__item ${activeMenuIndex === 7 ? 'activeMenu' : ''}`}>
+                            <AnchorTag className={`nav__link ${active == 'reportes' ? 'active' : ''}`} style={reportes} onClick={(e) => { toggleSubMenu(7, 'reportes'); e.preventDefault(); }} to={`${PrivateRoutes.REPORTES}`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-file-chart-line"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m16 13-3.5 3.5-2-2L8 17"/></svg>                         
+                            </AnchorTag>
+                            <div className='sub__menu '>
+                                {permisos.REPORTES && permisos.REPORTES.map((permiso: any) => {
+                                    if (permiso.titulo == "EXISTENCIA ALMACEN") {
+                                        return (
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')}  to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.EXISTENCIAALMACEN}`}>
+                                                <span>Existencia por Producto</span>
+                                            </AnchorTag>
+                                        );
+                                    } else if (permiso.titulo == "ULTIMOS COSTOS") {
+                                        return (
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')}  to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.ULTIMOSCOSTOS}`}>
+                                                <span>Ultimos Costos</span>
+                                            </AnchorTag>
+                                        );
+                                    } else {
+                                        return null;
+                                    }
+                                })}
+                            </div>
+                        </div>
+                        :
+                        ''
+                    }
                     {permisos && permisos.CATAL.length > 0 ?
                         <div className={`nav__item ${activeMenuIndex === 4 ? 'activeMenu' : ''}`}>
-                            <AnchorTag className={`nav__link ${active == 'catalogue' ? 'active' : ''}`} style={catalogue} onClick={(e) => { e.preventDefault(); toggleSubMenu(4, 'catalogue')}} to={`${PrivateRoutes.CATALOGUE}`}>
+                            <AnchorTag className={`nav__link ${active == 'catalogue' ? 'active' : ''}`} style={catalogue} onClick={(e) => { e.preventDefault(); toggleSubMenu(4, 'catalogue') }} to={`${PrivateRoutes.CATALOGUE}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-folder"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 3a1 1 0 0 1 .608 .206l.1 .087l2.706 2.707h6.586a3 3 0 0 1 2.995 2.824l.005 .176v8a3 3 0 0 1 -2.824 2.995l-.176 .005h-14a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-11a3 3 0 0 1 2.824 -2.995l.176 -.005h4z" /></svg>
                                 <span>Catalágos</span>
                                 <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
@@ -353,7 +384,7 @@ const RootHome: React.FC = () => {
                                                 <span>Listas Productos Aprobados</span>
                                             </AnchorTag>
                                         );
-                                    }else {
+                                    } else {
                                         return null;
                                     }
                                 })}
@@ -364,8 +395,8 @@ const RootHome: React.FC = () => {
                     }
                     {permisos && permisos.CONFIG.length > 0 ?
                         <div className={`nav__item ${activeMenuIndex === 5 ? 'activeMenu' : ''}`}>
-                            <AnchorTag className={`nav__link ${active == 'processes' ? 'active' : ''}`} style={processes} onClick={(e) => { e.preventDefault(); toggleSubMenu(5, 'processes')}} to={`${PrivateRoutes.PROCESSOS}`}>
-                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  className="icon icon-tabler icons-tabler-filled icon-tabler-clipboard"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17.997 4.17a3 3 0 0 1 2.003 2.83v12a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 2.003 -2.83a4 4 0 0 0 3.997 3.83h4a4 4 0 0 0 3.98 -3.597zm-3.997 -2.17a2 2 0 1 1 0 4h-4a2 2 0 1 1 0 -4z" /></svg>
+                            <AnchorTag className={`nav__link ${active == 'processes' ? 'active' : ''}`} style={processes} onClick={(e) => { e.preventDefault(); toggleSubMenu(5, 'processes') }} to={`${PrivateRoutes.PROCESSOS}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-clipboard"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M17.997 4.17a3 3 0 0 1 2.003 2.83v12a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 2.003 -2.83a4 4 0 0 0 3.997 3.83h4a4 4 0 0 0 3.98 -3.597zm-3.997 -2.17a2 2 0 1 1 0 4h-4a2 2 0 1 1 0 -4z" /></svg>
                                 <span>Procesos</span>
                                 <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
                             </AnchorTag>
@@ -461,6 +492,7 @@ const RootHome: React.FC = () => {
                             <Route path={`${PrivateRoutes.SALES}/*`} element={<RouteSales />} />
                             <Route path={`${PrivateRoutes.PRODUCTION}/*`} element={<RouteProduction />} />
                             <Route path={`${PrivateRoutes.WEB}/*`} element={<RouteWeb />} />
+                            <Route path={`${PrivateRoutes.REPORTES}/*`} element={<RouteReportes />} />
                         </Routes>
                     </div>
                 </div>
