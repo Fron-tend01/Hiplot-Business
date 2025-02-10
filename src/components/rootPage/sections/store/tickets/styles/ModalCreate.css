@@ -1,4 +1,12 @@
 
+.conatiner__create_tickets-main > .row__one {
+    padding: 20px;
+	background-color: var(--cards-background);
+	border-radius: var(--general-card-border);
+}
+
+
+
 
  /*************************************************************
                     Modal de crear entradas
@@ -34,7 +42,7 @@
 	transform: scale(0.7);
 	opacity: 0;
     overflow: hidden;
-
+  
     &::-webkit-scrollbar {
         width: 5px;
     }
@@ -213,16 +221,18 @@
 
 .table__modal_create_tickets {
     border-radius: 10px;
+}
 
-    
+.table__modal_create_tickets .table {
+    border-radius: 20px;
+    border: 2px solid var(--border-table-color);
 }
 
 .table__modal_create_tickets .table__head {
     display: flex;
     width: 100%;
     background-color: var( --table-color);
-    border-radius: 5px 5px 0 0;
-    
+    border-radius: 20px 20px 0 0;
 }
 
 .table__modal_create_tickets .table__head .thead {
@@ -238,7 +248,6 @@
     font-weight: 600;
     color: var(--text-table-color);
     text-align: left;
-	
 }
 
 .table__modal_create_tickets .table__body {
@@ -262,18 +271,37 @@
 }
 
 
-
+.table__modal_create_tickets .tbody__container {
+	border-top: 2px solid var(--border-table-color);
+}
 
 .table__modal_create_tickets .tbody__container:nth-child(even) {
-    background-color: var(--table-color);
-}
-  
-.table__modal_create_tickets .tbody__container:nth-child(odd) {
-    background-color: var(--two-table-color);
+	background-color: var(--table-color);
 }
 
+.table__modal_create_tickets .tbody__container:nth-child(odd) {
+	background-color: var(--two-table-color);
+}
+
+.table__modal_create_tickets .tbody__container:first-child {
+	border-top: 2px solid var(--border-table-color);
+}
+
+.table__modal_create_tickets .tbody__container:last-child {
+	border-bottom: none;
+	border-radius: 0 0 20px 20px;
+}
+
+
+
+
+
 .table__modal_create_tickets .table__body .tbody .td {
-    color: var(--text-color);
+    display: flex;
+}
+
+.table__modal_create_tickets .table__body .tbody .td .inputs__general, .traditional__selector {
+    background-color: var(--cards-background);
 }
 
 .table__modal_create_tickets .table__body .tbody {
@@ -282,7 +310,8 @@
 
 .table__modal_create_tickets .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(8, minmax(0, 1fr)) 100px;
+    grid-template-columns: repeat(7, minmax(0, 1fr)) 100px;
+
     padding: 10px;
     column-gap: 20px;
     align-items: center;

@@ -734,6 +734,12 @@ getTotalPrice: async (data: any, customPath?: string) => {
     return ConfigurationAPIs.post(path, data)
   },
 
+  updateConceptsPersonalizedOrder: async (data: any, customPath?: string) => {
+    const path = customPath || 'conceptos_personalizados/update';
+    return ConfigurationAPIs.put(path, data)
+  },
+
+
   
 
 
@@ -743,6 +749,9 @@ getTotalPrice: async (data: any, customPath?: string) => {
     const path = customPath || 'create_orden_produccion';
     return ConfigurationAPIs.post(path, data)
   },
+
+
+  
 
 
   

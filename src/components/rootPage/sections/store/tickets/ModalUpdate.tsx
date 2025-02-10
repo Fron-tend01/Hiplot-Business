@@ -65,7 +65,7 @@ const ModalUpdate = ({ updateTickets }: any) => {
         setPurchaseOrderToUpdate(result[0])
     }
     return (
-        
+
         <div className='conatiner__update_tickets'>
             <div className="row">
                 <div className="col-12">
@@ -101,89 +101,93 @@ const ModalUpdate = ({ updateTickets }: any) => {
                         <div className='quantities_tables'>{conceptos?.length}</div>
                     </div>
                 </div>
-                <div className='table__head'>
-                    <div className='thead'>
-                        <div className='th'>
-                            <p className=''>Articulo</p>
+                <div className="table">
+                    <div className='table__head'>
+                        <div className='thead'>
+                            <div className='th'>
+                                <p className=''>Articulo</p>
+                            </div>
+                            <div className='th'>
+                                <p className=''>Cant</p>
+                            </div>
+                            <div className='th'>
+                                <p className=''>Unidad</p>
+                            </div>
+                            <div className='th'>
+                                <p className=''>Prov</p>
+                            </div>
+                            <div className='th'>
+                                <p className=''>Almacen</p>
+                            </div>
+                            <div className='th'>
+                                <p className=''>OC</p>
+                            </div>
+                            <div className='th'>
+                                <p className=''>Coment</p>
+                            </div>
                         </div>
-                        <div className='th'>
-                            <p className=''>Cant</p>
-                        </div>
-
-                        <div className='th'>
-                            <p className=''>Unidad</p>
-                        </div>
-                  
-                        <div className='th'>
-                            <p className=''>Prov</p>
-                        </div>
-
-                        <div className='th'>
-                            <p className=''>Almacen</p>
-                        </div>
-                        <div className='th'>
-                            <p className=''>OC</p>
-                        </div>
-                        <div className='th'>
-                            <p className=''>Coment</p>
-                        </div>
-
                     </div>
-                </div>
-                {conceptos?.length > 0 ? (
-                    <div className='table__body'>
-                        {conceptos.map((concept: any, index: any) => (
-                            <div className='tbody__container' key={index}>
-                                <div className='tbody'>
-                                    <div className='td'>
-                                        <p>{concept.codigo}-{concept.descripcion}</p>
-                                    </div>
-                                    <div className="td">
-                                        <p>{concept.cantidad}</p>
-                                    </div>
-                                    <div className="td">
-                                        <p>{concept.unidad}</p>
-                                    </div>
-                                    <div className="td">
-                                        <p>{concept.proveedor}</p>
-                                    </div>
-                                    <div className="td">
-                                        <p>{concept.almacen}</p>
-                                    </div>
-                                    <div className="td">
-                                        <button className='btn__general-gray' onClick={() => verOc(concept.data_oc.id_oc)}>{concept.data_oc.folio}</button>
-                                    </div>
-                                    <div className="td">
-                                        <p>{concept.comentarios}</p>
+                    {conceptos?.length > 0 ? (
+                        <div className='table__body'>
+                            {conceptos.map((concept: any, index: any) => (
+                                <div className='tbody__container' key={index}>
+                                    <div className='tbody'>
+                                        <div className='td'>
+                                            <p className="folio-identifier">{concept.codigo}-{concept.descripcion}</p>
+                                        </div>
+                                        <div className="td">
+                                            <p className="amount-identifier">{concept.cantidad}</p>
+                                        </div>
+                                        <div className="td">
+                                            <p>{concept.unidad}</p>
+                                        </div>
+                                        <div className="td">
+                                            <p>{concept.proveedor}</p>
+                                        </div>
+                                        <div className="td">
+                                            <p>{concept.almacen}</p>
+                                        </div>
+                                        <div className="td">
+                                            <button className='btn__general-gray' onClick={() => verOc(concept.data_oc.id_oc)}>{concept.data_oc.folio}</button>
+                                        </div>
+                                        <div className="td">
+                                            <p>{concept.comentarios}</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <p className='text'>No hay aritculos que mostrar</p>
-                )}
+                            ))}
+                        </div>
+                    ) : (
+                        <p className='text'>No hay aritculos que mostrar</p>
+                    )}
+                </div>
             </div>
-
-           
             <div className='row__three'>
-                <div>
-                    <p className='title'>Subtotal</p>
-                    <p className='result'>$ {subtotal.toFixed(2)}</p>
-                </div>
-                <div>
-                    <p className='title'>Descuento</p>
-                    <p className='result'>$ {discount.toFixed(2)}</p>
-                </div>
-                <div>
-                    <p className='title'>IVA</p>
-                    {/* Si applyExtraDiscount es true, mostrar 16%, de lo contrario, mostrar el valor calculado */}
-                    <p className='result'>{IVA}</p>
-                </div>
-                <div>
-                    <p className='title'>Total</p>
-                    {/* Ajustar el cálculo del total basado en si applyExtraDiscount está marcado */}
-                    <p className='result'>$ {total.toFixed(2)}</p>
+                <div className='btns'>
+                    <div className='subtotal'>
+                        <div>
+                            <p className='name'>Subtotal</p>
+                            <p className='value'>$ {subtotal}</p>
+                        </div>
+                    </div>
+                    <div className='discount'>
+                        <div>
+                            <p className='name'>Descuento</p>
+                            <p className='value'>$ {discount}</p>
+                        </div>
+                    </div>
+                    <div className='urgency'>
+                        <div>
+                            <p className='name'>Urgencia</p>
+                            <p className='value'>$ {IVA}</p>
+                        </div>
+                    </div>
+                    <div className='total'>
+                        <div>
+                            <p className='name'>Total</p>
+                            <p className='value'>$ {total}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div className="row__four">

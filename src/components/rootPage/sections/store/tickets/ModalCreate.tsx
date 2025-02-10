@@ -50,7 +50,7 @@ const ModalCreate = () => {
         }
     };
 
-  
+
     const [selectedUnit, setSelectedUnit] = useState<any[]>([]);
     const [selectedSupplier, setSelectedSupplier] = useState<any>([])
     const [selectedStore, setSelectedStore] = useState<any>([])
@@ -70,8 +70,8 @@ const ModalCreate = () => {
         const value = e.target.value;
         const newArticleStates = [...conceptos];
         newArticleStates[index] = {
-            ...newArticleStates[index],  
-            comentarios: value, 
+            ...newArticleStates[index],
+            comentarios: value,
         };
         setConceptos(newArticleStates);
 
@@ -160,7 +160,7 @@ const ModalCreate = () => {
 
         const ids: any = [];
 
-        if(conceptos.length !== 0){
+        if (conceptos.length !== 0) {
             conceptos.forEach((concept: any) => {
                 const exists = ids.some((x: any) => x === concept.id_orden_compra);
                 if (exists) {
@@ -170,7 +170,7 @@ const ModalCreate = () => {
                     costo_flete += concept.costo_flete;
                 }
                 concept.id_almacen = store[0].id
-    
+
             });
         }
 
@@ -222,7 +222,7 @@ const ModalCreate = () => {
                         </div>
                     </div>
                     <div className="conatiner__create_tickets-main">
-                        <div className="row">
+                        <div className="row row__one">
                             <div className="col-8">
                                 <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
                             </div>
@@ -239,12 +239,12 @@ const ModalCreate = () => {
                         <div className=''>
                             <div className='table__modal_create_tickets' >
                                 <div>
-                                    <div>
-                                        <div className='table__numbers'>
-                                            <p className='text'>Total de conceptos</p>
-                                            <div className='quantities_tables'>{conceptos?.length}</div>
-                                        </div>
+                                    <div className='table__numbers'>
+                                        <p className='text'>Total de conceptos</p>
+                                        <div className='quantities_tables'>{conceptos?.length}</div>
                                     </div>
+                                </div>
+                                <div className="table">
                                     <div className='table__head'>
                                         <div className='thead'>
                                             <div className='th'>
@@ -280,7 +280,7 @@ const ModalCreate = () => {
                                                 <div className='tbody__container' key={index}>
                                                     <div className='tbody'>
                                                         <div className='td'>
-                                                            <p>{concept.codigo}-{concept.descripcion}</p>
+                                                            <p className="folio-identifier">{concept.codigo}-{concept.descripcion}</p>
                                                         </div>
                                                         <div className='td'>
                                                             <div>

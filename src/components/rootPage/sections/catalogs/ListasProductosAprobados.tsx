@@ -8,7 +8,7 @@ import { useSelectStore } from '../../../../zustand/Select';
 import Select from '../../Dynamic_Components/Select';
 import Filtrado_Articulos_Basic from '../../Dynamic_Components/Filtrado_Articulos_Basic';
 
-const ListasProductosAprobados = () => {
+const ListasProductosAprobados: React.FC = () => {
     const [lpa, setLpa] = useState<any>({
         id: 0,
         nombre: '',

@@ -3,7 +3,6 @@ import { useStore } from 'zustand';
 import { storeModals } from '../../../../zustand/Modals';
 import { storeSaleCard } from '../../../../zustand/SaleCard';
 import { storeSaleOrder } from '../../../../zustand/SalesOrder';
-import { articleRequests } from '../../../../fuctions/Articles';
 import { v4 as uuidv4 } from 'uuid';
 import { UserGroupsRequests } from '../../../../fuctions/UserGroups';
 import useUserStore from '../../../../zustand/General';
@@ -20,7 +19,7 @@ import Indications from './sales-sard_modals/Stocks';
 import DeliveryTimes from './sales-sard_modals/DeliveryTimes';
 import Components from './sales-sard_modals/Components';
 import APIs from '../../../../services/services/APIs';
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner'
 import { storePersonalized } from '../../../../zustand/Personalized';
 import { storeQuotation } from '../../../../zustand/Quotation';
 import Swal from 'sweetalert2';
@@ -31,7 +30,7 @@ import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
 
 
 
-const SalesCard: React.FC = ({ idA }: any) => {
+const SalesCard: React.FC<any> = ({ idA }: any) => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id;
 
@@ -64,7 +63,6 @@ const SalesCard: React.FC = ({ idA }: any) => {
   const [usersGroups, setUsersGroups] = useState<any[]>([]);
   const [amount, setAmount] = useState<number>(0);
 
-  const { getArticles }: any = articleRequests();
 
   const [billingComment, setBillingComment] = useState<any>('')
   const [opciones, setOpciones] = useState<any>(null);
@@ -535,34 +533,6 @@ const SalesCard: React.FC = ({ idA }: any) => {
   const [productionComments, setproductionComments] = useState<string>('')
 
 
-  const combinacion = async (x: any) => {
-    const data = {
-      id: x.id_articulo,
-      activos: true,
-      nombre: '',
-      codigo: '',
-      familia: 0,
-      proveedor: 0,
-      materia_prima: 0,
-      get_sucursales: true,
-      get_proveedores: true,
-      get_max_mins: true,
-      get_precios: true,
-      get_combinaciones: true,
-      get_plantilla_data: true,
-      get_areas_produccion: true,
-      get_tiempos_entrega: true,
-      get_componentes: true,
-      get_stock: true,
-      get_web: true,
-      for_ventas: true,
-      get_unidades: true,
-      id_usuario: user_id
-    };
-
-    const result = await getArticles(data)
-    setArticle(result[0])
-  }
 
   useEffect(() => {
     setUnits(article?.unidades);

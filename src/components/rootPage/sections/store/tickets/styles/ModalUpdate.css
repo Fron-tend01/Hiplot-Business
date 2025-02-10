@@ -20,19 +20,106 @@
 }
 
 
-.conatiner__update_tickets > .row__three {
-    display: grid;
-	grid-template-columns: repeat(4, minmax(0, 1fr));
-    column-gap: 10px;
-    row-gap: 20px;
-    text-align: justify;
+
+/*///////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////// ROW THREE ///////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////// */
+
+
+.conatiner__update_tickets .row__three {
     margin: 20px 0;
 }
 
-.conatiner__update_tickets > .row__three >  div {
+
+.conatiner__update_tickets .row__three > .btns {
     display: flex;
-    color: var(--text-color);
+    justify-content: space-between;
+    width: 100%;
 }
+
+.conatiner__update_tickets .row__three .btns > div {
+    display: flex;
+    align-items: center;
+}
+
+.conatiner__update_tickets .row__three .btns>.subtotal>div {
+    display: flex;
+    border: 2px solid #3d86c633;
+    border-radius: 5px;
+
+}
+
+.conatiner__update_tickets .row__three .btns>.discount>div {
+    display: flex;
+    border: 2px solid #ff52522f;
+    border-radius: 5px;
+
+}
+
+.conatiner__update_tickets .row__three .btns>.urgency>div {
+    display: flex;
+    border: 2px solid #ff910031;
+    border-radius: 5px;
+
+}
+
+.conatiner__update_tickets .row__three .btns>.total>div {
+    display: flex;
+    border: 2px solid #5e35b038;
+    border-radius: 5px;
+
+}
+
+.conatiner__update_tickets .row__three .btns>.subtotal>div>.name {
+    background-color: #3d86c633;
+    color: #3d86c6;
+    font-weight: 600;
+}
+
+.conatiner__update_tickets .row__three .btns>.discount>div>.name {
+    background-color: #ff52522f;
+    color: #FF5252;
+    font-weight: 600;
+}
+
+
+.conatiner__update_tickets .row__three .btns>.urgency>div>.name {
+    background-color: #ff910031;
+    color: #FF8F00;
+    font-weight: 600;
+}
+
+.conatiner__update_tickets .row__three .btns>.total>div>.name {
+    background-color: #5e35b038;
+    color: #5d35b0;
+    font-weight: 600;
+}
+
+
+.conatiner__update_tickets .row__three .btns>div>div>.name {
+    color: #fff;
+    padding: 5px 10px 5px 5px;
+}
+
+
+.conatiner__update_tickets .row__three .btns>div>div>.value {
+    padding: 5px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .conatiner__update_tickets > .row__four {
     display: flex;
@@ -42,15 +129,18 @@
 
 .table__modal_update_tickets {
     border-radius: 10px;
+}
 
-    
+.table__modal_update_tickets .table {
+    border-radius: 20px;
+    border: 2px solid var(--border-table-color);
 }
 
 .table__modal_update_tickets .table__head {
     display: flex;
     width: 100%;
     background-color: var( --table-color);
-    border-radius: 5px 5px 0 0;
+    border-radius: 20px 20px 0 0;
     
 }
 
@@ -91,18 +181,32 @@
 }
 
 
-
+.table__modal_update_tickets .tbody__container {
+	border-top: 2px solid var(--border-table-color);
+}
 
 .table__modal_update_tickets .tbody__container:nth-child(even) {
-    background-color: var(--table-color);
-}
-  
-.table__modal_update_tickets .tbody__container:nth-child(odd) {
-    background-color: var(--two-table-color);
+	background-color: var(--table-color);
 }
 
+.table__modal_update_tickets .tbody__container:nth-child(odd) {
+	background-color: var(--two-table-color);
+}
+
+.table__modal_update_tickets .tbody__container:first-child {
+	border-top: 2px solid var(--border-table-color);
+}
+
+.table__modal_update_tickets .tbody__container:last-child {
+	border-bottom: none;
+	border-radius: 0 0 20px 20px;
+}
+
+
+
+
 .table__modal_update_tickets .table__body .tbody .td {
-    color: var(--text-color);
+    display: flex;
 }
 
 .table__modal_update_tickets .table__body .tbody {

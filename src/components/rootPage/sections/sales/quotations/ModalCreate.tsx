@@ -306,7 +306,7 @@ const ModalCreate: React.FC = () => {
     if (modal === 'create-modal__qoutation') {
 
       setCustomConcepts(deleteItemCustomC)
-      const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
+      // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
       let data = [...normalConcepts, ...deleteItemCustomC]
       setConceptView([...data, ...concept.conceptos]);
       setNormalConcepts([...normalConcepts, ...concept.conceptos])
@@ -319,7 +319,7 @@ const ModalCreate: React.FC = () => {
       }));
 
       // Filtrar y actualizar conceptView
-      const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
+      // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
 
 
       let data = [...normalConcepts, ...deleteItemCustomC]
@@ -351,25 +351,25 @@ const ModalCreate: React.FC = () => {
 
 
 
-  const deleteCustomConcept = (item: any) => {
-    if (modal === 'create-modal__qoutation') {
-      const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
-      setConceptView(filter_view)
+  // const deleteCustomConcept = (item: any) => {
+  //   if (modal === 'create-modal__qoutation') {
+  //     const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
+  //     setConceptView(filter_view)
 
-      const filter_normal = customConcepts.filter((c: any) => c.id_identifier !== item.id_identifier)
-      setCustomConcepts(filter_normal)
-      toast.success('Concepto eliminado')
-    } else {
-      const filter = customConcepts.filter((c: any) => c.id_identifier !== item.id_identifier)
-      setCustomConcepts(filter)
-      const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
-      setConceptView(filter_view)
-      setCustomConceptView(filter_view)
-      setDeleteCustomConcepts([...deleteCustomConcepts, item.id])
-      toast.success('Concepto eliminado')
+  //     const filter_normal = customConcepts.filter((c: any) => c.id_identifier !== item.id_identifier)
+  //     setCustomConcepts(filter_normal)
+  //     toast.success('Concepto eliminado')
+  //   } else {
+  //     const filter = customConcepts.filter((c: any) => c.id_identifier !== item.id_identifier)
+  //     setCustomConcepts(filter)
+  //     const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
+  //     setConceptView(filter_view)
+  //     setCustomConceptView(filter_view)
+  //     setDeleteCustomConcepts([...deleteCustomConcepts, item.id])
+  //     toast.success('Concepto eliminado')
 
-    }
-  }
+  //   }
+  // }
 
 
 
