@@ -829,6 +829,16 @@ getTotalPrice: async (data: any, customPath?: string) => {
     const path = ruta;
     return ConfigurationAPIs.delete(path)
   },
+  getTotalPriceWSignal: async (dataArticle: any, options: { signal?: AbortSignal } = {}) => {
+    const response = await fetch("http://hiplot.dyndns.org:84/api_dev/get_total", {
+      method: "POST",
+      body: JSON.stringify(dataArticle),
+      headers: { "Content-Type": "application/json" },
+      signal: options.signal, // Pasa la señal al request
+    });
+  
+    return response.json();
+  },
 }
 
 

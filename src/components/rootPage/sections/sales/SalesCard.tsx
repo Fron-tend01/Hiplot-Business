@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useStore } from 'zustand';
 import { storeModals } from '../../../../zustand/Modals';
 import { storeSaleCard } from '../../../../zustand/SaleCard';
@@ -220,10 +220,16 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
   const [data, setData] = useState<any>()
 
+  const controllerRef = useRef<AbortController | null>(null);
 
   const get = async () => {
 
-
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+  
+    controllerRef.current = new AbortController();
+  
     const dataArticle = {
       id_articulo: article.id,
       id_grupo_us: selectedUserGroup,
@@ -236,7 +242,10 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
 
     try {
-      const result: any = await APIs.getTotalPrice(dataArticle);
+      // const result: any = await APIs.getTotalPrice(dataArticle)
+      const result: any = await APIs.getTotalPriceWSignal(dataArticle, {
+        signal: controllerRef.current.signal, // Pasa la señal aquí
+      });
 
       article.plantilla_data.forEach((c: any) => {
         let buscar_in_result = result.txtvisual_campos.filter(
@@ -276,7 +285,10 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
             franquicia: true
           };
 
-          const resultFranquicia: any = await APIs.getTotalPrice(dataArticleFranquicia);
+          // const resultFranquicia: any = await APIs.getTotalPrice(dataArticleFranquicia);
+          const resultFranquicia: any = await APIs.getTotalPriceWSignal(dataArticleFranquicia, {
+            signal: controllerRef.current.signal, // Pasa la señal aquí
+          });
           if (!resultFranquicia.error) {
             precio_franq_tmp = resultFranquicia.mensaje
             // precio_franq_adi_tmp = resultFranquicia?.adicional?.total
@@ -347,27 +359,27 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
     if (amount > 0) {
       let numbrs = article.plantilla_data.filter((x: any) => x.tipo == 'numero')
       if (numbrs.length > 0) {
-        article.plantilla_data.forEach((x: any) => {
+        article.plantilla_data.forEach(async (x: any) => {
           if (x.valor > 0 && x.tipo == 'numero') {
-            get();
+            await get();
           }
         });
       } else {
-        get()
+        await get()
       }
 
     }
 
   };
-
+  
+  useEffect(() => {
+    getPrices()
+  }, [amount])
 
   const handleAmountChange = (e: any) => {
     setAmount(parseInt(e.target.value))
 
   }
-  useEffect(() => {
-    getPrices()
-  }, [amount])
 
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
 
@@ -596,7 +608,6 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       return;
     }
 
-    console.log("IDs seleccionados:", selectedIds);
 
     fetch2(selectedIds)
   }
@@ -654,7 +665,6 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
       const resultUsers = await getUserGroups(user_id);
       if (resultUsers) {
-        console.log('ENTRANDO A ASIGNAR LOS UP', resultUsers);
 
         setUsersGroups(resultUsers);
         setSelectedUserGroup(resultUsers[0].id);
@@ -689,7 +699,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                       <SwiperSlide>
                         <div className='images__container'>
                           <div className='images' style={{ backgroundImage: `url(${image?.img_base64})` }}>
-                            
+
                           </div>
                           <div className='buttons-sale-card'>
                           </div>
@@ -765,7 +775,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                     </div>
                     :
                     ''
-                    }
+                  }
                   {article.bajo_pedido ?
                     <div className='bajo-pedido'>
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-truck"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18H9" /><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" /><circle cx="17" cy="18" r="2" /><circle cx="7" cy="18" r="2" /></svg>
@@ -773,7 +783,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                     </div>
                     :
                     ''
-                    }
+                  }
                   {article.vender_sin_stock ?
                     <div className='vender-sin-stock'>
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
@@ -781,7 +791,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                     </div>
                     :
                     ''
-                    }
+                  }
                   {article.ultimas_piezas ?
                     <div className='ultima-piezas'>
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-clock-3"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16.5 12" /></svg>
@@ -789,7 +799,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                     </div>
                     :
                     ''
-                    }
+                  }
                 </div>
                 :
                 <div className="card-sale__pulse__labels">
@@ -1121,7 +1131,16 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                 </div>
                 <div className='total__price'>
                   <p className='title__total-price'>Precio total</p>
-                  <p className='result__total-price'>$ {prices}</p>
+                  <p className='result__total-price'>$
+                    {article.precio_libre ?
+                      <input
+                        // className={`inputs__general`}
+                        type="text"
+                        value={prices}
+                        onChange={(e) => setPrices(e.target.value)}
+                      />
+                      : prices}
+                  </p>
                 </div>
 
               </div>
