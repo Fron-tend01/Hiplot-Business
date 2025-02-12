@@ -31,7 +31,7 @@ const Departures: React.FC = () => {
     const setLPAs = storeOrdes(state => state.setLPAs)
 
     const setModal = storeModals(state => state.setModal)
-    
+
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
 
@@ -54,31 +54,31 @@ const Departures: React.FC = () => {
 
 
 
-  const [series, setSeries] = useState<any>([])
+    const [series, setSeries] = useState<any>([])
 
 
     const fecth = async () => {
-        APIs.CreateAny({ id_usuario: user_id, for_pedido:1, light:true }, "getLPA")
-        .then(async (response: any) => {
-            setLPAs({
-                selectName: 'Lista Productos Aprobados',
-                dataSelect: response,
-                options: 'nombre'
+        APIs.CreateAny({ id_usuario: user_id, for_pedido: 1, light: true }, "getLPA")
+            .then(async (response: any) => {
+                setLPAs({
+                    selectName: 'Lista Productos Aprobados',
+                    dataSelect: response,
+                    options: 'nombre'
+                })
             })
-        })
         setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
         await getCompaniesXUsers(user_id)
         await getBranchOfficeXCompanies(0, user_id)
-        const resultSeries = await getSeriesXUser({id: user_id,tipo_ducumento: 3,})
+        const resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 3, })
         resultSeries.unshift({ nombre: 'Ninguna', id: 0 });
         setSeries({
-          selectName: 'Series',
-          options: 'nombre',
-          dataSelect: resultSeries
+            selectName: 'Series',
+            options: 'nombre',
+            dataSelect: resultSeries
         })
         getSuppliers('', true, user_id)
         await getOrdedrs({ id_usuario, id_sucursal: branchOffices.id, desde, hasta, status, })
-        
+
     }
 
 
@@ -105,9 +105,9 @@ const Departures: React.FC = () => {
     const [orderConceptsUpdate, setorderConceptsUpdate] = useState<any>([])
 
     const modalUpdate = (order: any) => {
-       
+
         setModal('modal-orders-update')
-       
+
         setOderUpdate(order)
         setorderConceptsUpdate(order.conceptos)
     }
@@ -136,13 +136,12 @@ const Departures: React.FC = () => {
                     <div className='col-4'>
                         <label className='label__general'>Fechas</label>
                         <div className='container_dates__requisition'>
-                            <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas'  />
+                            <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
                         </div>
                     </div>
                 </div>
                 <div className="row__two">
-                    <Select  dataSelects={series}  instanceId="serieSelected" nameSelect={'Series'} />
-
+                    <Select dataSelects={series} instanceId="serieSelected" nameSelect={'Series'} />
                     <div>
                         <label className='label__general'>Folio</label>
                         <div className='warning__general'><small >Este campo es obligatorio</small></div>
@@ -187,7 +186,7 @@ const Departures: React.FC = () => {
                 </div>
                 <ModalCreate />
                 <ModalUpdate oderUpdate={oderUpdate} orderConceptsUpdate={orderConceptsUpdate} />
-                  
+
                 <div className='table__orders'>
                     {orders ? (
                         <div className='table__numbers'>
@@ -198,7 +197,7 @@ const Departures: React.FC = () => {
                         <p className="text">No hay empresas que mostras</p>
                     )}
                     <div className='table__head'>
-                        <div className='thead'> 
+                        <div className='thead'>
                             <div className='th'>
                                 <p>Pedido</p>
                             </div>
@@ -236,7 +235,7 @@ const Departures: React.FC = () => {
                                             <div className='td'>
                                                 <p>{order.fecha_creacion}</p>
                                             </div>
-                                            
+
                                             <div className='td'>
                                                 <button className='branchoffice__edit_btn' onClick={() => modalUpdate(order)}>Editar</button>
                                             </div>

@@ -266,20 +266,28 @@ const RootHome: React.FC = () => {
                     {permisos && permisos?.REPORTES?.length > 0 ?
                         <div className={`nav__item ${activeMenuIndex === 7 ? 'activeMenu' : ''}`}>
                             <AnchorTag className={`nav__link ${active == 'reportes' ? 'active' : ''}`} style={reportes} onClick={(e) => { toggleSubMenu(7, 'reportes'); e.preventDefault(); }} to={`${PrivateRoutes.REPORTES}`}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-file-chart-line"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m16 13-3.5 3.5-2-2L8 17"/></svg>                         
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-file-description"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 2l.117 .007a1 1 0 0 1 .876 .876l.007 .117v4l.005 .15a2 2 0 0 0 1.838 1.844l.157 .006h4l.117 .007a1 1 0 0 1 .876 .876l.007 .117v9a3 3 0 0 1 -2.824 2.995l-.176 .005h-10a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-14a3 3 0 0 1 2.824 -2.995l.176 -.005zm3 14h-6a1 1 0 0 0 0 2h6a1 1 0 0 0 0 -2m0 -4h-6a1 1 0 0 0 0 2h6a1 1 0 0 0 0 -2" /><path d="M19 7h-4l-.001 -4.001z" /></svg>
+                                <span>Reportes</span>
+                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
                             </AnchorTag>
                             <div className='sub__menu '>
                                 {permisos.REPORTES && permisos.REPORTES.map((permiso: any) => {
                                     if (permiso.titulo == "EXISTENCIA ALMACEN") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')}  to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.EXISTENCIAALMACEN}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')} to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.EXISTENCIAALMACEN}`}>
                                                 <span>Existencia por Producto</span>
                                             </AnchorTag>
                                         );
                                     } else if (permiso.titulo == "ULTIMOS COSTOS") {
                                         return (
-                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')}  to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.ULTIMOSCOSTOS}`}>
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')} to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.ULTIMOSCOSTOS}`}>
                                                 <span>Ultimos Costos</span>
+                                            </AnchorTag>
+                                        );
+                                    }  else if (permiso.titulo == "MOVIMIENTOS DE ALMACEN") {
+                                        return (
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')} to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.WAREHOUSEMOVEMENTS}`}>
+                                                <span>Movimiento Almacen</span>
                                             </AnchorTag>
                                         );
                                     } else {

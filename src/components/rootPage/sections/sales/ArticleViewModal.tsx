@@ -16,7 +16,7 @@ const ArticleViewModal = () => {
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
     const setStatusArticle = storeSaleCard(state => state.setStatusArticle);
-    
+
 
     const { modalArticleView }: any = useStore(storeArticleView)
 
@@ -32,14 +32,14 @@ const ArticleViewModal = () => {
 
 
     const fetch = async () => {
-        const resultFamilies:any = await getFamilies(user_id)
+        const resultFamilies: any = await getFamilies(user_id)
         resultFamilies.unshift({ nombre: 'Todas', id: 0 });
         search()
         setFamilies(resultFamilies)
     };
 
     useEffect(() => {
-        if (modalArticleView =='article-view__modal') {
+        if (modalArticleView == 'article-view__modal') {
             fetch();
             setPage(1)
         }
@@ -65,7 +65,7 @@ const ArticleViewModal = () => {
     const [idA, setIdA] = useState<any>(null);
     const [i, setI] = useState(0);
 
- 
+
     const modal = async (x: any) => {
         setStatusArticle(false);
         if (x.id_familia) {
@@ -128,8 +128,8 @@ const ArticleViewModal = () => {
             // id_coleccion: isChecked ? dataCollection.id : 0,
             get_web: false,
             get_unidades: false,
-            for_vendedor:true,
-            page:page
+            for_vendedor: true,
+            page: page
         };
 
         const result = await getArticles(data);
@@ -150,9 +150,9 @@ const ArticleViewModal = () => {
     const [userSearchTerm, setUserSearchTerm] = useState<string>('');
 
     useEffect(() => {
-            search();
-            console.log('page',);
-            
+        search();
+        console.log('page',);
+
     }, [page]);
 
     return (
@@ -170,13 +170,13 @@ const ArticleViewModal = () => {
                             <label className='label__general'>Código</label>
                             <div className='warning__general'><small>Este campo es obligatorio</small></div>
                             <input className='inputs__general' type='text' name='code' value={inputs.code} onChange={handleInputChange}
-                            onKeyDown={(e) => {if (e.key === "Enter") {setPage(1)}}}  placeholder='Ingresa el código' />
+                                onKeyDown={(e) => { if (e.key === "Enter") { setPage(1) } }} placeholder='Ingresa el código' />
                         </div>
                         <div>
                             <label className='label__general'>Nombre</label>
                             <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                            <input className='inputs__general' type='text' name='name' value={inputs.name}  onChange={handleInputChange} 
-                            onKeyDown={(e) => {if (e.key === "Enter") {setPage(1)}}}  placeholder='Ingresa el nombre' />
+                            <input className='inputs__general' type='text' name='name' value={inputs.name} onChange={handleInputChange}
+                                onKeyDown={(e) => { if (e.key === "Enter") { setPage(1) } }} placeholder='Ingresa el nombre' />
                         </div>
                         <div className='select__container'>
                             <label className='label__general'>Familias</label>
@@ -214,7 +214,7 @@ const ArticleViewModal = () => {
                             <p className='text'>Colección</p>
                         </div>
                         <div>
-                            <button className='btn__general-purple' onClick={()=>{search();setPage(1)}}>Buscar</button>
+                            <button className='btn__general-purple' onClick={() => { search(); setPage(1) }}>Buscar</button>
                         </div>
                     </div>
                     <div className='row__two'>
@@ -238,12 +238,10 @@ const ArticleViewModal = () => {
                                 </div>
                                 <div className='img' style={{ backgroundImage: `url(${x.imagen})` }}>
                                 </div>
-                                
                                 <div className='content'>
                                     <p className='code'>{x.codigo}</p>
                                     <p className='descripcion'>{x.descripcion}</p>
                                     <div className='labels'>
-
                                         {x.bajo_pedido == true ?
                                             <div className='bajo-pedido'>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-truck"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18H9" /><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" /><circle cx="17" cy="18" r="2" /><circle cx="7" cy="18" r="2" /></svg>
@@ -260,27 +258,23 @@ const ArticleViewModal = () => {
                                             :
                                             ''
                                         }
-
-
-
-
                                     </div>
 
                                 </div>
                             </div>
                         ))}
                     </div>
-                <div className='row'>
-                    <div className='col-1'>
-                        <button className='btn__general-primary' onClick={()=>setPage(page-1)} disabled={page==1}>ANTERIOR</button>
-                    </div>
-                    <div className='col-10'>
+                    <div className='row'>
+                        <div className='col-1'>
+                            <button className='btn__general-primary' onClick={() => setPage(page - 1)} disabled={page == 1}>ANTERIOR</button>
+                        </div>
+                        <div className='col-10'>
 
+                        </div>
+                        <div className='col-1'>
+                            <button className='btn__general-primary' onClick={() => setPage(page + 1)}>SIGUIENTE</button>
+                        </div>
                     </div>
-                    <div className='col-1'>
-                        <button className='btn__general-primary' onClick={()=>setPage(page+1)}>SIGUIENTE</button>
-                    </div>
-                </div>
                 </div>
                 <SalesCard idA={idA} />
             </div>

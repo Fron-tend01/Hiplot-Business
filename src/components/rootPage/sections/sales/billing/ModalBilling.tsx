@@ -51,11 +51,14 @@ const ModalBilling: React.FC = () => {
     const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
 
     const setCustomConceptView = storePersonalized((state) => state.setCustomConceptView);
+    const setCustomConcepts = storePersonalized((state) => state.setCustomConcepts);
+
+    const setCustomLocal = storePersonalized(state => state.setCustomLocal)
 
     const setConceptView = storePersonalized((state) => state.setConceptView);
 
     const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
-    const { normalConcepts, deleteNormalConcepts, customConcepts, customConceptView, deleteCustomConcepts, conceptView, identifier }: any = useStore(storePersonalized)
+    const { normalConcepts, deleteNormalConcepts, customConcepts, customConceptView, deleteCustomConcepts, CustomConcepts, conceptView, identifier }: any = useStore(storePersonalized)
 
     const { subModal }: any = useStore(storeArticles)
 
@@ -498,11 +501,12 @@ const ModalBilling: React.FC = () => {
         });
     
         let totalConcepts = [...newConcepts, ...newConceptsPers];
-    
+        setCustomLocal(newConcepts)
         setTotals(copy_totals);
         setNormalConcepts([...normalConcepts, ...newConcepts]);
         setConceptView([...conceptView, ...totalConcepts]);
-        setCustomConceptView([...customConceptView, ...newConceptsPers]);
+        setCustomConceptView([...customConceptView, ...newConcepts]);
+        setCustomConcepts([...customConcepts, ...newConceptsPers]);
         setDataBillign([...dataBillign, ...totalConcepts]);
         setIdentifier(newIdentifier);
     };
@@ -663,9 +667,13 @@ const ModalBilling: React.FC = () => {
 
   
 
+    const personalizedCreate = (concept: any) => {
+        setPersonalizedModal('personalized_modal-billing')
+        
+    }
 
     const personalizedUpdate = (concept: any) => {
-        setPersonalizedModal('personalized_modal-sale')
+        setPersonalizedModal('personalized_modal-billing-update')
         setCustomConceptView(concept.conceptos)
         console.log(concept)
     }
@@ -908,7 +916,7 @@ const ModalBilling: React.FC = () => {
                             </div>
                         </div>
                         <div className='d-flex justify-content-end'>
-                            <button className='btn__general-primary' onClick={() => setPersonalizedModal('personalized_modal-billing')}>Personalizados</button>
+                            <button className='btn__general-primary' onClick={personalizedCreate}>Personalizados</button>
                         </div>
                         <div className='table__billing_concepts'>
                             {conceptView ? (
@@ -951,7 +959,7 @@ const ModalBilling: React.FC = () => {
                             </div>
                             {conceptView ? (
                                 <div className='table__body'>
-                                    {conceptView.map((concept: any) => {
+                                    {conceptView?.map((concept: any) => {
                                         return (
                                             <div className={`tbody__container `} key={concept.id}>
                                                 {concept?.personalized ?
@@ -961,7 +969,7 @@ const ModalBilling: React.FC = () => {
                                                     :
                                                     ''
                                                 }                                                
-                                                {concept.personalized ?
+                                                {concept?.personalized ?
                                                     <div className={`tbody ${concept.conceptos[0].pers_div ? 'personalized_div' : 'personalized'}`}>
                                                         <div className='td'>
                                                             <p>{concept.codigo}-{concept.descripcion}</p>

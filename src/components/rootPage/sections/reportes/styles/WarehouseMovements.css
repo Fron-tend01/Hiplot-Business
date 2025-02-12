@@ -1,0 +1,194 @@
+.warehouse__movements {
+    display: grid;
+    padding: 20px;
+    /* display: flex;
+    flex-direction: column;
+    overflow: auto;
+    flex-grow: 1; */
+}
+
+.warehouse__movements_container {
+    display: grid;
+	grid-template-rows: auto auto 1fr;
+	height: 100%;
+	border-radius: 10px;
+    overflow: hidden;
+}
+
+.warehouse__movements_container .row__one {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	column-gap: 10px;
+	padding: 20px;
+	background-color: var(--cards-background);
+	border-radius: var(--general-card-border);
+}
+
+.warehouse__movements_container .row__two {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	column-gap: 10px;
+	margin-top: 20px;
+	padding: 20px;
+	background-color: var(--cards-background);
+	border-radius: var(--general-card-border);
+
+}
+
+.warehouse__movements_container .row__two > div {
+	display: flex;
+	align-items: end;
+
+}
+
+.warehouse__movements_container .row__two > div .input {
+	width: 100%;
+}
+
+.warehouse__movements_container .row__two > div .btn .btn__general-primary {
+	margin-left: 10px;
+}
+
+.warehouse__movements_container .row__three {
+	margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+    height: 100%;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+/*************************************************************
+                    Tabla de Entradas
+ **************************************************************/
+
+ .table__warehouse-movements {
+    border-radius: 10px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    border: 2px solid var(--border-table-color);
+    max-height: 200px;
+}
+
+.table__warehouse-movements .table__head {
+    display: flex;
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    background-color: var(--table-header-color);
+    
+}
+
+.table__warehouse-movements .table__head .thead {
+    display: flex;
+    width: 100%;
+}
+
+.table__warehouse-movements .table__head .thead {
+    display: grid;
+	grid-template-columns: 1fr;
+    padding: 10px;
+    font-weight: 600;
+    column-gap: 20px;
+}
+
+.table__warehouse-movements .table__body {
+    height: 100%;
+    overflow-y: auto;
+ 
+    transition-delay: 0.0s;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color);
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {}
+}
+
+.table__warehouse-movements .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table__warehouse-movements .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+}
+
+.table__warehouse-movements .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+.table__warehouse-movements .tbody__container:first-child {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table__warehouse-movements .tbody__container:last-child {
+    border-bottom: none;
+    border-radius: 0 0 20px 20px;
+}
+
+
+
+
+.table__warehouse-movements .table__body .tbody {
+    display: flex;
+}
+
+.table__warehouse-movements .table__body .tbody.personalized {
+    border: 2px solid var(--primary-color);
+}
+
+.table__warehouse-movements .table__body .tbody {
+    display: grid;
+	grid-template-columns: 1fr;
+    padding: 10px;
+    row-gap: 20px;
+
+}
+
+
+.table__warehouse-movements .table__body .tbody>.td {
+    display: flex;
+    align-items: center;
+}
+
+.table__warehouse-movements .table__body .tbody>.td .article {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #3d86c62c;
+    border-radius: 5px;
+    font-weight: 600;
+    /* outline: 2px solid var(--primary-100); */
+    color: var(--primary-100);
+}
+
+
+.table__warehouse-movements .table__body .tbody:hover {
+    background-color: var(--table-hover-color);
+    color: #fff;
+}
+
+
+.table__warehouse-movements .table__body .tbody:hover .td>.article {
+    background-color: #3d86c6;
+    color: #ffffff;
+}
+

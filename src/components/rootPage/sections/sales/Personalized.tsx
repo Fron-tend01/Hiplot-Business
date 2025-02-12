@@ -12,12 +12,16 @@ import { storeDv } from '../../../../zustand/Dynamic_variables'
 import Swal from 'sweetalert2'
 import SeeCamposPlantillas from './SeeCamposPlantillas'
 import { storeSaleOrder } from '../../../../zustand/SalesOrder'
+import { storeArticles } from '../../../../zustand/Articles'
 
 const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
 
   const setConceptView = storePersonalized(state => state.setConceptView)
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+
+
+  const { subModal }: any = useStore(storeArticles)
 
   const { modalSalesOrder }: any = useStore(storeSaleOrder)
 
@@ -57,11 +61,11 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   }, [])
 
 
-
+  console.log('conceptView', conceptView)
+  console.log('normalConcepts', normalConcepts)
 
   const [articlesPersonalized, setArticlesPersonalized] = useState<any>([])
 
-  const [setFilterPersonalized] = useState<any>([])
 
   const addPersonalized = (item: any, index: number) => {
 
@@ -161,7 +165,9 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
       }
 
-    } else {
+    }
+
+    if (personalizedModal == 'personalized_modal-sale-orders') {
 
       if (personalizedModal == 'personalized_modal-quotation') {
         customConceptView[index].check = !customConceptView[index].check
@@ -255,28 +261,20 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         }
 
       }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
+    if (subModal == 'billing__modal-create') {
       if (personalizedModal == 'personalized_modal-billing') {
         customConceptView[index].check = !customConceptView[index].check
 
         const existItem = normalConcepts.find((x: any) => x.id_identifier == item.id_identifier)
+        console.log(' existItemexistItemexistItem', item.id_identifier)
         if (existItem) {
           ///// Eliminar el concepto de la variable de normal conceptos que se envia al backend /////////////
           const deleteItem = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
           setNormalConcepts(deleteItem)
           // setDeleteNormalConcepts([...deleteNormalConcepts, existItem.id])
-
+          console.log('existe')
           ////////////////// Se agrega el concepto a la variable de conceptos de personalizados //////////////
           const existLocal = customLocal.some((x: any) => x.id_identifier == existItem.id_identifier)
           if (existLocal) {
@@ -290,11 +288,14 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
           return
 
         } else {
+
           //// Item que se va agregar //////////////////
           let itemAdd = customLocal.find((x: any) => x.id_identifier == item.id_identifier)
           // const deleteItem = deleteNormalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
           // setDeleteNormalConcepts(deleteItem)
-          setNormalConcepts([itemAdd, ...normalConcepts]);
+          if (itemAdd) {
+            setNormalConcepts([itemAdd, ...normalConcepts]);
+          }
         }
 
 
@@ -448,7 +449,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
       setCustomConcepts([...customConcepts, data])
       setNormalConceptsView(normalConcepts)
       setPersonalizedModal('')
-      setFilterPersonalized([])
+
       setArticlesPersonalized([])
 
       return
@@ -458,7 +459,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
     if (personalizedModal == 'personalized_modal-quotation-update') {
       let leght: any = null
 
-       const updatedConceptView = customConcepts.map((x: any) => {
+      const updatedConceptView = customConcepts.map((x: any) => {
 
         if (x.id_identifier === idItem.id_identifier) {
           length = x.conceptos.leght
@@ -479,7 +480,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         }
         return x;
       });
-   
+
 
       if (leght > 1) {
         console.log('Se mantiene por que todavia le quedan conceptos', leght)
@@ -528,9 +529,9 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
       console.log('customConcepts', customConcepts)
       console.log('mixOfConcepts', mixOfConcepts)
       setConceptView([...mixOfConcepts, data])
-      
+
       setPersonalizedModal('')
-      setFilterPersonalized([])
+
       setArticlesPersonalized([])
       return
     }
@@ -610,6 +611,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
       }
 
 
+
       setCustomConcepts([...customConcepts, data])
 
       let dataView = [...normalConcepts, ...customConcepts]
@@ -618,7 +620,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
       setCustomConceptView(normalConcepts)
 
       setPersonalizedModal('')
-      setFilterPersonalized([])
+
       setArticlesPersonalized([])
       return
 
@@ -672,7 +674,8 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   })
 
 
-
+  console.log('customLocal', customLocal)
+  console.log('conceptView', conceptView)
 
 
 
@@ -719,14 +722,14 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
       }));
     }
     setPersonalizedModal('')
-    setCustomConceptView([])
-    setCustomConceptView([])
-    setCustomLocal([])
+    // setCustomConceptView([])
+    // setCustomConceptView([])
+    // setCustomLocal([])
 
   }
 
 
-
+console.log('customLocal', customLocal)
 
   const setIndexVM = storeDv(state => state.setIndex)
 
@@ -837,7 +840,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   useEffect(() => {
     if (idItem) {
       setSelectedId('units', { id: idItem.unidad });
- 
+
       setInputs({
         descripcion: idItem.descripcion,
         codigo: idItem.codigo,
@@ -1669,8 +1672,6 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
               }</>
             :
             ""
-
-
           }
 
 
@@ -1678,6 +1679,87 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
 
           {personalizedModal == "personalized_modal-billing" ?
+            <div className='table__personalized'>
+              {customData ? (
+                <div className='table__numbers'>
+                  <p className='text'>Total de artículos</p>
+                  <div className='quantities_tables'>{customData.length}</div>
+                </div>
+              ) : (
+                <p className="text">No hay empresas que mostras</p>
+              )}
+              <div className='table__head'>
+                <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
+                  {personalizedModal == 'personalized_modal-update' ?
+                    ''
+                    :
+                    <div className='th'>
+                    </div>
+                  }
+                  <div className='th'>
+                    <p>Artículo</p>
+                  </div>
+                  <div className='th'>
+                    <p>Cantidad</p>
+                  </div>
+                  <div className='th'>
+                    <p>Unidad</p>
+                  </div>
+                </div>
+              </div>
+              {customConceptView ? (
+                <div className='table__body'>
+                  {customConceptView.map((quotation: any, index: number) => {
+                    return (
+                      <div className='tbody__container'>
+                        <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={quotation.id}>
+                          {personalizedModal == 'personalized_modal-update' ?
+                            ''
+                            :
+                            <div className='td'>
+                              <div className="td">
+                                <label className="custom-checkbox">
+                                  <input
+                                    type="checkbox"
+                                    checked={customConceptView[index]?.check || false}
+                                    onChange={() => addPersonalized(quotation, index)}
+                                  />
+                                  <span className="checkmark"></span>
+                                </label>
+                              </div>
+                            </div>
+                          }
+                          <div className='td'>
+                            <div className='article'>
+                              <p>{quotation.codigo}-{quotation.descripcion}</p>
+                            </div>
+                          </div>
+                          <div className='td'>
+                            <div>
+                              <p>{quotation.cantidad}</p>
+                            </div>
+                          </div>
+                          <div className='td'>
+                            <div>
+                              <p>{quotation.name_unidad}</p>
+                            </div>
+                          </div>
+                          <div className='td'>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <p className="text">Cargando datos...</p>
+              )}
+            </div>
+            :
+            ''
+          }
+
+          {personalizedModal == "personalized_modal-billing-update" ?
             <div className='table__personalized'>
               {customData ? (
                 <div className='table__numbers'>
@@ -1758,6 +1840,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
             :
             ''
           }
+
 
 
           <div className='mt-5 d-flex justify-content-center'>
