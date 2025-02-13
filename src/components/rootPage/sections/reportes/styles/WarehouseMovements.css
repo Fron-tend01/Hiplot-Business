@@ -3,25 +3,16 @@
     padding: 20px;
     /* display: flex;
     flex-direction: column;
-    overflow: auto;
     flex-grow: 1; */
+    overflow: auto;
 }
 
 .warehouse__movements_container {
     display: grid;
-	grid-template-rows: auto auto 1fr;
+	grid-template-rows: auto auto auto 1fr;
 	height: 100%;
 	border-radius: 10px;
-    overflow: hidden;
-}
-
-.warehouse__movements_container .row__one {
-	display: grid;
-	grid-template-columns: 2fr 1fr;
-	column-gap: 10px;
-	padding: 20px;
-	background-color: var(--cards-background);
-	border-radius: var(--general-card-border);
+    /* overflow: hidden; */
 }
 
 .warehouse__movements_container .row__two {
@@ -58,7 +49,13 @@
 
 }
 
+.wm-col-izq {
+    padding: 20px;
+    background-color: var(--cards-background);
+    border-radius: var(--general-card-border);
+    border-right: 2px solid black; 
 
+}
 
 
 
@@ -96,7 +93,7 @@
 
 .table__warehouse-movements .table__head .thead {
     display: grid;
-	grid-template-columns: 1fr;
+	grid-template-columns: 1fr 50px;
     padding: 10px;
     font-weight: 600;
     column-gap: 20px;
@@ -142,9 +139,6 @@
     border-radius: 0 0 20px 20px;
 }
 
-
-
-
 .table__warehouse-movements .table__body .tbody {
     display: flex;
 }
@@ -155,7 +149,7 @@
 
 .table__warehouse-movements .table__body .tbody {
     display: grid;
-	grid-template-columns: 1fr;
+	grid-template-columns: 0.9fr 30px;
     padding: 10px;
     row-gap: 20px;
 
@@ -192,3 +186,47 @@
     color: #ffffff;
 }
 
+/* --------------------------------------------TABLA PARA MOSTRAR EL REPORTE */
+.datareporte__container {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .datareporte__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    min-width: 900px;
+  }
+  
+  .datareporte__table th,
+  .datareporte__table td {
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    text-align: left;
+  }
+  
+  .datareporte__table thead {
+    background-color: #343a40;
+    color: #fff;
+  }
+  
+  .datareporte__table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .datareporte__table tbody tr:hover {
+    background-color: #e9ecef;
+  }
+  
+  .datareporte__table th {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .datareporte__no-data {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+    color: #888;
+  }

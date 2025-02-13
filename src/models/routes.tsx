@@ -14,6 +14,7 @@ export const PrivateRoutes = {
   WAREHOUSES: 'warehouses',
   REPORTES: 'reportes',
   SALES: 'sales',
+  ADMINISTRACION: 'administracion',
   SHOPPING: 'shopping',
   // Processos//
   COMPANIES: 'companies',
@@ -54,12 +55,13 @@ export const PrivateRoutes = {
   //Ventas 
   QUOTATION: 'quotation',
   SALESORDER: 'salesorder',
-  BILLING: 'billing',
-
-  //Ventas 
+  
+  //PRODUCCION 
   PRODUCTION: 'production',
   VALES: 'vales',
-
+  //ADMINISTRACION 
+  BILLING: 'billing',
+  COBROS_A_FRANQUICIA: 'cobrosafranquicia',
   // REPORTES //
   EXISTENCIAALMACEN: 'ExistenciaAlmacen',
   ULTIMOSCOSTOS: 'UltimosCostos',

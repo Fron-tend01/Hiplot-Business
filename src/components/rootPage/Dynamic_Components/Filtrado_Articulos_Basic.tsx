@@ -1,36 +1,37 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { articleRequests } from '../../../fuctions/Articles';
 import useUserStore from '../../../zustand/General';
 import { storeFamilies } from '../../../zustand/Families';
 import './styles/Filtrado_Articulos_Basic.css'
+import APIs from '../../../services/services/APIs';
 
 interface FiltradoArticulosBasicProps {
-  get_sucursales?: boolean;
-  get_proveedores?: boolean;
-  get_max_mins?: boolean;
-  get_plantilla_data?: boolean;
-  get_stock?: boolean;
-  get_variaciones?: boolean;
-  get_precios?: boolean;
-  get_combinaciones?: boolean;
-  get_componentes?: boolean;
-  get_tiempos_entrega?: boolean;
-  get_areas_produccion?: boolean;
-  get_unidades?: boolean;
-  get_cargos_minimos?: boolean;
-  get_adicional?: boolean;
-  get_imagenes?: boolean;
-  id_empresa_proveedor?: 0;
-  id_sucursal_franquicia?: 0;
-  campos_ext?: any[];
-  set_article_local?:any
-  
+    get_sucursales?: boolean;
+    get_proveedores?: boolean;
+    get_max_mins?: boolean;
+    get_plantilla_data?: boolean;
+    get_stock?: boolean;
+    get_variaciones?: boolean;
+    get_precios?: boolean;
+    get_combinaciones?: boolean;
+    get_componentes?: boolean;
+    get_tiempos_entrega?: boolean;
+    get_areas_produccion?: boolean;
+    get_unidades?: boolean;
+    get_cargos_minimos?: boolean;
+    get_adicional?: boolean;
+    get_imagenes?: boolean;
+    id_empresa_proveedor?: 0;
+    id_sucursal_franquicia?: 0;
+    campos_ext?: any[];
+    set_article_local?: any
+
 }
-  const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_sucursales = false, get_proveedores = false, get_max_mins = false,
-     get_plantilla_data = false, get_stock = false, get_unidades = false,get_variaciones = false,get_precios = false,get_combinaciones = false,get_componentes = false,
-  get_tiempos_entrega = false,get_areas_produccion = false,get_cargos_minimos = false,get_adicional = false,get_imagenes = false,id_empresa_proveedor= 0,
-  id_sucursal_franquicia= 0,
-    campos_ext = [], set_article_local = []}) => {
+const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_sucursales = false, get_proveedores = false, get_max_mins = false,
+    get_plantilla_data = false, get_stock = false, get_unidades = false, get_variaciones = false, get_precios = false, get_combinaciones = false, get_componentes = false,
+    get_tiempos_entrega = false, get_areas_produccion = false, get_cargos_minimos = false, get_adicional = false, get_imagenes = false, id_empresa_proveedor = 0,
+    id_sucursal_franquicia = 0,
+    campos_ext = [], set_article_local = [] }) => {
     const { getArticles }: any = articleRequests()
     const [articles, setArticles] = useState<any>()
     const { getFamilies, families }: any = storeFamilies()
@@ -60,7 +61,7 @@ interface FiltradoArticulosBasicProps {
         {
             id: 2,
             name: 'Familia'
-        },  
+        },
     ]
     const openSelectSearch = () => {
         setSelectSearch(!selectSearch)
@@ -71,6 +72,13 @@ interface FiltradoArticulosBasicProps {
         setNameBy('')
         setSelectSearch(false)
     }
+    const controllerRef = useRef<AbortController | null>(null);
+
+    if (controllerRef.current) {
+        controllerRef.current.abort();
+    }
+
+    controllerRef.current = new AbortController();
 
     const searchFor = async () => {
         const data = {
@@ -88,29 +96,36 @@ interface FiltradoArticulosBasicProps {
             get_stock: get_stock == false ? get_stock : true,
             get_web: false,
             get_unidades: get_unidades == false ? get_unidades : true,
-            get_variaciones : get_variaciones == false ? get_variaciones : true,
-            get_precios : get_precios == false ? get_precios : true,
-            get_combinaciones : get_combinaciones == false ? get_combinaciones : true,
-            get_componentes : get_componentes == false ? get_componentes : true,
-            get_tiempos_entrega : get_tiempos_entrega == false ? get_tiempos_entrega : true,
-            get_areas_produccion : get_areas_produccion == false ? get_areas_produccion : true,
-            get_cargos_minimos : get_cargos_minimos == false ? get_cargos_minimos : true,
-            get_adicional : get_adicional == false ? get_adicional : true,
-            get_imagenes : get_imagenes == false ? get_imagenes : true,
+            get_variaciones: get_variaciones == false ? get_variaciones : true,
+            get_precios: get_precios == false ? get_precios : true,
+            get_combinaciones: get_combinaciones == false ? get_combinaciones : true,
+            get_componentes: get_componentes == false ? get_componentes : true,
+            get_tiempos_entrega: get_tiempos_entrega == false ? get_tiempos_entrega : true,
+            get_areas_produccion: get_areas_produccion == false ? get_areas_produccion : true,
+            get_cargos_minimos: get_cargos_minimos == false ? get_cargos_minimos : true,
+            get_adicional: get_adicional == false ? get_adicional : true,
+            get_imagenes: get_imagenes == false ? get_imagenes : true,
             id_empresa_proveedor: id_empresa_proveedor || 0,
             id_sucursal_franquicia: id_sucursal_franquicia || 0,
             id_usuario: user_id
         }
         if (selectedSearch === 0) {
-            const result = await getArticles(data)
+            // const result = await getArticles(data)
+            const result: any = await APIs.getArticleWSignal(data, {
+                signal: controllerRef?.current?.signal,
+            });
             setArticles(result)
             setSelectedResult(result[0])
         } else if (selectedSearch === 1) {
-            const result = await getArticles(data)
+            const result: any = await APIs.getArticleWSignal(data, {
+                signal: controllerRef?.current?.signal,
+            });
             setArticles(result)
             setSelectedResult(result[0])
         } else if (selectedSearch === 2) {
-            const result = await getArticles(data)
+            const result: any = await APIs.getArticleWSignal(data, {
+                signal: controllerRef?.current?.signal,
+            });
             setArticles(result)
             setSelectedResult(result[0])
         }
@@ -136,36 +151,36 @@ interface FiltradoArticulosBasicProps {
     }, [])
     const agregar_articulos = (all: boolean) => {
         if (!all) {
-            
-            const data = { ...selectedResult }; 
+
+            const data = { ...selectedResult };
             campos_ext.forEach(element => {
-               if(element.tipo == 1) {
-                data[element.nombre] = data[element.asignacion];
-               } else  {
-                data[element.nombre] = element.tipo;
-               }
-           
-                
+                if (element.tipo == 1) {
+                    data[element.nombre] = data[element.asignacion];
+                } else {
+                    data[element.nombre] = element.tipo;
+                }
+
+
             });
             set_article_local((prevArticulos: any) => [...prevArticulos, data]);
 
         } else {
             const datas: any = []
-            articles.forEach((d:any) => {
-                const data = { ...d }; 
+            articles.forEach((d: any) => {
+                const data = { ...d };
                 campos_ext.forEach(element => {
-                   
-                    if(element.tipo == 1) {
+
+                    if (element.tipo == 1) {
                         data[element.nombre] = data[element.asignacion];
-                       } else  {  
+                    } else {
                         data[element.nombre] = element.tipo;
-                       }
+                    }
                 });
                 datas.push(data)
-   
-                
+
+
             });
-            datas.forEach((d:any) => {
+            datas.forEach((d: any) => {
                 set_article_local((prevArticulos: any) => [...prevArticulos, d]);
             });
         }
@@ -196,7 +211,7 @@ interface FiltradoArticulosBasicProps {
                 {selectedSearch != 2 ?
                     <div>
                         <div>
-                            <label className='label__general'>Escribe el {selectedSearch==0?'Código':'Nombre'}</label>
+                            <label className='label__general'>Escribe el {selectedSearch == 0 ? 'Código' : 'Nombre'}</label>
                             <input className='inputs__general' type='text' value={nameBy} onChange={(e) => setNameBy(e.target.value)} placeholder='Ingresa el nombre' onKeyUp={searchFor} />
                         </div>
                     </div>
