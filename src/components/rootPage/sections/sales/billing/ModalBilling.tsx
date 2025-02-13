@@ -466,6 +466,7 @@ const ModalBilling: React.FC = () => {
                 folio: order.folio,
                 anio: order.anio,
             };
+            el.pers_div = false;
             el.id_identifier = newIdentifier;
             newIdentifier++;
     
@@ -481,6 +482,7 @@ const ModalBilling: React.FC = () => {
         });
     
         let newConceptsPers = order.conceptos_pers.map((el: any) => {
+            el.pers_div = false;
             el.orden = {
                 serie: order.serie,
                 folio: order.folio,
@@ -665,18 +667,37 @@ const ModalBilling: React.FC = () => {
         setCustomConceptView([...deleteItem, ...concept.conceptos])
     }
 
-  
-
     const personalizedCreate = (concept: any) => {
         setPersonalizedModal('personalized_modal-billing')
-        
     }
 
+    const [idItem, setIdItem] = useState<number>()
     const personalizedUpdate = (concept: any) => {
-        setPersonalizedModal('personalized_modal-billing-update')
-        setCustomConceptView(concept.conceptos)
-        console.log(concept)
-    }
+        setPersonalizedModal('personalized_modal-billing-update');
+        setIdItem(concept);
+    
+        const currentIdentifier = storePersonalized.getState().identifier;
+        let newIdentifier = currentIdentifier;
+    
+        // Usar map() en lugar de forEach()
+        const updatedConceptos = concept.conceptos.map((x: any) => ({
+            ...x,
+            check: true,
+            id_identifier: ++newIdentifier
+        }));
+    
+        console.log('concept.conceptos', updatedConceptos);
+    
+        const updatedNormalConcepts = normalConcepts.map((element: any) => ({
+            ...element,
+            check: false,
+            id_identifier: ++newIdentifier
+        }));
+    
+        // Actualizar el estado con copias nuevas
+        setCustomConceptView([...updatedConceptos, ...updatedNormalConcepts]);
+    };
+    
     return (
         <div className={`overlay__billing-modal ${subModal == 'billing__modal-create' || subModal == 'billing__modal-update' ? 'active' : ''}`}>
             <Toaster expand={true} position="top-right" richColors />
@@ -963,14 +984,14 @@ const ModalBilling: React.FC = () => {
                                         return (
                                             <div className={`tbody__container `} key={concept.id}>
                                                 {concept?.personalized ?
-                                                    <div className={`concept__personalized ${concept.conceptos[0].pers_div ? 'div' : ''}`}>
+                                                    <div className={`concept__personalized ${concept?.conceptos[0]?.pers_div ? 'div' : ''}`}>
                                                         <p>Concepto {concept.conceptos[0].pers_div ? 'personalized_div' : 'personalized'}</p>
                                                     </div>
                                                     :
                                                     ''
                                                 }                                                
                                                 {concept?.personalized ?
-                                                    <div className={`tbody ${concept.conceptos[0].pers_div ? 'personalized_div' : 'personalized'}`}>
+                                                    <div className={`tbody ${concept?.conceptos[0]?.pers_div ? 'personalized_div' : 'personalized'}`}>
                                                         <div className='td'>
                                                             <p>{concept.codigo}-{concept.descripcion}</p>
 
@@ -1091,12 +1112,11 @@ const ModalBilling: React.FC = () => {
                             <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Actualizar factura</button>
                             :
                             <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Crear factura</button>
-
                         }
                     </div>
                 </div>
                 <Division />
-                <Personalized />
+                <Personalized idItem={idItem}/>
 
             </div>
         </div >

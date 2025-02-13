@@ -20,7 +20,6 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   const setConceptView = storePersonalized(state => state.setConceptView)
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
 
-
   const { subModal }: any = useStore(storeArticles)
 
   const { modalSalesOrder }: any = useStore(storeSaleOrder)
@@ -61,8 +60,6 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   }, [])
 
 
-  console.log('conceptView', conceptView)
-  console.log('normalConcepts', normalConcepts)
 
   const [articlesPersonalized, setArticlesPersonalized] = useState<any>([])
 
@@ -268,7 +265,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         customConceptView[index].check = !customConceptView[index].check
 
         const existItem = normalConcepts.find((x: any) => x.id_identifier == item.id_identifier)
-        console.log(' existItemexistItemexistItem', item.id_identifier)
+   
         if (existItem) {
           ///// Eliminar el concepto de la variable de normal conceptos que se envia al backend /////////////
           const deleteItem = normalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
@@ -279,16 +276,14 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
           const existLocal = customLocal.some((x: any) => x.id_identifier == existItem.id_identifier)
           if (existLocal) {
             console.log('Ya existe')
-
           } else {
             setCustomLocal([...customLocal, item])
           }
-
-
           return
 
         } else {
 
+          console.log('No existe')
           //// Item que se va agregar //////////////////
           let itemAdd = customLocal.find((x: any) => x.id_identifier == item.id_identifier)
           // const deleteItem = deleteNormalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
@@ -297,8 +292,6 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
             setNormalConcepts([itemAdd, ...normalConcepts]);
           }
         }
-
-
       } else {
         //personalized_modal-billing-update'
 
@@ -318,25 +311,23 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
 
 
-          const newNormalConcept = customLocal.map((x: any) => {
+          const newNormalConcept = normalConcepts.map((x: any) => {
             //////////////////// Solo para cambiar el check //////////////////
             if (x.id_identifier === item.id_identifier) {
               return { ...x, check: false };
             }
             return x;
           });
-          const addItem = newNormalConcept.find((xx: any) => xx.id_identifier == item.id_identifier)
+          const addItem = customConceptView.find((xx: any) => xx.id_identifier == item.id_identifier)
+
+          console.log('addItem', addItem)
 
           setCustomConceptView(updatedDataUpdate);
-          setNormalConcepts([...normalConcepts, addItem])
+          setNormalConcepts([...newNormalConcept, addItem])
 
-          const deleteItem = customLocal.filter((xx: any) => xx.id_identifier !== addItem.id_identifier)
+          const deleteItem  = customLocal.filter((xx: any) => xx.id_identifier !== addItem.id_identifier)
           setCustomLocal(deleteItem)
 
-
-
-          console.log('customLocal', customLocal)
-          console.log('normalConcepts', normalConcepts)
 
         } else {
           const updatedDataUpdate = customConceptView.map((x: any) => {
@@ -345,9 +336,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
             }
             return x;
           });
-          console.log('customLocal', customLocal)
-          console.log('normalConcepts', normalConcepts)
-          console.log('customConcepts', customConcepts)
+          
           setCustomConceptView(updatedDataUpdate);
 
           const existItem = normalConcepts.find((x: any) => x.id_identifier == item.id_identifier)
@@ -358,8 +347,6 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
           }
           setCustomLocal([...customLocal, existItem])
 
-          console.log('customLocal', customLocal)
-          console.log('normalConcepts', normalConcepts)
 
         }
 
@@ -628,6 +615,10 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
     if (personalizedModal == 'personalized_modal-billing-update') {
       const updatedConceptView = customConcepts.map((x: any) => {
 
+        customLocal.forEach((element: any) => {
+          element.check = false
+        });
+
         if (x.id_identifier === idItem.id_identifier) {
           return { ...x, conceptos: customLocal };
         }
@@ -636,13 +627,13 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
       setConceptView([...updatedConceptView, ...normalConcepts])
       setCustomConcepts(updatedConceptView)
-      setCustomConceptView(normalConcepts)
+      // setCustomConceptView(normalConcepts)
 
       setPersonalizedModal('')
       return
     }
 
-
+    
 
     // const identifiersToFilter = filterPersonalized.map((x: any) => x.id_identifier);
 
@@ -704,6 +695,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
     fetchData();
   }, [satKeyTerm]);
 
+  console.log('normalConcepts', normalConcepts)
 
   const closeModal = () => {
     normalConcepts.forEach((element: any) => {
