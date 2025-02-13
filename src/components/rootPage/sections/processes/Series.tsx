@@ -95,6 +95,10 @@ const Series: React.FC = () => {
     {
       id: 11,
       name: 'Vales'
+    },
+    {
+      id: 12,
+      name: 'Cobros a Franquicia'
     }
   ]
 

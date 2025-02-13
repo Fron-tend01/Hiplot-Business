@@ -19,6 +19,7 @@ import Header from '../../../components/rootPage/Header/Header';
 import Logo from '../../../assets/HI SOFT LOGO-12.svg'
 import APIs from '../../../services/services/APIs';
 import RouteReportes from '../../../routes/sections/processes/RouteReportes';
+import RouteAdmin from '../../../routes/sections/processes/RouteAdmin';
 
 const RootHome: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -77,7 +78,9 @@ const RootHome: React.FC = () => {
     const reportes = {
         backgroundColor: activeMenuIndex === 7 && activeSidebar === true ? '#3D85C6' : ''
     }
-
+    const administracion = {
+        backgroundColor: activeMenuIndex === 8 && activeSidebar === true ? '#3D85C6' : ''
+    }
     const toggleMenu = () => {
         setActiveSidebar(!activeSidebar)
     }
@@ -263,6 +266,37 @@ const RootHome: React.FC = () => {
                         :
                         ''
                     }
+                    {permisos && permisos?.ADM?.length ?
+                        <div className={`nav__item ${activeMenuIndex === 8 ? 'activeMenu' : ''}`} >
+                            <AnchorTag className={`nav__link ${active == 'administracion' ? 'active' : ''}`} style={administracion} onClick={(e) => { e.preventDefault(); toggleSubMenu(8, 'administracion') }} to={`${PrivateRoutes.ADMINISTRACION}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-folder-check"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" /><path d="m9 13 2 2 4-4" /></svg>
+                                <span>Admin.</span>
+                                <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
+
+                            </AnchorTag>
+                            <div className='sub__menu '>
+                                {permisos?.ADM && permisos?.ADM.map((permiso: any, index: any) => {
+                                    if (permiso.titulo == "COBROS A FRANQUICIAS") {
+                                        return (
+                                            <AnchorTag key={index} className='sub__menu-link' onClick={() => toggleSubMenu(8, 'administracion')} to={`${PrivateRoutes.ADMINISTRACION}/${PrivateRoutes.COBROS_A_FRANQUICIA}`}>
+                                                <span>Cobros a Franquicias</span>
+                                            </AnchorTag>
+                                        );
+                                    } else if (permiso.titulo == "FACTURA") {
+                                        return (
+                                            <AnchorTag key={index} className='sub__menu-link' onClick={() => toggleSubMenu(8, 'administracion')} to={`${PrivateRoutes.ADMINISTRACION}/${PrivateRoutes.BILLING}`}>
+                                                <span>Facturacion</span>
+                                            </AnchorTag>
+                                        );
+                                    } else {
+                                        return null;
+                                    }
+                                })}
+                            </div>
+                        </div>
+                        :
+                        ''
+                    }
                     {permisos && permisos?.REPORTES?.length > 0 ?
                         <div className={`nav__item ${activeMenuIndex === 7 ? 'activeMenu' : ''}`}>
                             <AnchorTag className={`nav__link ${active == 'reportes' ? 'active' : ''}`} style={reportes} onClick={(e) => { toggleSubMenu(7, 'reportes'); e.preventDefault(); }} to={`${PrivateRoutes.REPORTES}`}>
@@ -284,7 +318,7 @@ const RootHome: React.FC = () => {
                                                 <span>Ultimos Costos</span>
                                             </AnchorTag>
                                         );
-                                    }  else if (permiso.titulo == "MOVIMIENTOS DE ALMACEN") {
+                                    } else if (permiso.titulo == "MOVIMIENTOS DE ALMACEN") {
                                         return (
                                             <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')} to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.WAREHOUSEMOVEMENTS}`}>
                                                 <span>Movimiento Almacen</span>
@@ -501,6 +535,7 @@ const RootHome: React.FC = () => {
                             <Route path={`${PrivateRoutes.PRODUCTION}/*`} element={<RouteProduction />} />
                             <Route path={`${PrivateRoutes.WEB}/*`} element={<RouteWeb />} />
                             <Route path={`${PrivateRoutes.REPORTES}/*`} element={<RouteReportes />} />
+                            <Route path={`${PrivateRoutes.ADMINISTRACION}/*`} element={<RouteAdmin />} />
                         </Routes>
                     </div>
                 </div>
