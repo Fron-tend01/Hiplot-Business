@@ -696,8 +696,6 @@ getTotalPrice: async (data: any, customPath?: string) => {
     return ConfigurationAPIs.post(path, data)
   },
 
-
-
   getCalculateUrgency: async (data: any, customPath?: any) => {
     const path = customPath || 'calcular_urgencia';
     return ConfigurationAPIs.post(path, data)
@@ -738,6 +736,13 @@ getTotalPrice: async (data: any, customPath?: string) => {
     const path = customPath || 'conceptos_personalizados/update';
     return ConfigurationAPIs.put(path, data)
   },
+
+  cancelConceptsOrder: async (id: any, customPath?: string) => {
+    const path = customPath || `cancelar_orden_venta_concepto/${id}`;
+    return ConfigurationAPIs.put(path, id)
+  },
+
+
 
 
   
