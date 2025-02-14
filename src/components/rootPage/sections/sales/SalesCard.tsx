@@ -227,9 +227,9 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
     if (controllerRef.current) {
       controllerRef.current.abort();
     }
-  
+
     controllerRef.current = new AbortController();
-  
+
     const dataArticle = {
       id_articulo: article.id,
       id_grupo_us: selectedUserGroup,
@@ -371,7 +371,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
     }
 
   };
-  
+
   useEffect(() => {
     getPrices()
   }, [amount])
@@ -828,48 +828,44 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                     <div className="combinaciones">
                       {opciones?.map((x: any, index: any) => (
                         <div className='combinaciones__container' key={index}>
-                          {/* {x.combinacion == 'COLORES' ?
-                            <div onClick={() => toggleModal(index)}>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-palette"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 2c5.498 0 10 4.002 10 9c0 1.351 -.6 2.64 -1.654 3.576c-1.03 .914 -2.412 1.424 -3.846 1.424h-2.516a1 1 0 0 0 -.5 1.875a1 1 0 0 1 .194 .14a2.3 2.3 0 0 1 -1.597 3.99l-.156 -.009l.068 .004l-.273 -.004c-5.3 -.146 -9.57 -4.416 -9.716 -9.716l-.004 -.28c0 -5.523 4.477 -10 10 -10m-3.5 6.5a2 2 0 0 0 -1.995 1.85l-.005 .15a2 2 0 1 0 2 -2m8 0a2 2 0 0 0 -1.995 1.85l-.005 .15a2 2 0 1 0 2 -2m-4 -3a2 2 0 0 0 -1.995 1.85l-.005 .15a2 2 0 1 0 2 -2" /></svg>
-
-                            </div>
-                            :
-                            <p onClick={() => toggleModal(index)}>    {x.combinacion}</p>
-                          }
-
-                          {x.combinacion == 'COLORES' ?
-                            <div onClick={() => toggleModal(index)}>
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M364.2 83.8c-24.4-24.4-64-24.4-88.4 0l-184 184c-42.1 42.1-42.1 110.3 0 152.4s110.3 42.1 152.4 0l152-152c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-152 152c-64 64-167.6 64-231.6 0s-64-167.6 0-231.6l184-184c46.3-46.3 121.3-46.3 167.6 0s46.3 121.3 0 167.6l-176 176c-28.6 28.6-75 28.6-103.6 0s-28.6-75 0-103.6l144-144c10.9-10.9 28.7-10.9 39.6 0s10.9 28.7 0 39.6l-144 144c-6.7 6.7-6.7 17.7 0 24.4s17.7 6.7 24.4 0l176-176c24.4-24.4 24.4-64 0-88.4z" /></svg>
-                            </div>
-                            :
-                            ''
-                          }
-
-                          {x.combinacion == 'COLORES' ?
-                            <div onClick={() => toggleModal(index)}>
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M469.3 19.3l23.4 23.4c25 25 25 65.5 0 90.5l-56.4 56.4L322.3 75.7l56.4-56.4c25-25 65.5-25 90.5 0zM44.9 353.2L299.7 98.3 413.7 212.3 158.8 467.1c-6.7 6.7-15.1 11.6-24.2 14.2l-104 29.7c-8.4 2.4-17.4 .1-23.6-6.1s-8.5-15.2-6.1-23.6l29.7-104c2.6-9.2 7.5-17.5 14.2-24.2zM249.4 103.4L103.4 249.4 16 161.9c-18.7-18.7-18.7-49.1 0-67.9L94.1 16c18.7-18.7 49.1-18.7 67.9 0l19.8 19.8c-.3 .3-.7 .6-1 .9l-64 64c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0l64-64c.3-.3 .6-.7 .9-1l45.1 45.1zM408.6 262.6l45.1 45.1c-.3 .3-.7 .6-1 .9l-64 64c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0l64-64c.3-.3 .6-.7 .9-1L496 350.1c18.7 18.7 18.7 49.1 0 67.9L417.9 496c-18.7 18.7-49.1 18.7-67.9 0l-87.4-87.4L408.6 262.6z" /></svg>
-                            </div>
-                            :
-                            ''
-                          } */}
                           <div className='container__combination' onClick={() => toggleModal(index)}>
                             {x.combinacion}
                           </div>
                           {activeIndex === index && (
-                            <div className="combination_options">
+                            <div className="combination_options" style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
                               {x.opciones.map((option: any) => (
                                 <div key={option.id} onClick={() => handleSelect(index, option.id)}
                                   style={{
                                     display: "flex",
                                     alignItems: "center",
-                                    gap: "10px",
+                                    gap: "5px",
                                     cursor: "pointer",
                                     backgroundColor: option.selected ? "#4CAF50" : "transparent",
                                     color: option.selected ? "white" : "black",
                                     padding: "5px",
                                     borderRadius: "5px"
                                   }}>
-                                  <p>{option.nombre}</p>
+                                  {option.tipo === 2 ? (
+                                    <>
+                                      <div className='tooltip-container'>
+                                        <div
+                                          style={{
+                                            width: "20px",
+                                            height: "20px",
+                                            backgroundColor: option.color,
+                                            border: "1px solid #ccc",
+                                            borderRadius: "3px"
+                                          }}
+                                        />
+                                        <span className="tooltip-text" >{option.nombre}</span>
+                                      </div>
+
+
+                                    </>
+                                  ) :
+                                    <p>{option.nombre}</p>
+
+                                  }
                                 </div>
                               ))}
                             </div>

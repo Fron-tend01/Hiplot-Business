@@ -9,6 +9,7 @@ import { articleRequests } from '../../../../fuctions/Articles';
 import { Toaster } from 'sonner'
 
 import { useStore } from 'zustand';
+import LoadingInfo from '../../../loading/LoadingInfo';
 
 const Articles: React.FC = () => {
   const effectRan = useRef(false)
@@ -57,12 +58,18 @@ const Articles: React.FC = () => {
       get_web: false,
       get_unidades: false
     };
+    setModalLoading(true)
 
     try {
+      setModalLoading(false)
+
       await getArticlesInGlobal(data);
     } catch (error) {
+      setModalLoading(false)
+
       console.log('Error')
     } finally {
+      setModalLoading(false)
 
     }
   }
@@ -133,15 +140,16 @@ const Articles: React.FC = () => {
     getFamilies(user_id)
 
     try {
+
       const result = await getArticles(data)
       const resultImagenes = await getArticles(data2)
       await setArticleByOne(result[0])
       setArticleToUpdate(result[0]);
       setImagesArticles(resultImagenes[0].imagenes)
-      // setModalLoading(false)
+      setModalLoading(false)
     } catch (error) {
     } finally {
-      //  setModalLoading(false) 
+       setModalLoading(false) 
     }
 
   };
@@ -171,11 +179,16 @@ const Articles: React.FC = () => {
       page: 1
     };
     setTypeService(value)
+    setModalLoading(true)
 
     try {
       await getArticlesInGlobal(data);
+      setModalLoading(false)
+
     } catch (error) {
       console.log('Error')
+      setModalLoading(false)
+
     }
 
   }
@@ -201,11 +214,16 @@ const Articles: React.FC = () => {
 
     };
     setTypeActive(value)
+    setModalLoading(true)
 
     try {
       await getArticlesInGlobal(data);
+      setModalLoading(false)
+
     } catch (error) {
       console.log('Error')
+      setModalLoading(false)
+
     }
 
   }
@@ -218,7 +236,7 @@ const Articles: React.FC = () => {
       codigo: code == '' ? '' : code,
       familia: 0,
       proveedor: 0,
-      page: 1,
+      page: page,
       materia_prima: typeServive,
       get_sucursales: false,
       get_proveedores: false,
@@ -228,11 +246,16 @@ const Articles: React.FC = () => {
       get_web: false,
       get_unidades: false
     };
+    setModalLoading(true)
 
     try {
       await getArticlesInGlobal(data);
+      setModalLoading(false)
+
     } catch (error) {
       console.log('Error')
+      setModalLoading(false)
+
     }
   }
   const [page, setPage] = useState<number>(1)
@@ -240,6 +263,7 @@ const Articles: React.FC = () => {
   useEffect(() => {
     searchArticle();
   }, [page]);
+ const modalLoading = storeArticles((state: any) => state.modalLoading);
 
   return (
     <div className='articles'>
@@ -371,10 +395,14 @@ const Articles: React.FC = () => {
             <button className='btn__general-purple' onClick={()=>setPage(page-1)} disabled={page==1}>Anterior</button>
           </div>
           <div>
-            <button className='btn__general-purple' onClick={()=>setPage(page-1)} disabled={page==1}>Siguente</button>
+            <button className='btn__general-purple' onClick={()=>setPage(page+1)} >Siguente</button>
           </div>
         </div>
       </div>
+      {modalLoading == true ? (
+                <LoadingInfo />
+            ) :
+                ''}
     </div>
   );
 };

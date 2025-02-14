@@ -24,6 +24,7 @@ const ModalCreate = (props: any) => {
     const [units, setUnits] = useState<any>([])
     const closeModal = () => {
         setModal('')
+        setModoUpdate(false)
     }
 
     const fetch = async () => {
@@ -147,16 +148,16 @@ const ModalCreate = (props: any) => {
                             onChange={(e)=>DynamicVariables.updateAnyVar(setInputs, "title", e.target.value)} placeholder='Ingresa el nombre' />
                         </div>
                         <div className='col-3 md-col-4 sm-col-12'>
-                            <label className='label__general'>Máximo</label>
-                            <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                            <input name="maxs" className={`inputs__general`} type="number" value={inputs.maxs} 
-                            onChange={(e)=>DynamicVariables.updateAnyVar(setInputs, "maxs", e.target.value)} placeholder='Ingresa el máximo' />
-                        </div>
-                        <div className='col-3 md-col-4 sm-col-12'>
                             <label className='label__general'>Mínimo</label>
                             <div className='warning__general'><small >Este campo es obligatorio</small></div>
                             <input name="mins" className={`inputs__general`} type="number" value={inputs.mins} 
                             onChange={(e)=>DynamicVariables.updateAnyVar(setInputs, "mins", e.target.value)} placeholder='Ingresa el mínimo' />
+                        </div>
+                        <div className='col-3 md-col-4 sm-col-12'>
+                            <label className='label__general'>Máximo</label>
+                            <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                            <input name="maxs" className={`inputs__general`} type="number" value={inputs.maxs} 
+                            onChange={(e)=>DynamicVariables.updateAnyVar(setInputs, "maxs", e.target.value)} placeholder='Ingresa el máximo' />
                         </div>
                         <div className='col-3 md-col-4 sm-col-12'>
                         <div className='select__container'>

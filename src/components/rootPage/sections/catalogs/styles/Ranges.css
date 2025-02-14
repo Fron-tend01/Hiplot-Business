@@ -5,7 +5,7 @@
 
 .rages__container {
     display: grid;
-	grid-template-rows: auto 1fr;
+	grid-template-rows: auto auto 1fr;
 	height: 100%;
 	background-color: var(--background-sections);
 	padding: 20px ;
@@ -50,7 +50,7 @@
 }
 
 .table__ranges .table__body {
-	max-height: 300px;
+	max-height: 400px;
     overflow: hidden;
     overflow: auto;
     transition-delay: 0.0s;

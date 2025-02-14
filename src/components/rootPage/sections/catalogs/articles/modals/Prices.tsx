@@ -201,7 +201,7 @@ const Prices: React.FC = () => {
 
   const addPrices = () => {
 
-    if (selectedIds?.grouspusers && inputs.price && inputs.observations && inputs.roundPrice) {
+    if (selectedIds?.grouspusers && inputs.price && inputs.roundPrice) {
       const data = {
         id_grupos_us: selectedIds.grouspusers.id,
         name_group: selectedIds.grouspusers.nombre,
