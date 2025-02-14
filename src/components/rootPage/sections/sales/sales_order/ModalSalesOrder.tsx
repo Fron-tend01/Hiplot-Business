@@ -1040,7 +1040,7 @@ const ModalSalesOrder: React.FC = () => {
                                                                 </div>
                                                                 :
                                                                 ""
-                                                            }
+                                                            }n   
                                                         </div>
                                                         <div className='td'>
                                                             <div className='see-icon' onClick={() => seeVerMas(index)}>

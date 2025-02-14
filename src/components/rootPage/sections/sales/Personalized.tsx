@@ -472,7 +472,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         setConceptView(normalConcepts)
       }
 
-      setConceptView([...normalConcepts, ...filterDelete])
+      setConceptView([...normalConcepts, ...updatedConceptView])
 
       setNormalConceptsView(normalConcepts)
       setCustomConcepts(updatedConceptView)
