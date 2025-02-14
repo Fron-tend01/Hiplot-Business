@@ -20,6 +20,9 @@ interface StoreState {
 
     concepts: any;
     setConcepts: (x: any) => void;
+
+    conceptsBack: any;
+    setConceptsBack: (x: any) => void;
 }
 
 export const storeBilling = create<StoreState>((set) => ({
@@ -41,6 +44,9 @@ export const storeBilling = create<StoreState>((set) => ({
 
     concepts: [],
     setConcepts: (x) => set({ concepts: x }),
+
+    conceptsBack: [],
+    setConceptsBack: (x) => set({ conceptsBack: x }),
 
 }));
 

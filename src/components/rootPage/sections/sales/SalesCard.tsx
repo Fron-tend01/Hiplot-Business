@@ -38,13 +38,16 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
 
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+
+  const setCustomLocal = storePersonalized(state => state.setCustomLocal)
+
   const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
 
   const setConceptView = storePersonalized(state => state.setConceptView)
   const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
 
-  const { normalConcepts, conceptView, customConceptView, customConcepts, normalConceptsView }: any = useStore(storePersonalized);
+  const { normalConcepts, conceptView, customLocal, customConceptView, customConcepts, normalConceptsView }: any = useStore(storePersonalized);
 
   const setArticle = storeSaleCard(state => state.setArticle);
 
@@ -444,7 +447,6 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
           setCustomConceptView(normalConcepts)
         }
       });
-
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
       const newData = { ...data };
       newData.id_identifier = identifier + 1;
@@ -453,6 +455,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       setNormalConceptsView([...normalConceptsView, newData])
       setConceptView([...conceptView, newData])
       setCustomConceptView([...customConceptView, newData])
+      // setCustomLocal([...customLocal, data])
 
     }
     toast.success('Artículo agregado')

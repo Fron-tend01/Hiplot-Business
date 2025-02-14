@@ -202,9 +202,6 @@ const Quotation: React.FC = () => {
   
   
 
-console.log('normalConceptsView')
-
-
 
   return (
     <div className='quotation'>

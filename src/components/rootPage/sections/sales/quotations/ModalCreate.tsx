@@ -252,7 +252,7 @@ const ModalCreate: React.FC = () => {
       id: modal === 'create-modal__qoutation' ? 0 : quatation.id,
       id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
       // id_cliente: modal === 'create-modal__qoutation' ? selectedResult?.id : quatation.id_cliente,
-      id_cliente: selectedResult?.id || quatation.id_cliente,
+      id_cliente: selectedResult?.id ? selectedResult?.id : quatation.id_cliente,
       id_usuario_crea: user_id,
       titulo: title,
       comentarios: comments,
@@ -381,6 +381,8 @@ const ModalCreate: React.FC = () => {
 
   const closeModal = () => {
     setModal('')
+    setCustomLocal([])
+    setNormalConceptsView([])
 
     setNormalConcepts([])
     setDeleteNormalConcepts([])
@@ -394,10 +396,6 @@ const ModalCreate: React.FC = () => {
     setDataQuotation([])
 
   }
-
-
-  console.log('normalConcepts', normalConcepts)
-  console.log('customConceptView', customConceptView)
 
 
   const modalPersonalized = () => {
@@ -419,24 +417,47 @@ const ModalCreate: React.FC = () => {
       setPersonalizedModal('personalized_modal-quotation-update');
     }
 
+    console.log('asdasdasda', concept)
+
     setIdItem(concept);
 
     // Obtener el valor actual del identificador
     const currentIdentifier = storePersonalized.getState().identifier;
     let newIdentifier = currentIdentifier;
 
-    // Asignar identificadores únicos a cada concepto
-    concept.conceptos.forEach((element: any) => {
-      element.check = true;
-      element.id_identifier = ++newIdentifier; // Incrementar y asignar
-    });
+    if (modal == 'create-modal__qoutation') {
+      // Asignar identificadores únicos a cada concepto
+      concept.conceptos.forEach((element: any) => {
+        element.check = true;
+        // Incrementar y asignar
+      });
 
+      normalConceptsView.forEach((element: any) => {
+        element.check = false;
+        // Incrementar y asignar
+      });
+
+    } else {
+      concept.conceptos.forEach((element: any) => {
+        element.check = true;
+        element.id_identifier = ++newIdentifier; // Incrementar y asignar
+      });
+
+      normalConceptsView.forEach((element: any) => {
+        element.check = false;
+        element.id_identifier = ++newIdentifier; // Incrementar y asignar
+      });
+
+    }
     if (concept.con_adicional) {
       setCustomConceptView(concept.conceptos);
     } else {
-      setCustomConceptView([...concept.conceptos, ...normalConceptsView]);
+      setCustomConceptView([...concept.conceptos, ...normalConcepts]);
     }
 
+    console.log('concept conceptconcept concept', concept)
+    // setNormalConcepts(concept.conceptos)
+    // setCustomConcepts(concept.conceptos_pers)
     // Actualizar el identificador global al último valor utilizado
     storePersonalized.setState({ identifier: newIdentifier });
     setCustomLocal(concept.conceptos);
@@ -445,7 +466,7 @@ const ModalCreate: React.FC = () => {
   }
 
 
-  console.log('normalConceptsView', normalConceptsView)
+
 
 
 
