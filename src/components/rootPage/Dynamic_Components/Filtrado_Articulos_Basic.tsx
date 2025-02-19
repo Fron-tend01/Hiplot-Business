@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { articleRequests } from '../../../fuctions/Articles';
 import useUserStore from '../../../zustand/General';
 import { storeFamilies } from '../../../zustand/Families';
 import './styles/Filtrado_Articulos_Basic.css'
@@ -32,7 +31,7 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
     get_tiempos_entrega = false, get_areas_produccion = false, get_cargos_minimos = false, get_adicional = false, get_imagenes = false, id_empresa_proveedor = 0,
     id_sucursal_franquicia = 0,
     campos_ext = [], set_article_local = [] }) => {
-    const { getArticles }: any = articleRequests()
+  
     const [articles, setArticles] = useState<any>()
     const { getFamilies, families }: any = storeFamilies()
 

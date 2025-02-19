@@ -58,7 +58,7 @@ const ModalBilling: React.FC = () => {
     const setConceptView = storePersonalized((state) => state.setConceptView);
 
     const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
-    const { normalConcepts, deleteNormalConcepts, customConcepts, customConceptView, deleteCustomConcepts, CustomConcepts, conceptView, identifier }: any = useStore(storePersonalized)
+    const { normalConcepts, deleteNormalConcepts, customConcepts, customConceptView, deleteCustomConcepts, conceptView, identifier }: any = useStore(storePersonalized)
 
     const { subModal }: any = useStore(storeArticles)
     const { conceptsBack }: any = storeBilling()
@@ -664,7 +664,7 @@ const ModalBilling: React.FC = () => {
         setCustomConceptView([...deleteItem, ...concept.conceptos])
     }
 
-    const personalizedCreate = (concept: any) => {
+    const personalizedCreate = () => {
         setPersonalizedModal('personalized_modal-billing')
         setCustomConceptView(normalConcepts);
     }

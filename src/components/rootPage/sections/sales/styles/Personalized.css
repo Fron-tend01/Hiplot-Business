@@ -4,6 +4,35 @@
   height: 100%;
 }
 
+.personalized_modal .row__three {
+  position: relative;
+}
+
+
+.personalized_modal .row__three .real_price {
+  position: absolute;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #f4f4f4;
+  border-radius: 5px;
+
+}
+
+.personalized_modal .row__three .real_price .value {
+  padding: 5px 10px;
+
+}
+
+
+.personalized_modal .row__three .real_price .name {
+  padding: 5px 10px;
+  background-color: #3d86c62c;
+  border-radius: 5px;
+  font-weight: 600;
+  color: var(--primary-100);
+}
 
 
 

@@ -13,7 +13,6 @@ import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid';
 import './style/Prices.css'
 import APIs from '../../../../../../services/services/APIs'
-import DynamicVariables from '../../../../../../utils/DynamicVariables'
 
 const Prices: React.FC = () => {
   const userState = useUserStore(state => state.user);
@@ -267,11 +266,11 @@ const Prices: React.FC = () => {
 
 
 
-  const [activeDrop, setActiveDrop] = useState<number>()
+  const [activeDrop] = useState<number>()
 
-  const dropDown = (index: any) => {
-    setActiveDrop((prevIndex) => (prevIndex === index ? null : index));
-  }
+  // const dropDown = (index: any) => {
+  //   setActiveDrop((prevIndex) => (prevIndex === index ? null : index));
+  // }
 
 
 
@@ -325,13 +324,12 @@ const Prices: React.FC = () => {
     setPrices(updatedPrices);
   };
 
-
-
   const handleGroupChange = (index: number, index_two: number) => {
     prices[index].precios_ext[index_two].agrupar = !prices[index].precios_ext[index_two].agrupar;
     setPrices([...prices]);
   };
 
+  
 
   const clonePrice = async () => {
     const data = {

@@ -35,10 +35,14 @@ const ModalSalesOrder: React.FC = () => {
     const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
     const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
 
+    const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
+    const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)    
+    const setDeleteCustomConcepts = storePersonalized(state => state.setDeleteCustomConcepts)
+    
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
-    const { normalConcepts, customConcepts, conceptView, identifier, personalized }: any = useStore(storePersonalized)
+    const { normalConcepts, customConcepts, conceptView, personalized, deleteCustomConcepts }: any = useStore(storePersonalized)
     const { dataGet }: any = useStore(storeSaleOrder)
     const setSaleOrders = storeSaleOrder((state) => state.setSaleOrders);
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
@@ -53,7 +57,7 @@ const ModalSalesOrder: React.FC = () => {
     const [companies, setCompanies] = useState<any>([])
 
     const [branchOffices, setBranchOffices] = useState<any>([])
-
+   
     const { getClients }: any = ClientsRequests()
 
     const { saleOrdersToUpdate }: any = useStore(storeSaleOrder);
@@ -64,6 +68,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const { getSaleOrders }: any = saleOrdersRequests()
 
+    
 
 
     const [clients, setClients] = useState<any>()
@@ -214,6 +219,7 @@ const ModalSalesOrder: React.FC = () => {
         const filterConceptView = conceptView.filter((x: any) => x.id_identifier !== item.id_identifier)
         setNormalConcepts(filter);
         setConceptView(filterConceptView);
+        localStorage.setItem('sale-order', JSON.stringify(filter));
         setCustomData(filter);
         if (item.id) {
             await APIs.cancelConceptsOrder(item.id)
@@ -691,6 +697,39 @@ const ModalSalesOrder: React.FC = () => {
 
     // };
 
+    const undoConcepts = (concept: any) => {
+        
+        if (modalSalesOrder == 'sale-order__modal') {
+         const deleteItemCustomC = customConcepts.filter((x: any) => x.id_identifier !== concept.id_identifier);
+    
+          setCustomConcepts(deleteItemCustomC)
+          // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
+          let data = [...normalConcepts, ...deleteItemCustomC]
+          setConceptView([...data, ...concept.conceptos]);
+          setNormalConcepts([...normalConcepts, ...concept.conceptos])
+          setNormalConceptsView([...normalConcepts, ...concept.conceptos])
+        } else {
+            const deleteItemCustomC = customConcepts.filter((x: any) => x.id_identifier !== concept.id_identifier);
+
+    
+          const updatedConcepts = concept.conceptos.map((element: any) => ({
+            ...element,
+            id_pers: 0,
+            check: false,
+          }));
+    
+          // Filtrar y actualizar conceptView
+          // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
+    
+    
+          let data = [...normalConcepts, ...deleteItemCustomC]
+          setConceptView([...data, ...updatedConcepts]);
+          setNormalConceptsView([...normalConcepts, ...updatedConcepts])
+          setNormalConcepts([...normalConcepts, ...updatedConcepts]);
+          setDeleteCustomConcepts([...deleteCustomConcepts, concept.id])
+        }
+      };
+
 
     const modalPersonalized = () => {
         setPersonalizedModal('personalized_modal-sale')
@@ -1040,7 +1079,7 @@ const ModalSalesOrder: React.FC = () => {
                                                                 </div>
                                                                 :
                                                                 ""
-                                                            }n   
+                                                            }
                                                         </div>
                                                         <div className='td'>
                                                             <div className='see-icon' onClick={() => seeVerMas(index)}>
@@ -1068,11 +1107,11 @@ const ModalSalesOrder: React.FC = () => {
                                                             :
                                                             ""
                                                         } */}
-                                                        {/* <div className='td'>
+                                                        <div className='td'>
                                                             <div className='undo-icon' onClick={() => undoConcepts(article)}>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
                                                             </div>
-                                                        </div> */}
+                                                        </div>
                                                     </div>
                                                     :
                                                     <div className='tbody'>

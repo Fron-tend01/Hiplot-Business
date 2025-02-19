@@ -233,9 +233,8 @@
 
 
 .conatiner__create_sale-card > .row__three > .row__five {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .conatiner__create_sale-card > .row__three > .row__five > .row__one {
@@ -253,15 +252,13 @@
   
 
 .conatiner__create_sale-card > .row__three > .row__five > .row__two .add__quotation {
-    border: 2px solid #dbdbdb;
-    color: var(--text-color);
-    padding: 10px 10px;
-    cursor: pointer;
-    border-radius: var(--border-radius-general);
-    background-color: transparent;
-    margin-right: 30px;
-    transition: all 500ms;
-    transition: transform 0.1s linear;
+  color: #ffffff;
+  border: none;
+  padding: 10px 10px;
+  cursor: pointer;
+  border-radius: var(--border-radius-general);
+  background-color: rgb(12, 36, 60);
+  transition: all 100ms;
 }
 
 .conatiner__create_sale-card > .row__three > .row__five > .row__two .add__quotation:hover {

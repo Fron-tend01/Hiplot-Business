@@ -28,7 +28,6 @@ const Quotation: React.FC = () => {
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
   const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
- 
 
   const setModal = storeModals(state => state.setModal)
 
@@ -41,13 +40,9 @@ const Quotation: React.FC = () => {
   const setQuotesData = storeQuotation(state => state.setQuotesData);
   const { quotesData }: any = useStore(storeQuotation)
 
-
-  
   const { getUsers }: any = usersRequests()
 
   const [users, setUsers] = useState<any>()
-
-
 
   const { getSeriesXUser }: any = seriesRequests()
   const [series, setSeries] = useState<any>([])
@@ -63,7 +58,14 @@ const Quotation: React.FC = () => {
 
   const modal = () => {
     setModal('create-modal__qoutation')
-    
+    const storedData = JSON.parse(localStorage.getItem('cotizacion') || "[]");
+
+    if (storedData) {
+      setNormalConcepts(storedData)
+      setNormalConceptsView(storedData)
+      setConceptView(storedData)
+    }
+
   }
 
 
@@ -172,23 +174,23 @@ const Quotation: React.FC = () => {
   const updateQuotation = (quotation: any) => {
     // Cambia el estado del modal
     setModal('update-modal__qoutation');
-  
+
     // Obtiene el valor actual de identifier desde el store
     const currentIdentifier = storePersonalized.getState().identifier;
     let newIdentifier = currentIdentifier;
-  
+
     // Actualiza los identificadores en conceptos
     quotation.conceptos.forEach((x: any) => {
       x.id_identifier = ++newIdentifier;
     });
-  
+
     quotation.conceptos_pers.forEach((x: any) => {
       x.id_identifier = ++newIdentifier;
     });
-  
+
     // Actualiza el identificador global en el store
     storePersonalized.setState({ identifier: newIdentifier });
-  
+
     // Actualiza los estados locales con los datos procesados
     setConceptView([...quotation.conceptos, ...quotation.conceptos_pers]);
     setCustomConcepts(quotation.conceptos_pers);
@@ -199,8 +201,8 @@ const Quotation: React.FC = () => {
     setQuatation(quotation);
     setPersonalized(quotation);
   };
-  
-  
+
+
 
 
   return (

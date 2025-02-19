@@ -30,16 +30,21 @@ import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
 
 
 
-const SalesCard: React.FC<any> = ({ idA }: any) => {
+const SalesCard: React.FC<any> = ({ idA, typeLocalStogare }: any) => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id;
+
+  const { modal }: any = useStore(storeModals)
+
+  console.log('typeLocalStogare', typeLocalStogare)
+
+  const { modalSalesOrder }: any = useStore(storeSaleOrder)
 
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
 
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
 
-  const setCustomLocal = storePersonalized(state => state.setCustomLocal)
 
   const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
 
@@ -47,7 +52,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
   const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
 
-  const { normalConcepts, conceptView, customLocal, customConceptView, customConcepts, normalConceptsView }: any = useStore(storePersonalized);
+  const { normalConcepts, conceptView, customConceptView, customConcepts, normalConceptsView }: any = useStore(storePersonalized);
 
   const setArticle = storeSaleCard(state => state.setArticle);
 
@@ -328,6 +333,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
           descuento: result.descuento_aplicado,
           precio_unitario: result.mensaje / amount,
           total_franquicia: precio_franq_tmp,
+          clave_sat: article.clave_sat,
           /////////////////////Para Orden de Requicicion //////////////////////////
 
           urgencia: false,
@@ -388,8 +394,6 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
 
   const addQua = () => {
-
-
     if (Adicional != null) { //SI ADICIONAL TIENE ALGO SE DEBE CREAR EL PERSONALIZADO PARA ENVIARLO A COT/OV
       //-------------------------------SIMULAR EL INGRESO DIRECTO A NORMALCONCEPTS
       Swal.fire({
@@ -440,11 +444,13 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
             conceptos: [concepto_principal, concepto_adicional],
             id_identifier: identifier + 1
           }
+
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
           setCustomConcepts([...customConcepts, data_pers])
 
           setConceptView([...normalConcepts, data_pers])
           setCustomConceptView(normalConcepts)
+          localStorage.setItem('cotizacion', JSON.stringify([...normalConcepts, data_pers]));
         }
       });
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
@@ -455,12 +461,18 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       setNormalConceptsView([...normalConceptsView, newData])
       setConceptView([...conceptView, newData])
       setCustomConceptView([...customConceptView, newData])
+      localStorage.setItem('cotizacion', JSON.stringify([...normalConcepts, newData]));
       // setCustomLocal([...customLocal, data])
-
     }
+
+
+
+
+
+
+    // localStorage.setItem('typeLocalStogare', normalConcepts)
     toast.success('Artículo agregado')
   };
-
 
 
   const addSaleOrder = () => {
@@ -521,31 +533,26 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
           setConceptView([...normalConcepts, data_pers])
           setCustomConceptView(normalConcepts)
+          localStorage.setItem('sale-order', JSON.stringify([...normalConcepts, data_pers]));
         }
       });
 
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
-      const incrementIdentifier = storePersonalized.getState().incrementIdentifier;
       const newData = { ...data };
-      newData.id_identifier = storePersonalized.getState().identifier + 1; // Usa el valor actual de identifier
-      incrementIdentifier();
-      console.log('data', data);
-
-      if (dataSaleOrder !== undefined) {
-        setDataSaleOrder([...dataSaleOrder, newData])
-      } else {
-        setDataSaleOrder([data])
-      }
-
+      newData.id_identifier = identifier + 1;
+      setIdentifier(identifier + 1);
       setNormalConcepts([...normalConcepts, newData])
+      setNormalConceptsView([...normalConceptsView, newData])
       setConceptView([...conceptView, newData])
       setCustomConceptView([...customConceptView, newData])
+      localStorage.setItem('sale-order', JSON.stringify([...normalConcepts, newData]));
     }
     toast.success('Artículo agregado')
 
   }
 
   const [productionComments, setproductionComments] = useState<string>('')
+  
 
 
 
@@ -569,7 +576,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
 
 
-  const modal = () => {
+  const modalOpen = () => {
     setModalSalesCard('')
     setStatusArticle(false)
   }
@@ -685,7 +692,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       {/* <Toaster expand={true} position="top-right" richColors /> */}
       <div className={`popup__sale-card ${modalSalesCard === 'sale-card' ? 'active' : ''}`}>
         <div className='header__modal'>
-          <a href="#" className="btn-cerrar-popup__sale-card" onClick={modal}>
+          <a href="#" className="btn-cerrar-popup__sale-card" onClick={modalOpen}>
             <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">
               <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
             </svg>
@@ -1156,11 +1163,25 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                 </div>
                 : ''}
               <div className='row__five'>
-                <div className='row__one'>
-                </div>
+              
                 <div className='row__two'>
-                  <button className='add__quotation' onClick={addQua}>Agregar a cotizacción</button>
-                  <button className='add__cart' onClick={addSaleOrder}>Agregar a orden de venta</button>
+                  {modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ?
+                     <button className='add__quotation' onClick={addQua}>Agregar a cotizacción</button>
+                    :
+                    ''
+                  }
+                  {modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' ?
+                    <button className='add__cart' onClick={addSaleOrder}>Agregar a orden de venta</button>
+                    :
+                    ''
+                  }
+                  {/* {modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' ?
+                    <button className='add__cart' onClick={addSaleOrder}>Agregar a orden de venta</button>
+                    :
+                    ''
+                  } */}
+                 
+
                 </div>
               </div>
             </div>

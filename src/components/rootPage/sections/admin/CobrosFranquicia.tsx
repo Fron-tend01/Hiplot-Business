@@ -243,7 +243,7 @@ const CobrosFranquicia: React.FC = () => {
             denyButtonText: `Cancelar`
         }).then(async (result) => {
             if (result.isConfirmed) {
-                let dat = {id:id}
+        
                 await APIs.CreateAnyPut(null,"eliminar_concepto_cobro/"+ id)
                     .then(async (resp: any) => {
                         if (resp.error) {
@@ -685,7 +685,7 @@ const CobrosFranquicia: React.FC = () => {
                                 <div className='row mt-5'>
                                     <div className='col-12 text-center'>
 
-                                        <button className='btn__general-purple' onClick={(e) => create()}>Guardar</button>
+                                        <button className='btn__general-purple' onClick={() => create()}>Guardar</button>
 
                                     </div>
 

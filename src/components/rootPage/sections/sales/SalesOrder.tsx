@@ -25,7 +25,7 @@ const SalesOrder: React.FC = () => {
     const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
     const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
     const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
-
+    const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
 
 
     const { getUsers }: any = usersRequests()
@@ -42,7 +42,16 @@ const SalesOrder: React.FC = () => {
     const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
 
+    const modalOpen = () => {
+        setModalSalesOrder('sale-order__modal')
+        const storedData = JSON.parse(localStorage.getItem('sale-order') || "[]");
 
+        if (storedData) {
+            setNormalConcepts(storedData)
+            setNormalConceptsView(storedData)
+            setConceptView(storedData)
+        }
+    }
 
 
     const [companies, setCompanies] = useState<any>([])
@@ -249,7 +258,7 @@ const SalesOrder: React.FC = () => {
                             <button type='button' className='btn__general-purple' onClick={search}>Buscar</button>
                         </div>
                         <div>
-                            <button type='button' className='btn__general-purple' onClick={() => setModalSalesOrder('sale-order__modal')}>Crear orden de venta</button>
+                            <button type='button' className='btn__general-purple' onClick={modalOpen}>Crear orden de venta</button>
                         </div>
                     </div>
                 </div>

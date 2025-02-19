@@ -41,9 +41,7 @@ const ModalCreate: React.FC = () => {
   const setCustomLocal = storePersonalized(state => state.setCustomLocal)
 
   ////////////////// Personalized Variations////////////////////////////////// 
-  const { normalConcepts, deleteNormalConcepts, customConcepts, deleteCustomConcepts, customConceptView, conceptView, dataUpdate, personalizedModal, normalConceptsView }: any = useStore(storePersonalized)
-
-
+  const { normalConcepts, deleteNormalConcepts, customConcepts, deleteCustomConcepts, conceptView, dataUpdate, personalizedModal, normalConceptsView, customConceptView }: any = useStore(storePersonalized)
 
   const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
 
@@ -92,6 +90,7 @@ const ModalCreate: React.FC = () => {
     light: true,
     id_sucursal: 0
   }
+  
   const fetch = async () => {
     const resultUsers = await APIs.getUsers(dataUsers)
     setDataSelects(
@@ -101,6 +100,8 @@ const ModalCreate: React.FC = () => {
         dataSelect: resultUsers
       })
   }
+
+
   const mandarAOV = () => {
     setSaleOrdersToUpdate(quatation)
     setModalSalesOrder('sale-order__modal_bycot')
@@ -110,10 +111,7 @@ const ModalCreate: React.FC = () => {
     fetch()
   }, [])
 
-
   const client = async () => {
-
-
     const data = {
       id_sucursal: quatation.id_sucursal,
       id_usuario: user_id,
@@ -127,11 +125,8 @@ const ModalCreate: React.FC = () => {
       setSelectedId('clients', { id: quatation.id_cliente });
       setSelectedResult({ id: quatation.id_cliente })
     } catch (error) {
-
+    
     }
-
-
-
   }
 
 
@@ -147,11 +142,7 @@ const ModalCreate: React.FC = () => {
     setCompany({ id: quatation.id_empresa })
     setBranch({ id: quatation.id_sucursal })
     setComments(quatation.comentarios)
-
-
-
-
-
+    selectedResult(quatation.id_cliente)
   }
 
   useEffect(() => {
@@ -276,10 +267,8 @@ const ModalCreate: React.FC = () => {
           Swal.fire('Cotizacion creada exitosamente', '', 'success');
           let response = await APIs.getQuotation(dataGet);
           setQuotesData(response)
-
           setModal('')
         }
-
       } else {
         let response: any = await APIs.updateQuotation(data)
         if (response.error == true) {
@@ -289,11 +278,20 @@ const ModalCreate: React.FC = () => {
           Swal.fire('Cotizacion creada exitosamente', '', 'success');
           const response = await APIs.getQuotation(dataGet);
           setQuotesData(response)
-
           setModal('')
         }
-
       }
+      setComments('')
+      setName('')
+      setCustomLocal([])
+      setNormalConceptsView([])
+      setNormalConcepts([])
+      setDeleteNormalConcepts([])
+      setDeleteCustomConcepts([])
+      setCustomConcepts([])
+      setConceptView([])
+      setCustomConceptView([])
+      localStorage.removeItem("cotizacion");      
     } catch (error) {
       Swal.fire('Error', 'Hubo un error al crear la cotizacion', 'error');
     }
@@ -335,9 +333,13 @@ const ModalCreate: React.FC = () => {
       const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
       setConceptView(filter_view)
 
+      const filter_Conceptview = normalConceptsView.filter((c: any) => c.id_identifier !== item.id_identifier)
+      setNormalConceptsView(filter_Conceptview)
+
       const filter_normal = normalConcepts.filter((c: any) => c.id_identifier !== item.id_identifier)
       setNormalConcepts(filter_normal)
       toast.success('Concepto eliminado')
+      localStorage.setItem('cotizacion', JSON.stringify(filter_normal));
 
     } else {
       const filter = normalConcepts.filter((x: any) => x.id_identifier !== item.id_identifier)
@@ -367,7 +369,6 @@ const ModalCreate: React.FC = () => {
   //     setCustomConceptView(filter_view)
   //     setDeleteCustomConcepts([...deleteCustomConcepts, item.id])
   //     toast.success('Concepto eliminado')
-
   //   }
   // }
 
@@ -383,34 +384,36 @@ const ModalCreate: React.FC = () => {
     setModal('')
     setCustomLocal([])
     setNormalConceptsView([])
-
-    setNormalConcepts([])
+    
+    // setNormalConcepts([])
     setDeleteNormalConcepts([])
 
     setCustomConcepts([])
     setDeleteNormalConcepts([])
-
     setConceptView([])
     setCustomConceptView([])
-
     setDataQuotation([])
-
   }
+
+  const [typeLocalStogare, setTypeLocalStogare] = useState<any>()
+
 
 
   const modalPersonalized = () => {
     setPersonalizedModal('personalized_modal-quotation')
+
     normalConceptsView.forEach((element: any) => {
       element.check = false;
     });
     setCustomConceptView(normalConceptsView)
   }
 
-
+  console.log('typeLocalStogare', typeLocalStogare)
 
   const [idItem, setIdItem] = useState<number>()
 
   const modalPersonalizedUpdate = (concept: any) => {
+    localStorage.removeItem("contizacion");
     if (concept.con_adicional) {
       setPersonalizedModal('personalized_modal-quotation-update-additional');
     } else {
@@ -699,7 +702,7 @@ const ModalCreate: React.FC = () => {
               </div>
               <div className='d-flex align-items-end' title='Busqueda de articulos'>
                 <div className='btn__general-purple-icon'>
-                  <svg onClick={() => setModalArticleView('article-view__modal')} xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" className="d-flex lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
+                  <svg onClick={() => {setModalArticleView('article-view__modal'); setTypeLocalStogare('cotizacion')}} xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" className="d-flex lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
                 </div>
               </div>
             </div>
@@ -932,7 +935,7 @@ const ModalCreate: React.FC = () => {
       </div>
       <Personalized idItem={idItem} branch={branch} />
       <ArticleViewModal />
-      <SalesCard />
+      <SalesCard typeLocalStogare={typeLocalStogare} />
       <SeeClient />
       {personalizedModal !== '' ?
         <SeeCamposPlantillas />

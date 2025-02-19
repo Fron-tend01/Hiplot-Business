@@ -13,7 +13,6 @@ import useUserStore from '../../../../zustand/General'
 import { useSelectStore } from '../../../../zustand/Select'
 import Select from '../../Dynamic_Components/Select'
 import { usersRequests } from '../../../../fuctions/Users'
-import { storePersonalized } from '../../../../zustand/Personalized'
 const Billing: React.FC = () => {
 
     const setSubModal = storeArticles(state => state.setSubModal)
@@ -36,10 +35,7 @@ const Billing: React.FC = () => {
     const setDataUpdate = storeBilling(state => state.setDataUpdate)
     const setConceptsBack = storeBilling(state => state.setConceptsBack)
     const setModoUpdate = storeBilling(state => state.setModoUpdate)
-    const setConceptView = storePersonalized(state => state.setConceptView)
-    const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
-    const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
-    const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
+
 
 
 
