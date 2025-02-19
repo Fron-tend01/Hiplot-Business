@@ -4,6 +4,8 @@ import ExistenciaAlmacen from "../../../components/rootPage/sections/reportes/Ex
 import { PrivateRoutes } from "../../../models/routes";
 import UltimosCostos from "../../../components/rootPage/sections/reportes/UltimosCostos";
 import WarehouseMovements from "../../../components/rootPage/sections/reportes/WarehouseMovements";
+import ExistenciaPorAlmacen from "../../../components/rootPage/sections/reportes/ExistenciaPorAlmacen";
+import HojasBlancas from "../../../components/rootPage/sections/reportes/HojasBlancas";
 
 
 const RouteReportes: React.FC = () => {
@@ -13,6 +15,8 @@ const RouteReportes: React.FC = () => {
       <Route path={`/${PrivateRoutes.EXISTENCIAALMACEN}`} element={<ExistenciaAlmacen />} />
       <Route path={`/${PrivateRoutes.ULTIMOSCOSTOS}`} element={<UltimosCostos />} />
       <Route path={`/${PrivateRoutes.WAREHOUSEMOVEMENTS}`} element={<WarehouseMovements />} />
+      <Route path={`/${PrivateRoutes.EXISTENCIAPORALMACEN}`} element={<ExistenciaPorAlmacen />} />
+      <Route path={`/${PrivateRoutes.HOJASBLANCAS}`} element={<HojasBlancas />} />
     </Routes>
   );
 };

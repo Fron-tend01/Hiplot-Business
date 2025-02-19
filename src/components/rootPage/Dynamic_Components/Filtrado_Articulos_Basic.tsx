@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
+import { articleRequests } from '../../../fuctions/Articles';
 import useUserStore from '../../../zustand/General';
 import { storeFamilies } from '../../../zustand/Families';
 import './styles/Filtrado_Articulos_Basic.css'
 import APIs from '../../../services/services/APIs';
+import { storeArticles } from '../../../zustand/Articles';
+import LoadingInfo from '../../loading/LoadingInfo';
 
 interface FiltradoArticulosBasicProps {
     get_sucursales?: boolean;
@@ -31,7 +34,6 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
     get_tiempos_entrega = false, get_areas_produccion = false, get_cargos_minimos = false, get_adicional = false, get_imagenes = false, id_empresa_proveedor = 0,
     id_sucursal_franquicia = 0,
     campos_ext = [], set_article_local = [] }) => {
-  
     const [articles, setArticles] = useState<any>()
     const { getFamilies, families }: any = storeFamilies()
 
@@ -55,7 +57,7 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
         },
         {
             id: 1,
-            name: 'Nombre'
+            name: 'Descripcion'
         },
         {
             id: 2,
@@ -108,23 +110,23 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
             id_sucursal_franquicia: id_sucursal_franquicia || 0,
             id_usuario: user_id
         }
+        setModalLoading(true)
         if (selectedSearch === 0) {
             // const result = await getArticles(data)
-            const result: any = await APIs.getArticleWSignal(data, {
-                signal: controllerRef?.current?.signal,
-            });
+            const result: any = await APIs.getArticleWSignal(data);
+            setModalLoading(false)
             setArticles(result)
             setSelectedResult(result[0])
         } else if (selectedSearch === 1) {
-            const result: any = await APIs.getArticleWSignal(data, {
-                signal: controllerRef?.current?.signal,
-            });
+            const result: any = await APIs.getArticleWSignal(data);
+            setModalLoading(false)
+
             setArticles(result)
             setSelectedResult(result[0])
         } else if (selectedSearch === 2) {
-            const result: any = await APIs.getArticleWSignal(data, {
-                signal: controllerRef?.current?.signal,
-            });
+            const result: any = await APIs.getArticleWSignal(data);
+            setModalLoading(false)
+
             setArticles(result)
             setSelectedResult(result[0])
         }
@@ -148,6 +150,9 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
     useEffect(() => {
         fetch()
     }, [])
+    const modalLoading = storeArticles((state: any) => state.modalLoading);
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
+
     const agregar_articulos = (all: boolean) => {
         if (!all) {
 
@@ -210,8 +215,9 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
                 {selectedSearch != 2 ?
                     <div>
                         <div>
-                            <label className='label__general'>Escribe el {selectedSearch == 0 ? 'Código' : 'Nombre'}</label>
-                            <input className='inputs__general' type='text' value={nameBy} onChange={(e) => setNameBy(e.target.value)} placeholder='Ingresa el nombre' onKeyUp={searchFor} />
+                            <label className='label__general'>Escribe {selectedSearch == 0 ? 'Código' : 'Descripcion'}</label>
+                            <input className='inputs__general' type='text' value={nameBy} onChange={(e) => setNameBy(e.target.value)} placeholder='Ingresa el nombre' onKeyUp={(e) => e.key === 'Enter' && searchFor()}
+                            />
                         </div>
                     </div>
                     :
@@ -271,6 +277,10 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
                     </div>
                 </div>
             </div>
+            {modalLoading == true ? (
+                <LoadingInfo />
+            ) :
+                ''}
         </div>
     )
 }

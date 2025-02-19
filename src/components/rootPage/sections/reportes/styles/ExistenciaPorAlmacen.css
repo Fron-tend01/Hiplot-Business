@@ -1,0 +1,189 @@
+
+
+.table_EPA {
+    border-radius: 10px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    border: 2px solid var(--border-table-color);
+    max-height: 200px;
+}
+
+.table_EPA .table__head {
+    display: flex;
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    background-color: var(--table-header-color);
+    
+}
+
+.table_EPA .table__head .thead {
+    display: flex;
+    width: 100%;
+}
+
+.table_EPA .table__head .thead {
+    display: grid;
+	grid-template-columns: 1fr 50px;
+    padding: 10px;
+    font-weight: 600;
+    column-gap: 20px;
+}
+
+.table_EPA .table__body {
+    height: 100%;
+    overflow-y: auto;
+ 
+    transition-delay: 0.0s;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color);
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {}
+}
+
+.table_EPA .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table_EPA .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+}
+
+.table_EPA .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+.table_EPA .tbody__container:first-child {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table_EPA .tbody__container:last-child {
+    border-bottom: none;
+    border-radius: 0 0 20px 20px;
+}
+
+.table_EPA .table__body .tbody {
+    display: flex;
+}
+
+.table_EPA .table__body .tbody.personalized {
+    border: 2px solid var(--primary-color);
+}
+
+.table_EPA .table__body .tbody {
+    display: grid;
+	grid-template-columns: 0.9fr 30px;
+    padding: 10px;
+    row-gap: 20px;
+    max-height: 200px;
+    /* overflow-y: scroll; */
+}
+
+
+.table_EPA .table__body .tbody>.td {
+    display: flex;
+    align-items: center;
+}
+
+.table_EPA .table__body .tbody>.td .article {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #3d86c62c;
+    border-radius: 5px;
+    font-weight: 600;
+    /* outline: 2px solid var(--primary-100); */
+    color: var(--primary-100);
+}
+
+
+.table_EPA .table__body .tbody:hover {
+    background-color: var(--table-hover-color);
+    color: #fff;
+}
+
+
+.table_EPA .table__body .tbody:hover .td>.article {
+    background-color: #3d86c6;
+    color: #ffffff;
+}
+
+
+
+
+/* Contenedor de la tabla */
+.EPA-table-container {
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 20px 0;
+  }
+  
+  /* Tabla */
+  .EPA-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Cabecera de la tabla */
+  .EPA-table th {
+    background-color: #2c3e50;
+    color: white;
+    text-align: left;
+    padding: 12px 15px;
+    font-size: 16px;
+  }
+  
+  /* Celdas de la tabla */
+  .EPA-table td {
+    text-align: left;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* Estilo para filas alternas */
+  .EPA-table tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+  }
+  
+  /* Estilo al pasar el ratón sobre las filas */
+  .EPA-table tbody tr:hover {
+    background-color: #ecf0f1;
+  }
+  
+  /* Estilo para la primera columna */
+  .EPA-table td:first-child {
+    font-weight: bold;
+  }
+  
+  /* Estilo para las celdas con valores numéricos */
+  .EPA-table td:nth-child(10),
+  .EPA-table td:nth-child(11),
+  .EPA-table td:nth-child(12),
+  .EPA-table td:nth-child(13) {
+    text-align: center;
+  }
+  
+  /* Ajustar texto largo en las celdas */
+  .EPA-table td {
+    word-wrap: break-word;
+  }
+  
+  /* Estilo de las filas en la cabecera */
+  .EPA-table th, .EPA-table td {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  

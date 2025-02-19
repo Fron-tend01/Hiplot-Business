@@ -1,0 +1,136 @@
+.HojasBlancas {
+    display: grid;
+    padding: 20px;
+}
+
+.HojasBlancas__container {
+    display: grid;
+	grid-template-rows: auto auto 1fr;
+	height: 100%;
+	background-color: var(--background-sections);
+	padding: 20px ;
+	border-radius: 10px;
+    overflow: hidden;
+}
+
+
+.table__HojasBlancas {
+    margin-top: 20px;
+    border-radius: 10px;
+    grid-column: 1 / span 2;
+
+}
+
+
+.table__HojasBlancas .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__HojasBlancas .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__HojasBlancas .table__head .thead {
+    display: grid;
+    grid-template-columns: 2fr 1fr 100px;
+    padding: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+}
+
+.table__HojasBlancas .table__body {
+	max-height: 150px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__HojasBlancas .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+  }
+  
+.table__HojasBlancas .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+  .table__HojasBlancas .table__body .tbody {
+    display: flex;
+}
+
+.table__HojasBlancas .table__body .tbody {
+    display: grid;
+    grid-template-columns: 2fr 1fr 100px;
+    padding: 10px;
+}
+
+.table__HojasBlancas .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+.table__HojasBlancas .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+/* -------------------------------------------------- */
+.HojasBlancasData__container {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .HojasBlancasData__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    min-width: 900px;
+  }
+  
+  .HojasBlancasData__table th,
+  .HojasBlancasData__table td {
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    text-align: left;
+  }
+  
+  .HojasBlancasData__table thead {
+    background-color: #343a40;
+    color: #fff;
+  }
+  
+  .HojasBlancasData__table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .HojasBlancasData__table tbody tr:hover {
+    background-color: #e9ecef;
+  }
+  
+  .HojasBlancasData__table th {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .HojasBlancasData__no-data {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+    color: #888;
+  }
+  
