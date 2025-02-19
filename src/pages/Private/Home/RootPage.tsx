@@ -312,7 +312,13 @@ const RootHome: React.FC = () => {
                                                 <span>Existencia por Producto</span>
                                             </AnchorTag>
                                         );
-                                    } else if (permiso.titulo == "ULTIMOS COSTOS") {
+                                    } else if (permiso.titulo == "EXISTENCIA_POR_ALM") {
+                                        return (
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')} to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.EXISTENCIAPORALMACEN}`}>
+                                                <span>Existencia Por Almacen</span>
+                                            </AnchorTag>
+                                        );
+                                    }else if (permiso.titulo == "ULTIMOS COSTOS") {
                                         return (
                                             <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')} to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.ULTIMOSCOSTOS}`}>
                                                 <span>Ultimos Costos</span>
@@ -324,7 +330,13 @@ const RootHome: React.FC = () => {
                                                 <span>Movimiento Almacen</span>
                                             </AnchorTag>
                                         );
-                                    } else {
+                                    } else if (permiso.titulo == "HOJAS BLANCAS") {
+                                        return (
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')} to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.HOJASBLANCAS}`}>
+                                                <span>Hojas Blancas</span>
+                                            </AnchorTag>
+                                        );
+                                    }else {
                                         return null;
                                     }
                                 })}

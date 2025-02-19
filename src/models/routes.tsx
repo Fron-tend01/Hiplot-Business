@@ -64,7 +64,9 @@ export const PrivateRoutes = {
   COBROS_A_FRANQUICIA: 'cobrosafranquicia',
   // REPORTES //
   EXISTENCIAALMACEN: 'ExistenciaAlmacen',
+  EXISTENCIAPORALMACEN: 'ExistenciaPorAlmacen',
   ULTIMOSCOSTOS: 'UltimosCostos',
+  HOJASBLANCAS: 'HojasBlancas',
   WAREHOUSEMOVEMENTS: 'warehouse-movements',
   // Web //
   WEB: 'web',

@@ -12,6 +12,7 @@ import { RequisitionRequests } from '../../../../../fuctions/Requisition'
 import APIs from '../../../../../services/services/APIs'
 import Swal from 'sweetalert2';
 import './ModalRequisition.css'
+import Filtrado_Articulos_Basic from '../../../Dynamic_Components/Filtrado_Articulos_Basic'
 
 const ModalRequisition: React.FC = () => {
   const userState = useUserStore(state => state.user);
@@ -22,6 +23,7 @@ const ModalRequisition: React.FC = () => {
 
   const setConcepts = storeRequisitions((state: any) => state.setConcepts);
 
+  const [ctmp, setCtmp] = useState<any>([])
   const { dataGet }: any = useStore(storeRequisitions);
 
   const setRequisitions = storeRequisitions((state: any) => state.setRequisitions);
@@ -75,10 +77,18 @@ const ModalRequisition: React.FC = () => {
       const resultAreas = await getAreas(resultBranch[0].id, user_id)
       setAreas(resultAreas)
       setSelectedModalArea(resultAreas[0].id)
+    } else {
+      setSelectedModalCompany(resultCompanies[0].id)
+      const resultBranch = await getBranchOffices(resultCompanies[0].id, user_id)
+      setBranchOffices(resultBranch)
+      setSelectedBranchOffice(resultBranch[0].id)
+      const resultAreas = await getAreas(resultBranch[0].id, user_id)
+      setAreas(resultAreas)
+      setSelectedModalArea(resultAreas[0].id)
     }
   }
 
- 
+
 
 
   console.log(updateToRequisition)
@@ -87,7 +97,7 @@ const ModalRequisition: React.FC = () => {
     if (updateToRequisition) {
       // setSelectedOption(updateToRequisition.tipo)
       setComments(updateToRequisition.comentarios)
-      // setConcepts(updateToRequisition.conceptos)
+      setConcepts(updateToRequisition.conceptos)
       setTitle(updateToRequisition.titulo)
 
     }
@@ -96,7 +106,9 @@ const ModalRequisition: React.FC = () => {
 
   }, [updateToRequisition])
 
-
+  useEffect(() => {
+    setConcepts(ctmp)
+  }, [ctmp])
 
   const modalCloseCreate = () => {
     setModalStateCreate('')
@@ -276,6 +288,8 @@ const ModalRequisition: React.FC = () => {
   const deleteConcept = (item: any) => {
     const itemDelete = concepts.filter((x: number) => x !== item);
     setConcepts(itemDelete);
+    const deltmp = ctmp.filter((x: number) => x !== item);
+    setCtmp(deltmp);
     setDeleteConcepts([...deleteConcepts, item.id])
 
 
@@ -289,15 +303,30 @@ const ModalRequisition: React.FC = () => {
       id: updateToRequisition.id,
       status: !updateToRequisition.status
     }
+    Swal.fire({
+      title: "Seguro que deseas cambiar el status de esta requisición?",
+      text: "TIP: Si una orden ya está terminada, puedes reutilizarla si se cancelo su proceso posterior solo activandola de nuevo",
+      showCancelButton: true,
+      icon:'info',
+      confirmButtonText: "Aceptar",
+      denyButtonText: `Cancelar`
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await APIs.updateStatusRequisition(data).then((resp: any) => {
+            if (!resp.error) {
+              Swal.fire('Notificacion', resp.mensaje, 'success')
+            }
+          })
+          const resultRequisition = await getRequisition(dataGet)
+          setRequisitions(resultRequisition.data)
+          setModalStateCreate('')
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    });
 
-    try {
-      await APIs.updateStatusRequisition(data)
-      const resultRequisition = await getRequisition(dataGet)
-      setRequisitions(resultRequisition)
-      setModalStateCreate('')
-    } catch (error) {
-      console.log(error)
-    }
   }
 
   const getPDFRequisition = async () => {
@@ -313,6 +342,7 @@ const ModalRequisition: React.FC = () => {
     //   console.log(error);
     // }
   }
+
   return (
     <div className={`overlay__requisition ${modalStateCreate == 'create' || modalStateCreate == 'update' ? 'active' : ''}`}>
       <Toaster expand={true} position="top-right" richColors />
@@ -473,7 +503,8 @@ const ModalRequisition: React.FC = () => {
 
             <div className='row__three'>
               {selectedOption == 0 ?
-                <Normal />
+                // <Filtrado_Articulos_Basic  get_max_mins={true} set_article_local={setCtmp} get_unidades={true} campos_ext={campos_ext}/>
+                <Normal></Normal>
                 :
                 <Differential />
               }
@@ -502,7 +533,7 @@ const ModalRequisition: React.FC = () => {
                       <p className=''>Unidad</p>
                     </div>
                     <div className='th'>
-                      <p className=''>Max</p>
+                      <p className=''>MaxMin</p>
                     </div>
                     <div className='th'>
                       <p className=''>Coment</p>
@@ -579,7 +610,11 @@ const ModalRequisition: React.FC = () => {
                   ''
                   :
                   <div>
-                    <button className='btn__general-danger' type='button' onClick={updateStatus}>Deshabilitar</button>
+                    {updateToRequisition?.status == 1 ?
+                      <button className='btn__general-success' type='button' onClick={updateStatus}>Activar</button>
+                      :
+                      <button className='btn__general-danger' type='button' onClick={updateStatus}>Cancelar</button>
+                    }
                   </div>
                 }
               </>

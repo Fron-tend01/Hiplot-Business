@@ -15,40 +15,40 @@
 }
 
 
-.quotation .breadcrumbs {
+.breadcrumbs {
   display: flex;
   margin-bottom: 15px;
 
 }
 
-.quotation .breadcrumbs > .breadcrumbs__container  {
+.breadcrumbs > .breadcrumbs__container  {
   padding: 8px 15px;
   background-color: var(--bg-300);
   border-radius: 5px;
 
 }
 
-.quotation .breadcrumbs > .chevron__breadcrumbs svg {
+.breadcrumbs > .chevron__breadcrumbs svg {
   color: var(--bg-300);
   
 }
 
-.quotation .breadcrumbs > .breadcrumbs__container svg {
+.breadcrumbs > .breadcrumbs__container svg {
   color: #ffffff;
   
 }
 
 
-.quotation .breadcrumbs > div {
+.breadcrumbs > div {
   display: flex;
   align-items: center;
 }
 
-.quotation .breadcrumbs > .chevron__breadcrumbs {
+.breadcrumbs > .chevron__breadcrumbs {
   margin: 0 10px;
 }
 
-.quotation .breadcrumbs > .breadcrumbs__container > .title {
+.breadcrumbs > .breadcrumbs__container > .title {
   margin-left: 10px;
   color: #fff;
   font-weight: 500;

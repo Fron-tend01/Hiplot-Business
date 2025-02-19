@@ -653,7 +653,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     try {
       await APIs.getPdfPurchaseOrders(purchaseOrderToUpdate.id);
       // Abrimos el PDF en una nueva pestaña
-      window.open(`https://hiplotbusiness.com/api_dev/pdf_oc/${purchaseOrderToUpdate.id}`, '_blank');
+      window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_oc/${purchaseOrderToUpdate.id}`, '_blank');
     } catch (error) {
       console.log(error);
     }
