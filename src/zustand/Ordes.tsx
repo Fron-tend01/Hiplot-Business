@@ -6,6 +6,9 @@ import Swal from 'sweetalert2';
 interface StoreState {
     orders: any[];
 
+    orderConceptsUpdate: any;
+    setOrderConceptsUpdate: (x: any) => void;
+
     concepts: any;
     setConcepts: (x: any) => void;
 
@@ -18,6 +21,9 @@ interface StoreState {
 
 export const storeOrdes = create<StoreState>((set) => ({
     orders: [],
+
+    orderConceptsUpdate: [],
+    setOrderConceptsUpdate: (x) => set({orderConceptsUpdate: x}),
 
     concepts: [],
     setConcepts: (x) => set({concepts: x}),

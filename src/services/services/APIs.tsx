@@ -426,6 +426,11 @@ updateClients: async (data: any, customPath?: string) => {
     return ConfigurationAPIs.post(path, data)
   },
 
+  updateOrders: async (data: any, customPath?: string ) => {
+    const path = customPath || 'update_pedido';
+    return ConfigurationAPIs.post(path, data)
+  },
+
   updateModeOrders: async (data: any, customPath?: string ) => {
     const path = customPath || 'pedido_almacen/updateCancelorActivePedido';
     return ConfigurationAPIs.post(path, data)

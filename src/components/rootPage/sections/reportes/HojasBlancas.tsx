@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from 'react'
 import './styles/HojasBlancas.css'
 import APIs from '../../../../services/services/APIs'
-import DynamicVariables from '../../../../utils/DynamicVariables'
-import Filtrado_Articulos_Basic from '../../Dynamic_Components/Filtrado_Articulos_Basic'
 import useUserStore from '../../../../zustand/General'
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales'
 import Flatpickr from "react-flatpickr";
@@ -12,7 +10,6 @@ import { usersRequests } from '../../../../fuctions/Users'
 import Select from '../../Dynamic_Components/Select'
 import { useSelectStore } from '../../../../zustand/Select'
 const HojasBlancas: React.FC = () => {
-  const [articulos, setArticulos] = useState<any[]>([])
   const [data, setData] = useState<any[]>([])
   const userState = useUserStore(state => state.user);
   const user_id = userState.id

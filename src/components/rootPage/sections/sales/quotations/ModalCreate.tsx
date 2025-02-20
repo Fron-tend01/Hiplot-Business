@@ -41,7 +41,7 @@ const ModalCreate: React.FC = () => {
   const setCustomLocal = storePersonalized(state => state.setCustomLocal)
 
   ////////////////// Personalized Variations////////////////////////////////// 
-  const { normalConcepts, deleteNormalConcepts, customConcepts, deleteCustomConcepts, conceptView, dataUpdate, personalizedModal, normalConceptsView, customConceptView }: any = useStore(storePersonalized)
+  const { normalConcepts, deleteNormalConcepts, customConcepts, deleteCustomConcepts, conceptView, dataUpdate, personalizedModal, normalConceptsView }: any = useStore(storePersonalized)
 
   const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
 
@@ -767,19 +767,16 @@ const ModalCreate: React.FC = () => {
                                 <div onClick={() => modalPersonalizedUpdate(article)} className='conept-icon'>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
                                 </div>
-
                                 :
                                 ''
                               }
                             </div>
-
                             <div className='td'>
                               <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
                               </div>
                             </div>
                             {article.con_adicional ?
-
                               <div className='td'>
                                 <div className='delete-icon' onClick={() => deleteNormalConcept(article)} title='Eliminar concepto'>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>

@@ -12,7 +12,6 @@ import { RequisitionRequests } from '../../../../../fuctions/Requisition'
 import APIs from '../../../../../services/services/APIs'
 import Swal from 'sweetalert2';
 import './ModalRequisition.css'
-import Filtrado_Articulos_Basic from '../../../Dynamic_Components/Filtrado_Articulos_Basic'
 
 const ModalRequisition: React.FC = () => {
   const userState = useUserStore(state => state.user);

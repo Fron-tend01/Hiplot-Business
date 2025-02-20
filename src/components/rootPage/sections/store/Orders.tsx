@@ -29,6 +29,7 @@ const Departures: React.FC = () => {
 
     const setDates = storeOrdes(state => state.setDates)
     const setLPAs = storeOrdes(state => state.setLPAs)
+    const setOrderConceptsUpdate = storeOrdes(state => state.setOrderConceptsUpdate)
 
     const setModal = storeModals(state => state.setModal)
 
@@ -44,13 +45,13 @@ const Departures: React.FC = () => {
     const haceUnaSemana = new Date();
     haceUnaSemana.setDate(hoy.getDate() - 7);
 
-    const [type, setTipo] = useState<any>(0)
+
 
     const id_usuario = user_id;
     const desde = haceUnaSemana.toISOString().split('T')[0];
     const hasta = hoy.toISOString().split('T')[0];
 
-    const status = type;
+
 
 
 
@@ -95,21 +96,21 @@ const Departures: React.FC = () => {
         }
     };
 
+    const [type, setTipo] = useState<any>([])
 
-
-    const handleClick = (value: any) => {
-        setTipo(value)
+    const handleClick = (value: number) => {
+        setTipo((prev: any) =>
+            prev.includes(value) ? prev.filter((x: any) => x !== value) : [...prev, value]
+        );
     };
 
-    const [oderUpdate, setOderUpdate] = useState<any>([])
-    const [orderConceptsUpdate, setorderConceptsUpdate] = useState<any>([])
-
+    const [orderUpdate, setOderUpdate] = useState<any>([])
     const modalUpdate = (order: any) => {
 
         setModal('modal-orders-update')
 
         setOderUpdate(order)
-        setorderConceptsUpdate(order.conceptos)
+        setOrderConceptsUpdate(order.conceptos)
     }
 
     const searchOrders = async () => {
@@ -126,66 +127,73 @@ const Departures: React.FC = () => {
     const modalCreate = () => {
         setModal('modal-create-pedido')
     }
+
+
+    
+  
+
     return (
         <div className="orders">
             <div className="orders__container">
-                <div className="row">
-                    <div className="col-8">
-                        <Empresas_Sucursales all={true} empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
-                    </div>
-                    <div className='col-4'>
-                        <label className='label__general'>Fechas</label>
-                        <div className='container_dates__requisition'>
-                            <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                <div className="row__one">
+                    <div className="row">
+                        <div className="col-8">
+                            <Empresas_Sucursales all={true} empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
+                        </div>
+                        <div className='col-4'>
+                            <label className='label__general'>Fechas</label>
+                            <div className='container_dates__requisition'>
+                                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="row__two">
-                    <Select dataSelects={series} instanceId="serieSelected" nameSelect={'Series'} />
-                    <div>
-                        <label className='label__general'>Folio</label>
-                        <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                        <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
-                    </div>
-                    <div className='container__checkbox_orders'>
-                        <div className='checkbox__orders'>
-                            <label className="checkbox__container_general">
-                                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 0} value={type} onChange={() => handleClick(0)} />
-                                <span className="checkmark__general"></span>
-                            </label>
-                            <p className='title__checkbox text'>Activo</p>
-                        </div>
-                        <div className='checkbox__orders'>
-                            <label className="checkbox__container_general">
-                                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 2} value={type} onChange={() => handleClick(2)} />
-                                <span className="checkmark__general"></span>
-                            </label>
-                            <p className='title__checkbox text'>Cancelados</p>
-                        </div>
-                        <div className='checkbox__orders'>
-                            <label className="checkbox__container_general">
-                                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 1} value={type} onChange={() => handleClick(1)} />
-                                <span className="checkmark__general"></span>
-                            </label>
-                            <p className='title__checkbox text'>Terminados</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="row__three">
-                    <div>
-                        <button className="btn__general-purple" onClick={searchOrders}>Buscar</button>
-                    </div>
-                    <div className="btns__departures">
+                    <div className="row__two">
+                        <Select dataSelects={series} instanceId="serieSelected" nameSelect={'Series'} />
                         <div>
-                            <button className="btn__general-purple">Excel</button>
+                            <label className='label__general'>Folio</label>
+                            <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                            <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
                         </div>
+                        <div className='container__checkbox_orders'>
+                            <div className='checkbox__orders'>
+                                <label className="checkbox__container_general">
+                                    <input className='checkbox' type="checkbox" name="requisitionStatus" checked={type.includes(0)} onChange={() => handleClick(0)} />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='title__checkbox text'>Activo</p>
+                            </div>
+                            <div className='checkbox__orders'>
+                                <label className="checkbox__container_general">
+                                    <input className='checkbox' type="checkbox" name="requisitionStatus" checked={type.includes(2)} onChange={() => handleClick(2)} />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='title__checkbox text'>Cancelados</p>
+                            </div>
+                            <div className='checkbox__orders'>
+                                <label className="checkbox__container_general">
+                                    <input className='checkbox' type="checkbox" name="requisitionStatus" checked={type.includes(1)} onChange={() => handleClick(1)} />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='title__checkbox text'>Terminados</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row__three">
                         <div>
-                            <button className="btn__general-purple" onClick={() => modalCreate()}>Nuevo pedido</button>
+                            <button className="btn__general-purple" onClick={searchOrders}>Buscar</button>
+                        </div>
+                        <div className="btns__departures">
+                            <div>
+                                <button className="btn__general-purple">Excel</button>
+                            </div>
+                            <div>
+                                <button className="btn__general-purple" onClick={() => modalCreate()}>Nuevo pedido</button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <ModalCreate />
-                <ModalUpdate oderUpdate={oderUpdate} orderConceptsUpdate={orderConceptsUpdate} />
+                <ModalUpdate oderUpdate={orderUpdate} />
 
                 <div className='table__orders'>
                     {orders ? (
@@ -196,57 +204,59 @@ const Departures: React.FC = () => {
                     ) : (
                         <p className="text">No hay empresas que mostras</p>
                     )}
-                    <div className='table__head'>
-                        <div className='thead'>
-                            <div className='th'>
-                                <p>Pedido</p>
-                            </div>
-                            <div className='th'>
-                                <p>Empresa</p>
-                            </div>
-                            <div className='th'>
-                                <p>Sucursal</p>
-                            </div>
-                            <div className='th'>
-                                <p>Fecha y hora</p>
-                            </div>
-                            <div className="th">
+                    <div className="table">
+                        <div className='table__head'>
+                            <div className='thead'>
+                                <div className='th'>
+                                    <p>Pedido</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Empresa</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Sucursal</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Fecha y hora</p>
+                                </div>
+                                <div className="th">
 
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {orders && orders ? (
-                        <div className='table__body'>
-                            {orders.map((order: any) => {
-                                return (
-                                    <div className='tbody__container' key={order.id}>
-                                        <div className='tbody'>
-                                            <div className='td order'>
-                                                <div>
-                                                    <p>{`${order.serie}-${order.folio}-${order.anio}`}</p>
+                        {orders && orders ? (
+                            <div className='table__body'>
+                                {orders.map((order: any) => {
+                                    return (
+                                        <div className='tbody__container' key={order.id}>
+                                            <div className='tbody'>
+                                                <div className='td order'>
+                                                    <div>
+                                                        <p>{`${order.serie}-${order.folio}-${order.anio}`}</p>
+                                                    </div>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{order.empresa}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{order.sucursal}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{order.fecha_creacion}</p>
+                                                </div>
+
+                                                <div className='td'>
+                                                    <button className='branchoffice__edit_btn' onClick={() => modalUpdate(order)}>Editar</button>
                                                 </div>
                                             </div>
-                                            <div className='td'>
-                                                <p>{order.empresa}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{order.sucursal}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{order.fecha_creacion}</p>
-                                            </div>
-
-                                            <div className='td'>
-                                                <button className='branchoffice__edit_btn' onClick={() => modalUpdate(order)}>Editar</button>
-                                            </div>
                                         </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    ) : (
-                        <p className="text">Cargando datos...</p>
-                    )}
+                                    )
+                                })}
+                            </div>
+                        ) : (
+                            <p className="text">Cargando datos...</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

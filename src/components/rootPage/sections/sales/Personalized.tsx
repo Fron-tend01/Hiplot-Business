@@ -34,7 +34,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
   const setCustomLocal = storePersonalized(state => state.setCustomLocal)
 
-  const { normalConcepts, customConceptView, deleteCustomConcepts, customConcepts, customLocal, deleteNormalConcepts, personalizedModal, customData, dataUpdate }: any = useStore(storePersonalized)
+  const { normalConcepts, customConceptView, deleteCustomConcepts, customConcepts, customLocal, personalizedModal, customData, dataUpdate, normalConceptsView }: any = useStore(storePersonalized)
   const { identifier }: any = useStore(storePersonalized)
   const { modal }: any = useStore(storeModals)
 
@@ -504,6 +504,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
       setConceptView([...mixOfConcepts, data])
       setCustomConcepts([...customConcepts, data])
       setNormalConceptsView(normalConcepts)
+      setCustomConceptView([])
       setPersonalizedModal('')
       setCustomLocal([])
       setArticlesPersonalized([])
@@ -716,6 +717,11 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   }
 
 
+  console.log('normalConcepts', normalConcepts)
+  console.log('normalConceptsView', normalConceptsView)
+  console.log('customConcepts', customConcepts)
+  console.log('customConceptView', customConceptView)
+  console.log('customLocal', customLocal)
 
 
   const setIndexVM = storeDv(state => state.setIndex)

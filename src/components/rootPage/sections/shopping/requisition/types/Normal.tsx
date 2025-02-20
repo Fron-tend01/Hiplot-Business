@@ -68,7 +68,7 @@ const Normal: React.FC = () => {
       console.log('respppppp',resp);
       
       setSelectedResult(resp[0])
-    }).catch((e:any) => {
+    }).catch(() => {
       setModalLoading(false)
     })
   }

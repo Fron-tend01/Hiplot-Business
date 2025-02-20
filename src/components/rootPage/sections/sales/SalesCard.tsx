@@ -36,7 +36,6 @@ const SalesCard: React.FC<any> = ({ idA, typeLocalStogare }: any) => {
 
   const { modal }: any = useStore(storeModals)
 
-  console.log('typeLocalStogare', typeLocalStogare)
 
   const { modalSalesOrder }: any = useStore(storeSaleOrder)
 
@@ -59,13 +58,12 @@ const SalesCard: React.FC<any> = ({ idA, typeLocalStogare }: any) => {
   const setIdentifier = storeQuotation(state => state.setIdentifier);
   const { identifier }: any = useStore(storeQuotation);
 
-  const setDataSaleOrder = storeSaleOrder(state => state.setDataSaleOrder);
+
   const setModalSub = storeModals(state => state.setModalSub)
   const setStatusArticle = storeSaleCard(state => state.setStatusArticle);
 
 
   const { IdArticle, modalSalesCard, article, statusArticle }: any = useStore(storeSaleCard);
-  const { dataSaleOrder }: any = useStore(storeSaleOrder);
   const { getUserGroups }: any = UserGroupsRequests();
   const [units, setUnits] = useState<any[]>([]);
   const [usersGroups, setUsersGroups] = useState<any[]>([]);
