@@ -155,7 +155,6 @@ const ModalCreate = () => {
         let totalSub = 0;
         let totalDiscount = 0;
         let iva = 0;
-        console.log(iva)
         let costo_flete = 0;
 
         const ids: any = [];
@@ -168,6 +167,7 @@ const ModalCreate = () => {
                 } else {
                     ids.push(concept.id_orden_compra);
                     costo_flete += concept.costo_flete;
+
                 }
                 concept.id_almacen = store[0].id
 
@@ -184,7 +184,6 @@ const ModalCreate = () => {
             }
 
         });
-
         setSubTotal(totalSub);
         setDiscount(totalDiscount);
         setIVA(iva);

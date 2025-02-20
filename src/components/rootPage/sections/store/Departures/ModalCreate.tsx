@@ -323,7 +323,7 @@ const ModalCreate: React.FC = () => {
                                                             {item.ped ?
                                                                 item.ped
                                                                 :
-                                                                <p>No aplica</p>
+                                                                <p>N/A</p>
                                                             }
                                                         </div>
                                                         <div className='td'>
