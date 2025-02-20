@@ -62,24 +62,30 @@ const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
                                         <p className='text'>No hay stock</p>
                                     )}
                                 </div>
-                                <div className="table__requisicion">
+                                <div className="" style={{ textAlign: "left" }}>
                                     <table style={{ width: "100%", borderCollapse: "collapse" }}>
                                         <thead className="table__head">
                                             <tr className="thead">
                                                 <th>Articulo</th>
+                                                <th>Pedido</th>
+                                                <th>Cant.</th>
                                                 <th>Unidad</th>
-                                                <th>Cantidad</th>
                                                 <th>Entradas Afect.</th>
                                                 <th>Comentarios</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="table__body">
+                                        <tbody className="table__body" >
                                             {conceptsUpdate.conceptos && conceptsUpdate.conceptos.length > 0 ? (
                                                 conceptsUpdate.conceptos?.map((concept: any, index: number) => (
                                                     <tr className="tbody__container" key={index}>
                                                         <td>{concept.codigo}-{concept.descripcion}</td>
-                                                        <td>{concept.unidad}</td>
+                                                        <td> {concept.ped ?
+                                                                concept.ped
+                                                                :
+                                                                <p>No aplica</p>
+                                                            }</td>
                                                         <td>{concept.cantidad}</td>
+                                                        <td>{concept.unidad}</td>
                                                         <td>
                                                             {concept.entradas_afectadas?.map((ent: any, i: number) => (
                                                                 <span key={i}>

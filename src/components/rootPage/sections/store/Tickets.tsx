@@ -153,6 +153,19 @@ const Tickets = () => {
     }, [page])
     return (
         <div className="tickets">
+            <div className='breadcrumbs'>
+                <div className='breadcrumbs__container'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-receipt"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 17.5v-11" /></svg>
+                    <small className='title'>Almacén</small>
+                </div>
+                <div className='chevron__breadcrumbs'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6" /></svg>
+                </div>
+                <div className='breadcrumbs__container'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /></svg>
+                    <small className='title'>Entradas</small>
+                </div>
+            </div>
             <div className="tickets__container">
                 <div className="row row__one">
                     <div className="col-8 md-col-12">
@@ -173,7 +186,7 @@ const Tickets = () => {
                         <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(parseInt(e.target.value))} placeholder='Ingresa el folio' />
                     </div>
                     <div className="col-4 md-col-12 d-flex justify-content-center align-items-end">
-                        <button className="btn__general-purple" onClick={() => setPage(1)}>Buscar</button>
+                        <button className="btn__general-purple" onClick={() => { setPage(1), searchTicket() }}>Buscar</button>
                         <button className="btn__general-orange mx-3" onClick={excel}>Excel</button>
                         <button className="btn__general-purple" onClick={() => setModalTickets('modal-create_ticket')}>Nueva entrada</button>
                         {/* <Select dataSelects={suppliers} instanceId="proveedores"  nameSelect={'Proveedores'}/> */}
@@ -230,7 +243,7 @@ const Tickets = () => {
                                                     <p className="folio-identifier">{ticket.serie}-{ticket.folio}-{ticket.anio}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p className="date-identifier">{ticket.fecha_creacion.split('T')[0]}</p>
+                                                    <p className="date-identifier">{ticket.fecha_creacion.replace("T", " ")}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <p className="user-identifier">{ticket.usuario_crea}</p>

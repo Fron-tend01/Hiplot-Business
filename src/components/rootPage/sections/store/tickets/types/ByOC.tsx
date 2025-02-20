@@ -82,7 +82,7 @@ const ByOC: React.FC = () => {
             desde: dates[0],
             hasta: dates[1],
             status: 0,
-            page:page
+            page: page
         }
         try {
             const result = await APIs.getPurchaseOrders(data);
@@ -97,10 +97,9 @@ const ByOC: React.FC = () => {
         for (const xx of x.conceptos) {
             xx.id_orden_compra_concepto = xx.id_orden_compra;
             xx.oc = `${x.serie}-${x.folio}-${x.anio}`
-            if (x.sumar_flete == 1) {
-                xx.sumar_flete = x.sumar_flete
-                xx.costo_flete = x.costo_flete
-            }
+            xx.sumar_flete = x.sumar_flete
+            xx.costo_flete = x.costo_flete
+
         }
         setConceptos([...conceptos, ...x.conceptos]);
     }
@@ -119,7 +118,7 @@ const ByOC: React.FC = () => {
 
     useEffect(() => {
         filterByRequest()
-     }, [page])
+    }, [page])
 
     const [purchaseOrderToUpdate, setPurchaseOrderToUpdate] = useState<any>(null);
 
@@ -217,25 +216,25 @@ const ByOC: React.FC = () => {
                                             </div>
 
                                         </div>
-                                            {/* Sub-recorrido para conceptos */}
-                                            <table className='concepts-table'>
-                                                <thead>
-                                                    <tr>
-                                                        <th>Articulo</th>
-                                                        <th>Cantidad</th>
-                                                        <th>Comentarios</th>
+                                        {/* Sub-recorrido para conceptos */}
+                                        <table className='concepts-table'>
+                                            <thead>
+                                                <tr>
+                                                    <th>Articulo</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Comentarios</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {x.conceptos?.map((concepto: any, subIndex: any) => (
+                                                    <tr key={subIndex}>
+                                                        <td >{concepto.codigo}-{concepto.descripcion}</td>
+                                                        <td >{concepto.cantidad}</td>
+                                                        <td >{concepto.comentarios}</td>
                                                     </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {x.conceptos?.map((concepto: any, subIndex: any) => (
-                                                        <tr key={subIndex}>
-                                                            <td >{concepto.codigo}-{concepto.descripcion}</td>
-                                                            <td >{concepto.cantidad}</td>
-                                                            <td >{concepto.comentarios}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
+                                                ))}
+                                            </tbody>
+                                        </table>
                                     </div>
                                 ))}
                             </div>
@@ -250,14 +249,14 @@ const ByOC: React.FC = () => {
                 </div>
             </div>
             <div className='d-flex justify-content-between mt-4'>
-                    <div>
-                        <button className='btn__general-purple' onClick={()=>{setPage(page-1)}}
-                            disabled={page==1}>Anterior</button>
-                    </div>
-                    <div>
-                        <button className='btn__general-purple' onClick={()=>{setPage(page+1)}}>Siguente</button>
-                    </div>
+                <div>
+                    <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
+                        disabled={page == 1}>Anterior</button>
                 </div>
+                <div>
+                    <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
+                </div>
+            </div>
         </div>
     )
 }

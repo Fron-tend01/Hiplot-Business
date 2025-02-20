@@ -64,7 +64,7 @@ const ByOrder: React.FC = () => {
       id_sucursal: branchOffices.id,
       desde: dates[0],
       hasta: dates[1],
-      status: 0,
+      status: [0],
     }
     const result = await getOrdedrs(data)
     setOrders(result)
@@ -91,6 +91,8 @@ const ByOrder: React.FC = () => {
 
     order.conceptos.forEach((element: any) => {
       element.unidad = element.id_unidad
+      element.ped = order.serie + '-'+order.folio + '-'+ order.anio
+      element.pedido_almacen_concepto_id = element.id
     });
 
     setConcepts([...concepts, ...order.conceptos]);
