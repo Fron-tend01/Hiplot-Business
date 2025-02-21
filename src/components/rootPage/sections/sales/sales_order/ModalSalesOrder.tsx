@@ -5,6 +5,9 @@ import './ModalSaleOrder.css'
 import Empresas_Sucursales from '../../../Dynamic_Components/Empresas_Sucursales'
 import Select from '../../../Dynamic_Components/Select'
 import Flatpickr from "react-flatpickr";
+import { Spanish } from 'flatpickr/dist/l10n/es.js';
+
+
 import ArticleViewModal from '../ArticleViewModal'
 import { storeArticleView } from '../../../../../zustand/ArticleView'
 import APIs from '../../../../../services/services/APIs'
@@ -36,9 +39,9 @@ const ModalSalesOrder: React.FC = () => {
     const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
 
     const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
-    const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)    
+    const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
     const setDeleteCustomConcepts = storePersonalized(state => state.setDeleteCustomConcepts)
-    
+
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
@@ -57,7 +60,7 @@ const ModalSalesOrder: React.FC = () => {
     const [companies, setCompanies] = useState<any>([])
 
     const [branchOffices, setBranchOffices] = useState<any>([])
-   
+
     const { getClients }: any = ClientsRequests()
 
     const { saleOrdersToUpdate }: any = useStore(storeSaleOrder);
@@ -68,7 +71,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const { getSaleOrders }: any = saleOrdersRequests()
 
-    
+
 
 
     const [clients, setClients] = useState<any>()
@@ -253,10 +256,24 @@ const ModalSalesOrder: React.FC = () => {
 
     }
 
+    
+
+    const [conceptsProductios, setConceptsProductions] = useState<any>()
+    console.log('conceptsProductios', conceptsProductios)
     const [modalProduction, setModalProduction] = useState<string>('')
     const [dataProduction, setDataProduction] = useState<any>()
 
     const SaleOrderProduction = async () => {
+        let concetps: any = []
+
+        customConcepts.forEach((element: any) => {
+            concetps = [...concetps, ...element.conceptos]
+
+        });
+
+        setConceptsProductions([...normalConcepts, ...concetps])
+
+
         setModalProduction('sale-order-production__modal')
         if (!modify_te) {
             let data = {
@@ -649,19 +666,24 @@ const ModalSalesOrder: React.FC = () => {
 
     const updateConceptSaleOrder = (concept: any, index: number) => {
         setPersonalizedModal('personalized_modal-sale-update')
-        console.log('concept', concept)
-        setIdItem(concept);
-        setIndexItem(index)
-        console.log(concept)
-        // Obtener el valor actual del identificador
-        const currentIdentifier = storePersonalized.getState().identifier;
-        let newIdentifier = currentIdentifier;
 
-        // // Asignar identificadores únicos a cada concepto
-        concept.conceptos.forEach((element: any) => {
-            element.check = true;
-            element.id_identifier = ++newIdentifier; // Incrementar y asignar
-        });
+        setIdItem(concept);
+        setIndexItem(index);
+
+        if (modalSalesOrder == 'sale-order__modal') {
+
+        } else {
+            const currentIdentifier = storePersonalized.getState().identifier;
+            let newIdentifier = currentIdentifier;
+
+            // // Asignar identificadores únicos a cada concepto
+            concept.conceptos.forEach((element: any) => {
+                element.check = true;
+                element.id_identifier = ++newIdentifier; // Incrementar y asignar
+            });
+
+        }
+        // Obtener el valor actual del identificador
 
         // // Actualizar el identificador global al último valor utilizado
         // storePersonalized.setState({ identifier: newIdentifier });
@@ -685,49 +707,49 @@ const ModalSalesOrder: React.FC = () => {
         setPersonalizedModal('personalized_modal-sale')
         setCustomConceptView(normalConceptsView)
         setCustomLocal([])
-      
+
     }
 
 
 
     const undoConcepts = (concept: any) => {
-        
+
         if (modalSalesOrder == 'sale-order__modal') {
-         const deleteItemCustomC = customConcepts.filter((x: any) => x.id_identifier !== concept.id_identifier);
-         const updatedConcepts = concept.conceptos.map((element: any) => ({
-            ...element,
-            id_pers: 0,
-            check: false,
-          }));
-    
-    
-          setCustomConcepts(deleteItemCustomC)
-          // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
-          let data = [...normalConcepts, ...deleteItemCustomC]
-          setConceptView([...data, ...updatedConcepts]);
-          setNormalConcepts([...normalConcepts, ...updatedConcepts])
-          setNormalConceptsView([...normalConcepts, ...updatedConcepts])
+            const deleteItemCustomC = customConcepts.filter((x: any) => x.id_identifier !== concept.id_identifier);
+            const updatedConcepts = concept.conceptos.map((element: any) => ({
+                ...element,
+                id_pers: 0,
+                check: false,
+            }));
+
+
+            setCustomConcepts(deleteItemCustomC)
+            // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
+            let data = [...normalConcepts, ...deleteItemCustomC]
+            setConceptView([...data, ...updatedConcepts]);
+            setNormalConcepts([...normalConcepts, ...updatedConcepts])
+            setNormalConceptsView([...normalConcepts, ...updatedConcepts])
         } else {
             const deleteItemCustomC = customConcepts.filter((x: any) => x.id_identifier !== concept.id_identifier);
 
-    
-          const updatedConcepts = concept.conceptos.map((element: any) => ({
-            ...element,
-            id_pers: 0,
-            check: false,
-          }));
-    
-          // Filtrar y actualizar conceptView
-          // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
-    
-    
-          let data = [...normalConcepts, ...deleteItemCustomC]
-          setConceptView([...data, ...updatedConcepts]);
-          setNormalConceptsView([...normalConcepts, ...updatedConcepts])
-          setNormalConcepts([...normalConcepts, ...updatedConcepts]);
-          setDeleteCustomConcepts([...deleteCustomConcepts, concept.id])
+
+            const updatedConcepts = concept.conceptos.map((element: any) => ({
+                ...element,
+                id_pers: 0,
+                check: false,
+            }));
+
+            // Filtrar y actualizar conceptView
+            // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
+
+
+            let data = [...normalConcepts, ...deleteItemCustomC]
+            setConceptView([...data, ...updatedConcepts]);
+            setNormalConceptsView([...normalConcepts, ...updatedConcepts])
+            setNormalConcepts([...normalConcepts, ...updatedConcepts]);
+            setDeleteCustomConcepts([...deleteCustomConcepts, concept.id])
         }
-      };
+    };
 
 
     const search = async () => {
@@ -748,15 +770,16 @@ const ModalSalesOrder: React.FC = () => {
         setModalSalesOrder('')
     }
 
-  
+
 
     const closeModal = () => {
         setModalSalesOrder('')
         setCustomLocal([])
         // setCustomConceptView([])
-        
-     
+
+
     }
+
 
 
     return (
@@ -779,40 +802,112 @@ const ModalSalesOrder: React.FC = () => {
                                     <p className='title__modals'>Enviar a produccion</p>
                                 </div>
                                 <div className='sale-order_production__modal_articles'>
-                                    <section className="listSaleOrder">
-                                        <div className="alertSaleOrder" role="alert">
-                                            Verificar tiempos de entrega o consultar con producción antes de enviar
-                                        </div>
-                                        <div className="itemDividerSaleOrder">Fecha Entrega Producción</div>
-                                        <div className="itemSaleOrder">
-                                            <span className="dateSaleOrder">{dataProduction?.fecha_produccion}</span>
-                                            <span className="timeSaleOrder">{dataProduction?.hora_produccion}</span>
-                                        </div>
-                                    </section>
+                                    <div className="alertSaleOrder" role="alert">
+                                        Verificar tiempos de entrega o consultar con producción antes de enviar
+                                    </div>
+                                    <div className='listSaleOrder__container'>
+                                        <section className="listSaleOrder">
 
-                                    <section className="listSaleOrder">
-                                        <div className="itemDividerSaleOrder">Fecha Entrega Cliente</div>
-                                        <div className="itemSaleOrder">
-                                            <span className="dateSaleOrder">{dataProduction?.fecha_cliente}</span>
-                                            <span className="timeSaleOrder">{dataProduction?.hora_cliente}</span>
-                                        </div>
-                                    </section>
+                                            <div className="itemDividerSaleOrder">Fecha Entrega Producción</div>
+                                            <div className="itemSaleOrder">
+                                                <span className="dateSaleOrder">{dataProduction?.fecha_produccion}</span>
+                                                <span className="timeSaleOrder">{dataProduction?.hora_produccion}</span>
+                                            </div>
+                                        </section>
 
-                                    {/* <div>
-                                        <div className='d-flex'>
-                                            <p>Fecha de entrega cliente</p>
-                                            <p className='mx-4'>{dataProduction?.fecha_cliente}</p>
-                                            <p>Hora de cliente</p>
-                                            <p className='mx-4'>{dataProduction?.hora_cliente}</p>
+                                        <section className="listSaleOrder">
+                                            <div className="itemDividerSaleOrder">Fecha Entrega Cliente</div>
+                                            <div className="itemSaleOrder">
+                                                <span className="dateSaleOrder">{dataProduction?.fecha_cliente}</span>
+                                                <span className="timeSaleOrder">{dataProduction?.hora_cliente}</span>
+                                            </div>
+                                        </section>
+                                    </div>
+                                    <div className='table'>
+                                        <div className='table__sales_modal-send-productions'>
+                                            {conceptsProductios ? (
+                                                <div className='table__numbers'>
+                                                    <p className='text'>Total de ordenes</p>
+                                                    <div className='quantities_tables'>{conceptsProductios.length}</div>
+                                                </div>
+                                            ) : (
+                                                <p className="text">No hay empresas que mostras</p>
+                                            )}
+                                            <div className='table__head'>
+                                                <div className='thead'>
+                                                    <div className='th'>
+                                                        <p>Artículo</p>
+                                                    </div>
+                                                    <div className='th'>
+                                                        <p>Cantidad</p>
+                                                    </div>
+                                                    <div className='th'>
+                                                        <p>Unidad</p>
+                                                    </div>
+                                                    <div className='th'>
+                                                        <p>Area</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {conceptsProductios ? (
+                                                <div className='table__body'>
+                                                    {conceptsProductios?.map((article: any, index: number) => {
+                                                        return (
+                                                            <div className='tbody__container' key={article.id}>
+                                                                <div className='tbody'>
+                                                                    <div className='td'>
+                                                                        <p className='folio-identifier'>{article.codigo}-{article.descripcion}</p>
+                                                                    </div>
+                                                                    <div className='td'>
+                                                                        <p className='amount-identifier'>{article.cantidad}</p>
+                                                                    </div>
+                                                                    <div className='td'>
+                                                                        <p>{article.name_unidad || article.unidad}</p>
+                                                                    </div>
+                                                                    <div className='td'>
+                                                                        <div className='send-areas'>
+                                                                            <div>
+                                                                                <label>Area</label>
+                                                                            </div>
+                                                                            <select className="traditional__selector" disabled value={article.id_area_produccion}>
+                                                                                {article?.areas_produccion?.map((item: any) => (
+                                                                                    <option key={item.id} value={item.id_area}>
+                                                                                        {item.nombre_area}
+                                                                                    </option>
+                                                                                ))}
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                    {article.status == 1 ?
+                                                                        <div className="td">
+                                                                            <p className='cancel-identifier'>Cancelado</p>
+                                                                        </div>
+                                                                        :
+                                                                        ""
+                                                                    }
+
+                                                                    {article.status == 2 ?
+                                                                        <div className="td">
+                                                                            <p>Cancelar</p>
+                                                                        </div>
+                                                                        :
+                                                                        ""
+                                                                    }
+
+                                                                </div>
+
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            ) : (
+                                                <p className="text">Cargando datos...</p>
+                                            )}
                                         </div>
-                                        <div className='d-flex'>
-                                            <p>Fecha de entrega produccion</p>
-                                            <p className='mx-4'>{dataProduction?.fecha_produccion}</p>
-                                            <p>Hora de produccion</p>
-                                            <p className='mx-4'>{dataProduction?.fecha_produccion}</p>
-                                        </div>
-                                    </div> */}
-                                    <div className='d-flex justify-content-center mt-3'>
+                                    </div>
+                                    <div className='mt-3 d-flex justify-content-center'>
                                         <button className='btn__general-purple' onClick={sendProduction} >Mandar a producción </button>
                                     </div>
                                 </div>
@@ -946,7 +1041,7 @@ const ModalSalesOrder: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className='row my-4'>
+                            <div className='my-4 row'>
                                 {modify_te != 0 ?
                                     <div className='col-12'>
                                         <b style={{ color: 'red' }} title='Esta leyenda aparece cuando las fechas son ingresadas de forma manual'>
@@ -958,8 +1053,7 @@ const ModalSalesOrder: React.FC = () => {
                                     <div className="container_dates__requisition">
                                         <Flatpickr
                                             className="date"
-                                            value={dates[0]} // Fecha inicial
-                                            options={{ enableTime: true, dateFormat: "Y-m-d H:i" }}
+                                            options={{ locale: Spanish, enableTime: true, dateFormat: "Y-m-d H:i", }}
                                             onChange={(fecha) => handleDateChange(fecha, 0)} // Índice 0
                                             placeholder="Selecciona la fecha de inicio"
                                         />
@@ -969,7 +1063,6 @@ const ModalSalesOrder: React.FC = () => {
                                     <div className="container_dates__requisition">
                                         <Flatpickr
                                             className="date"
-                                            value={dates[1]} // Fecha final
                                             options={{ enableTime: true, dateFormat: "Y-m-d H:i" }}
                                             onChange={(fecha) => handleDateChange(fecha, 1)} // Índice 1
                                             placeholder="Selecciona la fecha de fin"
@@ -979,15 +1072,15 @@ const ModalSalesOrder: React.FC = () => {
                             </div>
                         </div>
                         {modalSalesOrder == 'sale-order__modal' ?
-                            <div className='row my-4'>
+                            <div className='my-4 row'>
                                 <div className='col-12 d-flex align-items-center justify-content-between'>
                                     <p className='title__concepts'>Conceptos</p>
                                     <div className='d-flex align-items-center'>
                                         <div className='mx-4'>
                                             {urgenciaG ?
-                                                <button type='button' className='btn__general-success mr-4' onClick={() => urgenciaGlobal(false)}>Remover Urgencias</button>
+                                                <button type='button' className='mr-4 btn__general-success' onClick={() => urgenciaGlobal(false)}>Remover Urgencias</button>
                                                 :
-                                                <button type='button' className='btn__general-orange mr-4' onClick={() => urgenciaGlobal(true)}>Agregar Urgencia a Orden</button>
+                                                <button type='button' className='mr-4 btn__general-orange' onClick={() => urgenciaGlobal(true)}>Agregar Urgencia a Orden</button>
                                             }
                                             <button type='button' className='btn__general-purple' onClick={modalPersonalized}>Personalizados</button>
                                         </div>
@@ -1148,7 +1241,7 @@ const ModalSalesOrder: React.FC = () => {
                                                                 :
                                                                 <div>
                                                                     <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                                                    <p className='total-identifier mt-2'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                                                    <p className='mt-2 total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
                                                                         <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                                                 </div>
                                                             }
@@ -1261,7 +1354,7 @@ const ModalSalesOrder: React.FC = () => {
                             )}
                         </div>
                     </div>
-                    <div className='row__two mt-4'>
+                    <div className='mt-4 row__two'>
                         <div className='btns'>
                             <div className='subtotal'>
                                 <div>
@@ -1288,7 +1381,7 @@ const ModalSalesOrder: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className='btns mt-1'>
+                        <div className='mt-1 btns'>
                             <div className='subtotal'>
                                 <div>
                                     <p className='name'>Subtotal Franquicia</p>
@@ -1312,7 +1405,7 @@ const ModalSalesOrder: React.FC = () => {
                     </div>
 
                     {modalSalesOrder !== '' ?
-                        <div className='d-flex justify-content-center mt-3'>
+                        <div className='mt-3 d-flex justify-content-center'>
                             <div>
 
                                 {modalSalesOrder !== 'sale-order__modal-update' ?

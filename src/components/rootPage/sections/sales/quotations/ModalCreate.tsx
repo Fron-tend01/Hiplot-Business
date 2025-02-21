@@ -457,8 +457,6 @@ const ModalCreate: React.FC = () => {
     } else {
       setCustomConceptView([...concept.conceptos, ...normalConcepts]);
     }
-
-    console.log('concept conceptconcept concept', concept)
     // setNormalConcepts(concept.conceptos)
     // setCustomConcepts(concept.conceptos_pers)
     // Actualizar el identificador global al último valor utilizado

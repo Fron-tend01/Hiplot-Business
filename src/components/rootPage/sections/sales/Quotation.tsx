@@ -59,8 +59,10 @@ const Quotation: React.FC = () => {
   const modal = () => {
     setModal('create-modal__qoutation')
     const storedData = JSON.parse(localStorage.getItem('cotizacion') || "[]");
-
+ 
     if (storedData) {
+      const dataLength = storedData.length;
+      storePersonalized.getState().setIdentifier(dataLength);
       setNormalConcepts(storedData)
       setNormalConceptsView(storedData)
       setConceptView(storedData)

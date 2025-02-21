@@ -177,8 +177,8 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 40px 20px 20px 20px;
-	width: auto;
-	height: auto;
+	width: 90%;
+	height: 90%;
 	display: grid;
 	transition: .3s ease all;
 	transform: scale(0.7);
@@ -211,7 +211,19 @@
 
 .sale-order_production__modal_articles {
 	color: var(--text-color);
+	display: grid;
+	grid-template-rows: auto auto 1fr auto;
 }
+
+.sale-order_production__modal_articles > .table {
+	overflow: auto;
+}
+
+.sale-order_production__modal_articles .listSaleOrder__container {
+	display: flex;
+	justify-content: space-between;
+}
+
 
 
 
@@ -510,7 +522,7 @@
 .table__sales_modal .table__body .tbody>.td .urgency-identifier {
 	margin-left: 10px;
 }
-
+sale-order_production__modal_articles
 .table__sales_modal .table__body .tbody>.td .send-areas {
 	display: flex;
 	align-items: center;
@@ -603,6 +615,249 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+/*************************************************************
+                    Tabla de Entradas
+ **************************************************************/
+
+ .table__sales_modal-send-productions {
+	border-radius: 10px;
+	display: grid;
+	grid-template-rows: auto auto 1fr;
+	overflow: hidden;
+}
+
+
+.table__sales_modal-send-productions .table__head {
+	display: flex;
+	width: 100%;
+	background-color: var(--table-color);
+	color: var(--text-table-color);
+	border-radius: 5px 5px 0 0;
+	border: 2px solid var(--border-table-color);
+	border-radius: 20px 20px 0 0;
+}
+
+.table__sales_modal-send-productions .table__head .thead {
+	display: flex;
+	width: 100%;
+}
+
+.table__sales_modal-send-productions .table__head .thead {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	padding: 10px;
+	font-weight: 600;
+	column-gap: 20px;
+}
+
+.table__sales_modal-send-productions .table__body {
+	max-height: 300px;
+	overflow-y: auto;
+	transition-delay: 0.0s;
+
+	&::-webkit-scrollbar {
+		width: 5px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: var(--primary-color);
+		border-radius: 5px;
+		height: 100px;
+	}
+
+	&::-webkit-scrollbar-track {
+		/* Para modificar el background */
+	}
+}
+
+
+
+.table__sales_modal-send-productions .tbody:hover {
+	background-color: var(--table-hover-color);
+	color: #fff;
+}
+
+.table__sales_modal-send-productions .tbody__container {
+	border-top: 2px solid var(--border-table-color);
+}
+
+.table__sales_modal-send-productions .tbody__container:nth-child(even) {
+	background-color: var(--table-color);
+}
+
+.table__sales_modal-send-productions .tbody__container:nth-child(odd) {
+	background-color: var(--two-table-color);
+}
+
+.table__sales_modal-send-productions .tbody__container:first-child {
+	border-top: 2px solid var(--border-table-color);
+}
+
+.table__sales_modal-send-productions .tbody__container:last-child {
+	border-bottom: none;
+	border-radius: 0 0 20px 20px;
+}
+
+
+
+
+
+.table__sales_modal-send-productions .table__body .tbody {
+	display: flex;
+}
+
+.table__sales_modal-send-productions .table__body .tbody.personalized {
+	border: 2px solid var(--primary-color);
+}
+
+.table__sales_modal-send-productions .table__body .tbody {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	padding: 10px;
+	column-gap: 20px;
+}
+
+.table__sales_modal-send-productions .table__body .tbody>.td {
+	display: flex;
+	align-items: center;
+}
+
+.table__sales_modal-send-productions .table__body .tbody>.td .inputs__general {
+	margin-top: 0;
+}
+
+.table__sales_modal-send-productions .table__body .tbody>.td .textarea__general {
+	background-color: var(--cards-background);
+}
+
+.table__sales_modal-send-productions .table__body .tbody>.td .traditional__selector {
+	background-color: var(--cards-background);
+	max-width: 200px;
+	overflow: hidden;
+}
+
+.table__sales_modal-send-productions .table__body .tbody>.td .urgency-identifier {
+	margin-left: 10px;
+}
+
+.table__sales_modal-send-productions .table__body .tbody>.td .send-areas {
+	display: flex;
+	align-items: center;
+}
+
+.table__sales_modal-send-productions .table__body .tbody>.td .send-areas>div {
+	margin-right: 10px;
+}
+
+.table__sales_modal-send-productions .table__body .tbody:hover>.td .folio-identifier {
+	background-color: #3D85C6;
+	color: #ffffff;
+}
+
+.table__sales_modal-send-productions .table__body .tbody:hover>.td .amount-identifier {
+	background-color: #ff9100;
+	color: #ffffff;
+}
+
+
+.table__sales_modal-send-productions .table__body .tbody:hover>.td .total-identifier {
+	background-color: #5e35b0;
+	color: #ffffff;
+}
+
+.table__sales_modal-send-productions .table__body .tbody:hover>.td .urgency-identifier {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+
+
+.table__sales_modal-send-productions .table__body .tbody:hover>.td .urgency-true-icon {
+	background-color: #ff9100;
+	color: #ffffff;
+}
+
+.table__sales_modal-send-productions .table__body .tbody:hover>.td .urgency-false-icon {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+.table__sales_modal-send-productions .table__body .tbody:hover>.td .conept-icon {
+	background-color: #3D85C6;
+	color: #ffffff;
+}
+
+.table__sales_modal-send-productions .table__body .tbody:hover>.td .cancel-icon {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+.table__sales_modal-send-productions .table__body .tbody:hover>.td .see-icon {
+	background-color: #3D85C6;
+	color: #ffffff;
+}
+
+
+.table__sales_modal-send-productions .table__body .tbody:hover>.td .delete-icon {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+.table__sales_modal-send-productions .table__body .tbody:hover>.td .undo-icon {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+
+
+
+
+.table__sales_modal-send-productions .table__body .tbody>.td .add_urgency {
+	background-color: var(--orange-color);
+	border-radius: 5px;
+	color: #fff;
+	padding: 3px 0;
+	border: none;
+	cursor: pointer;
+}
+
+.table__sales_modal-send-productions .table__body .tbody>.td .remove_urgency {
+	background-color: var(--danger-color);
+	border-radius: 5px;
+	color: #fff;
+	padding: 3px 0;
+	border: none;
+	cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .listSaleOrder {
 	background-color: #fff;
 	border-radius: 8px;
@@ -658,3 +913,15 @@
 	color: #6c757d;
 	/* Un color gris más sutil */
 }
+
+
+
+
+
+
+
+
+
+
+
+

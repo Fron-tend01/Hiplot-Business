@@ -657,6 +657,7 @@ const ModalBilling: React.FC = () => {
         concept.conceptos.forEach((element: any) => {
             element.check = false
         });
+        
         const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
         setConceptView([...deleteItem, ...concept.conceptos]);
         console.log('concept.conceptos', concept.conceptos)
@@ -773,7 +774,7 @@ const ModalBilling: React.FC = () => {
                                     </div>
                                     : ''}
                             </div>
-                            <div className='row my-4 add-client__container'>
+                            <div className='my-4 row add-client__container'>
                                 <div className='col-12 title'>
                                     <p>Cliente</p>
                                 </div>
@@ -827,7 +828,7 @@ const ModalBilling: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className='row my-4'>
+                            <div className='my-4 row'>
                                 {type == 2 ? '' :
                                     <>
                                         <div className='col-3'>
@@ -847,7 +848,7 @@ const ModalBilling: React.FC = () => {
                                     <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' />
                                 </div>
                             </div>
-                            <div className='d-flex justify-content-around my-4'>
+                            <div className='my-4 d-flex justify-content-around'>
                                 <div className=''>
                                     <button type='button' className='btn__general-purple' onClick={search}>Buscar</button>
                                 </div>
@@ -920,7 +921,7 @@ const ModalBilling: React.FC = () => {
                         </div>
                         <div className='table__billing_concepts'>
                             {conceptView ? (
-                                <div className='d-flex w-full justify-content-between my-3'>
+                                <div className='w-full my-3 d-flex justify-content-between'>
                                     <div className='table__numbers'>
                                         <div className='col-12'>
                                             <p>Conceptos en tu Factura</p>

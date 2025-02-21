@@ -186,17 +186,17 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
           const existLocal = customLocal.some((x: any) => x.id_identifier == existItem.id_identifier)
           if (existLocal) {
             console.log('Ya existe')
-
           } else {
             setCustomLocal([...customLocal, item])
           }
-
 
           return
 
         } else {
           //// Item que se va agregar //////////////////
           let itemAdd = customLocal.find((x: any) => x.id_identifier == item.id_identifier)
+          let itemDelete = customLocal.filter((x: any) => x.id_identifier !== item.id_identifier)
+          setCustomLocal(itemDelete)
           // const deleteItem = deleteNormalConcepts.filter((xx: any) => xx.id_identifier !== item.id_identifier)
           // setDeleteNormalConcepts(deleteItem)
           setNormalConcepts([itemAdd, ...normalConcepts]);
@@ -848,7 +848,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
     }
   }, [personalizedModal]);
 
-  console.log(idItem)
+  console.log(identifier)
 
   const [realPrice, setRealPrice] = useState<any>()
 
@@ -874,34 +874,34 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
             <div className='row'>
               <div className='col-3 md-col-6 sm-col-12'>
                 <label className='label__general'>Nombre del concepto</label>
-                <input className={`inputs__general`} type="text" value={inpust.descripcion} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'descripcion', e.target.value)} placeholder='Nombre de concepto' />
+                <input className={`inputs__general`} type="text" value={inpust?.descripcion} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'descripcion', e.target.value)} placeholder='Nombre de concepto' />
               </div>
               <div className='col-2 md-col-6 sm-col-12'>
                 <label className='label__general'>Código</label>
-                <input className={`inputs__general`} type="text" value={inpust.codigo} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'codigo', e.target.value)} placeholder='Ingresa el código' />
+                <input className={`inputs__general`} type="text" value={inpust?.codigo} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'codigo', e.target.value)} placeholder='Ingresa el código' />
               </div>
               <div className='col-3'>
                 <Select dataSelects={units} nameSelect={'Unidades'} instanceId='units' />
               </div>
               <div className='col-2 md-col-6 sm-col-12'>
                 <label className='label__general'>Cantidad</label>
-                <input type='number' className={`inputs__general`} value={inpust.cantidad} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'cantidad', e.target.value)} placeholder='Cantidad' />
+                <input type='number' className={`inputs__general`} value={inpust?.cantidad} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'cantidad', e.target.value)} placeholder='Cantidad' />
               </div>
               <div className='col-2 md-col-6 sm-col-12'>
                 <label className='label__general'>Precio real</label>
-                <input type='number' className={`inputs__general`} value={inpust.precio_total} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'precio_total', e.target.value)} placeholder='Precio real' />
+                <input type='number' className={`inputs__general`} value={inpust?.precio_total} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'precio_total', e.target.value)} placeholder='Precio real' />
               </div>
             </div>
-            <div className='row gap-4 my-4 w-full'>
+            <div className='w-full gap-4 my-4 row'>
               <div className='col-3 md-col-6 sm-col-12'>
                 <label className='label__general'>Observaciones Producción</label>
                 <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                <textarea className={`textarea__general`} value={inpust.comentarios_produccion} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_produccion', e.target.value)} placeholder='Observaciones Producción'></textarea>
+                <textarea className={`textarea__general`} value={inpust?.comentarios_produccion} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_produccion', e.target.value)} placeholder='Observaciones Producción'></textarea>
               </div>
               <div className=' col-3 md-col-6 sm-col-12'>
                 <label className='label__general'>Observaciones Facturación</label>
                 <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                <textarea className={`inputs__general`} value={inpust.comentarios_factura} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_factura', e.target.value)} placeholder='Observaciones Facturación'></textarea>
+                <textarea className={`inputs__general`} value={inpust?.comentarios_factura} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'comentarios_factura', e.target.value)} placeholder='Observaciones Facturación'></textarea>
               </div>
               <div className='select__container col-6'>
                 <label className='label__general'>Claves SAT</label>
