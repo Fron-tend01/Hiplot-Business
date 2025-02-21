@@ -45,7 +45,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
-    const { normalConcepts, customConcepts, conceptView, personalized, deleteCustomConcepts, normalConceptsView, customConceptView }: any = useStore(storePersonalized)
+    const { normalConcepts, customConcepts, conceptView, personalized, deleteCustomConcepts, normalConceptsView }: any = useStore(storePersonalized)
     const { dataGet }: any = useStore(storeSaleOrder)
     const setSaleOrders = storeSaleOrder((state) => state.setSaleOrders);
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
@@ -851,7 +851,7 @@ const ModalSalesOrder: React.FC = () => {
                                             </div>
                                             {conceptsProductios ? (
                                                 <div className='table__body'>
-                                                    {conceptsProductios?.map((article: any, index: number) => {
+                                                    {conceptsProductios?.map((article: any) => {
                                                         return (
                                                             <div className='tbody__container' key={article.id}>
                                                                 <div className='tbody'>

@@ -606,16 +606,25 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
         id_identifier: identifier + 1
       }
 
+      let mixOfConcepts = [...normalConcepts, ...customConcepts]
+      setConceptView([...mixOfConcepts, data])
       setCustomConcepts([...customConcepts, data])
-
-      let dataView = [...normalConcepts, ...customConcepts]
-
-      setConceptView([...dataView, data])
-      setCustomConceptView(normalConcepts)
-
+      setNormalConceptsView(normalConcepts)
+      setCustomConceptView([])
       setPersonalizedModal('')
-
+      setCustomLocal([])
       setArticlesPersonalized([])
+
+      // setCustomConcepts([...customConcepts, data])
+
+      // let dataView = [...normalConcepts, ...customConcepts]
+
+      // setConceptView([...dataView, data])
+      // setCustomConceptView(normalConcepts)
+
+      // setPersonalizedModal('')
+
+      // setArticlesPersonalized([])
       return
 
     }

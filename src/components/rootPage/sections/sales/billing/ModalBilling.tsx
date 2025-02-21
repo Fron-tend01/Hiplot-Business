@@ -52,7 +52,10 @@ const ModalBilling: React.FC = () => {
 
     const setCustomConceptView = storePersonalized((state) => state.setCustomConceptView);
     const setCustomConcepts = storePersonalized((state) => state.setCustomConcepts);
+    const setDeleteCustomConcepts = storePersonalized((state) => state.setDeleteCustomConcepts);
+    const setNormalConceptsView = storePersonalized((state) => state.setNormalConceptsView);
 
+    
     const setCustomLocal = storePersonalized(state => state.setCustomLocal)
 
     const setConceptView = storePersonalized((state) => state.setConceptView);
@@ -476,30 +479,32 @@ const ModalBilling: React.FC = () => {
             return el;
         });
 
-       
+        let newConceptsPers = []
 
-        let newConceptsPers = order.conceptos_pers.map((el: any) => {
-            el.pers_div = false;
-            el.orden = {
-                serie: order.serie,
-                folio: order.folio,
-                anio: order.anio,
-            };
-            el.id_identifier = newIdentifier;
-            newIdentifier++;
+        if (order?.conceptos_pers?.length > 0) {
+            newConceptsPers = order.conceptos_pers.map((el: any) => {
+                el.pers_div = false;
+                el.orden = {
+                    serie: order.serie,
+                    folio: order.folio,
+                    anio: order.anio,
+                };
+                el.id_identifier = newIdentifier;
+                newIdentifier++;
 
-            if (type === 2) {
-                copy_totals.subtotal += parseFloat(el.total);
-                copy_totals.total += parseFloat(el.total);
-            } else {
-                copy_totals.subtotal += parseFloat(el.precio_total);
-                copy_totals.total += parseFloat(el.precio_total);
-      
-            }
-            return el;
-        });
+                if (type === 2) {
+                    copy_totals.subtotal += parseFloat(el.total);
+                    copy_totals.total += parseFloat(el.total);
+                } else {
+                    copy_totals.subtotal += parseFloat(el.precio_total);
+                    copy_totals.total += parseFloat(el.precio_total);
 
-     
+                }
+                return el;
+            });
+        }
+
+
 
         let totalConcepts = [...newConcepts, ...newConceptsPers];
         setCustomLocal(newConcepts)
@@ -644,25 +649,77 @@ const ModalBilling: React.FC = () => {
     console.log('conceptView', conceptView)
 
     const undoConceptos = (concept: any) => {
-        const updatedConcepts = concept.conceptos.map((element: any) => {
-            element.id_pers = 0;
-            return element;
-        });
 
-        // Actualizar el estado de normalConcepts
-        setNormalConcepts([...normalConcepts, ...updatedConcepts]);
-        console.log('updatedConcepts', updatedConcepts)
 
-        // Filtrar y actualizar conceptView para eliminar los conceptos con el id_identifier especificado
-        concept.conceptos.forEach((element: any) => {
-            element.check = false
-        });
-        
-        const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
-        setConceptView([...deleteItem, ...concept.conceptos]);
-        console.log('concept.conceptos', concept.conceptos)
-        console.log('deleteItem', deleteItem)
-        setCustomConceptView([...deleteItem, ...concept.conceptos])
+
+
+        if (subModal == 'billing__modal-create') {
+            const deleteItemCustomC = customConcepts.filter((x: any) => x.id_identifier !== concept.id_identifier);
+            const updatedConcepts = concept.conceptos.map((element: any) => ({
+                ...element,
+                id_pers: 0,
+                check: false,
+            }));
+
+
+            setCustomConcepts(deleteItemCustomC)
+            // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
+            let data = [...normalConcepts, ...deleteItemCustomC]
+            setConceptView([...data, ...updatedConcepts]);
+            setNormalConcepts([...normalConcepts, ...updatedConcepts])
+            setNormalConceptsView([...normalConcepts, ...updatedConcepts])
+        } else {
+            const deleteItemCustomC = customConcepts.filter((x: any) => x.id_identifier !== concept.id_identifier);
+
+
+            const updatedConcepts = concept.conceptos.map((element: any) => ({
+                ...element,
+                id_pers: 0,
+                check: false,
+            }));
+
+            // Filtrar y actualizar conceptView
+            // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
+
+
+            let data = [...normalConcepts, ...deleteItemCustomC]
+            setConceptView([...data, ...updatedConcepts]);
+            setNormalConceptsView([...normalConcepts, ...updatedConcepts])
+            setNormalConcepts([...normalConcepts, ...updatedConcepts]);
+            setDeleteCustomConcepts([...deleteCustomConcepts, concept.id])
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // const updatedConcepts = concept.conceptos.map((element: any) => {
+        //     element.id_pers = 0;
+        //     return element;
+        // });
+
+        // // Actualizar el estado de normalConcepts
+        // setNormalConcepts([...normalConcepts, ...updatedConcepts]);
+        // console.log('updatedConcepts', updatedConcepts)
+
+        // // Filtrar y actualizar conceptView para eliminar los conceptos con el id_identifier especificado
+        // concept.conceptos.forEach((element: any) => {
+        //     element.check = false
+        // });
+
+        // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
+        // setConceptView([...deleteItem, ...concept.conceptos]);
+        // console.log('concept.conceptos', concept.conceptos)
+        // console.log('deleteItem', deleteItem)
+        // setCustomConceptView([...deleteItem, ...concept.conceptos])
     }
 
     const personalizedCreate = () => {
@@ -1009,9 +1066,19 @@ const ModalBilling: React.FC = () => {
                                                         }
                                                         <div>
                                                             {concept.conceptos[0].pers_div ?
-                                                                <button className='btn__delete_users' type="button" onClick={() => { deleteConceptos(concept) }}>Eliminar</button>
+
+                                                                <div className='delete-icon' onClick={() => { deleteConceptos(concept) }} title='Eliminar concepto'>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                                </div>
+
+
                                                                 :
-                                                                <button className='btn__general-orange' type="button" onClick={() => { undoConceptos(concept) }}>Desaser</button>
+
+                                                                <div className='undo-icon' onClick={() => { undoConceptos(concept) }}>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
+                                                                </div>
+
+
                                                             }
                                                         </div>
 
@@ -1040,9 +1107,11 @@ const ModalBilling: React.FC = () => {
                                                         <div className='td'>
                                                             <button type='button' className='btn__general-purple' onClick={() => handleAddDivisionChange(concept)}>Division</button>
                                                         </div>
-                                                        <button className='btn__delete_users' type="button" onClick={() => {
-                                                            deleteConceptos(concept)
-                                                        }}>Eliminar</button>
+                                                        <div className='td'>
+                                                            <div className='delete-icon' onClick={() => { deleteConceptos(concept) }} title='Eliminar concepto'>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                            </div>
+                                                        </div>
                                                         {/* <div className='td'>            HABILITAR Y CONDICIONAR SOLO EN PERSONALIZADO
                                                     <button type='button' className='btn__general-purple' onClick={() => handleAddConceptsChange(concept)}>Desperzonalizado</button>
                                                 </div> */}

@@ -30,7 +30,7 @@ import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
 
 
 
-const SalesCard: React.FC<any> = ({ idA, typeLocalStogare }: any) => {
+const SalesCard: React.FC<any> = ({ idA }: any) => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id;
 
@@ -890,7 +890,7 @@ const SalesCard: React.FC<any> = ({ idA, typeLocalStogare }: any) => {
 
                 </div>
                 :
-                <div className="card-sale__pulse__combinations mt-4">
+                <div className="mt-4 card-sale__pulse__combinations">
                   <div className="animate-pulse">
                     <div className="rounded-full"></div>
                     <div className="row__p-one">

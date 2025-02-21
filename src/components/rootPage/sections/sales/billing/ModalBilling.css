@@ -291,6 +291,10 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr) 100px 100px;
     padding: 10px;
+}
+
+.table__billing_sale-orders .table__body .tbody  .td {
+    display: flex;
 
 }
 
@@ -399,6 +403,10 @@
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     padding: 10px;
+}
+
+.table__billing_concepts .table__body .tbody .td {
+    display: flex;
 }
 
 .table__billing_concepts .concept__personalized {

@@ -3,7 +3,6 @@ import Empresas_Sucursales from '../../../../Dynamic_Components/Empresas_Sucursa
 import Flatpickr from "react-flatpickr";
 import 'flatpickr/dist/flatpickr.min.css';
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
-import Select from '../../../../Dynamic_Components/Select';
 import { storeTickets } from '../../../../../../zustand/Tickets';
 import { useStore } from 'zustand';
 import { storeSeries } from '../../../../../../zustand/Series';
@@ -35,6 +34,7 @@ const ByOC: React.FC = () => {
 
     const [series, setSeries] = useState<any>([])
     const [page, setPage] = useState<number>(1);
+    console.log(series)
 
     const hoy = new Date();
     const haceUnaSemana = new Date();
@@ -111,10 +111,6 @@ const ByOC: React.FC = () => {
 
 
 
-    const [invoice, setInvoice] = useState<string>('')
-    const [warningInvoice] = useState<boolean>(false)
-    const searchByRequest = () => {
-    }
 
     useEffect(() => {
         filterByRequest()
@@ -142,10 +138,10 @@ const ByOC: React.FC = () => {
         // });
     }
     return (
-        <div className='conatiner__by-request mt-4'>
+        <div className='mt-4 conatiner__by-request'>
             <ModalPurchaseOrders purchaseOrderToUpdate={purchaseOrderToUpdate} />
             <div className='add-client__container'>
-                <div className='col-12  title '>
+                <div className='col-12 title '>
                     <p>Agregar Articulos por Orden de Compra</p>
                 </div>
             </div>
@@ -236,7 +232,7 @@ const ByOC: React.FC = () => {
                     )}
                 </div>
             </div>
-            <div className='d-flex justify-content-between mt-4'>
+            <div className='mt-4 d-flex justify-content-between'>
                 <div>
                     <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
                         disabled={page == 1}>Anterior</button>
