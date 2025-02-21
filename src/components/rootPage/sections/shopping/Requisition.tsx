@@ -19,6 +19,8 @@ import { useSelectStore } from '../../../../zustand/Select';
 import types from './requisition/json/types.json'
 import Pagination from '../../Dynamic_Components/Pagination';
 import { storePagination } from '../../../../zustand/Pagination';
+import APIs from '../../../../services/services/APIs';
+import { storeOrdes } from '../../../../zustand/Ordes';
 
 const Requisition: React.FC = () => {
 
@@ -78,10 +80,19 @@ const Requisition: React.FC = () => {
   const hoy = new Date();
   const haceUnaSemana = new Date();
   haceUnaSemana.setDate(hoy.getDate() - 7);
+  const setLPAs = storeOrdes(state => state.setLPAs)
 
-  
+
 
   const fetch = async () => {
+    APIs.CreateAny({ id_usuario: user_id, for_pedido: 2, light: true }, "getLPA")
+      .then(async (response: any) => {
+        setLPAs({
+          selectName: 'Lista Productos Aprobados',
+          dataSelect: response,
+          options: 'nombre'
+        })
+      })
     setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
     getCompaniesXUsers(user_id).then((data: any) => {
       data.unshift({ id: 0, razon_social: 'Todos' })
@@ -270,7 +281,7 @@ const Requisition: React.FC = () => {
       hasta: dates[1],
       status: status,
       page: 1
-     
+
     };
     setPage(1)
     const resultRequisition = await getRequisition(data)
@@ -293,7 +304,7 @@ const Requisition: React.FC = () => {
     height: warningName === true ? '23px' : ''
   }
 
- 
+
 
 
   return (
@@ -312,7 +323,7 @@ const Requisition: React.FC = () => {
         </div>
       </div>
       <div className='container__requisition'>
-        
+
         <div className='row__one'>
           <div className='row'>
             <div className='col-3 md-col-6 sm-col-12'>
@@ -501,7 +512,7 @@ const Requisition: React.FC = () => {
           )}
         </div>
         <Pagination />
-        
+
 
       </div>
     </div>
