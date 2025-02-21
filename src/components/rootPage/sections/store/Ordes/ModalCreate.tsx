@@ -24,6 +24,7 @@ const ModalCreate = () => {
 
     const { getOrdedrs, dates, LPAs }: any = storeOrdes();
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
+    const setSelects: any = useSelectStore((state) => state.setSelectedId);
     const setConcepts = storeOrdes(state => state.setConcepts)
     const { concepts } = useStore(storeOrdes)
 
@@ -66,7 +67,7 @@ const ModalCreate = () => {
             options: 'nombre',
             dataSelect: resultAreas
         })
-        // setSelectedIds('id_area', areas[0]?.id)
+        setSelects('id_area', areas[0])
 
     }
 
@@ -237,6 +238,9 @@ const ModalCreate = () => {
         }
     }, [selectData])
 
+
+    console.log('LPAS', LPAs);
+    
     return (
         <div className={`overlay__orders ${modal == 'modal-create-pedido' ? 'active' : ''}`}>
             <div className={`popup__orders ${modal == 'modal-create-pedido' ? 'active' : ''}`}>
@@ -254,7 +258,7 @@ const ModalCreate = () => {
                                 </label>
                                 <p className='text'>Directa</p>
                             </div>
-                            {LPAs?.length == 0 ?
+                            {LPAs?.dataSelect?.length == 0 ?
                                 <div className='checkbox__tickets' >
                                     <label className="checkbox__container_general">
                                         <input className='checkbox' type="radio" value="PorOC" checked={selectedOption == 1} onChange={handleOptionChange} />

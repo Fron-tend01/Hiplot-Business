@@ -10,6 +10,7 @@
 	grid-template-rows: auto 1fr auto;
 	grid-template-columns: 1fr;
     border-radius: 10px;
+	overflow:scroll;
 }
 
 .container__requisition > .row__one {

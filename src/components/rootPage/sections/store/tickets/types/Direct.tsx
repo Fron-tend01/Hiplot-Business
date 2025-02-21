@@ -95,7 +95,7 @@ const Direct: React.FC = () => {
                 <div>
                     <div>
                         <label className='label__general'>Buscador</label>
-                        <input className='inputs__general' type='text' value={searchBy} onChange={(e) => setSearchBy(e.target.value)} placeholder='Ingresa el nombre' />
+                        <input className='inputs__general' type='text' value={searchBy} onChange={(e) => setSearchBy(e.target.value)} onKeyUp={(event) => event.key === 'Enter' && searchFor()} placeholder='Ingresa el nombre' />
                     </div>
                 </div>
                 <div className='container__search'>

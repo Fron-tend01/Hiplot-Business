@@ -242,7 +242,7 @@
 
 .table__modal_create_tickets .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(8, minmax(0, 1fr)) 100px;
+    grid-template-columns: 3fr repeat(7, minmax(0, 1fr)) 100px;
     padding: 10px;
     column-gap: 20px;
     font-weight: 600;
@@ -310,7 +310,7 @@
 
 .table__modal_create_tickets .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr)) 100px;
+    grid-template-columns: 3fr repeat(7, minmax(0, 1fr)) 100px;
 
     padding: 10px;
     column-gap: 20px;

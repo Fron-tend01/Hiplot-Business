@@ -12,6 +12,11 @@ import { RequisitionRequests } from '../../../../../fuctions/Requisition'
 import APIs from '../../../../../services/services/APIs'
 import Swal from 'sweetalert2';
 import './ModalRequisition.css'
+import { storeOrdes } from '../../../../../zustand/Ordes'
+import { useSelectStore } from '../../../../../zustand/Select'
+import { storeArticles } from '../../../../../zustand/Articles'
+import Select from '../../../Dynamic_Components/Select'
+import LoadingInfo from '../../../../loading/LoadingInfo'
 
 const ModalRequisition: React.FC = () => {
   const userState = useUserStore(state => state.user);
@@ -38,6 +43,7 @@ const ModalRequisition: React.FC = () => {
   const { modalStateCreate, selectedBranchOffice, concepts, updateToRequisition }: any = useStore(storeRequisitions);
   const { createRequisition }: any = RequisitionRequests();
   // console.log('updateToRequisition', updateToRequisition)
+  const { LPAs }: any = storeOrdes();
 
   const { getCompaniesXUsers }: any = companiesRequests()
   const [companies, setCompanies] = useState<any>()
@@ -284,16 +290,21 @@ const ModalRequisition: React.FC = () => {
   }
 
 
-  const deleteConcept = (item: any) => {
-    const itemDelete = concepts.filter((x: number) => x !== item);
-    setConcepts(itemDelete);
-    const deltmp = ctmp.filter((x: number) => x !== item);
-    setCtmp(deltmp);
+  // const deleteConcept = (item: any) => {
+  //   const itemDelete = concepts.filter((x: number) => x !== item);
+  //   setConcepts(itemDelete);
+  //   // const deltmp = ctmp.filter((x: number) => x !== item);
+  //   // setCtmp(deltmp);
+  //   setDeleteConcepts([...deleteConcepts, item.id])
+
+
+  // };
+  const deleteConcept = (item: any, indexConcept: number) => {
+    const filter = concepts.filter((_: any, index: number) => index !== indexConcept)
+    setConcepts(filter)
     setDeleteConcepts([...deleteConcepts, item.id])
 
-
-  };
-
+  }
   // console.log('updateToRequisition', updateToRequisition)
 
   const updateStatus = async () => {
@@ -306,7 +317,7 @@ const ModalRequisition: React.FC = () => {
       title: "Seguro que deseas cambiar el status de esta requisición?",
       text: "TIP: Si una orden ya está terminada, puedes reutilizarla si se cancelo su proceso posterior solo activandola de nuevo",
       showCancelButton: true,
-      icon:'info',
+      icon: 'info',
       confirmButtonText: "Aceptar",
       denyButtonText: `Cancelar`
     }).then(async (result) => {
@@ -340,7 +351,44 @@ const ModalRequisition: React.FC = () => {
     // } catch (error) {
     //   console.log(error);
     // }
+
   }
+  const selectData: any = useSelectStore(state => state.selectedIds)
+  const modalLoading = storeArticles((state: any) => state.modalLoading);
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
+
+  useEffect(() => {
+    if (selectData?.LPASelected) {
+      setModalLoading(true)
+
+      APIs.CreateAny({ id: selectData?.LPASelected.id, id_usuario: user_id, for_pedido: 2 }, "getLPAArticulos")
+        .then(async (response: any) => {
+          setModalLoading(false)
+          response.forEach((el:any) => {
+            el.id = undefined
+             el.unidad = el.unidades[0].id_unidad
+             el.comentarios = ''
+          });
+          setConcepts(response)
+
+        }).catch((error: any) => {
+          if (error.response) {
+            if (error.response.status === 409) {
+              setModalLoading(false)
+              Swal.fire(error.mensaje, '', 'warning');
+
+            } else {
+              setModalLoading(false)
+              Swal.fire('Error al actualizar', '', 'error');
+            }
+          } else {
+            setModalLoading(false)
+            Swal.fire('Error de conexión.', '', 'error');
+          }
+        })
+
+    }
+  }, [selectData])
 
   return (
     <div className={`overlay__requisition ${modalStateCreate == 'create' || modalStateCreate == 'update' ? 'active' : ''}`}>
@@ -501,12 +549,22 @@ const ModalRequisition: React.FC = () => {
 
 
             <div className='row__three'>
-              {selectedOption == 0 ?
+              {LPAs?.dataSelect?.length == 0 ?
+                selectedOption == 0 ?
+                  <Normal></Normal>
+                  :
+                  <Differential />
+
+                :
+                updateToRequisition != null ? '':
+                <Select dataSelects={LPAs} instanceId='LPASelected' nameSelect={'Lista Productos Aprobados'}></Select>
+              }
+              {/* {selectedOption == 0 ?
                 // <Filtrado_Articulos_Basic  get_max_mins={true} set_article_local={setCtmp} get_unidades={true} campos_ext={campos_ext}/>
                 <Normal></Normal>
                 :
                 <Differential />
-              }
+              } */}
             </div>
             <div className='table__requisiciones-modal' >
               <div>
@@ -577,7 +635,7 @@ const ModalRequisition: React.FC = () => {
                             </div>
                           </div>
                           <div className='td delete'>
-                            <button className='btn__delete_users' type='button' onClick={() => deleteConcept(article)}>Eliminar</button>
+                            <button className='btn__delete_users' type='button' onClick={() => deleteConcept(article, index)}>Eliminar</button>
                           </div>
                         </div>
                       </div>
@@ -626,6 +684,10 @@ const ModalRequisition: React.FC = () => {
 
         </div>
       </div >
+      {modalLoading == true ? (
+        <LoadingInfo />
+      ) :
+        ''}
     </div >
   )
 }

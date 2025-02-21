@@ -694,11 +694,12 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                         <span className='text'>Creado por: <b>{purchaseOrderToUpdate?.usuario_crea}</b></span><br />
                         <span className='text'>Fecha de Creación: <b>{purchaseOrderToUpdate?.fecha_creacion}</b></span><br />
                         {purchaseOrderToUpdate?.status === 0 ? (
-                          <span className="active-status">Activo</span>
+                          <b style={{color:'green', background:'#baffc3', padding:'5px', borderRadius:'10px'}} >Activo</b>
                         ) : purchaseOrderToUpdate?.status === 1 ? (
-                          <span className="canceled-status">Cancelada</span>
+                          <b  style={{color:'red', background:'#ffbaba', padding:'5px', borderRadius:'10px'}}>Cancelada</b>
                         ) : (
-                          ""
+                          <b  style={{color:'blue', background:'#bad1ff', padding:'5px', borderRadius:'10px'}}>Terminado</b>
+
                         )}
 
                       </div>
