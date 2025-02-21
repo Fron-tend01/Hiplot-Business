@@ -364,10 +364,10 @@ const ModalRequisition: React.FC = () => {
       APIs.CreateAny({ id: selectData?.LPASelected.id, id_usuario: user_id, for_pedido: 2 }, "getLPAArticulos")
         .then(async (response: any) => {
           setModalLoading(false)
-          response.forEach((el:any) => {
+          response.forEach((el: any) => {
             el.id = undefined
-             el.unidad = el.unidades[0].id_unidad
-             el.comentarios = ''
+            el.unidad = el.unidades[0].id_unidad
+            el.comentarios = ''
           });
           setConcepts(response)
 
@@ -383,13 +383,19 @@ const ModalRequisition: React.FC = () => {
             }
           } else {
             setModalLoading(false)
-            Swal.fire('Error de conexión.', '', 'error');
+            Swal.fire('Error de conexión.', '', 'info');
           }
         })
 
     }
   }, [selectData])
 
+
+  const [articuloTemporal, setArticuloTemporal] = useState<any>('')
+
+  const agregarTmp = () => {
+    Swal.fire('Notificacion', 'Función aun en desarrollo, lamentamos los inconvenientes', 'warning')
+  }
   return (
     <div className={`overlay__requisition ${modalStateCreate == 'create' || modalStateCreate == 'update' ? 'active' : ''}`}>
       <Toaster expand={true} position="top-right" richColors />
@@ -548,7 +554,16 @@ const ModalRequisition: React.FC = () => {
             }
 
 
-            <div className='row__three'>
+            <div className='row__three '>
+              <div className='row text-center  mt-3 '  style={{background: '#f2f2f2'}}>
+                <div className='col-4 m-3'>
+                  <label className='label__general'>Articulo Temporal</label>
+                  <input className='inputs__general' type="text" value={articuloTemporal} onChange={(e) => setArticuloTemporal(e.target.value)} placeholder='Ingresa descripcion de tu articulo tmp' />
+                </div>
+                <div className='col-1'>
+                  <button className='btn__general-purple mt-4' onClick={agregarTmp}>Agregar</button>
+                </div>
+              </div>
               {LPAs?.dataSelect?.length == 0 ?
                 selectedOption == 0 ?
                   <Normal></Normal>
@@ -556,8 +571,11 @@ const ModalRequisition: React.FC = () => {
                   <Differential />
 
                 :
-                updateToRequisition != null ? '':
-                <Select dataSelects={LPAs} instanceId='LPASelected' nameSelect={'Lista Productos Aprobados'}></Select>
+                updateToRequisition != null ? '' :
+                  <>
+
+                    <Select dataSelects={LPAs} instanceId='LPASelected' nameSelect={'Lista Productos Aprobados'}></Select>
+                  </>
               }
               {/* {selectedOption == 0 ?
                 // <Filtrado_Articulos_Basic  get_max_mins={true} set_article_local={setCtmp} get_unidades={true} campos_ext={campos_ext}/>
