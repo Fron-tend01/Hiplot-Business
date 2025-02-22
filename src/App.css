@@ -534,6 +534,33 @@ option {
 
 
 
+.icon__search {
+  background-color: var(--primary-color);
+  height: 40px;
+  width: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 600ms;
+
+}
+
+.icon__search:hover {
+  transform: scale(1.1);  
+}
+
+.icon__search:active {
+  transform: scale(.9);
+  transition: all 200ms;
+}
+
+
+
+
+
+
 .btn__mode {
   background-color: var(--backgorund-header-icons);
   width: 66px;
@@ -1072,7 +1099,6 @@ html, body {
 
 .folio-identifier {
   display: flex;
-  padding: 5px;
   justify-content: center;
   align-items: center;
   padding: 5px 10px;
@@ -1084,7 +1110,6 @@ html, body {
 
 .article-identifier {
   display: flex;
-  padding: 5px;
   justify-content: center;
   align-items: center;
   padding: 5px 10px;

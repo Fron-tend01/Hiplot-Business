@@ -16,6 +16,7 @@ import Empresas_Sucursales from "../../Dynamic_Components/Empresas_Sucursales";
 import { storeModals } from "../../../../zustand/Modals";
 import APIs from "../../../../services/services/APIs";
 import Select from "../../Dynamic_Components/Select";
+import { useSelectStore } from "../../../../zustand/Select";
 
 const Departures: React.FC = () => {
 
@@ -36,6 +37,8 @@ const Departures: React.FC = () => {
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
 
+    const selectedIds: any = useSelectStore((state) => state.selectedIds);
+
 
     const [warningName] = useState<boolean>(false)
 
@@ -45,7 +48,7 @@ const Departures: React.FC = () => {
     const haceUnaSemana = new Date();
     haceUnaSemana.setDate(hoy.getDate() - 7);
 
-
+    const [status, setTipo] = useState<any>([0])
 
     const id_usuario = user_id;
     const desde = haceUnaSemana.toISOString().split('T')[0];
@@ -78,7 +81,7 @@ const Departures: React.FC = () => {
             dataSelect: resultSeries
         })
         getSuppliers('', true, user_id)
-        await getOrdedrs({ id_usuario, id_sucursal: branchOffices.id, desde, hasta, status, })
+        await getOrdedrs({ id_usuario, id_sucursal: 0, desde, hasta, status, })
 
     }
 
@@ -96,7 +99,7 @@ const Departures: React.FC = () => {
         }
     };
 
-    const [type, setTipo] = useState<any>([])
+
 
     const handleClick = (value: number) => {
         setTipo((prev: any) =>
@@ -119,7 +122,10 @@ const Departures: React.FC = () => {
             id_sucursal: branchOffices.id,
             desde: dates[0],
             hasta: dates[1],
-            status: type
+            status: status,
+            id_serie: selectedIds.series.id ? selectedIds.series.id : 0,
+            folio: invoice ? invoice : 0,
+            page: 0
         }
         await getOrdedrs(data)
     }
@@ -128,9 +134,11 @@ const Departures: React.FC = () => {
         setModal('modal-create-pedido')
     }
 
+    console.log(selectedIds)
 
-    
-  
+
+
+
 
     return (
         <div className="orders">
@@ -148,30 +156,30 @@ const Departures: React.FC = () => {
                         </div>
                     </div>
                     <div className="row__two">
-                        <Select dataSelects={series} instanceId="serieSelected" nameSelect={'Series'} />
+                        <Select dataSelects={series} instanceId="series" nameSelect={'Series'} />
                         <div>
                             <label className='label__general'>Folio</label>
                             <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                            <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
+                            <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="number" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
                         </div>
                         <div className='container__checkbox_orders'>
                             <div className='checkbox__orders'>
                                 <label className="checkbox__container_general">
-                                    <input className='checkbox' type="checkbox" name="requisitionStatus" checked={type.includes(0)} onChange={() => handleClick(0)} />
+                                    <input className='checkbox' type="checkbox" name="requisitionStatus" checked={status.includes(0)} onChange={() => handleClick(0)} />
                                     <span className="checkmark__general"></span>
                                 </label>
                                 <p className='title__checkbox text'>Activo</p>
                             </div>
                             <div className='checkbox__orders'>
                                 <label className="checkbox__container_general">
-                                    <input className='checkbox' type="checkbox" name="requisitionStatus" checked={type.includes(2)} onChange={() => handleClick(2)} />
+                                    <input className='checkbox' type="checkbox" name="requisitionStatus" checked={status.includes(2)} onChange={() => handleClick(2)} />
                                     <span className="checkmark__general"></span>
                                 </label>
                                 <p className='title__checkbox text'>Cancelados</p>
                             </div>
                             <div className='checkbox__orders'>
                                 <label className="checkbox__container_general">
-                                    <input className='checkbox' type="checkbox" name="requisitionStatus" checked={type.includes(1)} onChange={() => handleClick(1)} />
+                                    <input className='checkbox' type="checkbox" name="requisitionStatus" checked={status.includes(1)} onChange={() => handleClick(1)} />
                                     <span className="checkmark__general"></span>
                                 </label>
                                 <p className='title__checkbox text'>Terminados</p>
@@ -230,10 +238,8 @@ const Departures: React.FC = () => {
                                     return (
                                         <div className='tbody__container' key={order.id}>
                                             <div className='tbody'>
-                                                <div className='td order'>
-                                                    <div>
-                                                        <p>{`${order.serie}-${order.folio}-${order.anio}`}</p>
-                                                    </div>
+                                                <div className='td'>
+                                                    <p className="folio-identifier">{`${order.serie}-${order.folio}-${order.anio}`}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <p>{order.empresa}</p>

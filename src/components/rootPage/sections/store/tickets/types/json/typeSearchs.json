@@ -1,11 +1,10 @@
 [
-    {
-      "id": 0,
-      "name": "Código"
-    },
-    {
-      "id": 1,
-      "name": "Nombre"
-    }
-  ]
-  
+  {
+    "id": 0,
+    "name": "Descripción"
+  },
+  {
+    "id": 1,
+    "name": "Código"
+  }
+]

@@ -134,7 +134,6 @@ const Tickets = () => {
 
 
     const searchTicket = () => {
-
         const data = {
             id_usuario: user_id,
             id_empresa: companies.id,
@@ -186,8 +185,10 @@ const Tickets = () => {
                         <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(parseInt(e.target.value))} placeholder='Ingresa el folio' />
                     </div>
                     <div className="col-4 md-col-12 d-flex justify-content-center align-items-end">
-                        <button className="btn__general-purple" onClick={() => { setPage(1), searchTicket() }}>Buscar</button>
-                        <button className="btn__general-orange mx-3" onClick={excel}>Excel</button>
+                        <div className="icon__search" onClick={() => { setPage(1), searchTicket() }}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </div>
+                        <button className="mx-3 btn__general-orange" onClick={excel}>Excel</button>
                         <button className="btn__general-purple" onClick={() => setModalTickets('modal-create_ticket')}>Nueva entrada</button>
                         {/* <Select dataSelects={suppliers} instanceId="proveedores"  nameSelect={'Proveedores'}/> */}
                     </div>
@@ -202,7 +203,7 @@ const Tickets = () => {
                         <ModalUpdate updateTickets={updateTickets} />
                     </div>
                 </div>
-                <div className='table__tickets mt-4'>
+                <div className='mt-4 table__tickets'>
                     <div>
                         {tickets ? (
                             <div className='table__numbers'>
@@ -233,7 +234,7 @@ const Tickets = () => {
                                 </div>
                             </div>
                         </div>
-                        {tickets ? (
+                        {tickets.length > 0 ? (
                             <div className='table__body'>
                                 {tickets.map((ticket: any, index: number) => {
                                     return (
@@ -263,12 +264,15 @@ const Tickets = () => {
                                 })}
                             </div>
                         ) : (
-                            <p className="mt-3">No hay entradas que mostrar</p>
+                            <div className="empty">
+                                <p className='text'>Sin conceptos</p>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3d3e42" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-bucket"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 7m-8 0a8 4 0 1 0 16 0a8 4 0 1 0 -16 0" /><path d="M4 7c0 .664 .088 1.324 .263 1.965l2.737 10.035c.5 1.5 2.239 2 5 2s4.5 -.5 5 -2c.333 -1 1.246 -4.345 2.737 -10.035a7.45 7.45 0 0 0 .263 -1.965" /></svg>
+                            </div>
                         )}
                     </div>
                 </div>
 
-                <div className='d-flex justify-content-between mt-4'>
+                <div className='mt-4 d-flex justify-content-between'>
                     <div>
                         <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
                             disabled={page == 1}>Anterior</button>

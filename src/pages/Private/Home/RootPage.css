@@ -21,10 +21,11 @@
 
 
 .sidebar .logo__sidebar {
+    display: flex;
     text-align: center;
     justify-content: center;
     color: #fff;
-    padding: 20px 0;
+    height: 80px;
 }
 
 
@@ -67,6 +68,7 @@
 
 
 .sidebar.close .nav__items {
+  height: 500px;
   overflow: visible;
 }
 

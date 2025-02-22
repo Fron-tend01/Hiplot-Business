@@ -306,6 +306,10 @@
     display: flex;
 }
 
+.table__orders .table__body .tbody:hover .td .folio-identifier {
+    background-color: #3D85C6;
+    color: #ffffff;
+}
 
 
 .table__orders .table__body .tbody:hover {

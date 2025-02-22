@@ -118,12 +118,21 @@
     height: 100%;
     grid-template-rows: repeat(2, auto) 1fr;
     overflow: hidden;
+}
 
+.table__tickets .empty {
+    display: flex;
+    padding: 10px;
+}
+
+
+.table__tickets .empty > svg {
+    margin-left: 10px;
 }
 
 .table__tickets .table {
     border: 2px solid var(--border-table-color);
-    border-radius: 20px;
+    border-radius: 10px;
 }
 
 

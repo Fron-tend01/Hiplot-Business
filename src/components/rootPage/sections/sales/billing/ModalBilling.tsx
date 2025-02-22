@@ -55,7 +55,7 @@ const ModalBilling: React.FC = () => {
     const setDeleteCustomConcepts = storePersonalized((state) => state.setDeleteCustomConcepts);
     const setNormalConceptsView = storePersonalized((state) => state.setNormalConceptsView);
 
-    
+
     const setCustomLocal = storePersonalized(state => state.setCustomLocal)
 
     const setConceptView = storePersonalized((state) => state.setConceptView);
@@ -532,15 +532,14 @@ const ModalBilling: React.FC = () => {
     })
 
     const searchClient = async () => {
-
         const data = {
             id_sucursal: modoUpdate ? DataUpdate.id_sucursal : branchOffices.id,
             id_usuario: user_id,
             nombre: client
         }
+        
         try {
             const result: any = await APIs.getClients(data)
-
             setCustomers({
                 selectName: 'Clientes',
                 options: 'razon_social',
@@ -562,8 +561,6 @@ const ModalBilling: React.FC = () => {
         } catch (error) {
             console.log(error)
         }
-
-
     }
     useEffect(() => {
         // console.log(selectedIds);
@@ -639,20 +636,12 @@ const ModalBilling: React.FC = () => {
                 const filter = concepts.filter((x: number) => x !== c);
                 setConcepts(filter);
             }
-
         }
-
-
-
     }
 
     console.log('conceptView', conceptView)
 
     const undoConceptos = (concept: any) => {
-
-
-
-
         if (subModal == 'billing__modal-create') {
             const deleteItemCustomC = customConcepts.filter((x: any) => x.id_identifier !== concept.id_identifier);
             const updatedConcepts = concept.conceptos.map((element: any) => ({
@@ -660,7 +649,6 @@ const ModalBilling: React.FC = () => {
                 id_pers: 0,
                 check: false,
             }));
-
 
             setCustomConcepts(deleteItemCustomC)
             // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);

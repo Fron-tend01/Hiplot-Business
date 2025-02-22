@@ -133,41 +133,44 @@ const Departures = () => {
 
     return (
         <div className="departures">
-            <div className='breadcrumbs'>
-                <div className='breadcrumbs__container'>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-receipt"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 17.5v-11" /></svg>
-                    <small className='title'>Almacén</small>
-                </div>
-                <div className='chevron__breadcrumbs'>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6" /></svg>
-                </div>
-                <div className='breadcrumbs__container'>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /></svg>
-                    <small className='title'>Salidas</small>
-                </div>
-            </div>
+
             <Toaster expand={true} position="top-right" richColors />
             <div className="departures__container">
-                <div className="row">
-                    <div className="col-8">
-                        <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
+                <div className='breadcrumbs'>
+                    <div className='breadcrumbs__container'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-receipt"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 17.5v-11" /></svg>
+                        <small className='title'>Almacén</small>
                     </div>
-                    <div className='col-4'>
-                        <label className='label__general'>Fechas</label>
-                        <div className='container_dates__requisition'>
-                            <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                    <div className='chevron__breadcrumbs'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6" /></svg>
+                    </div>
+                    <div className='breadcrumbs__container'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /></svg>
+                        <small className='title'>Salidas</small>
+                    </div>
+                </div>
+                <div className="row__one">
+                    <div className="row">
+                        <div className="col-8">
+                            <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
                         </div>
-                    </div>
-                    <div className='col-4'>
-                        <Select dataSelects={series} instanceId="serie" nameSelect={'Series'} />
-                    </div>
-                    <div className="col-4">
-                        <label className='label__general'>Folio</label>
-                        <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                        <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
-                    </div>
-                    <div className='col-4'>
-                        <Select dataSelects={store} instanceId="store" nameSelect={'Almacén'} />
+                        <div className='col-4'>
+                            <label className='label__general'>Fechas</label>
+                            <div className='container_dates__requisition'>
+                                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                            </div>
+                        </div>
+                        <div className='col-4'>
+                            <Select dataSelects={series} instanceId="serie" nameSelect={'Series'} />
+                        </div>
+                        <div className="col-4">
+                            <label className='label__general'>Folio</label>
+                            <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                            <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
+                        </div>
+                        <div className='col-4'>
+                            <Select dataSelects={store} instanceId="store" nameSelect={'Almacén'} />
+                        </div>
                     </div>
                 </div>
                 <div className="row__two">

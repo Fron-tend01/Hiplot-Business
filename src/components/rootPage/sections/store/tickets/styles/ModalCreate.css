@@ -36,7 +36,7 @@
     grid-template-rows: auto 1fr;
 	background-color: var(--background-modal);
 	border-radius: 5px;
-	width: 90%;
+	width: 95vw;
     max-height: 95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
@@ -219,8 +219,22 @@
     margin-right: 10px;
 }
 
+
+
+
+
 .table__modal_create_tickets {
     border-radius: 10px;
+}
+
+.table__modal_create_tickets .empty {
+    display: flex;
+    padding: 10px;
+}
+
+
+.table__modal_create_tickets .empty > svg {
+    margin-left: 10px;
 }
 
 .table__modal_create_tickets .table {
@@ -242,7 +256,7 @@
 
 .table__modal_create_tickets .table__head .thead {
     display: grid;
-    grid-template-columns: 3fr repeat(7, minmax(0, 1fr)) 100px;
+    grid-template-columns: 3fr repeat(6, minmax(0, 1fr)) 50px;
     padding: 10px;
     column-gap: 20px;
     font-weight: 600;
@@ -251,9 +265,6 @@
 }
 
 .table__modal_create_tickets .table__body {
-	max-height: 300px;
-    overflow: hidden;
-    overflow: auto;
     transition-delay: 0.0s;
     &::-webkit-scrollbar {
         width: 5px;
@@ -294,7 +305,14 @@
 
 
 
+.table__modal_create_tickets .table__body .tbody {
+    display: grid;
+    grid-template-columns: 2fr repeat(6, minmax(0, 1fr)) 50px;
+    padding: 10px;
+    column-gap: 20px;
+    align-items: end;
 
+}
 
 .table__modal_create_tickets .table__body .tbody .td {
     display: flex;
@@ -302,26 +320,14 @@
 
 .table__modal_create_tickets .table__body .tbody .td .inputs__general, .traditional__selector {
     background-color: var(--cards-background);
+    width: 100%;
 }
 
-.table__modal_create_tickets .table__body .tbody {
+.table__modal_create_tickets .table__body .tbody .td.delete {
     display: flex;
-}
-
-.table__modal_create_tickets .table__body .tbody {
-    display: grid;
-    grid-template-columns: 3fr repeat(7, minmax(0, 1fr)) 100px;
-
-    padding: 10px;
-    column-gap: 20px;
+    justify-content: end;
     align-items: center;
-
 }
-
-
-
-
-
 
 
 
@@ -355,8 +361,8 @@
 }
 
 .table__modal_filter_tickets .table__body {
-	height: 100%;
-    overflow-y: auto;
+	/* height: 100%; */
+    /* overflow-y: auto; */
     transition-delay: 0.0s;
     &::-webkit-scrollbar {
         width: 5px;

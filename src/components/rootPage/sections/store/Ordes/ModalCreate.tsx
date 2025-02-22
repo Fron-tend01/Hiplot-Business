@@ -4,7 +4,6 @@ import Select from "../../../Dynamic_Components/Select";
 import { storeOrdes } from "../../../../../zustand/Ordes";
 import { areasRequests } from "../../../../../fuctions/Areas";
 import Direct from "./types/Direct";
-import { v4 as uuidv4 } from 'uuid';
 import 'flatpickr/dist/flatpickr.min.css';
 import './styles/ModalCreate.css'
 import Swal from 'sweetalert2';
@@ -16,7 +15,7 @@ import ByOP from "./types/ByOP";
 import APIs from "../../../../../services/services/APIs";
 import LoadingInfo from "../../../../loading/LoadingInfo";
 import { storeArticles } from "../../../../../zustand/Articles";
-
+import SeeStock from "./stock/SeeStock";
 
 const ModalCreate = () => {
     const userState = useUserStore(state => state.user);
@@ -31,8 +30,10 @@ const ModalCreate = () => {
     const { getAreas }: any = areasRequests();
     const { createOrders }: any = storeOrdes();
 
+    
 
     const setModal = storeModals(state => state.setModal)
+    const setModalSubSub = storeModals(state => state.setModalSubSub)
     const { modal }: any = storeModals();
 
 
@@ -90,7 +91,7 @@ const ModalCreate = () => {
         const stocks = concepts[index].stock;
         let almacenPredeterminado = concepts[index].almacenes_predeterminados.filter((x: any) => x.id_sucursal == branchOffices?.id)[0];
         if (LPAs?.dataSelect.length > 0) {
-            almacenPredeterminado = {id: LPAs?.dataSelect[0]?.id_almacen}
+            almacenPredeterminado = { id: LPAs?.dataSelect[0]?.id_almacen }
         }
         if (almacenPredeterminado == undefined) {
             Swal.fire('Notificacion', 'La sucursal seleccionada no tiene un almacen configurado para el articulo '
@@ -110,7 +111,7 @@ const ModalCreate = () => {
             // console.log('canti', equivalencias[0].cantidad);  
 
             if (value > equivalencias[0].cantidad) {
-                const newArticleStates = [...concepts]; 
+                const newArticleStates = [...concepts];
                 newArticleStates[index].cantidad = 0;
                 setConcepts(newArticleStates);
                 Swal.fire({
@@ -171,7 +172,7 @@ const ModalCreate = () => {
             status: 0
 
         }
-        concepts.forEach((el:any) => {
+        concepts.forEach((el: any) => {
             if (el.unidad != null && el.unidad != undefined) {
                 el.id_unidad = el.unidad
             }
@@ -186,18 +187,14 @@ const ModalCreate = () => {
 
     }
 
-    const [modalStateStore, setModalStateStore] = useState<any>(false)
 
+    const [stock, setStock] = useState<any>()
     const seeStock = (modal: any) => {
-        setModalStateStore((prevState: any) => ({
-            ...prevState,
-            [modal]: !prevState[modal]
-        }))
+        setModalSubSub('modal__stock')
+        setStock(modal)
     }
 
-    const closeModalStore = () => {
-        setModalStateStore(false)
-    }
+    console.log(stock)
 
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
@@ -240,7 +237,7 @@ const ModalCreate = () => {
 
 
     console.log('LPAS', LPAs);
-    
+
     return (
         <div className={`overlay__orders ${modal == 'modal-create-pedido' ? 'active' : ''}`}>
             <div className={`popup__orders ${modal == 'modal-create-pedido' ? 'active' : ''}`}>
@@ -269,18 +266,20 @@ const ModalCreate = () => {
                                 : ''}
                         </div>
                     </div>
-                    <div className='row'>
-                        <div className="col-8">
-                            <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
+                    <div className="row__two">
+                        <div className='row'>
+                            <div className="col-8">
+                                <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
+                            </div>
+                            <div className="col-4">
+                                <Select dataSelects={areas} instanceId="id_area" nameSelect={'Areas'} />
+                            </div>
                         </div>
-                        <div className="col-4">
-                            <Select dataSelects={areas} instanceId="id_area" nameSelect={'Areas'} />
-                        </div>
-                    </div>
-                    <div className="row__three">
-                        <div>
-                            <label className='label__general'>Comentarios de OC</label>
-                            <textarea className={`textarea__general`} value={OPcomments} onChange={(e) => setOPcomments(e.target.value)} placeholder='Comentarios' />
+                        <div className="row__three">
+                            <div>
+                                <label className='label__general'>Comentarios de OC</label>
+                                <textarea className={`textarea__general`} value={OPcomments} onChange={(e) => setOPcomments(e.target.value)} placeholder='Comentarios' />
+                            </div>
                         </div>
                     </div>
                     {LPAs?.dataSelect?.length == 0 ?
@@ -294,16 +293,17 @@ const ModalCreate = () => {
                     }
                     <div className='table__modal_create_orders' >
                         <div>
-                            <div>
-                                {concepts ? (
-                                    <div className='table__numbers'>
-                                        <p className='text'>Total de articulos</p>
-                                        <div className='quantities_tables'>{concepts.length}</div>
-                                    </div>
-                                ) : (
-                                    <p className='text'>No hay empresas</p>
-                                )}
-                            </div>
+                            {concepts ? (
+                                <div className='table__numbers'>
+                                    <p className='text'>Total de articulos</p>
+                                    <div className='quantities_tables'>{concepts.length}</div>
+                                </div>
+                            ) : (
+                                <p className='text'>No hay empresas</p>
+                            )}
+                        </div>
+                        <div className="table">
+
                             <div className='table__head'>
                                 <div className='thead'>
                                     <div className='th'>
@@ -364,61 +364,14 @@ const ModalCreate = () => {
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <button type="button" className="btn__general-purple" onClick={() => seeStock(concept.id)}>Ver</button>
+                                                    <button type="button" className="btn__general-purple" onClick={() => seeStock(concept)}>Ver</button>
                                                 </div>
-                                                <div className={`overlay__modal_stock_orders ${modalStateStore[concept?.id] ? 'active' : ''}`}>
-                                                    <div className={`popup__modal_stock_orders ${modalStateStore[concept?.id] ? 'active' : ''}`}>
-                                                        <a href="#" className="btn-cerrar-popup__modal_stock_orders" onClick={closeModalStore}>
-                                                            <svg className='close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
-                                                        </a>
-                                                        <div>
-                                                            <div className='table__modal_create_orders-stocks' >
-                                                                {concept?.stock?.length > 0 ? (
-                                                                    <div>
-                                                                        <div className='table__head'>
-                                                                            <div className='thead' style={{ gridTemplateColumns: `repeat(${concept?.stock[0]?.equivalencias.length + 1}, 1fr)` }}>
-                                                                                <div className='th'>
-                                                                                    <p className=''>Nombre</p>
-                                                                                </div>
-                                                                                {concept?.stock[0]?.equivalencias.map((item: any) => (
-                                                                                    <div className="th" key={uuidv4()}>
-                                                                                        <p>{item.nombre_unidad}</p>
-                                                                                    </div>
-                                                                                ))}
-                                                                            </div>
-                                                                        </div>
-                                                                        <div>
-                                                                            <div className='table__body'>
-                                                                                <div className='tbody__container' >
-                                                                                    {concept?.stock?.map((x: any) => (
-                                                                                        <div key={uuidv4()}>
-                                                                                            <div className='tbody' style={{ gridTemplateColumns: `repeat(${x?.equivalencias.length + 1}, 1fr)` }}>
-                                                                                                <div className="td">
-                                                                                                    <p>{x.nombre}</p>
-                                                                                                </div>
-                                                                                                {x?.equivalencias.map((item: any) => (
-                                                                                                    <div className="td" >
-                                                                                                        <p>{item.cantidad}</p>
-                                                                                                    </div>
-                                                                                                ))}
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    ))}
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                    </div>
-                                                                ) : (
-                                                                    <p className='text'>No hay aritculos que mostrar</p>
-                                                                )}
-                                                            </div>
-                                                        </div>
+                                                <div className='td delete'>
+                                                    <div className='delete-icon' onClick={() => deleteConcepts(concept, index)} title='Eliminar concepto'>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                                     </div>
                                                 </div>
-                                                <div className='td'>
-                                                    <button className='btn__delete_users' type='button' onClick={() => deleteConcepts(concept, index)}>Eliminar</button>
-                                                </div>
+
                                             </div>
                                         </div>
                                     ))}
@@ -428,7 +381,7 @@ const ModalCreate = () => {
                             )}
                         </div>
                     </div>
-                    <div className="d-flex justify-content-center mt-4">
+                    <div className="mt-4 d-flex justify-content-center">
                         <button className='btn__general-purple' type='submit'>Crear Pedido</button>
                     </div>
                 </form>
@@ -437,6 +390,7 @@ const ModalCreate = () => {
                 <LoadingInfo />
             ) :
                 ''}
+            <SeeStock concept={stock} />
         </div>
     )
 }

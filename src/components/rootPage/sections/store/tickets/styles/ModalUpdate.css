@@ -157,13 +157,11 @@
     font-weight: 600;
     color: var(--text-table-color);
     text-align: left;
-	
 }
 
 .table__modal_update_tickets .table__body {
-	max-height: 300px;
-    overflow: hidden;
-    overflow: auto;
+	/* max-height: 300px; */
+    /* overflow: auto; */
     transition-delay: 0.0s;
     &::-webkit-scrollbar {
         width: 5px;

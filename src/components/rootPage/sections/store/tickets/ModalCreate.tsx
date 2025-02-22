@@ -8,6 +8,8 @@ import APIs from "../../../../../services/services/APIs";
 import Empresas_Sucursales from "../../../Dynamic_Components/Empresas_Sucursales";
 import ByOC from "./types/ByOC";
 import Direct from "./types/Direct";
+import Swal from 'sweetalert2';
+
 
 
 const ModalCreate = () => {
@@ -109,26 +111,44 @@ const ModalCreate = () => {
 
 
 
-    const handleCreateAreas = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleCreateTickets = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         const id_sucursal = branchOffices.id;
         const id_usuario_crea = user_id;
         const comentarios = comments;
 
         try {
-            await createTickets(id_sucursal, id_usuario_crea, comentarios, conceptos)
-            const data = {
-                id_usuario: user_id,
-                id_empresa: companies.id,
-                id_sucursal: branchOffices.id,
-                desde: dates[0],
-                hasta: dates[1],
-                id_serie: 0,
-                status: 0,
-                folio: 0
+            if (comments === '') {
+                setWarningComments(true)
+            } else {
+                setWarningComments(false)
+                if (conceptos.length > 0) {
+                
+                    await createTickets(id_sucursal, id_usuario_crea, comentarios, conceptos)
+                    const data = {
+                        id_usuario: user_id,
+                        id_empresa: companies.id,
+                        id_sucursal: branchOffices.id,
+                        desde: dates[0],
+                        hasta: dates[1],
+                        id_serie: 0,
+                        status: 0,
+                        folio: 0
+                    }
+                    await getTickets(data)
+                    setModalTickets('')
+                } else {
+                    Swal.fire({
+                        title: 'Aviso',
+                        text: 'Debes agregar al menos un concepto para crear la entrada.',
+                        icon: 'warning',
+                        confirmButtonText: 'Entendido'
+                });
+    
+                }
             }
-            await getTickets(data)
-            setModalTickets('')
+          
+
 
         } catch (error) {
             console.log(error)
@@ -190,7 +210,12 @@ const ModalCreate = () => {
         setTotal((totalSub - totalDiscount) + iva + costo_flete);
     }, [conceptos]);
 
+    const [warningComments, setWarningComments] = useState<boolean>(false)
 
+    const styleWarningComments = {
+        opacity: warningComments === true ? '1' : '',
+        height: warningComments === true ? '23px' : ''
+    }
 
     return (
         <div className={`overlay__tickets ${modalTickets == 'modal-create_ticket' ? 'active' : ''}`}>
@@ -227,7 +252,8 @@ const ModalCreate = () => {
                             </div>
                             <div className="col-4 comments">
                                 <label className='label__general'>Comentarios</label>
-                                <input className='inputs__general' type='text' value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios' />
+                                <div className='warning__general' style={styleWarningComments}><small >Este campo es obligatorio</small></div>
+                                <input className={`inputs__general ${warningComments ? 'warning' : ''}`} type='text' value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios' />
                             </div>
                         </div>
                         {selectedOption === 0 ?
@@ -329,15 +355,21 @@ const ModalCreate = () => {
                                                                 <input className='inputs__general' value={concept.comentarios === '' ? '' : concept.comentarios} onChange={(e) => handleComentariosChange(e, index)} type="text" placeholder='Comentarios' />
                                                             </div>
                                                         </div>
-                                                        <div className='td'>
-                                                            <button className='btn__delete_users' type='button' onClick={() => deleteTicket(concept, index)}>Eliminar</button>
+                                                        <div className='td delete'>
+                                                            <div className='delete-icon' onClick={() => deleteTicket(concept, index)} title='Eliminar concepto'>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                            </div>
                                                         </div>
+
                                                     </div>
                                                 </div>
                                             ))}
                                         </div>
                                     ) : (
-                                        <p className='text'>No hay aritculos que mostrar</p>
+                                        <div className="empty">
+                                            <p className='text'>Sin conceptos</p>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3d3e42" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-bucket"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 7m-8 0a8 4 0 1 0 16 0a8 4 0 1 0 -16 0" /><path d="M4 7c0 .664 .088 1.324 .263 1.965l2.737 10.035c.5 1.5 2.239 2 5 2s4.5 -.5 5 -2c.333 -1 1.246 -4.345 2.737 -10.035a7.45 7.45 0 0 0 .263 -1.965" /></svg>
+                                        </div>
                                     )}
                                 </div>
                             </div>
@@ -367,8 +399,8 @@ const ModalCreate = () => {
                         :
                         ''
                     }
-                    <div className="d-flex justify-content-center mt-4">
-                        <button className='btn__general-purple' onClick={(e) => handleCreateAreas(e)}>Crear nueva entrada</button>
+                    <div className="mt-4 d-flex justify-content-center">
+                        <button className='btn__general-purple' onClick={(e) => handleCreateTickets(e)}>Crear nueva entrada</button>
                     </div>
                 </div>
             </div>
