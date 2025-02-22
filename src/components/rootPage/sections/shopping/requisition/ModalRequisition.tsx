@@ -393,8 +393,18 @@ const ModalRequisition: React.FC = () => {
 
   const [articuloTemporal, setArticuloTemporal] = useState<any>('')
 
-  const agregarTmp = () => {
-    Swal.fire('Notificacion', 'Función aun en desarrollo, lamentamos los inconvenientes', 'warning')
+  const agregarTmp = async () => {
+    let concept_tmp = {
+      codigo:'CODIGO_TMP',
+      descripcion:articuloTemporal,
+      unidades:[],
+      unidad:0
+    }
+    // const result:any = await APIs.getUnits()
+    // concept_tmp.unidades= result
+    // concept_tmp.unidad=result[0].id
+    setConcepts([...concepts,concept_tmp])
+    // Swal.fire('Notificacion', 'Función aun en desarrollo, lamentamos los inconvenientes', 'warning')
   }
   return (
     <div className={`overlay__requisition ${modalStateCreate == 'create' || modalStateCreate == 'update' ? 'active' : ''}`}>
