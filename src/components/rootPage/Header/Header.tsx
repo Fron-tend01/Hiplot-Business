@@ -1,19 +1,26 @@
 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useThemeStore } from '../../../zustand/ThemeStore';
 import './Header.css';
 import NotificationIcon from './NotificationIcon';
 import Swal from 'sweetalert2';
 import ArticleViewModal from '../sections/sales/ArticleViewModal';
 import { storeArticleView } from '../../../zustand/ArticleView';
+import { storeDv } from '../../../zustand/Dynamic_variables';
+import APIs from '../../../services/services/APIs';
+import useUserStore from '../../../zustand/General';
 
 const Header: React.FC = () => {
 
   const { toggleTheme } = useThemeStore();
   const [showUsers] = useState<boolean>(false);
-
+  const userState = useUserStore(state => state.user);
+  const user_id = userState.id
+  console.log('USER STATE',userState);
+  
   const setModalArticleView = storeArticleView((state) => state.setModalArticleView);
+
 
   const toggleUsersDisplay = () => {
     // setShowUsers(!showUsers);
@@ -52,8 +59,18 @@ const Header: React.FC = () => {
       setIsDarkMode((prev) => !prev);
     }
   };
-
-
+  const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
+  const permisosxVista = storeDv((state) => state.permisosxvista);
+  const [permisosxvista, setPermisosxvista] = useState<any[]>([]);
+  useEffect(() => {
+    APIs.GetAny('get_permisos_x_vista/' + user_id + '/HEADER').then((resp: any) => {
+      setPermisosxVista(resp)
+      setPermisosxvista(resp)
+    })
+  }, []);
+  const checkPermission = (elemento: string) => {
+    return permisosxvista.some((x: any) => x.titulo == elemento)
+  }
   // const [notifications, setNotifications] = useState<string[]>([]);
   // const wsUrl = "ws://hiplot.dyndns.org:84/api_dev/ws/notify"; // URL del WebSocket en el backend
   // const socketRef = useRef<WebSocket | null>(null); // Referencia para el WebSocket
@@ -114,15 +131,20 @@ const Header: React.FC = () => {
     <div className='hero'>
       <div className='container__hero'>
         <div>
+
           <div className={`inputs__general_icons`}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-            <input className='inputs__generic' placeholder='Ejemplo@gmail.com' />
+            {/* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg> */}
+            {/* <input className='inputs__generic' placeholder='Ejemplo@gmail.com' /> */}
+            <label className='inputs__generic'> Bienvenido: {userState.nombre} ({userState.email})</label>
           </div>
         </div>
         <div className='nav__hero'>
-          <div className='icon__search-btn'>
-            <svg onClick={() => setModalArticleView('article-view__modal')} xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" className="d-flex lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
-          </div>
+          {permisosxvista.length > 0 && checkPermission('BOTON-CATALOGO-ARTICULOS') && (
+            <div className='icon__search-btn'>
+              <svg onClick={() => setModalArticleView('article-view__modal')} xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="d-flex lucide lucide-package-search" > <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /> <path d="m7.5 4.27 9 5.15" /> <polyline points="3.29 7 12 12 20.71 7" /> <line x1="12" x2="12" y1="22" y2="12" /> <circle cx="18.5" cy="15.5" r="2.5" /> <path d="M20.27 17.27 22 19" />
+              </svg>
+            </div>
+          )}
           <div>
             <div className="btn__mode" onClick={handleClick}>
               <div className="btn__indicator">

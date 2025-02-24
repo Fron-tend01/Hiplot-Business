@@ -103,11 +103,11 @@ const ModalCreate = () => {
 
         // Verificar si el almacen existe y tiene stock disponible
 
-        debugger
         if (filter) {
-            const equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == concepts[index].unidad)
+            const equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == concepts[index].unidad || x.id_unidad == concepts[index].unidades[0].id_unidad)
             console.log('value', value);
             // console.log('canti', equivalencias[0].cantidad);  
+            debugger
 
             if (value > equivalencias[0].cantidad) {
                 const newArticleStates = [...concepts]; 
@@ -157,8 +157,7 @@ const ModalCreate = () => {
 
 
 
-    const handleCreateOrders = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+    const handleCreateOrders = async (e: React.MouseEvent<HTMLButtonElement>) => {
         const id_area = selectedIds.id_area.id
         const id_sucursal = branchOffices.id;
         const id_usuario_crea = user_id;
@@ -217,6 +216,11 @@ const ModalCreate = () => {
             APIs.CreateAny({ id: selectData?.LPASelected.id, id_usuario: user_id, for_pedido: 1 }, "getLPAArticulos")
                 .then(async (response: any) => {
                     setModalLoading(false)
+                    response.forEach((element:any) => {
+                        if (element.unidades.length > 0 ) {
+                            element.id_unidad = element.unidades[0].id_unidad
+                        }
+                    });
                     setConcepts(response)
 
                 }).catch((error: any) => {
@@ -248,7 +252,7 @@ const ModalCreate = () => {
                     <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
                 </a>
                 <p className='title__modals'>Crear nuevo pedido</p>
-                <form className='conatiner__create_orders' onSubmit={handleCreateOrders}>
+                <div className='conatiner__create_orders' >
                     <div className='row__one'>
                         <div className='container__checkbox_tickets'>
                             <div className='checkbox__tickets'>
@@ -429,9 +433,9 @@ const ModalCreate = () => {
                         </div>
                     </div>
                     <div className="d-flex justify-content-center mt-4">
-                        <button className='btn__general-purple' type='submit'>Crear Pedido</button>
+                        <button className='btn__general-purple' onClick={handleCreateOrders}>Crear Pedido</button>
                     </div>
-                </form>
+                </div>
             </div>
             {modalLoading == true ? (
                 <LoadingInfo />

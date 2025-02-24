@@ -432,7 +432,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
   const filterByRequest = async () => {
     const data = {
-      id_sucursal: selectedModalBranchOffice == null ? 0 : selectedModalBranchOffice.id,
+      id_sucursal: 0,
       id_usuario: user_id,
       desde: dateForReq[0],
       hasta: dateForReq[1],
