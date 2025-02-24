@@ -189,6 +189,15 @@ const ModalSalesOrder: React.FC = () => {
             } else {
                 Swal.fire('Notificacion', result.mensaje, 'success');
                 search()
+                setCustomLocal([])
+                setNormalConceptsView([])
+                setNormalConcepts([])
+                setDeleteNormalConcepts([])
+                setDeleteCustomConcepts([])
+                setCustomConcepts([])
+                setConceptView([])
+                setCustomConceptView([])
+                localStorage.removeItem("sale-order");  
             }
         } catch (error) {
             console.error("Error al crear la orden de compra:", error);
