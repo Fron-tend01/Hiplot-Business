@@ -537,6 +537,10 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
           setConceptView([...normalConcepts, data_pers])
           setCustomConceptView(normalConcepts)
           localStorage.setItem('sale-order', JSON.stringify([...normalConcepts, data_pers]));
+          setPrices(0)
+          setDescuento(0)
+          setPricesFranquicia(0)
+          setPricesFranquiciaAdicional(0)
         }
       });
 
