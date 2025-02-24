@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './styles/SalesOrder.css'
 import { storeSaleOrder } from '../../../../zustand/SalesOrder'
 import Modal from './sales_order/ModalSalesOrder'
@@ -94,24 +94,6 @@ const SalesOrder: React.FC = () => {
 
     const fetch = async () => {
 
-        // const dataSaleOrders = {
-        //     folio: fol,
-        //     id_sucursal: branchOffices?.id,
-        //     id_serie: selectedIds?.series?.id,
-        //     id_cliente: client,
-        //     desde:  haceUnaSemana.toISOString().split('T')[0],
-        //     hasta:  hoy.toISOString().split('T')[0],
-        //     id_usuario: user_id,
-        //     id_vendedor: selectedIds?.users?.id,
-        //     status: 0,
-        //     page:1
-        // }
-
-        // setDataGet(dataSaleOrders)
-
-        // const result = await getSaleOrders(dataSaleOrders)
-        // setSaleOrders(result)
-
         const data = {
             nombre: '',
             id_usuario: user_id,
@@ -134,18 +116,24 @@ const SalesOrder: React.FC = () => {
             options: 'nombre',
             dataSelect: resultSeries
         })
-        search()
+
     }
     const { modalSalesOrder }: any = useStore(storeSaleOrder)
+    const [page, setPage] = useState<number>(1)
+    
+    const effectRan = useRef(false);
 
     useEffect(() => {
-        fetch()
-    }, [])
-    useEffect(() => {
-        // if (modalSalesOrder == '') {
-        //     search()
-        // }
-    }, [modalSalesOrder])
+        if (!effectRan.current) {
+            search();
+            fetch();
+        }
+
+        return () => {
+            effectRan.current = true;
+        };
+    }, [page]);
+
     const search = async () => {
         setModalLoading(true)
         const dataSaleOrders = {
@@ -197,14 +185,11 @@ const SalesOrder: React.FC = () => {
     const handleClick = (value: any) => {
         setType(value)
     };
-    const [page, setPage] = useState<number>(1)
+
     const modalLoading = storeArticles((state: any) => state.modalLoading);
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
-    useEffect(() => {
-        search();
 
-    }, [page]);
     return (
         <div className='sales__order'>
             <div className='sales__order_container'>
@@ -221,7 +206,7 @@ const SalesOrder: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='row my-4'>
+                    <div className='my-4 row'>
                         <div className='col-3'>
                             <label className='label__general'>Clientes</label>
                             <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Folio/RFC/Razon social' />
@@ -237,7 +222,7 @@ const SalesOrder: React.FC = () => {
                             <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' />
                         </div>
                     </div>
-                    <div className='d-flex justify-content-around my-4'>
+                    <div className='my-4 d-flex justify-content-around'>
                         <div className='container__checkbox_orders'>
                             <div className='checkbox__orders'>
                                 <label className="checkbox__container_general">

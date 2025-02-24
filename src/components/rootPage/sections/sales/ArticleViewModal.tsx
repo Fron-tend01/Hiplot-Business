@@ -27,15 +27,15 @@ const ArticleViewModal = () => {
     const { getArticles }: any = articleRequests();
     const [articles, setArticles] = useState<any>([]);
 
-    const [families, setFamilies] = useState<any>([])
-    const [page, setPage] = useState<number>(1)
+    const [families, setFamilies] = useState<any>([]);
+    const [page, setPage] = useState<number>(1);
 
 
     const fetch = async () => {
         const resultFamilies: any = await getFamilies(user_id)
         resultFamilies.unshift({ nombre: 'Todas', id: 0 });
-        search()
-        setFamilies(resultFamilies)
+        search();
+        setFamilies(resultFamilies);
     };
 
     useEffect(() => {
@@ -45,6 +45,15 @@ const ArticleViewModal = () => {
         }
 
     }, [modalArticleView]);
+
+    useEffect(() => {
+        if (modalArticleView == 'article-view__modal') {
+            search();
+        }
+      
+
+    }, [page]);
+
 
     const [inputs, setInputs] = useState<any>({
         code: '',
@@ -149,11 +158,6 @@ const ArticleViewModal = () => {
     }
     const [userSearchTerm, setUserSearchTerm] = useState<string>('');
 
-    useEffect(() => {
-        search();
-        console.log('page',);
-
-    }, [page]);
 
     return (
         <div className={`overlay__article-view__modal ${modalArticleView == 'article-view__modal' ? 'active' : ''}`}>

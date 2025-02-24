@@ -1223,7 +1223,7 @@ const ModalSalesOrder: React.FC = () => {
                                                             <p>{article.name_unidad || article.unidad}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <p className=''>$ {article.precio_unitario.toFixed(2)} <br />
+                                                            <p className=''>$ {article.precio_unitario} <br />
                                                                 {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
                                                                     <small >PUF: ${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
                                                             </p>

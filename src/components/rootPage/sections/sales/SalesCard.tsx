@@ -73,6 +73,8 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
   const [billingComment, setBillingComment] = useState<any>('')
   const [opciones, setOpciones] = useState<any>(null);
 
+
+
   const fetch = async () => {
     const data = {
       id: IdArticle,
@@ -313,7 +315,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
           id_articulo: article.id,
           id_familia: article.id_familia,
           produccion_interna: false,
-          id_area_produccion: article.areas_produccion[0].id_area,
+          id_area_produccion: article.areas_produccion[0]?.id_area,
           enviar_a_produccion: false,
           personalized: false,
           check: false,
@@ -361,7 +363,8 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
     }
   };
 
-
+  console.log('data', data)
+  console.log('article', article)
   const getPrices = async () => {
     if (amount > 0) {
       let numbrs = article.plantilla_data.filter((x: any) => x.tipo == 'numero')
@@ -382,6 +385,8 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
   useEffect(() => {
     getPrices()
   }, [amount])
+
+
 
   const handleAmountChange = (e: any) => {
     setAmount(parseInt(e.target.value))
