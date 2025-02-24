@@ -106,7 +106,7 @@ const Articles: React.FC = () => {
       familia: 0,
       proveedor: 0,
       page: 1,
-      materia_prima:typeServive ,
+      materia_prima: typeServive,
       get_sucursales: true,
       get_proveedores: true,
       get_max_mins: true,
@@ -149,7 +149,7 @@ const Articles: React.FC = () => {
       setModalLoading(false)
     } catch (error) {
     } finally {
-       setModalLoading(false) 
+      setModalLoading(false)
     }
 
   };
@@ -161,70 +161,69 @@ const Articles: React.FC = () => {
 
 
   const handleTypeArticleChange = async (value: number) => {
-    const data = {
-      id: 0,
-      activos: typeActive,
-      nombre: '',
-      codigo: '',
-      familia: 0,
-      proveedor: 0,
-      materia_prima: value,
-      get_sucursales: false,
-      get_proveedores: false,
-      get_max_mins: false,
-      get_plantilla_data: false,
-      get_stock: false,
-      get_web: false,
-      get_unidades: false,
-      page: 1
-    };
     setTypeService(value)
-    setModalLoading(true)
+    // const data = {
+    //   id: 0,
+    //   activos: typeActive,
+    //   nombre: '',
+    //   codigo: '',
+    //   familia: 0,
+    //   proveedor: 0,
+    //   materia_prima: value,
+    //   get_sucursales: false,
+    //   get_proveedores: false,
+    //   get_max_mins: false,
+    //   get_plantilla_data: false,
+    //   get_stock: false,
+    //   get_web: false,
+    //   get_unidades: false,
+    //   page: 1
+    // };
+    // setModalLoading(true)
 
-    try {
-      await getArticlesInGlobal(data);
-      setModalLoading(false)
+    // try {
+    //   await getArticlesInGlobal(data);
+    //   setModalLoading(false)
 
-    } catch (error) {
-      console.log('Error')
-      setModalLoading(false)
+    // } catch (error) {
+    //   console.log('Error')
+    //   setModalLoading(false)
 
-    }
+    // }
 
   }
 
 
   const handleActivesArticleChange = async (value: number) => {
-    const data = {
-      id: 0,
-      activos: value,
-      nombre: '',
-      codigo: '',
-      familia: 0,
-      proveedor: 0,
-      materia_prima: typeServive,
-      get_sucursales: false,
-      get_proveedores: false,
-      get_max_mins: false,
-      get_plantilla_data: false,
-      get_stock: false,
-      get_web: false,
-      get_unidades: false,
-      page: 1
-
-    };
     setTypeActive(value)
-    setModalLoading(true)
+    // const data = {
+    //   id: 0,
+    //   activos: value,
+    //   nombre: '',
+    //   codigo: '',
+    //   familia: 0,
+    //   proveedor: 0,
+    //   materia_prima: typeServive,
+    //   get_sucursales: false,
+    //   get_proveedores: false,
+    //   get_max_mins: false,
+    //   get_plantilla_data: false,
+    //   get_stock: false,
+    //   get_web: false,
+    //   get_unidades: false,
+    //   page: 1
+    // };
+    // setModalLoading(true)
 
-    try {
-      await getArticlesInGlobal(data);
-      setModalLoading(false)
+    // try {
+    //   await getArticlesInGlobal(data);
+    //   setModalLoading(false)
 
-    } catch (error) {
-      console.log('Error')
-      setModalLoading(false)
+    // } catch (error) {
+    //   console.log('Error')
+    //   setModalLoading(false)
 
-    }
+    // }
 
   }
 
@@ -234,7 +233,7 @@ const Articles: React.FC = () => {
       activos: typeActive,
       nombre: descripcion == '' ? '' : descripcion,
       codigo: code == '' ? '' : code,
-      familia: 0,
+      familia: selectedFamilie,
       proveedor: 0,
       page: page,
       materia_prima: typeServive,
@@ -247,6 +246,7 @@ const Articles: React.FC = () => {
       get_unidades: false
     };
     setModalLoading(true)
+    console.log('MOSTRANDO DESDE EL SEARC');
 
     try {
       await getArticlesInGlobal(data);
@@ -263,7 +263,7 @@ const Articles: React.FC = () => {
   useEffect(() => {
     searchArticle();
   }, [page]);
- const modalLoading = storeArticles((state: any) => state.modalLoading);
+  const modalLoading = storeArticles((state: any) => state.modalLoading);
 
   return (
     <div className='articles'>
@@ -272,23 +272,27 @@ const Articles: React.FC = () => {
         <div className='row__one'>
           <div>
             <label className='label__general'>Código</label>
-            <input className='inputs__general' type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder='Ingresa el código' />
+            <input className='inputs__general' type="text" value={code} onChange={(e) => setCode(e.target.value)}  onKeyUp={(event) => event.key === 'Enter' && searchArticle()}  placeholder='Ingresa el código' />
           </div>
           <div>
             <label className='label__general'>Descripción</label>
-            <input className='inputs__general' type="text" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} placeholder='Ingresa la descripción' />
+            <input className='inputs__general' type="text" value={descripcion} onChange={(e) => setDescripcion(e.target.value)}  onKeyUp={(event) => event.key === 'Enter' && searchArticle()}placeholder='Ingresa la descripción' />
           </div>
           <div className='select__container'>
             <label className='label__general'>Familias</label>
             {/* <div className='warning__general' style={styleWarningSelectCompanies}><small >Este campo es obligatorio</small></div> */}
             <div className={`select-btn__general ${warningSelectCompany ? 'warning' : ''}`}>
               <div className={`select-btn ${selectFamilies ? 'active' : ''}`} onClick={openSelectFamilies}>
-                <p>{selectedFamilie ? families.find((s: { id: number }) => s.id === selectedFamilie)?.nombre : 'Selecciona'}</p>
+                <p>{selectedFamilie ? families.find((s: { id: number }) => s.id === selectedFamilie)?.nombre : 'Todos'}</p>
                 <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
               </div>
               <div className={`content ${selectFamilies ? 'active' : ''}`}>
                 <ul className={`options ${selectFamilies ? 'active' : ''}`} style={{ opacity: selectFamilies ? '1' : '0' }}>
+                  <li key={0} onClick={() => handleFamiliesChange({'id':0, 'nombre':'Todos'})}>
+                    Todos
+                  </li>
                   {families && families.map((familia: any) => (
+
                     <li key={familia.id} onClick={() => handleFamiliesChange(familia)}>
                       {familia.nombre}
                     </li>
@@ -392,17 +396,17 @@ const Articles: React.FC = () => {
         </div>
         <div className='d-flex justify-content-between mt-4'>
           <div>
-            <button className='btn__general-purple' onClick={()=>setPage(page-1)} disabled={page==1}>Anterior</button>
+            <button className='btn__general-purple' onClick={() => setPage(page - 1)} disabled={page == 1}>Anterior</button>
           </div>
           <div>
-            <button className='btn__general-purple' onClick={()=>setPage(page+1)} >Siguente</button>
+            <button className='btn__general-purple' onClick={() => setPage(page + 1)} >Siguente</button>
           </div>
         </div>
       </div>
       {modalLoading == true ? (
-                <LoadingInfo />
-            ) :
-                ''}
+        <LoadingInfo />
+      ) :
+        ''}
     </div>
   );
 };
