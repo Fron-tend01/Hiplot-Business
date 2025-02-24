@@ -96,7 +96,6 @@ const ModalRequisition: React.FC = () => {
 
 
 
-  console.log(updateToRequisition)
 
   useEffect(() => {
     if (updateToRequisition) {
@@ -138,7 +137,6 @@ const ModalRequisition: React.FC = () => {
   };
 
 
-  console.log(concepts);
 
 
 
@@ -221,9 +219,8 @@ const ModalRequisition: React.FC = () => {
     e.preventDefault();
     setStateLoading(true)
     // let art_tmp = articles.filter((x:any)=>x.id == selectedResult)
-    let deleteConceptsc = deleteConcepts.filter((item:any) => item != null);
-    console.log('deleteConcepts',deleteConcepts);
-    
+    let deleteConceptsc = deleteConcepts.filter((item: any) => item != null);
+
     const data = {
       id: updateToRequisition ? updateToRequisition.id : null,
       id_usuario_crea: user_id,
@@ -240,22 +237,25 @@ const ModalRequisition: React.FC = () => {
 
     if (updateToRequisition) {
       try {
+        setModalLoading(true)
         const result: any = await APIs.updateRequisition(data)
+        setModalLoading(false)
+
         if (result.error == true) {
           Swal.fire('advertencia', result.mensaje, 'warning');
         } {
           Swal.fire(result.mensaje, '', 'success');
-          const data = {
-            id_sucursal: 0,
-            id_usuario: user_id,
-            id_area: 0,
-            tipo: 0,
-            desde: dates[0],
-            hasta: dates[1],
-            status: 0
-          };
-          const resultRequisition = await getRequisition(data)
-          setRequisitions(resultRequisition.data)
+          // const data = {
+          //   id_sucursal: 0,
+          //   id_usuario: user_id,
+          //   id_area: 0,
+          //   tipo: 0,
+          //   desde: dates[0],
+          //   hasta: dates[1],
+          //   status: 0
+          // };
+          // const resultRequisition = await getRequisition(data)
+          // setRequisitions(resultRequisition.data)
           setModalStateCreate('')
         }
         setStateLoading(false)
@@ -265,22 +265,26 @@ const ModalRequisition: React.FC = () => {
       }
     } else {
       try {
+        setModalLoading(true)
+
         const result = await createRequisition(data)
+        setModalLoading(false)
+
         if (result.error == true) {
           Swal.fire('advertencia', result.mensaje, 'warning');
         } else {
           Swal.fire('Requisision creada exitosamente', '', 'success');
-          const data = {
-            id_sucursal: 0,
-            id_usuario: user_id,
-            id_area: 0,
-            tipo: 0,
-            desde: dates[0],
-            hasta: dates[1],
-            status: 0
-          };
-          const resultRequisition = await getRequisition(data)
-          setRequisitions(resultRequisition.data)
+          // const data = {
+          //   id_sucursal: 0,
+          //   id_usuario: user_id,
+          //   id_area: 0,
+          //   tipo: 0,
+          //   desde: dates[0],
+          //   hasta: dates[1],
+          //   status: 0
+          // };
+          // const resultRequisition = await getRequisition(data)
+          // setRequisitions(resultRequisition.data)
           setModalStateCreate('')
         }
         setStateLoading(false)
@@ -325,16 +329,21 @@ const ModalRequisition: React.FC = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          setModalLoading(true)
+
           await APIs.updateStatusRequisition(data).then((resp: any) => {
             if (!resp.error) {
               Swal.fire('Notificacion', resp.mensaje, 'success')
             }
           })
-          const resultRequisition = await getRequisition(dataGet)
-          setRequisitions(resultRequisition.data)
+          setModalLoading(false)
+
           setModalStateCreate('')
         } catch (error) {
           console.log(error)
+          setModalLoading(false)
+
+
         }
       }
     });
@@ -397,16 +406,16 @@ const ModalRequisition: React.FC = () => {
 
   const agregarTmp = async () => {
     let concept_tmp = {
-      codigo:'CODIGO_TMP',
-      descripcion:articuloTemporal,
-      unidades:[],
-      unidad:0,
-      id:0
+      codigo: 'CODIGO_TMP',
+      descripcion: articuloTemporal,
+      unidades: [],
+      unidad: 0,
+      id: 0
     }
     // const result:any = await APIs.getUnits()
     // concept_tmp.unidades= result
     // concept_tmp.unidad=result[0].id
-    setConcepts([...concepts,concept_tmp])
+    setConcepts([...concepts, concept_tmp])
     // Swal.fire('Notificacion', 'Función aun en desarrollo, lamentamos los inconvenientes', 'warning')
   }
   return (
@@ -568,7 +577,7 @@ const ModalRequisition: React.FC = () => {
 
 
             <div className='row__three '>
-              <div className='row text-center  mt-3 '  style={{background: '#f2f2f2'}}>
+              <div className='row text-center  mt-3 ' style={{ background: '#f2f2f2' }}>
                 <div className='col-4 m-3'>
                   <label className='label__general'>Articulo Temporal</label>
                   <input className='inputs__general' type="text" value={articuloTemporal} onChange={(e) => setArticuloTemporal(e.target.value)} placeholder='Ingresa descripcion de tu articulo tmp' />

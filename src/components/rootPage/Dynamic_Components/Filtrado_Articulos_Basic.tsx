@@ -152,6 +152,9 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
     const modalLoading = storeArticles((state: any) => state.modalLoading);
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
+
+    
+
     const agregar_articulos = (all: boolean) => {
         if (!all) {
 

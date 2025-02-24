@@ -19,6 +19,7 @@ const ExistenciaPorAlmacen: React.FC = () => {
     const [dataStore, setDataStore] = useState<any>([])
     const [store, setStore] = useState<any>({})
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
+    const setSelects: any = useSelectStore((state) => state.setSelectedId);
     const [data, setData] = useState<any>([])
     const [familias, setFamilias] = useState<any>({})
     const [familiaAdded, setFamiliaAdded] = useState<any>([])
@@ -33,10 +34,12 @@ const ExistenciaPorAlmacen: React.FC = () => {
         id_usuario: user_id
     })
     const fetch = async () => {
-        const resultFamilies: any = await getFamilies(user_id)
-        let response = await APIs.getStore(user_id)
-        const resprov = await getSuppliers(searcher)
-
+        let resultFamilies: any = await getFamilies(user_id)
+        let response: any = await APIs.getStore(user_id)
+        let resprov = await getSuppliers(searcher)
+        resultFamilies.unshift({ 'id': 0, 'nombre': 'TODOS' })
+        response.unshift({ 'id': 0, 'nombre': 'TODOS' })
+        resprov.unshift({ 'id': 0, 'razon_social': 'TODOS' })
         setStore({
             selectName: 'Almacen',
             options: 'nombre',
@@ -52,16 +55,34 @@ const ExistenciaPorAlmacen: React.FC = () => {
             options: 'razon_social',
             dataSelect: resprov
         })
+
+        setSelects('store', resultFamilies[0])
+        setSelects('familia', response[0])
+        setSelects('proveedor', resprov[0])
     }
 
     const addStore = () => {
-        setDataStore([...dataStore, selectedIds.store])
+        if (selectedIds.store.id == 0) {
+            setDataStore(store.dataSelect)
+
+        } else {
+            setDataStore([...dataStore, selectedIds.store])
+        }
     }
     const addFamilia = () => {
-        setFamiliaAdded([...familiaAdded, selectedIds.familia])
+        if (selectedIds.familia.id == 0) {
+            setFamiliaAdded(familias.dataSelect)
+        } else {
+            setFamiliaAdded([...familiaAdded, selectedIds.familia])
+        }
     }
     const addProveedor = () => {
-        setProvAdded([...provAdded, selectedIds.proveedor])
+        if (selectedIds.proveedor.id == 0) {
+            setProvAdded(proveedores.dataSelect)
+
+        } else {
+            setProvAdded([...provAdded, selectedIds.proveedor])
+        }
     }
     useEffect(() => {
         fetch()
@@ -77,7 +98,7 @@ const ExistenciaPorAlmacen: React.FC = () => {
             setModalLoading(false)
 
             setData(resp)
-        }).catch(()=> {
+        }).catch(() => {
             setModalLoading(false)
         })
     }
@@ -107,9 +128,14 @@ const ExistenciaPorAlmacen: React.FC = () => {
         }));
     };
     const descargarCSV = (almacen: any, articulos: any) => {
-        const encabezados = ["ID", "Código", "Descripción", "Familia", "Disponible"];
+        const encabezados = ["CODIGO", "DESCRIPCION", "FAMILIA", "PROVEEDOR", "UNIDAD", "UP", "BP", "MIN", "MAX", "TOTAL", "APART.", "DV"];
+        console.log(articulos);
         const filas = articulos.map((articulo: any) =>
-            [articulo.id, articulo.codigo, articulo.descripcion, articulo.familia, articulo.disponible].join(",")
+            [articulo.codigo, articulo.descripcion, articulo.familia, articulo.proveedor, articulo?.unidad_almacen?.nombre || 'N/A',
+            articulo.ultimas_piezas, articulo.bajo_pedido, articulo.max_min.length > 0 ? articulo.max_min[0].minimo : "0", articulo.max_min.length > 0 ? articulo.max_min[0].maximo : "0",
+            articulo.restantes, articulo.apartados, articulo.disponible
+
+            ].join(",")
         );
 
         const csvContenido = [encabezados.join(","), ...filas].join("\n");
@@ -356,7 +382,7 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                                     <td>{articulo.codigo}</td>
                                                     <td>{articulo.descripcion}</td>
                                                     <td>{articulo.familia}</td>
-                                                    <td>{articulo.familia}</td>
+                                                    <td>{articulo.proveedor}</td>
                                                     <td>{articulo.unidad_almacen?.nombre}</td>
                                                     <td>{articulo.ultimas_piezas ? "Sí" : "No"}</td>
                                                     <td>{articulo.bajo_pedido ? "Sí" : "No"}</td>

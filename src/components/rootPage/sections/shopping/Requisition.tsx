@@ -21,6 +21,7 @@ import Pagination from '../../Dynamic_Components/Pagination';
 import { storePagination } from '../../../../zustand/Pagination';
 import APIs from '../../../../services/services/APIs';
 import { storeOrdes } from '../../../../zustand/Ordes';
+import { storeArticles } from '../../../../zustand/Articles';
 
 const Requisition: React.FC = () => {
 
@@ -105,21 +106,21 @@ const Requisition: React.FC = () => {
     setSelectedId('empresa', 0)
 
 
-    const data = {
-      id_sucursal: 0,
-      id_usuario: user_id,
-      id_area: 0,
-      tipo: 0,
-      desde: haceUnaSemana.toISOString().split('T')[0],
-      hasta: hoy.toISOString().split('T')[0],
-      status: 0,
-      page: 1
-    };
-    setDataGet(data)
-    const resultRequisition = await getRequisition(data)
-    setRequisitions(resultRequisition.data)
-    setTotalPages(resultRequisition.total_pages)
-
+    // const data = {
+    //   id_sucursal: 0,
+    //   id_usuario: user_id,
+    //   id_area: 0,
+    //   tipo: 0,
+    //   desde: haceUnaSemana.toISOString().split('T')[0],
+    //   hasta: hoy.toISOString().split('T')[0],
+    //   status: 0,
+    //   page: 1
+    // };
+    // setDataGet(data)
+    // const resultRequisition = await getRequisition(data)
+    // setRequisitions(resultRequisition.data)
+    // setTotalPages(resultRequisition.total_pages)
+    await searchByFolio()
     const resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 0 })
     resultSeries.unshift({ nombre: 'Todos', id: 0 });
     setSeries(resultSeries)
@@ -269,6 +270,7 @@ const Requisition: React.FC = () => {
     setSelectSeries(!selectSeries)
 
   }
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
   const searchByFolio = async () => {
     const data = {
@@ -284,7 +286,10 @@ const Requisition: React.FC = () => {
 
     };
     setPage(1)
+    setModalLoading(true)
     const resultRequisition = await getRequisition(data)
+    setModalLoading(false)
+
     setRequisitions(resultRequisition.data)
     setTotalPages(resultRequisition.total_pages)
 
@@ -303,9 +308,15 @@ const Requisition: React.FC = () => {
     opacity: warningName === true ? '1' : '',
     height: warningName === true ? '23px' : ''
   }
+  const { modalStateCreate }: any = useStore(storeRequisitions);
 
 
 
+  useEffect(() => {
+    if (modalStateCreate == '') {
+      searchByFolio()
+    }
+  }, [modalStateCreate]);
 
   return (
     <div className='requisition'>
@@ -486,9 +497,10 @@ const Requisition: React.FC = () => {
                       <div className='td'>
                         <p>{requisition.status == 0 ? <div><p className='active-identifier'>Activo</p></div> : ''}</p>
                         <p>{requisition.status == 1 ? <div><p className='cancel-identifier'>Cancelada</p></div> : ''}</p>
+                        <p>{requisition.status == 2 ? <div><p className='active-identifier'>Terminada</p></div> : ''}</p>
                       </div>
                       <div className='td'>
-                        <p className='date-identifier'>{requisition.fecha_creacion.split('T')[0]}</p>
+                        <p className='date-identifier'>{requisition.fecha_creacion}</p>
                       </div>
                       <div className='td'>
                         <p className='user-identifier'>{requisition.usuario_crea}</p>

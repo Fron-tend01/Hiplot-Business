@@ -10,6 +10,8 @@ import { storeArticleView } from '../../../zustand/ArticleView';
 import { storeDv } from '../../../zustand/Dynamic_variables';
 import APIs from '../../../services/services/APIs';
 import useUserStore from '../../../zustand/General';
+import LoadingInfo from '../../loading/LoadingInfo';
+import { storeArticles } from '../../../zustand/Articles';
 
 const Header: React.FC = () => {
 
@@ -17,8 +19,8 @@ const Header: React.FC = () => {
   const [showUsers] = useState<boolean>(false);
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
-  console.log('USER STATE',userState);
-  
+  console.log('USER STATE', userState);
+
   const setModalArticleView = storeArticleView((state) => state.setModalArticleView);
 
 
@@ -126,7 +128,13 @@ const Header: React.FC = () => {
   //     }
   //   };
   // }, [wsUrl]);
-
+  const modalLoading = storeArticles((state: any) => state.modalLoading);
+  
+  useEffect(() => {
+    
+    console.log('modalLoading en header', modalLoading);
+  }, [modalLoading]);
+  
   return (
     <div className='hero'>
       <div className='container__hero'>
@@ -209,6 +217,10 @@ const Header: React.FC = () => {
         </div>
       </div>
       <ArticleViewModal />
+      {modalLoading == true ? (
+        <LoadingInfo />
+      ) :
+        ''}
     </div>
   )
 }
