@@ -199,7 +199,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
   const handleInputFreightCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim(); // Eliminar espacios en blanco alrededor
-    setFreightCost(value === '' ? '' : parseInt(value, 10));
+    setFreightCost(value === '' ? '' : parseFloat(value));
   };
 
 
@@ -335,14 +335,14 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   const handleDiscountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value.trim();
     const newArticleStates = [...conceptos];
-    newArticleStates[index].descuento = value === '' ? null : parseInt(value, 10);
+    newArticleStates[index].descuento = value === '' ? null : parseFloat(value);
     setConceptos(newArticleStates);
   };
 
   const handlePrecioUnitarioChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value.trim();
     const newArticleStates = [...conceptos];
-    newArticleStates[index].precio_unitario = value === '' ? null : parseInt(value, 10);
+    newArticleStates[index].precio_unitario = value === '' ? null : parseFloat(value);
     setConceptos(newArticleStates);
   };
 

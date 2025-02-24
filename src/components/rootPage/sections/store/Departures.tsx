@@ -15,6 +15,7 @@ import { StoreRequests } from '../../../../fuctions/Store'
 import { storeWarehouseExit } from "../../../../zustand/WarehouseExit";
 import { useStore } from "zustand";
 import ModalUpdate from "./Departures/ModalUpdate";
+import { storeArticles } from "../../../../zustand/Articles";
 
 const Departures = () => {
     const userState = useUserStore(state => state.user);
@@ -49,15 +50,7 @@ const Departures = () => {
     const fecht = async () => {
 
 
-        const data = {
-            id_almacen: null,
-            id_usuario: user_id,
-            id_sucursal: branchOffices?.id,
-            desde: dates[0],
-            hasta: dates[1],
-            id_serie: 0,
-            folio: invoice,
-        }
+
 
 
         const resultSeries = await getSeriesXUser({ tipo_ducumento: 4, id: user_id })
@@ -72,7 +65,21 @@ const Departures = () => {
             options: 'nombre',
             dataSelect: store
         })
+        const data = {
+            id_almacen: null,
+            id_usuario: user_id,
+            id_sucursal: branchOffices?.id,
+            desde: dates[0],
+            hasta: dates[1],
+            id_serie: 0,
+            folio: invoice,
+            light: true
+        }
+        setModalLoading(true)
+
         const result = await getWarehouseExit(data)
+        setModalLoading(false)
+
         setWarehouseExit(result)
     }
 
@@ -122,9 +129,18 @@ const Departures = () => {
 
 
     const [conceptsUpdate, setConceptsUpdate] = useState<any>([])
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
-    const modalUpdate = (item: any) => {
-        setConceptsUpdate(item)
+    const modalUpdate = async (sal: any) => {
+
+        const data = {
+            id: sal.id
+        }
+        setModalLoading(true)
+        const result = await getWarehouseExit(data)
+        setModalLoading(false)
+
+        setConceptsUpdate(result[0])
         setModal('modal-update__concepts')
     };
 

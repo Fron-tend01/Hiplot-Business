@@ -17,6 +17,7 @@ import { storeModals } from "../../../../zustand/Modals";
 import APIs from "../../../../services/services/APIs";
 import Select from "../../Dynamic_Components/Select";
 import { useSelectStore } from "../../../../zustand/Select";
+import { storeArticles } from "../../../../zustand/Articles";
 
 const Departures: React.FC = () => {
 
@@ -55,6 +56,7 @@ const Departures: React.FC = () => {
     const hasta = hoy.toISOString().split('T')[0];
 
 
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
 
 
@@ -81,7 +83,7 @@ const Departures: React.FC = () => {
             dataSelect: resultSeries
         })
         getSuppliers('', true, user_id)
-        await getOrdedrs({ id_usuario, id_sucursal: 0, desde, hasta, status, })
+        await searchOrders()
 
     }
 
@@ -108,12 +110,18 @@ const Departures: React.FC = () => {
     };
 
     const [orderUpdate, setOderUpdate] = useState<any>([])
-    const modalUpdate = (order: any) => {
+    const modalUpdate = async (order: any) => {
 
         setModal('modal-orders-update')
+        const data = {
+            id:order.id
+        }
+        setModalLoading(true)
+        let orders:any = await APIs.getOrdedrs(data);
+        setModalLoading(false)
 
-        setOderUpdate(order)
-        setOrderConceptsUpdate(order.conceptos)
+        setOderUpdate(orders[0])
+        setOrderConceptsUpdate(orders[0].conceptos)
     }
 
     const searchOrders = async () => {
@@ -125,7 +133,8 @@ const Departures: React.FC = () => {
             status: status,
             id_serie: selectedIds?.series?.id,
             folio: invoice ? invoice : 0,
-            page: page
+            page: page,
+            light:true
         }
         await getOrdedrs(data)
     }
