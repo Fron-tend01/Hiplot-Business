@@ -1,10 +1,11 @@
 .orders {
     height: 90vh;
 	padding: 20px;
+    overflow: scroll;
+
 }
 
 .orders__container {
-    
 }
 
 .orders__container > .row__one {

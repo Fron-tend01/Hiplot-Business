@@ -1,6 +1,7 @@
 .tickets {
     height: 90vh;
 	padding: 20px;
+    overflow:scroll
 }
 
 .tickets__container {
@@ -117,7 +118,7 @@
     display: grid;
     height: 100%;
     grid-template-rows: repeat(2, auto) 1fr;
-    overflow: hidden;
+    overflow: scroll;
 }
 
 .table__tickets .empty {

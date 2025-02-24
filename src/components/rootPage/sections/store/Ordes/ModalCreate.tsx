@@ -103,12 +103,9 @@ const ModalCreate = () => {
 
         // Verificar si el almacen existe y tiene stock disponible
 
-        if (filter) {
+        if (filter.length > 0) {
             const equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == concepts[index].unidad || x.id_unidad == concepts[index].unidades[0].id_unidad)
-            console.log('value', value);
-            // console.log('canti', equivalencias[0].cantidad);  
-            debugger
-
+           
             if (value > equivalencias[0].cantidad) {
                 const newArticleStates = [...concepts]; 
                 newArticleStates[index].cantidad = 0;
@@ -125,7 +122,7 @@ const ModalCreate = () => {
             }
             return
         } else {
-            console.log('El almacen no existe')
+            Swal.fire('Notificacion', 'Este articulo no tiene almacen predeterminado para la sucursal que tienes seleccionado, solicitar su configuración', 'info');
         }
     };
 

@@ -123,9 +123,9 @@ const Departures: React.FC = () => {
             desde: dates[0],
             hasta: dates[1],
             status: status,
-            id_serie: selectedIds.series.id ? selectedIds.series.id : 0,
+            id_serie: selectedIds?.series?.id,
             folio: invoice ? invoice : 0,
-            page: 0
+            page: page
         }
         await getOrdedrs(data)
     }
@@ -137,11 +137,27 @@ const Departures: React.FC = () => {
     console.log(selectedIds)
 
 
+    const [page, setPage] = useState<number>(1);
 
-
+    useEffect(() => {
+        searchOrders()
+    }, [page])
 
     return (
         <div className="orders">
+              <div className='breadcrumbs'>
+                <div className='breadcrumbs__container'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-receipt"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 17.5v-11" /></svg>
+                    <small className='title'>Almacén</small>
+                </div>
+                <div className='chevron__breadcrumbs'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6" /></svg>
+                </div>
+                <div className='breadcrumbs__container'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /></svg>
+                    <small className='title'>Pedidos</small>
+                </div>
+            </div>
             <div className="orders__container">
                 <div className="row__one">
                     <div className="row">
@@ -265,6 +281,15 @@ const Departures: React.FC = () => {
                     </div>
                 </div>
             </div>
+            <div className='mt-4 d-flex justify-content-between'>
+                    <div>
+                        <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
+                            disabled={page == 1}>Anterior</button>
+                    </div>
+                    <div>
+                        <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
+                    </div>
+                </div>
         </div>
     )
 }

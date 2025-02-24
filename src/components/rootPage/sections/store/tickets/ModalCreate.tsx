@@ -81,7 +81,11 @@ const ModalCreate = () => {
 
     const handleSelectUnits = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
         const valorSeleccionado = parseInt(event.target.value, 10); // Base 10 para números decimales
-        conceptos[index].unidad = valorSeleccionado;
+  
+
+        const nuevaInstanciac = [...conceptos];  // Copiar el arreglo de conceptos
+        nuevaInstanciac[index].unidad = valorSeleccionado;  // Actualizar el valor deseado
+        setConceptos(nuevaInstanciac);
         // Crear una copia del arreglo de selecciones temporales
         const nuevasSelecciones = [...selectedUnit];
         // Actualizar el valor seleccionado en la posición del índice correspondiente
@@ -94,8 +98,12 @@ const ModalCreate = () => {
 
     const handleProveedorChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
         const temp_proveedor = parseInt(event.target.value); // Convertir a número entero
-        console.log(temp_proveedor)
-        conceptos[index].id_proveedor = temp_proveedor;
+     
+
+        const nuevaInstanciac = [...conceptos];  // Copiar el arreglo de conceptos
+        nuevaInstanciac[index].id_proveedor = temp_proveedor;  // Actualizar el valor deseado
+        setConceptos(nuevaInstanciac);
+
         const nuevaInstancia = [...selectedSupplier];
         nuevaInstancia[index] = temp_proveedor;
         setSelectedSupplier(nuevaInstancia);
@@ -103,7 +111,10 @@ const ModalCreate = () => {
 
     const handleStoreChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
         const temp_store = parseInt(event.target.value, 10);
-        conceptos[index].id_almacen = temp_store;
+        const nuevaInstanciac = [...conceptos];  // Copiar el arreglo de conceptos
+        nuevaInstanciac[index].id_almacen = temp_store;  // Actualizar el valor deseado
+        setConceptos(nuevaInstanciac);
+
         const nuevaInstancia = [...selectedStore];
         nuevaInstancia[index] = temp_store;
         setSelectedStore(nuevaInstancia);
@@ -116,6 +127,7 @@ const ModalCreate = () => {
         const id_sucursal = branchOffices.id;
         const id_usuario_crea = user_id;
         const comentarios = comments;
+        console.log('conceptos casi entrando', conceptos);
 
         try {
             if (comments === '') {
@@ -123,7 +135,8 @@ const ModalCreate = () => {
             } else {
                 setWarningComments(false)
                 if (conceptos.length > 0) {
-                
+                    console.log(conceptos);
+
                     await createTickets(id_sucursal, id_usuario_crea, comentarios, conceptos)
                     const data = {
                         id_usuario: user_id,
@@ -135,6 +148,7 @@ const ModalCreate = () => {
                         status: 0,
                         folio: 0
                     }
+                    Swal.fire('Notificacion', 'Entrada creada correctamente', 'success')
                     await getTickets(data)
                     setModalTickets('')
                 } else {
@@ -143,11 +157,11 @@ const ModalCreate = () => {
                         text: 'Debes agregar al menos un concepto para crear la entrada.',
                         icon: 'warning',
                         confirmButtonText: 'Entendido'
-                });
-    
+                    });
+
                 }
             }
-          
+
 
 
         } catch (error) {
@@ -163,6 +177,12 @@ const ModalCreate = () => {
     const deleteTicket = (_: any, indexTicket: any) => {
         const filter = conceptos.filter((_: any, index: any) => index !== indexTicket)
         setConceptos(filter)
+        const filter1 = selectedUnit.filter((_: any, index: any) => index !== indexTicket)
+        setSelectedUnit(filter1)
+        const filter2 = selectedStore.filter((_: any, index: any) => index !== indexTicket)
+        setSelectedStore(filter2)
+        const filter3 = selectedSupplier.filter((_: any, index: any) => index !== indexTicket)
+        setSelectedSupplier(filter3)
     }
 
     const [subTotal, setSubTotal] = useState<any>(0)
@@ -189,7 +209,10 @@ const ModalCreate = () => {
                     costo_flete += concept.costo_flete;
 
                 }
-                concept.id_almacen = store[0].id
+                if (concept.id_almacen == undefined || concept.id_almacen == null || concept.id_almacen == 0){
+                    concept.id_almacen = store[0].id
+
+                }
 
             });
         }
@@ -342,7 +365,7 @@ const ModalCreate = () => {
                                                             </select>
                                                         </div>
                                                         <div className='td'>
-                                                            <select className='traditional__selector' onChange={(event) => handleStoreChange(event, index)} value={selectedStore[index] || ''} >
+                                                            <select className='traditional__selector' onChange={(event) => handleStoreChange(event, index)} value={concept.id_almacen} >
                                                                 {store?.map((item: any) => (
                                                                     <option key={item.id} value={item.id}>
                                                                         {item.nombre}

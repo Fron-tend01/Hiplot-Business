@@ -35,7 +35,7 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
       id_sucursal: 0,
       desde: dates[0],
       hasta: dates[1],
-      status: 0
+      status: [0]
 
     }
     const status = modeOrder === 0 ? 1 : 0;

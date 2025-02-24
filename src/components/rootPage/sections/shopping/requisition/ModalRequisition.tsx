@@ -221,7 +221,9 @@ const ModalRequisition: React.FC = () => {
     e.preventDefault();
     setStateLoading(true)
     // let art_tmp = articles.filter((x:any)=>x.id == selectedResult)
-
+    let deleteConceptsc = deleteConcepts.filter((item:any) => item != null);
+    console.log('deleteConcepts',deleteConcepts);
+    
     const data = {
       id: updateToRequisition ? updateToRequisition.id : null,
       id_usuario_crea: user_id,
@@ -231,7 +233,7 @@ const ModalRequisition: React.FC = () => {
       titulo: title,
       comentarios: comments,
       conceptos: concepts,
-      conceptos_elim: deleteConcepts
+      conceptos_elim: deleteConceptsc
     };
 
 
@@ -398,7 +400,8 @@ const ModalRequisition: React.FC = () => {
       codigo:'CODIGO_TMP',
       descripcion:articuloTemporal,
       unidades:[],
-      unidad:0
+      unidad:0,
+      id:0
     }
     // const result:any = await APIs.getUnits()
     // concept_tmp.unidades= result
