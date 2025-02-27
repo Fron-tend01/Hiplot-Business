@@ -6,7 +6,7 @@ import Empresas_Sucursales from '../../../Dynamic_Components/Empresas_Sucursales
 import Select from '../../../Dynamic_Components/Select'
 import Flatpickr from "react-flatpickr";
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
-
+import { toast } from 'sonner'
 
 import ArticleViewModal from '../ArticleViewModal'
 import { storeArticleView } from '../../../../../zustand/ArticleView'
@@ -86,15 +86,24 @@ const ModalSalesOrder: React.FC = () => {
     haceUnaSemana.setDate(hoy.getDate() - 7);
 
 
+    const openModalArticle = () => {
+        if (branchOffices.id) {
+            setModalArticleView('article-view__modal')
+        } else {
+            toast.warning('Por favor selecione una sucursal para continuar')
+        }
 
+    }
 
     ////////////////////////
     /// Fechas
     ////////////////////////
 
+
+
     // Inicializa el estado con la fecha y hora formateadas
     const [dates, setDates] = useState(["", ""]); // Asegúrate de que el array tenga siempre dos elementos.
-
+    console.log('dates', dates)
     const handleDateChange = (fechasSeleccionadas: Date[], index: number) => {
         const updatedDates = [...dates]; // Clonar el estado actual
 
@@ -110,12 +119,18 @@ const ModalSalesOrder: React.FC = () => {
         setmodify_te(1)
     };
 
+    // useEffect(() => {
+    //     setDates([
+    //         haceUnaSemana.toISOString().split('T')[0],
+    //         hoy.toISOString().split('T')[0]
+    //     ]);
+    // }, [])
+
     useEffect(() => {
-        setDates([
-            haceUnaSemana.toISOString().split('T')[0],
-            hoy.toISOString().split('T')[0]
-        ]);
-    }, [])
+
+    }, [dates])
+
+    console.log(dates)
 
     useEffect(() => {
         if (modalSalesOrder == 'sale-order__modal-update') {
@@ -197,7 +212,7 @@ const ModalSalesOrder: React.FC = () => {
                 setCustomConcepts([])
                 setConceptView([])
                 setCustomConceptView([])
-                localStorage.removeItem("sale-order");  
+                localStorage.removeItem("sale-order");
             }
         } catch (error) {
             console.error("Error al crear la orden de compra:", error);
@@ -226,7 +241,7 @@ const ModalSalesOrder: React.FC = () => {
 
 
     const deleteArticle = async (item: any) => {
-        console.log(item)
+
         const filter = normalConcepts.filter((x: any) => x.id_identifier !== item.id_identifier)
         const filterConceptView = conceptView.filter((x: any) => x.id_identifier !== item.id_identifier)
         setNormalConcepts(filter);
@@ -265,10 +280,10 @@ const ModalSalesOrder: React.FC = () => {
 
     }
 
-    
+
 
     const [conceptsProductios, setConceptsProductions] = useState<any>()
-    console.log('conceptsProductios', conceptsProductios)
+
     const [modalProduction, setModalProduction] = useState<string>('')
     const [dataProduction, setDataProduction] = useState<any>()
 
@@ -392,7 +407,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const handleStatusChange = (status: number, index: number) => {
         const newStatus = !status;
-        console.log(index);
+
         const updatedConcepts = [...normalConcepts];
         const updatedConceptsView = [...conceptView];
         updatedConcepts[index].enviar_a_produccion = newStatus;
@@ -510,7 +525,7 @@ const ModalSalesOrder: React.FC = () => {
             setCompanies({ id: saleOrdersToUpdate.id_empresa })
             setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
             setSelectedIds('clients', saleOrdersToUpdate.id_cliente)
-            console.log('saleOrdersToUpdate', saleOrdersToUpdate);
+
 
             const data = {
                 id_sucursal: saleOrdersToUpdate.id_sucursal,
@@ -527,6 +542,10 @@ const ModalSalesOrder: React.FC = () => {
             // })
         }
     }, [modalSalesOrder]);
+
+    const hora = hoy.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+    console.log('Hora:', hora); // "10:51"
 
 
     const calcular_tiempos_entrega = async () => {
@@ -556,13 +575,20 @@ const ModalSalesOrder: React.FC = () => {
         let data = {
             id_sucursal: saleOrdersToUpdate.id_sucursal || branchOffices.id,
             articulos: conceptos_a_enviar
-
         }
+
         await APIs.CreateAny(data, "calcular_tiempo_entrega")
             .then(async (response: any) => {
-                setDataProduction(response)
-                setDates([response.fecha_produccion + ' ' + response.hora_produccion, response.fecha_cliente + ' ' + response.hora_cliente])
-                setmodify_te(0)
+                console.log('response', response)
+                if (response.hora_cliente && response.hora_produccion) {
+                    setDataProduction(response)
+                    setDates([`${response.fecha_produccion} ${response.hora_produccion}`, `${response.fecha_cliente} ${response.hora_cliente}`])
+                    setmodify_te(0)
+                } else {
+                    setDates([`${response.fecha_produccion} ${hora}`, `${response.fecha_cliente} ${hora}`])
+                }
+            }).catch(() => {
+
             })
     }
     const setModalSub = storeModals((state) => state.setModalSub);
@@ -799,6 +825,7 @@ const ModalSalesOrder: React.FC = () => {
                     </a>
                     <p className='title__modals'>Orden de venta</p>
                 </div>
+
                 {modalSalesOrder == 'sale-order__modal-update' ?
                     <div className="card">
                         <div className={`overlay__sale-order_production__modal_articles ${modalProduction == 'sale-order-production__modal' ? 'active' : ''}`}>
@@ -1060,16 +1087,19 @@ const ModalSalesOrder: React.FC = () => {
                                     <p className="label__general">Fecha de entrega a producción</p>
                                     <div className="container_dates__requisition">
                                         <Flatpickr
+                                            value={dates[0]}
                                             className="date"
                                             options={{ locale: Spanish, enableTime: true, dateFormat: "Y-m-d H:i", }}
                                             onChange={(fecha) => handleDateChange(fecha, 0)} // Índice 0
                                             placeholder="Selecciona la fecha de inicio"
                                         />
                                     </div>
-                                </div>                            <div className="col-6 sale-order__input_container d-flex align-items-center">
+                                </div>
+                                <div className="col-6 sale-order__input_container d-flex align-items-center">
                                     <p className="label__general">Fecha de entrega cliente</p>
                                     <div className="container_dates__requisition">
                                         <Flatpickr
+                                            value={dates[1]}
                                             className="date"
                                             options={{ enableTime: true, dateFormat: "Y-m-d H:i" }}
                                             onChange={(fecha) => handleDateChange(fecha, 1)} // Índice 1
@@ -1093,7 +1123,7 @@ const ModalSalesOrder: React.FC = () => {
                                             <button type='button' className='btn__general-purple' onClick={modalPersonalized}>Personalizados</button>
                                         </div>
                                         <div className='btn__search__articles'>
-                                            <svg xmlns="http://www.w3.org/2000/svg" onClick={() => setModalArticleView('article-view__modal')} width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" onClick={() => openModalArticle()} width="30" height="30" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
                                         </div>
                                     </div>
                                 </div>

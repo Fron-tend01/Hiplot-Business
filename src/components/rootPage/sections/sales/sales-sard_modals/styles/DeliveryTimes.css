@@ -270,6 +270,7 @@
     justify-content: center;
     display: flex;
     visibility: hidden;
+    z-index: 1;
 }
 
 .overlay__delivery-times_modal-sale-card.active {

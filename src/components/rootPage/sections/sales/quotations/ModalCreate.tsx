@@ -639,12 +639,12 @@ const ModalCreate: React.FC = () => {
                     :
                     ''
                   }
-                  {/* <div className='col-4  md-col-6 sm-col-12'>
+                  {/* <div className='col-4 md-col-6 sm-col-12'>
                     <Select dataSelects={dataSelects} instanceId="select1" nameSelect={'Vendedor'} />:''
                   </div> */}
                 </div>
               </div>
-              <div className='row col-12 my-2 w-full'>
+              <div className='w-full my-2 row col-12'>
 
                 <div className='col-12'>
                   <label className='label__general'>Comentarios</label>
@@ -656,7 +656,7 @@ const ModalCreate: React.FC = () => {
             </div>
 
 
-            <div className='row__three my-2 w-full'>
+            <div className='w-full my-2 row__three'>
               {/* <div className='col-12'>
               <p className='title'>Datos del Cliente</p>
             </div> */}
@@ -801,7 +801,7 @@ const ModalCreate: React.FC = () => {
                               <p>{article.name_unidad || article.unidad}</p>
                             </div>
                             <div className='td'>
-                              <p className=''>$ {article.precio_unitario.toFixed(2)} <br />
+                              <p className=''>$ {article.precio_unitario?.toFixed(2)}<br />
                                 {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
                                   <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
                               </p>
@@ -895,7 +895,7 @@ const ModalCreate: React.FC = () => {
               </div>
             </div>
 
-            <div className='btns mt-1'>
+            <div className='mt-1 btns'>
               <div className='subtotal'>
                 <div>
                   <p className='name'>Subtotal Franquicia</p>
@@ -917,7 +917,7 @@ const ModalCreate: React.FC = () => {
               </div>
             </div>
             {modal === 'create-modal__qoutation' ?
-              <div className='d-flex justify-content-center mt-3'>
+              <div className='mt-3 d-flex justify-content-center'>
                 <button className='btn__general-purple' onClick={createQuotation}>Crear cotizacion</button>
               </div>
               :

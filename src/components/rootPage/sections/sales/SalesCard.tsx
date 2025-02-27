@@ -146,10 +146,24 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       setSelectedUserGroup(resultUsers[0].id);
     }
   }
+
+  const [prices, setPrices] = useState<any>(0)
+  const [descuento, setDescuento] = useState<number>(0)
+  const [pricesFranquicia, setPricesFranquicia] = useState<any>(0)
+  const [pricesFranquiciaAdicional, setPricesFranquiciaAdicional] = useState<any>(0)
+
+
   useEffect(() => {
     if (modalSalesCard === 'sale-card') {
       fetch();
       fetchUser()
+      setPrices(0)
+      setDescuento(0)
+      setPricesFranquicia(0)
+      setPricesFranquiciaAdicional(0)
+      setAmount(0)
+      setBillingComment('')
+      setproductionComments('')
     }
 
 
@@ -200,7 +214,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
   const handleTemplatesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     let value: any = e.target.value
-    console.log('article.plantilla_data[index]', article.plantilla_data[index]);
+   
 
     if (article.plantilla_data[index].tipo == 'numero') {
       value = parseInt(e.target.value);
@@ -212,12 +226,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
     getPrices()
   };
 
-  const [prices, setPrices] = useState<any>(0)
-  const [descuento, setDescuento] = useState<number>(0)
-  const [pricesFranquicia, setPricesFranquicia] = useState<any>(0)
-  const [pricesFranquiciaAdicional, setPricesFranquiciaAdicional] = useState<any>(0)
-
-
+ 
 
   useEffect(() => {
 
@@ -249,123 +258,170 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       camposTxTVisual: article.plantilla_data.filter((x: any) => x.tipo == 'txtvisual'),
     };
 
-
+  
     try {
+      
       // const result: any = await APIs.getTotalPrice(dataArticle)
       const result: any = await APIs.getTotalPriceWSignal(dataArticle, {
         signal: controllerRef.current.signal, // Pasa la señal aquí
       });
 
-      article.plantilla_data.forEach((c: any) => {
-        let buscar_in_result = result.txtvisual_campos.filter(
-          (x: any) => x.id_plantillas_art_campos == c.id
-        );
-
-        if (buscar_in_result.length > 0) {
-          let valor = buscar_in_result[0].valor;
-          c.valor = valor; // Actualiza el valor en el objeto clonado
-        }
-      });
-
-
-      if (result.error == true) {
-        toast.warning(result.mensaje)
-        return
-      }
-
-      if (result.error == false) {
-        setPrices(result.mensaje)
-        setDescuento(result.descuento_aplicado)
-        setAdicional(result.adicional)
-        let lista_precios_franquicia = 0
-        let precio_franq_tmp = 0
-
-        if (article?.precios_franquicia != null && article?.precios_franquicia.length > 0) {
-
-          lista_precios_franquicia = article?.precios_franquicia[0].id_grupos_us
-          const dataArticleFranquicia = {
+        if (result.error == true) {
+          // toast.warning(result.mensaje)
+          setData({
+            id_pers: 0,
+            front: true,
             id_articulo: article.id,
-            id_grupo_us: lista_precios_franquicia,
-            id_unidad: selectedUnit.id_unidad,
-            id_usuario: user_id,
+            id_familia: article.id_familia,
+            produccion_interna: false,
+            id_area_produccion: article.areas_produccion[0]?.id_area,
+            enviar_a_produccion: false,
+            personalized: false,
+            check: false,
+            status: 0,
+            descripcion: article.descripcion,
+            codigo: article.codigo,
+            unidad: selectedUnit.id_unidad,
+            name_unidad: selectedUnit.nombre,
             cantidad: amount,
-            campos: article.plantilla_data.filter((x: any) => x.tipo == 'numero'),
-            camposTxTVisual: article.plantilla_data.filter((x: any) => x.tipo == 'txtvisual'),
-            franquicia: true
-          };
-
-          // const resultFranquicia: any = await APIs.getTotalPrice(dataArticleFranquicia);
-          const resultFranquicia: any = await APIs.getTotalPriceWSignal(dataArticleFranquicia, {
-            signal: controllerRef.current.signal, // Pasa la señal aquí
-          });
-          if (!resultFranquicia.error) {
-            precio_franq_tmp = resultFranquicia.mensaje
-            // precio_franq_adi_tmp = resultFranquicia?.adicional?.total
-
-            setPricesFranquicia(resultFranquicia.mensaje)
-            setPricesFranquiciaAdicional(resultFranquicia?.adicional?.total)
-
-            // setAdicionalFranquicia(resultFranquicia.adicional)
-          }
-        } else {
-
+            precio_total: prices,
+            obs_produccion: productionComments,
+            obs_factura: productionComments,
+            monto_urgencia: 0,
+            urgencia_monto: 0,
+            descuento: result.descuento_aplicado,
+            precio_unitario: prices / amount,
+            total_franquicia: 0,
+            clave_sat: article.clave_sat,
+            /////////////////////Para Orden de Requicicion //////////////////////////
+  
+            urgencia: false,
+            areas_produccion: article.areas_produccion,
+  
+            /////////////////////Para Orden de compra //////////////////////////
+            id_ov: 0,
+            id_orden_produccion: 0,
+            status_produccion: 0,
+            cobrado: 0,
+            id_unidad: selectedUnit.id_unidad,
+            campos_plantilla: article.plantilla_data.map((x: any) => ({
+  
+              nombre_campo_plantilla: x.nombre,
+              tipo_campo_plantilla: x.tipo,
+              valor: x.tipo == 'texto' ? x.valor.toString() : x.valor
+              // valor: x.valor.toString()
+            }))
+  
+          })
+          return
         }
-        return setData({
-          id_pers: 0,
-          front: true,
-          id_articulo: article.id,
-          id_familia: article.id_familia,
-          produccion_interna: false,
-          id_area_produccion: article.areas_produccion[0]?.id_area,
-          enviar_a_produccion: false,
-          personalized: false,
-          check: false,
-          status: 0,
-          descripcion: article.descripcion,
-          codigo: article.codigo,
-          unidad: selectedUnit.id_unidad,
-          name_unidad: selectedUnit.nombre,
-          cantidad: amount,
-          precio_total: result.mensaje,
-          obs_produccion: productionComments,
-          obs_factura: productionComments,
-          monto_urgencia: 0,
-          urgencia_monto: 0,
-          descuento: result.descuento_aplicado,
-          precio_unitario: result.mensaje / amount,
-          total_franquicia: precio_franq_tmp,
-          clave_sat: article.clave_sat,
-          /////////////////////Para Orden de Requicicion //////////////////////////
 
-          urgencia: false,
-          areas_produccion: article.areas_produccion,
+        article.plantilla_data.forEach((c: any) => {
+          let buscar_in_result = result.txtvisual_campos.filter(
+            (x: any) => x.id_plantillas_art_campos == c.id
+          );
+  
+          if (buscar_in_result.length > 0) {
+            let valor = buscar_in_result[0].valor;
+            c.valor = valor; // Actualiza el valor en el objeto clonado
+          }
+        });
+  
+  
+        if (result.error == false) {
+          setPrices(result.mensaje)
+          setDescuento(result.descuento_aplicado)
+          setAdicional(result.adicional)
+          let lista_precios_franquicia = 0
+          let precio_franq_tmp = 0
+  
+          if (article?.precios_franquicia != null && article?.precios_franquicia.length > 0) {
+  
+            lista_precios_franquicia = article?.precios_franquicia[0].id_grupos_us
+            const dataArticleFranquicia = {
+              id_articulo: article.id,
+              id_grupo_us: lista_precios_franquicia,
+              id_unidad: selectedUnit.id_unidad,
+              id_usuario: user_id,
+              cantidad: amount,
+              campos: article.plantilla_data.filter((x: any) => x.tipo == 'numero'),
+              camposTxTVisual: article.plantilla_data.filter((x: any) => x.tipo == 'txtvisual'),
+              franquicia: true
+            };
+  
+            // const resultFranquicia: any = await APIs.getTotalPrice(dataArticleFranquicia);
+            const resultFranquicia: any = await APIs.getTotalPriceWSignal(dataArticleFranquicia, {
+              signal: controllerRef.current.signal, // Pasa la señal aquí
+            });
+            if (!resultFranquicia.error) {
+              precio_franq_tmp = resultFranquicia.mensaje
+              // precio_franq_adi_tmp = resultFranquicia?.adicional?.total
+  
+              setPricesFranquicia(resultFranquicia.mensaje)
+              setPricesFranquiciaAdicional(resultFranquicia?.adicional?.total)
+  
+              // setAdicionalFranquicia(resultFranquicia.adicional)
+            }
+          } else {
+  
+          }
+          return setData({
+            id_pers: 0,
+            front: true,
+            id_articulo: article.id,
+            id_familia: article.id_familia,
+            produccion_interna: false,
+            id_area_produccion: article.areas_produccion[0]?.id_area,
+            enviar_a_produccion: false,
+            personalized: false,
+            check: false,
+            status: 0,
+            descripcion: article.descripcion,
+            codigo: article.codigo,
+            unidad: selectedUnit.id_unidad,
+            name_unidad: selectedUnit.nombre,
+            cantidad: amount,
+            precio_total: result.mensaje,
+            obs_produccion: productionComments,
+            obs_factura: productionComments,
+            monto_urgencia: 0,
+            urgencia_monto: 0,
+            descuento: result.descuento_aplicado,
+            precio_unitario: result.mensaje / amount,
+            total_franquicia: precio_franq_tmp,
+            clave_sat: article.clave_sat,
+            /////////////////////Para Orden de Requicicion //////////////////////////
+  
+            urgencia: false,
+            areas_produccion: article.areas_produccion,
+  
+            /////////////////////Para Orden de compra //////////////////////////
+            id_ov: 0,
+            id_orden_produccion: 0,
+            status_produccion: 0,
+            cobrado: 0,
+            id_unidad: selectedUnit.id_unidad,
+            campos_plantilla: article.plantilla_data.map((x: any) => ({
+  
+              nombre_campo_plantilla: x.nombre,
+              tipo_campo_plantilla: x.tipo,
+              valor: x.tipo == 'texto' ? x.valor.toString() : x.valor
+              // valor: x.valor.toString()
+            }))
+  
+          })
+        }
+      
+    
+     
 
-          /////////////////////Para Orden de compra //////////////////////////
-          id_ov: 0,
-          id_orden_produccion: 0,
-          status_produccion: 0,
-          cobrado: 0,
-          id_unidad: selectedUnit.id_unidad,
-          campos_plantilla: article.plantilla_data.map((x: any) => ({
+      
 
-            nombre_campo_plantilla: x.nombre,
-            tipo_campo_plantilla: x.tipo,
-            valor: x.tipo == 'texto' ? x.valor.toString() : x.valor
-            // valor: x.valor.toString()
-          }))
-
-        })
-
-
-
-      }
     } catch (error) {
       console.error('Error al obtener el precio total:', error);
     }
   };
 
-  console.log('data', data)
-  console.log('article', article)
   const getPrices = async () => {
     if (amount > 0) {
       let numbrs = article.plantilla_data.filter((x: any) => x.tipo == 'numero')
@@ -606,7 +662,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
   };
 
   useEffect(() => {
-    console.log(opciones);
+ 
 
   }, [opciones])
 
