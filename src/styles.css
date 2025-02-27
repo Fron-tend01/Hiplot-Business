@@ -13,6 +13,9 @@
     grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 10px;
 }
+.small-container {
+  font-size: 0.7rem !important;
+}
 
 .h-full {
   height: 100%;

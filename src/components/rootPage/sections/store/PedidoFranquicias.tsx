@@ -12,6 +12,7 @@ import useUserStore from '../../../../zustand/General';
 import Flatpickr from "react-flatpickr";
 import { Spanish } from 'flatpickr/dist/l10n/es.js'; // Importa la localización en español
 import { storeSeries } from '../../../../zustand/Series';
+import { storeArticles } from '../../../../zustand/Articles';
 
 interface pedido {
   id: number,
@@ -205,6 +206,7 @@ const PedidoFranquicias = () => {
   }
   const [flag, setFlag] = useState<number | null>(null);
   const prevArticulosLength = useRef(articulos.length);
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
   useEffect(() => {
     const length = articulos.length;
@@ -284,15 +286,21 @@ const PedidoFranquicias = () => {
     if (modoUpdate) {
 
     } else {
+      setModalLoading(true)
       await APIs.CreateAny(createObjLf, "pedido_franquicia/create")
         .then(async (response: any) => {
           if (!response.error) {
+            setModalLoading(false)
+
             setModal('')
             Swal.fire('Notificación', response.mensaje, 'success');
             await getData()
             setPf(pfClear)
+            setModalLoading(false)
 
           } else {
+            setModalLoading(false)
+
             Swal.fire('Notificación', response.mensaje, 'warning');
             return
           }

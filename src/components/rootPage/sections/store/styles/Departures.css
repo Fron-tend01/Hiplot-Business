@@ -1,14 +1,15 @@
 .departures {
     height: 90vh;
 	padding: 20px;
+    overflow:scroll
 }
 
 .departures__container {
     display: grid;
-	grid-template-rows: auto auto auto 1fr;
+	grid-template-rows: auto auto auto 1fr ;
 	height: 100%;
 
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .departures__container > .row__one {
@@ -117,7 +118,7 @@
     display: grid;
     height: 100%;
     grid-template-rows: repeat(2, auto) 1fr;
-    overflow: hidden;
+    /* overflow: hidden; */
 
 }
 

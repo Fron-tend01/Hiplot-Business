@@ -1,11 +1,11 @@
 [
     {
       "id": 0,
-      "name": "Código"
+      "name": "Descripción"
     },
     {
       "id": 1,
-      "name": "Nombre"
+      "name": "Codigo"
     }
 ]
   

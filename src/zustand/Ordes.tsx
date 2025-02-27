@@ -46,7 +46,7 @@ export const storeOrdes = create<StoreState>((set) => ({
             });
           } else {
             console.log('Orden creada:', response);
-            Swal.fire('Orden creada exitosamente', '', 'success');
+            Swal.fire('Orden creada exitosamente', response.mensaje, 'success');
           }
         } catch (error) {
           console.error('Error al crear la orden:', error);

@@ -54,6 +54,7 @@ const Departures = () => {
 
 
         const resultSeries = await getSeriesXUser({ tipo_ducumento: 4, id: user_id })
+        resultSeries.unshift({'id':0, 'nombre':'Todos'})
         setSeries({
             selectName: 'Series',
             options: 'nombre',
@@ -73,7 +74,8 @@ const Departures = () => {
             hasta: dates[1],
             id_serie: 0,
             folio: invoice,
-            light: true
+            light: true,
+            page:page
         }
         setModalLoading(true)
 
@@ -145,10 +147,15 @@ const Departures = () => {
     };
 
 
+    const [page, setPage] = useState<number>(1);
+
+    useEffect(() => {
+        searchWarehouseExit()
+    }, [page])
 
 
     return (
-        <div className="departures">
+        <div className="departures small-container">
 
             <Toaster expand={true} position="top-right" richColors />
             <div className="departures__container">
@@ -168,7 +175,7 @@ const Departures = () => {
                 <div className="row__one">
                     <div className="row">
                         <div className="col-8">
-                            <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
+                            <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} all={true}/>
                         </div>
                         <div className='col-4'>
                             <label className='label__general'>Fechas</label>
@@ -269,6 +276,15 @@ const Departures = () => {
                     ) : (
                         <p className="text">Cargando datos...</p>
                     )}
+                </div>
+            <div className='mt-4 d-flex justify-content-between'>
+                    <div>
+                        <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
+                            disabled={page == 1}>Anterior</button>
+                    </div>
+                    <div>
+                        <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
+                    </div>
                 </div>
             </div>
         </div>

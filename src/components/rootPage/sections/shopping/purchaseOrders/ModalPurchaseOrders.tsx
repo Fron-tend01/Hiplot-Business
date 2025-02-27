@@ -258,8 +258,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     const data = {
       id: 0,
       activos: true,
-      nombre: selectedTypeSearch == 1 ? nameBy : '',
-      codigo: selectedTypeSearch == 0 ? nameBy : '',
+      nombre: selectedTypeSearch == 0 ? nameBy : '',
+      codigo: selectedTypeSearch == 1 ? nameBy : '',
       familia: 0,
       proveedor: 0,
       materia_prima: 0,
@@ -273,12 +273,17 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     };
     try {
       if (selectedTypeSearch === 0) {
+        setModalLoading(true)
         const result: any = await APIs.getArticles(data)
+        setModalLoading(false)
         setResultModalOC(result);
-
+        setArticleResult(result[0])
       } else if (selectedTypeSearch === 1) {
+        setModalLoading(true)
         const result = await getArticles(data)
+        setModalLoading(false)
         setResultModalOC(result);
+        setArticleResult(result[0])
 
       }
     } catch (error) {
@@ -506,10 +511,12 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     ]);
   }
 
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
   const hanledCreateOC = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
     setStateLoading(true);
+    setModalLoading(true)
     const data = {
       id: purchaseOrderToUpdate ? purchaseOrderToUpdate.id : null,
       id_usuario_crea: user_id,
@@ -548,30 +555,40 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
       if (purchaseOrderToUpdate) {
         const resultCreate: any = await APIs.updatePurchaseOrders(data);
         if (resultCreate.error == true) {
+          setModalLoading(false)
+
           return Swal.fire('Advertencia', resultCreate.mensaje, 'warning');
         }
         const resultGet = await APIs.getPurchaseOrders(dataGet);
         setPurchaseOrders(resultGet)
         setConceptosElim([])
         setConceptos([])
+        setModalLoading(false)
+
         Swal.fire('Orden de compra creada exitosamente', '', 'success');
         setStateLoading(false);
         setModal('')
       } else {
         const result: any = await APIs.createPurchaseOrders(data);
         if (result.error == true) {
+          setModalLoading(false)
+
           return Swal.fire('Advertencia', result.mensaje, 'warning');
         }
         const resultGet = await APIs.getPurchaseOrders(dataGet);
         setPurchaseOrders(resultGet)
         setConceptosElim([])
         setConceptos([])
+        setModalLoading(false)
+
         Swal.fire('Orden de compra actualizada exitosamente', '', 'success');
         setStateLoading(false);
         setModal('')
       }
     } catch (error) {
       console.error('Ocurrió un error al crear/actualizar el artículo', error);
+      setModalLoading(false)
+
       Swal.fire(`Ocurrió un error al ${purchaseOrderToUpdate ? 'actualizar' : 'crear'}`, '', 'error'); // Mensaje en caso de error
       setStateLoading(false);
     }
@@ -624,12 +641,17 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
       status: type,
     };
     try {
+      setModalLoading(true)
+
       const result: any = await APIs.updateStatusPurchaseOrder(data)
       const resultGet = await APIs.getPurchaseOrders(dataGet);
       setPurchaseOrders(resultGet)
+      setModalLoading(false)
+
       Swal.fire('Status actualizado', result.mensaje, 'success');
       setModal('')
     } catch (error) {
+      setModalLoading(false)
 
     }
   }
@@ -650,13 +672,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     setConceptos_req(req[0].conceptos)
   }
   const getPDFRequisition = async () => {
-    try {
-      await APIs.getPdfPurchaseOrders(purchaseOrderToUpdate.id);
-      // Abrimos el PDF en una nueva pestaña
-      window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_oc/${purchaseOrderToUpdate.id}`, '_blank');
-    } catch (error) {
-      console.log(error);
-    }
+    window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_oc/${purchaseOrderToUpdate.id}`, '_blank');
   }
   const [dateForReq, setDateForReq] = useState<any>()
   const handleDateChange2 = (fechasSeleccionadas: any) => {
@@ -694,11 +710,11 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                         <span className='text'>Creado por: <b>{purchaseOrderToUpdate?.usuario_crea}</b></span><br />
                         <span className='text'>Fecha de Creación: <b>{purchaseOrderToUpdate?.fecha_creacion}</b></span><br />
                         {purchaseOrderToUpdate?.status === 0 ? (
-                          <b style={{color:'green', background:'#baffc3', padding:'5px', borderRadius:'10px'}} >Activo</b>
+                          <b style={{ color: 'green', background: '#baffc3', padding: '5px', borderRadius: '10px' }} >Activo</b>
                         ) : purchaseOrderToUpdate?.status === 1 ? (
-                          <b  style={{color:'red', background:'#ffbaba', padding:'5px', borderRadius:'10px'}}>Cancelada</b>
+                          <b style={{ color: 'red', background: '#ffbaba', padding: '5px', borderRadius: '10px' }}>Cancelada</b>
                         ) : (
-                          <b  style={{color:'blue', background:'#bad1ff', padding:'5px', borderRadius:'10px'}}>Terminado</b>
+                          <b style={{ color: 'blue', background: '#bad1ff', padding: '5px', borderRadius: '10px' }}>Terminado</b>
 
                         )}
 
@@ -861,9 +877,9 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
               </div>
             </div>
             {typeModal ?
-              <p className='title'>Buscar Requisición</p>
+              <p className='title'>Buscar Requisicion</p>
               :
-              <p className='title'>Artículos en Requisición</p>
+              <p className='title'>Buscar Articulos</p>
             }
             <div className='row__four'>
               {typeModal == 0 ?
@@ -890,7 +906,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                     <div>
                       <div>
                         <label className='label__general'>Buscador por nombre</label>
-                        <input className='inputs__general' type='text' value={nameBy} onChange={(e) => setNameBy(e.target.value)} placeholder='Ingresa el nombre' />
+                        <input className='inputs__general' type='text' value={nameBy} onChange={(e) => setNameBy(e.target.value)} placeholder='Ingresa el nombre' onKeyUp={(e) => e.key === 'Enter' && searchFor()} />
                       </div>
                     </div>
                     <div className='container__search'>
@@ -905,7 +921,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                         <label className='label__general'>Resultados</label>
                         <div className='select-btn__general'>
                           <div className={`select-btn ${selectModalResults ? 'active' : ''}`} onClick={openSelectModalResults}>
-                            <p>{selectedModalResult ? `${articleResult.codigo}-${articleResult.descripcion}` : 'Selecciona'}</p>
+                            <p>{articleResult ? `${articleResult.codigo}-${articleResult.descripcion}` : 'Selecciona'}</p>
                             <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                           </div>
                           <div className={`content ${selectModalResults ? 'active' : ''}`}>

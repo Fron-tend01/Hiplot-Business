@@ -9,6 +9,7 @@ import Empresas_Sucursales from "../../../Dynamic_Components/Empresas_Sucursales
 import ByOC from "./types/ByOC";
 import Direct from "./types/Direct";
 import Swal from 'sweetalert2';
+import { storeArticles } from "../../../../../zustand/Articles";
 
 
 
@@ -120,6 +121,7 @@ const ModalCreate = () => {
         setSelectedStore(nuevaInstancia);
     };
 
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
 
     const handleCreateTickets = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -136,8 +138,11 @@ const ModalCreate = () => {
                 setWarningComments(false)
                 if (conceptos.length > 0) {
                     console.log(conceptos);
+                    setModalLoading(true)
 
                     await createTickets(id_sucursal, id_usuario_crea, comentarios, conceptos)
+                    setModalLoading(false)
+
                     const data = {
                         id_usuario: user_id,
                         id_empresa: companies.id,
@@ -152,6 +157,8 @@ const ModalCreate = () => {
                     await getTickets(data)
                     setModalTickets('')
                 } else {
+                    setModalLoading(false)
+
                     Swal.fire({
                         title: 'Aviso',
                         text: 'Debes agregar al menos un concepto para crear la entrada.',
@@ -340,7 +347,7 @@ const ModalCreate = () => {
                                                             <div>
                                                                 <select className='traditional__selector' onChange={(event) => handleSelectUnits(event, index)} value={selectedUnit[index] || ''}>
                                                                     {concept.unidades?.map((unit: any) => (
-                                                                        <option key={unit.id} value={unit.id}>
+                                                                        <option key={unit.id} value={unit.id_unidad}>
                                                                             {unit.nombre}
                                                                         </option>
                                                                     ))}
@@ -358,7 +365,7 @@ const ModalCreate = () => {
                                                         <div className='td'>
                                                             <select className='traditional__selector' onChange={(event) => handleProveedorChange(event, index)} value={selectedSupplier[index]} >
                                                                 {concept.proveedores?.map((item: any) => (
-                                                                    <option key={item.id} value={item.id}>
+                                                                    <option key={item.id} value={item.id_proveedor}>
                                                                         {item.proveedor}
                                                                     </option>
                                                                 ))}
