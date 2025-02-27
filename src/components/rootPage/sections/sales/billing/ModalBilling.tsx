@@ -480,27 +480,30 @@ const ModalBilling: React.FC = () => {
             }
             return el;
         });
-    
-        let newConceptsPers = order.conceptos_pers.map((el: any) => {
-            el.pers_div = false;
-            el.orden = {
-                serie: order.serie,
-                folio: order.folio,
-                anio: order.anio,
-            };
-            el.id_identifier = newIdentifier;
-            newIdentifier++;
-    
-            if (type === 2) {
-                copy_totals.subtotal += parseFloat(el.total);
-                copy_totals.total += parseFloat(el.total);
-            } else {
-                copy_totals.subtotal += parseFloat(el.total_restante) - parseFloat(el.monto_urgencia);
-                copy_totals.total += parseFloat(el.total_restante);
-                copy_totals.urgencia += parseFloat(el.monto_urgencia);
-            }
-            return el;
-        });
+        let newConceptsPers:any = []
+        if (order.conceptos_pers != undefined) {
+            newConceptsPers = order?.conceptos_pers?.map((el: any) => {
+                el.pers_div = false;
+                el.orden = {
+                    serie: order.serie,
+                    folio: order.folio,
+                    anio: order.anio,
+                };
+                el.id_identifier = newIdentifier;
+                newIdentifier++;
+        
+                if (type === 2) {
+                    copy_totals.subtotal += parseFloat(el.total);
+                    copy_totals.total += parseFloat(el.total);
+                } else {
+                    copy_totals.subtotal += parseFloat(el.total_restante) - parseFloat(el.monto_urgencia);
+                    copy_totals.total += parseFloat(el.total_restante);
+                    copy_totals.urgencia += parseFloat(el.monto_urgencia);
+                }
+                return el;
+            });
+
+        } 
     
         let totalConcepts = [...newConcepts, ...newConceptsPers];
         setCustomLocal(newConcepts)
@@ -725,14 +728,14 @@ const ModalBilling: React.FC = () => {
                                 </div> */}
                                 <div className='checkbox__modal_articles' title={'Facturar por ORDEN DE VENTA'}>
                                     <label className="checkbox__container_general">
-                                        <input value={1} className='checkbox' type="checkbox" checked={type === 1} onChange={() => handleCheckboxChange(1)} disabled={modoUpdate} />
+                                        <input value={1} className='checkbox' type="checkbox" checked={type === 1} onChange={() => handleCheckboxChange(1)}  />
                                         <span className="checkmark__general"></span>
                                     </label>
                                     <p className='text'>Por Ov</p>
                                 </div>
                                 <div className='checkbox__modal_articles' title={'Facturar por PEDIDO DE ALMACEN DE FRANQUICIA'}>
                                     <label className="checkbox__container_general">
-                                        <input value={2} className='checkbox' type="checkbox" checked={type === 2} onChange={() => handleCheckboxChange(2)} disabled={modoUpdate} />
+                                        <input value={2} className='checkbox' type="checkbox" checked={type === 2} onChange={() => handleCheckboxChange(2)} />
                                         <span className="checkmark__general"></span>
                                     </label>
                                     <p className='text'>Por PAF</p>
