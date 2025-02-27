@@ -267,7 +267,8 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       });
 
         if (result.error == true) {
-          // toast.warning(result.mensaje)
+          console.log(prices)
+          toast.warning(result.mensaje)
           setData({
             id_pers: 0,
             front: true,
@@ -441,7 +442,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
   useEffect(() => {
     getPrices()
-  }, [amount])
+  }, [amount, prices])
 
 
 
