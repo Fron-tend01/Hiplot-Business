@@ -6,6 +6,7 @@ import { storeModals } from "../../../../../zustand/Modals";
 import useUserStore from "../../../../../zustand/General";
 import APIs from "../../../../../services/services/APIs";
 import Swal from "sweetalert2";
+import { storeArticles } from "../../../../../zustand/Articles";
 
 
 const ModalUpdate = ({ oderUpdate }: any,) => {
@@ -20,6 +21,7 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
   const setModal = storeModals(state => state.setModal)
 
   const [modeOrder, setModeOrder] = useState<any>(null)
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
   console.log(oderUpdate)
 
@@ -35,13 +37,23 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
       id_sucursal: 0,
       desde: dates[0],
       hasta: dates[1],
-      status: [0]
+      status: [0],
+      light:true
 
     }
     const status = modeOrder === 0 ? 1 : 0;
-    await updateModeOrders({ id, status })
-    await getOrdedrs(data)
-    setModal('')
+    
+    try{
+      setModalLoading(true)
+      await updateModeOrders({ id, status })
+      setModalLoading(false)
+      await getOrdedrs(data)
+      setModal('')
+    }catch(error) {
+      setModalLoading(false)
+
+    }
+   
   }
 
 
@@ -53,11 +65,21 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
       id_sucursal: 0,
       desde: dates[0],
       hasta: dates[1],
-      status: 0
+      status: 0,
+      light:true
 
     }
     const status = order.status === 0 ? 1 : 0;
-    await updateModeConceptsOrders({ id, status })
+    try{
+      setModalLoading(true)
+      await updateModeConceptsOrders({ id, status })
+      setModalLoading(false)
+      await getOrdedrs(data)
+      setModal('')
+    }catch(error) {
+      setModalLoading(false)
+
+    }
     await getOrdedrs(data)
     setModal('')
   }
@@ -66,8 +88,11 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
   const [selectedUnit, setSelectedUnit] = useState<any[]>([]);
   const handleSelectUnits = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
     const valorSeleccionado = parseInt(event.target.value, 10); // Base 10 para números decimales
-    oderUpdate.conceptos[index].unidad = valorSeleccionado;
-    // Crear una copia del arreglo de selecciones temporales
+    const newArticleStates = oderUpdate.conceptos.map((concept:any, i:number) =>
+      i === index ? { ...concept, unidad: valorSeleccionado } : concept
+    );
+    
+    setOrderConceptsUpdate(newArticleStates);    // Crear una copia del arreglo de selecciones temporales
     const nuevasSelecciones = [...selectedUnit];
     // Actualizar el valor seleccionado en la posición del índice correspondiente
     nuevasSelecciones[index] = valorSeleccionado;
@@ -80,18 +105,17 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value.trim();
     const parsedValue = value === '' ? null : parseFloat(value);
-    const newArticleStates = [...oderUpdate.conceptos];
-    newArticleStates[index] = {
-        ...newArticleStates[index],
-        cantidad: parsedValue,
-    };
+    const newArticleStates = oderUpdate.conceptos.map((concept:any, i:number) =>
+      i === index ? { ...concept, cantidad: parsedValue } : concept
+    );
+    
     setOrderConceptsUpdate(newArticleStates);
   };
 
   const update = async () => {
     try {
-      let response: any = await APIs.updateOrders(oderUpdate.conceptos);
-      if(response.error) {
+      let response: any = await APIs.updateOrders(orderConceptsUpdate);
+      if (response.error) {
         Swal.fire({
           icon: "warning",
           title: "¡Advertencia!",
@@ -99,7 +123,7 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
           confirmButtonColor: "#3085d6",
           confirmButtonText: "Aceptar",
         });
-     
+
       } else {
         Swal.fire({
           icon: "success",
@@ -110,7 +134,7 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
         });
         setModal('');
       }
-      
+
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -217,13 +241,16 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                     <p className=''>Articulo</p>
                   </div>
                   <div className='th'>
+                    <p className=''>Status</p>
+                  </div>
+                  <div className='th'>
                     <p className=''>OP</p>
                   </div>
                   <div className='th'>
-                    <p className=''>Unidad</p>
+                    <p className=''>Cantidad</p>
                   </div>
                   <div className='th'>
-                    <p className=''>Cantidad</p>
+                    <p className=''>Unidad</p>
                   </div>
                   <div className='th'>
                     <p className=''>Comentarios</p>
@@ -240,13 +267,31 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                         </div>
                         <div className="td">
                           <div>
+                            {order.status==0 ? 
+                             <b style={{color:'green'}}>ACTIVO</b>
+                            :order.status==1 ? 
+                            <b style={{color:'red'}}>CANCELADO</b>:
+                            <b style={{color:'blue'}}>TERMINADO</b>}
+                           
+                          </div>
+                        </div>
+                        <div className="td">
+                          <div>
                             <p>N/A</p>
+                          </div>
+                        </div>
+                        <div className='td'>
+                          <div>
+                            <div>
+                              <input className='inputs__general' value={order.cantidad === null ? '' : order.cantidad}
+                                onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()} />
+                            </div>
                           </div>
                         </div>
                         <div className='td'>
                           <div className='td'>
                             <div>
-                              <select className='traditional__selector' onChange={(event) => handleSelectUnits(event, index)} value={selectedUnit[index] || ''}>
+                              <select className='traditional__selector' onChange={(event) => handleSelectUnits(event, index)} value={order.id_unidad}>
                                 {order.unidades?.map((unit: any) => (
                                   <option key={unit.id} value={unit.id}>
                                     {unit.nombre}
@@ -256,14 +301,7 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                             </div>
                           </div>
                         </div>
-                        <div className='td'>
-                          <div>
-                            <div>
-                              <input className='inputs__general' value={order.cantidad === null ? '' : order.cantidad}
-                                onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' />
-                            </div>
-                          </div>
-                        </div>
+
                         <div className='td'>
                           <div>
                             <p>{order.comentarios}</p>
@@ -300,7 +338,7 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
             </div>
             <div>
               {modeOrder === 0 ?
-                <button className="btn__general-danger" type="button" onClick={changeOrderMode}>Calncelar</button>
+                <button className="btn__general-danger" type="button" onClick={changeOrderMode}>Cancelar</button>
                 :
                 <button className="btn__general-success" type="button" onClick={changeOrderMode}>Activar</button>
               }

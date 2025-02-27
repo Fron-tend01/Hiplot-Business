@@ -126,7 +126,7 @@
 
 .table__requisiciones-modal .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(5, 1fr) 100px;
+    grid-template-columns: 4fr repeat(4, 1fr) 100px;
     padding: 10px;
     font-weight: 600;
 	color: var(--text-table-color);
@@ -134,8 +134,8 @@
 
 .table__requisiciones-modal .table__body {
 	max-height: 300px;
-    overflow: hidden;
-    overflow: auto;
+    /* overflow: hidden;
+    overflow: auto; */
     border: 2px solid var(--border-table-color);
     border-top: none;
     transition-delay: 0.0s;
@@ -182,7 +182,7 @@
 
 .table__requisiciones-modal .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(5, 1fr) 100px;
+    grid-template-columns: 4fr repeat(4, 1fr) 100px;
     padding: 10px;
 	column-gap: 20px;
 	align-items: center;

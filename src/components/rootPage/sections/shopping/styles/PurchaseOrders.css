@@ -1,6 +1,6 @@
 .purchase-order {
     height: 90vh;
-  
+    
 }
 
 .container__purchase-order {
@@ -9,7 +9,7 @@
     grid-template-rows: repeat(3, auto) 50%;
     padding: 20px;
     border-radius: 10px;
-    overflow: hidden;
+    overflow: scroll;
 }
 
 .container__purchase-order > .row__one {

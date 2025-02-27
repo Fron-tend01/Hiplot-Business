@@ -10,6 +10,7 @@ import APIs from '../../../../../services/services/APIs';
 import Swal from 'sweetalert2';
 import Empresas_Sucursales from '../../../Dynamic_Components/Empresas_Sucursales';
 import { useSelectStore } from '../../../../../zustand/Select';
+import { storeArticles } from '../../../../../zustand/Articles';
 
 const ModalCreate: React.FC = () => {
   const userState = useUserStore(state => state.user);
@@ -21,7 +22,7 @@ const ModalCreate: React.FC = () => {
   const setTransfers = storeTransfers((state: any) => state.setTransfers);
 
   const { getStore }: any = StoreRequests();
-  
+
 
   const [selectStore, setSelectStore] = useState<any>(false);
   const [selectStoreTwo, setSelectStoreTwo] = useState<any>(false);
@@ -47,9 +48,9 @@ const ModalCreate: React.FC = () => {
       options: 'nombre',
       dataSelect: resultStore
     })
-    
-    setSelectedId('almacen_origin', {id: resultStore[0]?.id})
-    setSelectedId('almacen_destino', {id: resultStore[0]?.id})
+
+    setSelectedId('almacen_origin', { id: resultStore[0]?.id })
+    setSelectedId('almacen_destino', { id: resultStore[0]?.id })
   }
 
   useEffect(() => {
@@ -76,17 +77,17 @@ const ModalCreate: React.FC = () => {
   const [articles, setArticles] = useState<any>()
 
   const [selectSearch, setSelectSearch] = useState<boolean>(false)
-  const [selectedSearch, setSelectedSearch] = useState<number | null>(null)
+  const [selectedSearch, setSelectedSearch] = useState<number | null>(0)
   const [nameBy, setNameBy] = useState<string | number>('')
 
   const searchX = [
     {
       id: 0,
-      name: 'Código'
+      name: 'Descripcion'
     },
     {
       id: 1,
-      name: 'Nombre'
+      name: 'Codigo'
     },
   ]
 
@@ -104,8 +105,8 @@ const ModalCreate: React.FC = () => {
     const data = {
       id: 0,
       activos: true,
-      nombre: selectedSearch == 1 ? nameBy : '',
-      codigo: selectedSearch == 0 ? nameBy : '',
+      nombre: selectedSearch == 0 ? nameBy : '',
+      codigo: selectedSearch == 1 ? nameBy : '',
       familia: 0,
       proveedor: 0,
       page: 1,
@@ -120,11 +121,17 @@ const ModalCreate: React.FC = () => {
       id_usuario: user_id
     }
     if (selectedSearch === 0) {
+      setModalLoading(true)
       const result = await getArticles(data)
+      setModalLoading(false)
       setArticles(result)
+      setSelectedResult(result[0])
     } else if (selectedSearch === 1) {
       const result = await getArticles(data)
+      setModalLoading(true)
       setArticles(result)
+      setModalLoading(false)
+      setSelectedResult(result[0])
     }
   }
 
@@ -229,10 +236,11 @@ const ModalCreate: React.FC = () => {
     newArticleStates[index].comentarios = value;
     setConcepts(newArticleStates);
   };
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
-  const modalCreateTrnasfers = async (e: React.FormEvent<HTMLFormElement>) => {
+  const modalCreateTrnasfers = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
+    setModalLoading(true)
     // Datos para crear el traspaso
     const transferData = {
       id_usuario_crea: user_id,
@@ -249,6 +257,8 @@ const ModalCreate: React.FC = () => {
       const result: any = await APIs.createTransfers(transferData);
 
       if (result.error) {
+        setModalLoading(false)
+
         // Si hay un error en la creación, mostramos el mensaje
         Swal.fire('Advertencia', result.mensaje, 'warning');
       } else {
@@ -266,12 +276,16 @@ const ModalCreate: React.FC = () => {
         const response: any = await APIs.getTransfers(data);
         setTransfers(response)
         console.log('result.mensaje', response.mensaje)
+        setModalLoading(false)
+
         Swal.fire('Traspaso exitoso', result.mensaje, 'success');
         setModalStateCreate('')
         return
       }
     } catch (error: any) {
       // Manejo del error de la API
+      setModalLoading(false)
+
       Swal.fire('Error al hacer el traspaso', error.message || '', 'error');
     }
   };
@@ -328,8 +342,8 @@ const ModalCreate: React.FC = () => {
           <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
         </a>
         <p className='title__modals'>Crear nuevo traspaso</p>
-        <form className='container__create_transfers' onSubmit={modalCreateTrnasfers}>
-          <div className='row'>
+        <div className='container__create_transfers'>
+          <div className='row card-body bg-standar'>
             <div className='col-8'>
               <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
             </div>
@@ -337,7 +351,7 @@ const ModalCreate: React.FC = () => {
               <Select dataSelects={selectStore} instanceId='almacen_origin' nameSelect={'Almacen origin'} />
             </div>
           </div>
-          <div className='row my-4'>
+          <div className='row my-4 card-body bg-standar'>
             <div className='col-8'>
               <Empresas_Sucursales empresaDyn={companiesTwo} sucursalDyn={branchOfficesTwo} setEmpresaDyn={setCompaniesTwo} setSucursalDyn={setBranchOfficesTwo} modeUpdate={false} />
             </div>
@@ -345,7 +359,7 @@ const ModalCreate: React.FC = () => {
               <Select dataSelects={selectStoreTwo} instanceId='almacen_destino' nameSelect={'Almacen destino'} />
             </div>
           </div>
-          <div className='row__four'>
+          <div className='row__four card-body bg-standar'>
             <div className='input__modal_store'>
               <div className='inputs__company'>
                 <label className='label__general'>Comentarios</label>
@@ -353,7 +367,7 @@ const ModalCreate: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className='row__two'>
+          <div className='row__two card-body bg-standar'>
             <div className='select__container'>
               <label className='label__general'>Buscar por</label>
               <div className='select-btn__general'>
@@ -374,13 +388,13 @@ const ModalCreate: React.FC = () => {
             </div>
             <div>
               <label className='label__general'>Buscador por nombre</label>
-              <input className='inputs__general' type='text' value={nameBy} onChange={(e) => setNameBy(e.target.value)} placeholder='Ingresa el nombre' />
+              <input className='inputs__general' type='text' value={nameBy} onChange={(e) => setNameBy(e.target.value)} placeholder='Ingresa el nombre' onKeyUp={(e) => e.key === 'Enter' && searchFor()} />
             </div>
             <div>
               <button className='btn__general-purple' type='button' onClick={searchFor}>Buscar</button>
             </div>
           </div>
-          <div className='row__three'>
+          <div className='row__three card-body bg-standar'>
             <div className='select__container'>
               <label className='label__general'>Resultado</label>
               <div className='select-btn__general'>
@@ -519,10 +533,10 @@ const ModalCreate: React.FC = () => {
               )}
             </div>
             <div className='container__btn_create-store'>
-              <button className='btn__general-purple' type='submit' >Reaizar traspaso</button>
+              <button className='btn__general-purple' onClick={(e)=>modalCreateTrnasfers(e)}>Realizar traspaso</button>
             </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )

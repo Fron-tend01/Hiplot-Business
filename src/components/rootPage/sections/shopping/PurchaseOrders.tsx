@@ -9,6 +9,7 @@ import './styles/PurchaseOrders.css'
 import ModalPurchaseOrders from './purchaseOrders/ModalPurchaseOrders';
 import APIs from '../../../../services/services/APIs';
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales';
+import { storeArticles } from '../../../../zustand/Articles';
 
 // import { storePagination } from '../../../../zustand/Pagination';
 
@@ -127,8 +128,9 @@ const PurchaseOrders: React.FC = () => {
 
   }
 
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
-  const searchOrders = () => {
+  const searchOrders = async () => {
     console.log(dates)
     const data = {
       folio: invoice,
@@ -140,10 +142,12 @@ const PurchaseOrders: React.FC = () => {
       desde: dates[0],
       hasta: dates[1],
       status: type,
+      page:page
     };
-
+    setModalLoading(true)
     // getPurchaseOrders(0, 0, 0, user_id, 0, 0, '2024-03-14', '2024-03-16', 0)
-    getPurchaseOrders(data)
+    await getPurchaseOrders(data)
+    setModalLoading(false)
 
   }
 
@@ -165,8 +169,11 @@ const PurchaseOrders: React.FC = () => {
   }
 
 
+  const [page, setPage] = useState<number>(1);
 
-
+  useEffect(() => {
+    searchOrders()
+}, [page])
 
   return (
     <div className='purchase-order'>
@@ -331,6 +338,15 @@ const PurchaseOrders: React.FC = () => {
             <p>Cargando datos...</p>
           )}
         </div>
+        <div className='mt-4 d-flex justify-content-between'>
+                    <div>
+                        <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
+                            disabled={page == 1}>Anterior</button>
+                    </div>
+                    <div>
+                        <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
+                    </div>
+                </div>
         {/* <Pagination /> */}
       </div>
     </div>

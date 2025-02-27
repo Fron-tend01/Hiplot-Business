@@ -12,6 +12,7 @@ import Empresas_Sucursales from '../../../Dynamic_Components/Empresas_Sucursales
 import Select from '../../../Dynamic_Components/Select'
 import { useSelectStore } from '../../../../../zustand/Select'
 import APIs from '../../../../../services/services/APIs'
+import { storeArticles } from '../../../../../zustand/Articles';
 
 
 const ModalCreate: React.FC = () => {
@@ -129,6 +130,7 @@ const ModalCreate: React.FC = () => {
         newArticleStates[index].cantidad = 0;
         setConcepts(newArticleStates);
     };
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
     const handleCreateWarehouseExit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
@@ -156,10 +158,20 @@ const ModalCreate: React.FC = () => {
             return
         }
         try {
+            setModalLoading(true)
+
             const result: any = await APIs.createWarehouseExit(data)
-            Swal.fire(result.mensaje, '', 'success');
+            if (result.error) {
+                setModalLoading(false)
+
+                Swal.fire('Notificacion', result.mensaje, 'warning');
+                return
+            }
+            Swal.fire('Notificacion', result.mensaje, 'success');
             const resultGet: any = await APIs.getWarehouseExit(dataGet)
             setWarehouseExit(resultGet)
+            setModalLoading(false)
+
             setModal('')
         } catch (error) {
             Swal.fire('Error', 'Hubo un rrror al crear la salida', 'error');

@@ -237,7 +237,7 @@
 
 .table__orders .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(4, 1fr) 100px;
+    grid-template-columns: repeat(5, 1fr) 100px;
     padding: 10px;
     font-weight: 600;
 }
@@ -291,7 +291,7 @@
 
 .table__orders .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(4, 1fr) 100px;
+    grid-template-columns: repeat(5, 1fr) 100px;
     padding: 10px;
 }
 

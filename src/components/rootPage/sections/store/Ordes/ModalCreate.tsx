@@ -67,7 +67,7 @@ const ModalCreate = () => {
             options: 'nombre',
             dataSelect: resultAreas
         })
-        setSelects('id_area', areas[0])
+        setSelects('id_area', resultAreas[0])
 
     }
 
@@ -85,45 +85,59 @@ const ModalCreate = () => {
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value.trim();  // Obtener el valor ingresado sin espacios
-
+        console.log(concepts[index].stock);
+        let total_stocks = 0
+        concepts[index].stock.forEach((el: any) => {
+            total_stocks += el.stock
+        });
+        if (parseFloat(value) > total_stocks) {
+            Swal.fire('Notificacion', 'El valor ingresado supera el stock', 'warning')
+            const newArticleStates = [...concepts];
+            newArticleStates[index].cantidad = 0;
+            setConcepts(newArticleStates);
+            return
+        }
+        const newArticleStates = [...concepts];
+        newArticleStates[index].cantidad = value;
+        setConcepts(newArticleStates);
         // Obtener los valores relevantes de `concepts`
-        const stocks = concepts[index].stock;
-        let almacenPredeterminado = concepts[index].almacenes_predeterminados.filter((x: any) => x.id_sucursal == branchOffices?.id)[0];
-        if (LPAs?.dataSelect.length > 0) {
-            almacenPredeterminado = {id: LPAs?.dataSelect[0]?.id_almacen}
-        }
-        if (almacenPredeterminado == undefined) {
-            Swal.fire('Notificacion', 'La sucursal seleccionada no tiene un almacen configurado para el articulo '
-                + concepts[index].codigo + ' - ' + concepts[index].descripcion, 'warning')
-            return
-        }
+        // const stocks = concepts[index].stock;
+        // let almacenPredeterminado = concepts[index].almacenes_predeterminados.filter((x: any) => x.id_sucursal == branchOffices?.id)[0];
+        // if (LPAs?.dataSelect.length > 0) {
+        //     almacenPredeterminado = {id: LPAs?.dataSelect[0]?.id_almacen}
+        //     if (almacenPredeterminado == undefined) {
+        //         Swal.fire('Notificacion', 'La sucursal seleccionada no tiene un almacen configurado para el articulo '
+        //             + concepts[index].codigo + ' - ' + concepts[index].descripcion, 'warning')
+        //         return
+        //     }
+        // }
 
-        // Filtrar el stock para obtener el almacen correspondiente
-        const filter = stocks.filter((x: any) => x.id === almacenPredeterminado.id);
+        // // Filtrar el stock para obtener el almacen correspondiente
+        // const filter = stocks.filter((x: any) => x.id === almacenPredeterminado.id);
 
-        // Verificar si el almacen existe y tiene stock disponible
+        // // Verificar si el almacen existe y tiene stock disponible
 
-        if (filter.length > 0) {
-            const equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == concepts[index].unidad || x.id_unidad == concepts[index].unidades[0].id_unidad)
-           
-            if (value > equivalencias[0].cantidad) {
-                const newArticleStates = [...concepts]; 
-                newArticleStates[index].cantidad = 0;
-                setConcepts(newArticleStates);
-                Swal.fire({
-                    icon: "warning",
-                    title: "Oops...",
-                    text: 'La cantidad ingresada supera el stock disponible'
-                });
-            } else {
-                const newArticleStates = [...concepts];
-                newArticleStates[index].cantidad = value;
-                setConcepts(newArticleStates);
-            }
-            return
-        } else {
-            Swal.fire('Notificacion', 'Este articulo no tiene almacen predeterminado para la sucursal que tienes seleccionado, solicitar su configuración', 'info');
-        }
+        // if (filter.length > 0) {
+        //     const equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == concepts[index].unidad || x.id_unidad == concepts[index].unidades[0].id_unidad)
+
+        //     if (value > equivalencias[0].cantidad) {
+        //         const newArticleStates = [...concepts]; 
+        //         newArticleStates[index].cantidad = 0;
+        //         setConcepts(newArticleStates);
+        //         Swal.fire({
+        //             icon: "warning",
+        //             title: "Oops...",
+        //             text: 'La cantidad ingresada supera el stock disponible'
+        //         });
+        //     } else {
+        //         const newArticleStates = [...concepts];
+        //         newArticleStates[index].cantidad = value;
+        //         setConcepts(newArticleStates);
+        //     }
+        //     return
+        // } else {
+        //     Swal.fire('Notificacion', 'Este articulo no tiene almacen predeterminado para la sucursal que tienes seleccionado, solicitar su configuración', 'info');
+        // }
     };
 
 
@@ -159,25 +173,24 @@ const ModalCreate = () => {
         const id_sucursal = branchOffices.id;
         const id_usuario_crea = user_id;
         const comentarios = OPcomments;
-        const data = {
-            id_usuario: user_id,
-            id_sucursal: 0,
-            desde: dates[0],
-            hasta: dates[1],
-            status: 0
-
-        }
-        concepts.forEach((el:any) => {
+       
+        concepts.forEach((el: any) => {
             if (el.unidad != null && el.unidad != undefined) {
                 el.id_unidad = el.unidad
             }
         });
         try {
+            setModalLoading(true)
+
             await createOrders({ id_area, id_sucursal, id_usuario_crea, status: 0, comentarios, conceptos: concepts })
-            await getOrdedrs(data)
+            setModalLoading(false)
+
             setModal('')
         } catch (error) {
             console.log(error)
+            Swal.fire('Notificacion', 'Ocurrió un error al crear el pedido:'+ error, 'error')
+            setModalLoading(false)
+
         }
 
     }
@@ -213,8 +226,8 @@ const ModalCreate = () => {
             APIs.CreateAny({ id: selectData?.LPASelected.id, id_usuario: user_id, for_pedido: 1 }, "getLPAArticulos")
                 .then(async (response: any) => {
                     setModalLoading(false)
-                    response.forEach((element:any) => {
-                        if (element.unidades.length > 0 ) {
+                    response.forEach((element: any) => {
+                        if (element.unidades.length > 0) {
                             element.id_unidad = element.unidades[0].id_unidad
                         }
                     });
@@ -241,7 +254,7 @@ const ModalCreate = () => {
 
 
     console.log('LPAS', LPAs);
-    
+
     return (
         <div className={`overlay__orders ${modal == 'modal-create-pedido' ? 'active' : ''}`}>
             <div className={`popup__orders ${modal == 'modal-create-pedido' ? 'active' : ''}`}>
@@ -345,7 +358,8 @@ const ModalCreate = () => {
                                                 </div>
                                                 <div className='td'>
                                                     <div>
-                                                        <input className='inputs__general' value={concept?.cantidad === null ? '' : concept?.cantidad} onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' />
+                                                        <input className='inputs__general' value={concept?.cantidad === null ? '' : concept?.cantidad} 
+                                                        onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()}/>
                                                     </div>
                                                 </div>
                                                 <div className='td'>

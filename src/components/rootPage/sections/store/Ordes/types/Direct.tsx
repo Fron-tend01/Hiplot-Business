@@ -7,6 +7,7 @@ import APIs from '../../../../../../services/services/APIs';
 import { useSelectStore } from '../../../../../../zustand/Select';
 import { useStore } from 'zustand';
 import useUserStore from '../../../../../../zustand/General';
+import { storeArticles } from '../../../../../../zustand/Articles';
 
 
 const Direct: React.FC = () => {
@@ -40,6 +41,7 @@ const Direct: React.FC = () => {
     // setSelectedIds('type',typeSearch[0])
     // Bucador por nombre
     const [searchBy, setSearchBy] = useState<any>('')
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
     const searchFor = async () => {
         const data = {
@@ -62,10 +64,16 @@ const Direct: React.FC = () => {
         };
 
         try {
-            const result = await APIs.getArticles(data)
+            setModalLoading(true)
+            const result:any = await APIs.getArticles(data)
+            
             setArticles(result)
+            setSelectedModalResult(result[0])
+            setModalLoading(false)
         } catch (error) {
             console.log(error)
+            setModalLoading(false)
+
         }
     };
 

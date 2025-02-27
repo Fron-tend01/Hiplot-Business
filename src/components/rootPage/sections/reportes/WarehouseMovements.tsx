@@ -257,7 +257,7 @@ const WarehouseMovements: React.FC = () => {
                                                                                     <td>{ov.usuario_nombre}</td>
                                                                                     <td>{ov.cantidad}</td>
                                                                                     <td>{ov.unidad_nombre}</td>
-                                                                                    <td>Apartado por OV</td>
+                                                                                    <td>{ov.tipo==0?'Apartado por OV':'Venta OV'}</td>
                                                                                 </tr>
                                                                             ))
                                                                         ) : (
@@ -275,7 +275,7 @@ const WarehouseMovements: React.FC = () => {
                                                                                     <td>{paf.usuario_nombre}</td>
                                                                                     <td>{paf.cantidad}</td>
                                                                                     <td>{paf.unidad_nombre}</td>
-                                                                                    <td>Apartado por PAF</td>
+                                                                                    <td>{paf.tipo==1?'Apartado por PAF':'Venta PAF'}</td>
 
                                                                                 </tr>
                                                                             ))
