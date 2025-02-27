@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useThemeStore } from '../../../zustand/ThemeStore';
 import './Header.css';
 import NotificationIcon from './NotificationIcon';
@@ -12,6 +12,7 @@ import APIs from '../../../services/services/APIs';
 import useUserStore from '../../../zustand/General';
 import LoadingInfo from '../../loading/LoadingInfo';
 import { storeArticles } from '../../../zustand/Articles';
+import { storeHeader } from '../../../zustand/Header';
 
 const Header: React.FC = () => {
 
@@ -20,6 +21,9 @@ const Header: React.FC = () => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
   console.log('USER STATE', userState);
+
+  const setToggle = storeHeader(state => state.setToggle)
+  const {toggle} = storeHeader()
 
   const setModalArticleView = storeArticleView((state) => state.setModalArticleView);
 
@@ -64,12 +68,26 @@ const Header: React.FC = () => {
   const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
   const permisosxVista = storeDv((state) => state.permisosxvista);
   const [permisosxvista, setPermisosxvista] = useState<any[]>([]);
-  useEffect(() => {
+
+  const fetch = () => {
     APIs.GetAny('get_permisos_x_vista/' + user_id + '/HEADER').then((resp: any) => {
       setPermisosxVista(resp)
       setPermisosxvista(resp)
     })
+  }
+
+  const effectRan = useRef(false);
+
+  useEffect(() => {
+    if (!effectRan.current) {
+      fetch();
+    }
+
+    return () => {
+      effectRan.current = true;
+    };
   }, []);
+
   const checkPermission = (elemento: string) => {
     return permisosxvista.some((x: any) => x.titulo == elemento)
   }
@@ -129,17 +147,25 @@ const Header: React.FC = () => {
   //   };
   // }, [wsUrl]);
   const modalLoading = storeArticles((state: any) => state.modalLoading);
-  
+
   useEffect(() => {
-    
+
     console.log('modalLoading en header', modalLoading);
   }, [modalLoading]);
+
   
+
   return (
     <div className='hero'>
       <div className='container__hero'>
+        <div className='toggle' onClick={() => setToggle(!toggle)}>
+          <button className={`toggle__botton ${toggle ? 'activo' : ''}`}>
+            <span className="l1 span"></span>
+            <span className="l2 span"></span>
+            <span className="l3 span"></span>
+          </button>
+        </div>
         <div>
-
           <div className={`inputs__general_icons`}>
             {/* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg> */}
             {/* <input className='inputs__generic' placeholder='Ejemplo@gmail.com' /> */}

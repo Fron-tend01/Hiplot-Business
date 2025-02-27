@@ -20,6 +20,7 @@ import Logo from '../../../assets/HI SOFT LOGO-12.svg'
 import APIs from '../../../services/services/APIs';
 import RouteReportes from '../../../routes/sections/processes/RouteReportes';
 import RouteAdmin from '../../../routes/sections/processes/RouteAdmin';
+import { storeHeader } from '../../../zustand/Header';
 
 const RootHome: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -28,6 +29,8 @@ const RootHome: React.FC = () => {
     const [activeSidebar, setActiveSidebar] = useState<boolean>(true)
 
     const { resetUser, UserKey }: any = useUserStore()
+
+    const { toggle } = storeHeader()
 
     const [active, setActive] = useState<string>('dashboard')
 
@@ -97,13 +100,29 @@ const RootHome: React.FC = () => {
 
     };
 
+  const setToggle = storeHeader(state => state.setToggle)
+  
+
+  const toggleMen = () => {
+    setToggle(!toggle)
+    setActiveSidebar(false)
+  }
+
+
 
     return (
         <div className='root__dashboard'>
-            <div className={`sidebar ${activeSidebar ? 'close' : ''}`}>
+            <div className={`sidebar ${toggle ? 'active' : ''} ${activeSidebar ? 'close' : ''}`}>
                 <div className="logo__sidebar">
                     <img className='logo__image' src={Logo} alt="" />
                     {/* <h2 className='title__logo'>Procura</h2> */}
+                    <div className='toggle' onClick={toggleMen}>
+                        <button className={`toggle__botton ${toggle ? 'activo' : ''}`}>
+                            <span className="l1 span"></span>
+                            <span className="l2 span"></span>
+                            <span className="l3 span"></span>
+                        </button>
+                    </div>
                 </div>
                 <div className='arrow__sidebar' onClick={toggleMenu}>
                     <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 6l6 6l-6 6" /></svg>
@@ -269,7 +288,7 @@ const RootHome: React.FC = () => {
                     {permisos && permisos?.ADM?.length ?
                         <div className={`nav__item ${activeMenuIndex === 8 ? 'activeMenu' : ''}`} >
                             <AnchorTag className={`nav__link ${active == 'administracion' ? 'active' : ''}`} style={administracion} onClick={(e) => { e.preventDefault(); toggleSubMenu(8, 'administracion') }} to={`${PrivateRoutes.ADMINISTRACION}`}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-folder-check"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" /><path d="m9 13 2 2 4-4" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h207q16 0 30.5 6t25.5 17l57 57h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Z" /></svg>
                                 <span>Admin.</span>
                                 <svg onClick={toggleClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="arrow lucide lucide-chevron-down"><path d="m6 9 6 6 6-6" /></svg>
 
@@ -318,7 +337,7 @@ const RootHome: React.FC = () => {
                                                 <span>Existencia Por Almacen</span>
                                             </AnchorTag>
                                         );
-                                    }else if (permiso.titulo == "ULTIMOS COSTOS") {
+                                    } else if (permiso.titulo == "ULTIMOS COSTOS") {
                                         return (
                                             <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')} to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.ULTIMOSCOSTOS}`}>
                                                 <span>Ultimos Costos</span>
@@ -336,7 +355,7 @@ const RootHome: React.FC = () => {
                                                 <span>Hojas Blancas</span>
                                             </AnchorTag>
                                         );
-                                    }else {
+                                    } else {
                                         return null;
                                     }
                                 })}

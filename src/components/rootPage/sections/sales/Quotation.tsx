@@ -236,7 +236,7 @@ const Quotation: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className='row__two my-4'>
+          <div className='my-4 row__two'>
             <div>
               <label className='label__general'>Clientes</label>
               <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Cliente' />
@@ -262,7 +262,6 @@ const Quotation: React.FC = () => {
             </div>
           </div>
         </div>
-
         <div className='table__quotations-head'>
           <div>
             {quotesData ? (
@@ -302,7 +301,7 @@ const Quotation: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className='table__quotations-body'>
+        <div className='table__quotations-body-desk'>
           {quotesData ? (
             <div className='table__body'>
               {quotesData?.map((quatation: any, index: any) => (
@@ -339,7 +338,44 @@ const Quotation: React.FC = () => {
           ) : (
             <p className='text'>Cargando datos...</p>
           )}
-
+        </div>
+        <div className='table__quotations-body-response'>
+          {quotesData ? (
+            <div className='table__body'>
+              {quotesData?.map((quatation: any, index: any) => (
+                <div className='tbody__container' key={index} onClick={() => updateQuotation(quatation)}>
+                  <div className='tbody'>
+                    <div className='td'>
+                      <p className='folio-mobile'>{quatation.folio}-{quatation.anio}</p>
+                    </div>
+                    <div className='td'>
+                      {quatation.titulo}
+                    </div>
+                  
+                    <div className='td'>
+                      {quatation.Razon_social}
+                    </div>
+                    <div className='td '>
+                      <div className='by-user'>
+                        {quatation.usuario_crea}
+                      </div>
+                    </div>
+                    <div className='td'>
+                      {quatation.fecha_creacion}
+                    </div>
+                    <div className='td'>
+                      {quatation.sucursal}
+                    </div>
+                    <div className='td '>
+                      <p className='total'>$ 567.45</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className='text'>Cargando datos...</p>
+          )}
         </div>
         <ModalCreate />
       </div>

@@ -310,7 +310,9 @@
         height: 100px;
     }
 
-    &::-webkit-scrollbar-track {}
+    &::-webkit-scrollbar-track {
+        
+    }
 }
 
 .table__quotations_modal .tbody__container {

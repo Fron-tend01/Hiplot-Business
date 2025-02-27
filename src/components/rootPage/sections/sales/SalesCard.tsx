@@ -136,15 +136,6 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
 
 
-
-  useEffect(() => {
-    if (modalSalesCard === 'sale-card') {
-      fetch();
-    }
-
-
-  }, [idA]);
-
   const fetchUser = async () => {
 
     const resultUsers = await getUserGroups(user_id);
@@ -155,10 +146,20 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       setSelectedUserGroup(resultUsers[0].id);
     }
   }
-
   useEffect(() => {
-    fetchUser()
+    if (modalSalesCard === 'sale-card') {
+      fetch();
+      fetchUser()
+    }
+
+
   }, [idA]);
+
+
+
+  // useEffect(() => {
+  //   fetchUser()
+  // }, [idA]);
 
 
   // useEffect(() => {

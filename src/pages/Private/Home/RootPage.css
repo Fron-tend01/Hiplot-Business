@@ -581,5 +581,33 @@
     transform: rotate(180deg);
 }
 
+@media screen and (max-width: 768px) {
+
+    .sidebar {
+        z-index: 10;
+    }
+
+    .sidebar.close {
+        position: absolute;
+        left: -300px;
+    }
+    .arrow__sidebar {
+        display: none;
+    }
+
+     .sidebar {
+        position: absolute;
+        left: 0px;
+        left: -300px;
+    }
+
+    .sidebar.active {
+        position: absolute;
+        left: 0;
+        width: 300px;
+    }
+    
+    
+}
 
 

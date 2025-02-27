@@ -172,3 +172,84 @@
     width: 30px;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+/*================Nav Modal=====================*/
+
+.toggle {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    /* centra los elementos */
+    width: 35px;
+    height: 35px;
+    z-index: 1;
+}
+
+.toggle__botton {
+    width: 35px;
+    height: 35px;
+    transform: scale(.8);
+    position: relative;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+
+
+}
+
+.span {
+    background: var(--primary-color);
+    width: 100%;
+    height: 3px;
+    border-radius: 5px;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.4s, width 0.3s;
+}
+
+.l1 {
+    transform: translate(-50%, -15px);
+}
+
+.l3 {
+    transform: translate(-50%, 10px);
+}
+
+/* PARTE DE JAVASCRIPT */
+.activo .l1 {
+    transform: translate(-50%, -50%)rotate(45deg);
+}
+
+.activo .l3 {
+    transform: translate(-50%, -50%)rotate(-45deg);
+}
+
+.activo .l2 {
+    width: 0;
+}
+  
+
+
+
+@media screen and (max-width: 768px) {
+    .toggle {
+        display: block;
+    }
+    
+    .container__hero .inputs__general_icons {
+        display: none;
+    }
+}

@@ -492,15 +492,15 @@ const ModalSalesOrder: React.FC = () => {
                 id_usuario: user_id,
                 nombre: saleOrdersToUpdate.rfc
             }
-            getClients(data).then((response: any) => {
-                setClients({
-                    selectName: 'Cliente',
-                    options: 'razon_social',
-                    dataSelect: response
-                })
+            // getClients(data).then((response: any) => {
+            //     setClients({
+            //         selectName: 'Cliente',
+            //         options: 'razon_social',
+            //         dataSelect: response
+            //     })
 
-            })
-            calcular_tiempos_entrega()
+            // })
+            // calcular_tiempos_entrega()
         } else {
             setDates([saleOrdersToUpdate.fecha_entrega_produccion + ' ' + saleOrdersToUpdate.hora_entrega_produccion,
             saleOrdersToUpdate.fecha_entrega_cliente + ' ' + saleOrdersToUpdate.hora_entrega_cliente])
@@ -517,14 +517,14 @@ const ModalSalesOrder: React.FC = () => {
                 id_usuario: user_id,
                 nombre: saleOrdersToUpdate.razon_social
             }
-            getClients(data).then((response: any) => {
-                setClients({
-                    selectName: 'Cliente',
-                    options: 'razon_social',
-                    dataSelect: response
-                })
+            // getClients(data).then((response: any) => {
+            //     setClients({
+            //         selectName: 'Cliente',
+            //         options: 'razon_social',
+            //         dataSelect: response
+            //     })
 
-            })
+            // })
         }
     }, [modalSalesOrder]);
 
@@ -785,7 +785,6 @@ const ModalSalesOrder: React.FC = () => {
         setModalSalesOrder('')
         setCustomLocal([])
         // setCustomConceptView([])
-
 
     }
 
