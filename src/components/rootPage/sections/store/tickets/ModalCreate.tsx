@@ -37,7 +37,7 @@ const ModalCreate = () => {
 
     useEffect(() => {
         fecth()
-    }, [])
+    }, [modalTickets])
 
     const [selectedOption, setSelectedOption] = useState<number | null>(0);
 

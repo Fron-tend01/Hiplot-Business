@@ -290,6 +290,9 @@ const PurchaseOrders: React.FC = () => {
                 <p>Status</p>
               </div>
               <div className='th'>
+                <p>Prov.</p>
+              </div>
+              <div className='th'>
                 <p>Fecha</p>
               </div>
               <div className='th'>
@@ -316,6 +319,9 @@ const PurchaseOrders: React.FC = () => {
                         <p>{requisition.status == 0 ? <div className='active-identifier'><p>Activa</p></div> : ''}</p>
                         <p>{requisition.status == 1 ? <div className='cancel-identifier'><p>Cancelada</p></div> : ''}</p>
                         <p>{requisition.status == 2 ? <div className='active-status'><p>Terminada</p></div> : ''}</p>
+                      </div>
+                      <div className='td'>
+                        <p >{requisition.proveedor_gral}</p>
                       </div>
                       <div className='td'>
                         <p className='date-identifier'>{requisition.fecha_creacion}</p>

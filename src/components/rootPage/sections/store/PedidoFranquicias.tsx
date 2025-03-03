@@ -30,7 +30,8 @@ interface searcher {
   hasta: string,
   id_serie: number,
   status: number,
-  folio: number
+  folio: number,
+  page: number
 }
 const PedidoFranquicias = () => {
   const [_, setPf] = useState<pedido>({
@@ -70,7 +71,8 @@ const PedidoFranquicias = () => {
     hasta: date[1],
     id_serie: 0,
     status: 0,
-    folio: 0
+    folio: 0,
+    page: 1
   })
   const [proveedorSearcher, setProveedorSearcher] = useState<any>({})
   const [franquiciaSearcher, setFranquiciaSearcher] = useState<any>({})
@@ -126,11 +128,21 @@ const PedidoFranquicias = () => {
     console.log(searcher);
     searcher.id_sucursal = sucursalFSearcher.id
     searcher.id_serie = selectData?.serieSearcher?.id
-    const result = await APIs.CreateAny(searcher, "pedido_franquicia/get")
-    setData(result)
+    searcher.page = page
+    setModalLoading(true)
+    await APIs.CreateAny(searcher, "pedido_franquicia/get").then((e: any) => {
+      setData(e)
+      setModalLoading(false)
+
+    }).catch((e: any) => {
+      setModalLoading(false)
+
+    })
   }
   const getEmpresas = async (id_fr: number) => {
-    const resultCompanies: any = await APIs.GetAny("get_proveedor_franquicia/" + id_fr)
+    let resultCompanies: any = await APIs.GetAny("get_proveedor_franquicia/" + id_fr)
+    let copia = resultCompanies.map((obj: any) => ({ ...obj }));
+    copia.unshift({ 'id': 0, 'razon_social': 'Todos' })
     setProveedor({
       selectName: 'Proveedor',
       dataSelect: resultCompanies,
@@ -138,10 +150,10 @@ const PedidoFranquicias = () => {
     })
     setProveedorSearcher({
       selectName: 'Proveedor',
-      dataSelect: resultCompanies,
+      dataSelect: copia,
       options: 'razon_social'
     })
-    setSelectData('proveedorSearcher', resultCompanies[0])
+    setSelectData('proveedorSearcher', copia[0])
     setSelectData('proveedor', resultCompanies[0])
   }
 
@@ -528,7 +540,11 @@ const PedidoFranquicias = () => {
     }
     return null;
   };
+  const [page, setPage] = useState<number>(1);
 
+  useEffect(() => {
+    getData()
+  }, [page])
   return (
     <div className='franchise__orders'>
       <div className='franchise__orders_container'>
@@ -537,7 +553,7 @@ const PedidoFranquicias = () => {
             <div className='row'>
               <div className='col-6'>
                 <Empresas_Sucursales modeUpdate={false} empresaDyn={franquiciaSearcher} sucursalDyn={sucursalFSearcher}
-                  setEmpresaDyn={setFranquiciaSearcher} setSucursalDyn={setSucursalFSearcher}></Empresas_Sucursales>
+                  setEmpresaDyn={setFranquiciaSearcher} setSucursalDyn={setSucursalFSearcher} all={true}></Empresas_Sucursales>
               </div>
               <div className='col-3'>
                 <Select dataSelects={proveedorSearcher} instanceId='proveedorSearcher' nameSelect={'Proveedor'}></Select>
@@ -681,6 +697,15 @@ const PedidoFranquicias = () => {
               ''
             )}
           </div>
+          <div className='mt-4 d-flex justify-content-between'>
+            <div>
+              <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
+                disabled={page == 1}>Anterior</button>
+            </div>
+            <div>
+              <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
+            </div>
+          </div>
           {/* <button className='btn__general-purple d-flex align-items-center' onClick={(e) => create(e)}>Guardar</button> */}
         </div>
 
@@ -709,7 +734,9 @@ const PedidoFranquicias = () => {
                         <span className='text'>Empresa: <b>{pfMu.empresa}</b></span><br />
                         <span className='text'>Sucursal: <b>{pfMu.sucursal}</b></span><br />
                         <span className='text'>Proveedor: <b>{pfMu.proveedor}</b></span> <br />
-                        <button className='btn__general-danger' type='button' onClick={cancelarPf}>Cancelar</button>
+                        {pfMu.status == 0 ?
+                          <button className='btn__general-danger' type='button' onClick={cancelarPf}>Cancelar</button>
+                          : ''}
 
                       </div>
                     </div>

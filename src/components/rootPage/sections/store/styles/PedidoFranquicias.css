@@ -1,6 +1,7 @@
 .franchise__orders {
   height: 90vh;
 	padding: 20px;
+  overflow: scroll;
 }
 
 .franchise__orders_container {
@@ -8,7 +9,6 @@
 	grid-template-rows: auto auto 1fr;
 
 	border-radius: 10px;
-  overflow: hidden;
 }
 
 .franchise__orders_container .row__one {
@@ -246,7 +246,7 @@
   display: grid;
   height: 100%;
   grid-template-rows: repeat(3, auto) 1fr;
-overflow: auto;
+/* overflow: auto; */
 }
 
 .table__franchise__orders > .table {

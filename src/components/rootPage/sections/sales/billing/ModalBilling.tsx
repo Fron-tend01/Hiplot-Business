@@ -296,6 +296,7 @@ const ModalBilling: React.FC = () => {
             console.log(DataUpdate.conceptos);
 
             setTitle(DataUpdate.titulo)
+            setType(DataUpdate.tipo)
             setSelectedIds('vendedores', DataUpdate.id_vendedor)
             setClient(DataUpdate.razon_social)
             searchClient()
