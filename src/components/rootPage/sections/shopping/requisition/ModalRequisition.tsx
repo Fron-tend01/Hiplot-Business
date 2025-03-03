@@ -69,6 +69,9 @@ const ModalRequisition: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<any>(0);
   useEffect(() => {
     setSelectedOption(0)
+    setComments('')
+    setConcepts([])
+    setTitle('')
   }, [modalStateCreate])
 
   const fetch = async () => {
@@ -416,6 +419,7 @@ const ModalRequisition: React.FC = () => {
     // concept_tmp.unidades= result
     // concept_tmp.unidad=result[0].id
     setConcepts([...concepts, concept_tmp])
+    setArticuloTemporal('')
     // Swal.fire('Notificacion', 'Función aun en desarrollo, lamentamos los inconvenientes', 'warning')
   }
   const printPDF = () => {

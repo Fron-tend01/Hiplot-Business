@@ -950,7 +950,7 @@ const ModalSalesOrder: React.FC = () => {
                         </div>
                         <div className="card-body bg-standar">
                             <div className='d-flex align-items-center justify-content-between'>
-                                <h3 className="text">{saleOrdersToUpdate.serie}-{saleOrdersToUpdate.folio}-{saleOrdersToUpdate.anio}</h3>
+                                <h3 className="text" title={saleOrdersToUpdate?.id}>{saleOrdersToUpdate.serie}-{saleOrdersToUpdate.folio}-{saleOrdersToUpdate.anio}</h3>
                                 {modalSalesOrder == 'sale-order__modal_bycot' || saleOrdersToUpdate?.id_cotizacion_relacionada > 0 && saleOrdersToUpdate?.id_cotizacion_relacionada != undefined ?
                                     <div className='d-flex align-items-center related_quote_order'>
                                         <p>Cotización relacionada</p>

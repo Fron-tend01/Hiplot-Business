@@ -82,7 +82,8 @@ const ByOC: React.FC = () => {
             desde: dates[0],
             hasta: dates[1],
             status: 0,
-            page: page
+            page: page,
+            entrada_on:true
         }
         try {
             const result = await APIs.getPurchaseOrders(data);
@@ -95,7 +96,7 @@ const ByOC: React.FC = () => {
     const addArticlesByRequest = async (x: any) => {
         console.log(x)
         for (const xx of x.conceptos) {
-            xx.id_orden_compra_concepto = xx.id_orden_compra;
+            xx.id_orden_compra_concepto = xx.id;
             xx.oc = `${x.serie}-${x.folio}-${x.anio}`
             xx.sumar_flete = x.sumar_flete
             xx.costo_flete = x.costo_flete

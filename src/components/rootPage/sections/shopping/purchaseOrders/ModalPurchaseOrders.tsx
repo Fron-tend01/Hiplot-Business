@@ -116,8 +116,6 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
       hoy.toISOString().split('T')[0]
     ])
 
-    setSelectedModalCompany(0)
-    setSelectedModalBranchOffice(0)
     setQuoteComments('')
     setBill('')
     setOComments('')
@@ -134,11 +132,26 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   }, [])
 
   useEffect(() => {
+
+
     if (modal == 'modal-purchase-orders-update') {
       setModoUpdate(true)
+      setRequisitions([])
+
     }
     if (modal == 'modal-purchase-orders-create') {
       setModoUpdate(false)
+      setQuoteComments('')
+      setBill('')
+      setOComments('')
+      setSelectedModalType(0)
+      setSelectedModalfreightProvider(0)
+      setFreightCost(0)
+      setFreightCostActive(false)
+      setFreightComments('')
+      setConceptos([])
+      setSelectedModalType(0)
+      setRequisitions([])
     }
   }, [modal])
   useEffect(() => {
@@ -316,7 +329,12 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
   const handleProveedorChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
     const temp_proveedor = parseInt(event.target.value, 10); // Convertir a número entero
-    conceptos[index].id_proveedor = temp_proveedor;
+    setConceptos((prevConceptos: any) =>
+      prevConceptos.map((concepto: any, i: number) =>
+        i === index ? { ...concepto, id_proveedor: temp_proveedor } : concepto
+      )
+    );
+
     const nuevaInstancia = [...proveedores];
     nuevaInstancia[index] = temp_proveedor;
     setProveedores(nuevaInstancia);
@@ -345,9 +363,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   };
 
   const handlePrecioUnitarioChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const value = e.target.value.trim();
     const newArticleStates = [...conceptos];
-    newArticleStates[index].precio_unitario = value === '' ? null : parseFloat(value);
+    newArticleStates[index].precio_unitario = e.target.value;
     setConceptos(newArticleStates);
   };
 
@@ -437,14 +454,20 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
   const filterByRequest = async () => {
     const data = {
-      id_sucursal: 0,
+      id_sucursal: selectedModalBranchOffice.id,
       id_usuario: user_id,
       desde: dateForReq[0],
       hasta: dateForReq[1],
       status: 0
     }
-    const res = await getRequisition2(data)
-    setRequisitions(res.data)
+    setModalLoading(true)
+    await getRequisition2(data).then((e: any) => {
+      setRequisitions(e.data)
+      setModalLoading(false)
+    }).catch(() => {
+      setModalLoading(false)
+
+    })
   }
 
 
@@ -459,21 +482,21 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   const openModalConcepts = (item: any) => {
     setModalStateConcepts(true);
 
-    item.conceptos.forEach((element: any) => {
-      setConcepts(prevConcepts => ([{
-        ...prevConcepts,
+    setConcepts(
+      item.conceptos.map((element: any) => ({
         cantidad: element.cantidad,
         codigo: element.codigo,
         comentarios: element.comentarios,
         descripcion: element.descripcion,
         iva_on: element.iva_on,
         precio_unitario: element.precio_unitario == null ? 0 : element.precio_unitario,
-        proveedor: element.proveedor,
+        proveedor: element?.proveedor || '',
         unidad: (element.unidades.find((unidad: any) => unidad.id_unidad === element.unidad) || { id_unidad: 0 }).id_unidad,
         nombre_unidad: (element.unidades.find((unidad: any) => unidad.id_unidad === element.unidad) || { nombre: 'n/a' }).nombre,
-        id_proveedor: element.proveedores[0].id_proveedor
-      }]));
-    });
+        id_proveedor: element?.proveedores[0]?.id_proveedor || 0
+      }))
+    );
+
 
 
   }
@@ -486,29 +509,44 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
 
   const addArticlesByRequest = (req: any) => {
-    const updatedConceptos = req.conceptos.map((concepto: any) => ({
-      id_proveedor: concepto.proveedores[0].id_proveedor,
-      proveedores: concepto.proveedores,
-      codigo: concepto.codigo,
-      id_articulo: concepto.id_articulo,
-      descripcion: concepto.descripcion,
-      cantidad: concepto.cantidad,
-      descuento: 0,
-      unidad: concepto.unidad,
-      unidades: concepto.unidades,
-      precio_unitario: 0,
-      iva_on: false,
-      comentarios: concepto.comentarios,
-      id_requisicion: concepto.id_requisicion,
-      folio_req: req.serie + '-' + req.folio + '-' + req.anio
+    const conceptosSinProveedores = req.conceptos.filter(
+      (concepto: any) => !concepto.proveedores || concepto.proveedores.length === 0
+    );
 
-    }));
+    if (conceptosSinProveedores.length > 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "Alerta de Proveedores",
+        html: `Los siguientes conceptos no tienen proveedores:<br>
+               <ul>${conceptosSinProveedores.map((c: any) => `<li>${c.codigo} - ${c.descripcion}</li>`).join('')}</ul>
+               <ul>Si ya añadiste tu proveedor, no olvides volver a hacer clic en el botón Filtrar, para refrescar los datos</ul>`,
+      });
+    } else {
+      const updatedConceptos = req.conceptos.map((concepto: any) => ({
+        id_proveedor: concepto.proveedores[0].id_proveedor,
+        proveedores: concepto.proveedores,
+        codigo: concepto.codigo,
+        id_articulo: concepto.id_articulo,
+        descripcion: concepto.descripcion,
+        cantidad: concepto.cantidad,
+        descuento: 0,
+        unidad: concepto.unidad,
+        unidades: concepto.unidades,
+        precio_unitario: 0,
+        iva_on: false,
+        comentarios: concepto.comentarios,
+        id_requisicion: concepto.id_requisicion,
+        folio_req: `${req.serie}-${req.folio}-${req.anio}`
+      }));
 
-    // Actualizar el estado de conceptos con los datos mapeados
-    setConceptos((prevArticleStates: any) => [
-      ...prevArticleStates,
-      ...updatedConceptos,  // Agregar los conceptos transformados
-    ]);
+
+      // Actualizar el estado de conceptos con los datos mapeados
+      setConceptos((prevArticleStates: any) => [
+        ...prevArticleStates,
+        ...updatedConceptos,  // Agregar los conceptos transformados
+      ]);
+    }
+
   }
 
   const setModalLoading = storeArticles((state: any) => state.setModalLoading);
@@ -702,7 +740,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
             <div className='row'>
               <div className='col-12'>
                 <div className="card ">
-                  <div className="card-body bg-standar">
+                  <div className="card-body bg-standar" title={purchaseOrderToUpdate?.id}>
                     <h3 className="text">{purchaseOrderToUpdate?.serie}-{purchaseOrderToUpdate?.folio}-{purchaseOrderToUpdate?.anio}</h3>
                     <hr />
                     <div className='row'>
@@ -1078,6 +1116,9 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                         <div className='th'>
                           <p className=''>Coment</p>
                         </div>
+                        <div className='th' title='Entradas Almacen Relacionadas'>
+                          <p className=''>EA Rel.</p>
+                        </div>
 
                       </div>
                     </div>
@@ -1131,7 +1172,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                                 </div>
                               </div>
                               <div className='td'>
-                                <select className='traditional__selector' onChange={(event) => handleProveedorChange(event, index)} value={proveedores[index] || ''} >
+                                <select className='traditional__selector' onChange={(event) => handleProveedorChange(event, index)} value={article.id_proveedor} >
                                   {article.proveedores && article.proveedores.map((item: any) => (
                                     <option key={item.id} value={item.id_proveedor}>
                                       {item.proveedor}
@@ -1149,7 +1190,14 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                               </div>
                               <div className='td'>
                                 <div>
-                                  <input className='inputs__general' value={article.comentarios === '' ? '' : article.comentarios} onChange={(e) => handleComentariosChange(e, index)} type="text" placeholder='P/U' />
+                                  <input className='inputs__general' value={article.comentarios === '' ? '' : article.comentarios} onChange={(e) => handleComentariosChange(e, index)} type="text" placeholder='Comentario' />
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <div>
+                                  {article.entradas_relacionadas.map((entrada:any, index:number) => (
+                                    <div key={index}>{entrada.folio_completo}</div>
+                                  ))}
                                 </div>
                               </div>
                               <div className='td'>

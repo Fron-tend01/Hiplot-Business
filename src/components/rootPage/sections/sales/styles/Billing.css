@@ -15,3 +15,128 @@
 	background-color: var(--cards-background);
 	border-radius: var(--general-card-border);
 }
+
+.table__billin_gral {
+	height: 100%;
+    margin-top: 20px;
+    border-radius: 10px;
+    grid-column: 1 / span 2;
+
+}
+
+
+.table__billin_gral .table__head {
+    display: flex;
+    width: 100%;
+	background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+	border: 2px solid var(--border-table-color);
+	border-radius: 20px 20px 0 0;
+}
+
+.table__billin_gral .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__billin_gral .table__head .thead {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    padding: 10px;
+	column-gap: 20px;
+    font-weight: 600;
+	color: var(--text-table-color);
+}
+
+.table__billin_gral .table__body {
+	max-height: 300px;
+    overflow: hidden;
+	border: 2px solid var(--border-table-color);
+	border-top: none;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+
+    }
+}
+
+.table__billin_gral .tbody__container {
+	border-top: 2px solid var(--border-table-color);
+}
+  
+.table__billin_gral .tbody__container:nth-child(even) {
+	background-color: var(--table-color);
+}
+  
+.table__billin_gral .tbody__container:nth-child(odd) {
+	background-color: var(--two-table-color);
+}
+  
+.table__billin_gral .tbody__container:first-child {
+	border-top: none;
+}
+  
+.table__billin_gral .tbody__container:last-child {
+	border-bottom: none;
+	border-radius: 0 0 20px 20px;
+}
+ 
+
+  .table__billin_gral .table__body .tbody {
+    display: flex;
+}
+
+.table__billin_gral .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    padding: 10px;
+	column-gap: 20px;
+	align-items: center;
+	color: var(--text-color);
+}
+
+
+.table__billin_gral .table__body .tbody .td {
+	display: flex;
+}
+
+
+.table__billin_gral .table__body .tbody .td .inputs__general {
+   margin-top: 0;
+}
+
+.table__billin_gral .table__body .tbody:hover > .td .folio-identifier {
+	background-color: #3D85C6;
+	color: #ffffff;
+}
+
+.table__billin_gral .table__body .tbody:hover > .td .date-identifier {
+	background-color: #ff9100;
+	color: #ffffff;
+}
+
+.table__billin_gral .table__body .tbody:hover > .td .cancel-identifier {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+.table__billin_gral .table__body .tbody:hover .td .active-identifier {
+    background-color: #4CAF50;
+    color: #ffffff;
+}
+
+.table__billin_gral .table__body .tbody:hover {
+	background-color: var(--table-hover-color);
+    color: #fff;
+}

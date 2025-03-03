@@ -149,7 +149,7 @@
 
 .table__purchase-order .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(7, 1fr);
     padding: 10px;
     font-weight: 600;
 }
@@ -207,7 +207,7 @@
 
 .table__purchase-order .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(7, 1fr);
     padding: 10px;
 
 }

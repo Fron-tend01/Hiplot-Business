@@ -29,7 +29,7 @@ const Billing: React.FC = () => {
     const selectData: any = useSelectStore(state => state.selectedIds)
     const setSelectData = useSelectStore(state => state.setSelectedId)
     const { getUsers }: any = usersRequests()
-   
+
     const [users, setUsers] = useState<any>([])
     const [Data, setData] = useState<any>([])
     const setDataUpdate = storeBilling(state => state.setDataUpdate)
@@ -96,49 +96,56 @@ const Billing: React.FC = () => {
             id_vendedor: selectData?.vendedorSearcher?.id,
             id_usuario: user_id,
             status: TypeSearcher,
+            page: page,
         }
         const result = await APIs.CreateAny(data, "get_factura")
         setData(result)
     }
     const modalUpdate = (dat: any) => {
         setSubModal('billing__modal-update');
-    
+
         // Obtener el identificador actual del store
         // const currentIdentifier = storePersonalized.getState().identifier;
         // let newIdentifier = currentIdentifier;
-    
+
         // // Actualizar los conceptos con un nuevo identificador y otras propiedades
         // const updatedConceptos = dat.conceptos.map((element: any) => ({
         //     ...element,
         //     check: false, // Ejemplo para marcar como seleccionado
         //     id_identifier: ++newIdentifier, // Incrementar y asignar el nuevo identificador
         // }));
-    
+
         // // Actualizar los conceptos personalizados
         // const updatedConceptosPers = dat.conceptos_pers.map((element: any) => ({
         //     ...element,
         //     check: true, // Ejemplo para marcar como seleccionado
         //     id_identifier: ++newIdentifier, // Incrementar y asignar el nuevo identificador
         // }));
-    
+
         // // Guardar el nuevo identificador en el store
         // storePersonalized.setState({ identifier: newIdentifier });
-    
+
         // Actualizar el estado local
         setDataUpdate(dat);
-    
+
         // // Combinar conceptos para la vista
         // setConceptView([...updatedConceptos, ...updatedConceptosPers]);
         setConceptsBack([...dat.conceptos, ...dat.conceptos_pers])
-        
+
         // setNormalConcepts(updatedConceptos)
         // setCustomConcepts(updatedConceptosPers);
         // setCustomConceptView(updatedConceptos);
-    
+
         // Activar modo de actualización
         setModoUpdate(true);
     };
-    
+
+    const [page, setPage] = useState<number>(1);
+
+    useEffect(() => {
+        search()
+    }, [page])
+
     return (
         <div className='billing'>
             <div className='billing__container'>
@@ -212,9 +219,9 @@ const Billing: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className='row'>
+                <div className='row small-container'>
                     <div className='col-12'>
-                        <div className='table__requisiciones'>
+                        <div className='table__billin_gral'>
                             <div>
                                 {Data ? (
                                     <div>
@@ -227,14 +234,17 @@ const Billing: React.FC = () => {
                             <div className='table__head'>
                                 <div className='thead'>
                                     <div className='th'>
+                                        <p>Titulo</p>
+                                    </div>
+                                    <div className='th'>
                                         <p>Folio</p>
                                     </div>
                                     <div className='th'>
                                         <p>Tipo</p>
                                     </div>
-                                    <div className='th'>
+                                    {/* <div className='th'>
                                         <p>Status</p>
-                                    </div>
+                                    </div> */}
                                     <div className='th'>
                                         <p>Fecha</p>
                                     </div>
@@ -247,6 +257,12 @@ const Billing: React.FC = () => {
                                     <div className='th'>
                                         <p>Sucursal</p>
                                     </div>
+                                    <div className='th'>
+                                        <p>Cliente</p>
+                                    </div>
+                                    <div className='th'>
+                                        <p>Ovs/PAFs</p>
+                                    </div>
                                 </div>
                             </div>
                             {Data ? (
@@ -256,15 +272,18 @@ const Billing: React.FC = () => {
                                             <div className='tbody__container' key={index} onClick={() => modalUpdate(dat)}>
                                                 <div className='tbody'>
                                                     <div className='td code'>
+                                                        <p>{dat.titulo}</p>
+                                                    </div>
+                                                    <div className='td code'>
                                                         <p>{dat.serie}-{dat.folio}-{dat.anio}</p>
                                                     </div>
                                                     <div className='td'>
                                                         <p>{dat.tipo === 0 ? 'Directa' : dat.tipo == 1 ? 'OV' : 'PAF'}</p>
                                                     </div>
-                                                    <div className='td'>
+                                                    {/* <div className='td'>
                                                         <p>{dat.status == 0 ? <div className='active-status'><p>Activo</p></div> : ''}</p>
                                                         <p>{dat.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
-                                                    </div>
+                                                    </div> */}
                                                     <div className='td date'>
                                                         <p>{dat.fecha_creacion.split('T')[0]}</p>
                                                     </div>
@@ -277,6 +296,16 @@ const Billing: React.FC = () => {
                                                     <div className='td'>
                                                         <p>{dat.sucursal}</p>
                                                     </div>
+                                                    <div className='td'>
+                                                        <p>{dat.razon_social}</p>
+                                                    </div>
+                                                    <div className=''>
+                                                        {dat?.ordenes.map((or: any, index: number) => (
+                                                            <span key={index}>
+                                                                {or?.serie}-{or?.folio}-{or?.anio} <br />
+                                                            </span>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                             </div>
                                         )
@@ -286,6 +315,15 @@ const Billing: React.FC = () => {
                                 <p>Cargando datos...</p>
                             )}
                         </div>
+                    </div>
+                </div>
+                <div className='mt-4 d-flex justify-content-between'>
+                    <div>
+                        <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
+                            disabled={page == 1}>Anterior</button>
+                    </div>
+                    <div>
+                        <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
                     </div>
                 </div>
             </div>
