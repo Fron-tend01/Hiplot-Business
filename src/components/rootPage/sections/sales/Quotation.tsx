@@ -59,7 +59,7 @@ const Quotation: React.FC = () => {
   const modal = () => {
     setModal('create-modal__qoutation')
     const storedData = JSON.parse(localStorage.getItem('cotizacion') || "[]");
- 
+
     if (storedData) {
       const dataLength = storedData.length;
       storePersonalized.getState().setIdentifier(dataLength);
@@ -351,7 +351,7 @@ const Quotation: React.FC = () => {
                     <div className='td'>
                       {quatation.titulo}
                     </div>
-                  
+
                     <div className='td'>
                       {quatation.Razon_social}
                     </div>
@@ -366,8 +366,11 @@ const Quotation: React.FC = () => {
                     <div className='td'>
                       {quatation.sucursal}
                     </div>
-                    <div className='td '>
-                      <p className='total'>$ 567.45</p>
+                    <div className='td total-mobile'>
+                      <div className='total__mobile_container'>
+                        <p>Total </p>
+                        <p className='total_mobile'>$ 567.45</p>
+                      </div>
                     </div>
                   </div>
                 </div>

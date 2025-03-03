@@ -394,7 +394,13 @@
 
 
 
-
+@media screen and (max-width: 768px) {
+	.sale-order__modal_articles>.row__two>.btns {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		width: 100%;
+	}
+}
 
 
 /*************************************************************
@@ -925,3 +931,6 @@ sale-order_production__modal_articles
 
 
 
+@media screen and (max-width: 768px) {
+	
+}

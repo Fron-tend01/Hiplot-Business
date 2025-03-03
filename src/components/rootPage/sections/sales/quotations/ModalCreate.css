@@ -78,6 +78,19 @@
     color: #ffffff;
 }
 
+@media screen and (max-width: 768px) {
+    .quotations__modal > .row__two > .row__three {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 20px;
+        background-color: var(--cards-background);
+        padding: 20px;
+        border-radius: var(--general-card-border);
+        margin-top: 20px;
+    }
+    
+}
+
 
 
 /*///////////////////////////////////////////////////////////////////////////////////////////
@@ -167,7 +180,14 @@
 
 
 
-
+@media screen and (max-width: 768px) {
+	.quotations__modal .row__three>.btns {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+        gap: 20px;
+		width: 100%;
+	}
+}
 
 
 /*///////////////////////////////////////////////////////////////////////////////////////////
@@ -313,6 +333,10 @@
     &::-webkit-scrollbar-track {
         
     }
+}
+
+.table__quotations_modal .table__quotations-modal-body-response {
+    display: none;
 }
 
 .table__quotations_modal .tbody__container {
@@ -625,4 +649,18 @@
 .tooltip-container:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
+}
+
+
+
+@media screen and (max-width: 768px) {
+    .table__quotations_modal .table__quotations-modal-body-desk {
+        display: none;
+    }
+    .table__quotations_modal .table__head {
+        display: none;
+    }
+    .table__quotations_modal .table__quotations-modal-body-response {
+        display: block;
+    }
 }

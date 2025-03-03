@@ -90,7 +90,7 @@ const ModalCreate: React.FC = () => {
     light: true,
     id_sucursal: 0
   }
-  
+
   const fetch = async () => {
     const resultUsers = await APIs.getUsers(dataUsers)
     setDataSelects(
@@ -125,7 +125,7 @@ const ModalCreate: React.FC = () => {
       setSelectedId('clients', { id: quatation.id_cliente });
       setSelectedResult({ id: quatation.id_cliente })
     } catch (error) {
-    
+
     }
   }
 
@@ -291,7 +291,7 @@ const ModalCreate: React.FC = () => {
       setCustomConcepts([])
       setConceptView([])
       setCustomConceptView([])
-      localStorage.removeItem("cotizacion");      
+      localStorage.removeItem("cotizacion");
     } catch (error) {
       Swal.fire('Error', 'Hubo un error al crear la cotizacion', 'error');
     }
@@ -384,7 +384,7 @@ const ModalCreate: React.FC = () => {
     setModal('')
     setCustomLocal([])
     setNormalConceptsView([])
-    
+
     // setNormalConcepts([])
     setDeleteNormalConcepts([])
 
@@ -589,7 +589,6 @@ const ModalCreate: React.FC = () => {
                         ""
                       )
                     )}
-
                   </div>
                   <div className='col-6 md-col-12'>
                     <span className='text'>Empresa: <b>{quatation.empresa}</b></span><br />
@@ -616,7 +615,6 @@ const ModalCreate: React.FC = () => {
               </div>
             </div>
           }
-
           <div className='row__two'>
             <div className='row__one'>
               <div className='col-12'>
@@ -700,7 +698,7 @@ const ModalCreate: React.FC = () => {
               </div>
               <div className='d-flex align-items-end' title='Busqueda de articulos'>
                 <div className='btn__general-purple-icon'>
-                  <svg onClick={() => {setModalArticleView('article-view__modal'); setTypeLocalStogare('cotizacion')}} xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" className="d-flex lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
+                  <svg onClick={() => { setModalArticleView('article-view__modal'); setTypeLocalStogare('cotizacion') }} xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" className="d-flex lucide lucide-package-search"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /><path d="m7.5 4.27 9 5.15" /><polyline points="3.29 7 12 12 20.71 7" /><line x1="12" x2="12" y1="22" y2="12" /><circle cx="18.5" cy="15.5" r="2.5" /><path d="M20.27 17.27 22 19" /></svg>
                 </div>
               </div>
             </div>
@@ -724,147 +722,292 @@ const ModalCreate: React.FC = () => {
                   </div>
                 </div>
               </div>
-              {conceptView ? (
-                <div className='table__body'>
-                  {conceptView?.map((article: any, index: number) => {
-                    return (
-                      <div className='tbody__container' key={index}>
-                        {article.personalized ?
-                          <div className='concept__personalized'>
-                            <p>Concepto Personalizado</p>
-                          </div>
-                          :
-                          ''
-                        }
-                        {article.personalized ?
-                          <div className={`tbody personalized`}>
-                            <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
-                              <p className='article'>{article.codigo}-{article.descripcion}</p>
+              <div className='table__quotations-modal-body-desk'>
+                {conceptView ? (
+                  <div className='table__body'>
+                    {conceptView?.map((article: any, index: number) => {
+                      return (
+                        <div className='tbody__container' key={index}>
+                          {article.personalized ?
+                            <div className='concept__personalized'>
+                              <p>Concepto Personalizado</p>
                             </div>
-                            <div className='td'>
-                              <p className='amount'>{article.cantidad}</p>
-                            </div>
-                            <div className='td'>
-                              <p>{article.name_unidad || article.unidad}</p>
-                            </div>
-                            <div className='td'>
-                              <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
-                                <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small></p>
-                            </div>
-                            <div className='td'>
-                              <div className='d-flex'>
-                                <div>
-                                  <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                  <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                    <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                            :
+                            ''
+                          }
+                          {article.personalized ?
+                            <div className={`tbody personalized`}>
+                              <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                                <p className='article'>{article.codigo}-{article.descripcion}</p>
+                              </div>
+                              <div className='td'>
+                                <p className='amount'>{article.cantidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p>{article.name_unidad || article.unidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
+                                  <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small></p>
+                              </div>
+                              <div className='td'>
+                                <div className='d-flex'>
+                                  <div>
+                                    <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                    <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                      <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            <div className='td'>
-                              {article?.personalized ?
-                                <div onClick={() => modalPersonalizedUpdate(article)} className='conept-icon'>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
+                              <div className='td'>
+                                {article?.personalized ?
+                                  <div onClick={() => modalPersonalizedUpdate(article)} className='conept-icon'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
+                                  </div>
+                                  :
+                                  ''
+                                }
+                              </div>
+                              <div className='td'>
+                                <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
+                                </div>
+                              </div>
+                              {article.con_adicional ?
+                                <div className='td'>
+                                  <div className='delete-icon' onClick={() => deleteNormalConcept(article)} title='Eliminar concepto'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                  </div>
                                 </div>
                                 :
-                                ''
+                                <div className='td'>
+                                  <div className='undo-icon' onClick={() => undoConcepts(article)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
+                                  </div>
+                                </div>
                               }
-                            </div>
-                            <div className='td'>
-                              <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
-                              </div>
-                            </div>
-                            {article.con_adicional ?
-                              <div className='td'>
-                                <div className='delete-icon' onClick={() => deleteNormalConcept(article)} title='Eliminar concepto'>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                </div>
-                              </div>
-                              :
-                              <div className='td'>
-                                <div className='undo-icon' onClick={() => undoConcepts(article)}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
-                                </div>
-                              </div>
-                            }
 
-                          </div>
-                          :
-                          <div className='tbody'>
-                            <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
-                              <p className='article'>{article.codigo}-{article.descripcion}</p>
                             </div>
-                            <div className='td'>
-                              <p className='amount'>{article.cantidad}</p>
-                            </div>
-                            <div className='td'>
-                              <p>{article.name_unidad || article.unidad}</p>
-                            </div>
-                            <div className='td'>
-                              <p className=''>$ {article.precio_unitario?.toFixed(2)}<br />
-                                {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                  <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
-                              </p>
-                            </div>
-                            <div className='td '>
-                              {article.urgency ?
-                                <div className='container__total'>
+                            :
+                            <div className='tbody'>
+                              <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                                <p className='article'>{article.codigo}-{article.descripcion}</p>
+                              </div>
+                              <div className='td'>
+                                <p className='amount'>{article.cantidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p>{article.name_unidad || article.unidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p className=''>$ {article.precio_unitario?.toFixed(2)}<br />
+                                  {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                    <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
+                                </p>
+                              </div>
+                              <div className='td '>
+                                {article.urgency ?
+                                  <div className='container__total'>
+                                    <div>
+                                      <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                      <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                        <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                    </div>
+                                    <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.monto_urgencia).toFixed(2)})</p>
+                                  </div>
+                                  :
                                   <div>
                                     <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
                                     <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
                                       <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                   </div>
-                                  <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.monto_urgencia).toFixed(2)})</p>
-                                </div>
-                                :
-                                <div>
-                                  <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                  <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                    <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
-                                </div>
 
-                              }
-                              {article.descuento > 0 ?
-                                <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
-                                : ''}
+                                }
+                                {article.descuento > 0 ?
+                                  <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
+                                  : ''}
+                              </div>
+
+                              <div className='td urgency'>
+                                {article?.urgency ?
+                                  <div>
+                                    <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                    </div>
+                                  </div>
+                                  :
+                                  <div>
+                                    <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+                              <div className='td'>
+                                <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
+                                </div>
+                              </div>
+
+                              <div className='td'>
+                                <div className='delete-icon' onClick={() => deleteNormalConcept(article)} title='Eliminar concepto'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                </div>
+                              </div>
+
                             </div>
-
-                            <div className='td urgency'>
-                              {article?.urgency ?
-                                <div>
-                                  <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                          }
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <p className="text">Cargando datos...</p>
+                )}
+              </div>
+              <div className='table__quotations-modal-body-response'>
+                {conceptView ? (
+                  <div className='table__body'>
+                    {conceptView?.map((article: any, index: number) => {
+                      return (
+                        <div className='tbody__container' key={index}>
+                          {article.personalized ?
+                            <div className='concept__personalized'>
+                              <p>Concepto Personalizado</p>
+                            </div>
+                            :
+                            ''
+                          }
+                          {article.personalized ?
+                            <div className={`tbody personalized`}>
+                              <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                                <p className='article'>{article.codigo}-{article.descripcion}</p>
+                              </div>
+                              <div className='td'>
+                                <p className='amount'>{article.cantidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p>{article.name_unidad || article.unidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
+                                  <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small></p>
+                              </div>
+                              <div className='td'>
+                                <div className='d-flex'>
+                                  <div>
+                                    <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                    <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                      <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className='td'>
+                                {article?.personalized ?
+                                  <div onClick={() => modalPersonalizedUpdate(article)} className='conept-icon'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
+                                  </div>
+                                  :
+                                  ''
+                                }
+                              </div>
+                              <div className='td'>
+                                <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
+                                </div>
+                              </div>
+                              {article.con_adicional ?
+                                <div className='td'>
+                                  <div className='delete-icon' onClick={() => deleteNormalConcept(article)} title='Eliminar concepto'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                   </div>
                                 </div>
                                 :
-                                <div>
-                                  <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                <div className='td'>
+                                  <div className='undo-icon' onClick={() => undoConcepts(article)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
                                   </div>
                                 </div>
                               }
-                            </div>
-                            <div className='td'>
-                              <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
-                              </div>
-                            </div>
 
-                            <div className='td'>
-                              <div className='delete-icon' onClick={() => deleteNormalConcept(article)} title='Eliminar concepto'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                              </div>
                             </div>
+                            :
+                            <div className='tbody'>
+                              <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                                <p className='article'>{article.codigo}-{article.descripcion}</p>
+                              </div>
+                              <div className='td'>
+                                <p className='amount'>{article.cantidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p>{article.name_unidad || article.unidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p className=''>$ {article.precio_unitario?.toFixed(2)}<br />
+                                  {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                    <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
+                                </p>
+                              </div>
+                              <div className='td '>
+                                {article.urgency ?
+                                  <div className='container__total'>
+                                    <div>
+                                      <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                      <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                        <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                    </div>
+                                    <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.monto_urgencia).toFixed(2)})</p>
+                                  </div>
+                                  :
+                                  <div>
+                                    <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                    <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                      <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                  </div>
 
-                          </div>
-                        }
-                      </div>
-                    )
-                  })}
-                </div>
-              ) : (
-                <p className="text">Cargando datos...</p>
-              )}
+                                }
+                                {article.descuento > 0 ?
+                                  <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
+                                  : ''}
+                              </div>
+
+                              <div className='td urgency'>
+                                {article?.urgency ?
+                                  <div>
+                                    <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                    </div>
+                                  </div>
+                                  :
+                                  <div>
+                                    <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+                              <div className='td'>
+                                <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
+                                </div>
+                              </div>
+
+                              <div className='td'>
+                                <div className='delete-icon' onClick={() => deleteNormalConcept(article)} title='Eliminar concepto'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                </div>
+                              </div>
+
+                            </div>
+                          }
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <p className="text">Cargando datos...</p>
+                )}
+              </div>
             </div>
           </div>
           <div className='row__three'>
