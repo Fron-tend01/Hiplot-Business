@@ -1,11 +1,27 @@
 .orders {
     height: 90vh;
 	padding: 20px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
     
 
 }
 
 .orders__container {
+    overflow: auto;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
 }
 
 .orders__container > .row__one {
@@ -207,9 +223,8 @@
  .table__orders {
     border-radius: 10px;
     display: grid;
-    overflow: hidden;
-    grid-template-rows: repeat(2, auto) 1fr;
-    height: 100%;
+    grid-template-rows: repeat(1, auto) 1fr;
+
     
 
 }
@@ -243,7 +258,7 @@
 }
 
 .table__orders .table__body {
-	height: 100%;
+
     overflow-y: auto;
     transition-delay: 0.0s;
     &::-webkit-scrollbar {

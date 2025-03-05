@@ -706,6 +706,10 @@ const ModalSalesOrder: React.FC = () => {
         setIndexItem(index);
 
         if (modalSalesOrder == 'sale-order__modal') {
+            concept.conceptos.forEach((element: any) => {
+                element.check = true;
+           // Incrementar y asignar
+            });
 
         } else {
             const currentIdentifier = storePersonalized.getState().identifier;
@@ -1108,7 +1112,7 @@ const ModalSalesOrder: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>x
                         {modalSalesOrder == 'sale-order__modal' ?
                             <div className='my-4 row'>
                                 <div className='col-12 d-flex align-items-center justify-content-between'>
