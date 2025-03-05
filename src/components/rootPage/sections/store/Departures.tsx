@@ -16,6 +16,7 @@ import { storeWarehouseExit } from "../../../../zustand/WarehouseExit";
 import { useStore } from "zustand";
 import ModalUpdate from "./Departures/ModalUpdate";
 import { storeArticles } from "../../../../zustand/Articles";
+import { useSelectStore } from "../../../../zustand/Select";
 
 const Departures = () => {
     const userState = useUserStore(state => state.user);
@@ -45,6 +46,7 @@ const Departures = () => {
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
 
+  const selectData: any = useSelectStore(state => state.selectedIds)
 
 
     const fecht = async () => {
@@ -66,13 +68,21 @@ const Departures = () => {
             options: 'nombre',
             dataSelect: store
         })
+       searchData()
+    }
+
+    useEffect(() => {
+        fecht()
+    }, [])
+
+    const searchData = async () => {
         const data = {
             id_almacen: null,
             id_usuario: user_id,
             id_sucursal: branchOffices?.id,
             desde: dates[0],
             hasta: dates[1],
-            id_serie: 0,
+            id_serie: selectData?.serie?.id ,
             folio: invoice,
             light: true,
             page:page
@@ -84,11 +94,6 @@ const Departures = () => {
 
         setWarehouseExit(result)
     }
-
-    useEffect(() => {
-        fecht()
-    }, [])
-
     useEffect(() => {
         if (branchOffices) {
             setSelectedBranchOffice(branchOffices.id)
@@ -198,7 +203,7 @@ const Departures = () => {
                 </div>
                 <div className="row__two">
                     <div>
-                        <button className="btn__general-purple" onClick={searchWarehouseExit}>Buscar</button>
+                        <button className="btn__general-purple" onClick={searchData}>Buscar</button>
                     </div>
                     <div className="btns__departures">
                         <div>

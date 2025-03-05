@@ -1195,7 +1195,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                               </div>
                               <div className='td'>
                                 <div>
-                                  {article.entradas_relacionadas.map((entrada:any, index:number) => (
+                                  {article?.entradas_relacionadas?.map((entrada:any, index:number) => (
                                     <div key={index}>{entrada.folio_completo}</div>
                                   ))}
                                 </div>
