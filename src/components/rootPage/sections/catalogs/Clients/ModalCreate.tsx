@@ -31,17 +31,17 @@ const ModalCreate = () => {
     ])
     const [divisas] = useState<any>([
         {
-            id: 0,
-            nombre: 'Peso Mexicano'
-        },
-        {
             id: 1,
             nombre: 'US Dolar'
         },
         {
             id: 2,
             nombre: 'Euro'
-        }
+        },
+        {
+            id: 3,
+            nombre: 'Peso Mexicano'
+        },
     ])
     const [categorias] = useState<any>([
         {

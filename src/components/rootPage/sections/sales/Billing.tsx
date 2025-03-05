@@ -285,7 +285,7 @@ const Billing: React.FC = () => {
                                                         <p>{dat.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
                                                     </div> */}
                                                     <div className='td date'>
-                                                        <p>{dat.fecha_creacion.split('T')[0]}</p>
+                                                        <p>{dat.fecha_creacion}</p>
                                                     </div>
                                                     <div className='td'>
                                                         <p>{dat.usuario_crea}</p>

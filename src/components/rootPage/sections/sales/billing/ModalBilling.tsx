@@ -67,6 +67,7 @@ const ModalBilling: React.FC = () => {
     const { conceptsBack }: any = storeBilling()
     const setIdentifier = storePersonalized(state => state.setIdentifier)
 
+    const setConceptsBack = storeBilling(state => state.setConceptsBack)
     const setConcepts = storeBilling(state => state.setConcepts)
 
     const { concepts }: any = useStore(storeBilling)
@@ -288,10 +289,11 @@ const ModalBilling: React.FC = () => {
             })
         }
     }, [type])
-
     useEffect(() => {
         setConcepts([])
+        setConceptView([])
         setTotals(totalsc)
+
         if (modoUpdate) {
             console.log(DataUpdate.conceptos);
 
@@ -306,7 +308,7 @@ const ModalBilling: React.FC = () => {
             });
             setConcepts([...concepts, ...DataUpdate.conceptos]);
         }
-    }, [modoUpdate])
+    }, [modoUpdate, subModal])
     const search = async () => {
         if (type == 2) {
             const data = {
@@ -356,8 +358,27 @@ const ModalBilling: React.FC = () => {
             Swal.fire('Notificacion', 'Selecciona un cliente para continuar', 'info')
             return
         }
+        if (selectedIds?.foreignExchange == undefined) {
+            Swal.fire('Notificacion', 'Selecciona un tipo de cambio', 'info')
+            return
+        }
+        if (selectedIds?.paymentMethod == undefined) {
+            Swal.fire('Notificacion', 'Selecciona un metodo de pago', 'info')
+            return
+        }
+        if (selectedIds?.paymentConditions == undefined) {
+            Swal.fire('Notificacion', 'Selecciona una condición de pago', 'info')
+            return
+        }
+        if (selectedIds?.methodPayment == undefined) {
+            Swal.fire('Notificacion', 'Selecciona una forma de pago', 'info')
+            return
+        }
+        if (selectedIds?.cfdi == undefined) {
+            Swal.fire('Notificacion', 'Selecciona un uso de CFDI', 'info')
+            return
+        }
         for (const element of normalConcepts) {
-            console.log(element);
             element.precio_unitario = element.order == null ? element.precio_unitario : element.total_restante / element.cantidad;
             element.orden = null
             element.produccion_interna = false
@@ -368,9 +389,9 @@ const ModalBilling: React.FC = () => {
                 obs.push(element.id_ov);
             }
         }
-
+        // let filter = normalConcepts
         if (modoUpdate) {
-            // const filter = normalConcepts.filter((x: any) => x.id_concepto_comercial == undefined)
+            // filter = normalConcepts.filter((x: any) => x.id_concepto_comercial == undefined)
         }
         const data = {
             id: modoUpdate ? DataUpdate.id : 0,
@@ -394,7 +415,8 @@ const ModalBilling: React.FC = () => {
             conceptos_elim: deleteNormalConcepts,
             conceptos_pers_elim: deleteCustomConcepts
         };
-        console.log(customConcepts);
+        console.log(normalConcepts);
+        // return
         if (!modoUpdate) {
             Swal.fire({
                 icon: 'warning',
@@ -453,7 +475,7 @@ const ModalBilling: React.FC = () => {
         setType(value);
     };
 
-    const handleAddConceptsChange = (order: any) => {
+    const handleAddConceptsChange = (order: any, i:number) => {
         console.log('order', order);
 
         let newIdentifier = identifier + 1;
@@ -516,6 +538,18 @@ const ModalBilling: React.FC = () => {
         setCustomConcepts([...customConcepts, ...newConceptsPers]);
         setDataBillign([...dataBillign, ...totalConcepts]);
         setIdentifier(newIdentifier);
+        //------------------------------------------------------------------RELLENAR INFORMACIÓN AUTOMATICA DE CLIENTE Y TITULO
+        setTitle(order.titulo == undefined ? 'Cobro PAF' : order.titulo)
+        if (order.rfc != undefined) {
+            setClient((prevClient:any) => {
+                const newClient = order.rfc;
+                searchClient(newClient); // Llama a la función con el nuevo valor
+                return newClient; // Actualiza el estado
+            });
+        }
+        //------------------------------------------------------------------ELIMINAR LA ORDEN QUE YA SE AGREGÓ 
+        setSaleOrders((prev:any) => prev.filter((_:any, index:number) => index !== i));
+
     };
 
 
@@ -532,11 +566,11 @@ const ModalBilling: React.FC = () => {
         dataSelect: []
     })
 
-    const searchClient = async () => {
+    const searchClient = async (customClient?:string) => {
         const data = {
             id_sucursal: modoUpdate ? DataUpdate.id_sucursal : branchOffices.id,
             id_usuario: user_id,
-            nombre: client
+            nombre: customClient ?? client
         }
 
         try {
@@ -617,8 +651,8 @@ const ModalBilling: React.FC = () => {
                                     Swal.fire('Notificación', response.mensaje, 'success');
                                     DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total))
                                     DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
-                                    const filter = concepts.filter((x: number) => x !== c);
-                                    setConcepts(filter);
+                                    const filter = concepts.filter((x: any) => x !== c);
+                                    setConceptsBack(filter);
                                 } else {
                                     Swal.fire('Notificación', response.mensaje, 'warning');
                                 }
@@ -634,7 +668,7 @@ const ModalBilling: React.FC = () => {
                     DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total_restante))
                     DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total_restante))
                 }
-                const filter = concepts.filter((x: number) => x !== c);
+                const filter = concepts.filter((x: any) => x !== c);
                 setConcepts(filter);
             }
         }
@@ -799,6 +833,7 @@ const ModalBilling: React.FC = () => {
                             </div>
                             : ''}
                         <div className='row__one'>
+
                             <div className='row'>
                                 <div className={`${modoUpdate ? 'col-8' : 'col-3'}`}>
                                     <label className='label__general'>Titulo</label>
@@ -829,7 +864,7 @@ const ModalBilling: React.FC = () => {
                                     <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Folio/RFC/Razon social' />
                                 </div>
                                 <div className='col-2 d-flex align-items-end justify-content-center'>
-                                    <button type='button' className='btn__general-purple' onClick={searchClient}>Buscar</button>
+                                    <button type='button' className='btn__general-purple' onClick={()=>searchClient()}>Buscar</button>
                                 </div>
                                 <div className='col-4'>
                                     <Select dataSelects={customers} instanceId='customers' nameSelect={'Clientes Encontrados'} />
@@ -923,13 +958,16 @@ const ModalBilling: React.FC = () => {
                                             <div className='th'>
                                                 <p>Creado Por</p>
                                             </div>
+                                            <div className='th'>
+                                                <p>Total($)</p>
+                                            </div>
                                             <div className="th">
                                             </div>
                                         </div>
                                     </div>
                                     {saleOrders ? (
                                         <div className='table__body'>
-                                            {saleOrders.map((order: any) => {
+                                            {saleOrders.map((order: any, i:number) => {
                                                 return (
                                                     <div className='tbody__container' key={order.id}>
                                                         <div className='tbody'>
@@ -945,11 +983,14 @@ const ModalBilling: React.FC = () => {
                                                             <div className='td'>
                                                                 <p>{order.usuario_crea}</p>
                                                             </div>
+                                                            <div className='td'>
+                                                                <p>$ {order.total_orden - order.total_facturado}</p>
+                                                            </div>
                                                             {/* <div className='td'>                HABILITAR SI ES NECESARIO PARA LA ORDEN DE VENTA 
                                                         <button type='button' className='btn__general-purple' onClick={() => handleModalSeeChange(order)}>conceptos</button>
                                                     </div> */}
                                                             <div className="th">
-                                                                <button type='button' className='btn__general-purple' onClick={() => handleAddConceptsChange(order)}>Agregar</button>
+                                                                <button type='button' className='btn__general-purple' onClick={() => handleAddConceptsChange(order,i)}>Agregar</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1004,7 +1045,6 @@ const ModalBilling: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            <p className='title__concepts_create'>Conceptos creados</p>
                             {conceptView ? (
                                 <div className='table__body'>
                                     {conceptView?.map((concept: any) => {
@@ -1114,8 +1154,10 @@ const ModalBilling: React.FC = () => {
                             ) : (
                                 <p className="text">Cargando datos...</p>
                             )}
-                            {conceptsBack ? (
+                            {subModal == 'billing__modal-update' && conceptsBack ? (
+
                                 <div className='table__body'>
+                                    <p style={{ color: 'red' }}>Estos conceptos se encuentran en tu factura</p>
                                     {conceptsBack?.map((concept: any) => {
                                         return (
                                             <div className={`tbody__container `} key={concept.id}>
