@@ -60,17 +60,17 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
   }, [])
 
-  // console.log('normalConcepts', normalConcepts)
+  console.log('normalConcepts', normalConcepts)
   // console.log('deleteNormalConcepts', deleteNormalConcepts)
-  // console.log('customConcepts', customConcepts)
-  // console.log('deleteCustomConcepts', deleteCustomConcepts)
+  console.log('customConcepts', customConcepts)
+  console.log('deleteCustomConcepts', deleteCustomConcepts)
   const [selectedKey, setselectedKey] = useState<any>('')
 
   const [articlesPersonalized, setArticlesPersonalized] = useState<any>([])
   const addPersonalized = (item: any, index: number) => {
     setSelectedIds('units', {id: customConceptView[0].unidad}) 
     setselectedKey(customConceptView[0].clave_sat)
-    setInputs(customConceptView[0].clave_sat);
+    // setInputs(customConceptView[0].clave_sat);
 
 
 

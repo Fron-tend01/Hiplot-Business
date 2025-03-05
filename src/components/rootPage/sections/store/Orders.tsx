@@ -56,7 +56,7 @@ const Departures: React.FC = () => {
     const hasta = hoy.toISOString().split('T')[0];
 
 
-  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
 
 
@@ -114,10 +114,10 @@ const Departures: React.FC = () => {
 
         setModal('modal-orders-update')
         const data = {
-            id:order.id
+            id: order.id
         }
         setModalLoading(true)
-        let orders:any = await APIs.getOrdedrs(data);
+        let orders: any = await APIs.getOrdedrs(data);
         setModalLoading(false)
 
         setOderUpdate(orders[0])
@@ -134,7 +134,7 @@ const Departures: React.FC = () => {
             id_serie: selectedIds?.series?.id,
             folio: invoice ? invoice : 0,
             page: page,
-            light:true
+            light: true
         }
         await getOrdedrs(data)
     }
@@ -161,7 +161,7 @@ const Departures: React.FC = () => {
     }, [modal])
     return (
         <div className="orders">
-              <div className='breadcrumbs'>
+            <div className='breadcrumbs'>
                 <div className='breadcrumbs__container'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-receipt"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 17.5v-11" /></svg>
                     <small className='title'>Almacén</small>
@@ -277,9 +277,9 @@ const Departures: React.FC = () => {
                                                     <p className="folio-identifier">{`${order.serie}-${order.folio}-${order.anio}`}</p>
                                                 </div>
                                                 <div className='td'>
-                                                <p>{order.status == 0 ? <div className='active-status'><p>Activa</p></div> : ''}</p>
-                                                <p>{order.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
-                                                <p>{order.status == 2 ? <div className='active-status'><p>Terminada</p></div> : ''}</p>
+                                                    <p>{order.status == 0 ? <div className='active-status'><p>Activa</p></div> : ''}</p>
+                                                    <p>{order.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
+                                                    <p>{order.status == 2 ? <div className='active-status'><p>Terminada</p></div> : ''}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <p>{order.empresa}</p>
@@ -306,14 +306,14 @@ const Departures: React.FC = () => {
                 </div>
             </div>
             <div className='mt-4 d-flex justify-content-between'>
-                    <div>
-                        <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
-                            disabled={page == 1}>Anterior</button>
-                    </div>
-                    <div>
-                        <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
-                    </div>
+                <div>
+                    <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
+                        disabled={page == 1}>Anterior</button>
                 </div>
+                <div>
+                    <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
+                </div>
+            </div>
         </div>
     )
 }

@@ -35,7 +35,7 @@ const Transfers: React.FC = () => {
   const { getCompaniesXUsers }: any = companiesRequests();
   const { getStore }: any = StoreRequests();
   const { getSeriesXUser }: any = seriesRequests();
-  const { getTransfers,  }: any = TransfersRequests();
+  const { getTransfers, }: any = TransfersRequests();
 
   const { transfer, dates }: any = storeTransfers();
 
@@ -46,7 +46,7 @@ const Transfers: React.FC = () => {
   const [storeHasta, setStoreHasta] = useState<any>()
   const [series, setSeries] = useState<any>()
 
- 
+
   const hoy = new Date();
   const haceUnaSemana = new Date();
   haceUnaSemana.setDate(hoy.getDate() - 7);
@@ -56,7 +56,7 @@ const Transfers: React.FC = () => {
 
   const fetch = async () => {
     setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
-    
+
     const resultCompanies = await getCompaniesXUsers(user_id)
     resultCompanies.unshift({ id: 0, razon_social: 'Todas' })
     setCompaniesDesde({
@@ -65,7 +65,7 @@ const Transfers: React.FC = () => {
       dataSelect: [...resultCompanies]
     })
 
-    
+
 
     setCompaniesHasta({
       selectName: 'Empresas hasta',
@@ -109,15 +109,15 @@ const Transfers: React.FC = () => {
 
     }
 
-  
+
 
     const response = await APIs.getTransfers(data)
     setTransfers(response)
-  
+
   }
 
   useEffect(() => {
-    
+
     fetch()
     setSelectedId('company_desde', 0)
     setSelectedId('store_desde', 0)
@@ -191,61 +191,64 @@ const Transfers: React.FC = () => {
   return (
     <div className='transfer'>
       <div className='transfer__container'>
-        <div className='row'>
-          <div className='col-3'>
-            <Select dataSelects={companiesDesde} instanceId='company_desde' nameSelect={'Empresas desde'} />
+        <div className='row__one'>
+          <div className='row'>
+            <div className='col-3'>
+              <Select dataSelects={companiesDesde} instanceId='company_desde' nameSelect={'Empresas desde'} />
+            </div>
+            <div className='col-3'>
+              <Select dataSelects={storeDesde} instanceId='store_desde' nameSelect={'Almacen desde'} />
+            </div>
+            <div className='col-3'>
+              <Select dataSelects={companiesHasta} instanceId='company_hasta' nameSelect={'Empresas hasta'} />
+            </div>
+            <div className='col-3'>
+              <Select dataSelects={storeHasta} instanceId='store_hasta' nameSelect={'Almacen hasta'} />
+            </div>
           </div>
-          <div className='col-3'>
-            <Select dataSelects={storeDesde} instanceId='store_desde' nameSelect={'Almacen desde'} />
-          </div>
-          <div className='col-3'>
-            <Select dataSelects={companiesHasta} instanceId='company_hasta' nameSelect={'Empresas hasta'} />
-          </div>
-          <div className='col-3'>
-            <Select dataSelects={storeHasta} instanceId='store_hasta' nameSelect={'Almacen hasta'} />
-          </div>
-        </div>
-        <div className='row'>
-          <div className='col-8 row'>
-            <div className='dates__requisition col-4'>
-              <label className='label__general'>Fechas</label>
-              <div className='container_dates__requisition'>
-                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+          <div className='row '>
+            <div className='col-8 row'>
+              <div className='dates__requisition col-4'>
+                <label className='label__general'>Fechas</label>
+                <div className='container_dates__requisition'>
+                  <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                </div>
+              </div>
+              <div className='col-4'>
+                <Select dataSelects={series} instanceId='serie' nameSelect={'Series'} />
+              </div>
+              <div className='col-4'>
+                <label className='label__general'>Folio</label>
+                <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                <input className={`inputs__general`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
               </div>
             </div>
-            <div className='col-4'>
-              <Select dataSelects={series} instanceId='serie' nameSelect={'Series'} />
-            </div>
-            <div className='col-4'>
-              <label className='label__general'>Folio</label>
-              <div className='warning__general'><small >Este campo es obligatorio</small></div>
-              <input className={`inputs__general`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
-            </div>
-          </div>
-          <div className='container__checkbox_orders col-4'>
-            <div className='checkbox__orders'>
-              <label className="checkbox__container_general">
-                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 1} value={type} onChange={() => handleClick(1)} />
-                <span className="checkmark__general"></span>
-              </label>
-              <p className='title__checkbox text'>Pend</p>
-            </div>
-            <div className='checkbox__orders'>
-              <label className="checkbox__container_general">
-                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 0} value={type} onChange={() => handleClick(0)} />
-                <span className="checkmark__general"></span>
-              </label>
-              <p className='title__checkbox text'>Termi</p>
-            </div>
-            <div className='checkbox__orders'>
-              <label className="checkbox__container_general">
-                <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 2} value={type} onChange={() => handleClick(2)} />
-                <span className="checkmark__general"></span>
-              </label>
-              <p className='title__checkbox text'>Cancel</p>
+            <div className='container__checkbox_orders col-4'>
+              <div className='checkbox__orders'>
+                <label className="checkbox__container_general">
+                  <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 1} value={type} onChange={() => handleClick(1)} />
+                  <span className="checkmark__general"></span>
+                </label>
+                <p className='title__checkbox text'>Pend</p>
+              </div>
+              <div className='checkbox__orders'>
+                <label className="checkbox__container_general">
+                  <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 0} value={type} onChange={() => handleClick(0)} />
+                  <span className="checkmark__general"></span>
+                </label>
+                <p className='title__checkbox text'>Termi</p>
+              </div>
+              <div className='checkbox__orders'>
+                <label className="checkbox__container_general">
+                  <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 2} value={type} onChange={() => handleClick(2)} />
+                  <span className="checkmark__general"></span>
+                </label>
+                <p className='title__checkbox text'>Cancel</p>
+              </div>
             </div>
           </div>
         </div>
+
         <ModalCreate />
         <ModalSee />
         <div className='row__two'>
@@ -282,7 +285,6 @@ const Transfers: React.FC = () => {
               <div className='th'>
                 <p>Fecha</p>
               </div>
-
               <div className="th">
 
               </div>
@@ -296,11 +298,11 @@ const Transfers: React.FC = () => {
                     <div className='tbody'>
                       <div className='td transfers'>
                         <div>
-                          <p>{`${transfer.serie}-${transfer.folio}-${transfer.anio}`}</p>
+                          <p className='folio-identifier'>{`${transfer.serie}-${transfer.folio}-${transfer.anio}`}</p>
                         </div>
                       </div>
                       <div className='td'>
-                        <div className='active-status'><p>Terminado</p></div>
+                        <div className='finished-identifier'><p>Terminado</p></div>
                         {/* <p>{transfer.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p> */}
                       </div>
                       <div className='td'>
