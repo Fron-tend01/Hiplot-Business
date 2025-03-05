@@ -54,7 +54,7 @@ const Departures = () => {
 
 
         const resultSeries = await getSeriesXUser({ tipo_ducumento: 4, id: user_id })
-        resultSeries.unshift({'id':0, 'nombre':'Todos'})
+        resultSeries.unshift({ 'id': 0, 'nombre': 'Todos' })
         setSeries({
             selectName: 'Series',
             options: 'nombre',
@@ -75,7 +75,7 @@ const Departures = () => {
             id_serie: 0,
             folio: invoice,
             light: true,
-            page:page
+            page: page
         }
         setModalLoading(true)
 
@@ -155,61 +155,62 @@ const Departures = () => {
 
 
     return (
-        <div className="departures small-container">
-
+        <div className="departures">
             <Toaster expand={true} position="top-right" richColors />
-            <div className="departures__container">
-                <div className='breadcrumbs'>
-                    <div className='breadcrumbs__container'>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-receipt"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 17.5v-11" /></svg>
-                        <small className='title'>Almacén</small>
-                    </div>
-                    <div className='chevron__breadcrumbs'>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6" /></svg>
-                    </div>
-                    <div className='breadcrumbs__container'>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /></svg>
-                        <small className='title'>Salidas</small>
-                    </div>
+            <div className='breadcrumbs'>
+                <div className='breadcrumbs__container'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-receipt"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 17.5v-11" /></svg>
+                    <small className='title'>Almacén</small>
                 </div>
+                <div className='chevron__breadcrumbs'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6" /></svg>
+                </div>
+                <div className='breadcrumbs__container'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /></svg>
+                    <small className='title'>Salidas</small>
+                </div>
+            </div>
+            <div className="departures__container">
                 <div className="row__one">
-                    <div className="row">
-                        <div className="col-8">
-                            <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} all={true}/>
+                    <div className="row__one">
+                        <div>
+                            <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} all={true} />
                         </div>
-                        <div className='col-4'>
+                        <div>
                             <label className='label__general'>Fechas</label>
                             <div className='container_dates__requisition'>
                                 <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
                             </div>
                         </div>
-                        <div className='col-4'>
+                        <div>
+                            <Select dataSelects={store} instanceId="store" nameSelect={'Almacén'} />
+                        </div>
+                    </div>
+                    <div className="row__two">
+                        <div >
                             <Select dataSelects={series} instanceId="serie" nameSelect={'Series'} />
                         </div>
-                        <div className="col-4">
+                        <div>
                             <label className='label__general'>Folio</label>
                             <div className='warning__general'><small >Este campo es obligatorio</small></div>
                             <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(e.target.value)} placeholder='Ingresa el folio' />
                         </div>
-                        <div className='col-4'>
-                            <Select dataSelects={store} instanceId="store" nameSelect={'Almacén'} />
+                        <div>
+                            <button className="btn__general-purple" onClick={searchWarehouseExit}>Buscar</button>
+                        </div>
+                        <div className="btns__departures">
+                            <div>
+                                <button className="btn__general-purple">Excel</button>
+                            </div>
+                            <div>
+                                <button className="btn__general-purple" onClick={modalCreate}>Nueva salida</button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div className="row__two">
-                    <div>
-                        <button className="btn__general-purple" onClick={searchWarehouseExit}>Buscar</button>
-                    </div>
-                    <div className="btns__departures">
-                        <div>
-                            <button className="btn__general-purple">Excel</button>
-                        </div>
-                        <div>
-                            <button className="btn__general-purple" onClick={modalCreate}>Nueva salida</button>
-                        </div>
-                    </div>
-                </div>
 
+                </div>
                 <ModalCreate />
                 <ModalUpdate conceptsUpdate={conceptsUpdate} />
                 <div className='table__departures'>
@@ -246,12 +247,8 @@ const Departures = () => {
                                 return (
                                     <div className='tbody__container' key={exit.id}>
                                         <div className='tbody'>
-                                            <div className='td salida'>
-                                                <div>
-                                                    <p>{exit.serie}</p>-
-                                                    <p>{exit.folio}</p>-
-                                                    <p>{exit.anio}</p>
-                                                </div>
+                                            <div className='td'>
+                                                <p className="folio-identifier">{exit.serie}-{exit.folio}-{exit.anio}</p>
                                             </div>
                                             <div className='td'>
                                                 <p>{exit.empresa}</p>
@@ -259,10 +256,8 @@ const Departures = () => {
                                             <div className='td'>
                                                 <p>{exit.sucursal}</p>
                                             </div>
-                                            <div className='td date'>
-                                                <div>
-                                                    <p className="">{exit.fecha_creacion}</p>
-                                                </div>
+                                            <div className='td'>
+                                                <p className="date-identifier">{exit.fecha_creacion}</p>
                                             </div>
                                             <div className='td end'>
                                                 <button className='branchoffice__edit_btn' onClick={() => modalUpdate(exit)}>Ver conceptos</button>
@@ -277,14 +272,15 @@ const Departures = () => {
                         <p className="text">Cargando datos...</p>
                     )}
                 </div>
+
+            </div>
             <div className='mt-4 d-flex justify-content-between'>
-                    <div>
-                        <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
-                            disabled={page == 1}>Anterior</button>
-                    </div>
-                    <div>
-                        <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
-                    </div>
+                <div>
+                    <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
+                        disabled={page == 1}>Anterior</button>
+                </div>
+                <div>
+                    <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
                 </div>
             </div>
         </div>

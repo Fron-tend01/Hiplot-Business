@@ -11,7 +11,7 @@
   --primary-200: #75b4f9;
   --primary-300: #dfffff;
   
-  --accent-100: #F9A825;
+  --accent-100: #ffa81b;
   --accent-200: #8b4d00;
   --accent-300: #f55041;
   
@@ -231,9 +231,10 @@ option {
   margin-top: 10px;
   border: none;
   outline: none;
-  padding: 10px 0;
+  padding: 10px 15px;
   border-radius: 3px;
-  text-indent: 15px;
+  outline: 2px solid #f2f2f2;
+
 }
 .bg-standar {
   width: 100%;
@@ -257,6 +258,7 @@ option {
   padding: 10px 0;
   border-radius: 3px;
   text-indent: 15px;
+   outline: 2px solid #f2f2f2;
 
 }
 
@@ -322,6 +324,7 @@ option {
   padding: 15px;
   display: block;
   color: var(--text-color);
+  outline: 2px solid #f2f2f2;
 }
 
 .textarea__general:hover {
@@ -1131,6 +1134,18 @@ html, body {
   color: #FF8F00;
 }
 
+.unit-identifier {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #5e35b031;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #6e34e2;
+}
+
+
 .user-identifier {
   display: flex;
   padding: 5px;
@@ -1330,3 +1345,109 @@ html, body {
   color: #FF5252;
   cursor: pointer;
 }
+
+
+
+.card {
+  border-radius: 10px; 
+  width: 100%;
+  transition: transform 0.2s;
+}
+
+.card .btn__view_requisition {
+  background-color: var(--accent-100);
+  border: none;
+  padding: 5px 15px;
+
+}
+
+
+.card-img-top {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  width: 100%;
+  height: auto;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+.card-title {
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.card-text {
+  margin-bottom: 1rem;
+  color: #666;
+}
+
+
+
+
+
+
+/* //////////////////////////////////// CARDS////////////////////////////////// */
+
+
+.order-identifier-card {
+  padding: 5px 10px;
+  background-color: #ff91001f;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #FF8F00;
+}
+
+.user-identifier-card {
+  padding: 5px 10px;
+  background-color: #3d86c62c;
+  border-radius: 5px;
+  font-weight: 600;
+  color: var(--primary-100);
+}
+
+/* .article-identifier {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #3d86c62c;
+  border-radius: 5px;
+  font-weight: 600;
+  color: var(--primary-100);
+} */
+
+
+.data-identifier-card {
+  padding: 5px 10px;
+  background-color: #ff91001f;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #FF8F00;
+}
+
+/* .user-identifier {
+  display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #5c6c85;
+} */
+
+/* .date-identifier {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #ff91001f;
+  border-radius: 5px;
+  font-weight: 600;
+
+  color: #FF8F00;
+}  */

@@ -11,6 +11,26 @@
 	margin-top: 20px;
 }
 
+.normal > .row__one > .btn_search {
+	display: flex;
+}
+
+.normal > .row__one > .btn_search > div {
+	background-color: var(--primary-color);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 40px;
+	width: 40px;
+	border-radius: 5px;
+}
+
+.normal > .row__one > .btn_search > div > svg {
+	transform: rotate(90deg);
+	color: #fff;
+
+}
+
 
 .container___row_four {
 	display: flex;

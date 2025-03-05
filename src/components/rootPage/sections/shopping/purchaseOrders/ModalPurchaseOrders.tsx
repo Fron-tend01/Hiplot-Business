@@ -737,38 +737,38 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
         </div>
         <div className='parchase-orders-modal'>
           {modoUpdate ?
-            <div className='row'>
-              <div className='col-12'>
-                <div className="card ">
-                  <div className="card-body bg-standar" title={purchaseOrderToUpdate?.id}>
-                    <h3 className="text">{purchaseOrderToUpdate?.serie}-{purchaseOrderToUpdate?.folio}-{purchaseOrderToUpdate?.anio}</h3>
-                    <hr />
-                    <div className='row'>
-                      <div className='col-6 md-col-12'>
-                        <span className='text'>Creado por: <b>{purchaseOrderToUpdate?.usuario_crea}</b></span><br />
-                        <span className='text'>Fecha de Creación: <b>{purchaseOrderToUpdate?.fecha_creacion}</b></span><br />
-                        {purchaseOrderToUpdate?.status === 0 ? (
-                          <b style={{ color: 'green', background: '#baffc3', padding: '5px', borderRadius: '10px' }} >Activo</b>
-                        ) : purchaseOrderToUpdate?.status === 1 ? (
-                          <b style={{ color: 'red', background: '#ffbaba', padding: '5px', borderRadius: '10px' }}>Cancelada</b>
-                        ) : (
-                          <b style={{ color: 'blue', background: '#bad1ff', padding: '5px', borderRadius: '10px' }}>Terminado</b>
-
-                        )}
-
+            <div className="card__parchase-orders-modal">
+              <div className='btn__linked_order'>
+                <h3 className="order-identifier-card" title={purchaseOrderToUpdate?.id}>{purchaseOrderToUpdate?.serie}-{purchaseOrderToUpdate?.folio}-{purchaseOrderToUpdate?.anio}</h3>
+              </div>
+              <div className="card-body__parchase-orders-modal" >
+                <div className='row__one'>
+                  <div className='row__one'>
+                    <span>Creado por: <b className='user-identifier-card'>{purchaseOrderToUpdate?.usuario_crea}</b></span>
+                    <span>Fecha de Creación: <b className='data-identifier-card'>{purchaseOrderToUpdate?.fecha_creacion}</b></span>
+                    {purchaseOrderToUpdate?.status === 0 ? (
+                      <div className='active-status'>
+                        <p>Activo</p>
                       </div>
-                      <div className='col-6 md-col-12'>
-                        <span className='text'>Empresa: <b>{purchaseOrderToUpdate?.empresa}</b></span><br />
-                        <span className='text'>Sucursal: <b>{purchaseOrderToUpdate?.sucursal}</b></span><br />
-                        <span className='text'>Tipo: <b>{purchaseOrderToUpdate?.tipo == 0 ? 'Normal' : 'Diferencial'}</b></span><br />
+                    ) : purchaseOrderToUpdate?.status === 1 ? (
+                      <div>
+                        <p>Cancelada</p>
                       </div>
-                    </div>
-                    <div className='row'>
-                      <div className='col-12'>
-                        <span className='text'>Comentarios: {purchaseOrderToUpdate?.comentarios}</span>
-
+                    ) : (
+                      <div>
+                        <p>Terminado</p>
                       </div>
-                    </div>
+                    )}
+                  </div>
+                  <div className='row__two'>
+                    <span>Empresa: <b>{purchaseOrderToUpdate?.empresa}</b></span>
+                    <span>Sucursal: <b>{purchaseOrderToUpdate?.sucursal}</b></span>
+                    <span>Tipo: <b>{purchaseOrderToUpdate?.tipo == 0 ? 'Normal' : 'Diferencial'}</b></span>
+                  </div>
+                </div>
+                <div className='row__two'>
+                  <div>
+                    <span className='text'>Comentarios: {purchaseOrderToUpdate?.comentarios}</span>
                   </div>
                 </div>
               </div>
@@ -827,14 +827,13 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                       className='date'
                       options={{
                         locale: Spanish,
-                        mode: "single", // Modo para seleccionar solo una fecha
-                        dateFormat: "Y-m-d" // Formato de fecha
+                        mode: "single",
+                        dateFormat: "Y-m-d"
                       }}
                       value={arrivalDate} // Valor del estado
                       onChange={handleDateChange} // Manejo del cambio de fecha
                       placeholder='Selecciona una fecha' // Placeholder
                     />
-
                     {/* <input className='' ref={inputRef} type="text" placeholder="Selecciona una fecha" /> */}
                   </div>
                 </div>
@@ -914,14 +913,17 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                 </div>
               </div>
             </div>
-            {typeModal ?
-              <p className='title'>Buscar Requisicion</p>
-              :
-              <p className='title'>Buscar Articulos</p>
-            }
+
             <div className='row__four'>
               {typeModal == 0 ?
                 <div className='conatiner__direct'>
+                  <div className='title'>
+                    {typeModal ?
+                      <p>Buscar Requisicion</p>
+                      :
+                      <p>Buscar Artículos</p>
+                    }
+                  </div>
                   <div className='row__one'>
                     <div className='select__container'>
                       <label className='label__general'>Buscar por</label>
@@ -1119,7 +1121,6 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                         <div className='th' title='Entradas Almacen Relacionadas'>
                           <p className=''>EA Rel.</p>
                         </div>
-
                       </div>
                     </div>
                     {conceptos.length > 0 ? (
@@ -1195,13 +1196,15 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                               </div>
                               <div className='td'>
                                 <div>
-                                  {article.entradas_relacionadas.map((entrada:any, index:number) => (
+                                  {article.entradas_relacionadas.map((entrada: any, index: number) => (
                                     <div key={index}>{entrada.folio_completo}</div>
                                   ))}
                                 </div>
                               </div>
-                              <div className='td'>
-                                <button className='btn__delete_users' type='button' onClick={() => deleteOrders(article, index)}>Eliminar</button>
+                              <div className='td delete'>
+                                <div className='delete-icon' onClick={() => deleteOrders(article, index)} title='Eliminar concepto'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                </div>
                               </div>
                             </div>
                           </div>

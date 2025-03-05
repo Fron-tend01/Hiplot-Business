@@ -1,15 +1,32 @@
 .purchase-order {
     height: 90vh;
+    padding: 20px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
     
 }
 
 .container__purchase-order {
-    display: grid;
+    /* display: grid;
     height: 100%;
-    grid-template-rows: repeat(3, auto) 50%;
-    padding: 20px;
+    grid-template-rows: repeat(3, auto) 50%; */
+   
     border-radius: 10px;
-    overflow: scroll;
+    overflow: auto;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+ 
 }
 
 .container__purchase-order > .row__one {
@@ -25,9 +42,10 @@
 }
 
 .container__purchase-order > .row__one {
-    padding: 20px;
+    padding: 15px 20px;
     background-color: var(--cards-background);
     border-radius: var(--general-card-border);
+    position: relative;
 }
 
 .container__purchase-order > .row__one > .row__two {
@@ -35,25 +53,33 @@
 	grid-template-columns: repeat(3, 1fr);
 	gap: 10px;
     align-items: end;
-    margin: 20px 0;
+    margin: 10px 0;
 }
 
 
 
-.container__purchase-order > .row__one > .row__three {
-    display: grid;
-	grid-template-columns: 1fr 100px 100px;
-	gap: 10px;
-    align-items: end;
-    margin: 20px 0;
-}
 
 
 
-.container__purchase-order > .row__three .container__search {
+
+.container__purchase-order .row__three > .container__search {
     display: flex;
     justify-content: center;
 }
+
+.container__purchase-order  .row__three > .container__search > .btns {
+    position: absolute;
+    display: flex;
+    right: 20px;
+}
+
+.container__purchase-order  .row__three > .container__search > .btns > .btn__excel {
+    margin-right: 20px;
+}
+
+
+
+
 
 .parchase-orders-modal_container > .row__check {
     display: flex;
@@ -404,7 +430,7 @@
 }
 
 
-
+/* 
 @media screen and (max-height: 1080px) {
     .container__purchase-order {
         grid-template-rows: repeat(3, auto) 65%;
@@ -415,7 +441,7 @@
     .container__purchase-order {
         grid-template-rows: repeat(3, auto) 50%;
     }
-}
+} */
 
 
 

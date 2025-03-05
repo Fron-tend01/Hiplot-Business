@@ -20,7 +20,8 @@
     display: flex;
     width: 100%;
     background-color: var( --table-color);
-    border-radius: 5px 5px 0 0;
+    border-radius: 10px 10px 0 0;
+    border: 2px solid var(--border-table-color);
 }
 
 .table__modal_store  .table__head .thead {
@@ -40,6 +41,9 @@
 	max-height: 300px;
     overflow: hidden;
     overflow: auto;
+    border: 2px solid var(--border-table-color);
+    border-radius: 0 0 10px 10px;
+    border-top: none;
     transition-delay: 0.0s;
     &::-webkit-scrollbar {
         width: 5px;
@@ -57,15 +61,29 @@
 }
 
 
+
+.table__modal_store .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
+
 .table__modal_store .tbody__container:nth-child(even) {
     background-color: var(--table-color);
-	color: var(--text-table-color);
-  }
-  
+}
+
 .table__modal_store .tbody__container:nth-child(odd) {
     background-color: var(--two-table-color);
-	color: var(--text-table-color);
-  }
+}
+
+.table__modal_store .tbody__container:first-child {
+    border-top: none;
+}
+
+.table__modal_store .tbody__container:last-child {
+    border-bottom: none;
+    border-radius: 0 0 20px 20px;
+}
+
+
 
 .table__modal_store .table__body .tbody {
     display: flex;

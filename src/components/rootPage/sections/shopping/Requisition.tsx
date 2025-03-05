@@ -523,10 +523,11 @@ const Requisition: React.FC = () => {
             <p>Cargando datos...</p>
           )}
         </div>
-        <Pagination />
+       
 
 
       </div>
+      <Pagination />
     </div>
   );
 };

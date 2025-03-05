@@ -5,9 +5,8 @@
 
 .store__container {
     display: grid;
-	grid-template-rows: auto auto 1fr;
+	grid-template-rows: auto 1fr;
 	height: 100%;
-	background-color: var(--background-sections);
 	padding: 20px;
 	border-radius: 10px;
     overflow: hidden;
@@ -125,20 +124,24 @@
 	display: grid;
     height: 100%;
     grid-template-rows: repeat(2, auto) 1fr;
-	overflow: auto;
+    overflow: hidden;
+  
 }
+
 
 
 .table__store .table__head {
     display: flex;
     width: 100%;
     background-color: var( --table-color);
-    border-radius: 5px 5px 0 0;
+    border-radius: 10px 10px 0 0;
+    border: 2px solid var(--border-table-color);
 }
 
 .table__store  .table__head .thead {
    display: flex;
    width: 100%;
+
 }
 
 .table__store  .table__head .thead {
@@ -147,13 +150,16 @@
     padding: 10px;
     font-weight: 600;
 	color: var(--text-table-color);
+
 }
 
 .table__store .table__body {
 	height: 100%;
-    overflow: hidden;
     overflow: auto;
     transition-delay: 0.0s;
+    border: 2px solid var(--border-table-color);
+    border-radius: 0 0 10px 10px;
+    border-top: none;
     &::-webkit-scrollbar {
     width: 5px;
     }
@@ -170,13 +176,28 @@
 }
 
 
+.table__store .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
+
 .table__store .tbody__container:nth-child(even) {
-	background-color: var(--table-color);
+    background-color: var(--table-color);
 }
-  
+
 .table__store .tbody__container:nth-child(odd) {
-	background-color: var(--two-table-color);
+    background-color: var(--two-table-color);
 }
+
+.table__store .tbody__container:first-child {
+    border-top: none;
+}
+
+.table__store .tbody__container:last-child {
+    border-bottom: none;
+    border-radius: 0 0 20px 20px;
+}
+
+
 
   .table__store .table__body .tbody {
     display: flex;
@@ -189,10 +210,10 @@
 }
 
 .table__store .table__body .tbody .td {
-    color: var(--text-color);
+    
 }
 
 .table__store .table__body .tbody:hover {
-    background-color: var(--secundary-color);
+    background-color: var(--table-hover-color);
     color: #fff;
 }

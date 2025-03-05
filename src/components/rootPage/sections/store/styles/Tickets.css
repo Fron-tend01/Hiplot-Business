@@ -1,7 +1,9 @@
 .tickets {
     height: 90vh;
 	padding: 20px;
-    overflow:scroll
+    display: grid;
+    grid-template-rows: auto  1fr auto;
+  
 }
 
 .tickets__container {
@@ -118,7 +120,23 @@
     display: grid;
     height: 100%;
     grid-template-rows: repeat(2, auto) 1fr;
-    overflow: scroll;
+    overflow: auto;
+    transition: .3s ease all;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+    
 }
 
 .table__tickets .empty {

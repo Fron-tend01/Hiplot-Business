@@ -22,19 +22,22 @@
 }
 
 .breadcrumbs > .breadcrumbs__container  {
-  padding: 8px 15px;
-  background-color: var(--bg-300);
+  padding: 5px 15px;
+  background-color: #3d86c63f;
+  color: #3D85C6;
   border-radius: 5px;
 
 }
 
 .breadcrumbs > .chevron__breadcrumbs svg {
-  color: var(--bg-300);
+  color: #3D85C6;
+  font-weight: 600;
   
 }
 
 .breadcrumbs > .breadcrumbs__container svg {
-  color: #ffffff;
+  color: #3D85C6;
+  font-weight: 600;
   
 }
 
@@ -50,8 +53,8 @@
 
 .breadcrumbs > .breadcrumbs__container > .title {
   margin-left: 10px;
-  color: #fff;
-  font-weight: 500;
+  /* color: #fff; */
+  font-weight: 600;
 }
 
 

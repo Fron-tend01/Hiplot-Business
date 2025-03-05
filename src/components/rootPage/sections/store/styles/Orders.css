@@ -1,7 +1,7 @@
 .orders {
     height: 90vh;
 	padding: 20px;
-    overflow: scroll;
+    
 
 }
 
@@ -20,7 +20,7 @@
     text-align: end;
     column-gap: 10px;
     row-gap: 20px;
-    margin: 20px 0;
+    margin: 10px 0;
 
 }
 

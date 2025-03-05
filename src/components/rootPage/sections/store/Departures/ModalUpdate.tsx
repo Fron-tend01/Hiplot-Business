@@ -19,12 +19,12 @@ const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
     }
 
     return (
-        <div className={`overlay__modal-concepts_departures ${modal == 'modal-update__concepts' ? 'active' : ''}`}>
-            <div className={`popup__modal-concepts_departures ${modal == 'modal-update__concepts' ? 'active' : ''}`} style={{ overflow: 'scroll' }}>
-                <a href="#" className="btn-cerrar-popup__modal-concepts_departures" onClick={() => setModal('')}>
+        <div className={`overlay__departures-modal-update ${modal == 'modal-update__concepts' ? 'active' : ''}`}>
+            <div className={`popup__departures-modal-update ${modal == 'modal-update__concepts' ? 'active' : ''}`} style={{ overflow: 'scroll' }}>
+                <a href="#" className="btn-cerrar-popup__departures-modal-update" onClick={() => setModal('')}>
                     <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
                 </a>
-                <div className='container__modal-concepts_departures' >
+                <div className='container__departures-modal-update' >
                     <div className='modal-concepts_departures' >
                         <div className=''>
                             <div className="card ">
@@ -35,7 +35,6 @@ const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
                                         <div className='col-6 md-col-12'>
                                             <span className='text'>Creado por: <b>{conceptsUpdate.usuario_crea}</b></span><br />
                                             <span className='text'>Fecha de Creación: <b>{conceptsUpdate.fecha_creacion}</b></span><br />
-
                                         </div>
                                         <div className='col-6 md-col-12'>
                                             <span className='text'>Empresa: <b>{conceptsUpdate.empresa}</b></span><br />
@@ -46,12 +45,11 @@ const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
                                     <div className='row'>
                                         <div className='col-12'>
                                             <span className='text'>Comentarios: {conceptsUpdate.comentarios}</span>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div >
+                            {/* <div>
                                 <div>
                                     {conceptsUpdate.conceptos ? (
                                         <div className='table__numbers'>
@@ -84,7 +82,7 @@ const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
                                                             :
                                                             <p>No aplica</p>
                                                         }</td>
-                                                        <td style={{ border: '1px solid black', textAlign: 'center'  }}>{concept.cantidad}</td>
+                                                        <td style={{ border: '1px solid black', textAlign: 'center' }}>{concept.cantidad}</td>
                                                         <td>{concept.unidad}</td>
                                                         <td>
                                                             {concept.entradas_afectadas?.map((ent: any, i: number) => (
@@ -106,11 +104,87 @@ const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
                                         </tbody>
                                     </table>
                                 </div>
+                            </div> */}
+                            <div className='table__departures-modal-update'>
+                                {conceptsUpdate.conceptos ? (
+                                    <div className='table__numbers'>
+                                        <p className='text'>Total de pedidos</p>
+                                        <div className='quantities_tables'>{conceptsUpdate.conceptos.length}</div>
+                                    </div>
+                                ) : (
+                                    <p className="text">No hay empresas que mostras</p>
+                                )}
+                                <div className="table">
+                                    <div className='table__head'>
+                                        <div className='thead'>
+                                            <div className='th'>
+                                                <p>Artículo</p>
+                                            </div>
+                                            <div className='th'>
+                                                <p>Pedido</p>
+                                            </div>
+                                            <div className='th'>
+                                                <p>Cant.</p>
+                                            </div>
+                                            <div className='th'>
+                                                <p>Unidad</p>
+                                            </div>
+                                            <div className='th'>
+                                                <p>Entradas Afect.</p>
+                                            </div>
+                                            <div className="th">
+                                                <p>Comentarios</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {conceptsUpdate.conceptos ? (
+                                        <div className='table__body'>
+                                            {conceptsUpdate.conceptos.map((order: any) => {
+                                                return (
+                                                    <div className='tbody__container' key={order.id}>
+                                                        <div className='tbody'>
+                                                            <div className='td'>
+                                                                <p className="folio-identifier">{order.codigo}-{order.descripcion}</p>
+                                                            </div>
+                                                            <div className='td'>
+                                                                <p> {order.ped ?
+                                                                    order.ped
+                                                                    :
+                                                                    <p>No aplica</p>
+                                                                }
+                                                                </p>
+                                                            </div>
+                                                            <div className='td'>
+                                                                <p className='amount-identifier'>{order.cantidad}</p>
+                                                            </div>    
+                                                            <div className='td'>
+                                                                <p className='unit-identifier'>{order.unidad}</p>
+                                                            </div>
+                                                            <div className='td'>
+                                                                {order.entradas_afectadas?.map((ent: any, i: number) => (
+                                                                    <span key={i}>
+                                                                        {ent.serie}-{ent.folio}-{ent.anio} ||
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                            <div className='td'>
+                                                                <p>{order.comentarios}</p>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <p className="text">Cargando datos...</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className='d-flex justify-content-between mt-3'>
+                <div className='mt-3 d-flex justify-content-between'>
                     <div>
                         <button className='btn__general-orange' type='button' onClick={getPdf}>PDF</button>
                     </div>

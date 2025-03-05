@@ -270,9 +270,9 @@ const Tickets = () => {
                             </div>
                         )}
                     </div>
-                </div>
-
-                <div className='mt-4 d-flex justify-content-between'>
+                </div>               
+            </div>
+            <div className='mt-4 d-flex justify-content-between'>
                     <div>
                         <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
                             disabled={page == 1}>Anterior</button>
@@ -281,7 +281,6 @@ const Tickets = () => {
                         <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
                     </div>
                 </div>
-            </div>
         </div>
     )
 }

@@ -495,7 +495,7 @@ const ModalRequisition: React.FC = () => {
           }
         </div>
         <div className='requisition-modal'>
-          <div className='requisition-modal_container small-container'>
+          <div className='requisition-modal_container'>
             {updateToRequisition == null ?
               <>
                 <div className='row__one'>
@@ -600,15 +600,6 @@ const ModalRequisition: React.FC = () => {
                   </div>
                 </div>
                 <div className='row__three '>
-                  <div className='row text-center  mt-3 ' style={{ background: '#f2f2f2' }}>
-                    <div className='col-4 m-3'>
-                      <label className='label__general'>Articulo Temporal</label>
-                      <input className='inputs__general' type="text" value={articuloTemporal} onChange={(e) => setArticuloTemporal(e.target.value)} placeholder='Ingresa descripcion de tu articulo tmp' />
-                    </div>
-                    <div className='col-1'>
-                      <button className='btn__general-purple mt-4' onClick={agregarTmp}>Agregar</button>
-                    </div>
-                  </div>
                   {LPAs?.dataSelect?.length == 0 ?
                     selectedOption == 0 ?
                       <Normal></Normal>
@@ -618,63 +609,90 @@ const ModalRequisition: React.FC = () => {
                     :
                     updateToRequisition != null ? '' :
                       <>
-
                         <Select dataSelects={LPAs} instanceId='LPASelected' nameSelect={'Lista Productos Aprobados'}></Select>
                       </>
                   }
-                  {/* {selectedOption == 0 ?
-                // <Filtrado_Articulos_Basic  get_max_mins={true} set_article_local={setCtmp} get_unidades={true} campos_ext={campos_ext}/>
-                <Normal></Normal>
-                :
-                <Differential />
-              } */}
+
                 </div>
               </>
               :
               <div className="card ">
-                <div className="card-body bg-standar">
-                  <h3 className="text">{updateToRequisition.serie}-{updateToRequisition.folio}-{updateToRequisition.anio}</h3>
-                  <hr />
-                  <div className='row'>
-                    <div className='col-6 md-col-12'>
-                      <span className='text'>Creado por: <b>{updateToRequisition.usuario_crea}</b></span><br />
-                      <span className='text'>Fecha de Creación: <b>{updateToRequisition.fecha_creacion}</b></span><br />
-                      <span className='text'>Titulo: <b>{updateToRequisition.titulo}</b> </span>
+                <div className='folio_order_sale'>
+                  <h3>{updateToRequisition.serie}-{updateToRequisition.folio}-{updateToRequisition.anio}</h3>
+                </div>
+                <div className="card-body ">
+                  <div className='row__one'>
+                    <div className='row__one'>
+                      <div>
+                        <span className='text'>Creado por: <b className='name'>{updateToRequisition.usuario_crea}</b></span>
+                      </div>
+                      <div>
+                        <span className='text'>Fecha de Creación: <b className='data-identifier-card'>{updateToRequisition.fecha_creacion}</b></span>
+                      </div>
+                      <div>
+                        <span className='text'>Titulo: <b className='title'>{updateToRequisition.titulo}</b> </span>
+                      </div>
                       {updateToRequisition.status === 0 ? (
-                        <span className="active-status">Activo</span>
+                        <span className="active-status">
+                          <p>Activa</p>
+                        </span>
                       ) : updateToRequisition.status === 1 ? (
-                        <span className="canceled-status">Cancelada</span>
+                        <span className="canceled-status">
+                          <p>Cancelada</p>
+                        </span>
                       ) : (
                         updateToRequisition.status === 2 ? (
-                          <span className="end-status">Terminado</span>
+                          <span className="end-status">
+                            <p>Terminado</p>
+                          </span>
                         ) : (
                           ""
                         )
                       )}
-
                     </div>
-                    <div className='col-6 md-col-12'>
-                      <span className='text'>Empresa: <b>{updateToRequisition.empresa}</b></span><br />
-                      <span className='text'>Sucursal: <b>{updateToRequisition.sucursal}</b></span><br />
-                      <span className='text'>Area: <b>{updateToRequisition.area}</b></span>
+                    <div className='row__two'>
+                      <div>
+                        <span className='text'>Empresa: <b>{updateToRequisition.empresa}</b></span>
+                      </div>
+                      <div>
+                        <span className='text'>Sucursal: <b>{updateToRequisition.sucursal}</b></span>
+                      </div>
+                      <div>
+                        <span className='text'>Area: <b>{updateToRequisition.area}</b></span>
+                      </div>
+                      <div>
+
+                      </div>
                     </div>
                   </div>
-                  <div className='row'>
+                  <div className='row__two'>
                     <div className='col-10'>
                       <span className='text'>Comentarios: {updateToRequisition.comentarios}</span>
-
                     </div>
-                    <div className='col-2 text-center' title='Visualiza una vista previa de los conceptos de la requisición'>
-                      <button onClick={printPDF} style={{ padding: "5px 10px", background: "#007bff", color: "#fff", border: "none", cursor: "pointer", borderRadius: "5px", }}>
-                        📥 Vista Previa
+                    <div className='' title='Visualiza una vista previa de los conceptos de la requisición'>
+                      <button className='btn__view_requisition' onClick={printPDF} >
+                        Vista Previa
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
             }
-            <div className='table__requisiciones-modal' >
+            {updateToRequisition != null ?
+              ''
+              :
+              <div className='row__four'>
+                <div className=''>
+                  <label className='label__general'>Artículo Temporal</label>
+                  <input className='inputs__general' type="text" value={articuloTemporal} onChange={(e) => setArticuloTemporal(e.target.value)} placeholder='Descripcion artículo tmp' />
+                </div>
+                <div className='d-flex align-items-end'>
+                  <button className='mt-4 btn__general-purple ' onClick={agregarTmp}>Agregar</button>
+                </div>
+              </div>
+            }
 
+            <div className='table__requisiciones-modal' >
               <div>
                 <div>
                   {concepts ? (
@@ -743,7 +761,9 @@ const ModalRequisition: React.FC = () => {
                             </div>
                           </div>
                           <div className='td delete'>
-                            <button className='btn__delete_users' type='button' onClick={() => deleteConcept(article, index)}>Eliminar</button>
+                            <div className='delete-icon' onClick={() => deleteConcept(article, index)} title='Eliminar concepto'>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                            </div>
                           </div>
                         </div>
                       </div>

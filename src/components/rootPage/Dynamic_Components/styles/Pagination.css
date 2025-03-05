@@ -1,10 +1,10 @@
-.requisition  .row__pages {
+.pagination {
 	display: flex;
 	justify-content: center;
 	margin-top: 20px;
 }
 
-.requisition .row__pages .items__container {
+.pagination .items__container {
 	display: flex;
 	justify-content: center;
 	overflow-x: auto; /* Habilita el desplazamiento horizontal */
@@ -12,7 +12,7 @@
 
 }
 
-.requisition .row__pages .items__container > .button-prev {
+.pagination .items__container > .button-prev {
 	width: 35px;
     height: 35px;
     transition: opacity 0.3s ease;
@@ -25,7 +25,7 @@
 
 }
 
-.requisition .row__pages .items__container > .button-next {
+.pagination .items__container > .button-next {
 	width: 35px;
     height: 35px;
     transition: opacity 0.3s ease;
@@ -38,14 +38,14 @@
 
 }
 
-.requisition .row__pages .items__container .items {
+.pagination .items__container .items {
 	display: flex;
 	flex-wrap: nowrap; /* Evita que los elementos salten a una nueva línea */
 	width: max-content; /* Asegura que el contenedor tome el tamaño de su contenido */
 	overflow-x: auto; /* Permite el desplazamiento horizontal */
 }
 
-.requisition .row__pages .items__container .items > .item {
+.pagination .items__container .items > .item {
 	width: 35px;
 	height: 35px;
 	flex-shrink: 0; /* Evita que los elementos se encojan */
@@ -58,7 +58,7 @@
 	margin: 0 10px;
   }
   
-  .requisition .row__pages .items__container .items > .item.active {
+  .pagination .items__container .items > .item.active {
 	background-color: var(--primary-color);
 	color: #FFF;
   }

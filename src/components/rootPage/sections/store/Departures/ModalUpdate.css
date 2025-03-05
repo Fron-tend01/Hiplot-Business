@@ -12,3 +12,204 @@
     border-radius: 5px;
     margin-left: 20px;
 }
+
+
+
+
+
+
+ /*************************************************************
+                    Modal de actualizar entradas
+ **************************************************************/
+
+  
+ .overlay__departures-modal-update {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+	z-index: 1;
+}
+
+.overlay__departures-modal-update.active {
+	visibility: visible;
+}
+
+.popup__departures-modal-update {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	/* text-align: center; */
+	width: 95%;
+    max-height: 95%;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+.popup__departures-modal-update  .btn-cerrar-popup__departures-modal-update  {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__departures-modal-update.active {	transform: scale(1); opacity: 1; }
+
+
+
+ /*************************************************************
+ 
+                    Tabla de almacen
+ 
+ **************************************************************/
+
+
+
+ .table__departures-modal-update {
+	display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+    overflow: hidden;
+  
+}
+
+
+
+.table__departures-modal-update .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 10px 10px 0 0;
+    border: 2px solid var(--border-table-color);
+}
+
+.table__departures-modal-update  .table__head .thead {
+   display: flex;
+   width: 100%;
+
+}
+
+.table__departures-modal-update  .table__head .thead {
+    display: grid;
+    grid-template-columns: 2fr 100px  1fr 1fr 2fr 2fr;
+    padding: 10px;
+    font-weight: 600;
+	color: var(--text-table-color);
+    gap: 10px;
+}
+
+.table__departures-modal-update .table__body {
+	height: 100%;
+    overflow: auto;
+    transition-delay: 0.0s;
+    border: 2px solid var(--border-table-color);
+    border-radius: 0 0 10px 10px;
+    border-top: none;
+    &::-webkit-scrollbar {
+    width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__departures-modal-update .tbody__container {
+    border-top: 2px solid var(--border-table-color);
+}
+
+.table__departures-modal-update .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+}
+
+.table__departures-modal-update .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+.table__departures-modal-update .tbody__container:first-child {
+    border-top: none;
+}
+
+.table__departures-modal-update .tbody__container:last-child {
+    border-bottom: none;
+    border-radius: 0 0 20px 20px;
+}
+
+
+
+  .table__departures-modal-update .table__body .tbody {
+    display: flex;
+}
+
+.table__departures-modal-update .table__body .tbody {
+    display: grid;
+    grid-template-columns: 2fr 100px  1fr 1fr 2fr 2fr;
+    padding: 10px;
+    gap: 10px;
+}
+
+.table__departures-modal-update .table__body .tbody .td {
+    display: flex;
+    align-items: center;
+    
+}
+
+.table__departures-modal-update .table__body .tbody:hover>.td .folio-identifier {
+	background-color: #3D85C6;
+	color: #ffffff;
+}
+
+
+.table__departures-modal-update .table__body .tbody:hover>.td .amount-identifier {
+	background-color: #FF8F00;
+	color: #ffffff;
+}
+
+.table__departures-modal-update .table__body .tbody:hover>.td .unit-identifier {
+	background-color: #6e34e2;
+	color: #ffffff;
+}
+
+
+.table__departures-modal-update .table__body .tbody:hover {
+    background-color: var(--table-hover-color);
+    color: #fff;
+}

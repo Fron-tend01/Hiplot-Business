@@ -11,7 +11,9 @@ import APIs from '../../../../services/services/APIs';
 import Empresas_Sucursales from '../../Dynamic_Components/Empresas_Sucursales';
 import { storeArticles } from '../../../../zustand/Articles';
 
-// import { storePagination } from '../../../../zustand/Pagination';
+import { storePagination } from '../../../../zustand/Pagination';
+import Pagination from '../../Dynamic_Components/Pagination';
+
 
 const PurchaseOrders: React.FC = () => {
 
@@ -20,9 +22,9 @@ const PurchaseOrders: React.FC = () => {
   const setDates = storePurchaseOrders(state => state.setDates)
   const setType = storePurchaseOrders(state => state.setType)
   const setPurchaseOrders = storePurchaseOrders(state => state.setPurchaseOrders)
-  
-  // const setTotalPages = storePagination((state: any) => state.setTotalPages);
-  // const setPage = storePagination((state: any) => state.setPage);
+
+  const setTotalPages = storePagination((state: any) => state.setTotalPages);
+  const setPage = storePagination((state: any) => state.setPage);
 
   const [series, setSeries] = useState<any>(null)
 
@@ -43,7 +45,8 @@ const PurchaseOrders: React.FC = () => {
   haceUnaSemana.setDate(hoy.getDate() - 7);
 
   const fecth = async () => {
-
+    // setTotalPages(1)
+    // setPage(1)
     const dataS = {
       id: user_id,
       tipo_ducumento: 1
@@ -53,7 +56,6 @@ const PurchaseOrders: React.FC = () => {
     setSeries(resultSeries)
 
     setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
-
 
     const data = {
       id: 0,
@@ -142,7 +144,7 @@ const PurchaseOrders: React.FC = () => {
       desde: dates[0],
       hasta: dates[1],
       status: type,
-      page:page
+      page: 1
     };
     setModalLoading(true)
     // getPurchaseOrders(0, 0, 0, user_id, 0, 0, '2024-03-14', '2024-03-16', 0)
@@ -169,15 +171,15 @@ const PurchaseOrders: React.FC = () => {
   }
 
 
-  const [page, setPage] = useState<number>(1);
+  // const [page, setPage] = useState<number>(1);
 
   useEffect(() => {
     searchOrders()
-}, [page])
+  }, [])
 
   return (
     <div className='purchase-order'>
-       <div className='breadcrumbs'>
+      <div className='breadcrumbs'>
         <div className='breadcrumbs__container'>
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-receipt"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 17.5v-11" /></svg>
           <small className='title'>Compras</small>
@@ -261,13 +263,16 @@ const PurchaseOrders: React.FC = () => {
               <div>
                 <button className='btn__general-purple' type='button' onClick={searchOrders}>Buscar</button>
               </div>
+              <div className='btns'>
+                <div className='btn__excel'>
+                  <button className='btn__general-acccent'>Excel</button>
+                </div>
+                <div>
+                  <button className='btn__general-purple' onClick={openModal}>Nueva OC</button>
+                </div>
+              </div>
             </div>
-            <div>
-              <button className='btn__general-purple'>Excel</button>
-            </div>
-            <div>
-              <button className='btn__general-purple' onClick={openModal}>Nueva OC</button>
-            </div>
+
           </div>
         </div>
         <ModalPurchaseOrders purchaseOrderToUpdate={purchaseOrderToUpdate} />
@@ -344,17 +349,18 @@ const PurchaseOrders: React.FC = () => {
             <p>Cargando datos...</p>
           )}
         </div>
-        <div className='mt-4 d-flex justify-content-between'>
-                    <div>
-                        <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
-                            disabled={page == 1}>Anterior</button>
-                    </div>
-                    <div>
-                        <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
-                    </div>
-                </div>
-        {/* <Pagination /> */}
+        {/* <div className='mt-4 d-flex justify-content-between'>
+          <div>
+            <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
+              disabled={page == 1}>Anterior</button>
+          </div>
+          <div>
+            <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
+          </div>
+        </div> */}
+
       </div>
+      <Pagination />
     </div>
   )
 }
