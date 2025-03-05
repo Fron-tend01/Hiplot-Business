@@ -415,7 +415,7 @@ const ModalBilling: React.FC = () => {
             conceptos_elim: deleteNormalConcepts,
             conceptos_pers_elim: deleteCustomConcepts
         };
-        console.log(normalConcepts);
+        console.log('normalConcepts', normalConcepts);
         // return
         if (!modoUpdate) {
             Swal.fire({
@@ -469,7 +469,7 @@ const ModalBilling: React.FC = () => {
     const [title, setTitle] = useState<any>()
 
 
-
+console.log('ddddddddddddddddddddddddddddd', identifier)
 
     const handleCheckboxChange = (value: number) => {
         setType(value);
@@ -477,6 +477,8 @@ const ModalBilling: React.FC = () => {
 
     const handleAddConceptsChange = (order: any, i:number) => {
         console.log('order', order);
+
+        
 
         let newIdentifier = identifier + 1;
         let copy_totals = { ...totals };
@@ -651,8 +653,14 @@ const ModalBilling: React.FC = () => {
                                     Swal.fire('Notificación', response.mensaje, 'success');
                                     DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal - parseFloat(c.total))
                                     DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
-                                    const filter = concepts.filter((x: any) => x !== c);
+                                    const filter = conceptsBack.filter((x: any) => x.id !== c.id);
                                     setConceptsBack(filter);
+
+                                    const FilterConceptNormal = normalConcepts.filter((x: any) => x.id_identifier !== c.id_identifier);
+                                    setNormalConcepts(FilterConceptNormal);
+
+                                    const FilterConcept = conceptView.filter((x: any) => x.id_identifier !== c.id_identifier);
+                                    setConceptView(FilterConcept);
                                 } else {
                                     Swal.fire('Notificación', response.mensaje, 'warning');
                                 }
@@ -668,8 +676,14 @@ const ModalBilling: React.FC = () => {
                     DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total_restante))
                     DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total_restante))
                 }
-                const filter = concepts.filter((x: any) => x !== c);
-                setConcepts(filter);
+                const filter = conceptsBack.filter((x: any) => x.id !== c.id);
+                setConceptsBack(filter);
+
+                const FilterConceptNormal = normalConcepts.filter((x: any) => x.id_identifier !== c.id_identifier);
+                setNormalConcepts(FilterConceptNormal);
+
+                const FilterConcept = conceptView.filter((x: any) => x.id_identifier !== c.id_identifier);
+                setConceptView(FilterConcept);
             }
         }
     }

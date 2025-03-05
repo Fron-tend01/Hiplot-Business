@@ -13,6 +13,7 @@ import useUserStore from '../../../../zustand/General'
 import { useSelectStore } from '../../../../zustand/Select'
 import Select from '../../Dynamic_Components/Select'
 import { usersRequests } from '../../../../fuctions/Users'
+import { storePersonalized } from '../../../../zustand/Personalized'
 const Billing: React.FC = () => {
 
     const setSubModal = storeArticles(state => state.setSubModal)
@@ -36,7 +37,10 @@ const Billing: React.FC = () => {
     const setConceptsBack = storeBilling(state => state.setConceptsBack)
     const setModoUpdate = storeBilling(state => state.setModoUpdate)
 
-
+    const setConceptView = storePersonalized(state => state.setConceptView)
+    const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+    const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
+    const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
 
 
@@ -105,36 +109,36 @@ const Billing: React.FC = () => {
         setSubModal('billing__modal-update');
 
         // Obtener el identificador actual del store
-        // const currentIdentifier = storePersonalized.getState().identifier;
-        // let newIdentifier = currentIdentifier;
+        const currentIdentifier = storePersonalized.getState().identifier;
+        let newIdentifier = currentIdentifier;
 
-        // // Actualizar los conceptos con un nuevo identificador y otras propiedades
-        // const updatedConceptos = dat.conceptos.map((element: any) => ({
-        //     ...element,
-        //     check: false, // Ejemplo para marcar como seleccionado
-        //     id_identifier: ++newIdentifier, // Incrementar y asignar el nuevo identificador
-        // }));
+        // Actualizar los conceptos con un nuevo identificador y otras propiedades
+        const updatedConceptos = dat.conceptos.map((element: any) => ({
+            ...element,
+            check: false, // Ejemplo para marcar como seleccionado
+            id_identifier: ++newIdentifier, // Incrementar y asignar el nuevo identificador
+        }));
 
-        // // Actualizar los conceptos personalizados
-        // const updatedConceptosPers = dat.conceptos_pers.map((element: any) => ({
-        //     ...element,
-        //     check: true, // Ejemplo para marcar como seleccionado
-        //     id_identifier: ++newIdentifier, // Incrementar y asignar el nuevo identificador
-        // }));
+        // Actualizar los conceptos personalizados
+        const updatedConceptosPers = dat.conceptos_pers.map((element: any) => ({
+            ...element,
+            check: true, // Ejemplo para marcar como seleccionado
+            id_identifier: ++newIdentifier, // Incrementar y asignar el nuevo identificador
+        }));
 
-        // // Guardar el nuevo identificador en el store
-        // storePersonalized.setState({ identifier: newIdentifier });
+        // Guardar el nuevo identificador en el store
+        storePersonalized.setState({ identifier: newIdentifier });
 
         // Actualizar el estado local
         setDataUpdate(dat);
 
         // // Combinar conceptos para la vista
-        // setConceptView([...updatedConceptos, ...updatedConceptosPers]);
-        setConceptsBack([...dat.conceptos, ...dat.conceptos_pers])
+        setConceptView([...updatedConceptos, ...updatedConceptosPers]);
+        setConceptsBack([...updatedConceptos, ...updatedConceptosPers])
 
-        // setNormalConcepts(updatedConceptos)
-        // setCustomConcepts(updatedConceptosPers);
-        // setCustomConceptView(updatedConceptos);
+        setNormalConcepts(updatedConceptos)
+        setCustomConcepts(updatedConceptosPers);
+        setCustomConceptView(updatedConceptos);
 
         // Activar modo de actualización
         setModoUpdate(true);
@@ -187,7 +191,7 @@ const Billing: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='row mt-2'>
+                    <div className='mt-2 row'>
                         <div className='col-6 md-col-6 sm-col-12 container__checkbox_orders'>
                             <div className='col-4 md-col-4 sm-col-12 checkbox__orders'>
                                 <label className="checkbox__container_general">
