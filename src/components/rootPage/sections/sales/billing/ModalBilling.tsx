@@ -144,12 +144,12 @@ const ModalBilling: React.FC = () => {
         setPaymentConditions({
             selectName: 'Condiciónes Pagos',
             options: 'Value',
-            dataSelect: fp
+            dataSelect: cp
         })
         setMethodPayment({
             selectName: 'Formas de Pago',
             options: 'Value',
-            dataSelect: cp
+            dataSelect: fp
         })
         setSelectedIds('paymentConditions', cp[0])
         setSelectedIds('methodPayment', fp[0])
@@ -567,7 +567,7 @@ console.log('ddddddddddddddddddddddddddddd', identifier)
         options: 'razon_social',
         dataSelect: []
     })
-
+ 
     const searchClient = async (customClient?:string) => {
         const data = {
             id_sucursal: modoUpdate ? DataUpdate.id_sucursal : branchOffices.id,

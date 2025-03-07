@@ -105,6 +105,7 @@ const ArticleViewModal = () => {
                 get_unidades: false,
                 for_vendedor: true,
                 page: page,
+                id_usuario:user_id
             };
 
             const result = await getArticles(data);
@@ -138,7 +139,9 @@ const ArticleViewModal = () => {
             get_web: false,
             get_unidades: false,
             for_vendedor: true,
-            page: page
+            page: page,
+            id_usuario:user_id
+
         };
 
         const result = await getArticles(data);

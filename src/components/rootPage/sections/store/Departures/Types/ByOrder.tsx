@@ -65,6 +65,7 @@ const ByOrder: React.FC = () => {
       desde: dates[0],
       hasta: dates[1],
       status: [0],
+      for_salida:true
     }
     const result = await getOrdedrs(data)
     setOrders(result)
