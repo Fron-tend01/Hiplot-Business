@@ -433,6 +433,16 @@ const ModalBilling: React.FC = () => {
                             if (!response.error) {
                                 Swal.fire('Notificación', response.mensaje, 'success');
                                 setSubModal('')
+                                setNormalConcepts([])
+                                setCustomConceptView([])
+                                setCustomConcepts([])
+                                setDeleteCustomConcepts([])
+                                setNormalConceptsView([])
+                                setCustomLocal([])
+                                setConceptView([])
+                                setTitle('')
+                                setClient('')
+                                setSelectedIds('series', 0)
                             } else {
                                 Swal.fire('Notificación', response.mensaje, 'warning');
                             }
@@ -457,6 +467,15 @@ const ModalBilling: React.FC = () => {
                             if (!response.error) {
                                 Swal.fire('Notificación', response.mensaje, 'success');
                                 setSubModal('')
+                                setNormalConcepts([])
+                                setCustomConceptView([])
+                                setCustomConcepts([])
+                                setDeleteCustomConcepts([])
+                                setNormalConceptsView([])
+                                setCustomLocal([])
+                                setConceptView([])
+                                setTitle('')
+                                setClient('')
                             } else {
                                 Swal.fire('Notificación', response.mensaje, 'warning');
                             }
@@ -469,7 +488,6 @@ const ModalBilling: React.FC = () => {
     const [title, setTitle] = useState<any>()
 
 
-console.log('ddddddddddddddddddddddddddddd', identifier)
 
     const handleCheckboxChange = (value: number) => {
         setType(value);
@@ -774,12 +792,25 @@ console.log('ddddddddddddddddddddddddddddd', identifier)
 
     };
 
+
+    const closeModal = () => {
+        setSubModal('')
+        setModoUpdate(false)
+        setNormalConcepts([])
+        setCustomConceptView([])
+        setCustomConcepts([])
+        setDeleteCustomConcepts([])
+        setNormalConceptsView([])
+        setCustomLocal([])
+        setConceptView([])
+    }
+
     return (
         <div className={`overlay__billing-modal ${subModal == 'billing__modal-create' || subModal == 'billing__modal-update' ? 'active' : ''}`}>
             <Toaster expand={true} position="top-right" richColors />
             <div className={`popup__billing-modal ${subModal == 'billing__modal-create' || subModal == 'billing__modal-update' ? 'active' : ''}`}>
                 <div className='header__modal'>
-                    <a href="#" className="btn-cerrar-popup__billing-modal" onClick={() => { setModoUpdate(false); setSubModal('') }} >
+                    <a href="#" className="btn-cerrar-popup__billing-modal" onClick={closeModal} >
                         <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
                     </a>
                     {modoUpdate ?
