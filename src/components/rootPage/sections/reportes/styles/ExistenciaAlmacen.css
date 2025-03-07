@@ -1,6 +1,7 @@
 .existenciaAlmacen {
     display: grid;
     padding: 20px;
+    overflow: scroll;
 }
 
 .existenciaAlmacen__container {
@@ -10,7 +11,6 @@
 	background-color: var(--background-sections);
 	padding: 20px ;
 	border-radius: 10px;
-    overflow: hidden;
 }
 
 

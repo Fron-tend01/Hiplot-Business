@@ -219,7 +219,7 @@ const SalesOrder: React.FC = () => {
                         </div>
                         <div className='col-3'>
                             <label className='label__general'>Folio</label>
-                            <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' />
+                            <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio'   onKeyUp={(e) => e.key === 'Enter' && search()}/>
                         </div>
                     </div>
                     <div className='my-4 d-flex justify-content-around'>
