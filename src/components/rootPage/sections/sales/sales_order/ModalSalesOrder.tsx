@@ -121,17 +121,18 @@ const ModalSalesOrder: React.FC = () => {
     ////////////////////////
 
 
-
     const [dates, setDates] = useState(["", ""]); // Estado para las fechas
     const [modify_te, setModifyTe] = useState(0); // Estado para mostrar el aviso
-  
+    
     const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-      const updatedDates = [...dates];
-      updatedDates[index] = event.target.value; // Captura el valor del input
-      setDates(updatedDates);
-      setModifyTe(1); // Indica que las fechas han sido modificadas
+        const updatedDates = [...dates];
+        updatedDates[index] = event.target.value; // Captura el valor del input
+        setDates(updatedDates);
+        setModifyTe(1); // Indica que las fechas han sido modificadas
     };
-  
+    
+    // Extraer fecha y hora de los valores seleccionados
+
     // useEffect(() => {
     //     setDates([
     //         haceUnaSemana.toISOString().split('T')[0],
@@ -184,8 +185,8 @@ const ModalSalesOrder: React.FC = () => {
 
 
 
-        const [datePartOne, timePartOne] = dates[0].split(" ");
-        const [datePartTwo, timePartTwo] = dates[1].split(" ");
+        const [datePartOne, timePartOne] = dates[0] ? dates[0].split("T") : ["", ""];
+        const [datePartTwo, timePartTwo] = dates[1] ? dates[1].split("T") : ["", ""];
         normalConcepts.forEach((element: any) => {
             element.unidad = element.id_unidad
             element.total = element.precio_total
@@ -275,7 +276,7 @@ const ModalSalesOrder: React.FC = () => {
         setNormalConcepts(filter);
 
         localStorage.setItem('sale-order', JSON.stringify(filter));
-    
+
         if (item.id) {
             await APIs.cancelConceptsOrder(item.id)
             setDeleteNormalConcepts([...normalConcepts, item.id])
@@ -470,7 +471,7 @@ const ModalSalesOrder: React.FC = () => {
     const [subtotalf, setSubtotalf] = useState<number>(0)
     const [urgenciaf] = useState<number>(0)
     const [totalf, setTotalf] = useState<number>(0)
-    
+
     useEffect(() => {
 
         calcular_totales()
@@ -1060,7 +1061,6 @@ const ModalSalesOrder: React.FC = () => {
                                     </div>
                                 )}
 
-                                {/* Fecha de entrega a producción */}
                                 <div className="col-6 sale-order__input_container d-flex align-items-center">
                                     <p className="label__general">Fecha de entrega a producción</p>
                                     <div className="container_dates__requisition">
@@ -1196,15 +1196,19 @@ const ModalSalesOrder: React.FC = () => {
                                                     </div>
 
 
-                                                    <div className='td'>
-                                                        {saleOrdersToUpdate.status != 1 ?
-                                                            <div className='cancel-icon' onClick={() => deleteArticle(article)} title='Cancelar concepto'>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
-                                                            </div>
+                                                    {article.id ?
+                                                        <div className='td'>
+                                                            {saleOrdersToUpdate.status != 1 ?
+                                                                <div className='cancel-icon' onClick={() => deleteArticle(article, index)} title='Cancelar concepto'>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
+                                                                </div>
 
-                                                            :
-                                                            ''}
-                                                    </div>
+                                                                :
+                                                                ''}
+                                                        </div>
+                                                        :
+                                                        ''
+                                                    }
                                                     <div className='td'>
                                                         <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>

@@ -177,12 +177,14 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
     }
 
     if (personalizedModal == 'personalized_modal-quotation-update') {
-      let leght: any = null
+      let length: number = 0;
 
-      const updatedConceptView = customConcepts.map((x: any) => {
+      let filter = customConceptView.filter((x: any) => x.check == true)
+      let filterDeleteNormal = customConceptView.filter((x: any) => x.check !== true)
+      const updatedConceptView = customConcepts.map((x: any, index: number) => {
+        if (index == indexItem) {
 
-        if (x.id_identifier === idItem.id_identifier) {
-          length = x.conceptos?.leght
+          length = filter.length
           return {
             ...x,
             // conceptos: customLocal,
@@ -201,26 +203,24 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
         return x;
       });
 
-      let filterDelete = []
+      let filterDelete: any = []
 
-      if (leght > 1) {
 
+      if (length > 0) {
+        console.log('Se mantiene por que todavia le quedan conceptos', length)
+        setNormalConcepts(filterDeleteNormal)
+        setCustomConcepts(updatedConceptView)
+        setPersonalizedModal('')
+        return
 
       } else {
-        filterDelete = updatedConceptView.filter((x: any) => x.id_identifier !== idItem.id_identifier)
+        console.log('Se elimina', length)
+        let filterDelete = customConcepts.filter((_: any, index: number) => index !== indexItem)
 
         setCustomConcepts(filterDelete)
-        setConceptView(normalConcepts)
+        setNormalConcepts(filterDeleteNormal)
+        setPersonalizedModal('')
       }
-
-      setConceptView([...normalConcepts, ...updatedConceptView])
-
-      setNormalConceptsView(normalConcepts)
-      setCustomConcepts(updatedConceptView)
-      setCustomConceptView(normalConcepts)
-      setCustomLocal([])
-
-      setPersonalizedModal('')
       return
     }
 
@@ -310,34 +310,15 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
 
           setCustomConcepts(filterDelete)
           setNormalConcepts(filterDeleteNormal)
+          setPersonalizedModal('')
         }
 
-        // let filterDeleteNormal = normalConcepts.filter((x: any) => x.check !== true)
-        // setNormalConcepts(filterDeleteNormal)
-        // setCustomConcepts(updatedConceptView)
+
 
       } else {
-        // let data = {
-        //   id: idItem.id,
-        //   descripcion: inpust.descripcion,
-        //   codigo: inpust.codigo,
-        //   cantidad: inpust.cantidad,
-        //   unidad: selectedIds?.units?.id,
-        //   precio_total: inpust.precio_total,
-        //   clave_sat: selectedKey ? selectedKey : selectedSatKey?.Clave ? parseInt(selectedSatKey.Clave) : idItem.clave_sat,
-        //   comentarios_produccion: inpust.comentarios_produccion,
-        //   comentarios_factura: inpust.comentarios_factura,
-        //   conceptos: customLocal,
-        // }
 
-        // let response: any = await APIs.updateConceptsPersonalizedOrder(data)
-        // if (response.error) {
-        //   Swal.fire('Notificación', response.mensaje, 'info');
-        // } else {
-        //   Swal.fire('Notificación', response.mensaje, 'success');
-        // }
       }
-      setPersonalizedModal('')
+    
       return
     }
 
@@ -419,7 +400,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
   }
 
 
-  
+
 
   const [inpust, setInputs] = useState<any>({
     descripcion: '',
@@ -553,7 +534,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
 
     // if (modalSalesOrder == 'sale-order__modal') {
     //   if (personalizedModal == 'personalized_modal-sale') {
-      
+
     //   } else {
     //   }
     // } else {
@@ -618,6 +599,8 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
   }, [personalizedModal]);
 
 
+  console.log('customConceptView', customConceptView)
+  console.log('normalConcepts', normalConcepts)
 
 
   const [realPrice, setRealPrice] = useState<any>()
@@ -1441,7 +1424,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
                               </div>
                               <div className='td'>
                               </div>
-                              
+
                             </div>
                           </div>
                         )
