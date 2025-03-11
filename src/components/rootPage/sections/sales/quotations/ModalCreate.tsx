@@ -994,7 +994,7 @@ const ModalCreate: React.FC = () => {
                             }
                           </div>
                           <div className='td'>
-                            <div className='see-icon' onClick={() => seeVerMas(index, index)} title='Ver mas campos'>
+                            <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
                               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
                             </div>
                           </div>
@@ -1006,7 +1006,7 @@ const ModalCreate: React.FC = () => {
                             </div>
                             :
                             <div className='td'>
-                              <div className='undo-icon' onClick={() => undoConcepts(article)}>
+                              <div className='undo-icon' onClick={() => undoConcepts(article, index)}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
                               </div>
                             </div>
