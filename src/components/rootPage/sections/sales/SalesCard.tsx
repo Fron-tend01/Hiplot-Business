@@ -697,7 +697,10 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
   };
 
   useEffect(() => {
-    setCombinacionesSeleccionadas([...opciones])
+    if (opciones != undefined && opciones.lenght > 0) {
+      setCombinacionesSeleccionadas([...opciones])
+
+    }
     console.log('Opciones',opciones);
     
   }, [opciones])
