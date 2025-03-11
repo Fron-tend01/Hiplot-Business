@@ -190,7 +190,7 @@
 
 .table__personalized .table__body .tbody {
   display: grid;
-  grid-template-columns: 100px repeat(5, 1fr);
+  grid-template-columns: 100px repeat(5, 1fr) 50px 50px ;
   padding: 10px;
 }
 
@@ -211,13 +211,23 @@
   color: var(--primary-100);
 }
 
+.table__personalized .table__body .tbody:hover>.td .folio-identifier {
+	background-color: #3D85C6;
+	color: #ffffff;
+}
+
+.table__personalized .table__body .tbody:hover>.td .amount-identifier {
+	background-color: #ff9100;
+	color: #ffffff;
+}
+
 
 .table__personalized .table__body .tbody.active {
   grid-template-columns: repeat(5, 1fr);
 }
 
 .table__personalized .table__body .tbody:hover {
-  background-color: var(--secundary-color);
+  background-color: var(--table-hover-color);
   color: #fff;
 }
 

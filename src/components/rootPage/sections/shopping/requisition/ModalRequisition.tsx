@@ -28,11 +28,7 @@ const ModalRequisition: React.FC = () => {
   const setConcepts = storeRequisitions((state: any) => state.setConcepts);
 
   const [ctmp] = useState<any>([])
-  const { dataGet }: any = useStore(storeRequisitions);
 
-  const setRequisitions = storeRequisitions((state: any) => state.setRequisitions);
-
-  const { dates }: any = useStore(storeRequisitions);
 
 
   const { getRequisition }: any = RequisitionRequests();

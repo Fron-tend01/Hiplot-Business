@@ -35,17 +35,20 @@ const ModalSalesOrder: React.FC = () => {
 
     const setCustomLocal = storePersonalized((state) => state.setCustomLocal);
 
+    
+
     const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
     const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
 
     const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
     const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
     const setDeleteCustomConcepts = storePersonalized(state => state.setDeleteCustomConcepts)
-
+    const setIdItem = storePersonalized(state => state.setIdItem)
+  
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
-    const { normalConcepts, customConcepts, conceptView, personalized, deleteCustomConcepts, normalConceptsView }: any = useStore(storePersonalized)
+    const { normalConcepts, customConcepts, conceptView, personalized, idItem, deleteCustomConcepts, normalConceptsView }: any = useStore(storePersonalized)
     const { dataGet }: any = useStore(storeSaleOrder)
     const setSaleOrders = storeSaleOrder((state) => state.setSaleOrders);
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
@@ -55,6 +58,7 @@ const ModalSalesOrder: React.FC = () => {
     const setCustomData = storePersonalized((state) => state.setCustomData);
 
     const setDataSaleOrder = storeSaleOrder((state) => state.setDataSaleOrder);
+    const setDataSaleOrders = storeSaleOrder((state) => state.setDataSaleOrders);
     const setSubModal = storeSaleOrder((state) => state.setSubModal);
 
     const [companies, setCompanies] = useState<any>([])
@@ -71,7 +75,24 @@ const ModalSalesOrder: React.FC = () => {
 
     const { getSaleOrders }: any = saleOrdersRequests()
 
+    const fetch = async () => {
+        const data = {
+            id_sucursal: branchOffices.id,
+            id_usuario: user_id,
+            nombre: ''
+        }
+        const result = await getClients(data)
+        setSelectedIds('clients', result[0])
+        setClients({
+            selectName: 'Cliente',
+            options: 'razon_social',
+            dataSelect: result
+        })
+    }
 
+    useEffect(() => {
+        fetch()
+    }, [modalSalesOrder])
 
 
     const [clients, setClients] = useState<any>()
@@ -103,7 +124,7 @@ const ModalSalesOrder: React.FC = () => {
 
     // Inicializa el estado con la fecha y hora formateadas
     const [dates, setDates] = useState(["", ""]); // Asegúrate de que el array tenga siempre dos elementos.
-    console.log('dates', dates)
+   
     const handleDateChange = (fechasSeleccionadas: Date[], index: number) => {
         const updatedDates = [...dates]; // Clonar el estado actual
 
@@ -130,10 +151,24 @@ const ModalSalesOrder: React.FC = () => {
 
     }, [dates])
 
-    console.log(dates)
+ 
+    const [modeUpdate, setModeUpdate] = useState<boolean>(false)
+
+    useEffect(() => {
+        if (modalSalesOrder == 'sale-order__modal') {
+            setModeUpdate(false)
+          
+        } else {
+            setModeUpdate(true)
+        }
+    }, [modalSalesOrder])
+
+
+    
 
     useEffect(() => {
         if (modalSalesOrder == 'sale-order__modal-update') {
+           
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setNormalConcepts(saleOrdersToUpdate?.conceptos)
             setDates([
@@ -148,6 +183,7 @@ const ModalSalesOrder: React.FC = () => {
                 "sin_tiempos": false
             })
         }
+        
     }, [saleOrdersToUpdate])
 
 
@@ -453,7 +489,7 @@ const ModalSalesOrder: React.FC = () => {
 
     }, [normalConcepts, customConcepts, branchOffices, modalSalesOrder])
     const calcular_totales = () => {
-
+        
         const precios = normalConcepts?.reduce(
             (acc: any, item: any) => ({
                 precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
@@ -493,6 +529,8 @@ const ModalSalesOrder: React.FC = () => {
             console.log(error);
         }
     }
+
+    console.log(normalConcepts)
 
     useEffect(() => {
 
@@ -545,7 +583,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const hora = hoy.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
-    console.log('Hora:', hora); // "10:51"
+
 
 
     const calcular_tiempos_entrega = async () => {
@@ -696,13 +734,12 @@ const ModalSalesOrder: React.FC = () => {
         });
     }
 
-    const [idItem, setIdItem] = useState<any>(null)
+   
     const [indexItem, setIndexItem] = useState<any>()
 
     const updateConceptSaleOrder = (concept: any, index: number) => {
         setPersonalizedModal('personalized_modal-sale-update')
-
-        setIdItem(concept);
+      
         setIndexItem(index);
 
         if (modalSalesOrder == 'sale-order__modal') {
@@ -739,13 +776,15 @@ const ModalSalesOrder: React.FC = () => {
 
 
 
-
+    
 
 
     const modalPersonalized = () => {
+       
         setPersonalizedModal('personalized_modal-sale')
+      
         setCustomConceptView(normalConceptsView)
-        setCustomLocal([])
+        // setCustomLocal([])
 
     }
 
@@ -805,6 +844,7 @@ const ModalSalesOrder: React.FC = () => {
             page: 1
         }
         const resultData = await getSaleOrders(dataSaleOrders)
+        
         setSaleOrders(resultData)
         setModalSalesOrder('')
     }
@@ -1055,9 +1095,9 @@ const ModalSalesOrder: React.FC = () => {
                             <div className='row'>
                                 <div className='col-12'>
                                     {modalSalesOrder !== 'sale-order__modal-update' ?
-                                        <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                                        <Empresas_Sucursales modeUpdate={modeUpdate}  empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
                                         :
-                                        <Empresas_Sucursales modeUpdate={true} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                                        <Empresas_Sucursales modeUpdate={modeUpdate} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
                                     }
                                 </div>
                             </div>
@@ -1112,7 +1152,7 @@ const ModalSalesOrder: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>x
+                        </div>
                         {modalSalesOrder == 'sale-order__modal' ?
                             <div className='my-4 row'>
                                 <div className='col-12 d-flex align-items-center justify-content-between'>

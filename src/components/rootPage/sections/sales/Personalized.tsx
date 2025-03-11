@@ -17,8 +17,11 @@ import { storeArticles } from '../../../../zustand/Articles'
 const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
 
+
   const setConceptView = storePersonalized(state => state.setConceptView)
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
+  const setIdItem = storePersonalized(state => state.setIdItem)
+  
 
   const { subModal }: any = useStore(storeArticles)
 
@@ -61,20 +64,21 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   }, [])
 
   console.log('normalConcepts', normalConcepts)
-  // console.log('deleteNormalConcepts', deleteNormalConcepts)
-  console.log('customConcepts', customConcepts)
-  console.log('deleteCustomConcepts', deleteCustomConcepts)
+
+
+  
   const [selectedKey, setselectedKey] = useState<any>('')
 
   const [articlesPersonalized, setArticlesPersonalized] = useState<any>([])
   const addPersonalized = (item: any, index: number) => {
-    setSelectedIds('units', {id: customConceptView[0].unidad}) 
+    setSelectedIds('units', { id: customConceptView[0].unidad })
     setselectedKey(customConceptView[0].clave_sat)
     // setInputs(customConceptView[0].clave_sat);
 
 
 
-    console.log('customConceptView', customConceptView)
+
+    
 
     if (modal == 'create-modal__qoutation' || modal == 'update-modal__qoutation') {
       if (personalizedModal == 'personalized_modal-quotation') {
@@ -135,7 +139,8 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
           });
           const addItem = customConceptView.find((xx: any) => xx.id_identifier == item.id_identifier)
 
-          console.log('addItem', addItem)
+      
+          
 
           setCustomConceptView(updatedDataUpdate);
           setNormalConcepts([...newNormalConcept, addItem])
@@ -152,8 +157,8 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
             return x;
           });
 
-          console.log('hola')
-
+  
+          
           setCustomConceptView(updatedDataUpdate);
 
           const existItem = normalConcepts.find((x: any) => x.id_identifier == item.id_identifier)
@@ -174,6 +179,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
       if (personalizedModal == 'personalized_modal-sale') {
         customConceptView[index].check = !customConceptView[index].check
+        setIdItem(item);
 
         const existItem = normalConcepts.find((x: any) => x.id_identifier == item.id_identifier)
         if (existItem) {
@@ -189,7 +195,6 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
           } else {
             setCustomLocal([...customLocal, item])
           }
-
           return
 
         } else {
@@ -321,7 +326,8 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
           });
           const addItem = customConceptView.find((xx: any) => xx.id_identifier == item.id_identifier)
 
-          console.log('addItem', addItem)
+      
+          
 
           setCustomConceptView(updatedDataUpdate);
           setNormalConcepts([...newNormalConcept, addItem])
@@ -438,7 +444,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
       const updatedConceptView = customConcepts.map((x: any) => {
 
         if (x.id_identifier === idItem.id_identifier) {
-          length = x.conceptos.leght
+          length = x.conceptos?.leght
           return {
             ...x,
             // conceptos: customLocal,
@@ -460,7 +466,8 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
       let filterDelete = []
 
       if (leght > 1) {
-        console.log('Se mantiene por que todavia le quedan conceptos', leght)
+  
+        
       } else {
         filterDelete = updatedConceptView.filter((x: any) => x.id_identifier !== idItem.id_identifier)
 
@@ -510,7 +517,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
       setArticlesPersonalized([])
       return
     }
-    if (personalizedModal == 'personalized_modal-sale-update') {      
+    if (personalizedModal == 'personalized_modal-sale-update') {
 
       if (modalSalesOrder == 'sale-order__modal') {
         let length: any = null
@@ -659,6 +666,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
     // await setDataPersonalized(filteredData);
   }
 
+  console.log('customLocal', customLocal)
 
   const [inpust, setInputs] = useState<any>({
     descripcion: '',
@@ -726,11 +734,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
   }
 
 
-  console.log('normalConcepts', normalConcepts)
-  console.log('normalConceptsView', normalConceptsView)
-  console.log('customConcepts', customConcepts)
-  console.log('customConceptView', customConceptView)
-  console.log('customLocal', customLocal)
+  
 
 
   const setIndexVM = storeDv(state => state.setIndex)
@@ -790,19 +794,32 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
 
   };
 
-
-
-
   const handleStatusChange = (_: any, i: any) => {
-    let newCustomConcep = [...idItem.conceptos]
+    if(modalSalesOrder == 'sale-order__modal') {
+      if(personalizedModal == 'personalized_modal-sale'){
+        let newCustomConcep = [...normalConcepts]
+        let view = [...customConceptView]
+        newCustomConcep[i].enviar_a_produccion = !newCustomConcep[i].enviar_a_produccion
+        view[i].enviar_a_produccion = !view[i].enviar_a_produccion
+        // // Actualizamos el estado con el array modificado
+        setNormalConcepts(newCustomConcep);
+        setCustomConceptView(view);
+      } else {
+        let newCustomConcep = [...normalConcepts]
+        let view = [...customConceptView]
+        newCustomConcep[i].enviar_a_produccion = !newCustomConcep[i].enviar_a_produccion
+        view[i].enviar_a_produccion = !view[i].enviar_a_produccion
+        // // Actualizamos el estado con el array modificado
+        setNormalConcepts(newCustomConcep);
+        setCustomConceptView(view);
+      }
+    } else {
+      let newCustomConcep = [...idItem.conceptos]
 
-    newCustomConcep[i].enviar_a_produccion = !newCustomConcep[i].enviar_a_produccion
-    // Actualizamos el estado con el array modificado
-    setCustomConcepts(newCustomConcep);
-
-
-
-
+      newCustomConcep[i].enviar_a_produccion = !newCustomConcep[i].enviar_a_produccion
+      // Actualizamos el estado con el array modificado
+      setCustomConcepts(newCustomConcep);
+    }
   };
 
 
@@ -857,7 +874,8 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
     }
   }, [personalizedModal]);
 
-  console.log(identifier)
+
+  
 
   const [realPrice, setRealPrice] = useState<any>()
 
@@ -865,7 +883,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
     const totalPrice = customConceptView.reduce((acc: any, element: any) => acc + element.precio_total, 0);
     setRealPrice(totalPrice);
   }, [customConceptView]);
-  
+
 
 
 
@@ -1335,10 +1353,10 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
                   </div>
                   {customConceptView ? (
                     <div className='table__body'>
-                      {customConceptView.map((quotation: any, index: number) => {
+                      {customConceptView.map((concept: any, index: number) => {
                         return (
                           <div className='tbody__container'>
-                            <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={quotation.id}>
+                            <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={concept.id}>
                               {personalizedModal == 'personalized_modal-update' ?
                                 ''
                                 :
@@ -1348,7 +1366,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
                                       <input
                                         type="checkbox"
                                         checked={customConceptView[index]?.check || false}
-                                        onChange={() => addPersonalized(quotation, index)}
+                                        onChange={() => addPersonalized(concept, index)}
                                       />
                                       <span className="checkmark"></span>
                                     </label>
@@ -1356,22 +1374,89 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
                                 </div>
                               }
 
+                              <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept()}>
+                                <p className='folio-identifier'>{concept.codigo}-{concept.descripcion}</p>
+                              </div>
                               <div className='td'>
-                                <div className='article'>
-                                  <p>{quotation.codigo}-{quotation.descripcion}</p>
+                                <p className='amount-identifier'>{concept.cantidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p>{concept.name_unidad || concept.unidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p className=''>$ {concept.precio_total / concept.cantidad}</p>
+                              </div>
+                              <div className='td'>
+                                {concept.urgency ?
+                                  <div className='d-flex'>
+                                    <p className='total-identifier'>$ {concept.precio_total}</p>
+                                    <p className='urgency-identifier'>${parseFloat(concept.monto_urgencia).toFixed(2)}</p>
+                                  </div>
+                                  :
+                                  <p className='total-identifier'>$ {concept.precio_total}</p>
+                                }
+                              </div>
+                              <div className='td urgency'>
+                                {concept?.urgency ?
+                                  <div>
+                                    <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                    </div>
+                                  </div>
+                                  :
+                                  <div>
+                                    <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+                              <div className='td'>
+                                <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
                                 </div>
                               </div>
                               <div className='td'>
+                                <div className='send-areas'>
+                                  <div>
+                                    <label>Area</label>
+                                  </div>
+                                  <select
+                                    className="traditional__selector"
+                                    onChange={(event) => handleAreasChange(event, index)}
+                                  >
+                                    {concept?.areas_produccion?.map((item: any) => (
+                                      <option key={item.id} value={item.id_area}>
+                                        {item.nombre_area}
+                                      </option>
+                                    ))}
+                                  </select>
+
+
+
+                                </div>
+                              </div>
+                              <div className='td'>
+                                {concept.enviar_a_produccion ?
+                                  <p>Es tgrue</p>
+                                  :
+                                  <p>No es tgrue</p>
+                                }
                                 <div>
-                                  <p>{quotation.cantidad}</p>
+                                  <div className=''>
+                                    <label>Enviar producción</label>
+                                  </div>
+                                  <label className="switch">
+                                    <input
+                                      type="checkbox"
+                                      checked={concept.enviar_a_produccion}
+                                      onChange={() =>
+                                        handleStatusChange(concept, index)
+                                      }
+                                    />
+                                    <span className="slider"></span>
+                                  </label>
                                 </div>
-                              </div>
-                              <div className='td'>
-                                <div>
-                                  <p>{quotation.name_unidad}</p>
-                                </div>
-                              </div>
-                              <div className='td'>
                               </div>
                             </div>
                           </div>
@@ -1413,10 +1498,10 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
                   </div>
                   {customConceptView ? (
                     <div className='table__body'>
-                      {customConceptView.map((quotation: any, index: number) => {
+                      {customConceptView.map((concept: any, index: number) => {
                         return (
                           <div className='tbody__container'>
-                            <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={quotation.id}>
+                            <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={concept.id}>
                               {personalizedModal == 'personalized_modal-update' ?
                                 ''
                                 :
@@ -1426,7 +1511,7 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
                                       <input
                                         type="checkbox"
                                         checked={customConceptView[index]?.check || false}
-                                        onChange={() => addPersonalized(quotation, index)}
+                                        onChange={() => addPersonalized(concept, index)}
                                       />
                                       <span className="checkmark"></span>
                                     </label>
@@ -1434,22 +1519,89 @@ const Personalized: React.FC<any> = ({ branch, idItem }: any,) => {
                                 </div>
                               }
 
+                              <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept()}>
+                                <p className='folio-identifier'>{concept.codigo}-{concept.descripcion}</p>
+                              </div>
                               <div className='td'>
-                                <div className='article'>
-                                  <p>{quotation.codigo}-{quotation.descripcion}</p>
+                                <p className='amount-identifier'>{concept.cantidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p>{concept.name_unidad || concept.unidad}</p>
+                              </div>
+                              <div className='td'>
+                                <p className=''>$ {concept.precio_total / concept.cantidad}</p>
+                              </div>
+                              <div className='td'>
+                                {concept.urgency ?
+                                  <div className='d-flex'>
+                                    <p className='total-identifier'>$ {concept.precio_total}</p>
+                                    <p className='urgency-identifier'>${parseFloat(concept.monto_urgencia).toFixed(2)}</p>
+                                  </div>
+                                  :
+                                  <p className='total-identifier'>$ {concept.precio_total}</p>
+                                }
+                              </div>
+                              <div className='td urgency'>
+                                {concept?.urgency ?
+                                  <div>
+                                    <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                    </div>
+                                  </div>
+                                  :
+                                  <div>
+                                    <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                    </div>
+                                  </div>
+                                }
+                              </div>
+                              <div className='td'>
+                                <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
                                 </div>
                               </div>
                               <div className='td'>
+                                <div className='send-areas'>
+                                  <div>
+                                    <label>Area</label>
+                                  </div>
+                                  <select
+                                    className="traditional__selector"
+                                    onChange={(event) => handleAreasChange(event, index)}
+                                  >
+                                    {concept?.areas_produccion?.map((item: any) => (
+                                      <option key={item.id} value={item.id_area}>
+                                        {item.nombre_area}
+                                      </option>
+                                    ))}
+                                  </select>
+
+
+
+                                </div>
+                              </div>
+                              <div className='td'>
+                                {concept.enviar_a_produccion ?
+                                  <p>Es tgrue</p>
+                                  :
+                                  <p>No es tgrue</p>
+                                }
                                 <div>
-                                  <p>{quotation.cantidad}</p>
+                                  <div className=''>
+                                    <label>Enviar producción</label>
+                                  </div>
+                                  <label className="switch">
+                                    <input
+                                      type="checkbox"
+                                      checked={concept.enviar_a_produccion}
+                                      onChange={() =>
+                                        handleStatusChange(concept, index)
+                                      }
+                                    />
+                                    <span className="slider"></span>
+                                  </label>
                                 </div>
-                              </div>
-                              <div className='td'>
-                                <div>
-                                  <p>{quotation.name_unidad}</p>
-                                </div>
-                              </div>
-                              <div className='td'>
                               </div>
                             </div>
                           </div>

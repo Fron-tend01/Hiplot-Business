@@ -41,15 +41,13 @@ const SalesOrder: React.FC = () => {
     const setSaleOrders = storeSaleOrder(state => state.setSaleOrders)
     const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
-
+    const storedData = JSON.parse(localStorage.getItem("sale-order") || "[]");
     const modalOpen = () => {
         setModalSalesOrder('sale-order__modal')
-        const storedData = JSON.parse(localStorage.getItem("sale-order") || "[]");
-        
-        if (storedData) {
+
+        if (storedData.length > 0) {
             // Obtener la longitud de storedData
             const dataLength = storedData.length;
-
             // Asignar la longitud al estado de Zustand
             storePersonalized.getState().setIdentifier(dataLength);
             setNormalConcepts(storedData)
@@ -125,7 +123,7 @@ const SalesOrder: React.FC = () => {
 
     useEffect(() => {
         if (!effectRan.current) {
-            search();
+        
             fetch();
         }
 
@@ -133,6 +131,17 @@ const SalesOrder: React.FC = () => {
             effectRan.current = true;
         };
     }, [page]);
+
+    useEffect(() => {
+        if (!effectRan.current) {
+            search();
+  
+        }
+
+        return () => {
+            effectRan.current = true;
+        };
+    }, []);
 
     const search = async () => {
         setModalLoading(true)
@@ -149,6 +158,7 @@ const SalesOrder: React.FC = () => {
             page: page
         }
         const result = await getSaleOrders(dataSaleOrders)
+        result.unshift({ nombre: 'Todas', id: 0 });
         setModalLoading(false)
 
         setDataGet(dataSaleOrders)

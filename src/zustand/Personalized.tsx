@@ -46,11 +46,10 @@ interface SelectStore {
   dataUpdate: any;
   setDataUpdate: (x: any) => void;
 
-
+  idItem: any;
+  setIdItem: (x: any) => void;
 
   
-
-
   customData: any[];
   setCustomData: (x: any) => void;
 
@@ -74,6 +73,8 @@ interface SelectStore {
 
 export const storePersonalized = create<SelectStore>((set) => ({
 
+  idItem: {},
+  setIdItem: (x) => set({ idItem: x }),
 
   normalConcepts: [],
   setNormalConcepts: (x) => set({ normalConcepts: x }),
