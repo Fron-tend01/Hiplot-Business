@@ -339,7 +339,7 @@ const ModalCreate: React.FC = () => {
                                                             }
                                                         </div>
                                                         <div className='td'>
-                                                            <input className='inputs__general' type="number" value={item.cantidad} placeholder='Cantidad' onChange={(e) => handleAmountChange(e, index)} />
+                                                            <input className='inputs__general' type="number" value={item.cantidad} placeholder='Cantidad' onChange={(e) => handleAmountChange(e, index)} onWheel={(e) => e.currentTarget.blur()}/>
                                                         </div>
                                                         <div className='td'>
                                                             <select className='traditional__selector' onChange={(event) => handleUnits(event, index)} value={item.unidad}>

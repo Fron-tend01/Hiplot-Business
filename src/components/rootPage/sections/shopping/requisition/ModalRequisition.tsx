@@ -730,7 +730,7 @@ const ModalRequisition: React.FC = () => {
                           </div>
                           <div className='td'>
                             <div>
-                              <input className='inputs__general' value={article.cantidad} onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' />
+                              <input className='inputs__general' value={article.cantidad} onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()}/>
                             </div>
                           </div>
                           <div className='td'>

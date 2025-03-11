@@ -693,7 +693,8 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
           : grupo
       )
     );
-    
+    setActiveIndex(null); // Alterna la visibilidad
+
   };
 
   useEffect(() => {

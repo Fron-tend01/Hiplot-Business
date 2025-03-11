@@ -1133,7 +1133,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                               </div>
                               <div className='td'>
                                 <div>
-                                  <input className='inputs__general' value={article.cantidad === null ? '' : article.cantidad.toString()} onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' />
+                                  <input className='inputs__general' value={article.cantidad === null ? '' : article.cantidad.toString()} onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()}/>
                                 </div>
                               </div>
                               <div className='td'>
@@ -1164,12 +1164,12 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                               </div>
                               <div className='td'>
                                 <div>
-                                  <input className='inputs__general' value={article.precio_unitario === null ? '' : article.precio_unitario.toString()} onChange={(e) => handlePrecioUnitarioChange(e, index)} type="number" placeholder='P/U' />
+                                  <input className='inputs__general' value={article.precio_unitario === null ? '' : article.precio_unitario.toString()} onChange={(e) => handlePrecioUnitarioChange(e, index)} type="number" placeholder='P/U' onWheel={(e) => e.currentTarget.blur()}/>
                                 </div>
                               </div>
                               <div className='td'>
                                 <div>
-                                  <input className='inputs__general' value={article.descuento === null ? '' : article.descuento.toString()} onChange={(e) => handleDiscountChange(e, index)} type="number" placeholder='Descuento' />
+                                  <input className='inputs__general' value={article.descuento === null ? '' : article.descuento.toString()} onChange={(e) => handleDiscountChange(e, index)} type="number" placeholder='Descuento'onWheel={(e) => e.currentTarget.blur()} />
                                 </div>
                               </div>
                               <div className='td'>

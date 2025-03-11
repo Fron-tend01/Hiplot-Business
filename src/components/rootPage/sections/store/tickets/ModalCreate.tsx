@@ -340,7 +340,7 @@ const ModalCreate = () => {
                                                         <div className='td'>
                                                             <div>
                                                                 <input className='inputs__general' value={concept.cantidad === null ? '' : concept.cantidad}
-                                                                    onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' />
+                                                                    onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()}/>
                                                             </div>
                                                         </div>
                                                         <div className='td'>

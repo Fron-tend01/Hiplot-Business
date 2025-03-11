@@ -848,7 +848,7 @@ const PedidoFranquicias = () => {
                                   </div>
                                   <div className='td'>
                                     <input className={`inputs__general`} type="number" value={article.cantidad}
-                                      onChange={(e) => { handleCantidad(e, index) }}
+                                      onChange={(e) => { handleCantidad(e, index) }} onWheel={(e) => e.currentTarget.blur()}
                                     />
                                   </div>
                                   <div className='td'>

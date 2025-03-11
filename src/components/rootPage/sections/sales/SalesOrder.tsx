@@ -102,15 +102,16 @@ const SalesOrder: React.FC = () => {
             id_sucursal: 0
         }
 
-        const resultUsers = await getUsers(data)
+        let resultUsers = await getUsers(data)
+        resultUsers.unshift({'id':0, 'nombre': 'Todos'})
         setUsers({
             selectName: 'Vendedores',
             options: 'nombre',
             dataSelect: resultUsers
         })
 
-        const resultSeries = await getSeriesXUser({ tipo_ducumento: 7, id: user_id })
-
+        let resultSeries = await getSeriesXUser({ tipo_ducumento: 7, id: user_id })
+        resultSeries.unshift({'nombre': 'Todos'})
         setSeries({
             selectName: 'Series',
             options: 'nombre',
@@ -122,7 +123,9 @@ const SalesOrder: React.FC = () => {
     const [page, setPage] = useState<number>(1)
     
     const effectRan = useRef(false);
-
+    useEffect(() => {
+        fetch();
+    }, []);
     useEffect(() => {
         search();
     }, [page]);
@@ -139,7 +142,8 @@ const SalesOrder: React.FC = () => {
             id_usuario: user_id,
             id_vendedor: selectedIds?.users?.id,
             status: type,
-            page: page
+            page: page,
+            // light:true
         }
         const result = await getSaleOrders(dataSaleOrders)
         setModalLoading(false)
