@@ -390,7 +390,7 @@ const ModalCreate: React.FC = () => {
 
 
   const [idItem, setIdItem] = useState<number>()
-      const [indexItem, setIndexItem] = useState<any>()
+  const [indexItem, setIndexItem] = useState<any>()
 
   const modalPersonalizedUpdate = (concept: any, index: number) => {
     setIndexItem(index)
