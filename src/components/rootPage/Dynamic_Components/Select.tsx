@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useSelectStore } from '../../../zustand/Select'; // Asegúrate de que la ruta es correcta
+import { useSelectStore } from '../../../zustand/Select';
+import { v4 as uuidv4 } from 'uuid'; // Asegúrate de que la ruta es correcta
 
 interface SelectData {
   selectName: string;
@@ -47,7 +48,7 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }: 
         <div className={`content ${selects ? 'active' : ''}`}>
           <ul className={`options ${selects ? 'active' : ''}`} style={{ opacity: selects ? '1' : '0' }}>
             {dataSelects?.dataSelect?.map((select: any) => (
-              <li key={select.id} onClick={() => handleSelectsChange(select)}>
+              <li key={uuidv4()} onClick={() => handleSelectsChange(select)}>
                 {select[dataSelects?.options] || 'No disponible'}
               </li>
             ))}

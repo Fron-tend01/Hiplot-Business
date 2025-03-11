@@ -19,6 +19,9 @@ interface StoreState {
 
     saleOrdersToUpdate: any;
     setSaleOrdersToUpdate: (x: any) => void;
+
+    dataSaleOrders: any;
+    setDataSaleOrders: (x: any) => void;
     
     IdArticle: any;
     setIdArticle: (x: any) => void;
@@ -27,6 +30,9 @@ interface StoreState {
 export const storeSaleOrder = create<StoreState>((set) => ({
     IdArticle: [],
     setIdArticle: (x) => set({IdArticle: x}),
+
+    dataSaleOrders: [],
+    setDataSaleOrders: (x) => set({dataSaleOrders: x}),
 
     dataSaleOrder: [],       
     setDataSaleOrder: (x) => set({dataSaleOrder: x}),
