@@ -506,7 +506,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
           concepto_principal.precio_unitario -= (concepto_adicional.total / concepto_adicional.cantidad)
           concepto_principal.descuento -= concepto_adicional.descuento
           concepto_principal.total_franquicia = pricesFranquiciaAdicional != null && !Number.isNaN(pricesFranquiciaAdicional) ? concepto_principal.total_franquicia - pricesFranquiciaAdicional : concepto_principal.total_franquicia
-          setIdentifier(identifier + 1);
+
           concepto_adicional.id_identifier = concepto_principal.id_identifier + 1;
           concepto_adicional.check = false
           concepto_adicional.id = null
@@ -518,7 +518,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
           concepto_adicional.total_franquicia = pricesFranquiciaAdicional
           concepto_adicional.campos_plantilla = []
 
-          setIdentifier(identifier + 1);
+
           //-------------------------------SIMULA LA CREACIÓN DEL PERSONALIZADO
           const data_pers = {
             descripcion: article.descripcion,
@@ -535,26 +535,17 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
             comentarios_produccion: productionComments,
             comentarios_factura: billingComment,
             conceptos: [concepto_principal, concepto_adicional],
-            id_identifier: identifier + 1
+
           }
 
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
           setCustomConcepts([...customConcepts, data_pers])
-
-          setConceptView([...normalConcepts, data_pers])
-          setCustomConceptView(normalConcepts)
-          localStorage.setItem('cotizacion', JSON.stringify([...normalConcepts, data_pers]));
+          // localStorage.setItem('cotizacion', JSON.stringify([...normalConcepts, data_pers]));
         }
       });
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
-      const newData = { ...data };
-      newData.id_identifier = identifier + 1;
-      setIdentifier(identifier + 1);
-      setNormalConcepts([...normalConcepts, newData])
-      setNormalConceptsView([...normalConceptsView, newData])
-      setConceptView([...conceptView, newData])
-      setCustomConceptView([...customConceptView, newData])
-      localStorage.setItem('cotizacion', JSON.stringify([...normalConcepts, newData]));
+      setNormalConcepts([...normalConcepts, data])
+      localStorage.setItem('cotizacion', JSON.stringify([...normalConcepts, data]));
       // setCustomLocal([...customLocal, data])
     }
 
@@ -619,7 +610,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
             comentarios_produccion: productionComments,
             comentarios_factura: billingComment,
             conceptos: [concepto_principal, concepto_adicional],
-            id_identifier: identifier + 1
+      
           }
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
           setCustomConcepts([...customConcepts, data_pers])
@@ -635,14 +626,8 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       });
 
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
-      const newData = { ...data };
-      newData.id_identifier = identifier + 1;
-      setIdentifier(identifier + 1);
-      setNormalConcepts([...normalConcepts, newData])
-      setNormalConceptsView([...normalConceptsView, newData])
-      setConceptView([...conceptView, newData])
-      setCustomConceptView([...customConceptView, newData])
-      localStorage.setItem('sale-order', JSON.stringify([...normalConcepts, newData]));
+      setNormalConcepts([...normalConcepts, data])
+      localStorage.setItem('sale-order', JSON.stringify([...normalConcepts, data]));
     }
     toast.success('Artículo agregado')
 
