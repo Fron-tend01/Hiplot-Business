@@ -8,6 +8,7 @@ import './styles/ArticleViewModal.css'
 import { useStore } from 'zustand';
 import { storeSaleCard } from '../../../../zustand/SaleCard';
 import { FamiliesRequests } from '../../../../fuctions/Families';
+import { storeArticles } from '../../../../zustand/Articles';
 
 const ArticleViewModal = () => {
     const userState = useUserStore(state => state.user);
@@ -34,7 +35,7 @@ const ArticleViewModal = () => {
     const fetch = async () => {
         const resultFamilies: any = await getFamilies(user_id)
         resultFamilies.unshift({ nombre: 'Todas', id: 0 });
-        search();
+        search(false);
         setFamilies(resultFamilies);
     };
 
@@ -48,9 +49,9 @@ const ArticleViewModal = () => {
 
     useEffect(() => {
         if (modalArticleView == 'article-view__modal') {
-            search();
+            search(false);
         }
-      
+
 
     }, [page]);
 
@@ -74,7 +75,8 @@ const ArticleViewModal = () => {
     const [idA, setIdA] = useState<any>(null);
     const [i, setI] = useState(0);
 
-
+    const [dentroColeccion, setDentroColeccion] = useState<boolean>(false)
+    const [dentroColeccionNombre, setDentroColeccionNombre] = useState<string>('')
     const modal = async (x: any) => {
         setStatusArticle(false);
         if (x.id_familia) {
@@ -92,7 +94,7 @@ const ArticleViewModal = () => {
                 codigo: '',
                 familia: 0,
                 proveedor: 0,
-                materia_prima: 0,
+                materia_prima: 99,
                 get_sucursales: false,
                 get_proveedores: false,
                 get_max_mins: false,
@@ -105,11 +107,22 @@ const ArticleViewModal = () => {
                 get_unidades: false,
                 for_vendedor: true,
                 page: page,
-                id_usuario:user_id
+                id_usuario: user_id,
+                light: true
             };
+            try {
+                setDentroColeccionNombre(x.codigo)
+                setDentroColeccion(true)
+                setModalLoading(true)
+                const result = await getArticles(data);
+                setArticles(result);
+                setModalLoading(false)
 
-            const result = await getArticles(data);
-            setArticles(result);
+            } catch (error) {
+                setModalLoading(false)
+
+            }
+
         }
     };
     const [isChecked, setIsChecked] = useState(true);
@@ -118,8 +131,18 @@ const ArticleViewModal = () => {
         const checked = e.target.checked;
         setIsChecked(checked); // Actualiza el estado con true o false
     };
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
+
     const [selectedFamily, setSelectedFamily] = useState<number>(0)
-    const search = async () => {
+    const search = async (reinicio_page: boolean) => {
+        let pag = page
+        setDentroColeccion(false)
+        setDentroColeccionNombre('')
+        setArticles([])
+        if (reinicio_page) {
+            setPage(1)
+            pag = 1
+        }
         const data = {
             id: 0,
             activos: true,
@@ -139,13 +162,20 @@ const ArticleViewModal = () => {
             get_web: false,
             get_unidades: false,
             for_vendedor: true,
-            page: page,
-            id_usuario:user_id
-
+            page: pag,
+            id_usuario: user_id,
+            light: true
         };
+        try {
+            setModalLoading(true)
+            const result = await getArticles(data)
+            setArticles(result);
+            setModalLoading(false)
 
-        const result = await getArticles(data);
-        setArticles(result);
+        } catch (error) {
+            setModalLoading(false)
+        }
+
     }
 
     const [selectUsers, setSelectUsers] = useState<boolean>(false);
@@ -172,58 +202,76 @@ const ArticleViewModal = () => {
                     <p className='title__modals'>Artículos</p>
                 </div>
                 <div className='article__view_container'>
-                    <div className='row__one'>
-                        <div>
+                    <div className='row card-row'>
+                        <div className='col-3 md-col-6 sm-col-12'>
                             <label className='label__general'>Código</label>
                             <div className='warning__general'><small>Este campo es obligatorio</small></div>
                             <input className='inputs__general' type='text' name='code' value={inputs.code} onChange={handleInputChange}
-                                onKeyDown={(e) => { if (e.key === "Enter") { setPage(1) } }} placeholder='Ingresa el código' />
+                                onKeyUp={(e) => e.key === 'Enter' && search(true)} placeholder='Ingresa el código' />
                         </div>
-                        <div>
+                        <div className='col-3 md-col-6 sm-col-12'>
                             <label className='label__general'>Nombre</label>
                             <div className='warning__general'><small>Este campo es obligatorio</small></div>
                             <input className='inputs__general' type='text' name='name' value={inputs.name} onChange={handleInputChange}
-                                onKeyDown={(e) => { if (e.key === "Enter") { setPage(1) } }} placeholder='Ingresa el nombre' />
+                                onKeyUp={(e) => e.key === 'Enter' && search(true)} placeholder='Ingresa el nombre' />
                         </div>
-                        <div className='select__container'>
-                            <label className='label__general'>Familias</label>
-                            <div className='select-btn__general'>
-                                <div className={`select-btn ${selectUsers ? 'active' : ''}`} onClick={openSelectUsers}>
-                                    <p>{selectedFamily ? families?.find((s: { id: number }) => s.id === selectedFamily)?.nombre : 'Selecciona'}</p>
-                                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                                </div>
-                                <div className={`content ${selectUsers ? 'active' : ''}`}>
-                                    <ul className={`options ${selectUsers ? 'active' : ''}`} style={{ opacity: selectUsers ? '1' : '0' }}>
-                                        <div className='search'>
-                                            <input type="text" onChange={(e) => setUserSearchTerm(e.target.value)} value={userSearchTerm} placeholder="Buscar..." />
-                                        </div>
-                                        {families?.filter((user: any) => user.nombre.toLowerCase().includes(userSearchTerm.toLowerCase()))
-                                            .map((user: any) => (
-                                                <li key={user.id} onClick={() => familyChange(user)}>
-                                                    {user.nombre}
-                                                </li>
-                                            ))
-                                        }
-                                    </ul>
+                        <div className='col-3 md-col-6 sm-col-6'>
+
+                            <div className='select__container' >
+                                <label className='label__general'>Familias</label>
+                                <div className='select-btn__general'>
+                                    <div className={`select-btn ${selectUsers ? 'active' : ''}`} onClick={openSelectUsers}>
+                                        <p>{selectedFamily ? families?.find((s: { id: number }) => s.id === selectedFamily)?.nombre : 'Todas'}</p>
+                                        <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                                    </div>
+                                    <div className={`content ${selectUsers ? 'active' : ''}`}>
+                                        <ul className={`options ${selectUsers ? 'active' : ''}`} style={{ opacity: selectUsers ? '1' : '0' }}>
+                                            <div className='search'>
+                                                <input type="text" onChange={(e) => setUserSearchTerm(e.target.value)} value={userSearchTerm} placeholder="Buscar..." />
+                                            </div>
+                                            {families?.filter((user: any) => user.nombre.toLowerCase().includes(userSearchTerm.toLowerCase()))
+                                                .map((user: any) => (
+                                                    <li key={user.id} onClick={() => familyChange(user)}>
+                                                        {user.nombre}
+                                                    </li>
+                                                ))
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div className='checkbox__tickets'>
-                            <label className="checkbox__container_general">
-                                <input
-                                    className='checkbox'
-                                    type="checkbox" // Cambiamos a checkbox en lugar de radio
-                                    checked={isChecked} // Controlamos el estado marcado/desmarcado
-                                    onChange={handlecollectionsOnchange}
-                                />
-                                <span className="checkmark__general"></span>
-                            </label>
-                            <p className='text'>Colección</p>
+                        <div className='col-2 md-col-6 sm-col-6'>
+                            <div className='checkbox__tickets'>
+                                <label className="checkbox__container_general">
+                                    <input
+                                        className='checkbox'
+                                        type="checkbox" // Cambiamos a checkbox en lugar de radio
+                                        checked={isChecked} // Controlamos el estado marcado/desmarcado
+                                        onChange={handlecollectionsOnchange}
+                                    />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='text'>Colección</p>
+                            </div>
+
                         </div>
-                        <div>
-                            <button className='btn__general-purple' onClick={() => { search(); setPage(1) }}>Buscar</button>
+                        <div className='col-1 md-col-6 sm-col-12'>
+                            <button className='btn__general-purple' onClick={() => { search(true) }}>Buscar</button>
                         </div>
                     </div>
+                    {dentroColeccion ?
+                        <div className='row'>
+                            <div className='col-12'>
+                                <button className='btn__general-orange' style={{ maxHeight: '50px', width:'100%' }} onClick={() => search(true)}>Salir de Colección</button>
+                                <div className='text-center'>
+
+                                    <h2 >{dentroColeccionNombre}</h2>
+                                </div>
+
+                            </div>
+                        </div>
+                        : ''}
                     <div className='row__two'>
                         {articles.map((x: any) => (
                             <div className='item' key={x.id} onClick={() => modal(x)}>

@@ -124,14 +124,7 @@ const SalesOrder: React.FC = () => {
     const effectRan = useRef(false);
 
     useEffect(() => {
-        if (!effectRan.current) {
-            search();
-            fetch();
-        }
-
-        return () => {
-            effectRan.current = true;
-        };
+        search();
     }, [page]);
 
     const search = async () => {
@@ -197,7 +190,7 @@ const SalesOrder: React.FC = () => {
                 <div className='row__one'>
                     <div className='row'>
                         <div className='col-8'>
-                            <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+                            <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} all={true}/>
                         </div>
                         <div className='col-4'>
                             <label className='label__general'>Fechas</label>
@@ -361,10 +354,7 @@ const SalesOrder: React.FC = () => {
                     </div>
                 </div>
             </div>
-            {modalLoading == true ? (
-                <LoadingInfo />
-            ) :
-                ''}
+            
         </div>
     )
 }

@@ -31,7 +31,8 @@ interface searcher {
   id_serie: number,
   status: number,
   folio: number,
-  page: number
+  page: number,
+  id_proveedor: number
 }
 const PedidoFranquicias = () => {
   const [_, setPf] = useState<pedido>({
@@ -72,7 +73,8 @@ const PedidoFranquicias = () => {
     id_serie: 0,
     status: 0,
     folio: 0,
-    page: 1
+    page: 1,
+    id_proveedor: 0
   })
   const [proveedorSearcher, setProveedorSearcher] = useState<any>({})
   const [franquiciaSearcher, setFranquiciaSearcher] = useState<any>({})
@@ -128,7 +130,12 @@ const PedidoFranquicias = () => {
     console.log(searcher);
     searcher.id_sucursal = sucursalFSearcher.id
     searcher.id_serie = selectData?.serieSearcher?.id
+    searcher.desde= date[0],
+    searcher.hasta= date[1],
     searcher.page = page
+    console.log( selectData?.proveedorSearcher);
+    
+    searcher.id_proveedor = selectData?.proveedorSearcher?.id
     setModalLoading(true)
     await APIs.CreateAny(searcher, "pedido_franquicia/get").then((e: any) => {
       setData(e)

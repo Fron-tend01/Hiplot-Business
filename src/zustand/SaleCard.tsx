@@ -17,6 +17,9 @@ interface StoreState {
     IdArticle: any;
     setIdArticle: (x: any) => void;
 
+    combinacionesSeleccionadas: any;
+    setCombinacionesSeleccionadas: (x: any) => void;
+
     article: any;
     setArticle: (x: any) => void;
 
@@ -27,6 +30,9 @@ interface StoreState {
 export const storeSaleCard = create<StoreState>((set) => ({
     IdArticle: {},
     setIdArticle: (x) => set({IdArticle: x}),
+
+    combinacionesSeleccionadas: [],
+    setCombinacionesSeleccionadas: (x) => set({combinacionesSeleccionadas: x}),
 
     dataQuotation: [],       
     setDataQuotation: (x) => set({dataQuotation: x}),

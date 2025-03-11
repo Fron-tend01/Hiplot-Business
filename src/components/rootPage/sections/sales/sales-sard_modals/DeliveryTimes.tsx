@@ -80,7 +80,7 @@ const DeliveryTimes: React.FC = () => {
             </div>
 
           </div>
-          <div className='table__delivery-times-sale-card-produc' >
+          {/* <div className='table__delivery-times-sale-card-produc' >
             <div>
               {article?.tiempos_entrega ? (
                 <div className='table__numbers'>
@@ -121,7 +121,7 @@ const DeliveryTimes: React.FC = () => {
               </div>
             </div>
 
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -17,6 +17,7 @@ import { storePersonalized } from '../../../../zustand/Personalized'
 const Billing: React.FC = () => {
 
     const setSubModal = storeArticles(state => state.setSubModal)
+    const subModal = storeArticles(state => state.subModal)
     const userState = useUserStore(state => state.user);
     const user_id = userState.id
     const setDates = storeBilling(state => state.setDates)
@@ -87,6 +88,8 @@ const Billing: React.FC = () => {
     const handleClickType = (value: number) => {
         setTypeSearcher(value)
     };
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
+
     const search = async () => {
         console.log(SucursalSearcher);
 
@@ -102,8 +105,14 @@ const Billing: React.FC = () => {
             status: TypeSearcher,
             page: page,
         }
-        const result = await APIs.CreateAny(data, "get_factura")
-        setData(result)
+        setModalLoading(true)
+        await APIs.CreateAny(data, "get_factura").then((resp:any)=> {
+            setData(resp)
+            setModalLoading(false)
+
+        }).catch((e:any)=> {
+            setModalLoading(false)
+        })
     }
     const modalUpdate = (dat: any) => {
         setSubModal('billing__modal-update');
@@ -149,7 +158,12 @@ const Billing: React.FC = () => {
     useEffect(() => {
         search()
     }, [page])
+    useEffect(() => {
+        if (subModal == '') {
+            search()
 
+        }
+    }, [subModal])
     return (
         <div className='billing'>
             <div className='billing__container'>
