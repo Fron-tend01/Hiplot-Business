@@ -29,24 +29,6 @@ const ByOP: React.FC = () => {
 
     const [series, setSeries] = useState<any>()
 
-    const fetch = async () => {
-
-        let data = {
-            id: user_id,
-            tipo_ducumento: 0
-        }
-
-        const resultSeries = await getSeriesXUser(data)
-        setSeries({
-              selectName: 'Series',
-              options: 'nombre',
-              dataSelect: resultSeries
-            })
-    }
-
-    useEffect(() => {
-        fetch()
-    }, [])
 
     const hoy = new Date();
     const haceUnaSemana = new Date();
@@ -71,6 +53,7 @@ const ByOP: React.FC = () => {
         let data = {
             folio: 0,
             id_sucursal: branch.id,
+            id_area: selectedIds?.id_area?.id,
             id_serie: selectedIds?.series?.id,
             desde: date[0],
             hasta: date[1],
@@ -89,8 +72,19 @@ const ByOP: React.FC = () => {
     }
 
     const addArticlesByRequest = (item: any) => {
-        setConcepts([...concepts, ...item.conceptos])
-    }
+        setConcepts([
+            ...concepts,
+            ...item.conceptos.map((concepto:any) => ({
+              ...concepto,
+              orden_produccion: {
+                  folio: item.serie + '-' + item.folio + '-' + item.anio, 
+                  id: item.id 
+              },
+              id_orden_produccion: item.id ,
+              unidad : concepto.unidades[0].id_unidad,
+              id_unidad : concepto.unidades[0].id_unidad
+            }))
+          ]);    }
     
     const openModalConcepts = () => {
 
@@ -101,18 +95,18 @@ const ByOP: React.FC = () => {
     return (
         <div className='conatiner__by-request'>
             <div className='row'>
-                <div className='col-6'>
+                {/* <div className='col-6'>
                     <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
-                </div>
+                </div> */}
                 <div className='col-3'>
-                    <label className='label__general'>Fechas</label>
+                    <label className='label__general'>Buscar Ordenes de Producción</label>
                     <div className='container_dates__requisition'>
                         <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
                     </div>
                 </div>
-                <div className='col-3'>
+                {/* <div className='col-3'>
                     <Select dataSelects={series} instanceId='series' nameSelect='Series' />
-                </div>
+                </div> */}
             </div>
             <div className='row__three mt-3'>
                 <div>
@@ -175,17 +169,17 @@ const ByOP: React.FC = () => {
                     </div>
                 </div> */}
             </div>
-            <div className='row__two'>
-                <div className=''>
+            <div className='row__two' >
+                <div className='' >
                     {orders.length > 0 ? (
                         <div className='table__modal_filter_tickets' >
                             <div className='table__numbers'>
-                                <p className='text'>Tus ordenes de compras</p>
+                                <p className='text'>ORDENES DE PRODUCCIÓN ENCONTRADAS</p>
                                 <div className='quantities_tables'>{orders.length}</div>
                             </div>
-                            <div className='table__body'>
+                            <div className='table__body'  >
                                 {orders.map((x: any, index: any) => (
-                                    <div className='tbody__container' key={index}>
+                                    <div className='tbody__container' key={index} >
                                         <div className='tbody'>
                                             <div className='td'>
                                                 {x.empresa}
@@ -198,7 +192,7 @@ const ByOP: React.FC = () => {
                                             </div>
                                             <div className='td'>
                                                 <div>
-                                                    <button onClick={() => openModalConcepts()} type='button' className='btn__general-purple'>Ver conceptos</button>
+                                                    {/* <button onClick={() => openModalConcepts()} type='button' className='btn__general-purple'>Ver conceptos</button> */}
                                                 </div>
                                             </div>
                                             <div className='td'>

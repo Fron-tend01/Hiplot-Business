@@ -403,10 +403,6 @@ const Articles: React.FC = () => {
           </div>
         </div>
       </div>
-      {modalLoading == true ? (
-        <LoadingInfo />
-      ) :
-        ''}
     </div>
   );
 };

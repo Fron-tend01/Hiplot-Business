@@ -66,24 +66,7 @@ const Production: React.FC = () => {
 
     const fetch = async () => {
 
-        const dataProductionOrders = {
-            folio: parseInt(fol) || 0,
-            id_sucursal: branchOffices.id,
-            id_serie: selectedIds?.series?.id,
-            id_area: selectedIds?.areas?.id,
-            // id_cliente: client,
-            desde: date[0],
-            hasta: date[1],
-            id_usuario: user_id,
-            status: 0,
-        }
-
-        try {
-            const result = await APIs.getProoductionOrders(dataProductionOrders)
-            setProduction(result)
-        } catch (error) {
-            console.log(error)
-        }
+        
 
         const data = {
             nombre: '',
@@ -136,7 +119,7 @@ const Production: React.FC = () => {
             desde: date[0],
             hasta: date[1],
             id_usuario: user_id,
-            status: 0,
+            status: type,
         }
 
         try {

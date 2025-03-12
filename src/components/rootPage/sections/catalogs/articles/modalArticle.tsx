@@ -527,12 +527,7 @@ const modalArticle: React.FC = () => {
                     </a>
                     <p className='title__modals'>Artículo</p>
                 </div>
-                {modalLoading == true ? (
-                    <div className='loading__container'>
-                        <ModalLoading />
-                    </div>
-                ) : (
-                    <div className='conatiner__articles-modal' >
+                <div className='conatiner__articles-modal' >
                         <div className='row__form_articles-radios'>
                             <div className='container__form_articles-radios'>
                                 <div className='checkbox__modal_articles'>
@@ -867,7 +862,6 @@ const modalArticle: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                )}
             </div>
         </div>
     )

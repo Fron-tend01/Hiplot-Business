@@ -279,10 +279,6 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
                     </div>
                 </div>
             </div>
-            {modalLoading == true ? (
-                <LoadingInfo />
-            ) :
-                ''}
         </div>
     )
 }

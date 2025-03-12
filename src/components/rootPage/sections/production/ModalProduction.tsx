@@ -71,9 +71,91 @@ const ModalProduction: React.FC = () => {
     }
 
     const finishConcept = async () => {
+        let data = {
+            id: productionToUpdate.id,
+            id_usuario: user_id,
+        }
+        Swal.fire({
+            title: "Seguro que deseas terminar la orden?",
+            text: "Esta acción no se puede deshacer",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await APIs.CreateAny(data, "terminar_op")
+                    .then(async (_: any) => {
+                        Swal.fire('Notificación', 'Orden terminada correctamente', 'success');
+                        let copy = { ...productionToUpdate }
+                        copy.status = 2
+                        setProductionToUpdate(copy)
+                    })
+                } catch (error) {
+                    Swal.fire('Notificacion', 'Ocurrió un error al cambiar de area, consulta con soporte', 'info')
+
+                }
+            }
+        });
+    }
+    const cancelarOp = async () => {
+        let data = {
+            id: productionToUpdate.id,
+            id_usuario: user_id,
+        }
+        Swal.fire({
+            title: "Seguro que deseas cancelar esta orden?",
+            text: "Esta acción no se puede deshacer",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await APIs.CreateAny(data, "cancelar_op")
+                    .then(async (_: any) => {
+                        Swal.fire('Notificación', 'Orden cancelada correctamente', 'success');
+                        let copy = { ...productionToUpdate }
+                        copy.status = 1
+                        setProductionToUpdate(copy)
+                    })
+                } catch (error) {
+                    Swal.fire('Notificacion', 'Ocurrió un error al cancelar la orden, consulta con soporte', 'info')
+
+                }
+            }
+        });
 
     }
+    const enviarASucursal = async () => {
+        let data = {
+            id: productionToUpdate.id,
+            id_usuario: user_id,
+        }
+        Swal.fire({
+            title: "Seguro que deseas enviar a sucursal la orden?",
+            text: "Esta acción no se puede deshacer",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await APIs.CreateAny(data, "enviar_sucursal_op")
+                    .then(async (_: any) => {
+                        Swal.fire('Notificación', 'Orden enviada a sucursal correctamente', 'success');
+                        let copy = { ...productionToUpdate }
+                        copy.status = 3
+                        setProductionToUpdate(copy)
+                    })
+                } catch (error) {
+                    Swal.fire('Notificacion', 'Ocurrió un error al cambiar de area, consulta con soporte', 'info')
 
+                }
+            }
+        });
+
+    }
     const sendAreas = async () => {
         let data = {
             id: productionToUpdate.id,
@@ -211,7 +293,7 @@ const ModalProduction: React.FC = () => {
                     </a>
                     <p className='title__modals'>Modal de produccion</p>
                 </div>
-                <form className='production-modal__article-modal' onSubmit={handleCreateSaleOrder}>
+                <div className='production-modal__article-modal'>
                     <div>
                         <div className="card ">
                             <div className="card-body bg-standar">
@@ -257,17 +339,17 @@ const ModalProduction: React.FC = () => {
                                                 <Select dataSelects={areasGral} instanceId='areasGral' nameSelect='Enviar todo a Otra Area:' />
                                             </div>
                                             <div className='d-flex align-items-end'>
-                                                <button className='btn__general-purple' onClick={sendAreas}>Enviar</button>
+                                                <button className='btn__general-purple' onClick={()=>sendAreas()}>Enviar</button>
                                             </div>
 
                                         </div>
                                         <div>
-                                            <button className='btn__general-primary'>Enviar a sucursal</button>
+                                            <button className='btn__general-primary' onClick={()=>enviarASucursal()}>Enviar a sucursal</button>
                                         </div>
                                     </div>
                                     <div className='d-flex align-items-end'>
-                                        <button className='btn__general-danger mr-3' onClick={finishConcept}>Terminar orden</button>
-                                        <button className='btn__general-danger'>Cancelar</button>
+                                        <button className='btn__general-danger mr-3' onClick={()=>finishConcept()}>Terminar orden</button>
+                                        <button className='btn__general-danger' onClick={()=>cancelarOp()}>Cancelar</button>
                                     </div>
                                 </div>
                             </div>
@@ -384,7 +466,7 @@ const ModalProduction: React.FC = () => {
                             <p className="text">Cargando datos...</p>
                         )}
                     </div>
-                </form>
+                </div>
                 <Binnacle />
             </div>
         </div>

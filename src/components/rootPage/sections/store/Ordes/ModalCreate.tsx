@@ -173,12 +173,14 @@ const ModalCreate = () => {
         const id_sucursal = branchOffices.id;
         const id_usuario_crea = user_id;
         const comentarios = OPcomments;
-       
+
         concepts.forEach((el: any) => {
             if (el.unidad != null && el.unidad != undefined) {
                 el.id_unidad = el.unidad
             }
         });
+        console.log('concepts',concepts);
+        
         try {
             setModalLoading(true)
 
@@ -188,7 +190,7 @@ const ModalCreate = () => {
             setModal('')
         } catch (error) {
             console.log(error)
-            Swal.fire('Notificacion', 'Ocurrió un error al crear el pedido:'+ error, 'error')
+            Swal.fire('Notificacion', 'Ocurrió un error al crear el pedido:' + error, 'error')
             setModalLoading(false)
 
         }
@@ -353,13 +355,13 @@ const ModalCreate = () => {
                                                 </div>
                                                 <div className="td">
                                                     <div>
-                                                        <p>No aplica</p>
+                                                        <p>{concept?.orden_produccion ? concept?.orden_produccion.folio : "N/A"}</p>
                                                     </div>
                                                 </div>
                                                 <div className='td'>
                                                     <div>
-                                                        <input className='inputs__general' value={concept?.cantidad === null ? '' : concept?.cantidad} 
-                                                        onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()}/>
+                                                        <input className='inputs__general' value={concept?.cantidad === null ? '' : concept?.cantidad}
+                                                            onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()} />
                                                     </div>
                                                 </div>
                                                 <div className='td'>
