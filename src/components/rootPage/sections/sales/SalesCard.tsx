@@ -76,6 +76,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
 
   const [billingComment, setBillingComment] = useState<any>('')
+  const [productionComments, setproductionComments] = useState<string>('')
   const [opciones, setOpciones] = useState<any>(null);
 
   const setModalLoading = storeArticles((state: any) => state.setModalLoading);
@@ -263,10 +264,13 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
   }, [prices])
 
 
+  console.log(billingComment)
 
 
-
-  const [data, setData] = useState<any>()
+  const [data, setData] = useState<any>({
+    obs_produccion: '',
+    obs_factura: '',
+  })
 
   const controllerRef = useRef<AbortController | null>(null);
 
@@ -317,8 +321,8 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
           name_unidad: selectedUnit.nombre,
           cantidad: amount,
           precio_total: prices,
-          obs_produccion: productionComments,
-          obs_factura: productionComments,
+          obs_produccion: data.obs_produccion,
+          obs_factura: data.obs_factura,
           monto_urgencia: 0,
           urgencia_monto: 0,
           descuento: result.descuento_aplicado,
@@ -415,8 +419,8 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
           name_unidad: selectedUnit.nombre,
           cantidad: amount,
           precio_total: result.mensaje,
-          obs_produccion: productionComments,
-          obs_factura: productionComments,
+          obs_produccion: data.obs_produccion,
+          obs_factura: data.obs_factura,
           monto_urgencia: 0,
           urgencia_monto: 0,
           descuento: result.descuento_aplicado,
@@ -474,7 +478,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
   useEffect(() => {
     getPrices()
-  }, [amount, prices, fyv])
+  }, [amount, prices, fyv, billingComment, productionComments])
 
 
 
@@ -532,12 +536,12 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
             precio_total: prices,
             total_franquicia: pricesFranquicia,
             con_adicional: true,
-            comentarios_produccion: productionComments,
-            comentarios_factura: billingComment,
+            comentarios_produccion: data.obs_produccion,
+            comentarios_factura: data.obs_factura,
             conceptos: [concepto_principal, concepto_adicional],
 
           }
-
+       
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
           setCustomConcepts([...customConcepts, data_pers])
           // localStorage.setItem('cotizacion', JSON.stringify([...normalConcepts, data_pers]));
@@ -607,8 +611,8 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
             precio_total: prices,
             total_franquicia: pricesFranquicia,
             con_adicional: true,
-            comentarios_produccion: productionComments,
-            comentarios_factura: billingComment,
+            comentarios_produccion: data.obs_produccion,
+            comentarios_factura: data.obs_factura,
             conceptos: [concepto_principal, concepto_adicional],
       
           }
@@ -633,7 +637,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
   }
 
-  const [productionComments, setproductionComments] = useState<string>('')
+
 
 
 
@@ -1125,11 +1129,11 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                     <div className='row'>
                       <div className='col-6'>
                         <label className='label__general'>Coment. factura</label>
-                        <textarea className={`inputs__general`} rows={2} value={billingComment} onChange={(e) => { setBillingComment(e.target.value) }} placeholder='Factura' />
+                        <textarea className={`inputs__general`}  value={data.obs_factura} onChange={(e) => setData((prev: any) => ({ ...prev, obs_factura: e.target.value }))} placeholder='Factura' />
                       </div>
                       <div className='col-6'>
                         <label className='label__general'>Coment. producción</label>
-                        <textarea className={`inputs__general`} rows={2} value={productionComments} onChange={(e) => setproductionComments(e.target.value)} placeholder='Producción' />
+                        <textarea className={`inputs__general`}  value={data.obs_produccion}  onChange={(e) => setData((prev: any) => ({ ...prev, obs_produccion: e.target.value }))} placeholder='Producción' />
                       </div>
 
                     </div>

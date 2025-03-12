@@ -742,10 +742,16 @@ getTotalPrice: async (data: any, customPath?: string) => {
     return ConfigurationAPIs.put(path, data)
   },
 
-  cancelConceptsOrder: async (id: any, customPath?: string) => {
-    const path = customPath || `cancelar_orden_venta_concepto/${id}`;
-    return ConfigurationAPIs.put(path, id)
+  cancelConceptsOrder: async (data: any, customPath?: string) => {
+    const path = customPath || `cancelar_orden_venta_concepto/${data.id}/${data.id_usuario}`;
+    return ConfigurationAPIs.put(path, data)
   },
+
+  updateConceptPersonalized: async (data: any, customPath?: string) => {
+    const path = customPath || `conceptos_personalizados/update`;
+    return ConfigurationAPIs.put(path, data)
+  },
+
 
 
 

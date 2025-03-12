@@ -36,6 +36,7 @@ const ModalSalesOrder: React.FC = () => {
     const setCustomLocal = storePersonalized((state) => state.setCustomLocal);
 
 
+    const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
     const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
     const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
@@ -43,12 +44,12 @@ const ModalSalesOrder: React.FC = () => {
     const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
     const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
     const setDeleteCustomConcepts = storePersonalized(state => state.setDeleteCustomConcepts)
-    const setIdItem = storePersonalized(state => state.setIdItem)
+
 
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
-    const { normalConcepts, customConcepts, conceptView, personalized, idItem, deleteCustomConcepts, normalConceptsView }: any = useStore(storePersonalized)
+    const { normalConcepts, customConcepts, conceptView, personalized, deleteCustomConcepts, normalConceptsView }: any = useStore(storePersonalized)
     const { dataGet }: any = useStore(storeSaleOrder)
     const setSaleOrders = storeSaleOrder((state) => state.setSaleOrders);
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
@@ -58,7 +59,7 @@ const ModalSalesOrder: React.FC = () => {
     const setCustomData = storePersonalized((state) => state.setCustomData);
 
     const setDataSaleOrder = storeSaleOrder((state) => state.setDataSaleOrder);
-    const setDataSaleOrders = storeSaleOrder((state) => state.setDataSaleOrders);
+
     const setSubModal = storeSaleOrder((state) => state.setSubModal);
 
     const [companies, setCompanies] = useState<any>([])
@@ -75,24 +76,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const { getSaleOrders }: any = saleOrdersRequests()
 
-    const fetch = async () => {
-        const data = {
-            id_sucursal: branchOffices.id,
-            id_usuario: user_id,
-            nombre: ''
-        }
-        const result = await getClients(data)
-        setSelectedIds('clients', result[0])
-        setClients({
-            selectName: 'Cliente',
-            options: 'razon_social',
-            dataSelect: result
-        })
-    }
 
-    useEffect(() => {
-        fetch()
-    }, [modalSalesOrder])
 
 
     const [clients, setClients] = useState<any>()
@@ -123,14 +107,14 @@ const ModalSalesOrder: React.FC = () => {
 
     const [dates, setDates] = useState(["", ""]); // Estado para las fechas
     const [modify_te, setModifyTe] = useState(0); // Estado para mostrar el aviso
-    
+
     const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const updatedDates = [...dates];
         updatedDates[index] = event.target.value; // Captura el valor del input
         setDates(updatedDates);
         setModifyTe(1); // Indica que las fechas han sido modificadas
     };
-    
+
     // Extraer fecha y hora de los valores seleccionados
 
     // useEffect(() => {
@@ -156,18 +140,16 @@ const ModalSalesOrder: React.FC = () => {
         }
     }, [modalSalesOrder])
 
-
-
-
     useEffect(() => {
         if (modalSalesOrder == 'sale-order__modal-update') {
-
+            setClients({
+                selectName: 'Cliente',
+                options: 'razon_social',
+                dataSelect: [{id: saleOrdersToUpdate.id_cliente, razon_social: saleOrdersToUpdate.razon_social}]})
+            console.log('saleOrdersToUpdate', saleOrdersToUpdate)
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setNormalConcepts(saleOrdersToUpdate?.conceptos)
-            setDates([
-                saleOrdersToUpdate.fecha_entrega_cliente,
-                saleOrdersToUpdate.fecha_entrega_produccion,
-            ]);
+            setDates([`${saleOrdersToUpdate.fecha_entrega_cliente}T${saleOrdersToUpdate.hora_entrega_cliente}`, `${saleOrdersToUpdate.fecha_entrega_produccion}T${saleOrdersToUpdate.hora_entrega_produccion}`]);
             setDataProduction({
                 "fecha_produccion": saleOrdersToUpdate.fecha_entrega_produccion,
                 "hora_produccion": saleOrdersToUpdate.hora_entrega_produccion,
@@ -277,15 +259,14 @@ const ModalSalesOrder: React.FC = () => {
 
         localStorage.setItem('sale-order', JSON.stringify(filter));
 
-        if (item.id) {
-            await APIs.cancelConceptsOrder(item.id)
-            setDeleteNormalConcepts([...normalConcepts, item.id])
-        } else {
 
-        }
     }
 
     const SaleOrderStatus = () => {
+        let data = {
+            id: saleOrdersToUpdate.id,
+            id_usuario: user_id
+        }
         Swal.fire({
             title: "Seguro que deseas cancelar la Orden de Venta?",
             text: "Se desapartará el material apartado, está acción no se puede deshacer",
@@ -294,7 +275,7 @@ const ModalSalesOrder: React.FC = () => {
             denyButtonText: `Cancelar`
         }).then(async (result) => {
             if (result.isConfirmed) {
-                await APIs.CreateAnyPut({}, "cancelar_orden_venta/" + saleOrdersToUpdate.id)
+                await APIs.CreateAnyPut({}, `cancelar_orden_venta/${data.id}/${data.id_usuario}`)
                     .then(async (response: any) => {
                         if (response.error) {
 
@@ -435,14 +416,12 @@ const ModalSalesOrder: React.FC = () => {
     // };
 
     const handleStatusChange = (status: number, index: number) => {
-        const newStatus = !status;
+        setNormalConcepts(
+            normalConcepts.map((item: any, i: number) =>
+                i === index ? { ...item, enviar_a_produccion: !status } : item
+            )
+        );
 
-        const updatedConcepts = [...normalConcepts];
-        const updatedConceptsView = [...conceptView];
-        updatedConcepts[index].enviar_a_produccion = newStatus;
-        updatedConceptsView[index].enviar_a_produccion = newStatus;
-        setNormalConcepts(updatedConceptsView);
-        setNormalConcepts(updatedConcepts);
     };
 
     const [amount, setAmount] = useState<any>(0)
@@ -531,6 +510,7 @@ const ModalSalesOrder: React.FC = () => {
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setCompanies({ id: saleOrdersToUpdate.id_empresa })
             setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
+
             setTitle(saleOrdersToUpdate.titulo)
             const data = {
                 id_sucursal: saleOrdersToUpdate.id_sucursal,
@@ -547,8 +527,8 @@ const ModalSalesOrder: React.FC = () => {
             // })
             // calcular_tiempos_entrega()
         } else {
-            setDates([saleOrdersToUpdate.fecha_entrega_produccion + ' ' + saleOrdersToUpdate.hora_entrega_produccion,
-            saleOrdersToUpdate.fecha_entrega_cliente + ' ' + saleOrdersToUpdate.hora_entrega_cliente])
+            setDates([saleOrdersToUpdate.fecha_entrega_produccion + 'T' + saleOrdersToUpdate.hora_entrega_produccion,
+            saleOrdersToUpdate.fecha_entrega_cliente + 'T' + saleOrdersToUpdate.hora_entrega_cliente])
             setTitle(saleOrdersToUpdate.titulo)
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setModifyTe(saleOrdersToUpdate.motivo_modify_te)
@@ -686,10 +666,13 @@ const ModalSalesOrder: React.FC = () => {
 
     };
     const updateOrdenVenta = async () => {
-        const [datePartOne, timePartOne] = dates[0].split(" ");
-        const [datePartTwo, timePartTwo] = dates[1].split(" ");
+
+        const [datePartOne, timePartOne] = dates[0] ? dates[0].split("T") : ["", ""];
+        const [datePartTwo, timePartTwo] = dates[1] ? dates[1].split("T") : ["", ""];
+      
         let data = {
             id: saleOrdersToUpdate.id,
+            id_usuario_actualiza: user_id,
             id_sucursal: branchOffices.id,
             id_usuario_crea: saleOrdersToUpdate.id_usuario_crea,
             id_cliente: selectedIds.clients.id || saleOrdersToUpdate.id_cliente,
@@ -708,7 +691,6 @@ const ModalSalesOrder: React.FC = () => {
                     Swal.fire('Notificación', response.mensaje, 'success');
                 }
             })
-
     }
     const [urgenciaG, setUrgenciaG] = useState<boolean>(false)
 
@@ -728,10 +710,11 @@ const ModalSalesOrder: React.FC = () => {
 
 
     const [indexItem, setIndexItem] = useState<any>()
-
+    const [idItem, setIdItem] = useState<any>()
 
 
     const updateConceptSaleOrder = (concept: any, index: number) => {
+        setIdItem(concept)
         setIndexItem(index)
         setPersonalizedModal('personalized_modal-sale-update')
 
@@ -790,6 +773,38 @@ const ModalSalesOrder: React.FC = () => {
         // setCustomConceptView([])
     }
 
+
+    const canceleStatus = async (item: any) => {
+        console.log(item)
+        let data = {
+            id: item.id,
+            id_usuario: user_id
+        }
+        const dataSaleOrders = {
+            id: saleOrdersToUpdate.id,
+            folio: 0,
+            id_sucursal: 0,
+            id_serie: 0,
+            id_cliente: 0,
+            desde: haceUnaSemana.toISOString().split('T')[0],
+            hasta: hoy.toISOString().split('T')[0],
+            id_usuario: user_id,
+            id_vendedor: selectedIds?.users?.id,
+            status: 0,
+            page: 1,
+        }
+
+        try {
+            let response: any = await APIs.cancelConceptsOrder(data)
+            const result = await getSaleOrders(dataSaleOrders)
+            setNormalConcepts(result[0].conceptos);
+       
+ 
+            Swal.fire('Exito', response.mensaje, 'success');
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
 
     return (
@@ -1179,6 +1194,30 @@ const ModalSalesOrder: React.FC = () => {
                                                             <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
                                                             : ''}
                                                     </div>
+                                                    {article.status == 0 ?
+                                                        <div className='td'>
+                                                            {article.id ?
+                                                                <div >
+                                                                    {saleOrdersToUpdate.status != 1 ?
+                                                                        <div className='cancel-icon' onClick={() => canceleStatus(article)} title='Cancelar concepto'>
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
+                                                                        </div>
+
+                                                                        :
+                                                                        ''}
+                                                                </div>
+                                                                :
+                                                                <div className='td'>
+
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                        :
+                                                        <div className='td'>
+
+                                                        </div>
+                                                    }
+
                                                     <div className='td urgency'>
                                                         {article?.urgency ?
                                                             <div>
@@ -1194,21 +1233,6 @@ const ModalSalesOrder: React.FC = () => {
                                                             </div>
                                                         }
                                                     </div>
-
-
-                                                    {article.id ?
-                                                        <div className='td'>
-                                                            {saleOrdersToUpdate.status != 1 ?
-                                                                <div className='cancel-icon' onClick={() => deleteArticle(article, index)} title='Cancelar concepto'>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
-                                                                </div>
-
-                                                                :
-                                                                ''}
-                                                        </div>
-                                                        :
-                                                        ''
-                                                    }
                                                     <div className='td'>
                                                         <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
@@ -1248,18 +1272,25 @@ const ModalSalesOrder: React.FC = () => {
                                                             <label className="switch">
                                                                 <input
                                                                     type="checkbox"
+
                                                                     checked={article.enviar_a_produccion}
-                                                                    onChange={() => handleStatusChange(article.enviar_a_produccion, index)} />
+                                                                    onChange={() => handleStatusChange(article.enviar_a_produccion, index)} disabled={article.status == !0} />
                                                                 <span className="slider"></span>
                                                             </label>
                                                         </div>
                                                     </div>
-                                                    {modalSalesOrder == 'sale-order__modal-update' && saleOrdersToUpdate.status != 1 ?
-                                                        <div className='td'>
-                                                            <button type='button' className='btn__general-purple' onClick={() => updateSaleOrderConcept(article)}>Actualizar</button>
+                                                    {article.status == 0 ?
+                                                        <div>
+                                                            {modalSalesOrder == 'sale-order__modal-update' && saleOrdersToUpdate.status != 1 ?
+                                                                <div className='td'>
+                                                                    <button type='button' className='btn__general-purple' onClick={() => updateSaleOrderConcept(article)}>Actualizar</button>
+                                                                </div>
+                                                                :
+                                                                ""
+                                                            }
                                                         </div>
                                                         :
-                                                        ""
+                                                        ''
                                                     }
                                                     {article.status == 1 ?
                                                         <div className="td">

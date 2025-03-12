@@ -153,6 +153,7 @@ const SalesOrder: React.FC = () => {
     }
 
     const modalUpdate = (order: any) => {
+        console.log(order)
         setModalSalesOrder('sale-order__modal-update')
         setSaleOrdersToUpdate(order)
         setCustomConcepts(order.conceptos_pers);

@@ -415,7 +415,7 @@ const ModalBilling: React.FC = () => {
             conceptos_elim: deleteNormalConcepts,
             conceptos_pers_elim: deleteCustomConcepts
         };
-        console.log('normalConcepts', normalConcepts);
+    
         // return
         if (!modoUpdate) {
             Swal.fire({
@@ -493,10 +493,10 @@ const ModalBilling: React.FC = () => {
         setType(value);
     };
 
-    const handleAddConceptsChange = (order: any, i:number) => {
-        console.log('order', order);
+    const handleAddConceptsChange = (order: any, i: number) => {
+       
 
-        
+
 
         let newIdentifier = identifier + 1;
         let copy_totals = { ...totals };
@@ -561,14 +561,14 @@ const ModalBilling: React.FC = () => {
         //------------------------------------------------------------------RELLENAR INFORMACIÓN AUTOMATICA DE CLIENTE Y TITULO
         setTitle(order.titulo == undefined ? 'Cobro PAF' : order.titulo)
         if (order.rfc != undefined) {
-            setClient((prevClient:any) => {
+            setClient((prevClient: any) => {
                 const newClient = order.rfc;
                 searchClient(newClient); // Llama a la función con el nuevo valor
                 return newClient; // Actualiza el estado
             });
         }
         //------------------------------------------------------------------ELIMINAR LA ORDEN QUE YA SE AGREGÓ 
-        setSaleOrders((prev:any) => prev.filter((_:any, index:number) => index !== i));
+        setSaleOrders((prev: any) => prev.filter((_: any, index: number) => index !== i));
 
     };
 
@@ -585,8 +585,8 @@ const ModalBilling: React.FC = () => {
         options: 'razon_social',
         dataSelect: []
     })
- 
-    const searchClient = async (customClient?:string) => {
+
+    const searchClient = async (customClient?: string) => {
         const data = {
             id_sucursal: modoUpdate ? DataUpdate.id_sucursal : branchOffices.id,
             id_usuario: user_id,
@@ -635,7 +635,7 @@ const ModalBilling: React.FC = () => {
 
     }, [selectedIds?.customers])
 
-    console.log('conceptView', conceptView)
+
 
     const deleteConceptos = (c: any) => {
         console.log('c', c)
@@ -706,7 +706,6 @@ const ModalBilling: React.FC = () => {
         }
     }
 
-    console.log('conceptView', conceptView)
 
     const undoConceptos = (concept: any) => {
         if (subModal == 'billing__modal-create') {
@@ -785,10 +784,27 @@ const ModalBilling: React.FC = () => {
     const [idItem, setIdItem] = useState<number>()
 
 
-    const personalizedUpdate = (concept: any) => {
+const [indexItem, setIndexItem] = useState<any>()
+
+    const personalizedUpdate = (concept: any, index: number) => {
         setPersonalizedModal('personalized_modal-billing-update');
         setIdItem(concept);
+        setIndexItem(index)
+        console.log(concept)
 
+        if(subModal == 'billing__modal-create') {
+
+            setCustomConceptView([...concept.conceptos, ...normalConcepts]);
+
+        } else {
+            
+        }
+
+        // concept.conceptos.forEach((element: any) => {
+        //     element.check = true;
+        //     // Incrementar y asignar
+        // });
+       
 
     };
 
@@ -909,7 +925,7 @@ const ModalBilling: React.FC = () => {
                                     <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Folio/RFC/Razon social' />
                                 </div>
                                 <div className='col-2 d-flex align-items-end justify-content-center'>
-                                    <button type='button' className='btn__general-purple' onClick={()=>searchClient()}>Buscar</button>
+                                    <button type='button' className='btn__general-purple' onClick={() => searchClient()}>Buscar</button>
                                 </div>
                                 <div className='col-4'>
                                     <Select dataSelects={customers} instanceId='customers' nameSelect={'Clientes Encontrados'} />
@@ -1012,7 +1028,7 @@ const ModalBilling: React.FC = () => {
                                     </div>
                                     {saleOrders ? (
                                         <div className='table__body'>
-                                            {saleOrders.map((order: any, i:number) => {
+                                            {saleOrders.map((order: any, i: number) => {
                                                 return (
                                                     <div className='tbody__container' key={order.id}>
                                                         <div className='tbody'>
@@ -1035,7 +1051,7 @@ const ModalBilling: React.FC = () => {
                                                         <button type='button' className='btn__general-purple' onClick={() => handleModalSeeChange(order)}>conceptos</button>
                                                     </div> */}
                                                             <div className="th">
-                                                                <button type='button' className='btn__general-purple' onClick={() => handleAddConceptsChange(order,i)}>Agregar</button>
+                                                                <button type='button' className='btn__general-purple' onClick={() => handleAddConceptsChange(order, i)}>Agregar</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1090,117 +1106,105 @@ const ModalBilling: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                            {conceptView ? (
-                                <div className='table__body'>
-                                    {conceptView?.map((concept: any) => {
-                                        return (
-                                            <div className={`tbody__container `} key={concept.id}>
-                                                {concept?.personalized ?
-                                                    <div className={`concept__personalized ${concept?.conceptos[0]?.pers_div ? 'div' : ''}`}>
-                                                        <p>Concepto {concept.conceptos[0].pers_div ? 'personalized_div' : 'personalized'}</p>
+                            <div className='table__body'>
+                                {normalConcepts?.map((concept: any) => {
+                                    return (
+                                        <div className={`tbody__container `} key={concept.id}>
+                                            <div className='tbody'>
+                                                <div className='td'>
+                                                    <p>{concept.codigo}-{concept.descripcion}</p>
+
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{concept.cantidad} {concept.unidad}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>${(concept.total_restante || concept.total) / concept.cantidad}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>${concept.total || concept.total_restante}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>${concept.total || concept.total_restante}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <button type='button' className='btn__general-purple' onClick={() => handleAddDivisionChange(concept)}>Division</button>
+                                                </div>
+                                                <div className='td'>
+                                                    <div className='delete-icon' onClick={() => { deleteConceptos(concept) }} title='Eliminar concepto'>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                                     </div>
-                                                    :
-                                                    ''
-                                                }
-                                                {concept?.personalized ?
-                                                    <div className={`tbody ${concept?.conceptos[0]?.pers_div ? 'personalized_div' : 'personalized'}`}>
-                                                        <div className='td'>
-                                                            <p>{concept.codigo}-{concept.descripcion}</p>
-
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>{concept.cantidad} {concept.name_unidad}</p>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>${(concept.precio_total) / concept.cantidad}</p>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>${concept.total || concept.total_restante || concept.precio_total}</p>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>${concept.total || concept.total_restante || concept.precio_total}</p>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
-                                                        </div>
-                                                        <div className='td'>
-                                                            {concept.concept ?
-                                                                <button type='button' className='btn__general-purple' onClick={() => personalizedUpdate(concept)}>Conceptos</button>
-                                                                :
-                                                                <button type='button' className='btn__general-purple' onClick={() => personalizedUpdate(concept)}>Conceptos</button>
-
-                                                            }
-                                                        </div>
-                                                        {concept.concept ?
-                                                            ''
-                                                            :
-                                                            <div className='td'>
-                                                                <button type='button' className='btn__general-purple' onClick={() => handleAddDivisionChange(concept)}>Division</button>
-                                                            </div>
-                                                        }
-                                                        <div>
-                                                            {concept.conceptos[0].pers_div ?
-
-                                                                <div className='delete-icon' onClick={() => { deleteConceptos(concept) }} title='Eliminar concepto'>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                                                </div>
-
-
-                                                                :
-
-                                                                <div className='undo-icon' onClick={() => { undoConceptos(concept) }}>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
-                                                                </div>
-
-
-                                                            }
-                                                        </div>
-
-                                                    </div>
-                                                    :
-                                                    <div className='tbody'>
-                                                        <div className='td'>
-                                                            <p>{concept.codigo}-{concept.descripcion}</p>
-
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>{concept.cantidad} {concept.unidad}</p>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>${(concept.total_restante || concept.total) / concept.cantidad}</p>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>${concept.total || concept.total_restante}</p>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>${concept.total || concept.total_restante}</p>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <button type='button' className='btn__general-purple' onClick={() => handleAddDivisionChange(concept)}>Division</button>
-                                                        </div>
-                                                        <div className='td'>
-                                                            <div className='delete-icon' onClick={() => { deleteConceptos(concept) }} title='Eliminar concepto'>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                                            </div>
-                                                        </div>
-                                                        {/* <div className='td'>            HABILITAR Y CONDICIONAR SOLO EN PERSONALIZADO
+                                                </div>
+                                                {/* <div className='td'>            HABILITAR Y CONDICIONAR SOLO EN PERSONALIZADO
                                                     <button type='button' className='btn__general-purple' onClick={() => handleAddConceptsChange(concept)}>Desperzonalizado</button>
                                                 </div> */}
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                                {customConcepts?.map((concept: any, index: number) => {
+                                    return (
+                                        <div className={`tbody__container `} key={concept.id}>
+
+                                            <div className={`concept__personalized ${concept?.conceptos[0]?.pers_div ? 'div' : ''}`}>
+                                                <p>Concepto {concept.conceptos[0].pers_div ? 'personalized_div' : 'personalized'}</p>
+                                            </div>
+                                            <div className={`tbody ${concept?.conceptos[0]?.pers_div ? 'personalized_div' : 'personalized'}`}>
+                                                <div className='td'>
+                                                    <p>{concept.codigo}-{concept.descripcion}</p>
+
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{concept.cantidad} {concept.name_unidad}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>${(concept.precio_total) / concept.cantidad}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>${concept.total || concept.total_restante || concept.precio_total}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>${concept.total || concept.total_restante || concept.precio_total}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    {concept.concept ?
+                                                        <button type='button' className='btn__general-purple' onClick={() => personalizedUpdate(concept, index)}>Conceptos</button>
+                                                        :
+                                                        <button type='button' className='btn__general-purple' onClick={() => personalizedUpdate(concept, index)}>Conceptos</button>
+
+                                                    }
+                                                </div>
+                                                {concept.concept ?
+                                                    ''
+                                                    :
+                                                    <div className='td'>
+                                                        <button type='button' className='btn__general-purple' onClick={() => handleAddDivisionChange(concept)}>Division</button>
                                                     </div>
                                                 }
+                                                <div>
+                                                    {concept.conceptos[0].pers_div ?
 
+                                                        <div className='delete-icon' onClick={() => { deleteConceptos(concept) }} title='Eliminar concepto'>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                        </div>
+                                                        :
+                                                        <div className='undo-icon' onClick={() => { undoConceptos(concept) }}>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
+                                                        </div>
+                                                    }
+                                                </div>
                                             </div>
-                                        )
-                                    })}
-                                </div>
-                            ) : (
-                                <p className="text">Cargando datos...</p>
-                            )}
+                                        </div>
+                                    )
+                                })}
+                            </div>
                             {subModal == 'billing__modal-update' && conceptsBack ? (
-
                                 <div className='table__body'>
                                     <p style={{ color: 'red' }}>Estos conceptos se encuentran en tu factura</p>
                                     {conceptsBack?.map((concept: any) => {
@@ -1313,7 +1317,7 @@ const ModalBilling: React.FC = () => {
                     </div>
                 </div>
                 <Division />
-                <Personalized idItem={idItem} />
+                <Personalized idItem={idItem}  indexItem={indexItem} />
 
             </div>
         </div >

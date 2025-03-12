@@ -312,26 +312,19 @@ const ModalCreate: React.FC = () => {
 
   };
 
-  const deleteNormalConcept = (item: any) => {
+  const deleteNormalConcept = (item: any, i: number) => {
     if (modal === 'create-modal__qoutation') {
-      const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
-      setConceptView(filter_view)
 
-      const filter_Conceptview = normalConceptsView.filter((c: any) => c.id_identifier !== item.id_identifier)
-      setNormalConceptsView(filter_Conceptview)
-
-      const filter_normal = normalConcepts.filter((c: any) => c.id_identifier !== item.id_identifier)
-      setNormalConcepts(filter_normal)
+      const filter = normalConcepts.filter((c: any, index: number) => index !== i)
+      setNormalConcepts(filter)
       toast.success('Concepto eliminado')
-      localStorage.setItem('cotizacion', JSON.stringify(filter_normal));
+      localStorage.setItem('cotizacion', JSON.stringify(filter));
 
     } else {
-      const filter = normalConcepts.filter((x: any) => x.id_identifier !== item.id_identifier)
+      const filter = normalConcepts.filter((c: any, index: number) => index !== i)
       setNormalConcepts(filter)
-      const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
-      setConceptView(filter_view)
-      setDeleteNormalConcepts([...deleteNormalConcepts, item.id])
       toast.success('Concepto eliminado')
+      localStorage.setItem('cotizacion', JSON.stringify(filter));
     }
   }
 
@@ -399,22 +392,27 @@ const ModalCreate: React.FC = () => {
       setPersonalizedModal('personalized_modal-quotation-update-additional');
     } else {
       setPersonalizedModal('personalized_modal-quotation-update');
+
     }
     setIdItem(concept);
 
 
     if (modal == 'create-modal__qoutation') {
 
-
     } else {
-
-
-    }
-    if (concept.con_adicional) {
-      setCustomConceptView(concept.conceptos);
-    } else {
+      concept.conceptos.forEach((element: any) => {
+        element.check = true;
+        // Incrementar y asignar
+      });
       setCustomConceptView([...concept.conceptos, ...normalConcepts]);
+
+
     }
+    // if (concept.con_adicional) {
+    //   setCustomConceptView(concept.conceptos);
+    // } else {
+    //   setCustomConceptView([...concept.conceptos, ...normalConcepts]);
+    // }
 
   }
 
@@ -727,7 +725,7 @@ const ModalCreate: React.FC = () => {
                               </div>
                               {article.con_adicional ?
                                 <div className='td'>
-                                  <div className='delete-icon' onClick={() => deleteNormalConcept(article)} title='Eliminar concepto'>
+                                  <div className='delete-icon' onClick={() => deleteNormalConcept(article, index)} title='Eliminar concepto'>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                   </div>
                                 </div>
@@ -802,7 +800,7 @@ const ModalCreate: React.FC = () => {
                               </div>
 
                               <div className='td'>
-                                <div className='delete-icon' onClick={() => deleteNormalConcept(article)} title='Eliminar concepto'>
+                                <div className='delete-icon' onClick={() => deleteNormalConcept(article, index)} title='Eliminar concepto'>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                 </div>
                               </div>
@@ -857,7 +855,7 @@ const ModalCreate: React.FC = () => {
                             </div>
                             {article.con_adicional ?
                               <div className='td'>
-                                <div className='delete-icon' onClick={() => deleteNormalConcept(article)} title='Eliminar concepto'>
+                                <div className='delete-icon' onClick={() => deleteNormalConcept(article, index)} title='Eliminar concepto'>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                 </div>
                               </div>
@@ -945,7 +943,7 @@ const ModalCreate: React.FC = () => {
                           </div>
 
                           <div className='td'>
-                            <div className='delete-icon' onClick={() => deleteNormalConcept(article)} title='Eliminar concepto'>
+                            <div className='delete-icon' onClick={() => deleteNormalConcept(article, index)} title='Eliminar concepto'>
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                             </div>
                           </div>
@@ -1000,7 +998,7 @@ const ModalCreate: React.FC = () => {
                           </div>
                           {article.con_adicional ?
                             <div className='td'>
-                              <div className='delete-icon' onClick={() => deleteNormalConcept(article)} title='Eliminar concepto'>
+                              <div className='delete-icon' onClick={() => deleteNormalConcept(article, index)} title='Eliminar concepto'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                               </div>
                             </div>
