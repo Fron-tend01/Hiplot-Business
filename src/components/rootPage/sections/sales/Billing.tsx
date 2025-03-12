@@ -43,8 +43,6 @@ const Billing: React.FC = () => {
     const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
     const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
-
-
     const hoy = new Date();
     const haceUnaSemana = new Date();
     haceUnaSemana.setDate(hoy.getDate() - 7);

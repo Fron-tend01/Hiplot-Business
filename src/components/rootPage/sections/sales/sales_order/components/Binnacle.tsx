@@ -6,6 +6,7 @@ const Binnacle: React.FC = () => {
 
     const { subModal }: any = storeSaleOrder()
     const setSubModal = storeSaleOrder((state) => state.setSubModal);
+    const { saleOrdersToUpdate }: any = storeSaleOrder();
 
 
     const [data] = useState([])
@@ -22,10 +23,10 @@ const Binnacle: React.FC = () => {
                 </div>
                 <div className='sale-order__modal_articles-binnacle' >
                     <div className='table__sales_modal-binnacle'>
-                        {data ? (
+                        {saleOrdersToUpdate ? (
                             <div className='table__numbers'>
                                 <p className='text'>Total de movimientos</p>
-                                <div className='quantities_tables'>{data.length}</div>
+                                <div className='quantities_tables'>{saleOrdersToUpdate?.length}</div>
                             </div>
                         ) : (
                             <p className="text">No hay movimientos</p>
@@ -36,21 +37,27 @@ const Binnacle: React.FC = () => {
                                     <p>Movimiento</p>
                                 </div>
                                 <div className='th'>
+                                    <p>Nombre</p>
+                                </div>
+                                <div className='th'>
                                     <p>Fecha</p>
                                 </div>
                             </div>
                         </div>
-                        {data ? (
+                        {saleOrdersToUpdate.bitacora?.length > 0 ? (
                             <div className='table__body'>
-                                {data?.map((article: any) => {
+                                {saleOrdersToUpdate?.bitacora?.map((article: any) => {
                                     return (
                                         <div className='tbody__container' key={article.id}>
                                             <div className='tbody personalized'>
                                                 <div className='td'>
-                                                    <p>{article.codigo}-{article.descripcion}</p>
+                                                    <p>{article.mensaje}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>$ {article.cantidad}</p>
+                                                    <p>{article.nombre}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>$ {article.fecha_creacion}</p>
                                                 </div>
                                             </div>
 

@@ -23,8 +23,7 @@ const Division = () => {
     const [number, setNumber] = useState<any | string>('')
     const [divisiones, setDivisiones] = useState<any[]>([])
 
-    console.log('division', division)
-    console.log('conceptView', conceptView)
+
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const a = division.cantidad
@@ -112,7 +111,7 @@ const Division = () => {
         }
     }
 
-    console.log('division', division)
+ 
 
     const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -179,7 +178,7 @@ const Division = () => {
         }
     };
     
-    console.log('customConcepts', customConcepts)
+
 
     return (
         <div className={`overlay__billing__modal-division ${modalSub == 'billing__modal-division' ? 'active' : ''}`}>

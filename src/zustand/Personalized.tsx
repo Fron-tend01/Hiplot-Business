@@ -24,7 +24,7 @@ interface SelectStore {
   setConceptView: (x: any) => void;
 
   
-  customConceptView: any;
+  customConceptView: [];
   setCustomConceptView: (x: any) => void;
 
 

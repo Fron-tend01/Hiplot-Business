@@ -176,32 +176,9 @@ const Quotation: React.FC = () => {
   const updateQuotation = (quotation: any) => {
     // Cambia el estado del modal
     setModal('update-modal__qoutation');
-
-    // Obtiene el valor actual de identifier desde el store
-    const currentIdentifier = storePersonalized.getState().identifier;
-    let newIdentifier = currentIdentifier;
-
-    // Actualiza los identificadores en conceptos
-    quotation.conceptos.forEach((x: any) => {
-      x.id_identifier = ++newIdentifier;
-    });
-
-    quotation.conceptos_pers.forEach((x: any) => {
-      x.id_identifier = ++newIdentifier;
-    });
-
-    // Actualiza el identificador global en el store
-    storePersonalized.setState({ identifier: newIdentifier });
-
-    // Actualiza los estados locales con los datos procesados
-    setConceptView([...quotation.conceptos, ...quotation.conceptos_pers]);
     setCustomConcepts(quotation.conceptos_pers);
     setNormalConcepts(quotation.conceptos);
-    setCustomConceptView(quotation.conceptos);
-    setNormalConceptsView(quotation.conceptos);
-    // Actualiza otros estados relacionados con la cotización
     setQuatation(quotation);
-    setPersonalized(quotation);
   };
 
 
