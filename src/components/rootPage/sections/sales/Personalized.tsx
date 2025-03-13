@@ -478,8 +478,6 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
 
 
   const closeModal = () => {
-
-
     if (personalizedModal === 'personalized_modal-quotation-update') {
       setInputs((prev: any) => ({
         ...prev,
@@ -493,11 +491,14 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
     }
     setPersonalizedModal('')
     setCustomConceptView([])
-    // setCustomConcepts([])
+   
     // setCustomConceptView([])
     // setCustomLocal([])
 
   }
+  
+
+
 
 
 
@@ -556,9 +557,10 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
     data[i].id_area_produccion = value
     // Actualizamos el estado con el array modificado
     setCustomConceptView(data);
-
-
   };
+  
+
+  console.log('customConceptView', customConceptView);
 
   const handleStatusChange = (_: any, i: any) => {
 
@@ -1220,17 +1222,9 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
                                       </option>
                                     ))}
                                   </select>
-
-
-
                                 </div>
                               </div>
                               <div className='td'>
-                                {concept.enviar_a_produccion ?
-                                  <p>Es tgrue</p>
-                                  :
-                                  <p>No es tgrue</p>
-                                }
                                 <div>
                                   <div className=''>
                                     <label>Enviar producción</label>
@@ -1371,11 +1365,6 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
                                 </div>
                               </div>
                               <div className='td'>
-                                {concept.enviar_a_produccion ?
-                                  <p>Es tgrue</p>
-                                  :
-                                  <p>No es tgrue</p>
-                                }
                                 <div>
                                   <div className=''>
                                     <label>Enviar producción</label>

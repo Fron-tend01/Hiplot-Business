@@ -770,6 +770,7 @@ const ModalSalesOrder: React.FC = () => {
     const closeModal = () => {
         setModalSalesOrder('')
         setCustomLocal([])
+        setCustomConcepts([])
         // setCustomConceptView([])
     }
 
