@@ -159,53 +159,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
 
     }
 
-    if (personalizedModal == 'personalized_modal-quotation-update') {
-      let length: number = 0;
 
-      let filter = customConceptView.filter((x: any) => x.check == true)
-      let filterDeleteNormal = customConceptView.filter((x: any) => x.check !== true)
-      const updatedConceptView = customConcepts.map((x: any, index: number) => {
-        if (index == indexItem) {
-
-          length = filter.length
-          return {
-            ...x,
-            // conceptos: customLocal,
-            descripcion: inpust.descripcion,
-            codigo: inpust.codigo,
-            cantidad: inpust.cantidad,
-            unidad: selectedIds?.units?.id,
-            name_unidad: selectedIds?.units?.nombre,
-            clave_sat: selectedKey ? selectedKey : selectedSatKey?.Clave ? parseInt(selectedSatKey.Clave) : idItem.clave_sat,
-            precio_total: inpust.precio_total,
-            comentarios_produccion: inpust.comentarios_produccion,
-            comentarios_factura: inpust.comentarios_factura,
-            conceptos: filter
-          };
-        }
-        return x;
-      });
-
-      let filterDelete: any = []
-
-
-      if (length > 0) {
-        console.log('Se mantiene por que todavia le quedan conceptos', length)
-        setNormalConcepts(filterDeleteNormal)
-        setCustomConcepts(updatedConceptView)
-        setPersonalizedModal('')
-        return
-
-      } else {
-        console.log('Se elimina', length)
-        let filterDelete = customConcepts.filter((_: any, index: number) => index !== indexItem)
-
-        setCustomConcepts(filterDelete)
-        setNormalConcepts(filterDeleteNormal)
-        setPersonalizedModal('')
-      }
-      return
-    }
 
     if (personalizedModal == 'personalized_modal-sale') {
       let filter: any = []
@@ -243,6 +197,102 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
 
 
       return
+    }
+
+
+
+    if (personalizedModal == 'personalized_modal-billing') {
+
+      let filter: any = []
+      filter = customConceptView.filter((x: any) => x.check == true)
+      if (filter.length > 0) {
+        const data = {
+          descripcion: inpust.descripcion,
+          order: {
+            serie: customConceptView[0].serie,
+            folio: customConceptView[0].folio,
+            anio: customConceptView[0].anio
+          },
+          personalized: true,
+          codigo: inpust.codigo,
+          cantidad: inpust.cantidad,
+          unidad: selectedIds?.units?.id,
+          name_unidad: selectedIds?.units?.nombre,
+          clave_sat: selectedKey ? selectedKey : selectedSatKey?.Clave ? parseInt(selectedSatKey.Clave) : idItem.clave_sat,
+          codigo_unidad_sat: 0,
+          precio_total: inpust.precio_total,
+          comentarios_produccion: inpust.comentarios_produccion,
+          comentarios_factura: inpust.comentarios_factura,
+          conceptos: filter,
+        }
+
+
+        let filterDelete = customConceptView.filter((x: any) => x.check !== true)
+        setNormalConcepts(filterDelete)
+        setCustomConcepts([...customConcepts, data])
+        setCustomConceptView([])
+        setPersonalizedModal('')
+      } else {
+        Swal.fire({
+          title: "Advertencia",
+          text: "Debes seleccionar al menos un concepto para crear el personalizado.",
+          icon: "warning"
+        });
+
+      }
+      return
+
+    }
+
+
+
+  }
+
+
+  const updatePersonalized = async () => {
+
+    if (personalizedModal == 'personalized_modal-quotation-update') {
+
+      let length: number = 0;
+
+      let filter = customConceptView.filter((x: any) => x.check == true)
+      let filterDeleteNormal = customConceptView.filter((x: any) => x.check !== true)
+      const updatedConceptView = customConcepts.map((x: any, index: number) => {
+        if (index == indexItem) {
+
+          length = filter.length
+          return {
+            ...x,
+            descripcion: inpust.descripcion,
+            codigo: inpust.codigo,
+            cantidad: inpust.cantidad,
+            unidad: selectedIds?.units?.id,
+            name_unidad: selectedIds?.units?.nombre,
+            clave_sat: selectedKey ? selectedKey : selectedSatKey?.Clave ? parseInt(selectedSatKey.Clave) : idItem.clave_sat,
+            precio_total: inpust.precio_total,
+            comentarios_produccion: inpust.comentarios_produccion,
+            comentarios_factura: inpust.comentarios_factura,
+            conceptos: filter
+          };
+        }
+        return x;
+      });
+
+      if (length > 0) {
+        console.log('Se mantiene por que todavia le quedan conceptos', length)
+        setNormalConcepts(filterDeleteNormal)
+        setCustomConcepts(updatedConceptView)
+        setPersonalizedModal('')
+        return
+
+      } else {
+        console.log('Se elimina', length)
+        let filterDelete = customConcepts.filter((_: any, index: number) => index !== indexItem)
+
+        setCustomConcepts(filterDelete)
+        setNormalConcepts(filterDeleteNormal)
+        setPersonalizedModal('')
+      }
     }
 
     if (personalizedModal == 'personalized_modal-sale-update') {
@@ -292,145 +342,138 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
           setNormalConcepts(filterDeleteNormal)
           setPersonalizedModal('')
         }
+        return
 
 
-
-      }
-      return
-    }
-
-    if (personalizedModal == 'personalized_modal-billing') {
-
-      let filter: any = []
-      filter = customConceptView.filter((x: any) => x.check == true)
-      if (filter.length > 0) {
-        const data = {
-          descripcion: inpust.descripcion,
-          order: {
-            serie: customLocal[0].serie,
-            folio: customLocal[0].folio,
-            anio: customLocal[0].anio
-          },
-          personalized: true,
+      } else {
+        let data = {
+          id: idItem.id,
           codigo: inpust.codigo,
+          descripcion: inpust.descripcion,
           cantidad: inpust.cantidad,
-          unidad: selectedIds?.units?.id,
-          name_unidad: selectedIds?.units?.nombre,
-          clave_sat: selectedKey ? selectedKey : selectedSatKey?.Clave ? parseInt(selectedSatKey.Clave) : idItem.clave_sat,
-          codigo_unidad_sat: 0,
+          unidad: selectedIds.units.id,
           precio_total: inpust.precio_total,
-          comentarios_produccion: inpust.comentarios_produccion,
           comentarios_factura: inpust.comentarios_factura,
-          conceptos: filter,
+          comentarios_produccion: inpust.comentarios_produccion,
+          clave_sat: inpust.clave_sat,
+          conceptos: []
         }
 
+        const dataSaleOrders = {
+          id: saleOrdersToUpdate.id,
+          folio: 0,
+          id_sucursal: 0,
+          id_serie: 0,
+          id_cliente: 0,
+          desde: haceUnaSemana.toISOString().split('T')[0],
+          hasta: hoy.toISOString().split('T')[0],
+          id_usuario: user_id,
+          id_vendedor: selectedIds?.users?.id,
+          status: 0,
+          page: 1,
+        }
 
-        let filterDelete = customConceptView.filter((x: any) => x.check !== true)
-        setNormalConcepts(filterDelete)
-        setCustomConcepts([...customConcepts, data])
-        setCustomConceptView([])
-        setPersonalizedModal('')
-      } else {
-        Swal.fire({
-          title: "Advertencia",
-          text: "Debes seleccionar al menos un concepto para crear el personalizado.",
-          icon: "warning"
-        });
-
+        try {
+          let response: any = await APIs.updateConceptPersonalized(data)
+          const result = await getSaleOrders(dataSaleOrders)
+          setCustomConcepts(result[0].conceptos_pers);
+          setPersonalizedModal('')
+          return Swal.fire('Éxito', response.mensaje, 'success');
+        } catch (error: any) {
+          return Swal.fire('Error', error.mensaje, 'error');
+        }
+        return
       }
-      return
-
     }
 
     if (personalizedModal == 'personalized_modal-billing-update') {
-      let length: number = 0;
 
-      let filter = customConceptView.filter((x: any) => x.check == true)
-      console.log('filter', filter)
-      let filterDeleteNormal = customConceptView.filter((x: any) => x.check !== true)
-      const updatedConceptView = customConcepts.map((x: any, index: number) => {
-        if (index == indexItem) {
+      if (subModal == 'billing__modal-create') {
+        let length: number = 0;
 
-          length = filter.length
-          return {
-            ...x,
-            // conceptos: customLocal,
-            id: idItem.id,
-            descripcion: inpust.descripcion,
-            codigo: inpust.codigo,
-            cantidad: inpust.cantidad,
-            unidad: selectedIds?.units?.id,
-            precio_total: inpust.precio_total,
-            clave_sat: selectedKey ? selectedKey : selectedSatKey?.Clave ? parseInt(selectedSatKey.Clave) : idItem.clave_sat,
-            comentarios_produccion: inpust.comentarios_produccion,
-            comentarios_factura: inpust.comentarios_factura,
-            conceptos: filter,
-          };
+        let filter = customConceptView.filter((x: any) => x.check == true)
+        console.log('filter', filter)
+        let filterDeleteNormal = customConceptView.filter((x: any) => x.check !== true)
+        const updatedConceptView = customConcepts.map((x: any, index: number) => {
+          if (index == indexItem) {
+
+            length = filter.length
+            return {
+              ...x,
+              // conceptos: customLocal,
+              id: idItem.id,
+              descripcion: inpust.descripcion,
+              codigo: inpust.codigo,
+              cantidad: inpust.cantidad,
+              unidad: selectedIds?.units?.id,
+              precio_total: inpust.precio_total,
+              clave_sat: selectedKey ? selectedKey : selectedSatKey?.Clave ? parseInt(selectedSatKey.Clave) : idItem.clave_sat,
+              comentarios_produccion: inpust.comentarios_produccion,
+              comentarios_factura: inpust.comentarios_factura,
+              conceptos: filter,
+            };
+          }
+          return x;
+        });
+
+        console.log('updatedConceptView', updatedConceptView)
+
+        if (length > 0) {
+          console.log('Se mantiene por que todavia le quedan conceptos', length)
+          setNormalConcepts(filterDeleteNormal)
+          setCustomConcepts(updatedConceptView)
+          setPersonalizedModal('')
+          return
+
+        } else {
+          console.log('Se elimina', length)
+          let filterDelete = customConcepts.filter((_: any, index: number) => index !== indexItem)
+
+          setCustomConcepts(filterDelete)
+          setNormalConcepts(filterDeleteNormal)
+          setPersonalizedModal('')
         }
-        return x;
-      });
-
-      console.log('updatedConceptView', updatedConceptView)
-
-      if (length > 0) {
-        console.log('Se mantiene por que todavia le quedan conceptos', length)
-        setNormalConcepts(filterDeleteNormal)
-        setCustomConcepts(updatedConceptView)
-        setPersonalizedModal('')
         return
-
       } else {
-        console.log('Se elimina', length)
-        let filterDelete = customConcepts.filter((_: any, index: number) => index !== indexItem)
+        let data = {
+          id: idItem.id,
+          codigo: inpust.codigo,
+          descripcion: inpust.descripcion,
+          cantidad: inpust.cantidad,
+          unidad: selectedIds.units.id,
+          precio_total: inpust.precio_total,
+          comentarios_factura: inpust.comentarios_factura,
+          comentarios_produccion: inpust.comentarios_produccion,
+          clave_sat: inpust.clave_sat,
+          conceptos: []
+        }
 
-        setCustomConcepts(filterDelete)
-        setNormalConcepts(filterDeleteNormal)
-        setPersonalizedModal('')
+        const dataSaleOrders = {
+          id: saleOrdersToUpdate.id,
+          folio: 0,
+          id_sucursal: 0,
+          id_serie: 0,
+          id_cliente: 0,
+          desde: haceUnaSemana.toISOString().split('T')[0],
+          hasta: hoy.toISOString().split('T')[0],
+          id_usuario: user_id,
+          id_vendedor: selectedIds?.users?.id,
+          status: 0,
+          page: 1,
+        }
+
+        try {
+          let response: any = await APIs.updateConceptPersonalized(data)
+          const result = await getSaleOrders(dataSaleOrders)
+          setCustomConcepts(result[0].conceptos_pers);
+          setPersonalizedModal('')
+          return Swal.fire('Éxito', response.mensaje, 'success');
+        } catch (error: any) {
+          return Swal.fire('Error', error.mensaje, 'error');
+        }
       }
-      return
-
-    }
-
-  }
 
 
-  const updatePersonalized = async () => {
-
-    let data = {
-      id: idItem.id,
-      codigo: inpust.codigo,
-      descripcion: inpust.descripcion,
-      cantidad: inpust.cantidad,
-      unidad: selectedIds.units.id,
-      precio_total: inpust.precio_total,
-      comentarios_factura: inpust.comentarios_factura,
-      comentarios_produccion: inpust.comentarios_produccion,
-      clave_sat: inpust.clave_sat,
-      conceptos: []
-    }
-
-    const dataSaleOrders = {
-      id: saleOrdersToUpdate.id,
-      folio: 0,
-      id_sucursal: 0,
-      id_serie: 0,
-      id_cliente: 0,
-      desde: haceUnaSemana.toISOString().split('T')[0],
-      hasta: hoy.toISOString().split('T')[0],
-      id_usuario: user_id,
-      id_vendedor: selectedIds?.users?.id,
-      status: 0,
-      page: 1,
-    }
-
-    try {
-      let response: any = await APIs.updateConceptPersonalized(data)
-      const result = await getSaleOrders(dataSaleOrders)
-      setCustomConcepts(result[0].conceptos_pers);
-      setPersonalizedModal('')
-      return Swal.fire('Éxito', response.mensaje, 'success');
-    } catch (error: any) {
-      return Swal.fire('Error', error.mensaje, 'error');
     }
 
   }
@@ -491,12 +534,12 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
     }
     setPersonalizedModal('')
     setCustomConceptView([])
-   
+
     // setCustomConceptView([])
     // setCustomLocal([])
 
   }
-  
+
 
 
 
@@ -558,7 +601,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
     // Actualizamos el estado con el array modificado
     setCustomConceptView(data);
   };
-  
+
 
   console.log('customConceptView', customConceptView);
 
@@ -1815,7 +1858,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
             ''
           }
           <div className='mt-5 row__three'>
-            {personalizedModal == 'personalized_modal-quotation' || personalizedModal == 'personalized_modal-sale' ?
+            {personalizedModal == 'personalized_modal-quotation' || personalizedModal == 'personalized_modal-sale' || personalizedModal == 'personalized_modal-billing' ?
               <div className='d-flex justify-content-center'>
                 <div>
                   <button type='button' className='btn__general-purple' onClick={createPersonalized}>Crear personalizado</button>
@@ -1827,9 +1870,13 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
               </div>
               :
               <div className='d-flex justify-content-center'>
-                <div>
-                  <button className='btn__general-purple' type='button' onClick={updatePersonalized}>Actulizar personalizado</button>
-                </div>
+                {idItem?.id !== 0 && personalizedModal == 'personalized_modal-billing-update' ?
+                  ''
+                  :
+                  <div>
+                    <button className='btn__general-purple' type='button' onClick={updatePersonalized}>Actulizar personalizado</button>
+                  </div>
+                }
                 <div className='real_price'>
                   <p>{realPrice}</p>
                 </div>
