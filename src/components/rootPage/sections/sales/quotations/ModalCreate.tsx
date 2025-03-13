@@ -395,19 +395,23 @@ const ModalCreate: React.FC = () => {
 
     }
     setIdItem(concept);
+    concept.conceptos.forEach((element: any) => {
+      element.check = true;
+      // Incrementar y asignar
+    });
+    setCustomConceptView([...concept.conceptos, ...normalConcepts]);
+
+    // if (modal == 'create-modal__qoutation') {
+
+    // } else {
+    //   concept.conceptos.forEach((element: any) => {
+    //     element.check = true;
+    //     // Incrementar y asignar
+    //   });
+    //   setCustomConceptView([...concept.conceptos, ...normalConcepts]);
 
 
-    if (modal == 'create-modal__qoutation') {
-
-    } else {
-      concept.conceptos.forEach((element: any) => {
-        element.check = true;
-        // Incrementar y asignar
-      });
-      setCustomConceptView([...concept.conceptos, ...normalConcepts]);
-
-
-    }
+    // }
     // if (concept.con_adicional) {
     //   setCustomConceptView(concept.conceptos);
     // } else {
@@ -775,7 +779,7 @@ const ModalCreate: React.FC = () => {
                                 }
                                 {article.descuento > 0 ?
                                   <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
-                                  : ''}
+                                  : '' }
                               </div>
 
                               <div className='td urgency'>

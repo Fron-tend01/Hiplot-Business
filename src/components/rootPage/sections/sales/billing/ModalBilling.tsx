@@ -415,7 +415,7 @@ const ModalBilling: React.FC = () => {
             conceptos_elim: deleteNormalConcepts,
             conceptos_pers_elim: deleteCustomConcepts
         };
-    
+
         // return
         if (!modoUpdate) {
             Swal.fire({
@@ -487,16 +487,11 @@ const ModalBilling: React.FC = () => {
 
     const [title, setTitle] = useState<any>()
 
-
-
     const handleCheckboxChange = (value: number) => {
         setType(value);
     };
 
     const handleAddConceptsChange = (order: any, i: number) => {
-       
-
-
 
         let newIdentifier = identifier + 1;
         let copy_totals = { ...totals };
@@ -550,11 +545,8 @@ const ModalBilling: React.FC = () => {
 
 
         let totalConcepts = [...newConcepts, ...newConceptsPers];
-        setCustomLocal(newConcepts)
         setTotals(copy_totals);
         setNormalConcepts([...normalConcepts, ...newConcepts]);
-        setConceptView([...conceptView, ...totalConcepts]);
-        setCustomConceptView([...customConceptView, ...newConcepts]);
         setCustomConcepts([...customConcepts, ...newConceptsPers]);
         setDataBillign([...dataBillign, ...totalConcepts]);
         setIdentifier(newIdentifier);
@@ -637,7 +629,7 @@ const ModalBilling: React.FC = () => {
 
 
 
-    const deleteConceptos = (c: any) => {
+    const deleteConceptos = (c: any, i: number) => {
         console.log('c', c)
         if (!modoUpdate) {
             if (type == 2) {
@@ -648,10 +640,7 @@ const ModalBilling: React.FC = () => {
                 DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total_restante))
             }
 
-            const filter = conceptView.filter((x: any) => x.id_identifier !== c.id_identifier);
-            setConceptView(filter);
-
-            const filterNormal = normalConcepts.filter((x: any) => x.id_identifier !== c.id_identifier);
+            const filterNormal = normalConcepts.filter((x: any, index: number) => index !== i);
             setNormalConcepts(filterNormal);
 
         } else {
@@ -674,11 +663,9 @@ const ModalBilling: React.FC = () => {
                                     const filter = conceptsBack.filter((x: any) => x.id !== c.id);
                                     setConceptsBack(filter);
 
-                                    const FilterConceptNormal = normalConcepts.filter((x: any) => x.id_identifier !== c.id_identifier);
-                                    setNormalConcepts(FilterConceptNormal);
 
-                                    const FilterConcept = conceptView.filter((x: any) => x.id_identifier !== c.id_identifier);
-                                    setConceptView(FilterConcept);
+
+
                                 } else {
                                     Swal.fire('Notificación', response.mensaje, 'warning');
                                 }
@@ -697,19 +684,17 @@ const ModalBilling: React.FC = () => {
                 const filter = conceptsBack.filter((x: any) => x.id !== c.id);
                 setConceptsBack(filter);
 
-                const FilterConceptNormal = normalConcepts.filter((x: any) => x.id_identifier !== c.id_identifier);
-                setNormalConcepts(FilterConceptNormal);
+                const filterNormal = normalConcepts.filter((x: any, index: number) => index !== i);
+                setNormalConcepts(filterNormal);
 
-                const FilterConcept = conceptView.filter((x: any) => x.id_identifier !== c.id_identifier);
-                setConceptView(FilterConcept);
             }
         }
     }
 
 
-    const undoConceptos = (concept: any) => {
+    const undoConceptos = (concept: any, i: number) => {
         if (subModal == 'billing__modal-create') {
-            const deleteItemCustomC = customConcepts.filter((x: any) => x.id_identifier !== concept.id_identifier);
+            const deleteItemCustomC = customConcepts.filter((x: any, index: number) => index !== i);
             const updatedConcepts = concept.conceptos.map((element: any) => ({
                 ...element,
                 id_pers: 0,
@@ -717,30 +702,18 @@ const ModalBilling: React.FC = () => {
             }));
 
             setCustomConcepts(deleteItemCustomC)
-            // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
-            let data = [...normalConcepts, ...deleteItemCustomC]
-            setConceptView([...data, ...updatedConcepts]);
             setNormalConcepts([...normalConcepts, ...updatedConcepts])
-            setNormalConceptsView([...normalConcepts, ...updatedConcepts])
+
         } else {
-            const deleteItemCustomC = customConcepts.filter((x: any) => x.id_identifier !== concept.id_identifier);
-
-
+            const deleteItemCustomC = customConcepts.filter((x: any, index: number) => index !== i);
             const updatedConcepts = concept.conceptos.map((element: any) => ({
                 ...element,
                 id_pers: 0,
                 check: false,
             }));
 
-            // Filtrar y actualizar conceptView
-            // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
-
-
-            let data = [...normalConcepts, ...deleteItemCustomC]
-            setConceptView([...data, ...updatedConcepts]);
-            setNormalConceptsView([...normalConcepts, ...updatedConcepts])
-            setNormalConcepts([...normalConcepts, ...updatedConcepts]);
-            setDeleteCustomConcepts([...deleteCustomConcepts, concept.id])
+            setCustomConcepts(deleteItemCustomC)
+            setNormalConcepts([...normalConcepts, ...updatedConcepts])
         }
 
 
@@ -784,7 +757,7 @@ const ModalBilling: React.FC = () => {
     const [idItem, setIdItem] = useState<number>()
 
 
-const [indexItem, setIndexItem] = useState<any>()
+    const [indexItem, setIndexItem] = useState<any>()
 
     const personalizedUpdate = (concept: any, index: number) => {
         setPersonalizedModal('personalized_modal-billing-update');
@@ -792,19 +765,17 @@ const [indexItem, setIndexItem] = useState<any>()
         setIndexItem(index)
         console.log(concept)
 
-        if(subModal == 'billing__modal-create') {
-
+        if (subModal == 'billing__modal-create') {
+            concept.conceptos.forEach((element: any) => {
+                element.check = true;
+            });
             setCustomConceptView([...concept.conceptos, ...normalConcepts]);
-
         } else {
-            
+            concept.conceptos.forEach((element: any) => {
+                element.check = true;
+            });
+            setCustomConceptView(concept.conceptos);
         }
-
-        // concept.conceptos.forEach((element: any) => {
-        //     element.check = true;
-        //     // Incrementar y asignar
-        // });
-       
 
     };
 
@@ -894,7 +865,6 @@ const [indexItem, setIndexItem] = useState<any>()
                             </div>
                             : ''}
                         <div className='row__one'>
-
                             <div className='row'>
                                 <div className={`${modoUpdate ? 'col-8' : 'col-3'}`}>
                                     <label className='label__general'>Titulo</label>
@@ -1068,13 +1038,13 @@ const [indexItem, setIndexItem] = useState<any>()
                             <button className='btn__general-primary' onClick={personalizedCreate}>Personalizados</button>
                         </div>
                         <div className='table__billing_concepts'>
-                            {conceptView ? (
+                            {normalConcepts ? (
                                 <div className='w-full my-3 d-flex justify-content-between'>
                                     <div className='table__numbers'>
                                         <div className='col-12'>
                                             <p>Conceptos en tu Factura</p>
                                         </div>
-                                        <div className='quantities_tables'>{conceptView.length}</div>
+                                        <div className='quantities_tables'>{normalConcepts.length}</div>
                                     </div>
                                 </div>
                             ) : (
@@ -1107,7 +1077,7 @@ const [indexItem, setIndexItem] = useState<any>()
                                 </div>
                             </div>
                             <div className='table__body'>
-                                {normalConcepts?.map((concept: any) => {
+                                {normalConcepts?.map((concept: any, index: number) => {
                                     return (
                                         <div className={`tbody__container `} key={concept.id}>
                                             <div className='tbody'>
@@ -1134,7 +1104,7 @@ const [indexItem, setIndexItem] = useState<any>()
                                                     <button type='button' className='btn__general-purple' onClick={() => handleAddDivisionChange(concept)}>Division</button>
                                                 </div>
                                                 <div className='td'>
-                                                    <div className='delete-icon' onClick={() => { deleteConceptos(concept) }} title='Eliminar concepto'>
+                                                    <div className='delete-icon' onClick={() => { deleteConceptos(concept, index) }} title='Eliminar concepto'>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                                     </div>
                                                 </div>
@@ -1190,11 +1160,11 @@ const [indexItem, setIndexItem] = useState<any>()
                                                 <div>
                                                     {concept.conceptos[0].pers_div ?
 
-                                                        <div className='delete-icon' onClick={() => { deleteConceptos(concept) }} title='Eliminar concepto'>
+                                                        <div className='delete-icon' onClick={() => { deleteConceptos(concept, index) }} title='Eliminar concepto'>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                                         </div>
                                                         :
-                                                        <div className='undo-icon' onClick={() => { undoConceptos(concept) }}>
+                                                        <div className='undo-icon' onClick={() => { undoConceptos(concept, index) }}>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
                                                         </div>
                                                     }
@@ -1207,7 +1177,7 @@ const [indexItem, setIndexItem] = useState<any>()
                             {subModal == 'billing__modal-update' && conceptsBack ? (
                                 <div className='table__body'>
                                     <p style={{ color: 'red' }}>Estos conceptos se encuentran en tu factura</p>
-                                    {conceptsBack?.map((concept: any) => {
+                                    {conceptsBack?.map((concept: any, index: number) => {
                                         return (
                                             <div className={`tbody__container `} key={concept.id}>
                                                 {concept?.personalized ?
@@ -1238,6 +1208,9 @@ const [indexItem, setIndexItem] = useState<any>()
                                                         <div className='td'>
                                                             <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
                                                         </div>
+                                                        <div onClick={() => personalizedUpdate(concept, index)} className='conept-icon'>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
+                                                        </div>
                                                     </div>
                                                     :
                                                     <div className='tbody'>
@@ -1261,7 +1234,7 @@ const [indexItem, setIndexItem] = useState<any>()
                                                             <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <div className='delete-icon' onClick={() => { deleteConceptos(concept) }} title='Eliminar concepto'>
+                                                            <div className='delete-icon' onClick={() => { deleteConceptos(concept, index) }} title='Eliminar concepto'>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                                             </div>
 
@@ -1317,7 +1290,7 @@ const [indexItem, setIndexItem] = useState<any>()
                     </div>
                 </div>
                 <Division />
-                <Personalized idItem={idItem}  indexItem={indexItem} />
+                <Personalized idItem={idItem} indexItem={indexItem} />
 
             </div>
         </div >
