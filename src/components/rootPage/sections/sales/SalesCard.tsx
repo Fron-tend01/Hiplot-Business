@@ -129,7 +129,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
         }));
 
         setArticle(response[0]);
-        setOpciones(response[0].opciones_de_variacion2)
+        setOpciones([...response[0].opciones_de_variacion2])
         setModalLoading(false)
         let art = response[0]
         if (art.vender_sin_stock){
@@ -687,11 +687,11 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
   };
 
   useEffect(() => {
-    if (opciones != undefined && opciones.lenght > 0) {
+    if (opciones != undefined && opciones.length > 0) {
       setCombinacionesSeleccionadas([...opciones])
 
+      console.log('Opciones--------------------------',opciones);
     }
-    console.log('Opciones',opciones);
     
   }, [opciones])
 
@@ -765,6 +765,8 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
         }));
 
         setArticle(response[0]);
+        console.log('---------------------------------------',combinacionesSeleccionadas);
+        
         if (combinacionesSeleccionadas.length > 0) {
           setOpciones([...combinacionesSeleccionadas])
         }else {

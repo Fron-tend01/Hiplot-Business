@@ -80,7 +80,7 @@ const ByOP: React.FC = () => {
                   folio: item.serie + '-' + item.folio + '-' + item.anio, 
                   id: item.id 
               },
-              id_orden_produccion: item.id ,
+              id_orden_produccion: concepto.id,
               unidad : concepto.unidades[0].id_unidad,
               id_unidad : concepto.unidades[0].id_unidad
             }))

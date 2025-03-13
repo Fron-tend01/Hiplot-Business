@@ -142,7 +142,7 @@ const ModalCreate: React.FC = () => {
             comentarios: comments,
             conceptos: concepts
         };
-        console.log(data)
+        console.log('--------------------------------------',data)
 
         const dataGet = {
             id_almacen: null,

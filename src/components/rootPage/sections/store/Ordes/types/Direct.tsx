@@ -95,8 +95,8 @@ const Direct: React.FC = () => {
         selectedModalResult.unidad = selectedModalResult.unidades[0].id_unidad
         selectedModalResult.id_unidad = selectedModalResult.unidades[0].id_unidad
         selectedModalResult.comentarios = ''
+        setConcepts([...concepts, { ...selectedModalResult }]);
 
-        setConcepts([...concepts, selectedModalResult]);
 
     };
 
