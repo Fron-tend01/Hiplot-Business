@@ -185,10 +185,10 @@ const Tickets = () => {
                         <input className={`inputs__general ${warningName ? 'warning' : ''}`} type="text" value={invoice} onChange={(e) => setInvoice(parseInt(e.target.value))} placeholder='Ingresa el folio' />
                     </div>
                     <div className="col-4 md-col-12 d-flex justify-content-center align-items-end">
-                        <div className="icon__search" onClick={() => { setPage(1), searchTicket() }}>
+                        <div className="mr-4 icon__search" onClick={() => { setPage(1), searchTicket() }}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
                         </div>
-                        <button className="mx-3 btn__general-orange" onClick={excel}>Excel</button>
+                        {/* <button className="mx-3 btn__general-orange" onClick={excel}>Excel</button> */}
                         <button className="btn__general-purple" onClick={() => setModalTickets('modal-create_ticket')}>Nueva entrada</button>
                         {/* <Select dataSelects={suppliers} instanceId="proveedores"  nameSelect={'Proveedores'}/> */}
                     </div>

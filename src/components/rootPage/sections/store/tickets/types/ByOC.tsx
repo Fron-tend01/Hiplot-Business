@@ -94,12 +94,14 @@ const ByOC: React.FC = () => {
     }
 
     const addArticlesByRequest = async (x: any) => {
+        console.log('x', x)
         console.log(x)
         for (const xx of x.conceptos) {
             xx.id_orden_compra_concepto = xx.id;
             xx.oc = `${x.serie}-${x.folio}-${x.anio}`
             xx.sumar_flete = x.sumar_flete
             xx.costo_flete = x.costo_flete
+           
 
         }
         setConceptos([...conceptos, ...x.conceptos]);

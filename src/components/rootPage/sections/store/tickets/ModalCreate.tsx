@@ -82,7 +82,7 @@ const ModalCreate = () => {
 
     const handleSelectUnits = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
         const valorSeleccionado = parseInt(event.target.value, 10); // Base 10 para números decimales
-  
+
 
         const nuevaInstanciac = [...conceptos];  // Copiar el arreglo de conceptos
         nuevaInstanciac[index].unidad = valorSeleccionado;  // Actualizar el valor deseado
@@ -99,26 +99,26 @@ const ModalCreate = () => {
 
     const handleProveedorChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
         const temp_proveedor = parseInt(event.target.value); // Convertir a número entero
-     
-
         const nuevaInstanciac = [...conceptos];  // Copiar el arreglo de conceptos
         nuevaInstanciac[index].id_proveedor = temp_proveedor;  // Actualizar el valor deseado
         setConceptos(nuevaInstanciac);
-
-        const nuevaInstancia = [...selectedSupplier];
-        nuevaInstancia[index] = temp_proveedor;
-        setSelectedSupplier(nuevaInstancia);
     };
 
     const handleStoreChange = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
         const temp_store = parseInt(event.target.value, 10);
-        const nuevaInstanciac = [...conceptos];  // Copiar el arreglo de conceptos
-        nuevaInstanciac[index].id_almacen = temp_store;  // Actualizar el valor deseado
-        setConceptos(nuevaInstanciac);
-
-        const nuevaInstancia = [...selectedStore];
-        nuevaInstancia[index] = temp_store;
-        setSelectedStore(nuevaInstancia);
+        if (index == 0) {
+            const nuevaInstanciac = conceptos.map((element: any) => ({
+                ...element,
+                id_almacen: temp_store
+            }));
+            
+            setConceptos(nuevaInstanciac);
+        } else {
+            const nuevaInstanciac = conceptos.map((element: any, i: number) => 
+                i === index ? { ...element, id_almacen: temp_store } : element
+            );
+            setConceptos(nuevaInstanciac);
+        }
     };
 
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
@@ -216,7 +216,7 @@ const ModalCreate = () => {
                     costo_flete += concept.costo_flete;
 
                 }
-                if (concept.id_almacen == undefined || concept.id_almacen == null || concept.id_almacen == 0){
+                if (concept.id_almacen == undefined || concept.id_almacen == null || concept.id_almacen == 0) {
                     concept.id_almacen = store[0].id
 
                 }
@@ -246,6 +246,8 @@ const ModalCreate = () => {
         opacity: warningComments === true ? '1' : '',
         height: warningComments === true ? '23px' : ''
     }
+
+    console.log('sdddddddddddddddd', conceptos)
 
     return (
         <div className={`overlay__tickets ${modalTickets == 'modal-create_ticket' ? 'active' : ''}`}>
@@ -340,7 +342,7 @@ const ModalCreate = () => {
                                                         <div className='td'>
                                                             <div>
                                                                 <input className='inputs__general' value={concept.cantidad === null ? '' : concept.cantidad}
-                                                                    onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()}/>
+                                                                    onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()} />
                                                             </div>
                                                         </div>
                                                         <div className='td'>
@@ -363,7 +365,7 @@ const ModalCreate = () => {
 
                                                         </div>
                                                         <div className='td'>
-                                                            <select className='traditional__selector' onChange={(event) => handleProveedorChange(event, index)} value={selectedSupplier[index]} >
+                                                            <select className='traditional__selector' value={concept.id_proveedor} onChange={(event) => handleProveedorChange(event, index)}  >
                                                                 {concept.proveedores?.map((item: any) => (
                                                                     <option key={item.id} value={item.id_proveedor}>
                                                                         {item.proveedor}
