@@ -1,8 +1,6 @@
 
 .conatiner__create_tickets-main > .row__one {
-    padding: 20px;
-	background-color: var(--cards-background);
-	border-radius: var(--general-card-border);
+   
 }
 
 
@@ -37,7 +35,7 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	width: 95vw;
-    max-height: 95%;
+    height: 95vh;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
@@ -81,7 +79,7 @@
     display: grid;
     grid-template-rows: auto 1fr auto auto;
     overflow: hidden;
-    padding: 20px;
+    padding: 0 20px 20px 20px;
 }
 
 .conatiner__create_tickets-main {
@@ -117,7 +115,7 @@
 .checkbox__tickets {
 	display: flex;
 	justify-content: center;
-  	padding: 20px;
+  	padding: 5px;
 }
 
 .conatiner__create_tickets > .row__two {

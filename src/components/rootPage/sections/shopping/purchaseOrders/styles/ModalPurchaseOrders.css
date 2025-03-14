@@ -153,7 +153,7 @@
 }
 
 .conatiner__direct {
-    padding: 20px;
+    padding: 10px 20px;
     background-color: var(--cards-background);
     border-radius: var(--general-card-border);
 }
