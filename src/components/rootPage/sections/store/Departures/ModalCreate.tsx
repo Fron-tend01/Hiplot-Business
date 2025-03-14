@@ -300,7 +300,7 @@ const ModalCreate: React.FC = () => {
                                                 <p className=''>Artículo</p>
                                             </div>
                                             <div className='th'>
-                                                <p className=''>Ped</p>
+                                                <p className=''>Ped/Op</p>
                                             </div>
                                             <div className='th'>
                                                 <p className=''>Cantidad</p>
@@ -336,6 +336,12 @@ const ModalCreate: React.FC = () => {
                                                                 item.ped
                                                                 :
                                                                 <p>N/A</p>
+                                                            } 
+                                                            <br />
+                                                              {item.orden_produccion ?
+                                                                item?.orden_produccion?.folio
+                                                                :
+                                                                ''
                                                             }
                                                         </div>
                                                         <div className='td'>

@@ -194,6 +194,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       setBillingComment('')
       setproductionComments('')
       setCombinacionesSeleccionadas([])
+      setOpciones([])
     }
 
 
@@ -668,29 +669,39 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
   }
 
   const handleSelect = (combinacionIndex: number, optionId: number) => {
-    setOpciones((prevOpciones: any) =>
-      prevOpciones.map((grupo: any, i: number) =>
+    setOpciones((prevOpciones: any) => {
+      const nuevasOpciones = prevOpciones.map((grupo: any, i: number) =>
         i === combinacionIndex
           ? {
-            ...grupo,
-            opciones: grupo.opciones.map((option: any) => ({
-              ...option,
-              selected: option.id === optionId
-            })),
-            OpcionSelected: grupo.opciones.find((option: any) => option.id === optionId)?.nombre || ""
-          }
+              ...grupo,
+              opciones: grupo.opciones.map((option: any) => ({
+                ...option,
+                selected: option.id === optionId
+              })),
+              OpcionSelected: grupo.opciones.find((option: any) => option.id === optionId)?.nombre || ""
+            }
           : grupo
-      )
-    );
+      );
+    
+      // Aquí sí puedes usar el nuevo estado para actualizar la otra variable
+      setCombinacionesSeleccionadas([...nuevasOpciones]);
+    
+      return nuevasOpciones;
+    });
     setActiveIndex(null); // Alterna la visibilidad
+    if (opciones.length == 1) {
+      console.log(`Comparando con ${optionId}`);
 
+      const opcion = opciones[combinacionIndex]?.opciones.find((opt: any) => opt.id === optionId);
+      console.log('------------------------------',opcion );
+
+      fetch2([opcion?.id])
+    }
   };
 
   useEffect(() => {
     if (opciones != undefined && opciones.length > 0) {
       setCombinacionesSeleccionadas([...opciones])
-
-      console.log('Opciones--------------------------',opciones);
     }
     
   }, [opciones])
@@ -990,9 +1001,11 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                           )}
                         </div>
                       ))}
+                      {opciones?.length > 1 ? 
                       <div className='search__sale-card' onClick={BuscarArticuloPorCombinacion}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
                       </div>
+                      : ''}
                     </div>
                     :
                     ''

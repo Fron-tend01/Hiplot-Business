@@ -450,14 +450,20 @@ const ModalSalesOrder: React.FC = () => {
     const [subtotalf, setSubtotalf] = useState<number>(0)
     const [urgenciaf] = useState<number>(0)
     const [totalf, setTotalf] = useState<number>(0)
+    const [prevNormalConceptsLength, setPrevNormalConceptsLength] = useState(0);
 
     useEffect(() => {
 
         calcular_totales()
-        if (modalSalesOrder != 'sale-order__modal-update') {
-            calcular_tiempos_entrega()
-
+        let cambioLength = true
+        if (normalConcepts.length == prevNormalConceptsLength){
+            cambioLength = false
         }
+        
+        if (modalSalesOrder !== 'sale-order__modal-update' && cambioLength) {
+            calcular_tiempos_entrega();
+        }
+        setPrevNormalConceptsLength(normalConcepts.length);
 
     }, [normalConcepts, customConcepts, branchOffices, modalSalesOrder])
     const calcular_totales = () => {
@@ -592,10 +598,10 @@ const ModalSalesOrder: React.FC = () => {
                 console.log('response', response)
                 if (response.hora_cliente && response.hora_produccion) {
                     setDataProduction(response)
-                    setDates([`${response.fecha_produccion} ${response.hora_produccion}`, `${response.fecha_cliente} ${response.hora_cliente}`])
+                    setDates([`${response.fecha_produccion}T${response.hora_produccion}`, `${response.fecha_cliente}T${response.hora_cliente}`])
                     setModifyTe(0)
                 } else {
-                    setDates([`${response.fecha_produccion} ${hora}`, `${response.fecha_cliente} ${hora}`])
+                    setDates([`${response.fecha_produccion}T${hora}`, `${response.fecha_cliente}T${hora}`])
                 }
             }).catch(() => {
 

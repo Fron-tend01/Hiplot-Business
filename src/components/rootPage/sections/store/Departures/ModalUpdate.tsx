@@ -147,12 +147,17 @@ const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
                                                                 <p className="folio-identifier">{order.codigo}-{order.descripcion}</p>
                                                             </div>
                                                             <div className='td'>
-                                                                <p> {order.ped ?
+                                                                {order.ped ?
                                                                     order.ped
                                                                     :
                                                                     <p>No aplica</p>
                                                                 }
-                                                                </p>
+                                                                <br />
+                                                                {order?.orden_produccion ?
+                                                                    order?.orden_produccion?.folio
+                                                                    :
+                                                                    ''
+                                                                }
                                                             </div>
                                                             <div className='td'>
                                                                 <p className='amount-identifier'>{order.cantidad}</p>
