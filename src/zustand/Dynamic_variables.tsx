@@ -36,7 +36,7 @@ export const storeDv = create<StoreState>((set) => ({
   })),
   permisosxvista: [],
   setPermisosxVista: (updateFunc) => set((state) => ({
-    articulos: typeof updateFunc === 'function' ? updateFunc(state.articulos) : updateFunc,
+    permisosxvista: typeof updateFunc === 'function' ? updateFunc(state.permisosxvista) : updateFunc,
   })),
   index: null,
   setIndex: (x) => set({ index: x }),

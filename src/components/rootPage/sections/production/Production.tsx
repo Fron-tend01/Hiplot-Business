@@ -12,6 +12,7 @@ import APIs from '../../../../services/services/APIs'
 import { storeModals } from '../../../../zustand/Modals'
 import ModalProduction from './ModalProduction'
 import { storeProduction } from '../../../../zustand/Production'
+import { storeDv } from '../../../../zustand/Dynamic_variables';
 
 
 const Production: React.FC = () => {
@@ -99,6 +100,7 @@ const Production: React.FC = () => {
     };
     useEffect(() => {
         fetch()
+        fetchPermisos()
         //---------------------------SIRVE PARA ESTAR CONSULTANDO CADA CIERTO TIEMPO, EL CLEARINVERVAL ROMPE EL INTERVALO CUANDO RETURN SE EJECUTA Y EL COMPONENTE SE DESMONTA
         fetchData();
         intervalRef.current = setInterval(fetchData, 30000);
@@ -161,7 +163,14 @@ const Production: React.FC = () => {
         setType(value)
     };
 
-
+   //-----------------------------------------APLICANDO PERMISOS-----------------------------------------------------------
+   const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
+   const permisosxVista = storeDv((state) => state.permisosxvista);
+   const fetchPermisos = async () => {
+       await APIs.GetAny('get_permisos_x_vista/' + user_id + '/PRODUCCION').then((resp: any) => {           
+           setPermisosxVista(resp)
+       })
+   }
     return (
         <div className='production'>
             <div className='production__container'>

@@ -22,6 +22,7 @@ import 'flatpickr/dist/flatpickr.css';
 import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import Empresas_Sucursales from '../../../Dynamic_Components/Empresas_Sucursales';
 import ModalRequisition from '../requisition/ModalRequisition';
+import { storeDv } from '../../../../../zustand/Dynamic_variables';
 
 
 const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
@@ -553,6 +554,9 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
   const hanledCreateOC = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
+   
+
+
     setStateLoading(true);
     setModalLoading(true)
     const data = {
@@ -591,6 +595,14 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
     try {
       if (purchaseOrderToUpdate) {
+        if (!checkPermission('modificar')) {
+          setStateLoading(false);
+          setModalLoading(false)
+
+          Swal.fire('Notificación', 'No tienes permiso para modificar la Orden', 'warning')
+
+          return
+        }
         const resultCreate: any = await APIs.updatePurchaseOrders(data);
         if (resultCreate.error == true) {
           setModalLoading(false)
@@ -603,7 +615,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
         setConceptos([])
         setModalLoading(false)
 
-        Swal.fire('Orden de compra creada exitosamente', '', 'success');
+        Swal.fire('Orden de compra actualizada exitosamente', '', 'success');
         setStateLoading(false);
         setModal('')
       } else {
@@ -719,6 +731,14 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     } else {
       setDateForReq([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
     }
+  };
+
+  const checkPermission = (elemento: string) => {
+    const permisosxVista = storeDv.getState().permisosxvista; // Obtiene el estado actual
+    console.log(permisosxVista);
+    console.log(elemento);
+
+    return permisosxVista.some((x: any) => x.titulo === elemento);
   };
   return (
     <div className={`overlay__purchase-orders ${modal == 'modal-purchase-orders-create' || modal == 'modal-purchase-orders-update' ? 'active' : ''}`}>
@@ -1133,7 +1153,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                               </div>
                               <div className='td'>
                                 <div>
-                                  <input className='inputs__general' value={article.cantidad === null ? '' : article.cantidad.toString()} onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()}/>
+                                  <input className='inputs__general' value={article.cantidad === null ? '' : article.cantidad.toString()} onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()} />
                                 </div>
                               </div>
                               <div className='td'>
@@ -1164,12 +1184,12 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                               </div>
                               <div className='td'>
                                 <div>
-                                  <input className='inputs__general' value={article.precio_unitario === null ? '' : article.precio_unitario.toString()} onChange={(e) => handlePrecioUnitarioChange(e, index)} type="number" placeholder='P/U' onWheel={(e) => e.currentTarget.blur()}/>
+                                  <input className='inputs__general' value={article.precio_unitario === null ? '' : article.precio_unitario.toString()} onChange={(e) => handlePrecioUnitarioChange(e, index)} type="number" placeholder='P/U' onWheel={(e) => e.currentTarget.blur()} />
                                 </div>
                               </div>
                               <div className='td'>
                                 <div>
-                                  <input className='inputs__general' value={article.descuento === null ? '' : article.descuento.toString()} onChange={(e) => handleDiscountChange(e, index)} type="number" placeholder='Descuento'onWheel={(e) => e.currentTarget.blur()} />
+                                  <input className='inputs__general' value={article.descuento === null ? '' : article.descuento.toString()} onChange={(e) => handleDiscountChange(e, index)} type="number" placeholder='Descuento' onWheel={(e) => e.currentTarget.blur()} />
                                 </div>
                               </div>
                               <div className='td'>
@@ -1254,8 +1274,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
               </button>
               {modal == 'modal-purchase-orders-update' ?
                 <div>
-                  {purchaseOrderToUpdate?.status == 0 ? <button className='btn__general-danger' type='button' onClick={updateStatus}>Deshabilitar</button> : ''}
-                  {purchaseOrderToUpdate?.status == 1 ? <button className='btn__general-success' type='button' onClick={updateStatus}>Activar</button> : ''}
+                  {purchaseOrderToUpdate?.status == 0 && checkPermission('cancelar')? <button className='btn__general-danger' type='button' onClick={updateStatus}>Cancelar</button> : ''}
+                  {purchaseOrderToUpdate?.status == 1 && checkPermission('cancelar')? <button className='btn__general-success' type='button' onClick={updateStatus}>Activar</button> : ''}
                 </div>
                 :
                 ''

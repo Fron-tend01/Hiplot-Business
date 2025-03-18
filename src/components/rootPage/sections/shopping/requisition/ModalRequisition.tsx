@@ -17,6 +17,7 @@ import { useSelectStore } from '../../../../../zustand/Select'
 import { storeArticles } from '../../../../../zustand/Articles'
 import Select from '../../../Dynamic_Components/Select'
 import LoadingInfo from '../../../../loading/LoadingInfo'
+import { storeDv } from '../../../../../zustand/Dynamic_variables'
 
 const ModalRequisition: React.FC = () => {
   const userState = useUserStore(state => state.user);
@@ -235,6 +236,12 @@ const ModalRequisition: React.FC = () => {
 
 
     if (updateToRequisition) {
+      if (!checkPermission('modificar')) {
+        setStateLoading(false)
+
+        Swal.fire('Notificacion', 'No tienes permisos para actualizar la orden', 'warning')
+        return
+      }
       try {
         setModalLoading(true)
         const result: any = await APIs.updateRequisition(data)
@@ -476,6 +483,13 @@ const ModalRequisition: React.FC = () => {
       console.error('No se pudo abrir la ventana de impresión.');
     }
   }
+  const checkPermission = (elemento: string) => {
+    const permisosxVista = storeDv.getState().permisosxvista; // Obtiene el estado actual
+    console.log(permisosxVista);
+    console.log(elemento);
+
+    return permisosxVista.some((x: any) => x.titulo === elemento);
+  };
   return (
     <div className={`overlay__requisition ${modalStateCreate == 'create' || modalStateCreate == 'update' ? 'active' : ''}`}>
       <Toaster expand={true} position="top-right" richColors />
@@ -509,18 +523,22 @@ const ModalRequisition: React.FC = () => {
                         </label>
                         <p className='text'>Normal</p>
                       </div>
-                      <div className='checkbox__requisition'>
-                        <label className="checkbox__container_general">
-                          <input
-                            className='checkbox'
-                            type="radio"
-                            value="diferencial"
-                            checked={selectedOption == 1}
-                            onChange={handleOptionChange} />
-                          <span className="checkmark__general"></span>
-                        </label>
-                        <p className='text'>Diferencial</p>
-                      </div>
+                      {checkPermission('OPCION-DIFERENCIAL') && (
+                        <div className='checkbox__requisition'>
+                          <label className="checkbox__container_general">
+                            <input
+                              className='checkbox'
+                              type="radio"
+                              value="diferencial"
+                              checked={selectedOption == 1}
+                              onChange={handleOptionChange} />
+                            <span className="checkmark__general"></span>
+                          </label>
+                          <p className='text'>Diferencial</p>
+                        </div>
+
+                      )}
+
                     </div>
                   </div>
                   <div className='row__two'>
@@ -730,7 +748,7 @@ const ModalRequisition: React.FC = () => {
                           </div>
                           <div className='td'>
                             <div>
-                              <input className='inputs__general' value={article.cantidad} onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()}/>
+                              <input className='inputs__general' value={article.cantidad} onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()} />
                             </div>
                           </div>
                           <div className='td'>
@@ -792,9 +810,12 @@ const ModalRequisition: React.FC = () => {
                   :
                   <div>
                     {updateToRequisition?.status == 1 ?
-                      <button className='btn__general-success' type='button' onClick={updateStatus}>Activar</button>
+                       
+                        <button className='btn__general-success' type='button' onClick={updateStatus} disabled={!checkPermission('cancelar')}>Activar</button>
                       :
-                      <button className='btn__general-danger' type='button' onClick={updateStatus}>Cancelar</button>
+                        <button className='btn__general-danger' type='button' onClick={updateStatus} disabled={!checkPermission('cancelar')}>Cancelar</button>
+                      
+
                     }
                   </div>
                 }
