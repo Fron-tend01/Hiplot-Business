@@ -384,6 +384,7 @@ const ModalSalesOrder: React.FC = () => {
             monto_urgencia: article.monto_urgencia,
             monto_descuento: article.monto_descuento,
             precio_unitario: article.precio_unitario,
+            total: article.precio_total,
             id_unidad: article.id_unidad,
             obs_produccion: article.obs_produccion,
             obs_factura: article.obs_factura,
@@ -695,6 +696,7 @@ const ModalSalesOrder: React.FC = () => {
             fecha_entrega_produccion: datePartOne,
             hora_entrega_cliente: timePartTwo,
             fecha_entrega_cliente: datePartTwo,
+            // conceptos: normalConcepts
 
         }
         await APIs.CreateAny(data, "update_ov_gral")
@@ -813,25 +815,31 @@ const ModalSalesOrder: React.FC = () => {
             let response: any = await APIs.cancelConceptsOrder(data)
             const result = await getSaleOrders(dataSaleOrders)
             setNormalConcepts(result[0].conceptos);
-
-
+            
             Swal.fire('Exito', response.mensaje, 'success');
         } catch (error) {
             console.log(error)
         }
     }
 
-    const handlePriceChange = (e: any, index: number) => {
-        const updatedConcepts = normalConcepts.map((concept: any, i: number) => {
-            if (i === index) {
-              return { ...concept, cadidad: e.target.value }; // Modificamos 'cadidad' solo en el índice correcto
-            }
-            return concept; // Si no es el índice, no modificamos el elemento
-          });
-          
-          setNormalConcepts(updatedConcepts);
-    }
+    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const value = parseFloat(e.target.value); // Convertir el valor de entrada a número
+        
+        if (isNaN(value)) {
 
+          return;
+        }
+      
+        let dataCopy = [...normalConcepts];
+      
+        // Calcula el precio unitario y total basándote en el valor de la cantidad y el precio
+        dataCopy[index].precio_unitario = value / dataCopy[index].cantidad;
+        dataCopy[index].precio_total = value;
+      
+        setNormalConcepts(dataCopy);
+      };
+
+    console.log('permisosxVista', permisosxVista)
 
 
     return (
@@ -1201,7 +1209,6 @@ const ModalSalesOrder: React.FC = () => {
                                                         </p>
                                                     </div>
                                                     <div className='td'>
-
                                                         {article.urgency ?
                                                             <div className='d-flex'>
                                                                 <div>
