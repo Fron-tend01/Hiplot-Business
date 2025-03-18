@@ -36,12 +36,12 @@ const ModalCreate: React.FC = () => {
 
     const { getCompaniesXUsers }: any = companiesRequests()
 
-    const { getStore }: any = StoreRequests()
+    const { getStore, getStoreXSuc }: any = StoreRequests()
     const [store, setStore] = useState<any>()
 
     const fecht = async () => {
         const companies = await getCompaniesXUsers(user_id)
-        const store = await getStore(user_id)
+        const store = await getStoreXSuc(user_id)
         setStore({
             selectName: 'Almacen',
             options: 'nombre',
@@ -431,7 +431,6 @@ const ModalCreate: React.FC = () => {
                                                                                     )}
                                                                                 </tbody>
                                                                             </table>
-
                                                                         </div>
                                                                     </div>
                                                                 </div>

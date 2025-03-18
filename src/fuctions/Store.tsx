@@ -12,6 +12,15 @@ export const StoreRequests = () => ({
         }
     },
 
+    getStoreXSuc: async (id: number) => {
+      try {
+        const response = await  APIs.getStoreXSuc(id);
+        return response
+      } catch {
+  
+      }
+  },
+
     createStore: async (data: any, data_ext: any) => {
       try  {
         const response = await APIs.createStore(data, data_ext);

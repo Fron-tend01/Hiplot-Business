@@ -311,6 +311,12 @@ updateClients: async (data: any, customPath?: string) => {
     return ConfigurationAPIs.get(path)
   },
 
+  getStoreXSuc: async (id: number, customPath?: string ) => {
+    const path = customPath || `almacen_getxsuc/${id}`;
+    return ConfigurationAPIs.get(path)
+  },
+
+
   updateStore: async (data: any, data_ext: any, customPath?: string) => {
     const path = customPath || `almacen_update/${data.id}`;
     return ConfigurationAPIs.put(path, { data, data_ext });

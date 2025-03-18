@@ -16,6 +16,8 @@ import { storePersonalized } from '../../../../zustand/Personalized'
 import { storeArticles } from '../../../../zustand/Articles'
 import LoadingInfo from '../../../loading/LoadingInfo'
 import { Toaster } from 'sonner'
+import { storeDv } from '../../../../zustand/Dynamic_variables'
+import APIs from '../../../../services/services/APIs'
 
 const SalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -40,6 +42,9 @@ const SalesOrder: React.FC = () => {
     const setDataGet = storeSaleOrder(state => state.setDataGet)
     const setSaleOrders = storeSaleOrder(state => state.setSaleOrders)
     const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
+
+    const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
+
 
 
     const modalOpen = () => {
@@ -93,6 +98,10 @@ const SalesOrder: React.FC = () => {
     };
 
     const fetch = async () => {
+
+        APIs.GetAny('get_permisos_x_vista/' + user_id + '/ORDEN_VENTA').then((resp: any) => {
+            setPermisosxVista(resp)
+          })
 
         const data = {
             nombre: '',

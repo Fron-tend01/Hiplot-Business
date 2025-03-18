@@ -27,6 +27,13 @@ const ModalSalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
     const user_id = userState.id
 
+    const permisosxVista = storeDv((state) => state.permisosxvista);
+
+    const checkPermission = (element: string) => {
+        const permisosxView = storeDv.getState().permisosxvista
+        return permisosxView.some((x: any) => x.titulo == element)
+    }
+
 
     const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
 
@@ -76,7 +83,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const { getSaleOrders }: any = saleOrdersRequests()
 
-
+    console.log(permisosxVista)
 
 
     const [clients, setClients] = useState<any>()
@@ -145,7 +152,8 @@ const ModalSalesOrder: React.FC = () => {
             setClients({
                 selectName: 'Cliente',
                 options: 'razon_social',
-                dataSelect: [{id: saleOrdersToUpdate.id_cliente, razon_social: saleOrdersToUpdate.razon_social}]})
+                dataSelect: [{ id: saleOrdersToUpdate.id_cliente, razon_social: saleOrdersToUpdate.razon_social }]
+            })
             console.log('saleOrdersToUpdate', saleOrdersToUpdate)
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setNormalConcepts(saleOrdersToUpdate?.conceptos)
@@ -456,10 +464,10 @@ const ModalSalesOrder: React.FC = () => {
 
         calcular_totales()
         let cambioLength = true
-        if (normalConcepts.length == prevNormalConceptsLength){
+        if (normalConcepts.length == prevNormalConceptsLength) {
             cambioLength = false
         }
-        
+
         if (modalSalesOrder !== 'sale-order__modal-update' && cambioLength) {
             calcular_tiempos_entrega();
         }
@@ -675,7 +683,7 @@ const ModalSalesOrder: React.FC = () => {
 
         const [datePartOne, timePartOne] = dates[0] ? dates[0].split("T") : ["", ""];
         const [datePartTwo, timePartTwo] = dates[1] ? dates[1].split("T") : ["", ""];
-      
+
         let data = {
             id: saleOrdersToUpdate.id,
             id_usuario_actualiza: user_id,
@@ -805,13 +813,25 @@ const ModalSalesOrder: React.FC = () => {
             let response: any = await APIs.cancelConceptsOrder(data)
             const result = await getSaleOrders(dataSaleOrders)
             setNormalConcepts(result[0].conceptos);
-       
- 
+
+
             Swal.fire('Exito', response.mensaje, 'success');
         } catch (error) {
             console.log(error)
         }
     }
+
+    const handlePriceChange = (e: any, index: number) => {
+        const updatedConcepts = normalConcepts.map((concept: any, i: number) => {
+            if (i === index) {
+              return { ...concept, cadidad: e.target.value }; // Modificamos 'cadidad' solo en el índice correcto
+            }
+            return concept; // Si no es el índice, no modificamos el elemento
+          });
+          
+          setNormalConcepts(updatedConcepts);
+    }
+
 
 
     return (
@@ -1185,14 +1205,14 @@ const ModalSalesOrder: React.FC = () => {
                                                         {article.urgency ?
                                                             <div className='d-flex'>
                                                                 <div>
-                                                                    <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                                                    {checkPermission('cambiar_totales') ? <input type="text" value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} /> : <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
                                                                     <p className='total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
                                                                         <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                                                 </div>
                                                             </div>
                                                             :
                                                             <div>
-                                                                <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                                                {checkPermission('cambiar_totales') ? <input type="text" value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} /> : <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
                                                                 <p className='mt-2 total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
                                                                     <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                                             </div>
@@ -1206,10 +1226,15 @@ const ModalSalesOrder: React.FC = () => {
                                                             {article.id ?
                                                                 <div >
                                                                     {saleOrdersToUpdate.status != 1 ?
-                                                                        <div className='cancel-icon' onClick={() => canceleStatus(article)} title='Cancelar concepto'>
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
+                                                                        <div>
+                                                                            {checkPermission('cambiar_totales') ?
+                                                                                <div className='cancel-icon' onClick={() => canceleStatus(article)} title='Cancelar concepto'>
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
+                                                                                </div>
+                                                                                :
+                                                                                ''
+                                                                            }
                                                                         </div>
-
                                                                         :
                                                                         ''}
                                                                 </div>
