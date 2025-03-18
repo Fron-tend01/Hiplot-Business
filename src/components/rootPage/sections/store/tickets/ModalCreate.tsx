@@ -111,10 +111,10 @@ const ModalCreate = () => {
                 ...element,
                 id_almacen: temp_store
             }));
-            
+
             setConceptos(nuevaInstanciac);
         } else {
-            const nuevaInstanciac = conceptos.map((element: any, i: number) => 
+            const nuevaInstanciac = conceptos.map((element: any, i: number) =>
                 i === index ? { ...element, id_almacen: temp_store } : element
             );
             setConceptos(nuevaInstanciac);
@@ -129,45 +129,42 @@ const ModalCreate = () => {
         const id_sucursal = branchOffices.id;
         const id_usuario_crea = user_id;
         const comentarios = comments;
-        console.log('conceptos casi entrando', conceptos);
+
 
         try {
-            if (comments === '') {
-                setWarningComments(true)
-            } else {
-                setWarningComments(false)
-                if (conceptos.length > 0) {
-                    console.log(conceptos);
-                    setModalLoading(true)
 
-                    await createTickets(id_sucursal, id_usuario_crea, comentarios, conceptos)
-                    setModalLoading(false)
+            if (conceptos.length > 0) {
+                console.log(conceptos);
+                setModalLoading(true)
 
-                    const data = {
-                        id_usuario: user_id,
-                        id_empresa: companies.id,
-                        id_sucursal: branchOffices.id,
-                        desde: dates[0],
-                        hasta: dates[1],
-                        id_serie: 0,
-                        status: 0,
-                        folio: 0
-                    }
-                    Swal.fire('Notificacion', 'Entrada creada correctamente', 'success')
-                    await getTickets(data)
-                    setModalTickets('')
-                } else {
-                    setModalLoading(false)
+                await createTickets(id_sucursal, id_usuario_crea, comentarios, conceptos)
+                setModalLoading(false)
 
-                    Swal.fire({
-                        title: 'Aviso',
-                        text: 'Debes agregar al menos un concepto para crear la entrada.',
-                        icon: 'warning',
-                        confirmButtonText: 'Entendido'
-                    });
-
+                const data = {
+                    id_usuario: user_id,
+                    id_empresa: companies.id,
+                    id_sucursal: branchOffices.id,
+                    desde: dates[0],
+                    hasta: dates[1],
+                    id_serie: 0,
+                    status: 0,
+                    folio: 0
                 }
+                Swal.fire('Notificacion', 'Entrada creada correctamente', 'success')
+                await getTickets(data)
+                setModalTickets('')
+            } else {
+                setModalLoading(false)
+
+                Swal.fire({
+                    title: 'Aviso',
+                    text: 'Debes agregar al menos un concepto para crear la entrada.',
+                    icon: 'warning',
+                    confirmButtonText: 'Entendido'
+                });
+
             }
+
 
 
 
