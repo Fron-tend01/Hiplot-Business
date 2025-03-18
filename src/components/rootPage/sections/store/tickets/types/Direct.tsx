@@ -5,6 +5,7 @@ import typeSearch from './json/typeSearchs.json'
 import APIs from '../../../../../../services/services/APIs';
 import { useSelectStore } from '../../../../../../zustand/Select';
 import { useStore } from 'zustand';
+import './styles/Direct.css'
 
 
 const Direct: React.FC = () => {
@@ -84,7 +85,7 @@ const Direct: React.FC = () => {
     };
 
     return (
-        <div className='mt-4 conatiner__direct'>
+        <div className='mt-3 conatiner__direct'>
             {/* <div className='add-client__container'>
                 <div className='col-12 title '>
                     <p>Agregar Articulos</p>

@@ -157,6 +157,7 @@ const ModalCreate: React.FC = () => {
             Swal.fire('Notificacion', 'Ingresa al menos un articulo para generar su salida', 'warning')
             return
         }
+
         try {
             setModalLoading(true)
 

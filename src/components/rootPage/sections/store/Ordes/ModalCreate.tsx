@@ -179,7 +179,13 @@ const ModalCreate = () => {
                 el.id_unidad = el.unidad
             }
         });
-        console.log('concepts',concepts);
+     
+        let filter0 = concepts.filter((x: any) => x.cantidad == '0')
+
+        if (filter0.length > 0) {
+            Swal.fire('Notificacion', 'No puedes enviar conceptos sin cantidad', 'warning')
+            return
+        }
         
         try {
             setModalLoading(true)
@@ -205,6 +211,8 @@ const ModalCreate = () => {
             [modal]: !prevState[modal]
         }))
     }
+
+    console.log(concepts)
 
     const closeModalStore = () => {
         setModalStateStore(false)
@@ -445,7 +453,7 @@ const ModalCreate = () => {
                             )}
                         </div>
                     </div>
-                    <div className="d-flex justify-content-center mt-4">
+                    <div className="mt-4 d-flex justify-content-center">
                         <button className='btn__general-purple' onClick={handleCreateOrders}>Crear Pedido</button>
                     </div>
                 </div>

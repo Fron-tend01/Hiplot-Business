@@ -134,6 +134,9 @@ const ModalCreate = () => {
         try {
 
             if (conceptos.length > 0) {
+
+                
+
                 console.log(conceptos);
                 setModalLoading(true)
 
@@ -153,6 +156,8 @@ const ModalCreate = () => {
                 Swal.fire('Notificacion', 'Entrada creada correctamente', 'success')
                 await getTickets(data)
                 setModalTickets('')
+                setConceptos([])
+                setComments('')
             } else {
                 setModalLoading(false)
 

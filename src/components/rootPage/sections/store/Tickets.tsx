@@ -227,6 +227,9 @@ const Tickets = () => {
                                     <p>Por</p>
                                 </div>
                                 <div className='th'>
+                                    <p>Proveedor</p>
+                                </div>
+                                <div className='th'>
                                     <p>Empresas</p>
                                 </div>
                                 <div className='th'>
@@ -248,6 +251,9 @@ const Tickets = () => {
                                                 </div>
                                                 <div className='td'>
                                                     <p className="user-identifier">{ticket.usuario_crea}</p>
+                                                </div>
+                                                <div className='td'>
+                                                    <p>{ticket.proveedor}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <p>{ticket.empresa}</p>

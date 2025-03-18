@@ -1,0 +1,5 @@
+.conatiner__create_tickets .conatiner__direct .row__two {
+    display: flex;
+    margin: 10px 0;
+    justify-content: center;
+}
