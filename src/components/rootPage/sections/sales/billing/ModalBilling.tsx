@@ -329,7 +329,7 @@ const ModalBilling: React.FC = () => {
                 folio: fol,
                 id_sucursal: branchOfficesFilter.id,
                 id_serie: selectedIds?.series?.id,
-                id_cliente: client,
+                cliente: client,
                 desde: date[0],
                 hasta: date[1],
                 id_usuario: user_id,
@@ -984,6 +984,9 @@ const ModalBilling: React.FC = () => {
                                                 <p>Sucursal</p>
                                             </div>
                                             <div className='th'>
+                                                <p>Cliente</p>
+                                            </div>
+                                            <div className='th'>
                                                 <p>Fecha</p>
                                             </div>
                                             <div className='th'>
@@ -1007,6 +1010,9 @@ const ModalBilling: React.FC = () => {
                                                             </div>
                                                             <div className='td'>
                                                                 <p>{order.sucursal}</p>
+                                                            </div>
+                                                            <div className='td'>
+                                                                <p>{order.razon_social}</p>
                                                             </div>
                                                             <div className='td'>
                                                                 <p>{order.fecha || order.fecha_creacion}</p>
