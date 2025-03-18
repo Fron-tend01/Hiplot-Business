@@ -9,6 +9,7 @@ import useUserStore from '../../../../zustand/General'
 import { useSelectStore } from '../../../../zustand/Select'
 import Swal from 'sweetalert2'
 import Binnacle from './Binnacle'
+import { storeDv } from '../../../../zustand/Dynamic_variables'
 
 const ModalProduction: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -85,12 +86,12 @@ const ModalProduction: React.FC = () => {
             if (result.isConfirmed) {
                 try {
                     await APIs.CreateAny(data, "terminar_op")
-                    .then(async (_: any) => {
-                        Swal.fire('Notificación', 'Orden terminada correctamente', 'success');
-                        let copy = { ...productionToUpdate }
-                        copy.status = 2
-                        setProductionToUpdate(copy)
-                    })
+                        .then(async (_: any) => {
+                            Swal.fire('Notificación', 'Orden terminada correctamente', 'success');
+                            let copy = { ...productionToUpdate }
+                            copy.status = 2
+                            setProductionToUpdate(copy)
+                        })
                 } catch (error) {
                     Swal.fire('Notificacion', 'Ocurrió un error al cambiar de area, consulta con soporte', 'info')
 
@@ -113,12 +114,12 @@ const ModalProduction: React.FC = () => {
             if (result.isConfirmed) {
                 try {
                     await APIs.CreateAny(data, "cancelar_op")
-                    .then(async (_: any) => {
-                        Swal.fire('Notificación', 'Orden cancelada correctamente', 'success');
-                        let copy = { ...productionToUpdate }
-                        copy.status = 1
-                        setProductionToUpdate(copy)
-                    })
+                        .then(async (_: any) => {
+                            Swal.fire('Notificación', 'Orden cancelada correctamente', 'success');
+                            let copy = { ...productionToUpdate }
+                            copy.status = 1
+                            setProductionToUpdate(copy)
+                        })
                 } catch (error) {
                     Swal.fire('Notificacion', 'Ocurrió un error al cancelar la orden, consulta con soporte', 'info')
 
@@ -142,12 +143,12 @@ const ModalProduction: React.FC = () => {
             if (result.isConfirmed) {
                 try {
                     await APIs.CreateAny(data, "enviar_sucursal_op")
-                    .then(async (_: any) => {
-                        Swal.fire('Notificación', 'Orden enviada a sucursal correctamente', 'success');
-                        let copy = { ...productionToUpdate }
-                        copy.status = 3
-                        setProductionToUpdate(copy)
-                    })
+                        .then(async (_: any) => {
+                            Swal.fire('Notificación', 'Orden enviada a sucursal correctamente', 'success');
+                            let copy = { ...productionToUpdate }
+                            copy.status = 3
+                            setProductionToUpdate(copy)
+                        })
                 } catch (error) {
                     Swal.fire('Notificacion', 'Ocurrió un error al cambiar de area, consulta con soporte', 'info')
 
@@ -284,6 +285,14 @@ const ModalProduction: React.FC = () => {
             }
         });
     }
+
+    const checkPermission = (elemento: string) => {
+        const permisosxVista = storeDv.getState().permisosxvista; // Obtiene el estado actual
+        console.log(permisosxVista);
+        console.log(elemento);
+
+        return permisosxVista.some((x: any) => x.titulo === elemento);
+    };
     return (
         <div className={`overlay__production-modal__article-modal ${modalSub == 'production__modal' ? 'active' : ''}`}>
             <div className={`popup__production-modal__article-modal ${modalSub == 'production__modal' ? 'active' : ''}`}>
@@ -310,8 +319,8 @@ const ModalProduction: React.FC = () => {
                                         <span className='text'>Fecha envio producción: <b>{productionToUpdate.fecha_creacion}</b></span><br />
                                         <span className='text'>Fecha Entrega: <b>{productionToUpdate.fecha_creacion}</b></span><br />
                                         {productionToUpdate.motivo_modify_te != 0 ?
-                                                <b  className='text' style={{ color: 'red' }} title='Esta leyenda aparece cuando las fechas son ingresadas de forma manual'>
-                                                    Esta orden tiene Fechas de Entrega Modificadas</b>
+                                            <b className='text' style={{ color: 'red' }} title='Esta leyenda aparece cuando las fechas son ingresadas de forma manual'>
+                                                Esta orden tiene Fechas de Entrega Modificadas</b>
                                             : ''}
                                         <p>{productionToUpdate.status == 0 ? <b style={{ color: 'green' }}>ACTIVO</b> :
                                             productionToUpdate.status == 1 ? <b style={{ color: 'red' }}>CANCELADO</b> :
@@ -339,17 +348,25 @@ const ModalProduction: React.FC = () => {
                                                 <Select dataSelects={areasGral} instanceId='areasGral' nameSelect='Enviar todo a Otra Area:' />
                                             </div>
                                             <div className='d-flex align-items-end'>
-                                                <button className='btn__general-purple' onClick={()=>sendAreas()}>Enviar</button>
+                                                <button className='btn__general-purple' onClick={() => sendAreas()}>Enviar</button>
                                             </div>
 
                                         </div>
-                                        <div>
-                                            <button className='btn__general-primary' onClick={()=>enviarASucursal()}>Enviar a sucursal</button>
-                                        </div>
+                                        {checkPermission('enviar_a_sucursal') && (
+                                            <div>
+                                                <button className='btn__general-primary' onClick={() => enviarASucursal()}>Enviar a sucursal</button>
+                                            </div>
+
+                                        )}
                                     </div>
                                     <div className='d-flex align-items-end'>
-                                        <button className='btn__general-danger mr-3' onClick={()=>finishConcept()}>Terminar orden</button>
-                                        <button className='btn__general-danger' onClick={()=>cancelarOp()}>Cancelar</button>
+                                    {checkPermission('terminar') && (
+                                        <button className='btn__general-danger mr-3' onClick={() => finishConcept()}>Terminar orden</button>
+
+                                    )}
+                                        {checkPermission('cancelar') && (
+                                        <button className='btn__general-danger' onClick={() => cancelarOp()}>Cancelar</button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -434,6 +451,7 @@ const ModalProduction: React.FC = () => {
                                                             </option>
                                                         ))}
                                                     </select>
+                                                    
                                                     <div className='d-flex'>
                                                         <div className='d-flex align-items-end'>
                                                             <button type='button' className='btn__general-purple' onClick={() => sendConceptoAreas(article)}>Enviar</button>
@@ -442,19 +460,31 @@ const ModalProduction: React.FC = () => {
                                                 </div>
 
                                                 <div className='td'>
+                                                {checkPermission('terminar') && (
                                                     <div>
                                                         <button className='btn__general-purple' type='button' onClick={() => terminarConcepto(article, index)}>Terminar conceptos</button>
                                                     </div>
+
+                                                )}
+
                                                 </div>
                                                 <div className='td'>
+                                                {checkPermission('enviar_a_sucursal') && (
                                                     <div>
                                                         <button className='btn__general-purple' type='button' onClick={() => enviarASucursalConcepto(article, index)}>Enviar concepto a sucursal</button>
                                                     </div>
+
+                                                )}
+
                                                 </div>
                                                 <div className='td'>
+                                                {checkPermission('cancelar') && (
                                                     <div>
                                                         <button className='btn__general-danger' type='button' onClick={() => cancelarConcepto(article, index)}>Cancelar Concepto</button>
                                                     </div>
+
+                                                )}
+
                                                 </div>
 
                                             </div>

@@ -16,6 +16,7 @@ import ByOP from "./types/ByOP";
 import APIs from "../../../../../services/services/APIs";
 import LoadingInfo from "../../../../loading/LoadingInfo";
 import { storeArticles } from "../../../../../zustand/Articles";
+import { storeDv } from "../../../../../zustand/Dynamic_variables";
 
 
 const ModalCreate = () => {
@@ -179,14 +180,14 @@ const ModalCreate = () => {
                 el.id_unidad = el.unidad
             }
         });
-     
+
         let filter0 = concepts.filter((x: any) => x.cantidad == '0')
 
         if (filter0.length > 0) {
             Swal.fire('Notificacion', 'No puedes enviar conceptos sin cantidad', 'warning')
             return
         }
-        
+
         try {
             setModalLoading(true)
 
@@ -264,7 +265,13 @@ const ModalCreate = () => {
 
 
     console.log('LPAS', LPAs);
-
+    const checkPermission = (elemento: string) => {
+        const permisosxVista = storeDv.getState().permisosxvista; // Obtiene el estado actual
+        console.log(permisosxVista);
+        console.log(elemento);
+        
+        return permisosxVista.some((x: any) => x.titulo === elemento);
+    };
     return (
         <div className={`overlay__orders ${modal == 'modal-create-pedido' ? 'active' : ''}`}>
             <div className={`popup__orders ${modal == 'modal-create-pedido' ? 'active' : ''}`}>
@@ -283,13 +290,16 @@ const ModalCreate = () => {
                                 <p className='text'>Directa</p>
                             </div>
                             {LPAs?.dataSelect?.length == 0 ?
-                                <div className='checkbox__tickets' >
-                                    <label className="checkbox__container_general">
-                                        <input className='checkbox' type="radio" value="PorOC" checked={selectedOption == 1} onChange={handleOptionChange} />
-                                        <span className="checkmark__general"></span>
-                                    </label>
-                                    <p className='text'>Por OP</p>
-                                </div>
+                                 checkPermission('OPCION-POR-OP') && (
+                                    <div className='checkbox__tickets' >
+                                        <label className="checkbox__container_general">
+                                            <input className='checkbox' type="radio" value="PorOC" checked={selectedOption == 1} onChange={handleOptionChange} />
+                                            <span className="checkmark__general"></span>
+                                        </label>
+                                        <p className='text'>Por OP</p>
+                                    </div>
+                                )
+
                                 : ''}
                         </div>
                     </div>
@@ -458,11 +468,13 @@ const ModalCreate = () => {
                     </div>
                 </div>
             </div>
-            {modalLoading == true ? (
-                <LoadingInfo />
-            ) :
-                ''}
-        </div>
+            {
+                modalLoading == true ? (
+                    <LoadingInfo />
+                ) :
+                    ''
+            }
+        </div >
     )
 }
 

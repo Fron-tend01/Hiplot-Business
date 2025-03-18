@@ -7,6 +7,7 @@ import useUserStore from "../../../../../zustand/General";
 import APIs from "../../../../../services/services/APIs";
 import Swal from "sweetalert2";
 import { storeArticles } from "../../../../../zustand/Articles";
+import { storeDv } from "../../../../../zustand/Dynamic_variables";
 
 
 const ModalUpdate = ({ oderUpdate }: any,) => {
@@ -38,22 +39,22 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
       desde: dates[0],
       hasta: dates[1],
       status: [0],
-      light:true
+      light: true
 
     }
     const status = modeOrder === 0 ? 1 : 0;
-    
-    try{
+
+    try {
       setModalLoading(true)
       await updateModeOrders({ id, status })
       setModalLoading(false)
       await getOrdedrs(data)
       setModal('')
-    }catch(error) {
+    } catch (error) {
       setModalLoading(false)
 
     }
-   
+
   }
 
 
@@ -66,17 +67,17 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
       desde: dates[0],
       hasta: dates[1],
       status: 0,
-      light:true
+      light: true
 
     }
     const status = order.status === 0 ? 1 : 0;
-    try{
+    try {
       setModalLoading(true)
       await updateModeConceptsOrders({ id, status })
       setModalLoading(false)
       await getOrdedrs(data)
       setModal('')
-    }catch(error) {
+    } catch (error) {
       setModalLoading(false)
 
     }
@@ -88,10 +89,10 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
   const [selectedUnit, setSelectedUnit] = useState<any[]>([]);
   const handleSelectUnits = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
     const valorSeleccionado = parseInt(event.target.value, 10); // Base 10 para números decimales
-    const newArticleStates = oderUpdate.conceptos.map((concept:any, i:number) =>
+    const newArticleStates = oderUpdate.conceptos.map((concept: any, i: number) =>
       i === index ? { ...concept, unidad: valorSeleccionado } : concept
     );
-    
+
     setOrderConceptsUpdate(newArticleStates);    // Crear una copia del arreglo de selecciones temporales
     const nuevasSelecciones = [...selectedUnit];
     // Actualizar el valor seleccionado en la posición del índice correspondiente
@@ -105,10 +106,10 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value.trim();
     const parsedValue = value === '' ? null : parseFloat(value);
-    const newArticleStates = oderUpdate.conceptos.map((concept:any, i:number) =>
+    const newArticleStates = oderUpdate.conceptos.map((concept: any, i: number) =>
       i === index ? { ...concept, cantidad: parsedValue } : concept
     );
-    
+
     setOrderConceptsUpdate(newArticleStates);
   };
 
@@ -160,6 +161,13 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
     }
   }
 
+  const checkPermission = (elemento: string) => {
+    const permisosxVista = storeDv.getState().permisosxvista; // Obtiene el estado actual
+    console.log(permisosxVista);
+    console.log(elemento);
+    
+    return permisosxVista.some((x: any) => x.titulo === elemento);
+};
   return (
     <div className={`overlay__orders ${modal == 'modal-orders-update' ? 'active' : ''}`}>
       <div className={`popup__orders ${modal == 'modal-orders-update' ? 'active' : ''}`}>
@@ -177,13 +185,15 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                 </label>
                 <p className='text'>Directa</p>
               </div>
+              { checkPermission('OPCION-POR-OP') && (
               <div className='checkbox__tickets'>
                 <label className="checkbox__container_general">
                   <input className='checkbox' type="radio" value="PorOC" checked={oderUpdate.status === 1} />
                   <span className="checkmark__general"></span>
                 </label>
-                <p className='text'>Por OC</p>
+                <p className='text'>Por OP</p>
               </div>
+            )}
             </div>
           </div>
           <div className="card ">
@@ -194,18 +204,12 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                 <div className='col-6 md-col-12'>
                   <span className='text'>Creado por: <b>{oderUpdate.usuario_crea}</b></span><br />
                   <span className='text'>Fecha de Creación: <b>{oderUpdate.fecha_creacion}</b></span><br />
-
-                  {oderUpdate.status === 0 ? (
-                    <span className="active-status">Activo</span>
-                  ) : oderUpdate.status === 1 ? (
-                    <span className="canceled-status">Cancelada</span>
-                  ) : (
-                    oderUpdate.status === 2 ? (
-                      <span className="end-status">Terminado</span>
-                    ) : (
-                      ""
-                    )
-                  )}
+                  {oderUpdate.status == 0 ?
+                              <b style={{ color: 'green' }}>ACTIVO</b>
+                              : oderUpdate.status == 1 ?
+                                <b style={{ color: 'red' }}>CANCELADO</b> :
+                                <b style={{ color: 'blue' }}>TERMINADO</b>}
+                 
 
                 </div>
                 <div className='col-6 md-col-12'>
@@ -267,17 +271,17 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                         </div>
                         <div className="td">
                           <div>
-                            {order.status==0 ? 
-                             <b style={{color:'green'}}>ACTIVO</b>
-                            :order.status==1 ? 
-                            <b style={{color:'red'}}>CANCELADO</b>:
-                            <b style={{color:'blue'}}>TERMINADO</b>}
-                           
+                            {order.status == 0 ?
+                              <b style={{ color: 'green' }}>ACTIVO</b>
+                              : order.status == 1 ?
+                                <b style={{ color: 'red' }}>CANCELADO</b> :
+                                <b style={{ color: 'blue' }}>TERMINADO</b>}
+
                           </div>
                         </div>
                         <div className="td">
                           <div>
-                          <p>{order?.orden_produccion ? order?.orden_produccion.folio : "N/A"}</p>
+                            <p>{order?.orden_produccion ? order?.orden_produccion.folio : "N/A"}</p>
                           </div>
                         </div>
                         <div className='td'>
@@ -309,7 +313,9 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                         </div>
                         <div className='td'>
                           <div className="d-flex">
-                            {order.status === 0 ?
+                          { checkPermission('cancelar') && (
+
+                            order.status === 0 ?
                               <div className='cancel-icon' onClick={() => changeConceptsOrderMode(order)} title='Cancelar concepto'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
                               </div>
@@ -317,7 +323,9 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                               <div className='active-icon' onClick={changeOrderMode} title='Activar concepto'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-power"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 6a7.75 7.75 0 1 0 10 0" /><path d="M12 4l0 8" /></svg>
                               </div>
-                            }
+                            
+                          )}
+
                           </div>
                         </div>
                       </div>
@@ -334,14 +342,22 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
               <button className="btn__general-purple" type="button" onClick={getPdf}>PDF</button>
             </div>
             <div>
+            { checkPermission('modificar') && (
+
               <button type="button" className='btn__general-purple' onClick={update}>Actualizar orden</button>
+            )}
+
             </div>
             <div>
-              {modeOrder === 0 ?
+            { checkPermission('cancelar') && (
+
+              modeOrder === 0 ?
                 <button className="btn__general-danger" type="button" onClick={changeOrderMode}>Cancelar</button>
                 :
                 <button className="btn__general-success" type="button" onClick={changeOrderMode}>Activar</button>
-              }
+              
+            )}
+
             </div>
           </div>
         </form>

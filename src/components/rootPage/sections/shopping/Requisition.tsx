@@ -22,6 +22,7 @@ import { storePagination } from '../../../../zustand/Pagination';
 import APIs from '../../../../services/services/APIs';
 import { storeOrdes } from '../../../../zustand/Ordes';
 import { storeArticles } from '../../../../zustand/Articles';
+import { storeDv } from '../../../../zustand/Dynamic_variables';
 
 const Requisition: React.FC = () => {
 
@@ -130,7 +131,7 @@ const Requisition: React.FC = () => {
 
   useEffect(() => {
     fetch()
-
+    fetchPermisos()
   }, [])
 
   //Modales
@@ -317,7 +318,17 @@ const Requisition: React.FC = () => {
       searchByFolio()
     }
   }, [modalStateCreate]);
+   //-----------------------------------------APLICANDO PERMISOS-----------------------------------------------------------
+   const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
+   const permisosxVista = storeDv((state) => state.permisosxvista);
 
+   const fetchPermisos = async () => {
+       await APIs.GetAny('get_permisos_x_vista/' + user_id + '/REQUISICIONES').then((resp: any) => {
+           // console.log('--------------------------------', resp);
+           
+           setPermisosxVista(resp)
+       })
+   }
   return (
     <div className='requisition'>
       <div className='breadcrumbs'>

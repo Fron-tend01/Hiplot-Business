@@ -18,6 +18,7 @@ import APIs from "../../../../services/services/APIs";
 import Select from "../../Dynamic_Components/Select";
 import { useSelectStore } from "../../../../zustand/Select";
 import { storeArticles } from "../../../../zustand/Articles";
+import { storeDv } from "../../../../zustand/Dynamic_variables";
 
 const Departures: React.FC = () => {
 
@@ -90,6 +91,7 @@ const Departures: React.FC = () => {
 
     useEffect(() => {
         fecth()
+        fetchPermisos()
     }, [])
 
 
@@ -127,7 +129,7 @@ const Departures: React.FC = () => {
     const searchOrders = async () => {
         const data = {
             id_usuario: user_id,
-            id_sucursal: branchOffices.id,
+            id_sucursal: branchOffices?.id,
             desde: dates[0],
             hasta: dates[1],
             status: status,
@@ -159,6 +161,18 @@ const Departures: React.FC = () => {
 
         }
     }, [modal])
+
+    //-----------------------------------------APLICANDO PERMISOS-----------------------------------------------------------
+    const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
+    const permisosxVista = storeDv((state) => state.permisosxvista);
+
+    const fetchPermisos = async () => {
+        await APIs.GetAny('get_permisos_x_vista/' + user_id + '/PEDIDO').then((resp: any) => {
+            // console.log('--------------------------------', resp);
+            
+            setPermisosxVista(resp)
+        })
+    }
     return (
         <div className="orders">
             <div className='breadcrumbs'>

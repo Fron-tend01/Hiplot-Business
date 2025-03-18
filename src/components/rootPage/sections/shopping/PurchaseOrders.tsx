@@ -13,6 +13,7 @@ import { storeArticles } from '../../../../zustand/Articles';
 
 import { storePagination } from '../../../../zustand/Pagination';
 import Pagination from '../../Dynamic_Components/Pagination';
+import { storeDv } from '../../../../zustand/Dynamic_variables';
 
 
 const PurchaseOrders: React.FC = () => {
@@ -82,6 +83,7 @@ const PurchaseOrders: React.FC = () => {
 
   useEffect(() => {
     fecth()
+    fetchPermisos()
   }, [])
 
 
@@ -176,7 +178,14 @@ const PurchaseOrders: React.FC = () => {
   useEffect(() => {
     searchOrders()
   }, [])
-
+   //-----------------------------------------APLICANDO PERMISOS-----------------------------------------------------------
+   const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
+   const permisosxVista = storeDv((state) => state.permisosxvista);
+   const fetchPermisos = async () => {
+       await APIs.GetAny('get_permisos_x_vista/' + user_id + '/ORDEN_COMPRA').then((resp: any) => {           
+           setPermisosxVista(resp)
+       })
+   }
   return (
     <div className='purchase-order'>
       <div className='breadcrumbs'>
