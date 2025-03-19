@@ -184,9 +184,44 @@ const ArticleViewModal = () => {
         setSelectUsers(!selectUsers)
     }
 
-    const familyChange = (user: any) => {
+    const familyChange = async (user: any) => {
         setSelectedFamily(user.id)
         setSelectUsers(!selectUsers)
+
+        let pag = page
+        const data = {
+            id: 0,
+            activos: true,
+            nombre: inputs.name,
+            codigo: inputs.code,
+            familia: selectedFamily,
+            proveedor: 0,
+            materia_prima: 99,
+            get_sucursales: false,
+            get_proveedores: false,
+            get_max_mins: false,
+            get_plantilla_data: false,
+            get_areas_produccion: false,
+            get_stock: false,
+            coleccion: isChecked,
+            // id_coleccion: isChecked ? dataCollection.id : 0,
+            get_web: false,
+            get_unidades: false,
+            for_vendedor: true,
+            page: pag,
+            id_usuario: user_id,
+            light: true
+        };
+        try {
+            setModalLoading(true)
+            const result = await getArticles(data)
+            setArticles(result);
+            setModalLoading(false)
+
+        } catch (error) {
+            setModalLoading(false)
+        }
+
 
     }
     const [userSearchTerm, setUserSearchTerm] = useState<string>('');
@@ -216,7 +251,6 @@ const ArticleViewModal = () => {
                                 onKeyUp={(e) => e.key === 'Enter' && search(true)} placeholder='Ingresa el nombre' />
                         </div>
                         <div className='col-3 md-col-6 sm-col-6'>
-
                             <div className='select__container' >
                                 <label className='label__general'>Familias</label>
                                 <div className='select-btn__general'>

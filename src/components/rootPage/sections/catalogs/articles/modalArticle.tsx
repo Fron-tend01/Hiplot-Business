@@ -641,7 +641,7 @@ const modalArticle: React.FC = () => {
                             </div>
                             <div>
                                 <label className='label__general'>Indicaciones de Ventas</label>
-                                <input className='inputs__general' type="text" value={salesInstructions} onChange={(e) => setsalesInstructions(e.target.value)} placeholder='Indicaciones de Ventas' />
+                                <textarea className='textarea__general' value={salesInstructions} onChange={(e) => setsalesInstructions(e.target.value)} placeholder='Indicaciones de Ventas'></textarea>
                             </div>
                             <div>
                                 <label className='label__general'>Notas web</label>
