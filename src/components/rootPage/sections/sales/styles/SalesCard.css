@@ -246,6 +246,7 @@
 .conatiner__create_sale-card > .row__three > .row__five > .row__two {
     display: flex;
     justify-content: center;
+    gap: 20px;
    
 }
   
@@ -260,6 +261,19 @@
   background-color: rgb(12, 36, 60);
   transition: all 100ms;
 }
+
+
+.conatiner__create_sale-card > .row__three > .row__five > .row__two .add__quotation_one {
+  color: rgb(12, 36, 60);
+  border: none;
+  padding: 10px 10px;
+  cursor: pointer;
+  border-radius: var(--border-radius-general);
+  background-color: #fff;
+  border: 2px solid rgb(12, 36, 60);
+  transition: all 100ms;
+}
+
 
 .conatiner__create_sale-card > .row__three > .row__five > .row__two .add__quotation:hover {
     transform: scale(1.05);

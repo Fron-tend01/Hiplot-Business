@@ -27,6 +27,7 @@ import Swal from 'sweetalert2';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
 import { storeArticles } from '../../../../zustand/Articles';
+import { storeArticleView } from '../../../../zustand/ArticleView';
 
 
 
@@ -51,7 +52,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
   const setConceptView = storePersonalized(state => state.setConceptView)
   const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
-
+  const { modalArticleView }: any = useStore(storeArticleView)
   const { normalConcepts, conceptView, customConceptView, customConcepts, normalConceptsView }: any = useStore(storePersonalized);
 
   const setArticle = storeSaleCard(state => state.setArticle);
@@ -132,19 +133,19 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
         setOpciones([...response[0].opciones_de_variacion2])
         setModalLoading(false)
         let art = response[0]
-        if (art.vender_sin_stock){
+        if (art.vender_sin_stock) {
           await Swal.fire('Notificación', 'Este articulo se puede vender sin stock disponible', 'success')
         }
-        if (art.bajo_pedido){
+        if (art.bajo_pedido) {
           await Swal.fire('Notificación', 'Este articulo puede levantar requisición automatica si el stock no es suficiente, pero la orden quedará como PENDIENTE hasta que llegue el material solicitado.', 'warning')
         }
-        if (art.desabasto){
+        if (art.desabasto) {
           await Swal.fire('Notificación', 'Hay desabasto de este articulo, verificar el stock o consultar con almacen.', 'warning')
         }
-        if (art.precio_libre){
+        if (art.precio_libre) {
           await Swal.fire('Notificación', 'Puedes añadir el precio manualmente o consultar una fuente externa para obtener el precio.', 'success')
         }
-        if (art.ultimas_piezas){
+        if (art.ultimas_piezas) {
           await Swal.fire('Notificación', 'El stock disponible de este articulo son las ULTIMAS PIEZAS, no se resurtirá más esté articulo. Cuando se agoté se desactivará automaticamente', 'warning')
         }
       }
@@ -542,7 +543,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
             conceptos: [concepto_principal, concepto_adicional],
 
           }
-       
+
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
           setCustomConcepts([...customConcepts, data_pers])
           // localStorage.setItem('cotizacion', JSON.stringify([...normalConcepts, data_pers]));
@@ -615,7 +616,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
             comentarios_produccion: data.obs_produccion,
             comentarios_factura: data.obs_factura,
             conceptos: [concepto_principal, concepto_adicional],
-      
+
           }
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
           setCustomConcepts([...customConcepts, data_pers])
@@ -673,19 +674,19 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       const nuevasOpciones = prevOpciones.map((grupo: any, i: number) =>
         i === combinacionIndex
           ? {
-              ...grupo,
-              opciones: grupo.opciones.map((option: any) => ({
-                ...option,
-                selected: option.id === optionId
-              })),
-              OpcionSelected: grupo.opciones.find((option: any) => option.id === optionId)?.nombre || ""
-            }
+            ...grupo,
+            opciones: grupo.opciones.map((option: any) => ({
+              ...option,
+              selected: option.id === optionId
+            })),
+            OpcionSelected: grupo.opciones.find((option: any) => option.id === optionId)?.nombre || ""
+          }
           : grupo
       );
-    
+
       // Aquí sí puedes usar el nuevo estado para actualizar la otra variable
       setCombinacionesSeleccionadas([...nuevasOpciones]);
-    
+
       return nuevasOpciones;
     });
     setActiveIndex(null); // Alterna la visibilidad
@@ -693,7 +694,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       console.log(`Comparando con ${optionId}`);
 
       const opcion = opciones[combinacionIndex]?.opciones.find((opt: any) => opt.id === optionId);
-      console.log('------------------------------',opcion );
+      console.log('------------------------------', opcion);
 
       fetch2([opcion?.id])
     }
@@ -703,7 +704,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
     if (opciones != undefined && opciones.length > 0) {
       setCombinacionesSeleccionadas([...opciones])
     }
-    
+
   }, [opciones])
 
   const BuscarArticuloPorCombinacion = () => {
@@ -776,11 +777,11 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
         }));
 
         setArticle(response[0]);
-        console.log('---------------------------------------',combinacionesSeleccionadas);
-        
+        console.log('---------------------------------------', combinacionesSeleccionadas);
+
         if (combinacionesSeleccionadas.length > 0) {
           setOpciones([...combinacionesSeleccionadas])
-        }else {
+        } else {
           setOpciones(response[0].opciones_de_variacion2)
         }
         setModalLoading(false)
@@ -957,7 +958,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                       {opciones?.map((x: any, index: any) => (
                         <div className='combinaciones__container' key={index}>
                           <div className='container__combination' style={{ color: x.OpcionSelected && x.OpcionSelected !== "" ? "#ffffff" : "#d6e5ff" }}
-                          onClick={() => toggleModal(index)}>
+                            onClick={() => toggleModal(index)}>
                             {x.OpcionSelected && x.OpcionSelected !== "" ? x.OpcionSelected : x.combinacion}
                           </div>
                           {activeIndex === index && (
@@ -1001,11 +1002,11 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                           )}
                         </div>
                       ))}
-                      {opciones?.length > 1 ? 
-                      <div className='search__sale-card' onClick={BuscarArticuloPorCombinacion}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
-                      </div>
-                      : ''}
+                      {opciones?.length > 1 ?
+                        <div className='search__sale-card' onClick={BuscarArticuloPorCombinacion}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                        </div>
+                        : ''}
                     </div>
                     :
                     ''
@@ -1144,11 +1145,11 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                     <div className='row'>
                       <div className='col-6'>
                         <label className='label__general'>Coment. factura</label>
-                        <textarea className={`inputs__general`}  value={data.obs_factura} onChange={(e) => setData((prev: any) => ({ ...prev, obs_factura: e.target.value }))} placeholder='Factura' />
+                        <textarea className={`inputs__general`} value={data.obs_factura} onChange={(e) => setData((prev: any) => ({ ...prev, obs_factura: e.target.value }))} placeholder='Factura' />
                       </div>
                       <div className='col-6'>
                         <label className='label__general'>Coment. producción</label>
-                        <textarea className={`inputs__general`}  value={data.obs_produccion}  onChange={(e) => setData((prev: any) => ({ ...prev, obs_produccion: e.target.value }))} placeholder='Producción' />
+                        <textarea className={`inputs__general`} value={data.obs_produccion} onChange={(e) => setData((prev: any) => ({ ...prev, obs_produccion: e.target.value }))} placeholder='Producción' />
                       </div>
 
                     </div>
@@ -1302,28 +1303,30 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                   </div>
                 </div>
                 : ''}
-              <div className='row__five'>
-
-                <div className='row__two'>
-                  {modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ?
-                    <button className='add__quotation' onClick={addQua}>Agregar a cotizacción</button>
-                    :
-                    ''
-                  }
-                  {modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' ?
+              {modalArticleView == 'article-view__modal_header' ?
+                <div className='row__five'>
+                  <div className='row__two'>
+                    <button className='add__quotation_one' onClick={addQua}>Agregar a cotizacción</button>
                     <button className='add__cart' onClick={addSaleOrder}>Agregar a orden de venta</button>
-                    :
-                    ''
-                  }
-                  {/* {modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' ?
-                    <button className='add__cart' onClick={addSaleOrder}>Agregar a orden de venta</button>
-                    :
-                    ''
-                  } */}
-
-
+                  </div>
                 </div>
-              </div>
+                :
+                <div className='row__five'>
+                  <div className='row__two'>
+                    {modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ?
+                      <button className='add__quotation' onClick={addQua}>Agregar a cotizacción</button>
+                      :
+                      ''
+                    }
+                    {modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' ?
+                      <button className='add__cart' onClick={addSaleOrder}>Agregar a orden de venta</button>
+                      :
+                      ''
+                    }
+                  </div>
+                </div>
+              }
+
             </div>
             :
             <div className="card-sale__pulse__buttons">

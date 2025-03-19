@@ -641,8 +641,9 @@ padding: 10px;
 .popup__articles {
 	background-color: var(--background-modal);  
 	border-radius: 5px;
-	width: 95%;
-    max-height: 95%;
+	width: 95vw;
+	height: 95vh;
+    /* max-height: 95%; */
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
@@ -670,7 +671,23 @@ padding: 10px;
 .popup__articles.active {	transform: scale(1); opacity: 1; }
 
 .conatiner__articles-modal {
+	height: 100%;
 	padding: 0 20px 20px 20px;
+	overflow: auto;
+	transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
 }
  
 

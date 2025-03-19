@@ -335,7 +335,7 @@ const ModalSalesOrder: React.FC = () => {
             id_ov: saleOrdersToUpdate.id,
             id_usuario: user_id,
             fecha_entrega: dataProduction.fecha_produccion,
-            hora_entrega: dataProduction.hora_produccion
+            hora_entrega: dataProduction.hora_produccion,
         }
 
         try {
@@ -815,7 +815,7 @@ const ModalSalesOrder: React.FC = () => {
             let response: any = await APIs.cancelConceptsOrder(data)
             const result = await getSaleOrders(dataSaleOrders)
             setNormalConcepts(result[0].conceptos);
-            
+
             Swal.fire('Exito', response.mensaje, 'success');
         } catch (error) {
             console.log(error)
@@ -824,20 +824,20 @@ const ModalSalesOrder: React.FC = () => {
 
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = parseFloat(e.target.value); // Convertir el valor de entrada a número
-        
+
         if (isNaN(value)) {
 
-          return;
+            return;
         }
-      
+
         let dataCopy = [...normalConcepts];
-      
+
         // Calcula el precio unitario y total basándote en el valor de la cantidad y el precio
         dataCopy[index].precio_unitario = value / dataCopy[index].cantidad;
         dataCopy[index].precio_total = value;
-      
+
         setNormalConcepts(dataCopy);
-      };
+    };
 
     console.log('permisosxVista', permisosxVista)
 
@@ -1212,14 +1212,19 @@ const ModalSalesOrder: React.FC = () => {
                                                         {article.urgency ?
                                                             <div className='d-flex'>
                                                                 <div>
-                                                                    {checkPermission('cambiar_totales') ? <input type="text" value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} /> : <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
-                                                                    <p className='total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                                                        <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                                                    {checkPermission('cambiar_totales') ? <input type="text" className='inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} /> : <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
+                                                                    <p className='total-identifier'>
+                                                                        {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                                                            <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small>
+                                                                            :
+                                                                            ''
+                                                                        }
+                                                                    </p>
                                                                 </div>
                                                             </div>
                                                             :
                                                             <div>
-                                                                {checkPermission('cambiar_totales') ? <input type="text" value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} /> : <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
+                                                                {checkPermission('cambiar_totales') ? <input type="text" className='inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} /> : <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
                                                                 <p className='mt-2 total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
                                                                     <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                                             </div>
