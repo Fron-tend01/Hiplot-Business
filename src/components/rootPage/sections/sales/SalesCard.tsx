@@ -250,7 +250,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
 
     if (article.plantilla_data[index].tipo == 'numero') {
-      value = parseInt(e.target.value);
+      value = e.target.value;
     }
     const updatedArticle = { ...article };
     updatedArticle.plantilla_data[index].valor = value;
@@ -275,6 +275,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
   })
 
   const controllerRef = useRef<AbortController | null>(null);
+  const [outOfRange, setOutOfRange] = useState<any>(false)
 
   const get = async () => {
 
@@ -302,8 +303,19 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       const result: any = await APIs.getTotalPriceWSignal(dataArticle, {
         signal: controllerRef.current.signal, // Pasa la señal aquí
       });
-
-      if (result.error == true) {
+      if(result.error2) {
+        setOutOfRange(true)
+        // // Crear una copia de `article` y modificar `precio_libre`
+        setPrices(0)
+           // Muestra la alerta después de actualizar el estado
+      // await Swal.fire(
+      //   "Notificación",
+      //   "Error",
+      //   "error"
+      // );
+      } else {
+        setOutOfRange(false)
+        if (result.error == true) {
         console.log(prices)
         toast.warning(result.mensaje)
         setData({
@@ -452,12 +464,23 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       }
 
 
+      }
 
 
 
 
     } catch (error) {
-      console.error('Error al obtener el precio total:', error);
+      console.error("Error al obtener el precio total:", error);
+  
+
+      
+
+      // // Muestra la alerta después de actualizar el estado
+      // await Swal.fire(
+      //   "Notificación",
+      //   "Error",
+      //   "error"
+      // );
     }
   };
 
@@ -482,12 +505,25 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
     getPrices()
   }, [amount, prices, fyv, billingComment, productionComments])
 
-
+   const [warningContact, setWarningContact] = useState<boolean>(false)
+  const styleWarningContact = {
+    opacity: warningContact === true ? '1' : '',
+    height: warningContact === true ? '23px' : ''
+  }
+  
 
   const handleAmountChange = (e: any) => {
-    setAmount(parseInt(e.target.value))
-
-  }
+    let value = e.target.value;
+  
+    if (!isNaN(value) && article.multiplos_de && value % article.multiplos_de === 0) {
+      setAmount(value);
+      setWarningContact(false);
+    } else {
+      setWarningContact(true);
+      setAmount(value);
+    }
+  };
+  
 
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
 
@@ -552,13 +588,8 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
       setNormalConcepts([...normalConcepts, data])
       localStorage.setItem('cotizacion', JSON.stringify([...normalConcepts, data]));
-      // setCustomLocal([...customLocal, data])
+
     }
-
-
-
-
-
 
     // localStorage.setItem('typeLocalStogare', normalConcepts)
     toast.success('Artículo agregado')
@@ -661,7 +692,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
   }, [data])
 
-
+  
 
 
   const modalOpen = () => {
@@ -794,6 +825,13 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
         setUsersGroups(resultUsers);
         setSelectedUserGroup(resultUsers[0].id);
       }
+      setPrices(0)
+      setData({
+        obs_produccion: '',
+        obs_factura: '',
+      });
+      setAmount(0)
+
 
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -803,6 +841,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       // Cambia el estado después de completar todo el proceso
       setStatusArticle(true);
       setModalLoading(false)
+
 
     }
   };
@@ -1027,11 +1066,13 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
               {statusArticle !== false ?
                 <div className='row__two'>
                   <div className='tab__fields'>
+                  <div className='inputs__branch-office'>
+                  <label className='label__general'>Cantidad</label>
+                  <div className='warning__general' style={styleWarningContact}><small >La cantidad  no es multiplo de {article.multiplos_de}</small></div>
+                  <input className={`inputs__general ${warningContact ? 'warning' : ''}`} type="number" value={amount} onChange={handleAmountChange} placeholder='Ingresa la cantidad' />
+                </div>
 
-                    <div className=''>
-                      <label className='label__general'>Cantidad</label>
-                      <input className={`inputs__general`} type="number" value={amount} onChange={handleAmountChange} placeholder='Ingresa la cantidad' />
-                    </div>
+                 
                     <div className='select__container'>
                       <label className='label__general'>Unidad</label>
                       <div className={`select-btn__general`}>
@@ -1276,7 +1317,9 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                   <p className='title__price_x_unit'>Precio por unidad:</p>
                   <p className='result__price_x_unit'>$ {Number.isNaN(prices / amount) ? 0 : (prices / amount)}</p>
                 </div>
+                {outOfRange ? <p className='alert__price'>Fuera de rango</p> : ''}
                 <div className='total__price'>
+                  
                   <p className='title__total-price'>Precio total</p>
                   <p className='result__total-price'>$
                     {article.precio_libre ?

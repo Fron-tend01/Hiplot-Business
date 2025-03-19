@@ -299,10 +299,8 @@ const ArticleViewModal = () => {
                             <div className='col-12'>
                                 <button className='btn__general-orange' style={{ maxHeight: '50px', width: '100%' }} onClick={() => search(true)}>Salir de Colección</button>
                                 <div className='text-center'>
-
                                     <h2 >{dentroColeccionNombre}</h2>
                                 </div>
-
                             </div>
                         </div>
                         : ''}
@@ -325,7 +323,8 @@ const ArticleViewModal = () => {
                                         ''
                                     }
                                 </div>
-                                <div className='img' style={{ backgroundImage: `url(${x.imagen})` }}>
+                                <div className='img'>
+                                    <img src={x.imagen} />
                                 </div>
                                 <div className='content'>
                                     <p className='code'>{x.codigo}</p>

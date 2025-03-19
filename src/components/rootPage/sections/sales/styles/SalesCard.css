@@ -180,6 +180,7 @@
     display: flex;
     margin: 20px 0;
     justify-content: end;
+    position: relative;
     
 }
 
@@ -214,7 +215,20 @@
 .conatiner__create_sale-card > .row__three > .row__four > .total__price {
   border: 2px solid #bf6903;
   border-radius: 5px;
+
 }
+
+
+.alert__price {
+  position: absolute;
+  top: -40px;
+  right: 23px;
+  padding: 5px;
+  background-color: #ff5252;
+  color: #fff;
+  border-radius: 5px;
+}
+
 
 
 

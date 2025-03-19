@@ -160,7 +160,7 @@
 .article__view_container .row__two > .item .img {
     width: 100%;
     border-radius: 5px 5px 0 0;
-    height: 200px;
+    min-height: 200px;
     background-size: cover;
     background-position: center;
 
@@ -169,9 +169,7 @@
 
 
 .article__view_container .row__two > .item .img > img {
-    width: 100%;
-    height: auto;
-	overflow-y: auto;
+  
 
 }
 
