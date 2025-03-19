@@ -40,7 +40,7 @@ const ArticleViewModal = () => {
     };
 
     useEffect(() => {
-        if (modalArticleView == 'article-view__modal') {
+        if (modalArticleView == 'article-view__modal' || modalArticleView == 'article-view__modal_header') {
             fetch();
             setPage(1)
         }
@@ -48,7 +48,7 @@ const ArticleViewModal = () => {
     }, [modalArticleView]);
 
     useEffect(() => {
-        if (modalArticleView == 'article-view__modal') {
+        if (modalArticleView == 'article-view__modal' || modalArticleView == 'article-view__modal_header') {
             search(false);
         }
 
