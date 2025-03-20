@@ -675,6 +675,13 @@ const modalArticle: React.FC = () => {
                                 <span className="slider"></span>
                             </label>
                         </div>
+                        <div className='col-1' title='Consuktar con cotizador'>
+                            <p className='label__general'>Boton consultar C</p>
+                            <label className="switch">
+                                <input type="checkbox"/>
+                                <span className="slider"></span>
+                            </label>
+                        </div>
                         <div className='col-1' title='Activar Check de Frente y Vuelta para tomar los precios FyV'>
                             <p className='label__general'>FyV</p>
                             <label className="switch">
