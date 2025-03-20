@@ -668,8 +668,15 @@ const modalArticle: React.FC = () => {
                                 <span className="slider"></span>
                             </label>
                         </div>
-                        <div className='col-2'>
+                        <div className='col-1'>
                             <p className='label__general'>Vender sin Stock</p>
+                            <label className="switch">
+                                <input type="checkbox" checked={sellStock} onChange={handleSellStockChange} />
+                                <span className="slider"></span>
+                            </label>
+                        </div>
+                        <div className='col-1'>
+                            <p className='label__general'>Consultar c/cotizador</p>
                             <label className="switch">
                                 <input type="checkbox" checked={sellStock} onChange={handleSellStockChange} />
                                 <span className="slider"></span>

@@ -15,6 +15,7 @@ import { useSelectStore } from '../../../../zustand/Select'
 import { storePersonalized } from '../../../../zustand/Personalized'
 import { useStore } from 'zustand'
 import { Toaster } from 'sonner'
+import { storeDv } from '../../../../zustand/Dynamic_variables'
 
 
 const Quotation: React.FC = () => {
@@ -133,6 +134,7 @@ const Quotation: React.FC = () => {
 
   useEffect(() => {
     fetch();
+    fetchPermisos()
   }, []);
 
 
@@ -182,7 +184,17 @@ const Quotation: React.FC = () => {
   };
 
 
+ //-----------------------------------------APLICANDO PERMISOS-----------------------------------------------------------
+ const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
+ const permisosxVista = storeDv((state) => state.permisosxvista);
 
+ const fetchPermisos = async () => {
+     await APIs.GetAny('get_permisos_x_vista/' + user_id + '/COTIZACION').then((resp: any) => {
+         // console.log('--------------------------------', resp);
+         
+         setPermisosxVista(resp)
+     })
+ }
 
   return (
     <div className='quotation'>

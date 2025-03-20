@@ -652,3 +652,74 @@
         display: block;
     }
 }
+
+
+/* Estilos generales */
+.cotly-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cotly-item {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 10px;
+  }
+  
+  .cotly-align-middle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .cotly-item-input-inset {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .cotly-input-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .cotly-item-input-wrapper {
+    width: 100%;
+    padding: 5px;
+  }
+  
+  .cotly-select-search {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .cotly-toggle {
+    display: flex;
+    align-items: center;
+  }
+  
+  .cotly-toggle input {
+    margin-right: 10px;
+  }
+  
+  .cotly-text-center {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .cotly-col-20,
+    .cotly-col-33,
+    .cotly-col-66 {
+      width: 100%;
+    }
+  }
+  
