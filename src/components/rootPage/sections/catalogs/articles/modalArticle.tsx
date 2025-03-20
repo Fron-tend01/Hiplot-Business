@@ -95,6 +95,8 @@ const modalArticle: React.FC = () => {
     const [PrecioLibre, setPrecioLibre] = useState<boolean>(false)
     const [UltimasPiezas, setUltimasPiezas] = useState<boolean>(false)
     const [AgruparTiempos, setAgruparTiempos] = useState<boolean>(false)
+    const [ConsultarConCotizador, setConsultarConCotizador] = useState<boolean>(false)
+    const [ConsultarTe, setsetConsultarTe] = useState<boolean>(false)
 
     const { getFamilies }: any = storeFamilies()
     const { getArticlesInGlobal }: any = storeArticles();
@@ -195,6 +197,8 @@ const modalArticle: React.FC = () => {
             setUltimasPiezas(articleToUpdate.ultimas_piezas)
             setAgruparTiempos(articleToUpdate.agrupar_tiempos)
             setFyV(articleToUpdate.fyv)
+            setConsultarConCotizador(articleToUpdate.consultar_cotizador)
+            setsetConsultarTe(articleToUpdate.consultar_te)
 
             setSelectedId('selectFamilies', { id: articleToUpdate.id_familia });
             setSelectedId('selectTypePayment', { id: articleToUpdate.tipo_de_cobro });
@@ -274,6 +278,8 @@ const modalArticle: React.FC = () => {
             ultimas_piezas: UltimasPiezas,
             agrupar_tiempos: AgruparTiempos,
             fyv: FyV,
+            consultar_cotizador: ConsultarConCotizador,
+            consultar_te: ConsultarTe,
 
             /////////////////////////////////Modales//////////////////////////////////////// 
             sucursales: branchOffices,
@@ -393,11 +399,17 @@ const modalArticle: React.FC = () => {
     const handleSellStockChange = (event: any) => {
         setSellStock(event.target.checked)
     }
+    const handleConsultarConCotizadorChange = (event: any) => {
+        setConsultarConCotizador(event.target.checked)
+    }
     const handleShortageChange = (event: any) => {
         setShortage(event.target.checked)
     }
     const handleExemptTaxChange = (event: any) => {
         setExemptTax(event.target.checked)
+    }
+    const handleconsultarTeChange = (event: any) => {
+        setsetConsultarTe(event.target.checked)
     }
     const handlePrecioLibreChange = (event: any) => {
         setPrecioLibre(event.target.checked)
@@ -504,6 +516,8 @@ const modalArticle: React.FC = () => {
         setUltimasPiezas(false)
         setAgruparTiempos(false)
         setFyV(false)
+        setConsultarConCotizador(false)
+        setsetConsultarTe(false)
 
         setBranchOffices([])
         setMaxsMins([]);
@@ -641,7 +655,7 @@ const modalArticle: React.FC = () => {
                             </div>
                             <div>
                                 <label className='label__general'>Indicaciones de Ventas</label>
-                                <textarea className='textarea__general' value={salesInstructions} onChange={(e) => setsalesInstructions(e.target.value)} placeholder='Indicaciones de Ventas'></textarea>
+                                <input className='inputs__general' type="text" value={salesInstructions} onChange={(e) => setsalesInstructions(e.target.value)} placeholder='Indicaciones de Ventas' />
                             </div>
                             <div>
                                 <label className='label__general'>Notas web</label>
@@ -675,10 +689,10 @@ const modalArticle: React.FC = () => {
                                 <span className="slider"></span>
                             </label>
                         </div>
-                        <div className='col-1'>
-                            <p className='label__general'>Consultar c/cotizador</p>
+                        <div className='col-1' title='Habilita la etiqueta de Consultar con Cotizador'>
+                            <p className='label__general'>CcC</p>
                             <label className="switch">
-                                <input type="checkbox" checked={sellStock} onChange={handleSellStockChange} />
+                                <input type="checkbox" checked={ConsultarConCotizador} onChange={handleConsultarConCotizadorChange} />
                                 <span className="slider"></span>
                             </label>
                         </div>
@@ -689,10 +703,17 @@ const modalArticle: React.FC = () => {
                                 <span className="slider"></span>
                             </label>
                         </div>
-                        <div className='col-2' title='Activa función en el comercial para IVA 0%'>
+                        <div className='col-1' title='Activa función en el comercial para IVA 0%'>
                             <p className='label__general'>IVA Excento</p>
                             <label className="switch">
                                 <input type="checkbox" checked={ExemptTax} onChange={handleExemptTaxChange} />
+                                <span className="slider"></span>
+                            </label>
+                        </div>
+                        <div className='col-1' title='Activa función para Consultar los Tiempos de Entrega'>
+                            <p className='label__general'>Consultar TE</p>
+                            <label className="switch">
+                                <input type="checkbox" checked={ConsultarTe} onChange={handleconsultarTeChange} />
                                 <span className="slider"></span>
                             </label>
                         </div>
