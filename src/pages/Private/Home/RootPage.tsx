@@ -56,6 +56,12 @@ const RootHome: React.FC = () => {
         setActiveMenuIndex((prevIndex) => (prevIndex === index ? null : index));
         setActive(type)
     };
+    const enviar_a_cotizador = () => {
+        let URLactual = window.location.origin;
+        // $window.localStorage.setItem('redir', 'cotizador');
+        window.localStorage.setItem('origin', URLactual);
+        window.location.href = `/cotizador-angular`;
+    };
     const sales = {
         backgroundColor: activeMenuIndex === 1 && activeSidebar === true ? '#3D85C6' : ''
     }
@@ -100,13 +106,13 @@ const RootHome: React.FC = () => {
 
     };
 
-  const setToggle = storeHeader(state => state.setToggle)
-  
+    const setToggle = storeHeader(state => state.setToggle)
 
-  const toggleMen = () => {
-    setToggle(!toggle)
-    setActiveSidebar(false)
-  }
+
+    const toggleMen = () => {
+        setToggle(!toggle)
+        setActiveSidebar(false)
+    }
 
 
 
@@ -160,6 +166,12 @@ const RootHome: React.FC = () => {
                                             <AnchorTag key={index} className='sub__menu-link' onClick={() => toggleSubMenu(1, 'sales')} to={`${PrivateRoutes.SALES}/${PrivateRoutes.BILLING}`}>
                                                 <span>Facturacion</span>
                                             </AnchorTag>
+                                        );
+                                    } else if (permiso.titulo == "SOLICITUD-COTIZADOR") {
+                                        return (
+                                            <a key={index} className='sub__menu-link' onClick={() => { toggleSubMenu(1, 'sales'); enviar_a_cotizador() }}>
+                                                <span>Solicitudes de Cotizador</span>
+                                            </a>
                                         );
                                     } else {
                                         return null;
