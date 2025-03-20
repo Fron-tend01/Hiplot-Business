@@ -43,6 +43,8 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
+  
+
 
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
 
@@ -164,6 +166,13 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
   };
 
 
+  
+  // useEffect(() => {
+  //   if(modalSalesCard === 'sale-card-quotation') {
+  //     setModalLoading(true)
+  //     fetch()
+  //   }
+  // },[modalSalesCard])
 
 
   const fetchUser = async () => {
@@ -757,6 +766,9 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
     fetch2(selectedIds)
   }
+
+
+
   const fetch2 = async (selectedIds: any[]) => {
     const data = {
       id: 0,
@@ -846,9 +858,9 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
     }
   };
   return (
-    <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' ? 'active' : ''}`}>
+    <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' || modalSalesCard === 'sale-card-quotation' ? 'active' : ''}`}>
       {/* <Toaster expand={true} position="top-right" richColors /> */}
-      <div className={`popup__sale-card ${modalSalesCard === 'sale-card' ? 'active' : ''}`}>
+      <div className={`popup__sale-card ${modalSalesCard === 'sale-card' || modalSalesCard === 'sale-card-quotation' ? 'active' : ''}`}>
         <div className='header__modal'>
           <a href="#" className="btn-cerrar-popup__sale-card" onClick={modalOpen}>
             <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512">

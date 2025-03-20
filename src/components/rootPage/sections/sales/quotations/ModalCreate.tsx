@@ -493,8 +493,9 @@ const ModalCreate: React.FC = () => {
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
   const abrirFichaModifyConcept = async (x: any) => {
+    console.log('sssssssssssssssssssssssssssssssssssss',x)
     setIdArticle(x.id_articulo)
-    setModalSalesCard('sale-card')
+    setModalSalesCard('sale-card-quotation')
   }
   const getTicket = async () => {
     try {
