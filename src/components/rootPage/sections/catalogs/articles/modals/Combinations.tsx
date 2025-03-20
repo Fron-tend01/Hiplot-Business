@@ -23,7 +23,9 @@ const Combinations: React.FC = () => {
             const ids = [];
 
             for (const combination of articleByOne.combinaciones) {
-                ids.push(combination.id);
+                // ids.push(combination.id);
+                ids.push(combination.id_combinacion_opcion);
+
             }
 
             setCombinations(ids);

@@ -108,7 +108,14 @@ const ModalCreate: React.FC = () => {
 
 
   const mandarAOV = () => {
-    setSaleOrdersToUpdate(quatation)
+    const copiaQuatation = {
+      ...quatation,
+      conceptos: quatation.conceptos.map((concepto:any) => {
+        const { id, ...rest } = concepto; // Extrae "id" y deja el resto
+        return rest; // Retorna el objeto sin "id"
+      })
+    };
+    setSaleOrdersToUpdate(copiaQuatation)
     setModalSalesOrder('sale-order__modal_bycot')
   }
 

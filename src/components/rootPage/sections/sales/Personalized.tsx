@@ -643,6 +643,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
       obs_produccion: article.obs_produccion,
       obs_factura: article.obs_factura,
       id_pers: article.id_pers,
+      id_usuario_actualiza:user_id
     }
 
     try {

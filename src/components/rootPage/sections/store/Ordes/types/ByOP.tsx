@@ -182,6 +182,9 @@ const ByOP: React.FC = () => {
                                     <div className='tbody__container' key={index} >
                                         <div className='tbody'>
                                             <div className='td'>
+                                                {x.serie}-{x.folio}-{x.anio}
+                                            </div>
+                                            <div className='td'>
                                                 {x.empresa}
                                             </div>
                                             <div className='td'>
@@ -190,11 +193,11 @@ const ByOP: React.FC = () => {
                                             <div className='td'>
                                                 {x.fecha_creacion}
                                             </div>
-                                            <div className='td'>
+                                            {/* <div className='td'>
                                                 <div>
-                                                    {/* <button onClick={() => openModalConcepts()} type='button' className='btn__general-purple'>Ver conceptos</button> */}
+                                                    <button onClick={() => openModalConcepts()} type='button' className='btn__general-purple'>Ver conceptos</button>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                             <div className='td'>
                                                 <div>
                                                     <button className='btn__general-purple' type='button' onClick={() => addArticlesByRequest(x)}>Agregar</button>

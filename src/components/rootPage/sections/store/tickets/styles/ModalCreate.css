@@ -394,7 +394,7 @@
 
 .table__modal_filter_tickets .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(3, 1fr) 150px 100px;
+    grid-template-columns: repeat(4, 1fr) 100px;
     padding: 10px;
 
 }
