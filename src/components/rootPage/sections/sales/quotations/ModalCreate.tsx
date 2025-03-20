@@ -21,8 +21,6 @@ import { storeDv } from '../../../../../zustand/Dynamic_variables';
 import { storeSaleOrder } from '../../../../../zustand/SalesOrder';
 import ModalSalesOrder from '../sales_order/ModalSalesOrder';
 import { toast } from 'sonner'
-import DynamicVariables from '../../../../../utils/DynamicVariables';
-import axios from 'axios';
 
 
 
@@ -85,25 +83,22 @@ const ModalCreate: React.FC = () => {
   const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
   const [, setDataSelects] = useState<any>([])
-  const [info_sc, setInfo_sc] = useState<any>({
-    vendedor: 0,
-    vendedores: [],
-    cot_propia: false,
-    folio_sc: 0,
-    folios_solicitudes: []
-  })
+  const dataUsers = {
+    nombre: '',
+    id_usuario: user_id,
+    id_usuario_consulta: user_id,
+    light: true,
+    id_sucursal: 0
+  }
 
   const fetch = async () => {
-    let dataUsers = {
-      nombre: '',
-      id_usuario: user_id,
-      id_usuario_consulta: user_id,
-      light: true,
-      id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal
-    }
-    let resultUsers: any = await APIs.getUsers(dataUsers)
-    DynamicVariables.updateAnyVar(setInfo_sc, 'vendedores', resultUsers)
-    traerSolicitudes(resultUsers[0].id)
+    const resultUsers = await APIs.getUsers(dataUsers)
+    setDataSelects(
+      {
+        selectName: 'Vendedor',
+        options: 'nombre',
+        dataSelect: resultUsers
+      })
   }
 
 
@@ -114,7 +109,7 @@ const ModalCreate: React.FC = () => {
 
   useEffect(() => {
     fetch()
-  }, [branch])
+  }, [])
 
   const client = async () => {
     const data = {
@@ -497,9 +492,17 @@ const ModalCreate: React.FC = () => {
   // };
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
+  const [dataArticle, setDataArticle] = useState<any>();
+    const [idA, setIdA] = useState<any>(null);
+    const [i, setI] = useState(0);
+
   const abrirFichaModifyConcept = async (x: any) => {
-    console.log('sssssssssssssssssssssssssssssssssssss',x)
+    setIdA(i)
+    let newi = i + 1;
+    setI(newi);
     setIdArticle(x.id_articulo)
+    setDataArticle(x)
+    
     setModalSalesCard('sale-card-quotation')
   }
   const getTicket = async () => {
@@ -510,27 +513,6 @@ const ModalCreate: React.FC = () => {
       console.log(error);
     }
   }
-  const traerSolicitudes = async (usuario: any) => {
-    DynamicVariables.updateAnyVar(setInfo_sc, 'vendedor', usuario.id)
-    let data = { vendedor: usuario.id ?? parseInt(usuario) }; // Asegurar que `usuario.id` sea un número válido
-
-    try {
-      const response: any = await axios.post(
-        "http://hiplot.dyndns.org:84/cotizador_api/index.php/mantenimiento/traer_solicitud_para_hb",
-        data,  // Enviar el objeto directamente (sin `JSON.stringify`)
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      DynamicVariables.updateAnyVar(setInfo_sc, 'folios_solicitudes', response.data)
-      console.log('------------------------------------', response.data[0].id);
-      
-      DynamicVariables.updateAnyVar(setInfo_sc, 'folio_sc', response.data[0].id)
-      console.log(response); // Ver qué está recibiendo
-    } catch (error) {
-      console.error("Error en la petición:", error);
-    }
-  };
   return (
     <div className={`overlay__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
       <div className={`popup__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
@@ -546,71 +528,7 @@ const ModalCreate: React.FC = () => {
             <p className='title__modals'>Actualizar cotización</p>
           }
         </div>
-        <div className='row '>
-          <div className='col-4'>
-            <span className="">Vendedor</span>
-            <label className="">
-              <select
-                className="select-search cotly-select"
-                value={info_sc.vendedor}
-                onChange={(e) => traerSolicitudes(e.target.value)}
-                title="Este vendedor aparecerá en la cotización especial"
-              >
-                {info_sc.vendedores.map((vendedor: any) => (
-                  <option key={vendedor.id} value={vendedor.id}>{vendedor.nombre}</option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <div className='col-4'>
-            <div className="">
-              <label>cotizacion propia</label><br></br>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={info_sc.cot_propia} // Asignar el valor del estado al atributo 'checked'
-                  onChange={(e) => { DynamicVariables.updateAnyVar(setInfo_sc, 'cot_propia', e.target.checked) }}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-          </div>
-          <div className='col-4'>
-            <div className="">
-              <span className="">Folio de Solicitud</span>
-              <label className="">
-                <select
-                  className=""
-                  value={info_sc?.folio_sc}
-                  onChange={(e) => {
-                    console.log('Folio cambiado:', e.target.value);
-                    setInfo_sc((prev: any) => ({ ...prev, folio_sc: e.target.value }));
-                  }}
-                  title={(() => {
-                    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', info_sc.folio_sc);
-                    
-                    if (!info_sc?.folio_sc) return "Seleccione una solicitud";
 
-                    const seleccionado = info_sc?.folios_solicitudes.find(
-                      (sol: any) => sol.id === info_sc?.folio_sc
-                    );
-
-                    return seleccionado
-                      ? `Cliente: ${seleccionado.cliente}, Creación: ${seleccionado.fecha_creacion}, Sucursal: ${seleccionado.sucursal}, Tipo: ${seleccionado.tipo}`
-                      : "Seleccione una solicitud";
-                  })()}
-                >
-                  {Array.isArray(info_sc?.folios_solicitudes) && info_sc.folios_solicitudes.length > 0
-                    && info_sc?.folios_solicitudes.map((sol: any) => (
-                      <option key={sol.id} value={sol.id}
-                        title={`Cliente: ${sol.cliente}, Creación: ${sol.fecha_creacion}, Sucursal: ${sol.sucursal}, Tipo: ${sol.tipo}`}
-                      >{sol.id}</option>
-                    ))}
-                </select>
-              </label>
-            </div>
-          </div>
-        </div>
         <div className='quotations__modal'>
           {modal == 'create-modal__qoutation' ?
             ''
@@ -682,7 +600,6 @@ const ModalCreate: React.FC = () => {
                     :
                     ''
                   }
-
                   {/* <div className='col-4 md-col-6 sm-col-12'>
                     <Select dataSelects={dataSelects} instanceId="select1" nameSelect={'Vendedor'} />:''
                   </div> */}
@@ -871,7 +788,7 @@ const ModalCreate: React.FC = () => {
                                 }
                                 {article.descuento > 0 ?
                                   <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
-                                  : ''}
+                                  : '' }
                               </div>
 
                               <div className='td urgency'>
@@ -1177,7 +1094,7 @@ const ModalCreate: React.FC = () => {
       </div>
       <Personalized idItem={idItem} branch={branch} indexItem={indexItem} />
       <ArticleViewModal />
-      <SalesCard typeLocalStogare={typeLocalStogare} />
+      <SalesCard typeLocalStogare={typeLocalStogare} idA={idA} dataArticle={dataArticle} />
       <SeeClient />
       {personalizedModal !== '' ?
         <SeeCamposPlantillas />

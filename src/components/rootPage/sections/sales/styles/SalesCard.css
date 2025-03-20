@@ -638,6 +638,17 @@
 	opacity: 1;
   }
   
+.show-warning {
+  opacity: 1;
+  height: 23px;
+  transition: height 0.3s ease, opacity 0.3s ease;
+}
+
+.hide-warning {
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+}
 
 
 
@@ -658,7 +669,9 @@
 	justify-content: center;
 	display: flex;
 	visibility: hidden;
+  z-index: 20;
 }
+
 
 .overlay__sale-card.active {
 	visibility: visible;

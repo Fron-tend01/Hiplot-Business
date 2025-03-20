@@ -32,7 +32,7 @@ import { storeArticleView } from '../../../../zustand/ArticleView';
 
 
 
-const SalesCard: React.FC<any> = ({ idA }: any) => {
+const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id;
 
@@ -42,8 +42,6 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
   const { modalSalesOrder }: any = useStore(storeSaleOrder)
 
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
-
-  
 
 
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
@@ -98,7 +96,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       get_imagenes: true,
       // get_adicional: true,
       get_proveedores: false,
-      get_max_mins: true,
+      get_max_mins: false,
       get_precios: true,
       get_combinaciones: true,
       get_plantilla_data: true,
@@ -106,7 +104,7 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
       get_tiempos_entrega: true,
       get_componentes: true,
       get_stock: true,
-      get_web: true,
+      get_web: false,
       for_ventas: true,
       get_unidades: true,
       id_usuario: user_id,
@@ -131,6 +129,10 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
           id_plantillas_art_campos: item.id,
         }));
 
+        if(modalSalesCard === 'sale-card-quotation') {
+          response[0].plantilla_data = dataArticle.campos_plantilla
+        }
+
         setArticle(response[0]);
         setOpciones([...response[0].opciones_de_variacion2])
         setModalLoading(false)
@@ -150,12 +152,6 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
         if (art.ultimas_piezas) {
           await Swal.fire('Notificación', 'El stock disponible de este articulo son las ULTIMAS PIEZAS, no se resurtirá más esté articulo. Cuando se agoté se desactivará automaticamente', 'warning')
         }
-        if (art.consultar_te) {
-          await Swal.fire('Notificación', 'Este articulo se debe consultar el tiempo de entrega', 'warning')
-        }
-        if (art.consultar_cotizador) {
-          await Swal.fire('Notificación', 'Este articulo debe consultar el precio con cotizador antes de venderse', 'warning')
-        }
       }
 
 
@@ -172,13 +168,6 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
   };
 
 
-  
-  // useEffect(() => {
-  //   if(modalSalesCard === 'sale-card-quotation') {
-  //     setModalLoading(true)
-  //     fetch()
-  //   }
-  // },[modalSalesCard])
 
 
   const fetchUser = async () => {
@@ -201,12 +190,26 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
     if (modalSalesCard === 'sale-card') {
       fetch();
       fetchUser()
-      setPrices(0)
+      setPrices(0)     
       setAdicional(null)
       setDescuento(0)
       setPricesFranquicia(0)
       setPricesFranquiciaAdicional(0)
       setAmount(0)
+      setBillingComment('')
+      setproductionComments('')
+      setCombinacionesSeleccionadas([])
+      setOpciones([])
+    }
+
+    if(modalSalesCard === 'sale-card-quotation') {
+      fetchUser()
+      setPrices(dataArticle?.precio_total)
+      setAdicional(null)
+      setDescuento(0)
+      setPricesFranquicia(0)
+      setPricesFranquiciaAdicional(0)
+      setAmount(dataArticle?.cantidad)
       setBillingComment('')
       setproductionComments('')
       setCombinacionesSeleccionadas([])
@@ -772,9 +775,6 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
 
     fetch2(selectedIds)
   }
-
-
-
   const fetch2 = async (selectedIds: any[]) => {
     const data = {
       id: 0,
@@ -982,22 +982,6 @@ const SalesCard: React.FC<any> = ({ idA }: any) => {
                     <div className='ultima-piezas'>
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-clock-3"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16.5 12" /></svg>
                       <p>Ultimas Piezas</p>
-                    </div>
-                    :
-                    ''
-                  }
-                   {article.consultar_cotizador ?
-                    <div className='vender-sin-stock'>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
-                      <p>Consultar con Cotizador</p>
-                    </div>
-                    :
-                    ''
-                  }
-                   {article.consultar_te ?
-                    <div className='vender-sin-stock'>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
-                      <p>Consultar Tiempos de Entrega</p>
                     </div>
                     :
                     ''
