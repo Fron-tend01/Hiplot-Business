@@ -13,7 +13,7 @@ const ByOP: React.FC = () => {
     const userState = useUserStore(state => state.user);
     const user_id = userState.id
 
-    const {getSeriesXUser}: any = seriesRequests()
+    const { getSeriesXUser }: any = seriesRequests()
 
     const setConcepts = storeOrdes(state => state.setConcepts)
     const { concepts } = storeOrdes()
@@ -74,18 +74,19 @@ const ByOP: React.FC = () => {
     const addArticlesByRequest = (item: any) => {
         setConcepts([
             ...concepts,
-            ...item.conceptos.map((concepto:any) => ({
-              ...concepto,
-              orden_produccion: {
-                  folio: item.serie + '-' + item.folio + '-' + item.anio, 
-                  id: item.id 
-              },
-              id_orden_produccion: concepto.id,
-              unidad : concepto.unidades[0].id_unidad,
-              id_unidad : concepto.unidades[0].id_unidad
+            ...item.conceptos.map((concepto: any) => ({
+                ...concepto,
+                orden_produccion: {
+                    folio: item.serie + '-' + item.folio + '-' + item.anio,
+                    id: item.id
+                },
+                id_orden_produccion: concepto.id,
+                unidad: concepto.unidades[0].id_unidad,
+                id_unidad: concepto.unidades[0].id_unidad
             }))
-          ]);    }
-    
+        ]);
+    }
+
     const openModalConcepts = () => {
 
     }
@@ -182,6 +183,9 @@ const ByOP: React.FC = () => {
                                     <div className='tbody__container' key={index} >
                                         <div className='tbody'>
                                             <div className='td'>
+                                                {x.serie}-{x.folio}-{x.anio}
+                                            </div>
+                                            <div className='td'>
                                                 {x.empresa}
                                             </div>
                                             <div className='td'>
@@ -190,11 +194,11 @@ const ByOP: React.FC = () => {
                                             <div className='td'>
                                                 {x.fecha_creacion}
                                             </div>
-                                            <div className='td'>
+                                            {/* <div className='td'>
                                                 <div>
-                                                    {/* <button onClick={() => openModalConcepts()} type='button' className='btn__general-purple'>Ver conceptos</button> */}
+                                                    <button onClick={() => openModalConcepts()} type='button' className='btn__general-purple'>Ver conceptos</button>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                             <div className='td'>
                                                 <div>
                                                     <button className='btn__general-purple' type='button' onClick={() => addArticlesByRequest(x)}>Agregar</button>

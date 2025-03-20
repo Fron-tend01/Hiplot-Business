@@ -52,7 +52,7 @@ const ModalCreate = () => {
         }
         else {
         }
-
+        setConcepts([])
         // if (selectedOption === 1) {
         //     setSelectedOption(0);
         // }
@@ -378,13 +378,13 @@ const ModalCreate = () => {
                                                 </div>
                                                 <div className='td'>
                                                     <div>
-                                                        <input className='inputs__general' value={concept?.cantidad === null ? '' : concept?.cantidad}
+                                                        <input className='inputs__general' value={concept?.cantidad === null ? '' : concept?.cantidad} disabled={concept?.orden_produccion}
                                                             onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()} />
                                                     </div>
                                                 </div>
                                                 <div className='td'>
                                                     <div>
-                                                        <select className='traditional__selector' onChange={(event) => handleSeleccion(event, index)} value={seleccionesTemporales[index] || ''}>
+                                                        <select className='traditional__selector' disabled={concept?.orden_produccion} onChange={(event) => handleSeleccion(event, index)} value={seleccionesTemporales[index] || ''}>
                                                             {concept?.unidades.map((item: any) => (
                                                                 <option key={item.id} value={item.id_unidad}>
                                                                     {item.nombre}
