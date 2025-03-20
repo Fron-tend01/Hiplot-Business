@@ -32,7 +32,7 @@ import { storeArticleView } from '../../../../zustand/ArticleView';
 
 
 
-const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
+const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id;
 
@@ -82,6 +82,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
 
   const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
+  console.log('IdArticle', IdArticle)
 
   const fetch = async () => {
     const data = {
@@ -129,7 +130,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
           id_plantillas_art_campos: item.id,
         }));
 
-        if(modalSalesCard === 'sale-card-quotation') {
+        if (modalSalesCard === 'sale-card-quotation') {
           response[0].plantilla_data = dataArticle.campos_plantilla
         }
 
@@ -190,7 +191,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
     if (modalSalesCard === 'sale-card') {
       fetch();
       fetchUser()
-      setPrices(0)     
+      setPrices(0)
       setAdicional(null)
       setDescuento(0)
       setPricesFranquicia(0)
@@ -200,17 +201,25 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
       setproductionComments('')
       setCombinacionesSeleccionadas([])
       setOpciones([])
+      setSelectedUnit(article?.unidades[0])
     }
 
-    if(modalSalesCard === 'sale-card-quotation') {
+    if (modalSalesCard === 'sale-card-quotation') {
+
       fetch();
       fetchUser()
       setPrices(dataArticle?.precio_total)
       setAdicional(null)
       setDescuento(0)
+      setSelectedUnit({ id: dataArticle?.id_unidad, id_unidad: dataArticle?.id_unidad })
+
       setPricesFranquicia(0)
       setPricesFranquiciaAdicional(0)
       setAmount(dataArticle?.cantidad)
+      setData({
+        obs_produccion: dataArticle.obs_produccion,
+        obs_factura: dataArticle.obs_factura,
+      });
       setBillingComment('')
       setproductionComments('')
       setCombinacionesSeleccionadas([])
@@ -220,6 +229,10 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
 
   }, [idA]);
   console.log(idA)
+
+  console.log('article', article)
+  console.log('units', units)
+
 
 
 
@@ -323,165 +336,165 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
       const result: any = await APIs.getTotalPriceWSignal(dataArticle, {
         signal: controllerRef.current.signal, // Pasa la señal aquí
       });
-      if(result.error2) {
+      if (result.error2) {
         setOutOfRange(true)
         // // Crear una copia de `article` y modificar `precio_libre`
         setPrices(0)
-           // Muestra la alerta después de actualizar el estado
-      // await Swal.fire(
-      //   "Notificación",
-      //   "Error",
-      //   "error"
-      // );
+        // Muestra la alerta después de actualizar el estado
+        // await Swal.fire(
+        //   "Notificación",
+        //   "Error",
+        //   "error"
+        // );
       } else {
         setOutOfRange(false)
         if (result.error == true) {
-        console.log(prices)
-        toast.warning(result.mensaje)
-        setData({
-          id_pers: 0,
-          front: true,
-          id_articulo: article.id,
-          id_familia: article.id_familia,
-          produccion_interna: false,
-          id_area_produccion: article.areas_produccion[0]?.id_area,
-          enviar_a_produccion: false,
-          personalized: false,
-          check: false,
-          status: 0,
-          descripcion: article.descripcion,
-          codigo: article.codigo,
-          unidad: selectedUnit.id_unidad,
-          name_unidad: selectedUnit.nombre,
-          cantidad: amount,
-          precio_total: prices,
-          obs_produccion: data.obs_produccion,
-          obs_factura: data.obs_factura,
-          monto_urgencia: 0,
-          urgencia_monto: 0,
-          descuento: result.descuento_aplicado,
-          precio_unitario: prices / amount,
-          total_franquicia: 0,
-          clave_sat: article.clave_sat,
-          /////////////////////Para Orden de Requicicion //////////////////////////
-
-          urgencia: false,
-          areas_produccion: article.areas_produccion,
-
-          /////////////////////Para Orden de compra //////////////////////////
-          id_ov: 0,
-          id_orden_produccion: 0,
-          status_produccion: 0,
-          cobrado: 0,
-          id_unidad: selectedUnit.id_unidad,
-          campos_plantilla: article.plantilla_data.map((x: any) => ({
-
-            nombre_campo_plantilla: x.nombre,
-            tipo_campo_plantilla: x.tipo,
-            valor: x.tipo == 'texto' ? x.valor.toString() : x.valor
-            // valor: x.valor.toString()
-          }))
-
-        })
-        return
-      }
-
-      article.plantilla_data.forEach((c: any) => {
-        let buscar_in_result = result.txtvisual_campos.filter(
-          (x: any) => x.id_plantillas_art_campos == c.id
-        );
-
-        if (buscar_in_result.length > 0) {
-          let valor = buscar_in_result[0].valor;
-          c.valor = valor; // Actualiza el valor en el objeto clonado
-        }
-      });
-
-
-      if (result.error == false) {
-        setPrices(result.mensaje)
-        setDescuento(result.descuento_aplicado)
-        setAdicional(result.adicional)
-        let lista_precios_franquicia = 0
-        let precio_franq_tmp = 0
-
-        if (article?.precios_franquicia != null && article?.precios_franquicia.length > 0) {
-
-          lista_precios_franquicia = article?.precios_franquicia[0].id_grupos_us
-          const dataArticleFranquicia = {
+          console.log(prices)
+          toast.warning(result.mensaje)
+          setData({
+            id_pers: 0,
+            front: true,
             id_articulo: article.id,
-            id_grupo_us: lista_precios_franquicia,
-            id_unidad: selectedUnit.id_unidad,
-            id_usuario: user_id,
+            id_familia: article.id_familia,
+            produccion_interna: false,
+            id_area_produccion: article.areas_produccion[0]?.id_area,
+            enviar_a_produccion: false,
+            personalized: false,
+            check: false,
+            status: 0,
+            descripcion: article.descripcion,
+            codigo: article.codigo,
+            unidad: selectedUnit.id_unidad,
+            name_unidad: selectedUnit.nombre,
             cantidad: amount,
-            fyv: fyv,
-            campos: article.plantilla_data.filter((x: any) => x.tipo == 'numero'),
-            camposTxTVisual: article.plantilla_data.filter((x: any) => x.tipo == 'txtvisual'),
-            franquicia: true
-          };
+            precio_total: prices,
+            obs_produccion: data.obs_produccion,
+            obs_factura: data.obs_factura,
+            monto_urgencia: 0,
+            urgencia_monto: 0,
+            descuento: result.descuento_aplicado,
+            precio_unitario: prices / amount,
+            total_franquicia: 0,
+            clave_sat: article.clave_sat,
+            /////////////////////Para Orden de Requicicion //////////////////////////
 
-          // const resultFranquicia: any = await APIs.getTotalPrice(dataArticleFranquicia);
-          const resultFranquicia: any = await APIs.getTotalPriceWSignal(dataArticleFranquicia, {
-            signal: controllerRef.current.signal, // Pasa la señal aquí
-          });
-          if (!resultFranquicia.error) {
-            precio_franq_tmp = resultFranquicia.mensaje
-            // precio_franq_adi_tmp = resultFranquicia?.adicional?.total
+            urgencia: false,
+            areas_produccion: article.areas_produccion,
 
-            setPricesFranquicia(resultFranquicia.mensaje)
-            setPricesFranquiciaAdicional(resultFranquicia?.adicional?.total)
+            /////////////////////Para Orden de compra //////////////////////////
+            id_ov: 0,
+            id_orden_produccion: 0,
+            status_produccion: 0,
+            cobrado: 0,
+            id_unidad: selectedUnit.id_unidad,
+            campos_plantilla: article.plantilla_data.map((x: any) => ({
 
-            // setAdicionalFranquicia(resultFranquicia.adicional)
-          }
-        } else {
+              nombre_campo_plantilla: x.nombre,
+              tipo_campo_plantilla: x.tipo,
+              valor: x.tipo == 'texto' ? x.valor.toString() : x.valor
+              // valor: x.valor.toString()
+            }))
 
+          })
+          return
         }
-        return setData({
-          id_pers: 0,
-          front: true,
-          id_articulo: article.id,
-          id_familia: article.id_familia,
-          produccion_interna: false,
-          id_area_produccion: article.areas_produccion[0]?.id_area,
-          enviar_a_produccion: false,
-          personalized: false,
-          check: false,
-          status: 0,
-          descripcion: article.descripcion,
-          codigo: article.codigo,
-          unidad: selectedUnit.id_unidad,
-          name_unidad: selectedUnit.nombre,
-          cantidad: amount,
-          precio_total: result.mensaje,
-          obs_produccion: data.obs_produccion,
-          obs_factura: data.obs_factura,
-          monto_urgencia: 0,
-          urgencia_monto: 0,
-          descuento: result.descuento_aplicado,
-          precio_unitario: result.mensaje / amount,
-          total_franquicia: precio_franq_tmp,
-          clave_sat: article.clave_sat,
-          /////////////////////Para Orden de Requicicion //////////////////////////
 
-          urgencia: false,
-          areas_produccion: article.areas_produccion,
+        article.plantilla_data.forEach((c: any) => {
+          let buscar_in_result = result.txtvisual_campos.filter(
+            (x: any) => x.id_plantillas_art_campos == c.id
+          );
 
-          /////////////////////Para Orden de compra //////////////////////////
-          id_ov: 0,
-          id_orden_produccion: 0,
-          status_produccion: 0,
-          cobrado: 0,
-          id_unidad: selectedUnit.id_unidad,
-          campos_plantilla: article.plantilla_data.map((x: any) => ({
+          if (buscar_in_result.length > 0) {
+            let valor = buscar_in_result[0].valor;
+            c.valor = valor; // Actualiza el valor en el objeto clonado
+          }
+        });
 
-            nombre_campo_plantilla: x.nombre,
-            tipo_campo_plantilla: x.tipo,
-            valor: x.tipo == 'texto' ? x.valor.toString() : x.valor
-            // valor: x.valor.toString()
-          }))
 
-        })
-      }
+        if (result.error == false) {
+          setPrices(result.mensaje)
+          setDescuento(result.descuento_aplicado)
+          setAdicional(result.adicional)
+          let lista_precios_franquicia = 0
+          let precio_franq_tmp = 0
+
+          if (article?.precios_franquicia != null && article?.precios_franquicia.length > 0) {
+
+            lista_precios_franquicia = article?.precios_franquicia[0].id_grupos_us
+            const dataArticleFranquicia = {
+              id_articulo: article.id,
+              id_grupo_us: lista_precios_franquicia,
+              id_unidad: selectedUnit.id_unidad,
+              id_usuario: user_id,
+              cantidad: amount,
+              fyv: fyv,
+              campos: article.plantilla_data.filter((x: any) => x.tipo == 'numero'),
+              camposTxTVisual: article.plantilla_data.filter((x: any) => x.tipo == 'txtvisual'),
+              franquicia: true
+            };
+
+            // const resultFranquicia: any = await APIs.getTotalPrice(dataArticleFranquicia);
+            const resultFranquicia: any = await APIs.getTotalPriceWSignal(dataArticleFranquicia, {
+              signal: controllerRef.current.signal, // Pasa la señal aquí
+            });
+            if (!resultFranquicia.error) {
+              precio_franq_tmp = resultFranquicia.mensaje
+              // precio_franq_adi_tmp = resultFranquicia?.adicional?.total
+
+              setPricesFranquicia(resultFranquicia.mensaje)
+              setPricesFranquiciaAdicional(resultFranquicia?.adicional?.total)
+
+              // setAdicionalFranquicia(resultFranquicia.adicional)
+            }
+          } else {
+
+          }
+          return setData({
+            id_pers: 0,
+            front: true,
+            id_articulo: article.id,
+            id_familia: article.id_familia,
+            produccion_interna: false,
+            id_area_produccion: article.areas_produccion[0]?.id_area,
+            enviar_a_produccion: false,
+            personalized: false,
+            check: false,
+            status: 0,
+            descripcion: article.descripcion,
+            codigo: article.codigo,
+            unidad: selectedUnit.id_unidad,
+            name_unidad: selectedUnit.nombre,
+            cantidad: amount,
+            precio_total: result.mensaje,
+            obs_produccion: data.obs_produccion,
+            obs_factura: data.obs_factura,
+            monto_urgencia: 0,
+            urgencia_monto: 0,
+            descuento: result.descuento_aplicado,
+            precio_unitario: result.mensaje / amount,
+            total_franquicia: precio_franq_tmp,
+            clave_sat: article.clave_sat,
+            /////////////////////Para Orden de Requicicion //////////////////////////
+
+            urgencia: false,
+            areas_produccion: article.areas_produccion,
+
+            /////////////////////Para Orden de compra //////////////////////////
+            id_ov: 0,
+            id_orden_produccion: 0,
+            status_produccion: 0,
+            cobrado: 0,
+            id_unidad: selectedUnit.id_unidad,
+            campos_plantilla: article.plantilla_data.map((x: any) => ({
+
+              nombre_campo_plantilla: x.nombre,
+              tipo_campo_plantilla: x.tipo,
+              valor: x.tipo == 'texto' ? x.valor.toString() : x.valor
+              // valor: x.valor.toString()
+            }))
+
+          })
+        }
 
 
       }
@@ -491,9 +504,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
 
     } catch (error) {
       console.error("Error al obtener el precio total:", error);
-  
 
-      
+
+
 
       // // Muestra la alerta después de actualizar el estado
       // await Swal.fire(
@@ -525,16 +538,16 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
     getPrices()
   }, [amount, prices, fyv, billingComment, productionComments])
 
-   const [warningContact, setWarningContact] = useState<boolean>(false)
+  const [warningContact, setWarningContact] = useState<boolean>(false)
   const styleWarningContact = {
     opacity: warningContact === true ? '1' : '',
     height: warningContact === true ? '23px' : ''
   }
-  
+
 
   const handleAmountChange = (e: any) => {
     let value = e.target.value;
-  
+
     if (!isNaN(value) && article.multiplos_de && value % article.multiplos_de === 0) {
       setAmount(value);
       setWarningContact(false);
@@ -543,7 +556,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
       setAmount(value);
     }
   };
-  
+
 
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
 
@@ -698,7 +711,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
   useEffect(() => {
     setUnits(article?.unidades);
 
-    setSelectedUnit(article?.unidades[0])
+
   }, [article])
 
   const [activeIndex, setActiveIndex] = useState(null);
@@ -712,7 +725,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
 
   }, [data])
 
-  
+
 
 
   const modalOpen = () => {
@@ -861,10 +874,24 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
       // Cambia el estado después de completar todo el proceso
       setStatusArticle(true);
       setModalLoading(false)
-
-
     }
   };
+
+
+  const updateConcept = () => {
+    console.log('data', data)
+    let deleteConcept = normalConcepts.filter((_: any, index: number) => index !== indexUpdate)
+    setNormalConcepts([...deleteConcept, data])
+    localStorage.setItem('sale-order', JSON.stringify([...deleteConcept, data]));
+    
+    setModalSalesCard('')
+
+  }
+
+
+  console.log('normalConcepts', normalConcepts)
+
+
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' || modalSalesCard === 'sale-card-quotation' ? 'active' : ''}`}>
       {/* <Toaster expand={true} position="top-right" richColors /> */}
@@ -1086,19 +1113,19 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
               {statusArticle !== false ?
                 <div className='row__two'>
                   <div className='tab__fields'>
-                  <div className='inputs__branch-office'>
-                  <label className='label__general'>Cantidad</label>
-                  <div className='warning__general' style={styleWarningContact}><small >La cantidad  no es multiplo de {article.multiplos_de}</small></div>
-                  <input className={`inputs__general ${warningContact ? 'warning' : ''}`} type="number" value={amount} onChange={handleAmountChange} placeholder='Ingresa la cantidad' />
-                </div>
+                    <div className='inputs__branch-office'>
+                      <label className='label__general'>Cantidad</label>
+                      <div className='warning__general' style={styleWarningContact}><small >La cantidad  no es multiplo de {article.multiplos_de}</small></div>
+                      <input className={`inputs__general ${warningContact ? 'warning' : ''}`} type="number" value={amount} onChange={handleAmountChange} placeholder='Ingresa la cantidad' />
+                    </div>
 
-                 
+
                     <div className='select__container'>
                       <label className='label__general'>Unidad</label>
                       <div className={`select-btn__general`}>
                         <div className={`select-btn ${selectUnits ? 'active' : ''}`} onClick={openSelectUnits}>
                           <div className='select__container_title'>
-                            <p>{selectedUnit ? units.find((s: { id: number }) => s.id === selectedUnit.id)?.nombre : 'Selecciona'}</p>
+                            <p>{selectedUnit ? units?.find((s: any) => s.id || s.id_unidad === selectedUnit.id)?.nombre : 'Selecciona'}</p>
                           </div>
                           <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
                             <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
@@ -1339,7 +1366,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
                 </div>
                 {outOfRange ? <p className='alert__price'>Fuera de rango</p> : ''}
                 <div className='total__price'>
-                  
+
                   <p className='title__total-price'>Precio total</p>
                   <p className='result__total-price'>$
                     {article.precio_libre ?
@@ -1366,27 +1393,37 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
                   </div>
                 </div>
                 : ''}
-              {modalArticleView == 'article-view__modal_header' ?
+              {modalSalesCard === 'sale-card-quotation' ?
                 <div className='row__five'>
                   <div className='row__two'>
-                    <button className='add__quotation_one' onClick={addQua}>Agregar a cotizacción</button>
-                    <button className='add__cart' onClick={addSaleOrder}>Agregar a orden de venta</button>
+                    <button className='add__cart' type='button' onClick={updateConcept}>Actualizar articulo</button>
                   </div>
                 </div>
                 :
-                <div className='row__five'>
-                  <div className='row__two'>
-                    {modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ?
-                      <button className='add__quotation' onClick={addQua}>Agregar a cotizacción</button>
-                      :
-                      ''
-                    }
-                    {modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' ?
-                      <button className='add__cart' onClick={addSaleOrder}>Agregar a orden de venta</button>
-                      :
-                      ''
-                    }
-                  </div>
+                <div>
+                  {modalArticleView == 'article-view__modal_header' ?
+                    <div className='row__five'>
+                      <div className='row__two'>
+                        <button className='add__quotation_one' onClick={addQua}>Agregar a cotizacción</button>
+                        <button className='add__cart' onClick={addSaleOrder}>Agregar a orden de venta</button>
+                      </div>
+                    </div>
+                    :
+                    <div className='row__five'>
+                      <div className='row__two'>
+                        {modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ?
+                          <button className='add__quotation' onClick={addQua}>Agregar a cotizacción</button>
+                          :
+                          ''
+                        }
+                        {modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' ?
+                          <button className='add__cart' onClick={addSaleOrder}>Agregar a orden de venta</button>
+                          :
+                          ''
+                        }
+                      </div>
+                    </div>
+                  }
                 </div>
               }
 
