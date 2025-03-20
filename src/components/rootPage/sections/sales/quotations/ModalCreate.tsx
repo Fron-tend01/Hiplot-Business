@@ -493,16 +493,20 @@ const ModalCreate: React.FC = () => {
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
   const [dataArticle, setDataArticle] = useState<any>();
-    const [idA, setIdA] = useState<any>(null);
-    const [i, setI] = useState(0);
+  const [idA, setIdA] = useState<any>(null);
+
+  const [i, setI] = useState(0);
 
   const abrirFichaModifyConcept = async (x: any) => {
-    setIdA(i)
-    let newi = i + 1;
-    setI(newi);
+    setI((prevI) => {
+      const newI = prevI + 1;
+      setIdA(newI); // Ahora usará el valor actualizado
+      return newI;
+    });
+    
     setIdArticle(x.id_articulo)
     setDataArticle(x)
-    
+
     setModalSalesCard('sale-card-quotation')
   }
   const getTicket = async () => {
@@ -788,7 +792,7 @@ const ModalCreate: React.FC = () => {
                                 }
                                 {article.descuento > 0 ?
                                   <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
-                                  : '' }
+                                  : ''}
                               </div>
 
                               <div className='td urgency'>

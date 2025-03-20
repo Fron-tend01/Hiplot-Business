@@ -96,7 +96,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
       get_imagenes: true,
       // get_adicional: true,
       get_proveedores: false,
-      get_max_mins: false,
+      get_max_mins: true,
       get_precios: true,
       get_combinaciones: true,
       get_plantilla_data: true,
@@ -104,7 +104,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
       get_tiempos_entrega: true,
       get_componentes: true,
       get_stock: true,
-      get_web: false,
+      get_web: true,
       for_ventas: true,
       get_unidades: true,
       id_usuario: user_id,
@@ -203,6 +203,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
     }
 
     if(modalSalesCard === 'sale-card-quotation') {
+      fetch();
       fetchUser()
       setPrices(dataArticle?.precio_total)
       setAdicional(null)
@@ -218,6 +219,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle }: any) => {
 
 
   }, [idA]);
+  console.log(idA)
 
 
 
