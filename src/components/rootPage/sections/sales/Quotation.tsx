@@ -176,6 +176,7 @@ const Quotation: React.FC = () => {
   }
 
   const updateQuotation = (quotation: any) => {
+    console.log('quotation', quotation)
     // Cambia el estado del modal
     setModal('update-modal__qoutation');
     setCustomConcepts(quotation.conceptos_pers);
@@ -303,7 +304,7 @@ const Quotation: React.FC = () => {
                       {quatation.titulo}
                     </div>
                     <div className='td '>
-                      <p className='total'>$ 567.45</p>
+                      <p className='total'>$ {quatation.total}</p>
                     </div>
                     <div className='td'>
                       {quatation.Razon_social}

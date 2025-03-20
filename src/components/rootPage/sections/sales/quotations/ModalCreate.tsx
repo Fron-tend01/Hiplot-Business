@@ -504,9 +504,26 @@ const ModalCreate: React.FC = () => {
   // };
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
-  const abrirFichaModifyConcept = async (x: any) => {
-    console.log('sssssssssssssssssssssssssssssssssssss',x)
+   const [dataArticle, setDataArticle] = useState<any>();
+    const [idA, setIdA] = useState<any>(null);
+  
+    const [i, setI] = useState(0);
+  
+    const [indexUpdate, setIndexUpdate] = useState<any>(null)
+
+  const abrirFichaModifyConcept = async (x: any, index: number) => {
+
+    setI((prevI) => {
+      const newI = prevI + 1;
+      setIdA(newI); // Ahora usará el valor actualizado
+      return newI;
+    });
+  
+    setIndexUpdate(index)
+    
     setIdArticle(x.id_articulo)
+    setDataArticle(x)
+
     setModalSalesCard('sale-card-quotation')
   }
   const getTicket = async () => {
@@ -555,10 +572,10 @@ const ModalCreate: React.FC = () => {
         </div>
         <div className='row '>
           <div className='col-4'>
-            <span className="">Vendedor</span>
-            <label className="">
-              <select
-                className="select-search cotly-select"
+            <label className="">Vendedor</label>
+            <div>
+            <select
+                className="select_original_general cotly-select"
                 value={info_sc.vendedor}
                 onChange={(e) => traerSolicitudes(e.target.value)}
                 title="Este vendedor aparecerá en la cotización especial"
@@ -567,7 +584,7 @@ const ModalCreate: React.FC = () => {
                   <option key={vendedor.id} value={vendedor.id}>{vendedor.nombre}</option>
                 ))}
               </select>
-            </label>
+            </div>
           </div>
           <div className='col-4'>
             <div className="">
@@ -584,10 +601,10 @@ const ModalCreate: React.FC = () => {
           </div>
           <div className='col-4'>
             <div className="">
-              <span className="">Folio de Solicitud</span>
-              <label className="">
-                <select
-                  className=""
+              <label className="">Folio de Solicitud</label>
+              <div>
+              <select
+                  className="select_original_general"
                   value={info_sc?.folio_sc}
                   onChange={(e) => {
                     console.log('Folio cambiado:', e.target.value);
@@ -614,7 +631,7 @@ const ModalCreate: React.FC = () => {
                       >{sol.id}</option>
                     ))}
                 </select>
-              </label>
+              </div>
             </div>
           </div>
         </div>
@@ -790,7 +807,7 @@ const ModalCreate: React.FC = () => {
                           }
                           {article.personalized ?
                             <div className={`tbody personalized`}>
-                              <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                              <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article, index)}>
                                 <p className='article'>{article.codigo}-{article.descripcion}</p>
                               </div>
                               <div className='td'>
@@ -843,7 +860,7 @@ const ModalCreate: React.FC = () => {
                             </div>
                             :
                             <div className='tbody'>
-                              <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                              <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article, index)}>
                                 <p className='article'>{article.codigo}-{article.descripcion}</p>
                               </div>
                               <div className='td'>
@@ -920,7 +937,7 @@ const ModalCreate: React.FC = () => {
                             <p>Concepto Personalizado</p>
                           </div>
                           <div className={`tbody personalized`}>
-                            <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                            <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article, index)}>
                               <p className='article'>{article.codigo}-{article.descripcion}</p>
                             </div>
                             <div className='td'>
@@ -986,7 +1003,7 @@ const ModalCreate: React.FC = () => {
                     return (
                       <div className='tbody__container' key={index}>
                         <div className='tbody'>
-                          <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                          <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article, index)}>
                             <p className='article'>{article.codigo}-{article.descripcion}</p>
                           </div>
                           <div className='td'>
@@ -1063,7 +1080,7 @@ const ModalCreate: React.FC = () => {
                           <p>Concepto Personalizado</p>
                         </div>
                         <div className={`tbody personalized`}>
-                          <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article)}>
+                          <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article, index)}>
                             <p className='article'>{article.codigo}-{article.descripcion}</p>
                           </div>
                           <div className='td'>
@@ -1184,7 +1201,7 @@ const ModalCreate: React.FC = () => {
       </div>
       <Personalized idItem={idItem} branch={branch} indexItem={indexItem} />
       <ArticleViewModal />
-      <SalesCard typeLocalStogare={typeLocalStogare} />
+      <SalesCard typeLocalStogare={typeLocalStogare} idA={idA} dataArticle={dataArticle} indexUpdate={indexUpdate} />
       <SeeClient />
       {personalizedModal !== '' ?
         <SeeCamposPlantillas />
