@@ -136,6 +136,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           }
 
           setArticle({ ...art, plantilla_data: plantillaData });
+          setSelectedUnit(art?.unidades[0])
 
           if (art.vender_sin_stock) Swal.fire('Notificación', 'Este articulo se puede vender sin stock disponible', 'success');
           if (art.bajo_pedido) Swal.fire('Notificación', 'Este articulo puede levantar requisición automática...', 'warning');
@@ -213,7 +214,6 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       setproductionComments('')
       setCombinacionesSeleccionadas([])
       // setOpciones([])
-      setSelectedUnit(article?.unidades[0])
     }
 
     if (modalSalesCard === 'sale-card-quotation') {

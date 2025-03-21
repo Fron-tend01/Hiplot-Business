@@ -575,19 +575,18 @@ const ModalSalesOrder: React.FC = () => {
 
     const calcular_tiempos_entrega = async () => {
         let normales = normalConcepts.filter((x: any) => x.personalized == undefined || x.personalized == false)
-        let pers = normalConcepts.filter((x: any) => x.personalized == true)
+        console.log(normalConcepts);
+        console.log(conceptView);
+        console.log(customConcepts);
+        
         let conceptos_a_enviar: any[] = []
         if (normales.length > 0) {
-
-
             normales.forEach((n: any) => {
                 conceptos_a_enviar.push(n)
-
             });
-
         }
-        if (pers.length > 0) {
-            pers.forEach((p: any) => {
+        if (customConcepts.length > 0) {
+            customConcepts.forEach((p: any) => {
                 if (p.conceptos.length > 0) {
                     p.conceptos.forEach((c: any) => {
                         conceptos_a_enviar.push(c)
