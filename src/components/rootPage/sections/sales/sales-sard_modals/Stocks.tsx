@@ -12,8 +12,7 @@ const Stocks: React.FC = () => {
 
   const unidad = article?.unidades.find((unidad: any) => unidad.unidad_almacen === true);
   const default_store = article?.stock.find((x: any) => x.id === article?.almacen_predeterminado?.id);
-  console.log(article)
-
+ 
   return (
     <div className={`overlay__stock_modal ${modalSub === 'stock_modal' ? 'active' : ''}`}>
       <div className={`popup__stock_modal ${modalSub === 'stock_modal' ? 'active' : ''}`}>

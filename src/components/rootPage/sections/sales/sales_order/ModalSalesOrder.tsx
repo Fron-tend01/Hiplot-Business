@@ -83,7 +83,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const { getSaleOrders }: any = saleOrdersRequests()
 
-    console.log(permisosxVista)
+
 
 
     const [clients, setClients] = useState<any>()
@@ -839,7 +839,6 @@ const ModalSalesOrder: React.FC = () => {
         setNormalConcepts(dataCopy);
     };
 
-    console.log('permisosxVista', permisosxVista)
 
 
     return (
@@ -993,17 +992,19 @@ const ModalSalesOrder: React.FC = () => {
                                 <div className='col-5 md-col-12'>
                                     <span className='text'>Creado por: <b>{saleOrdersToUpdate.usuario_crea}</b></span><br />
                                     <span className='text'>Fecha de Creación: <b>{saleOrdersToUpdate.fecha_creacion}</b></span><br />
+                                    <div className='d-flex'>
                                     {saleOrdersToUpdate.status === 0 ? (
-                                        <b className="active-status" style={{ color: 'green' }}>Activo</b>
+                                        <b className="active-identifier" >Activo</b>
                                     ) : saleOrdersToUpdate.status === 1 ? (
-                                        <b className="canceled-status" style={{ color: 'red' }}>Cancelada</b>
+                                        <b className="cancel-identifier">Cancelada</b>
                                     ) : (
                                         saleOrdersToUpdate.status === 2 ? (
-                                            <b className="end-status" style={{ color: 'yellow' }}>Pendiente</b>
+                                            <b className="peding-identifier">Pendiente</b>
                                         ) : (
                                             ""
                                         )
                                     )}
+                                    </div>
                                 </div>
                                 <div className='col-4 md-col-12'>
                                     <b>FACTURAS RELACIONADAS:</b>

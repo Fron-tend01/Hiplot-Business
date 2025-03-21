@@ -103,8 +103,8 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
   const [modalStatus, setModalStatus] = useState<boolean>(false)
 
   const addPersonalized = (_: any, i: number) => {
-    // setSelectedIds('units', { id: customConceptView[0].unidad })
-    // setselectedKey(customConceptView[0].clave_sat)
+    setSelectedIds('units', { id: customConceptView[0].unidad })
+    setselectedKey(customConceptView[0].clave_sat)
     setCustomConceptView(
       customConceptView.map((item: any, index: number) =>
         index === i ? { ...item, check: !item.check } : item
@@ -486,13 +486,13 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
     descripcion: '',
     codigo: '',
     cantidad: '',
-    precio_total: '',
+    precio_total: 0,
     codigo_unidad_sat: '',
     comentarios_produccion: '',
     comentarios_factura: ''
   })
 
-  console.log(inpust)
+
 
   const openselectsSatKey = () => {
     setSelectsSatKey(!selectsSatKey)
@@ -603,29 +603,21 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
   };
 
 
-  console.log('customConceptView', customConceptView);
+  
 
   const handleStatusChange = (_: any, i: any) => {
-
-    let dataConceptView = [...customConceptView]
-    dataConceptView[i].enviar_a_produccion = !dataConceptView[i].enviar_a_produccion
-    setCustomConceptView(dataConceptView)
-
-    // if (modalSalesOrder == 'sale-order__modal') {
-    //   if (personalizedModal == 'personalized_modal-sale') {
-
-    //   } else {
-    //   }
-    // } else {
-    //   let newCustomConcep = [...idItem.conceptos]
-
-    //   newCustomConcep[i].enviar_a_produccion = !newCustomConcep[i].enviar_a_produccion
-    //   // Actualizamos el estado con el array modificado
-    //   setCustomConcepts(newCustomConcep);
-    // }
+    // Utilizamos map para crear un nuevo array con los cambios aplicados
+   
+    setCustomConceptView(
+      customConceptView.map((item: any, index: number) =>
+        index === i ? { ...item, enviar_a_produccion: !item.enviar_a_produccion } : item
+      )
+    );
+    console.log(customConceptView)
   };
 
 
+  
 
 
   const updateSaleOrderConcept = async (article: any) => {
@@ -750,7 +742,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
                 <input type='number' className={`inputs__general`} value={inpust?.cantidad} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'cantidad', e.target.value)} placeholder='Cantidad' />
               </div>
               <div className='col-2 md-col-6 sm-col-12'>
-                <label className='label__general'>Precio real</label>
+                <label className='label__general'>Total personalizado</label>
                 <input type='number' className={`inputs__general`} value={inpust?.precio_total} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'precio_total', e.target.value)} placeholder='Precio real' />
               </div>
             </div>
@@ -1010,6 +1002,9 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
                   <div className='th'>
                     <p>Unidad</p>
                   </div>
+                  <div className='th'>
+                    <p>Precio</p>
+                  </div>
                 </div>
               </div>
               {customConceptView ? (
@@ -1183,6 +1178,12 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
                       </div>
                       <div className='th'>
                         <p>Unidad</p>
+                      </div>
+                      <div>
+                        <p>Precio</p>
+                      </div>
+                      <div>
+                        <p>Total Per.</p>
                       </div>
                     </div>
                   </div>
@@ -1860,13 +1861,17 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
           }
           <div className='mt-5 row__three'>
             {personalizedModal == 'personalized_modal-quotation' || personalizedModal == 'personalized_modal-sale' || personalizedModal == 'personalized_modal-billing' ?
-              <div className='d-flex justify-content-center'>
+              <div className='d-flex justify-content-between'>
+                 <div className='real_price'>
+                  <p className='name'>Total real</p>
+                  <p className='value'>{realPrice}</p>
+                </div>
                 <div>
                   <button type='button' className='btn__general-purple' onClick={createPersonalized}>Crear personalizado</button>
                 </div>
-                <div className='real_price'>
-                  <p className='name'>Precio real</p>
-                  <p className='value'>{realPrice}</p>
+                <div className='real_personalized'>
+                  <p className='name'>Total personalizado</p>
+                  <p className='value'>{inpust?.precio_total}</p>
                 </div>
               </div>
               :

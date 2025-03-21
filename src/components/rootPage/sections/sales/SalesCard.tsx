@@ -167,12 +167,13 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   };
 
   useEffect(() => {
-    console.log('Combiunacionessssssssssssss', opciones)
+ 
+    
   }, [opciones])
 
 
-  console.log('Opcionesssssssssssssssss', opciones)
-
+  
+  
 
   // useEffect(() => {
   //   if(modalSalesCard === 'sale-card-quotation') {
@@ -307,8 +308,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   }, [prices])
 
 
-  console.log(billingComment)
-
+  
 
   const [data, setData] = useState<any>({
     obs_produccion: '',
@@ -357,7 +357,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       } else {
         setOutOfRange(false)
         if (result.error == true) {
-          console.log(prices)
+   
+          
           toast.warning(result.mensaje)
           setData({
             id_pers: 0,
@@ -888,7 +889,6 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
 
   const updateConcept = () => {
-    console.log('data', data)
     let deleteConcept = normalConcepts.filter((_: any, index: number) => index !== indexUpdate)
     setNormalConcepts([...deleteConcept, data])
     localStorage.setItem('sale-order', JSON.stringify([...deleteConcept, data]));

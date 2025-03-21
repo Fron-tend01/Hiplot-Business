@@ -10,28 +10,62 @@
 
 
 .personalized_modal .row__three .real_price {
-  position: absolute;
-  right: 0;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 2px solid #f4f4f4;
+
   border-radius: 5px;
 
 }
-
-.personalized_modal .row__three .real_price .value {
-  padding: 5px 10px;
-
-}
-
 
 .personalized_modal .row__three .real_price .name {
   padding: 5px 10px;
   background-color: #3d86c62c;
-  border-radius: 5px;
+  border-radius: 5px 0 0px 5px;
+  border: 2px solid #3d86c62c;;
+
   font-weight: 600;
   color: var(--primary-100);
+}
+
+
+
+
+.personalized_modal .row__three .real_price .value {
+  padding: 5px 10px;
+  border: 2px solid #f4f4f4;
+  border-left: none;
+  border-radius: 5px 5px 5px 0;
+}
+
+
+
+.personalized_modal .row__three .real_personalized {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ 
+  border-radius: 5px;
+
+}
+
+.personalized_modal .row__three .real_personalized .value {
+  padding: 5px 10px;
+   border: 2px solid #f4f4f4;
+   border-left: none;
+   border-radius: 5px 5px 5px 0;
+}
+
+
+.personalized_modal .row__three .real_personalized .name {
+  padding: 5px 10px;
+  border-radius: 5px 0 0px 5px;
+  border: 2px solid #ff910038;
+  font-weight: 600;
+  background-color: #ff910038;
+  color: #FF8F00;
 }
 
 
@@ -134,7 +168,7 @@
 
 .table__personalized .table__head .thead {
   display: grid;
-  grid-template-columns: 100px repeat(5, 1fr);
+  grid-template-columns: 100px 2fr repeat(4, 1fr) 50px 50px;
   padding: 10px;
   font-weight: 600;
   background-color: var(--table-header-color);
@@ -190,7 +224,7 @@
 
 .table__personalized .table__body .tbody {
   display: grid;
-  grid-template-columns: 100px repeat(5, 1fr) 50px 50px ;
+  grid-template-columns: 100px 2fr repeat(4, 1fr) 50px 50px;
   padding: 10px;
 }
 

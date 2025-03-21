@@ -1237,6 +1237,18 @@ html, body {
   color: #6e34e2;
 }
 
+.peding-identifier {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #ff910038;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #FF8F00;
+}
+
+
   
 
 
