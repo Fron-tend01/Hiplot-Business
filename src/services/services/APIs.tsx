@@ -173,7 +173,10 @@ const APIs = {
     const path = customPath || 'articulos_get';
     return ConfigurationAPIs.post(path, data)
   },
-
+  getArticlesForVendedor: async (data: any, customPath?: string) => {
+    const path = customPath || 'articulos_get_for_vendedor';
+    return ConfigurationAPIs.post(path, data)
+  },
   getArticlesDifferential: async (data: any, customPath?: string) => {
     const path = customPath || `get_articulos_diferenciales/${data.id_proveedor}/${data.id_sucursal}/${data.id_usuario}`;
     return ConfigurationAPIs.post(path, data)
