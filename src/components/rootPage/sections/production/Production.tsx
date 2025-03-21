@@ -266,14 +266,7 @@ const Production: React.FC = () => {
                             {production.map((order: any) => {
                                 return (
                                     <div className='tbody__container' key={order.id} title='Haz Clic para ver más detalles de la Orden de Producción'>
-                                        <div className={`tbody ${order.color_estado === 'rojo'
-                                            ? 'delayed'
-                                            : order.color_estado === 'amarillo'
-                                                ? 'to-deliver'
-                                                : order.color_estado === 'azul_cielo'
-                                                    ? 'blue'
-                                                    : 'no-color'
-                                            }`}>
+                                        <div className='tbody'style={{ backgroundColor: `#${order.color_estado}` }}>
                                             <div className='td' onClick={() => handleModalChange(order)}>
                                                 <p className='folio-identifier'>{order.serie}-{order.folio}-{order.anio}</p>
                                             </div>
