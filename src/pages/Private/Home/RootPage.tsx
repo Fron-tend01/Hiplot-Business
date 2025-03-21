@@ -119,17 +119,7 @@ const RootHome: React.FC = () => {
     return (
         <div className='root__dashboard'>
             <div className={`sidebar ${toggle ? 'active' : ''} ${activeSidebar ? 'close' : ''}`}>
-                <div className="logo__sidebar">
-                    <img className='logo__image' src={Logo} alt="" />
-                    {/* <h2 className='title__logo'>Procura</h2> */}
-                    <div className='toggle' onClick={toggleMen}>
-                        <button className={`toggle__botton ${toggle ? 'activo' : ''}`}>
-                            <span className="l1 span"></span>
-                            <span className="l2 span"></span>
-                            <span className="l3 span"></span>
-                        </button>
-                    </div>
-                </div>
+                     
                 <div className='arrow__sidebar' onClick={toggleMenu}>
                     <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 6l6 6l-6 6" /></svg>
                 </div>

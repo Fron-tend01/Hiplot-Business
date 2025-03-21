@@ -262,7 +262,8 @@ const ModalCreate: React.FC = () => {
       conceptos: normalConcepts,
       conceptos_pers: customConcepts,
       conceptos_elim: deleteNormalConcepts,
-      conceptos_pers_elim: deleteCustomConcepts
+      conceptos_pers_elim: deleteCustomConcepts,
+      id_solicitud_cotizacion: info_sc.cot_propia ? user_id : info_sc.folio_sc == '' ?  info_sc.folio_sc : 0,
     };
 
 
@@ -386,7 +387,7 @@ const ModalCreate: React.FC = () => {
 
   const [typeLocalStogare, setTypeLocalStogare] = useState<any>()
 
-  console.log(normalConcepts)
+
 
   const modalPersonalized = () => {
     setPersonalizedModal('personalized_modal-quotation')
@@ -547,7 +548,7 @@ const ModalCreate: React.FC = () => {
         }
       );
       DynamicVariables.updateAnyVar(setInfo_sc, 'folios_solicitudes', response.data)
-      console.log('------------------------------------', response.data[0].id);
+     
 
       DynamicVariables.updateAnyVar(setInfo_sc, 'folio_sc', response.data[0].id)
       console.log(response); // Ver qué está recibiendo
@@ -555,6 +556,8 @@ const ModalCreate: React.FC = () => {
       console.error("Error en la petición:", error);
     }
   };
+
+  console.log(info_sc)
   return (
     <div className={`overlay__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
       <div className={`popup__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
@@ -611,7 +614,7 @@ const ModalCreate: React.FC = () => {
                     setInfo_sc((prev: any) => ({ ...prev, folio_sc: e.target.value }));
                   }}
                   title={(() => {
-                    console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', info_sc.folio_sc);
+          
 
                     if (!info_sc?.folio_sc) return "Seleccione una solicitud";
 
