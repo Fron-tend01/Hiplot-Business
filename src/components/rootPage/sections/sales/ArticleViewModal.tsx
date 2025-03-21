@@ -25,7 +25,7 @@ const ArticleViewModal = () => {
 
     const setIdArticle = storeSaleCard(state => state.setIdArticle)
 
-    const { getArticles }: any = articleRequests();
+    const { getArticles, getArticlesForVendedor }: any = articleRequests();
     const [articles, setArticles] = useState<any>([]);
 
     const [families, setFamilies] = useState<any>([]);
@@ -114,7 +114,7 @@ const ArticleViewModal = () => {
                 setDentroColeccionNombre(x.codigo)
                 setDentroColeccion(true)
                 setModalLoading(true)
-                const result = await getArticles(data);
+                const result = await getArticlesForVendedor(data);
                 setArticles(result);
                 setModalLoading(false)
 
@@ -168,7 +168,7 @@ const ArticleViewModal = () => {
         };
         try {
             setModalLoading(true)
-            const result = await getArticles(data)
+            const result = await getArticlesForVendedor(data)
             setArticles(result);
             setModalLoading(false)
 
@@ -214,7 +214,7 @@ const ArticleViewModal = () => {
         };
         try {
             setModalLoading(true)
-            const result = await getArticles(data)
+            const result = await getArticlesForVendedor(data)
             setArticles(result);
             setModalLoading(false)
 

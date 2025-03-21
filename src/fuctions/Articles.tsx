@@ -23,7 +23,14 @@ export const articleRequests = () => ({
       console.error('Ocurrió un error', error);
     }
   },
-
+  getArticlesForVendedor: async (data: any) => {
+    try {
+      const response = await APIs.getArticlesForVendedor(data);
+      return response;
+    } catch (error) {
+      console.error('Ocurrió un error', error);
+    }
+  },
   getArticlesDifferential: async (data: any) => {
     try {
       const response = await APIs.getArticlesDifferential(data);
