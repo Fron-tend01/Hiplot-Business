@@ -32,7 +32,7 @@ import { storeArticleView } from '../../../../zustand/ArticleView';
 
 
 
-const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate}: any) => {
+const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id;
 
@@ -115,55 +115,43 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate}: any) => {
     try {
       // Obtener artículos
       setModalLoading(true)
-      const response: any = await APIs.getArticles(data);
-      setUnits(response[0]?.unidades);
-      if (response && response.length > 0) {
-        const plantilla_data = response[0].plantilla_data || []; // Inicializar como un arreglo vacío
-        const id_plantillas_art_campos = [];
+      return await APIs.getArticles(data)
+        .then(async (response: any) => {
+          if (!response || response.length === 0) {
+            throw new Error('No se encontraron artículos');
+          }
 
-        for (let i = 0; i < plantilla_data.length; i++) {
-          const id = plantilla_data[i].id;
-          id_plantillas_art_campos.push(id);
-        }
-
-        // Asegúrate de que plantilla_data siga siendo un arreglo
-        response[0].plantilla_data = plantilla_data.map((item: any) => ({
-          ...item,
-          id_plantillas_art_campos: item.id,
-        }));
-
-        
-        if (modalSalesCard === 'sale-card-quotation') {
-          response[0].plantilla_data = dataArticle.campos_plantilla
-        }
+          const art = response[0];
 
 
-        setArticle(response[0]);
-        setOpciones([...response[0].opciones_de_variacion2])
-        setModalLoading(false)
-        let art = response[0]
-        if (art.vender_sin_stock) {
-          await Swal.fire('Notificación', 'Este articulo se puede vender sin stock disponible', 'success')
-        }
-        if (art.bajo_pedido) {
-          await Swal.fire('Notificación', 'Este articulo puede levantar requisición automatica si el stock no es suficiente, pero la orden quedará como PENDIENTE hasta que llegue el material solicitado.', 'warning')
-        }
-        if (art.desabasto) {
-          await Swal.fire('Notificación', 'Hay desabasto de este articulo, verificar el stock o consultar con almacen.', 'warning')
-        }
-        if (art.precio_libre) {
-          await Swal.fire('Notificación', 'Puedes añadir el precio manualmente o consultar una fuente externa para obtener el precio.', 'success')
-        }
-        if (art.ultimas_piezas) {
-          await Swal.fire('Notificación', 'El stock disponible de este articulo son las ULTIMAS PIEZAS, no se resurtirá más esté articulo. Cuando se agoté se desactivará automaticamente', 'warning')
-        }
-        if (art.consultar_te) {
-          await Swal.fire('Notificación', 'Este articulo se debe consultar el tiempo de entrega', 'warning')
-        }
-        if (art.consultar_cotizador) {
-          await Swal.fire('Notificación', 'Este articulo debe consultar el precio con cotizador antes de venderse', 'warning')
-        }
-      }
+
+          let plantillaData = art.plantilla_data || [];
+          plantillaData = plantillaData.map((item: any) => ({
+            ...item,
+            id_plantillas_art_campos: item.id,
+          }));
+
+          if (modalSalesCard === 'sale-card-quotation') {
+            plantillaData = dataArticle.campos_plantilla;
+          }
+
+          setArticle({ ...art, plantilla_data: plantillaData });
+
+          if (art.vender_sin_stock) Swal.fire('Notificación', 'Este articulo se puede vender sin stock disponible', 'success');
+          if (art.bajo_pedido) Swal.fire('Notificación', 'Este articulo puede levantar requisición automática...', 'warning');
+          if (art.desabasto) Swal.fire('Notificación', 'Hay desabasto de este articulo...', 'warning');
+          if (art.precio_libre) Swal.fire('Notificación', 'Puedes añadir el precio manualmente...', 'success');
+          if (art.ultimas_piezas) Swal.fire('Notificación', 'El stock disponible son las ULTIMAS PIEZAS...', 'warning');
+          if (art.consultar_te) Swal.fire('Notificación', 'Este articulo se debe consultar el tiempo de entrega', 'warning');
+          if (art.consultar_cotizador) Swal.fire('Notificación', 'Este articulo debe consultar el precio con cotizador', 'warning');
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        })
+        .finally(() => {
+          setStatusArticle(true);
+          setModalLoading(false);
+        });
 
 
     } catch (error) {
@@ -178,6 +166,12 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate}: any) => {
     }
   };
 
+  useEffect(() => {
+    console.log('Combiunacionessssssssssssss', opciones)
+  }, [opciones])
+
+
+  console.log('Opcionesssssssssssssssss', opciones)
 
 
   // useEffect(() => {
@@ -217,7 +211,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate}: any) => {
       setBillingComment('')
       setproductionComments('')
       setCombinacionesSeleccionadas([])
-      setOpciones([])
+      // setOpciones([])
       setSelectedUnit(article?.unidades[0])
     }
 
@@ -240,7 +234,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate}: any) => {
       setBillingComment('')
       setproductionComments('')
       setCombinacionesSeleccionadas([])
-      setOpciones([])
+
+
     }
 
 
@@ -248,15 +243,16 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate}: any) => {
 
 
 
-  // useEffect(() => {
-  //   fetchUser()
-  // }, [idA]);
 
 
-  // useEffect(() => {
-  //   fetchDos();
 
-  // }, [IdArticle, user_id]);
+  useEffect(() => {
+    if (article) {
+      setUnits(article.unidades || []);
+      setOpciones(article.opciones_de_variacion2 || []);
+    }
+
+  }, [article]);
   const [fyv, setfyv] = useState<boolean>(false)
 
 
@@ -992,56 +988,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate}: any) => {
                 ''
               }
               {statusArticle !== false ?
-                <div className='row__three'>
-                  {article.desabasto ?
-                    <div className='desabasto'>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
-                      <p>Desbasto</p>
-                    </div>
-                    :
-                    ''
-                  }
-                  {article.bajo_pedido ?
-                    <div className='bajo-pedido'>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-truck"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18H9" /><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" /><circle cx="17" cy="18" r="2" /><circle cx="7" cy="18" r="2" /></svg>
-                      <p>Bajo Pedido</p>
-                    </div>
-                    :
-                    ''
-                  }
-                  {article.vender_sin_stock ?
-                    <div className='vender-sin-stock'>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
-                      <p>Vender sin Stock</p>
-                    </div>
-                    :
-                    ''
-                  }
-                  {article.ultimas_piezas ?
-                    <div className='ultima-piezas'>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-clock-3"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16.5 12" /></svg>
-                      <p>Ultimas Piezas</p>
-                    </div>
-                    :
-                    ''
-                  }
-                  {article.consultar_cotizador ?
-                    <div className='vender-sin-stock'>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
-                      <p>Consultar con Cotizador</p>
-                    </div>
-                    :
-                    ''
-                  }
-                  {article.consultar_te ?
-                    <div className='vender-sin-stock'>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
-                      <p>Consultar Tiempos de Entrega</p>
-                    </div>
-                    :
-                    ''
-                  }
-                </div>
+                ''
                 :
                 <div className="card-sale__pulse__labels">
                   <div className="animate-pulse">
@@ -1135,6 +1082,60 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate}: any) => {
                     </div>
                   </div>
                 </div>
+              }
+              {statusArticle !== false ?
+                <div className='row_labels'>
+                  {article.desabasto ?
+                    <div className='desabasto'>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+                      <p>Desbasto</p>
+                    </div>
+                    :
+                    ''
+                  }
+                  {article.bajo_pedido ?
+                    <div className='bajo-pedido'>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-truck"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18H9" /><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" /><circle cx="17" cy="18" r="2" /><circle cx="7" cy="18" r="2" /></svg>
+                      <p>Bajo Pedido</p>
+                    </div>
+                    :
+                    ''
+                  }
+                  {article.vender_sin_stock ?
+                    <div className='vender-sin-stock'>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
+                      <p>Vender sin Stock</p>
+                    </div>
+                    :
+                    ''
+                  }
+                  {article.ultimas_piezas ?
+                    <div className='ultima-piezas'>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-clock-3"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16.5 12" /></svg>
+                      <p>Ultimas Piezas</p>
+                    </div>
+                    :
+                    ''
+                  }
+                  {article.consultar_cotizador ?
+                    <div className='vender-sin-stock'>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
+                      <p>Consultar con Cotizador</p>
+                    </div>
+                    :
+                    ''
+                  }
+                  {article.consultar_te ?
+                    <div className='vender-sin-stock'>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" stroke-linejoin="round" className="lucide lucide-shopping-bag"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /><path d="M3 6h18" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
+                      <p>Consultar Tiempos de Entrega</p>
+                    </div>
+                    :
+                    ''
+                  }
+                </div>
+                :
+                ''
               }
               {statusArticle !== false ?
                 <div className='row__two'>
