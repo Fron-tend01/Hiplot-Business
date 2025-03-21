@@ -198,9 +198,10 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const [pricesFranquicia, setPricesFranquicia] = useState<any>(0)
   const [pricesFranquiciaAdicional, setPricesFranquiciaAdicional] = useState<any>(0)
 
+  console.log(modal)
 
   useEffect(() => {
-    if (modalSalesCard === 'sale-card') {
+    if (modalSalesCard === 'sale-card' || modal === 'create-modal__qoutation') {
       fetch();
       fetchUser()
       setPrices(0)
@@ -213,10 +214,10 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       setproductionComments('')
       setCombinacionesSeleccionadas([])
       // setOpciones([])
-      setSelectedUnit(article?.unidades[0])
+      
     }
 
-    if (modalSalesCard === 'sale-card-quotation') {
+    if (modalSalesCard === 'sale-card-quotation' || modal === 'update-modal__qoutation') {
 
       fetch();
       fetchUser()
@@ -235,12 +236,16 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       setBillingComment('')
       setproductionComments('')
       setCombinacionesSeleccionadas([])
+      setSelectedUnit(article?.unidades[0])
 
 
     }
 
 
   }, [idA]);
+
+
+  console.log('usersGroups', usersGroups)
 
 
 
@@ -250,6 +255,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   useEffect(() => {
     if (article) {
       setUnits(article.unidades || []);
+      setSelectedUnit(article?.unidades[0])
       setOpciones(article.opciones_de_variacion2 || []);
     }
 
@@ -411,6 +417,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           return
         }
 
+       if(result.txtvisual_campos.length > 0) {
         article.plantilla_data.forEach((c: any) => {
           let buscar_in_result = result.txtvisual_campos.filter(
             (x: any) => x.id_plantillas_art_campos == c.id
@@ -421,6 +428,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
             c.valor = valor; // Actualiza el valor en el objeto clonado
           }
         });
+       }
 
 
         if (result.error == false) {
