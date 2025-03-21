@@ -603,21 +603,21 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
   };
 
 
-  
-
   const handleStatusChange = (_: any, i: any) => {
     // Utilizamos map para crear un nuevo array con los cambios aplicados
-   
-    setCustomConceptView(
-      customConceptView.map((item: any, index: number) =>
-        index === i ? { ...item, enviar_a_produccion: !item.enviar_a_produccion } : item
-      )
-    );
+    if (customConceptView && customConceptView.length > 0) {
+      setCustomConceptView(
+        customConceptView.map((item: any, index: number) =>
+          index === i ? { ...item, enviar_a_produccion: !item.enviar_a_produccion } : item
+        )
+      );
+    } else {
+      console.error("customConceptView está vacío o no es válido");
+    }
+    
     console.log(customConceptView)
   };
 
-
-  
 
 
   const updateSaleOrderConcept = async (article: any) => {
@@ -1154,10 +1154,10 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
             <>
               {personalizedModal == "personalized_modal-sale" ?
                 <div className='table__personalized'>
-                  {customData ? (
+                  {customConceptView ? (
                     <div className='table__numbers'>
                       <p className='text'>Total de artículos</p>
-                      <div className='quantities_tables'>{customData.length}</div>
+                      <div className='quantities_tables'>{customConceptView.length}</div>
                     </div>
                   ) : (
                     <p className="text">No hay empresas que mostras</p>
@@ -1187,9 +1187,9 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
                       </div>
                     </div>
                   </div>
-                  {normalConcepts ? (
+                  {customConceptView ? (
                     <div className='table__body'>
-                      {normalConcepts.map((concept: any, index: number) => {
+                      {customConceptView.map((concept: any, index: number) => {
                         return (
                           <div className='tbody__container'>
                             <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={concept.id}>

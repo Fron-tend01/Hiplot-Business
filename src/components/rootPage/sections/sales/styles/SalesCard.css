@@ -288,12 +288,32 @@
   transition: all 100ms;
 }
 
+.conatiner__create_sale-card > .row__three .row__five > .row__two .add__quotation_one.active {
+  color: rgb(12, 36, 60);
+  border: none;
+  padding: 10px 10px;
+  cursor: pointer;
+  border-radius: var(--border-radius-general);
+  background-color: #e7e7e7;
+  border: 2px solid rgba(12, 36, 60, 0.651);
+  transition: all 100ms;
+}
+
+
 
 .conatiner__create_sale-card > .row__three .row__five > .row__two .add__quotation:hover {
     transform: scale(1.05);
     transition: all 500ms;
   
 }
+
+.conatiner__create_sale-card > .row__three .row__five > .row__two .add__quotation.active:hover {
+  transition: none; 
+  transform: none; 
+
+
+}
+
 
 .conatiner__create_sale-card > .row__three .row__five > .row__two .add__quotation:active {
     transform: scale(0.90);
@@ -312,13 +332,23 @@
     transition: all 100ms;
 }
 
+.conatiner__create_sale-card > .row__three .row__five > .row__two .add__cart.active {
+  color: #ffffff;
+  background-color: rgba(12, 36, 60, 0.788);
+}
+
 .conatiner__create_sale-card > .row__three .row__five > .row__two .add__cart:hover {
     transition: all 500ms;
     transform: scale(1.05);
     /* background-color: var(--primary-color);
     color: var(--text-white); */
+}
 
-  
+.conatiner__create_sale-card > .row__three .row__five > .row__two .add__cart.active:hover {
+  transition: none; 
+  transform: none; 
+
+
 }
 
 .conatiner__create_sale-card > .row__three .row__five > .row__two .add__cart:active {

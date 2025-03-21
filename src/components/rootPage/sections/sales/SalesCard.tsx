@@ -167,13 +167,13 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   };
 
   useEffect(() => {
- 
-    
+
+
   }, [opciones])
 
 
-  
-  
+
+
 
   // useEffect(() => {
   //   if(modalSalesCard === 'sale-card-quotation') {
@@ -308,7 +308,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   }, [prices])
 
 
-  
+
 
   const [data, setData] = useState<any>({
     obs_produccion: '',
@@ -318,7 +318,10 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const controllerRef = useRef<AbortController | null>(null);
   const [outOfRange, setOutOfRange] = useState<any>(false)
 
+  const [loadingPrice, setLoadingPrice] = useState<boolean>(false)
+
   const get = async () => {
+    setLoadingPrice(true)
 
     if (controllerRef.current) {
       controllerRef.current.abort();
@@ -357,8 +360,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       } else {
         setOutOfRange(false)
         if (result.error == true) {
-   
-          
+
+
           toast.warning(result.mensaje)
           setData({
             id_pers: 0,
@@ -513,16 +516,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
     } catch (error) {
       console.error("Error al obtener el precio total:", error);
-
-
-
-
-      // // Muestra la alerta después de actualizar el estado
-      // await Swal.fire(
-      //   "Notificación",
-      //   "Error",
-      //   "error"
-      // );
+    }
+    finally {
+      setLoadingPrice(false)
     }
   };
 
@@ -977,12 +973,12 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                     </button>
                     <span className="sale__card-tooltip-text">Tiempos de Entrega</span>
                   </div>
-                  <div className='btn__sale__card-tooltip-container'>
+                  {/* <div className='btn__sale__card-tooltip-container'>
                     <button className='btn__general-purple' type='button' onClick={() => setModalSub('components_modal')}>
                       <svg className="icon icon-tabler icons-tabler-outline icon-tabler-components" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 12l3 3l3 -3l-3 -3z" /><path d="M15 12l3 3l3 -3l-3 -3z" /><path d="M9 6l3 3l3 -3l-3 -3z" /><path d="M9 18l3 3l3 -3l-3 -3z" /></svg>
                     </button>
                     <span className="sale__card-tooltip-text">Componentes</span>
-                  </div>
+                  </div> */}
                 </div>
                 :
                 ''
@@ -1389,22 +1385,35 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                   : ''}
                 <div className='price_x_unit'>
                   <p className='title__price_x_unit'>Precio por unidad:</p>
-                  <p className='result__price_x_unit'>$ {Number.isNaN(prices / amount) ? 0 : (prices / amount)}</p>
+                  {loadingPrice ?
+                    <div className='container__loader_simple'>
+                      <span className="loader_simple"></span>
+                    </div>
+                    :
+                    <p className='result__price_x_unit'>$ {Number.isNaN(prices / amount) ? 0 : (prices / amount)}</p>
+                  }
                 </div>
                 {outOfRange ? <p className='alert__price'>Fuera de rango</p> : ''}
                 <div className='total__price'>
 
                   <p className='title__total-price'>Precio total</p>
-                  <p className='result__total-price'>$
-                    {article.precio_libre ?
-                      <input
-                        // className={`inputs__general`}
-                        type="text"
-                        value={prices}
-                        onChange={(e) => setPrices(e.target.value)}
-                      />
-                      : prices}
-                  </p>
+                  {loadingPrice ?
+                    <div className='container__loader_simple'>
+                      <span className="loader_simple"></span>
+                    </div>
+                    :
+                    <p className='result__total-price'>$
+                      {article.precio_libre ?
+                        <input
+                          // className={`inputs__general`}
+                          type="text"
+                          value={prices}
+                          onChange={(e) => setPrices(e.target.value)}
+                        />
+                        : prices}
+                    </p>
+                  }
+
                 </div>
 
               </div>
@@ -1412,18 +1421,27 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                 <div className='row__four'>
                   <div className='price_x_unit'>
                     <p className='title__price_x_unit'>Precio por unidad Franquicia:</p>
-                    <p className='result__price_x_unit'>$ {Number.isNaN(pricesFranquicia / amount) ? 0 : (pricesFranquicia / amount)}</p>
+                    {loadingPrice ?
+                      <span className="loader_simple"></span>
+                      :
+                      <p className='result__price_x_unit'>$ {Number.isNaN(pricesFranquicia / amount) ? 0 : (pricesFranquicia / amount)}</p>
+                    }
                   </div>
                   <div className='total__price'>
                     <p className='title__total-price'>Precio total Franquicia</p>
-                    <p className='result__total-price'>$ {pricesFranquicia}</p>
+                    {loadingPrice ?
+                      <span className="loader_simple"></span>
+                      :
+                      <p className='result__total-price'>$ {pricesFranquicia}</p>
+                    }
+
                   </div>
                 </div>
                 : ''}
               {modalSalesCard === 'sale-card-quotation' ?
                 <div className='row__five'>
                   <div className='row__two'>
-                    <button className='add__cart' type='button' onClick={updateConcept}>Actualizar articulo</button>
+                    <button className={`add__cart ${loadingPrice ? 'active' : ''}`} disabled={loadingPrice ? true : false} type='button' onClick={updateConcept}>Actualizar articulo</button>
                   </div>
                 </div>
                 :
@@ -1431,20 +1449,20 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                   {modalArticleView == 'article-view__modal_header' ?
                     <div className='row__five'>
                       <div className='row__two'>
-                        <button className='add__quotation_one' onClick={addQua}>Agregar a cotizacción</button>
-                        <button className='add__cart' onClick={addSaleOrder}>Agregar a orden de venta</button>
+                        <button className={`add__quotation_one ${loadingPrice ? 'active' : ''}`} disabled={loadingPrice ? true : false} onClick={addQua}>Agregar a cotizacción</button>
+                        <button className={`add__cart ${loadingPrice ? 'active' : ''}`} disabled={loadingPrice ? true : false} onClick={addSaleOrder}>Agregar a orden de venta</button>
                       </div>
                     </div>
                     :
                     <div className='row__five'>
                       <div className='row__two'>
                         {modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ?
-                          <button className='add__quotation' onClick={addQua}>Agregar a cotizacción</button>
+                          <button className={`add__quotation_one ${loadingPrice ? 'active' : ''}`} disabled={loadingPrice ? true : false} onClick={addQua}>Agregar a cotizacción</button>
                           :
                           ''
                         }
                         {modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' ?
-                          <button className='add__cart' onClick={addSaleOrder}>Agregar a orden de venta</button>
+                          <button className={`add__cart ${loadingPrice ? 'active' : ''}`} disabled={loadingPrice ? true : false} onClick={addSaleOrder}>Agregar a orden de venta</button>
                           :
                           ''
                         }
