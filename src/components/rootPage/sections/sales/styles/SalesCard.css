@@ -246,18 +246,18 @@
 
 
 
-.conatiner__create_sale-card > .row__three > .row__five {
+.conatiner__create_sale-card > .row__three .row__five {
     display: flex;
     justify-content: center;
 }
 
-.conatiner__create_sale-card > .row__three > .row__five > .row__one {
+.conatiner__create_sale-card > .row__three .row__five > .row__one {
    
    
 }
   
 
-.conatiner__create_sale-card > .row__three > .row__five > .row__two {
+.conatiner__create_sale-card > .row__three .row__five > .row__two {
     display: flex;
     justify-content: center;
     gap: 20px;
@@ -266,7 +266,7 @@
   
   
 
-.conatiner__create_sale-card > .row__three > .row__five > .row__two .add__quotation {
+.conatiner__create_sale-card > .row__three  .row__five > .row__two .add__quotation {
   color: #ffffff;
   border: none;
   padding: 10px 10px;
@@ -277,7 +277,7 @@
 }
 
 
-.conatiner__create_sale-card > .row__three > .row__five > .row__two .add__quotation_one {
+.conatiner__create_sale-card > .row__three .row__five > .row__two .add__quotation_one {
   color: rgb(12, 36, 60);
   border: none;
   padding: 10px 10px;
@@ -289,20 +289,20 @@
 }
 
 
-.conatiner__create_sale-card > .row__three > .row__five > .row__two .add__quotation:hover {
+.conatiner__create_sale-card > .row__three .row__five > .row__two .add__quotation:hover {
     transform: scale(1.05);
     transition: all 500ms;
   
 }
 
-.conatiner__create_sale-card > .row__three > .row__five > .row__two .add__quotation:active {
+.conatiner__create_sale-card > .row__three .row__five > .row__two .add__quotation:active {
     transform: scale(0.90);
     transition: all 100ms;
   
 }
 
 
-.conatiner__create_sale-card > .row__three > .row__five > .row__two .add__cart {
+.conatiner__create_sale-card > .row__three .row__five > .row__two .add__cart {
     color: #ffffff;
     border: none;
     padding: 10px 10px;
@@ -312,7 +312,7 @@
     transition: all 100ms;
 }
 
-.conatiner__create_sale-card > .row__three > .row__five > .row__two .add__cart:hover {
+.conatiner__create_sale-card > .row__three .row__five > .row__two .add__cart:hover {
     transition: all 500ms;
     transform: scale(1.05);
     /* background-color: var(--primary-color);
@@ -321,12 +321,12 @@
   
 }
 
-.conatiner__create_sale-card > .row__three > .row__five > .row__two .add__cart:active {
+.conatiner__create_sale-card > .row__three .row__five > .row__two .add__cart:active {
     transform: scale(0.90);
     transition: all 100ms;
 }
 
-.conatiner__create_sale-card > .row__three > .row__five > .row__two .quotation {
+.conatiner__create_sale-card > .row__three .row__five > .row__two .quotation {
     margin-right: 30px;
     
 }
@@ -558,24 +558,24 @@
     cursor: pointer;
 }
 
-.card__images_container > .row__three {
+.conatiner__create_sale-card  .row_labels {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: flex-start;
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-.card__images_container > .row__three > div {
+.conatiner__create_sale-card  .row_labels > div {
     display: flex;
     padding: 5px;
 }
 
-.card__images_container > .row__three > div > svg {
+.conatiner__create_sale-card  .row_labels > div > svg {
     margin-right: 5px;
 }
 
-.card__images_container > .row__three  > .desabasto {
+.conatiner__create_sale-card  .row_labels  > .desabasto {
     padding: 5px;
     border-radius: 5px;
     color: rgb(153, 27, 27);
@@ -584,7 +584,7 @@
 
 }
 
-.card__images_container > .row__three > .ultima-piezas {
+.conatiner__create_sale-card  .row_labels > .ultima-piezas {
 
   padding: 5px;
   border-radius: 5px;
@@ -594,7 +594,7 @@
   
 }
 
-.card__images_container > .row__three > .bajo-pedido  {
+.conatiner__create_sale-card  .row_labels > .bajo-pedido  {
     padding: 5px;
     border-radius: 5px;
     background-color: #3d86c636;
@@ -603,7 +603,7 @@
     
 }
 
-.card__images_container > .row__three > .vender-sin-stock {
+.conatiner__create_sale-card  .row_labels > .vender-sin-stock {
     padding: 5px;
     border-radius: 5px;
     background-color:  rgba(22, 101, 52, 0.192);

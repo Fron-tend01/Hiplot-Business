@@ -497,12 +497,12 @@ const ModalCreate: React.FC = () => {
   // };
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
-   const [dataArticle, setDataArticle] = useState<any>();
-    const [idA, setIdA] = useState<any>(null);
-  
-    const [i, setI] = useState(0);
-  
-    const [indexUpdate, setIndexUpdate] = useState<any>(null)
+  const [dataArticle, setDataArticle] = useState<any>();
+  const [idA, setIdA] = useState<any>(null);
+
+  const [i, setI] = useState(0);
+
+  const [indexUpdate, setIndexUpdate] = useState<any>(null)
 
   const abrirFichaModifyConcept = async (x: any, index: number) => {
 
@@ -511,9 +511,9 @@ const ModalCreate: React.FC = () => {
       setIdA(newI); // Ahora usará el valor actualizado
       return newI;
     });
-  
+
     setIndexUpdate(index)
-    
+
     setIdArticle(x.id_articulo)
     setDataArticle(x)
 
@@ -541,7 +541,7 @@ const ModalCreate: React.FC = () => {
       );
       DynamicVariables.updateAnyVar(setInfo_sc, 'folios_solicitudes', response.data)
       console.log('------------------------------------', response.data[0].id);
-      
+
       DynamicVariables.updateAnyVar(setInfo_sc, 'folio_sc', response.data[0].id)
       console.log(response); // Ver qué está recibiendo
     } catch (error) {
@@ -567,7 +567,7 @@ const ModalCreate: React.FC = () => {
           <div className='col-4'>
             <label className="">Vendedor</label>
             <div>
-            <select
+              <select
                 className="select_original_general cotly-select"
                 value={info_sc.vendedor}
                 onChange={(e) => traerSolicitudes(e.target.value)}
@@ -596,7 +596,7 @@ const ModalCreate: React.FC = () => {
             <div className="">
               <label className="">Folio de Solicitud</label>
               <div>
-              <select
+                <select
                   className="select_original_general"
                   value={info_sc?.folio_sc}
                   onChange={(e) => {
@@ -605,7 +605,7 @@ const ModalCreate: React.FC = () => {
                   }}
                   title={(() => {
                     console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', info_sc.folio_sc);
-                    
+
                     if (!info_sc?.folio_sc) return "Seleccione una solicitud";
 
                     const seleccionado = info_sc?.folios_solicitudes.find(

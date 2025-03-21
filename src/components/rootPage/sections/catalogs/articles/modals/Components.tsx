@@ -36,9 +36,9 @@ const Components: React.FC = () => {
 
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const value = e.target.value.trim();
+    const value = e.target.value;
     const newTem = [...components];
-    newTem[index].cantidad = value === '' ? null : parseFloat(value);
+    newTem[index].cantidad = value === '' ? null : (value);
     setComponents(newTem);
   };
 
@@ -119,7 +119,7 @@ const Components: React.FC = () => {
                         </label>
                       </div>
                       <div className='td'>
-                        <input className='inputs__general' value={item.cantidad} onChange={(e) => handleFormChange(e, index)} type="text" placeholder='Indeterminada' />
+                        <input className='inputs__general' value={item.cantidad} onChange={(e) => handleFormChange(e, index)} type="number" placeholder='Indeterminada' />
                       </div>
                       <div className='td'>
                         <button className='btn__general-danger' type='button' onClick={() => deleteComponent(item)}>Eliminar</button>

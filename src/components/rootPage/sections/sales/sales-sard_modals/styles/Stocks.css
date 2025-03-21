@@ -26,8 +26,8 @@
     background-color: var(--background-modal);
     border-radius: 5px;
     padding: 20px;
-    width: 80%;
-    height: 80%;
+    width: 95vw;
+    height: 90vh;
     transition: .3s ease all;
     transform: scale(0.7);
     opacity: 0;
@@ -55,11 +55,47 @@
     opacity: 1;
 }
 
+.conatiner__create_sale-card-stock {
+
+}
+
+.conatiner__create_sale-card-stock .row__one {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr;
+}
+
+.conatiner__create_sale-card-stock .row__one > .title_stock {
+    display: flex;
+    align-items: center;
+}
+
+.conatiner__create_sale-card-stock .row__one > .title_stock > .amount__stcok {
+    padding: 2px 10px;
+    background-color: #FF8F00;
+    border-radius: 5px;
+    color: #fff;
+    margin-left: 10px;
+    
+
+}
+
+
+.conatiner__create_sale-card-stock .row__one .title_stock-name {
+    display: flex;
+}
+
+
+.conatiner__create_sale-card-stock .row__one .tables {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+}
+
 
 
 
 .table__stocks-sale-card {
-    margin-top: 20px;
     border-radius: 10px;
 	text-align: justify;
 }
@@ -75,6 +111,7 @@
     width: 100%;
 	background-color: var( --table-color);
     border-radius: 10px 10px 0 0;
+
 }
 
 .table__stocks-sale-card .table__head .thead {
@@ -84,6 +121,8 @@
     width: 100%;
     column-gap: 20px;
     border-radius: 10px 10px 0 0;
+    background-color: rgba(12, 36, 60, 0.925);
+    color: #fff;
 }
 
 .table__stocks-sale-card .table__head .thead {
@@ -112,6 +151,8 @@
     }
 }
 
+
+
 .table__stocks-sale-card .tbody__container {
     border-top: 2px solid var(--border-table-color);
 }
@@ -139,6 +180,10 @@
     display: flex;
 }
 
+.table__stocks-sale-card .table__body .tbody.active {
+    background-color: rgba(12, 36, 60, 0.925);
+}
+
 .table__stocks-sale-card .table__body .tbody {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -149,6 +194,7 @@
 .table__stocks-sale-card .table__body .tbody .td {
     display: flex;
 }
+
 
 .table__stocks-sale-card .table__body .tbody .td > .name__store {
     display: flex;
@@ -185,6 +231,17 @@
 }
 
 .table__stocks-sale-card .table__body .tbody:hover .td > .stock {
+    background-color: #FF8F00;
+    color: #ffffff;
+}
+
+
+.table__stocks-sale-card .table__body .tbody.active .td > .name__store {
+    background-color: #3d86c6;
+    color: #ffffff;
+}
+
+.table__stocks-sale-card .table__body .tbody.active .td > .stock {
     background-color: #FF8F00;
     color: #ffffff;
 }
