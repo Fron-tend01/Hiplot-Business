@@ -173,6 +173,35 @@ const Departures: React.FC = () => {
             setPermisosxVista(resp)
         })
     }
+    const descargarCSVPedidos = (orders: any[]) => {
+        const encabezados = ["Pedido", "Status", "Empresa", "Sucursal", "Fecha y hora"];
+    
+        const filas = orders.map((order) => {
+            const statusTexto = order.status === 0 ? "Activa" :
+                                order.status === 1 ? "Cancelada" :
+                                order.status === 2 ? "Terminada" : "Desconocido";
+    
+            return [
+                `${order.serie}-${order.folio}-${order.anio}`,
+                statusTexto,
+                order.empresa,
+                order.sucursal,
+                order.fecha_creacion
+            ].join(",");
+        });
+    
+        const csvContenido = [encabezados.join(","), ...filas].join("\n");
+        const blob = new Blob([csvContenido], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+    
+        link.href = url;
+        link.download = `pedidos.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+    
     return (
         <div className="orders">
             <div className='breadcrumbs'>
@@ -238,7 +267,7 @@ const Departures: React.FC = () => {
                         </div>
                         <div className="btns__departures">
                             <div>
-                                <button className="btn__general-purple">Excel</button>
+                                <button className="btn__general-purple" onClick={() => descargarCSVPedidos(orders)}>Excel</button>
                             </div>
                             <div>
                                 <button className="btn__general-purple" onClick={() => modalCreate()}>Nuevo pedido</button>
