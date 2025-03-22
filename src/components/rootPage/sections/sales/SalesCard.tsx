@@ -192,10 +192,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     }).catch((error) => {
       console.error("Error obteniendo los grupos del usuario:", error);
     });
-    
-
   }
-
 
 
   const [prices, setPrices] = useState<any>(0)
@@ -203,12 +200,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const [pricesFranquicia, setPricesFranquicia] = useState<any>(0)
   const [pricesFranquiciaAdicional, setPricesFranquiciaAdicional] = useState<any>(0)
 
-  console.log(modal)
-
   useEffect(() => {
     if (modalSalesCard === 'sale-card') {
       fetch();
-  
       setPrices(0)
       setAdicional(null)
       setDescuento(0)
@@ -223,7 +217,6 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     }
 
     if (modalSalesCard === 'sale-card-quotation') {
-
       fetch();
       setPrices(dataArticle?.precio_total)
       setAdicional(null)
@@ -252,7 +245,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   }, [idA])
 
 
-  console.log('usersGroups', usersGroups)
+
 
 
 
