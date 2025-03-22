@@ -44,6 +44,10 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
 
+  const [data, setData] = useState<any>({
+    obs_produccion: '',
+    obs_factura: '',
+  })
 
 
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
@@ -203,6 +207,10 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   useEffect(() => {
     if (modalSalesCard === 'sale-card') {
       fetch();
+      setData({
+        obs_produccion: '',
+        obs_factura: '',
+      })
       setPrices(0)
       setAdicional(null)
       setDescuento(0)
@@ -211,9 +219,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       setAmount(0)
       setBillingComment('')
       setproductionComments('')
-      setCombinacionesSeleccionadas([])
-      // setOpciones([])
-      
+    
+      setCombinacionesSeleccionadas([])     
     }
 
     if (modalSalesCard === 'sale-card-quotation') {
@@ -246,8 +253,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
 
 
-
-
+console.log('data', data)
 
 
 
@@ -316,10 +322,6 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
 
 
-  const [data, setData] = useState<any>({
-    obs_produccion: '',
-    obs_factura: '',
-  })
 
   const controllerRef = useRef<AbortController | null>(null);
   const [outOfRange, setOutOfRange] = useState<any>(false)
@@ -1221,7 +1223,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                                 <label className='label__general'>{x.nombre}</label>
                                 <input
                                   className={`inputs__general`}
-                                  type="text"
+                                  type="number"
                                   value={x.valor}
                                   onChange={(e) => handleTemplatesChange(e, index)}
                                   placeholder={x.nombre}
