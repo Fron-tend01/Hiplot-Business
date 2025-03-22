@@ -116,7 +116,14 @@ const ModalCreate: React.FC = () => {
       })
     };
     copiaQuatation?.conceptos.forEach((element: any) => {
-      element.id_area = element.areas_produccion[0].id_area
+      element.id_area_produccion = element.areas_produccion[0].id_area
+    });
+
+
+    copiaQuatation?.conceptos_pers.forEach((element: any) => {
+      element.conceptos.forEach((x: any) => {
+        x.id_area_produccion = x.areas_produccion[0].id_area
+      });
     });
     setSaleOrdersToUpdate(copiaQuatation)
     setModalSalesOrder('sale-order__modal_bycot')
