@@ -328,7 +328,7 @@ export const storeArticles = create<StoreState>((set) => ({
 
   getArticlesInGlobal: async (data: any) => {
     try {
-      const response = await APIs.getArticles(data)
+      const response = await APIs.getArticlesForVendedor(data)
       set({ articlesInGlobal: response as any[] })
     } catch (error) {
       console.error(error);

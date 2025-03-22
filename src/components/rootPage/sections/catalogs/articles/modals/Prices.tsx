@@ -13,6 +13,8 @@ import { toast } from 'sonner'
 import { v4 as uuidv4 } from 'uuid';
 import './style/Prices.css'
 import APIs from '../../../../../../services/services/APIs'
+import { storeFamilies } from '../../../../../../zustand/Families'
+import { articleRequests } from '../../../../../../fuctions/Articles'
 
 const Prices: React.FC = () => {
   const userState = useUserStore(state => state.user);
@@ -190,22 +192,44 @@ const Prices: React.FC = () => {
   };
 
   const deleteFinalPrice = (item: any) => {
-    const updated = prices.filter((x: any) => x !== item);
-    setPrices(updated);
-    if (item.id !== null) {
-      setDeletePrices([...deletePrices, item.id])
-    }
+    console.log('item', item);
+
+    Swal.fire({
+      title: "Deseas eliminar todos los precios de este grupo de usuarios?",
+      text: "No olvides guardar los cambios de este articulo, si le das click en No, solo se eliminará el registro seleccionado",
+      icon: 'warning',
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Si",
+      denyButtonText: `No`
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const updated = prices.filter((x: any) => x.id_grupos_us !== item.id_grupos_us);
+
+        const deletedIds = prices.filter((x: any) => x.id_grupos_us === item.id_grupos_us).map((x: any) => x.id)
+          .filter((id: any) => id !== null);
+        setPrices(updated);
+        setDeletePrices([...deletePrices, ...deletedIds]);
+      } else if (result.isDenied) {
+        const updated = prices.filter((x: any) => x !== item);
+        setPrices(updated);
+        if (item.id !== null) {
+          setDeletePrices([...deletePrices, item.id])
+        }
+      }
+    });
+
   };
 
 
   const addPrices = () => {
 
-    if (selectedIds?.grouspusers && inputs.price && inputs.roundPrice) {
+    if (selectedIds?.grouspusers && inputs.price) {
       const data = {
         id_grupos_us: selectedIds.grouspusers.id,
         name_group: selectedIds.grouspusers.nombre,
         precios: inputs.price,
-        precios_fyv: inputs.roundPrice,
+        precios_fyv: inputs.roundPrice == null ? 0 : inputs.roundPrice,
         comentarios: inputs.observations,
         precios_ext: additionalsPrices,
         precios_ext_elim: [],
@@ -329,18 +353,71 @@ const Prices: React.FC = () => {
     setPrices([...prices]);
   };
 
-  
+
+  const setModalArticle = storeArticles(state => state.setModalArticle)
+  const setArticleToUpdate = storeArticles(state => state.setArticleToUpdate)
+  const { families, getFamilies }: any = storeFamilies()
+  const { getArticles }: any = articleRequests()
+  const setArticleByOne = storeArticles((state: any) => state.setArticleByOne);
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
   const clonePrice = async () => {
-    const data = {
+    const dataa = {
       id_articulo: articleToUpdate.id,
-      id_grupo_us_desde: selectedIds.id_groupUserDe,
-      id_grupo_us_hasta: selectedIds.id_groupUserAl
+      id_grupo_us_desde: selectedIds.id_groupUserDe.id,
+      id_grupo_us_hasta: selectedIds.id_groupUserAl.id
     }
     try {
-      const result: any = await APIs.cloneArticlesPrice(data)
+      setModalLoading(true)
+      const result: any = await APIs.cloneArticlesPrice(dataa)
+      setSubModal('')
+      const data = {
+        id: articleToUpdate.id,
+        activos: true,
+        nombre: '',
+        codigo: '',
+        familia: 0,
+        proveedor: 0,
+        page: 1,
+        materia_prima: 99,
+        get_sucursales: true,
+        get_proveedores: true,
+        get_max_mins: true,
+        get_plantilla_data: true,
+        get_precios: true,
+        get_variaciones: true,
+        get_combinaciones: true,
+        get_tiempos_entrega: true,
+        get_areas_produccion: true,
+        get_componentes: true,
+        get_cargos_minimos: true,
+        get_cobros_franquicia: true,
+        get_adicional: true,
+        get_stock: true,
+        get_web: false,
+        get_unidades: true
+      }
+
+      setModalArticle('articles-modal-update')
+      getFamilies(user_id)
+
+      try {
+
+        const result = await getArticles(data)
+        // const resultImagenes = await getArticles(data2)
+        await setArticleByOne(result[0])
+        setArticleToUpdate(result[0]);
+        setSubModal('modal-prices')
+
+        // setImagesArticles(resultImagenes[0].imagenes)
+        setModalLoading(false)
+      } catch (error) {
+      } finally {
+        setModalLoading(false)
+      }
       Swal.fire(result.mensaje, '', 'success');
     } catch (error) {
+      setModalLoading(false)
       Swal.fire('Hubo un error', '', 'error');
     }
   }
@@ -349,7 +426,25 @@ const Prices: React.FC = () => {
     const value = e.target.value;
     prices[index].precios_ext[index_two].variable_pc = value;
   }
-
+  const handleChangeRange = (indexItem: number, indexRange: number, newValue: string) => {
+    const updatedPrices = (prices || []).map((item: any, i: number) => {
+      if (i === indexItem) {
+        return {
+          ...item,
+          precios_ext: Array.isArray(item.precios_ext)
+            ? item.precios_ext.map((rangeItem: any, j: number) =>
+                j === indexRange ? { ...rangeItem, id_rangos: newValue } : rangeItem
+              )
+            : [],
+        };
+      }
+      return item;
+    });
+    
+    // Ahora sí actualizas el estado
+    setPrices(updatedPrices);
+    
+  };
 
 
   return (
@@ -577,14 +672,14 @@ const Prices: React.FC = () => {
                       </div> */}
                       <div className='td'>
                         <div className='precios_ext-modal_container'>
-                         
+
                           {/* <div className='precios_ext-table_head'> */}
-                            <div className='precios_ext-thead'>
-                              <div className='precios_ext-th'><p>Rangos</p></div>
-                              <div className='precios_ext-th'><p>Campo</p></div>
-                              <div className='precios_ext-th'><p>Orden</p></div>
-                              <div className='precios_ext-th'><p>Agrupación</p></div>
-                            </div>
+                          <div className='precios_ext-thead'>
+                            <div className='precios_ext-th'><p>Rangos</p></div>
+                            <div className='precios_ext-th'><p>Campo</p></div>
+                            <div className='precios_ext-th'><p>Orden</p></div>
+                            <div className='precios_ext-th'><p>Agrupación</p></div>
+                          </div>
                           {/* </div> */}
                           {item.precios_ext?.length > 0 ? (
                             <div className='precios_ext-table_body'>
@@ -592,7 +687,17 @@ const Prices: React.FC = () => {
                                 <div className='precios_ext-tbody_container' key={index_two}>
                                   <div className='precios_ext-tbody'>
                                     <div className='precios_ext-td'>
-                                      <p>{item_two.rango_titulo || item_two?.rango}</p>
+                                      {/* <p>{item_two.rango_titulo || item_two?.rango}</p> */}
+                                      <select
+                                        value={item_two.id_rangos || ""}
+                                        onChange={(e) => handleChangeRange(index, index_two, e.target.value)}
+                                      >
+                                        {ranges.map((range:any, idx:number) => (
+                                          <option key={idx} value={range.id}>
+                                            {range.titulo}
+                                          </option>
+                                        ))}
+                                      </select>
                                     </div>
                                     <div className='precios_ext-td'>
                                       <select className='precios_ext-selector' onChange={(e) => handleTemplatesChange(e, index, index_two)} value={item_two.variable_pc}>
