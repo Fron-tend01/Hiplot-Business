@@ -25,11 +25,17 @@ interface StoreState {
     
     IdArticle: any;
     setIdArticle: (x: any) => void;
+
+    changeLength: any;
+    setChangeLength: (x: any) => void;
 }
 
 export const storeSaleOrder = create<StoreState>((set) => ({
     IdArticle: [],
     setIdArticle: (x) => set({IdArticle: x}),
+
+    changeLength: false,
+    setChangeLength: (x) => set({changeLength: x}),
 
     dataSaleOrders: [],
     setDataSaleOrders: (x) => set({dataSaleOrders: x}),

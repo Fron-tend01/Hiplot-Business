@@ -49,16 +49,11 @@ const SalesOrder: React.FC = () => {
     const modalOpen = () => {
         setModalSalesOrder('sale-order__modal')
         const storedData = JSON.parse(localStorage.getItem("sale-order") || "[]");
-        
-        if (storedData) {
+        if (storedData.length > 0) {
             // Obtener la longitud de storedData
-            const dataLength = storedData.length;
-
-            // Asignar la longitud al estado de Zustand
-            storePersonalized.getState().setIdentifier(dataLength);
+    
             setNormalConcepts(storedData)
-            setNormalConceptsView(storedData)
-            setConceptView(storedData)
+
         }
     }
 

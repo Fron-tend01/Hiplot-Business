@@ -25,6 +25,8 @@ const SeeCamposPlantillas: React.FC = () => {
         setNormalConcepts(updatedConcepts)
     }
 
+
+    console.log('normalConcepts', normalConcepts)
     
 
     return (

@@ -66,6 +66,7 @@ const ModalSalesOrder: React.FC = () => {
     const setCustomData = storePersonalized((state) => state.setCustomData);
 
     const setDataSaleOrder = storeSaleOrder((state) => state.setDataSaleOrder);
+    const setChangeLength = storeSaleOrder((state) => state.setChangeLength);
 
     const setSubModal = storeSaleOrder((state) => state.setSubModal);
 
@@ -75,7 +76,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const { getClients }: any = ClientsRequests()
 
-    const { saleOrdersToUpdate }: any = useStore(storeSaleOrder);
+    const { saleOrdersToUpdate, changeLength }: any = useStore(storeSaleOrder);
 
     const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
     const { modalSalesOrder }: any = useStore(storeSaleOrder)
@@ -266,6 +267,7 @@ const ModalSalesOrder: React.FC = () => {
         setNormalConcepts(filter);
 
         localStorage.setItem('sale-order', JSON.stringify(filter));
+        setChangeLength(!changeLength)
 
 
     }
@@ -460,21 +462,17 @@ const ModalSalesOrder: React.FC = () => {
     const [urgenciaf] = useState<number>(0)
     const [totalf, setTotalf] = useState<number>(0)
     const [prevNormalConceptsLength, setPrevNormalConceptsLength] = useState(0);
+    
 
     useEffect(() => {
 
         calcular_totales()
-        let cambioLength = true
-        if (normalConcepts.length == prevNormalConceptsLength) {
-            cambioLength = false
-        }
-
-        if (modalSalesOrder !== 'sale-order__modal-update' && cambioLength) {
+        if (modalSalesOrder !== 'sale-order__modal-update') {
             calcular_tiempos_entrega();
         }
-        setPrevNormalConceptsLength(normalConcepts.length);
 
-    }, [normalConcepts, customConcepts, branchOffices, modalSalesOrder])
+
+    }, [modalSalesOrder, changeLength])
     const calcular_totales = () => {
 
         const precios = normalConcepts?.reduce(
@@ -762,6 +760,7 @@ const ModalSalesOrder: React.FC = () => {
 
         setCustomConcepts(deleteItemCustomC)
         setNormalConcepts([...normalConcepts, ...updatedConcepts])
+
     };
 
 

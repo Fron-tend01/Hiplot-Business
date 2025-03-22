@@ -42,6 +42,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const { modalSalesOrder }: any = useStore(storeSaleOrder)
 
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
+    const setChangeLength = storeSaleOrder((state) => state.setChangeLength);
+    const { changeLength }: any = useStore(storeSaleOrder);
 
 
   const [data, setData] = useState<any>({
@@ -713,6 +715,7 @@ console.log('data', data)
       localStorage.setItem('sale-order', JSON.stringify([...normalConcepts, data]));
     }
     toast.success('Artículo agregado')
+    setChangeLength(!changeLength)
 
   }
 
