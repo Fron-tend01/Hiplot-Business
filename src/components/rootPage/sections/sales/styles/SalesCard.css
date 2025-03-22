@@ -322,6 +322,8 @@
 }
 
 
+
+
 .conatiner__create_sale-card > .row__three .row__five > .row__two .add__cart {
     color: #ffffff;
     border: none;
@@ -359,6 +361,17 @@
 .conatiner__create_sale-card > .row__three .row__five > .row__two .quotation {
     margin-right: 30px;
     
+}
+
+
+.conatiner__create_sale-card>.row__three .row__five>.row__two .add__quotation_one:hover {
+  transform: scale(1.05);
+  transition: all 500ms;
+}
+
+.conatiner__create_sale-card>.row__three .row__five>.row__two .add__quotation_one.active:hover {
+  transition: none; 
+  transform: none; 
 }
 
 .conatiner__create_sale-card > .row__three {
