@@ -22,6 +22,8 @@ import { storeModals } from '../../../../../zustand/Modals'
 import SeeCamposPlantillas from '../SeeCamposPlantillas'
 import Binnacle from './components/Binnacle'
 import { saleOrdersRequests } from '../../../../../fuctions/SaleOrders'
+import { storeArticles } from '../../../../../zustand/Articles'
+import ModalProduction from '../../production/ModalProduction'
 
 const ModalSalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -337,17 +339,29 @@ const ModalSalesOrder: React.FC = () => {
             fecha_entrega: dataProduction.fecha_produccion,
             hora_entrega: dataProduction.hora_produccion,
         }
-
+        setModalLoading(true)
         try {
-            APIs.createSaleOrderProduction(data).then((resp: any) => {
+            APIs.createSaleOrderProduction(data).then(async (resp: any) => {
                 if (resp.error) {
                     Swal.fire('Notificación', resp.mensaje, 'warning')
                 } else {
                     Swal.fire('Notificación', resp.mensaje, 'success')
                     setModalProduction('')
+                    let d = {
+                        id: saleOrdersToUpdate.id
+                    }
+                    await APIs.CreateAny(d, "get_orden_venta")
+                        .then(async (response: any) => {
+                            let order = response[0]
+                            setSaleOrdersToUpdate(order)
+                            setCustomConcepts(order.conceptos_pers);
+                            setNormalConcepts(order.conceptos);
+                            setModalLoading(false)
+                        })
                 }
             })
         } catch (error) {
+            setModalLoading(false)
 
         }
     }
@@ -389,14 +403,29 @@ const ModalSalesOrder: React.FC = () => {
             obs_produccion: article.obs_produccion,
             obs_factura: article.obs_factura,
             id_pers: article.id_pers,
+            id_usuario_actualiza: user_id
         }
 
         try {
-            let response: any = await APIs.updateOvConcepto(data)
+            setModalLoading(true)
+            let response: any = await APIs.updateOvConcepto(data).finally(() => { setModalLoading(false) })
             if (response.error) {
                 Swal.fire('Advertencia', response.mensaje, 'warning');
             } else {
                 Swal.fire('Exito', response.mensaje, 'success');
+                let d = {
+                    id: saleOrdersToUpdate.id
+                }
+                await APIs.CreateAny(d, "get_orden_venta")
+                    .then(async (response: any) => {
+                        let order = response[0]
+                        setSaleOrdersToUpdate(order)
+                        setCustomConcepts(order.conceptos_pers);
+                        setNormalConcepts(order.conceptos);
+                        setModalLoading(false)
+                        setModalLoading(false)
+
+                    })
             }
 
             search()
@@ -578,7 +607,7 @@ const ModalSalesOrder: React.FC = () => {
         console.log(normalConcepts);
         console.log(conceptView);
         console.log(customConcepts);
-        
+
         let conceptos_a_enviar: any[] = []
         if (normales.length > 0) {
             normales.forEach((n: any) => {
@@ -679,6 +708,8 @@ const ModalSalesOrder: React.FC = () => {
         (newConcept);
 
     };
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
+
     const updateOrdenVenta = async () => {
 
         const [datePartOne, timePartOne] = dates[0] ? dates[0].split("T") : ["", ""];
@@ -698,14 +729,35 @@ const ModalSalesOrder: React.FC = () => {
             // conceptos: normalConcepts
 
         }
+        setModalLoading(true)
         await APIs.CreateAny(data, "update_ov_gral")
             .then(async (response: any) => {
-                if (response.error) {
-                    Swal.fire('Notificación', response.mensaje, 'info');
-                } else {
+                if (!response.error) {
                     Swal.fire('Notificación', response.mensaje, 'success');
+                    let d = {
+                        id: saleOrdersToUpdate.id
+                    }
+                    await APIs.CreateAny(d, "get_orden_venta")
+                        .then(async (response: any) => {
+                            let order = response[0]
+                            setSaleOrdersToUpdate(order)
+                            setCustomConcepts(order.conceptos_pers);
+                            setNormalConcepts(order.conceptos);
+                            setModalLoading(false)
+
+                        })
+                } else {
+                    Swal.fire('Notificación', response.mensaje, 'info');
+                    setModalLoading(false)
+
+
                 }
+            }).finally(() => {
+                setModalLoading(false)
+
             })
+        search()
+
     }
     const [urgenciaG, setUrgenciaG] = useState<boolean>(false)
 
@@ -777,7 +829,7 @@ const ModalSalesOrder: React.FC = () => {
         const resultData = await getSaleOrders(dataSaleOrders)
 
         setSaleOrders(resultData)
-        setModalSalesOrder('')
+        // setModalSalesOrder('')
     }
 
 
@@ -838,7 +890,26 @@ const ModalSalesOrder: React.FC = () => {
         setNormalConcepts(dataCopy);
     };
 
+    const searchOp = async (id:number) => {
+        const dataProductionOrders = {
+            id: id,
+            folio: 0,
+            id_sucursal: 0,
+            id_serie: 0,
+            id_area: 0,
+            // id_cliente: client,
+            desde: dates[0],
+            hasta: dates[1],
+            id_usuario: user_id,
+            status: 0,
+        }
 
+        try {
+            const result = await APIs.getProoductionOrders(dataProductionOrders)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
@@ -966,6 +1037,7 @@ const ModalSalesOrder: React.FC = () => {
                                             )}
                                         </div>
                                     </div>
+
                                     <div className='mt-3 d-flex justify-content-center'>
                                         <button className='btn__general-purple' onClick={sendProduction} >Mandar a producción </button>
                                     </div>
@@ -992,17 +1064,17 @@ const ModalSalesOrder: React.FC = () => {
                                     <span className='text'>Creado por: <b>{saleOrdersToUpdate.usuario_crea}</b></span><br />
                                     <span className='text'>Fecha de Creación: <b>{saleOrdersToUpdate.fecha_creacion}</b></span><br />
                                     <div className='d-flex'>
-                                    {saleOrdersToUpdate.status === 0 ? (
-                                        <b className="active-identifier" >Activo</b>
-                                    ) : saleOrdersToUpdate.status === 1 ? (
-                                        <b className="cancel-identifier">Cancelada</b>
-                                    ) : (
-                                        saleOrdersToUpdate.status === 2 ? (
-                                            <b className="peding-identifier">Pendiente</b>
+                                        {saleOrdersToUpdate.status === 0 ? (
+                                            <b className="active-identifier" >Activo</b>
+                                        ) : saleOrdersToUpdate.status === 1 ? (
+                                            <b className="cancel-identifier">Cancelada</b>
                                         ) : (
-                                            ""
-                                        )
-                                    )}
+                                            saleOrdersToUpdate.status === 2 ? (
+                                                <b className="peding-identifier">Pendiente</b>
+                                            ) : (
+                                                ""
+                                            )
+                                        )}
                                     </div>
                                 </div>
                                 <div className='col-4 md-col-12'>
@@ -1051,9 +1123,13 @@ const ModalSalesOrder: React.FC = () => {
                                             <div className='mr-4'>
                                                 <button className='btn__general-orange' onClick={getTicket}>Imprimir ticket</button>
                                             </div>
-                                            <div className='mr-4'>
-                                                <button className='btn__general-purple' onClick={SaleOrderProduction}>Mandar a producción</button>
-                                            </div>
+                                            {saleOrdersToUpdate.ordenes_produccion.length == 0
+                                                ?
+                                                <div className='mr-4'>
+                                                    <button className='btn__general-purple' onClick={SaleOrderProduction}>Mandar a producción</button>
+                                                </div>
+                                                : ''}
+
                                         </>
                                         : ''}
                                     <div>
@@ -1517,6 +1593,7 @@ const ModalSalesOrder: React.FC = () => {
                 <Personalized idItem={idItem} indexItem={indexItem} />
                 <SeeCamposPlantillas />
                 <Binnacle />
+                <ModalProduction />
 
             </div>
         </div>
