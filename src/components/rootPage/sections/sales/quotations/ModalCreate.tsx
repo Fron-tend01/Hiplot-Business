@@ -573,7 +573,57 @@ const ModalCreate: React.FC = () => {
             <p className='title__modals'>Actualizar cotización</p>
           }
         </div>
-        <div className='row '>
+       
+        <div className='quotations__modal'>
+          {modal == 'create-modal__qoutation' ?
+            ''
+            :
+            <div className="row__one card ">
+              <div className="card-body bg-standar">
+                <h3 className="text">{quatation.serie}-{quatation.folio}-{quatation.anio}</h3>
+                <hr />
+                <div className='row'>
+                  <div className='col-6 md-col-12'>
+                    <span className='text'>Creado por: <b>{quatation.usuario_crea}</b></span><br />
+                    <span className='text'>Fecha de Creación: <b>{quatation.fecha_creacion}</b></span><br />
+                    {quatation.status === 0 ? (
+                      <span className="active-status">Activo</span>
+                    ) : quatation.status === 1 ? (
+                      <span className="canceled-status">Cancelada</span>
+                    ) : (
+                      quatation.status === 2 ? (
+                        <span className="end-status">Terminado</span>
+                      ) : (
+                        ""
+                      )
+                    )}
+                  </div>
+                  <div className='col-6 md-col-12'>
+                    <span className='text'>Empresa: <b>{quatation.empresa}</b></span><br />
+                    <span className='text'>Sucursal: <b>{quatation.sucursal}</b></span><br />
+                  </div>
+                </div>
+                <div className='mt-3'>
+                  {modal === 'create-modal__qoutation' ?
+                    ''
+                    :
+                    <div className='row__bts col-12'>
+                      <div className='btn__pdf'>
+                        <button className='btn__general-orange' onClick={getTicket}>PDF</button>
+                      </div>
+                      <div className='btn__update-qoutation'>
+                        <button className='btn__general-primary' onClick={createQuotation}>Actualizar cotizacion</button>
+                      </div>
+                      <div>
+                        <button className='btn__general-bg-100' onClick={mandarAOV}>Enviar a OV</button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+           <div className='row'>
           <div className='col-4'>
             <label className="">Vendedor</label>
             <div>
@@ -638,55 +688,6 @@ const ModalCreate: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className='quotations__modal'>
-          {modal == 'create-modal__qoutation' ?
-            ''
-            :
-            <div className="row__one card ">
-              <div className="card-body bg-standar">
-                <h3 className="text">{quatation.serie}-{quatation.folio}-{quatation.anio}</h3>
-                <hr />
-                <div className='row'>
-                  <div className='col-6 md-col-12'>
-                    <span className='text'>Creado por: <b>{quatation.usuario_crea}</b></span><br />
-                    <span className='text'>Fecha de Creación: <b>{quatation.fecha_creacion}</b></span><br />
-                    {quatation.status === 0 ? (
-                      <span className="active-status">Activo</span>
-                    ) : quatation.status === 1 ? (
-                      <span className="canceled-status">Cancelada</span>
-                    ) : (
-                      quatation.status === 2 ? (
-                        <span className="end-status">Terminado</span>
-                      ) : (
-                        ""
-                      )
-                    )}
-                  </div>
-                  <div className='col-6 md-col-12'>
-                    <span className='text'>Empresa: <b>{quatation.empresa}</b></span><br />
-                    <span className='text'>Sucursal: <b>{quatation.sucursal}</b></span><br />
-                  </div>
-                </div>
-                <div className='mt-3'>
-                  {modal === 'create-modal__qoutation' ?
-                    ''
-                    :
-                    <div className='row__bts col-12'>
-                      <div className='btn__pdf'>
-                        <button className='btn__general-orange' onClick={getTicket}>PDF</button>
-                      </div>
-                      <div className='btn__update-qoutation'>
-                        <button className='btn__general-primary' onClick={createQuotation}>Actualizar cotizacion</button>
-                      </div>
-                      <div>
-                        <button className='btn__general-bg-100' onClick={mandarAOV}>Enviar a OV</button>
-                      </div>
-                    </div>
-                  }
-                </div>
-              </div>
-            </div>
-          }
           <div className='row__two'>
             <div className='row__one'>
               <div className='col-12'>
@@ -1168,7 +1169,6 @@ const ModalCreate: React.FC = () => {
                 </div>
               </div>
             </div>
-
             <div className='mt-1 btns'>
               <div className='subtotal'>
                 <div>

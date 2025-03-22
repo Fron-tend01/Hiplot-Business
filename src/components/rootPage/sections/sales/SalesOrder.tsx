@@ -15,7 +15,6 @@ import { useStore } from 'zustand'
 import { storePersonalized } from '../../../../zustand/Personalized'
 import { storeArticles } from '../../../../zustand/Articles'
 import LoadingInfo from '../../../loading/LoadingInfo'
-import { Toaster } from 'sonner'
 import { storeDv } from '../../../../zustand/Dynamic_variables'
 import APIs from '../../../../services/services/APIs'
 
@@ -182,7 +181,7 @@ const SalesOrder: React.FC = () => {
     return (
         <div className='sales__order'>
             <div className='sales__order_container'>
-                <Toaster expand={true} position="top-right" richColors />
+             
                 <div className='row__one'>
                     <div className='row'>
                         <div className='col-8'>

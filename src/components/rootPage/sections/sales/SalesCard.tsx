@@ -301,8 +301,6 @@ console.log('data', data)
 
   const handleTemplatesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     let value: any = e.target.value
-
-
     if (article.plantilla_data[index].tipo == 'numero') {
       value = e.target.value;
     }
@@ -872,10 +870,7 @@ console.log('data', data)
         setSelectedUserGroup(resultUsers[0].id);
       }
       setPrices(0)
-      setData({
-        obs_produccion: '',
-        obs_factura: '',
-      });
+    
       setAmount(0)
 
 
@@ -1266,7 +1261,7 @@ console.log('data', data)
                     <div className='row'>
                       <div className='col-6'>
                         <label className='label__general'>Coment. factura</label>
-                        <textarea className={`inputs__general`} value={data.obs_factura} onChange={(e) => setData((prev: any) => ({ ...prev, obs_factura: e.target.value }))} placeholder='Factura' />
+                        <textarea className={`inputs__general`}  value={data.obs_factura} onChange={(e) => setData((prev: any) => ({ ...prev, obs_factura: e.target.value }))} placeholder='Factura' />
                       </div>
                       <div className='col-6'>
                         <label className='label__general'>Coment. producción</label>

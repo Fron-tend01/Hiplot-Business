@@ -13,6 +13,7 @@ import useUserStore from '../../../zustand/General';
 import LoadingInfo from '../../loading/LoadingInfo';
 import { storeArticles } from '../../../zustand/Articles';
 import { storeHeader } from '../../../zustand/Header';
+import { Toaster } from 'sonner'
 
 const Header: React.FC = () => {
 
@@ -157,6 +158,7 @@ const Header: React.FC = () => {
 
   return (
     <div className='hero'>
+      <Toaster expand={true} position="top-right" richColors />
       <div className='container__hero'>
         <div className='toggle' onClick={() => setToggle(!toggle)}>
           <button className={`toggle__botton ${toggle ? 'activo' : ''}`}>
