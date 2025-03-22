@@ -527,6 +527,7 @@ const ModalSalesOrder: React.FC = () => {
             setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
 
             setTitle(saleOrdersToUpdate.titulo)
+            console.log('saleOrdersToUpdate', saleOrdersToUpdate)
             const data = {
                 id_sucursal: saleOrdersToUpdate.id_sucursal,
                 id_usuario: user_id,

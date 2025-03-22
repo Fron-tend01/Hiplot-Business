@@ -115,6 +115,9 @@ const ModalCreate: React.FC = () => {
         return rest; // Retorna el objeto sin "id"
       })
     };
+    copiaQuatation?.conceptos.forEach((element: any) => {
+      element.id_area = element.areas_produccion[0].id_area
+    });
     setSaleOrdersToUpdate(copiaQuatation)
     setModalSalesOrder('sale-order__modal_bycot')
   }
