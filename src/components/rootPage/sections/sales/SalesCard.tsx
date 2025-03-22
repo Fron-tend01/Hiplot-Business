@@ -67,6 +67,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const setStatusArticle = storeSaleCard(state => state.setStatusArticle);
 
 
+
   const setCombinacionesSeleccionadas = storeSaleCard(state => state.setCombinacionesSeleccionadas);
   const combinacionesSeleccionadas = storeSaleCard(state => state.combinacionesSeleccionadas);
 
@@ -185,13 +186,17 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   const fetchUser = async () => {
 
-    const resultUsers = await getUserGroups(user_id);
-    if (resultUsers) {
-
-      setUsersGroups(resultUsers);
+   await APIs.getUserGroups(user_id).then(async (resultUsers: any) => {
+      await  setUsersGroups(resultUsers);
       setSelectedUserGroup(resultUsers[0].id);
-    }
+    }).catch((error) => {
+      console.error("Error obteniendo los grupos del usuario:", error);
+    });
+    
+
   }
+
+
 
   const [prices, setPrices] = useState<any>(0)
   const [descuento, setDescuento] = useState<number>(0)
@@ -201,9 +206,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   console.log(modal)
 
   useEffect(() => {
-    if (modalSalesCard === 'sale-card' || modal === 'create-modal__qoutation') {
+    if (modalSalesCard === 'sale-card') {
       fetch();
-      fetchUser()
+  
       setPrices(0)
       setAdicional(null)
       setDescuento(0)
@@ -217,15 +222,13 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       
     }
 
-    if (modalSalesCard === 'sale-card-quotation' || modal === 'update-modal__qoutation') {
+    if (modalSalesCard === 'sale-card-quotation') {
 
       fetch();
-      fetchUser()
       setPrices(dataArticle?.precio_total)
       setAdicional(null)
       setDescuento(0)
       setSelectedUnit({ id: dataArticle?.id_unidad, id_unidad: dataArticle?.id_unidad })
-
       setPricesFranquicia(0)
       setPricesFranquiciaAdicional(0)
       setAmount(dataArticle?.cantidad)
@@ -243,6 +246,10 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
 
   }, [idA]);
+
+  useEffect(() => {
+    fetchUser()
+  }, [idA])
 
 
   console.log('usersGroups', usersGroups)
