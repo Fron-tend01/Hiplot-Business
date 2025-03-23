@@ -52,12 +52,12 @@ const ModalSalesOrder: React.FC = () => {
     const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
     const setDeleteCustomConcepts = storePersonalized(state => state.setDeleteCustomConcepts)
 
-
+    const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
     const { normalConcepts, customConcepts, conceptView, personalized, deleteCustomConcepts, normalConceptsView }: any = useStore(storePersonalized)
-    const { dataGet }: any = useStore(storeSaleOrder)
+    const { dataGet, changeLength }: any = useStore(storeSaleOrder)
     const setSaleOrders = storeSaleOrder((state) => state.setSaleOrders);
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
 
@@ -77,14 +77,14 @@ const ModalSalesOrder: React.FC = () => {
 
     const { saleOrdersToUpdate }: any = useStore(storeSaleOrder);
 
-    const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
+
     const { modalSalesOrder }: any = useStore(storeSaleOrder)
 
 
     const { getSaleOrders }: any = saleOrdersRequests()
 
-
-
+    const setChangeLength = storeSaleOrder(state => state.setChangeLength)
+ 
 
     const [clients, setClients] = useState<any>()
     const [idCotizacion, setIdCotizacion] = useState<number>(0)
@@ -461,20 +461,38 @@ const ModalSalesOrder: React.FC = () => {
     const [totalf, setTotalf] = useState<number>(0)
     const [prevNormalConceptsLength, setPrevNormalConceptsLength] = useState(0);
 
+
+    console.log('normalConcepts', normalConcepts)
+
     useEffect(() => {
 
         calcular_totales()
-        let cambioLength = true
-        if (normalConcepts.length == prevNormalConceptsLength) {
-            cambioLength = false
-        }
-
-        if (modalSalesOrder !== 'sale-order__modal-update' && cambioLength) {
+        if (modalSalesOrder !== 'sale-order__modal-update') {
             calcular_tiempos_entrega();
         }
-        setPrevNormalConceptsLength(normalConcepts.length);
+    }, [modalSalesOrder, changeLength])
 
-    }, [normalConcepts, customConcepts, branchOffices, modalSalesOrder])
+   
+
+    // useEffect(() => {
+    //     calcular_totales()
+      
+    //     if (modalSalesOrder !== 'sale-order__modal-update') {
+    //         if (cambioLength) {
+    //             calcular_tiempos_entrega();
+    //         }
+    //     }
+    
+    //     setPrevNormalConceptsLength(normalConcepts.length);
+
+    // }, [normalConcepts, customConcepts, branchOffices])
+    
+
+
+    
+    
+
+
     const calcular_totales = () => {
 
         const precios = normalConcepts?.reduce(
@@ -578,14 +596,15 @@ const ModalSalesOrder: React.FC = () => {
 
 
     const calcular_tiempos_entrega = async () => {
-        let normales = normalConcepts.filter((x: any) => x.personalized == undefined || x.personalized == false)
-        console.log(normalConcepts);
-        console.log(conceptView);
-        console.log(customConcepts);
+
+        
+        console.log('normalConcepts', normalConcepts)
+        
+        console.log('customConcepts', customConcepts)
         
         let conceptos_a_enviar: any[] = []
-        if (normales.length > 0) {
-            normales.forEach((n: any) => {
+        if (normalConcepts.length > 0) {
+            normalConcepts.forEach((n: any) => {
                 conceptos_a_enviar.push(n)
             });
         }
@@ -626,6 +645,11 @@ const ModalSalesOrder: React.FC = () => {
         setIndexVM(index)
         setModalSub('see_cp')
     }
+
+    // console.log('normalConcepts', normalConcepts)
+        
+    // console.log('customConcepts', customConcepts)
+    
 
     const handleUrgencyChange = async (index: number) => {
         let data = {
@@ -743,6 +767,8 @@ const ModalSalesOrder: React.FC = () => {
             setCustomConceptView(concept.conceptos)
             console.log('concept.conceptos', concept.conceptos)
         }
+
+        setChangeLength(!changeLength)
 
 
     }
