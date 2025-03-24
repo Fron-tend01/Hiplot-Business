@@ -716,7 +716,7 @@ console.log('data', data)
       });
 
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
-      setNormalConcepts((prev:any) => [...(Array.isArray(prev) ? prev : []), data]);
+      setNormalConcepts([...normalConcepts, data])
       localStorage.setItem('sale-order', JSON.stringify([...normalConcepts, data]));
     }
     toast.success('Artículo agregado')
