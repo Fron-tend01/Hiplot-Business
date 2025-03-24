@@ -89,6 +89,68 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
+  const fetchJustPrices = async () => {
+    const data = {
+      id: IdArticle,
+      activos: true,
+      nombre: '',
+      codigo: '',
+      familia: 0,
+      proveedor: 0,
+      materia_prima: 0,
+      get_sucursales: false,
+      get_imagenes: false,
+      // get_adicional: true,
+      get_proveedores: false,
+      get_max_mins: false,
+      get_precios: true,
+      get_combinaciones: false,
+      get_plantilla_data: false,
+      get_areas_produccion: false,
+      get_tiempos_entrega: false,
+      get_componentes: false,
+      get_stock: false,
+      get_web: false,
+      for_ventas: false,
+      get_unidades: false,
+      id_usuario: user_id,
+      id_grupo_us: selectedUserGroup
+    };
+
+    try {
+      // Obtener artículos
+      setModalLoading(true)
+      return await APIs.getArticles(data)
+        .then(async (response: any) => {
+          if (!response || response.length === 0) {
+            throw new Error('No se encontraron artículos');
+          }
+          const art = response[0];
+          setArticle((state: any) => ({
+            ...state,
+            precios: art.precios
+          }));
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        })
+        .finally(() => {
+          setStatusArticle(true);
+          setModalLoading(false);
+        });
+
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setModalLoading(false)
+
+    } finally {
+      // Cambia el estado después de completar todo el proceso
+      setStatusArticle(true);
+      setModalLoading(false)
+
+    }
+  };
 
   const fetch = async () => {
     const data = {
@@ -103,7 +165,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       get_imagenes: true,
       // get_adicional: true,
       get_proveedores: false,
-      get_max_mins: true,
+      get_max_mins: false,
       get_precios: true,
       get_combinaciones: true,
       get_plantilla_data: true,
@@ -111,10 +173,11 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       get_tiempos_entrega: true,
       get_componentes: true,
       get_stock: true,
-      get_web: true,
+      get_web: false,
       for_ventas: true,
       get_unidades: true,
       id_usuario: user_id,
+      id_grupo_us: selectedUserGroup
     };
 
     try {
@@ -142,7 +205,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
           setArticle({ ...art, plantilla_data: plantillaData });
 
-          if (art.vender_sin_stock) Swal.fire('Notificación', 'Este articulo se puede vender sin stock disponible', 'success');
+          // if (art.vender_sin_stock) Swal.fire('Notificación', 'Este articulo se puede vender sin stock disponible', 'success');
           if (art.bajo_pedido) Swal.fire('Notificación', 'Este articulo puede levantar requisición automática...', 'warning');
           if (art.desabasto) Swal.fire('Notificación', 'Hay desabasto de este articulo...', 'warning');
           if (art.precio_libre) Swal.fire('Notificación', 'Puedes añadir el precio manualmente...', 'success');
@@ -190,62 +253,66 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   const fetchUser = async () => {
 
-   await APIs.getUserGroups(user_id).then(async (resultUsers: any) => {
-      await  setUsersGroups(resultUsers);
+    await APIs.getUserGroups(user_id).then(async (resultUsers: any) => {
+      await setUsersGroups(resultUsers);
       setSelectedUserGroup(resultUsers[0].id);
     }).catch((error) => {
       console.error("Error obteniendo los grupos del usuario:", error);
     });
   }
 
-
+  const [selectUsersGroups, setSelectUsersGroups] = useState<boolean>(false);
+  const [selectedUserGroup, setSelectedUserGroup] = useState<any>(null);
   const [prices, setPrices] = useState<any>(0)
   const [descuento, setDescuento] = useState<number>(0)
   const [pricesFranquicia, setPricesFranquicia] = useState<any>(0)
   const [pricesFranquiciaAdicional, setPricesFranquiciaAdicional] = useState<any>(0)
 
   useEffect(() => {
-    if (modalSalesCard === 'sale-card') {
-      fetch();
-      setData({
-        obs_produccion: '',
-        obs_factura: '',
-      })
-      setPrices(0)
-      setAdicional(null)
-      setDescuento(0)
-      setPricesFranquicia(0)
-      setPricesFranquiciaAdicional(0)
-      setAmount(0)
-      setBillingComment('')
-      setproductionComments('')
-    
-      setCombinacionesSeleccionadas([])     
+    if (selectedUserGroup) {
+      if (modalSalesCard === 'sale-card') {
+        fetch();
+        setData({
+          obs_produccion: '',
+          obs_factura: '',
+        })
+        setPrices(0)
+        setAdicional(null)
+        setDescuento(0)
+        setPricesFranquicia(0)
+        setPricesFranquiciaAdicional(0)
+        setAmount(0)
+        setBillingComment('')
+        setproductionComments('')
+
+        setCombinacionesSeleccionadas([])
+      }
+
+      if (modalSalesCard === 'sale-card-quotation') {
+        fetch();
+        setPrices(dataArticle?.precio_total)
+        setAdicional(null)
+        setDescuento(0)
+        setSelectedUnit({ id: dataArticle?.id_unidad, id_unidad: dataArticle?.id_unidad })
+        setPricesFranquicia(0)
+        setPricesFranquiciaAdicional(0)
+        setAmount(dataArticle?.cantidad)
+        setData({
+          obs_produccion: dataArticle.obs_produccion,
+          obs_factura: dataArticle.obs_factura,
+        });
+        setBillingComment('')
+        setproductionComments('')
+        setCombinacionesSeleccionadas([])
+        setSelectedUnit(article?.unidades[0])
+
+
+      }
+
     }
 
-    if (modalSalesCard === 'sale-card-quotation') {
-      fetch();
-      setPrices(dataArticle?.precio_total)
-      setAdicional(null)
-      setDescuento(0)
-      setSelectedUnit({ id: dataArticle?.id_unidad, id_unidad: dataArticle?.id_unidad })
-      setPricesFranquicia(0)
-      setPricesFranquiciaAdicional(0)
-      setAmount(dataArticle?.cantidad)
-      setData({
-        obs_produccion: dataArticle.obs_produccion,
-        obs_factura: dataArticle.obs_factura,
-      });
-      setBillingComment('')
-      setproductionComments('')
-      setCombinacionesSeleccionadas([])
-      setSelectedUnit(article?.unidades[0])
 
-
-    }
-
-
-  }, [idA]);
+  }, [idA, selectedUserGroup]);
 
   useEffect(() => {
     fetchUser()
@@ -253,9 +320,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
 
 
-console.log('data', data)
-
-
+  console.log('data', data)
 
 
   useEffect(() => {
@@ -273,8 +338,7 @@ console.log('data', data)
     // Implementa la lógica de creación de familias
   };
 
-  const [selectUsersGroups, setSelectUsersGroups] = useState<boolean>(false);
-  const [selectedUserGroup, setSelectedUserGroup] = useState<any>(null);
+
 
   const openSelectUsersGroups = () => {
     setSelectUsersGroups(!selectUsersGroups);
@@ -417,18 +481,18 @@ console.log('data', data)
           return
         }
 
-       if(result.txtvisual_campos.length > 0) {
-        article.plantilla_data.forEach((c: any) => {
-          let buscar_in_result = result.txtvisual_campos.filter(
-            (x: any) => x.id_plantillas_art_campos == c.id
-          );
+        if (result.txtvisual_campos.length > 0) {
+          article.plantilla_data.forEach((c: any) => {
+            let buscar_in_result = result.txtvisual_campos.filter(
+              (x: any) => x.id_plantillas_art_campos == c.id
+            );
 
-          if (buscar_in_result.length > 0) {
-            let valor = buscar_in_result[0].valor;
-            c.valor = valor; // Actualiza el valor en el objeto clonado
-          }
-        });
-       }
+            if (buscar_in_result.length > 0) {
+              let valor = buscar_in_result[0].valor;
+              c.valor = valor; // Actualiza el valor en el objeto clonado
+            }
+          });
+        }
 
 
         if (result.error == false) {
@@ -870,7 +934,7 @@ console.log('data', data)
         setSelectedUserGroup(resultUsers[0].id);
       }
       setPrices(0)
-    
+
       setAmount(0)
 
 
@@ -1261,7 +1325,7 @@ console.log('data', data)
                     <div className='row'>
                       <div className='col-6'>
                         <label className='label__general'>Coment. factura</label>
-                        <textarea className={`inputs__general`}  value={data.obs_factura} onChange={(e) => setData((prev: any) => ({ ...prev, obs_factura: e.target.value }))} placeholder='Factura' />
+                        <textarea className={`inputs__general`} value={data.obs_factura} onChange={(e) => setData((prev: any) => ({ ...prev, obs_factura: e.target.value }))} placeholder='Factura' />
                       </div>
                       <div className='col-6'>
                         <label className='label__general'>Coment. producción</label>
