@@ -64,6 +64,8 @@ const ModalSalesOrder: React.FC = () => {
     const setSaleOrdersCart = storeSaleOrder((state) => state.setSaleOrdersCart);
       const { saleOrdersCart } = storeSaleOrder();
 
+      const setSaleOrders = storeSaleOrder((state) => state.setSaleOrders);
+
     const setPersonalized = storePersonalized((state) => state.setPersonalized);
 
     const setCustomData = storePersonalized((state) => state.setCustomData);

@@ -300,8 +300,8 @@ const Prices: React.FC = () => {
 
 
   const handlePricesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const value = parseInt(e.target.value.trim(), 10);
-    if (!isNaN(value)) {
+    const value = e.target.value;
+    if (value!= '') {
       prices[index].precios = value;
       setPrices([...prices]);
     } else {
@@ -311,8 +311,8 @@ const Prices: React.FC = () => {
   };
 
   const handlePricesFVChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const value = parseInt(e.target.value.trim(), 10);
-    if (!isNaN(value)) {
+    const value = e.target.value;
+    if (value!= '') {
       prices[index].precios_fyv = value;
       setPrices([...prices]);
     } else {
