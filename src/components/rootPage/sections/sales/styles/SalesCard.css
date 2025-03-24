@@ -457,6 +457,7 @@
 
 .card__images_container .images__card-sale__container  .images__container  {
   width: 100%;
+  max-width: 350px;
   height: 350px;
 
 }

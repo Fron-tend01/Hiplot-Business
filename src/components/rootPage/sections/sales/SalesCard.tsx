@@ -54,8 +54,15 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
 
+  const setSaleOrdersCart = storeSaleOrder(state => state.setSaleOrdersCart)
+  const { saleOrdersCart }: any = useStore(storeSaleOrder);
+
+  const setQuotes = storeQuotation(state => state.setQuotes)
+  const { quotes }: any = useStore(storeSaleOrder);
+
 
   const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
+  
 
   const setConceptView = storePersonalized(state => state.setConceptView)
   const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
@@ -642,6 +649,7 @@ console.log('data', data)
       });
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
       setNormalConcepts([...normalConcepts, data])
+      setQuotes([...quotes, data])
       localStorage.setItem('cotizacion', JSON.stringify([...normalConcepts, data]));
 
     }
@@ -719,6 +727,7 @@ console.log('data', data)
 
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
       setNormalConcepts([...normalConcepts, data])
+      setSaleOrdersCart([...saleOrdersCart, data])
       localStorage.setItem('sale-order', JSON.stringify([...normalConcepts, data]));
     }
     toast.success('Artículo agregado')

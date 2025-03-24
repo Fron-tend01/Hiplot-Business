@@ -59,8 +59,10 @@ const ModalSalesOrder: React.FC = () => {
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
     const { normalConcepts, customConcepts, conceptView, personalized, deleteCustomConcepts, normalConceptsView }: any = useStore(storePersonalized)
     const { dataGet, changeLength }: any = useStore(storeSaleOrder)
-    const setSaleOrders = storeSaleOrder((state) => state.setSaleOrders);
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
+
+    const setSaleOrdersCart = storeSaleOrder((state) => state.setSaleOrdersCart);
+      const { saleOrdersCart } = storeSaleOrder();
 
     const setPersonalized = storePersonalized((state) => state.setPersonalized);
 
@@ -264,9 +266,12 @@ const ModalSalesOrder: React.FC = () => {
         console.log(item)
 
         const filter = normalConcepts.filter((_: any, index: number) => index !== i)
+        const filterSaleOrders = saleOrdersCart.filter((_: any, index: number) => index !== i)
         setNormalConcepts(filter);
 
         localStorage.setItem('sale-order', JSON.stringify(filter));
+        setChangeLength(!changeLength)
+        setSaleOrdersCart(filterSaleOrders)
 
 
     }

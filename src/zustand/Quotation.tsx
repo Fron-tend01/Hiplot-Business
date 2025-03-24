@@ -18,6 +18,9 @@ interface StoreState {
     quotesData: any;
     setQuotesData: (x: any) => void;
 
+    quotes: any;
+    setQuotes: (x: any) => void;
+
     dataGet: any;
     setDataGet: (x: any) => void;
 
@@ -30,6 +33,9 @@ interface StoreState {
 export const storeQuotation = create<StoreState>((set) => ({
     clientsModal: '',
     setClientsModal: (x) => set({clientsModal: x}),
+
+    quotes: [],
+    setQuotes: (x) => set({quotes: x}),
 
     quatation: [],
     setQuatation: (x) => set({quatation: x}),

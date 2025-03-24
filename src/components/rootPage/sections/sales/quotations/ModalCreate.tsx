@@ -44,6 +44,7 @@ const ModalCreate: React.FC = () => {
 
   ////////////////// Personalized Variations////////////////////////////////// 
   const { normalConcepts, deleteNormalConcepts, customConcepts, deleteCustomConcepts, conceptView, dataUpdate, personalizedModal, normalConceptsView }: any = useStore(storePersonalized)
+  const permisosxVista = storeDv((state) => state.permisosxvista);
 
   const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
 
@@ -67,6 +68,9 @@ const ModalCreate: React.FC = () => {
 
   const [company, setCompany] = useState<any>([])
   const [branch, setBranch] = useState<any>([])
+
+  const setQuotes = storeQuotation(state => state.setQuotes)
+  const { quotes }: any = useStore(storeQuotation);
 
 
 
@@ -110,7 +114,7 @@ const ModalCreate: React.FC = () => {
   const mandarAOV = () => {
     const copiaQuatation = {
       ...quatation,
-      conceptos: quatation.conceptos.map((concepto:any) => {
+      conceptos: quatation.conceptos.map((concepto: any) => {
         const { id, ...rest } = concepto; // Extrae "id" y deja el resto
         return rest; // Retorna el objeto sin "id"
       })
@@ -273,7 +277,7 @@ const ModalCreate: React.FC = () => {
       conceptos_pers: customConcepts,
       conceptos_elim: deleteNormalConcepts,
       conceptos_pers_elim: deleteCustomConcepts,
-      id_solicitud_cotizacion: info_sc.cot_propia ? user_id : info_sc.folio_sc == '' ?  info_sc.folio_sc : 0,
+      id_solicitud_cotizacion: info_sc.cot_propia ? user_id : info_sc.folio_sc == '' ? info_sc.folio_sc : 0,
     };
 
 
@@ -336,19 +340,26 @@ const ModalCreate: React.FC = () => {
   };
 
   const deleteNormalConcept = (item: any, i: number) => {
-    if (modal === 'create-modal__qoutation') {
+    // if (modal === 'create-modal__qoutation') {
 
-      const filter = normalConcepts.filter((c: any, index: number) => index !== i)
-      setNormalConcepts(filter)
-      toast.success('Concepto eliminado')
-      localStorage.setItem('cotizacion', JSON.stringify(filter));
+    //   const filter = normalConcepts.filter((c: any, index: number) => index !== i)
+    //   setNormalConcepts(filter)
+    //   toast.success('Concepto eliminado')
+    //   localStorage.setItem('cotizacion', JSON.stringify(filter));
 
-    } else {
-      const filter = normalConcepts.filter((c: any, index: number) => index !== i)
-      setNormalConcepts(filter)
-      toast.success('Concepto eliminado')
-      localStorage.setItem('cotizacion', JSON.stringify(filter));
-    }
+    // } else {
+    //   const filter = normalConcepts.filter((c: any, index: number) => index !== i)
+    //   setNormalConcepts(filter)
+    //   toast.success('Concepto eliminado')
+    //   localStorage.setItem('cotizacion', JSON.stringify(filter));
+    // }
+
+    const filter = normalConcepts.filter((c: any, index: number) => index !== i)
+    const filterQuotes = quotes.filter((c: any, index: number) => index !== i)
+    setNormalConcepts(filter)
+    toast.success('Concepto eliminado')
+    localStorage.setItem('cotizacion', JSON.stringify(filter));
+    setQuotes(filterQuotes)
   }
 
 
@@ -558,7 +569,7 @@ const ModalCreate: React.FC = () => {
         }
       );
       DynamicVariables.updateAnyVar(setInfo_sc, 'folios_solicitudes', response.data)
-     
+
 
       DynamicVariables.updateAnyVar(setInfo_sc, 'folio_sc', response.data[0].id)
       console.log(response); // Ver qué está recibiendo
@@ -583,7 +594,7 @@ const ModalCreate: React.FC = () => {
             <p className='title__modals'>Actualizar cotización</p>
           }
         </div>
-       
+
         <div className='quotations__modal'>
           {modal == 'create-modal__qoutation' ?
             ''
@@ -633,71 +644,77 @@ const ModalCreate: React.FC = () => {
               </div>
             </div>
           }
-           <div className='row'>
-          <div className='col-4'>
-            <label className="">Vendedor</label>
-            <div>
-              <select
-                className="select_original_general cotly-select"
-                value={info_sc.vendedor}
-                onChange={(e) => traerSolicitudes(e.target.value)}
-                title="Este vendedor aparecerá en la cotización especial"
-              >
-                {info_sc.vendedores.map((vendedor: any) => (
-                  <option key={vendedor.id} value={vendedor.id}>{vendedor.nombre}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className='col-4'>
-            <div className="">
-              <label>cotizacion propia</label><br></br>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={info_sc.cot_propia} // Asignar el valor del estado al atributo 'checked'
-                  onChange={(e) => { DynamicVariables.updateAnyVar(setInfo_sc, 'cot_propia', e.target.checked) }}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-          </div>
-          <div className='col-4'>
-            <div className="">
-              <label className="">Folio de Solicitud</label>
-              <div>
-                <select
-                  className="select_original_general"
-                  value={info_sc?.folio_sc}
-                  onChange={(e) => {
-                    console.log('Folio cambiado:', e.target.value);
-                    setInfo_sc((prev: any) => ({ ...prev, folio_sc: e.target.value }));
-                  }}
-                  title={(() => {
-          
+          {permisosxVista.map((x: any) =>
+            x.titulo == 'campos_cotizador' ?
+              <div className='row' key={x.id}>
+                <div className='col-4'>
+                  <label className="">Vendedor</label>
+                  <div>
+                    <select
+                      className="select_original_general cotly-select"
+                      value={info_sc.vendedor}
+                      onChange={(e) => traerSolicitudes(e.target.value)}
+                      title="Este vendedor aparecerá en la cotización especial"
+                    >
+                      {info_sc.vendedores.map((vendedor: any) => (
+                        <option key={vendedor.id} value={vendedor.id}>{vendedor.nombre}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className='col-4'>
+                  <div className="">
+                    <label>cotizacion propia</label><br></br>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={info_sc.cot_propia} // Asignar el valor del estado al atributo 'checked'
+                        onChange={(e) => { DynamicVariables.updateAnyVar(setInfo_sc, 'cot_propia', e.target.checked) }}
+                      />
+                      <span className="slider"></span>
+                    </label>
+                  </div>
+                </div>
+                <div className='col-4'>
+                  <div className="">
+                    <label className="">Folio de Solicitud</label>
+                    <div>
+                      <select
+                        className="select_original_general"
+                        value={info_sc?.folio_sc}
+                        onChange={(e) => {
+                          console.log('Folio cambiado:', e.target.value);
+                          setInfo_sc((prev: any) => ({ ...prev, folio_sc: e.target.value }));
+                        }}
+                        title={(() => {
 
-                    if (!info_sc?.folio_sc) return "Seleccione una solicitud";
 
-                    const seleccionado = info_sc?.folios_solicitudes.find(
-                      (sol: any) => sol.id === info_sc?.folio_sc
-                    );
+                          if (!info_sc?.folio_sc) return "Seleccione una solicitud";
 
-                    return seleccionado
-                      ? `Cliente: ${seleccionado.cliente}, Creación: ${seleccionado.fecha_creacion}, Sucursal: ${seleccionado.sucursal}, Tipo: ${seleccionado.tipo}`
-                      : "Seleccione una solicitud";
-                  })()}
-                >
-                  {Array.isArray(info_sc?.folios_solicitudes) && info_sc.folios_solicitudes.length > 0
-                    && info_sc?.folios_solicitudes.map((sol: any) => (
-                      <option key={sol.id} value={sol.id}
-                        title={`Cliente: ${sol.cliente}, Creación: ${sol.fecha_creacion}, Sucursal: ${sol.sucursal}, Tipo: ${sol.tipo}`}
-                      >{sol.id}</option>
-                    ))}
-                </select>
+                          const seleccionado = info_sc?.folios_solicitudes.find(
+                            (sol: any) => sol.id === info_sc?.folio_sc
+                          );
+
+                          return seleccionado
+                            ? `Cliente: ${seleccionado.cliente}, Creación: ${seleccionado.fecha_creacion}, Sucursal: ${seleccionado.sucursal}, Tipo: ${seleccionado.tipo}`
+                            : "Seleccione una solicitud";
+                        })()}
+                      >
+                        {Array.isArray(info_sc?.folios_solicitudes) && info_sc.folios_solicitudes.length > 0
+                          && info_sc?.folios_solicitudes.map((sol: any) => (
+                            <option key={sol.id} value={sol.id}
+                              title={`Cliente: ${sol.cliente}, Creación: ${sol.fecha_creacion}, Sucursal: ${sol.sucursal}, Tipo: ${sol.tipo}`}
+                            >{sol.id}</option>
+                          ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
+              :
+              ''
+          )}
+
           <div className='row__two'>
             <div className='row__one'>
               <div className='col-12'>
