@@ -47,15 +47,14 @@ const SalesOrder: React.FC = () => {
 
 
     const modalOpen = () => {
-       
-        const storedData = JSON.parse(localStorage.getItem("sale-order") || "[]");
-        
-        if (storedData) {
-        
-            setNormalConcepts(storedData)
-  
-        }
         setModalSalesOrder('sale-order__modal')
+        const storedData = JSON.parse(localStorage.getItem("sale-order") || "[]");
+        if (storedData.length > 0) {
+            // Obtener la longitud de storedData
+    
+            setNormalConcepts(storedData)
+
+        }
     }
 
 
