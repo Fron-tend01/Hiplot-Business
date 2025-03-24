@@ -27,11 +27,11 @@ const Stocks: React.FC = () => {
             <div className='row__one'>
               <div className='title_stock'>
                 <h3>Stock Total: </h3>
-                <p className='amount__stcok'>{default_store.stock}</p>
+                <p className='amount__stcok'>{default_store?.stock}</p>
               </div>
               <div className='title_stock-name'>
                 <p>Almacen predeterminado</p>
-                <p>{default_store.nombre}</p>
+                <p>{default_store?.nombre}</p>
               </div>
               <div className='tables'>
                 {article?.componentes?.map((x: any) => (

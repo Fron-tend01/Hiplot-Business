@@ -92,6 +92,7 @@
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
+    overflow: scroll;
 }
 
 .popup__families .btn-cerrar-popup__families {
@@ -138,7 +139,7 @@
 
 .table__families .table__head .thead {
     display: grid;
-    grid-template-columns: 1fr 100px;
+    grid-template-columns: 1fr 1fr 100px;
     padding: 10px;
     font-weight: 600;
     color: var(--text-table-color);
@@ -178,7 +179,7 @@
 
 .table__families .table__body .tbody {
     display: grid;
-    grid-template-columns: 1fr 100px;
+    grid-template-columns: 1fr 1fr 100px;
     padding: 10px;
 }
 

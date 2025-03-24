@@ -164,8 +164,24 @@ const CompanyModal = () => {
         opacity: warningNombreComercial === true ? '1' : '',
         height: warningNombreComercial === true ? '23px' : ''
     }
+  const [logo, setLogo] = useState<string>('');
 
-
+  const changeImg = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const image = reader.result as string; // Asegurar que image sea de tipo string
+        // setLogo(image)
+        DynamicVariables.updateAnyVar(setModel, 'imagen', image)
+        console.log('Imagen convertida a Base64:', image);
+      };
+      reader.onerror = (error) => {
+        console.error('Error al leer el archivo:', error);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
     return (
         <div className={`overlay__companies ${modal == 'modal__creating-companies' || modal == 'modal__update-companies' ? 'active' : ''}`}>
             <div className={`popup__companies ${modal == 'modal__creating-companies' || modal == 'modal__update-companies' ? 'active' : ''}`}>
@@ -266,7 +282,20 @@ const CompanyModal = () => {
                 <div className='row'>
                     <div className='col-12'>
                         <label className='label__general'>Terminos y Condiciones de Cotización:</label>
-                        <textarea className='inputs__general' rows={5} value={model.tyc_cotizaciones} onChange={(e)=> DynamicVariables.updateAnyVar(setModel, "tyc_cotizaciones", e.target.value)}></textarea>
+                        <textarea className='inputs__general' rows={5} value={model.tyc_cotizaciones} onChange={(e) => DynamicVariables.updateAnyVar(setModel, "tyc_cotizaciones", e.target.value)}></textarea>
+                    </div>
+                </div>
+                <div className='row text-center'>
+                    <div className='col-4'></div>
+                    <div className='col-4'>
+                        <label className='label__general'>Imagen Informativa</label>
+
+                        <div className="container__change_img2" style={{ backgroundImage: `url(${model.imagen})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                            <label className="custom-file-upload2">
+                                <small> Seleccionar archivo</small>
+                                <input id="custom-file-upload2" type="file" onChange={changeImg} />
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div className='create__company_btn_modal_container mt-3'>
