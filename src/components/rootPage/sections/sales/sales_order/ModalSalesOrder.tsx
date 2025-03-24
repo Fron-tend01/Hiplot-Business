@@ -575,8 +575,11 @@ const ModalSalesOrder: React.FC = () => {
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setCompanies({ id: saleOrdersToUpdate.id_empresa })
             setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
-            setNormalConcepts(saleOrdersToUpdate.conceptos)
-            setCustomConcepts(saleOrdersToUpdate.conceptos_pers)
+            if (modalSalesOrder == 'sale-order__modal_bycot') {
+                setNormalConcepts(saleOrdersToUpdate.conceptos)
+                setCustomConcepts(saleOrdersToUpdate.conceptos_pers)
+
+            }
             setTitle(saleOrdersToUpdate.titulo)
             console.log('saleOrdersToUpdate', saleOrdersToUpdate)
             const data = {

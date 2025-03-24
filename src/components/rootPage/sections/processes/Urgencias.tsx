@@ -254,7 +254,7 @@ const Urgencias = () => {
                 <hr />
                 <br />
                 <Filtrado_Articulos_Basic get_sucursales={false} get_proveedores={false} get_max_mins={false} get_plantilla_data={false} get_stock={false} get_unidades={false} 
-                set_article_local={setArticulos}/>
+                set_article_local={setArticulos} materia_prima={99}/>
                 <br />
                 <div className='table__modal '>
                   <div>

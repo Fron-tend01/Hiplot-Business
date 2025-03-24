@@ -24,6 +24,7 @@ interface FiltradoArticulosBasicProps {
     get_imagenes?: boolean;
     id_empresa_proveedor?: 0;
     id_sucursal_franquicia?: 0;
+    materia_prima?: number;
     campos_ext?: any[];
     set_article_local?: any
 
@@ -31,7 +32,7 @@ interface FiltradoArticulosBasicProps {
 const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_sucursales = false, get_proveedores = false, get_max_mins = false,
     get_plantilla_data = false, get_stock = false, get_unidades = false, get_variaciones = false, get_precios = false, get_combinaciones = false, get_componentes = false,
     get_tiempos_entrega = false, get_areas_produccion = false, get_cargos_minimos = false, get_adicional = false, get_imagenes = false, id_empresa_proveedor = 0,
-    id_sucursal_franquicia = 0,
+    id_sucursal_franquicia = 0, materia_prima = 0,
     campos_ext = [], set_article_local = [] }) => {
     const [articles, setArticles] = useState<any>()
     const { getFamilies, families }: any = storeFamilies()
@@ -88,7 +89,7 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
             codigo: selectedSearch == 0 ? nameBy : '',
             familia: selectedSearch == 2 ? familia.id : 0,
             proveedor: 0,
-            materia_prima: 0,
+            materia_prima: materia_prima,
             get_sucursales: get_sucursales == false ? get_sucursales : true,
             get_proveedores: get_proveedores == false ? get_proveedores : true,
             get_max_mins: get_max_mins == false ? get_max_mins : true,
