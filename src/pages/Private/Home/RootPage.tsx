@@ -21,6 +21,7 @@ import APIs from '../../../services/services/APIs';
 import RouteReportes from '../../../routes/sections/processes/RouteReportes';
 import RouteAdmin from '../../../routes/sections/processes/RouteAdmin';
 import { storeHeader } from '../../../zustand/Header';
+import Dashboard from '../../../components/rootPage/sections/processes/dashboard/Dashboard';
 
 const RootHome: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -571,6 +572,7 @@ const RootHome: React.FC = () => {
                             {/* <Route path="dashboard" element={<MainDashboard />} /> */}
                             <Route path={`${permisos && permisos.CONFIG.length > 0 ? PrivateRoutes.PROCESSOS : ''}/*`} element={<RouteProcesses />} />
                             <Route path={`${PrivateRoutes.CATALOGUE}/*`} element={<RouteCatalogue />} />
+                            <Route path={`/*`} element={<Dashboard />} />
                             <Route path={`${PrivateRoutes.WAREHOUSES}/*`} element={<RouteWarehouses />} />
                             <Route path={`${PrivateRoutes.SHOPPING}/*`} element={<RoutesShopping />} />
                             <Route path={`${PrivateRoutes.SALES}/*`} element={<RouteSales />} />
