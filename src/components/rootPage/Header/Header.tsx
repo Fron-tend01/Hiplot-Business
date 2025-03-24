@@ -262,6 +262,7 @@ useEffect(() => {
                               <div className='td amount'>
                                 <p>{x.cantidad}</p>
                               </div>
+                              
                             </div>
                           </div>
                         );
