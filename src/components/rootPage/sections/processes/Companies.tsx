@@ -39,6 +39,7 @@ const Companies: React.FC = () => {
     DynamicVariables.updateAnyVar(setModel, 'razon_social', company.razon_social)
     DynamicVariables.updateAnyVar(setModel, 'nombre_comercial', company.nombre_comercial)
     DynamicVariables.updateAnyVar(setModel, 'bd_compaqi', company.bd_compaqi)
+    DynamicVariables.updateAnyVar(setModel, 'imagen', company.imagen)
     DynamicVariables.updateAnyVar(setModel, 'modulo_cobrofranquicia_compaqi', company.modulo_cobrofranquicia_compaqi)
 
     DynamicVariables.updateAnyVar(setModel, 'empresas_franquicias', company.empresas_franquicias)
