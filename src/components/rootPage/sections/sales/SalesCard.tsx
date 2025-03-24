@@ -549,8 +549,13 @@ console.log('data', data)
 
   useEffect(() => {
     getPrices()
-  }, [amount, prices, fyv, billingComment, productionComments])
-
+  }, [amount, fyv])
+  // useEffect(() => {
+  //   setData((prev:any) => ({
+  //     ...prev,
+  //     precio_unitario: prices / prev.cantidad
+  //   }));
+  // }, [prices]);
   const [warningContact, setWarningContact] = useState<boolean>(false)
   const styleWarningContact = {
     opacity: warningContact === true ? '1' : '',
