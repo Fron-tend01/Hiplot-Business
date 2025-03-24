@@ -194,7 +194,7 @@ const ArticleViewModal = () => {
             activos: true,
             nombre: inputs.name,
             codigo: inputs.code,
-            familia: selectedFamily,
+            familia: user.id,
             proveedor: 0,
             materia_prima: 99,
             get_sucursales: false,

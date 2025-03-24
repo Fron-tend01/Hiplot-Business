@@ -177,8 +177,8 @@
 	background-color: var(--background-modal);
 	border-radius: 5px;
 	padding: 40px 20px 20px 20px;
-	width: 90%;
-	height: 90%;
+	width: 90vw;
+	height: 90vh;
 	display: grid;
 	transition: .3s ease all;
 	transform: scale(0.7);
@@ -211,8 +211,10 @@
 
 .sale-order_production__modal_articles {
 	color: var(--text-color);
+	height: 100%;
 	display: grid;
 	grid-template-rows: auto auto 1fr auto;
+	overflow: auto;
 }
 
 .sale-order_production__modal_articles > .table {

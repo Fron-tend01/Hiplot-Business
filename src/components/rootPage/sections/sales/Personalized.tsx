@@ -1442,7 +1442,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
           }
 
 
-          {modalSalesOrder == 'sale-order__modal-update' ?
+          {modalSalesOrder == 'sale-order__modal-update' ||  modalSalesOrder == 'sale-order__modal_bycot'?
             <>
               {personalizedModal == "personalized_modal-sale" ?
                 <div className='table__personalized'>
