@@ -115,6 +115,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       for_ventas: true,
       get_unidades: true,
       id_usuario: user_id,
+      id_grupo_us: selectedUserGroup
+
     };
 
     try {
@@ -142,7 +144,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
           setArticle({ ...art, plantilla_data: plantillaData });
 
-          if (art.vender_sin_stock) Swal.fire('Notificación', 'Este articulo se puede vender sin stock disponible', 'success');
+          // if (art.vender_sin_stock) Swal.fire('Notificación', 'Este articulo se puede vender sin stock disponible', 'success');
           if (art.bajo_pedido) Swal.fire('Notificación', 'Este articulo puede levantar requisición automática...', 'warning');
           if (art.desabasto) Swal.fire('Notificación', 'Hay desabasto de este articulo...', 'warning');
           if (art.precio_libre) Swal.fire('Notificación', 'Puedes añadir el precio manualmente...', 'success');
@@ -550,12 +552,12 @@ console.log('data', data)
   useEffect(() => {
     getPrices()
   }, [amount, fyv])
-  // useEffect(() => {
-  //   setData((prev:any) => ({
-  //     ...prev,
-  //     precio_unitario: prices / prev.cantidad
-  //   }));
-  // }, [prices]);
+  useEffect(() => {
+    setData((prev:any) => ({
+      ...prev,
+      precio_unitario: prices / prev.cantidad
+    }));
+  }, [prices]);
   const [warningContact, setWarningContact] = useState<boolean>(false)
   const styleWarningContact = {
     opacity: warningContact === true ? '1' : '',
@@ -714,7 +716,7 @@ console.log('data', data)
       });
 
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
-      setNormalConcepts([...normalConcepts, data])
+      setNormalConcepts((prev:any) => [...(Array.isArray(prev) ? prev : []), data]);
       localStorage.setItem('sale-order', JSON.stringify([...normalConcepts, data]));
     }
     toast.success('Artículo agregado')
