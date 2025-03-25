@@ -23,6 +23,7 @@ import SeeCamposPlantillas from '../SeeCamposPlantillas'
 import Binnacle from './components/Binnacle'
 import { saleOrdersRequests } from '../../../../../fuctions/SaleOrders'
 import { storeArticles } from '../../../../../zustand/Articles'
+import { storeProduction } from '../../../../../zustand/Production'
 
 const ModalSalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -62,9 +63,9 @@ const ModalSalesOrder: React.FC = () => {
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
 
     const setSaleOrdersCart = storeSaleOrder((state) => state.setSaleOrdersCart);
-      const { saleOrdersCart } = storeSaleOrder();
+    const { saleOrdersCart } = storeSaleOrder();
 
-      const setSaleOrders = storeSaleOrder((state) => state.setSaleOrders);
+    const setSaleOrders = storeSaleOrder((state) => state.setSaleOrders);
 
     const setPersonalized = storePersonalized((state) => state.setPersonalized);
 
@@ -928,8 +929,12 @@ const ModalSalesOrder: React.FC = () => {
 
         setNormalConcepts(dataCopy);
     };
+    const setProductionToUpdate = storeProduction(state => state.setProductionToUpdate)
 
-
+    const verProduccion = () => {
+        setModalSub('production__modal')
+        // setProductionToUpdate(order)
+    }
 
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>

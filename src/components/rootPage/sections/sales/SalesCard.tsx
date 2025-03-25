@@ -649,7 +649,7 @@ console.log('data', data)
       });
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
       setNormalConcepts([...normalConcepts, data])
-      setQuotes([...quotes, data])
+      setQuotes([...(quotes || []), data]);
       localStorage.setItem('cotizacion', JSON.stringify([...normalConcepts, data]));
 
     }

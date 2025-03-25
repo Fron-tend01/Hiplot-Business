@@ -18,7 +18,7 @@ interface StoreState {
     quotesData: any;
     setQuotesData: (x: any) => void;
 
-    quotes: any;
+    quotes: any[];
     setQuotes: (x: any) => void;
 
     dataGet: any;
