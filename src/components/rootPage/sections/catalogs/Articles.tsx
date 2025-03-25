@@ -196,35 +196,6 @@ const Articles: React.FC = () => {
 
   const handleActivesArticleChange = async (value: number) => {
     setTypeActive(value)
-    // const data = {
-    //   id: 0,
-    //   activos: value,
-    //   nombre: '',
-    //   codigo: '',
-    //   familia: 0,
-    //   proveedor: 0,
-    //   materia_prima: typeServive,
-    //   get_sucursales: false,
-    //   get_proveedores: false,
-    //   get_max_mins: false,
-    //   get_plantilla_data: false,
-    //   get_stock: false,
-    //   get_web: false,
-    //   get_unidades: false,
-    //   page: 1
-    // };
-    // setModalLoading(true)
-
-    // try {
-    //   await getArticlesInGlobal(data);
-    //   setModalLoading(false)
-
-    // } catch (error) {
-    //   console.log('Error')
-    //   setModalLoading(false)
-
-    // }
-
   }
 
   const searchArticle = async () => {
@@ -335,7 +306,7 @@ const Articles: React.FC = () => {
           </div>
 
         </div>
-        <div className='row__three mt-4'>
+        <div className='mt-4 row__three'>
           <div>
             <button className='btn__general-purple' onClick={searchArticle}>Buscar</button>
           </div>
@@ -394,7 +365,7 @@ const Articles: React.FC = () => {
           )}
 
         </div>
-        <div className='d-flex justify-content-between mt-4'>
+        <div className='mt-4 d-flex justify-content-between'>
           <div>
             <button className='btn__general-purple' onClick={() => setPage(page - 1)} disabled={page == 1}>Anterior</button>
           </div>

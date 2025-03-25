@@ -58,7 +58,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const { saleOrdersCart }: any = useStore(storeSaleOrder);
 
   const setQuotes = storeQuotation(state => state.setQuotes)
-  const { quotes }: any = useStore(storeSaleOrder);
+  const { quotes }: any = useStore(storeQuotation);
 
 
   const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)

@@ -120,6 +120,12 @@
 	display: flex;
 }
 
+
+.table__sale-orders .table__body .tbody > .td {
+	display: flex;
+	align-items: center;
+}
+
 .table__sale-orders .table__body .tbody {
 	display: grid;
 	grid-template-columns: repeat(10, 1fr);
@@ -146,10 +152,6 @@
 	color: var(--primary-100);
 }
 
-.table__sale-orders .table__body .tbody .td {
-	display: flex;
-}
-
 .table__sale-orders .table__body .tbody:hover {
 	background-color: var(--table-hover-color);
 	color: #fff;
@@ -158,5 +160,10 @@
 
 .table__sale-orders .table__body .tbody:hover .td > .folio {
 	background-color: #3d86c6;
+	color: #ffffff;
+  }
+
+  .table__sale-orders .table__body .tbody:hover .td > .active-identifier {
+	background-color: #388E3C;
 	color: #ffffff;
   }

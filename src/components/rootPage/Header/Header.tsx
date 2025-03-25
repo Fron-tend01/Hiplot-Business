@@ -19,6 +19,7 @@ import { PrivateRoutes } from '../../../models/routes';
 import { storeSaleOrder } from '../../../zustand/SalesOrder';
 import { storeQuotation } from '../../../zustand/Quotation';
 import { useStore } from 'zustand';
+import { storePersonalized } from '../../../zustand/Personalized';
 
 const Header: React.FC = () => {
 
@@ -35,6 +36,9 @@ const Header: React.FC = () => {
 
   const setSaleOrdersCart = storeSaleOrder((state) => state.setSaleOrdersCart);
   const { saleOrdersCart }: any = useStore(storeSaleOrder);
+
+  const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts)
+  const { normalConcepts }: any = useStore(storePersonalized);
 
 
   const setQuotes = storeQuotation(state => state.setQuotes)
@@ -53,37 +57,37 @@ const Header: React.FC = () => {
 
 
 
-const [totalSales, setTotalSales] = useState<number>(0);
-const [totalQuotes, setTotalQuotes] = useState<number>(0);
+  const [totalSales, setTotalSales] = useState<number>(0);
+  const [totalQuotes, setTotalQuotes] = useState<number>(0);
 
-const getOrders = () => {
-  const storedData = JSON.parse(localStorage.getItem("sale-order") || "[]");
-  const storedQuotes = JSON.parse(localStorage.getItem("cotizacion") || "[]");
+  const getOrders = () => {
+    const storedData = JSON.parse(localStorage.getItem("sale-order") || "[]");
+    const storedQuotes = JSON.parse(localStorage.getItem("cotizacion") || "[]");
 
-  if (storedData.length > 0) {
-    setSaleOrdersCart(storedData);
-  } else {
-    setSaleOrdersCart([]); // Asegurar que el estado no quede undefined
-  }
+    if (storedData.length > 0) {
+      setSaleOrdersCart(storedData);
+    } else {
+      setSaleOrdersCart([]); // Asegurar que el estado no quede undefined
+    }
 
-  if (storedQuotes.length > 0) {
-    setQuotes(storedQuotes);
-  } else {
-    setQuotes([]); // Asegurar que el estado no quede undefined
-  }
-};
+    if (storedQuotes.length > 0) {
+      setQuotes(storedQuotes);
+    } else {
+      setQuotes([]); // Asegurar que el estado no quede undefined
+    }
+  };
 
-useEffect(() => {
-  getOrders();
-}, []);
+  useEffect(() => {
+    getOrders();
+  }, []);
 
-useEffect(() => {
-  let totalSale = saleOrdersCart.reduce((acc, item) => acc + parseInt(item.cantidad || "0"), 0);
-  let totalQuote = quotes.reduce((acc, item) => acc + parseInt(item.cantidad || "0"), 0);
+  useEffect(() => {
+    let totalSale = saleOrdersCart.reduce((acc, item) => acc + parseInt(item.cantidad || "0"), 0);
+    let totalQuote = quotes.reduce((acc, item) => acc + parseInt(item.cantidad || "0"), 0);
 
-  setTotalSales(totalSale);
-  setTotalQuotes(totalQuote);
-}, [saleOrdersCart, quotes]);
+    setTotalSales(totalSale);
+    setTotalQuotes(totalQuote);
+  }, [saleOrdersCart, quotes]);
 
 
 
@@ -200,8 +204,24 @@ useEffect(() => {
     console.log('modalLoading en header', modalLoading);
   }, [modalLoading]);
 
-  const [statusSale, setStatusSale] = useState<any>()
-  const [statusSQuotation, setStatusQuotation] = useState<any>()
+
+  const deleteArticle = (_: any, i: number, type: string) => {
+
+    if (type == 'quotes') {
+      const filter = normalConcepts.filter((_: any, index: number) => index !== i)
+      const filterQuotes = quotes.filter((_: any, index: number) => index !== i)
+      setNormalConcepts(filter);
+      setQuotes(filterQuotes)
+      localStorage.setItem('cotizacion', JSON.stringify(filter));
+    } else {
+      const filter = normalConcepts.filter((_: any, index: number) => index !== i)
+      const filterSaleOrders = saleOrdersCart.filter((_: any, index: number) => index !== i)
+      setNormalConcepts(filter);
+      setSaleOrdersCart(filterSaleOrders)
+      localStorage.setItem('sale-order', JSON.stringify(filter));
+    }
+
+  }
 
   return (
     <div className='hero'>
@@ -222,9 +242,9 @@ useEffect(() => {
           </div>
         </div>
         <div className='nav__hero'>
-          <div className='icon__articles-quotation-cart-btn' onClick={() => setStatusSale(!statusSale)}>
+          <div className='icon__articles-quotation-cart-btn'>
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M440-240v20q0 8 6 14t14 6h40q8 0 14-6t6-14v-20h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h120q17 0 28.5-11.5T600-520q0-17-11.5-28.5T560-560h-40v-20q0-8-6-14t-14-6h-40q-8 0-14 6t-6 14v20h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H400q-17 0-28.5 11.5T360-280q0 17 11.5 28.5T400-240h40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h360l200 200v520q0 33-23.5 56.5T720-80H240Zm0-80h480v-480H600q-17 0-28.5-11.5T560-680v-120H240v640Zm0-640v160-160 640-640Z" /></svg>
-            <div className={`cart-quotation__container ${statusSale ? 'active' : ''}`}>
+            <div className={`cart-quotation__container`}>
               <div className='concepts-quotation__container'>
                 <svg className='icon-change_history' xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(12,36,60)"><path d="M152-160q-23 0-35-20.5t1-40.5l328-525q12-19 34-19t34 19l328 525q13 20 1 40.5T808-160H152Z" /></svg>
                 <div className='row__one'>
@@ -249,7 +269,7 @@ useEffect(() => {
                   </div>
                   {quotes ? (
                     <div className='table__body'>
-                      {quotes.map((x: any) => {
+                      {quotes.map((x: any, index: number) => {
                         return (
                           <div className='tbody__container' key={x.id}>
                             <div className='tbody'>
@@ -262,7 +282,11 @@ useEffect(() => {
                               <div className='td amount'>
                                 <p>{x.cantidad}</p>
                               </div>
-                              
+                              <div className='td delete'>
+                                <div className='delete-icon' onClick={() => deleteArticle(x, index, 'quotes')} title='Eliminar concepto'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         );
@@ -282,9 +306,9 @@ useEffect(() => {
               </div>
             </div>
           </div>
-          <div className='icon__articles-sale-cart-btn' onClick={() => setStatusQuotation(!statusSQuotation)}>
+          <div className='icon__articles-sale-cart-btn' >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
-            <div className={`cart-sale__container ${statusSQuotation ? 'active' : ''}`}>
+            <div className={`cart-sale__container `}>
               <div className='concepts-sale__container'>
                 <svg className='icon-change_history' xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(12,36,60)"><path d="M152-160q-23 0-35-20.5t1-40.5l328-525q12-19 34-19t34 19l328 525q13 20 1 40.5T808-160H152Z" /></svg>
                 <div className='row__one'>
@@ -309,7 +333,7 @@ useEffect(() => {
                   </div>
                   {saleOrdersCart ? (
                     <div className='table__body'>
-                      {saleOrdersCart.map((x: any) => {
+                      {saleOrdersCart.map((x: any, index: number) => {
                         return (
                           <div className='tbody__container' key={x.id}>
                             <div className='tbody'>
@@ -321,6 +345,11 @@ useEffect(() => {
                               </div>
                               <div className='td amount'>
                                 <p>{x.cantidad}</p>
+                              </div>
+                              <div className='td delete'>
+                                <div className='delete-icon' onClick={() => deleteArticle(x, index, 'sales')} title='Eliminar concepto'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                </div>
                               </div>
                             </div>
                           </div>

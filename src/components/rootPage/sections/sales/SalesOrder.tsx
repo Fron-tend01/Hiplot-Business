@@ -310,9 +310,9 @@ const SalesOrder: React.FC = () => {
                                                 <p>{order.fecha_creacion}</p>
                                             </div>
                                             <div className='td'>
-                                                <p>{order.status == 0 ? <div className='active-status'><p>Activa</p></div> : ''}</p>
-                                                <p>{order.status == 1 ? <div className='canceled-status'><p>Cancelada</p></div> : ''}</p>
-                                                <p>{order.status == 2 ? <div className='active-status'><p>Terminada</p></div> : ''}</p>
+                                                {order.status == 0 ? <p className='active-identifier'>Activa</p> : ''}
+                                                {order.status == 1 ? <p className='cancel-identifier'>Cancelada</p> : ''}
+                                                {order.status == 2 ? <p className='cancel-identifier'>Terminada</p> : ''}
                                             </div>
                                             <div className='td'>
                                                 <p>{order.razon_social}</p>
