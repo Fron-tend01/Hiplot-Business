@@ -3,6 +3,15 @@ import { create } from 'zustand';
 
 
 interface StoreState {
+
+    quotesConcepts: any;
+    setQuotesConcepts: (x: any) => void;
+
+
+
+    quotesPers: any;
+    setQuotesPers: (x: any) => void;
+
     clientsModal: any;
     setClientsModal: (x: any) => void;
 
@@ -18,8 +27,7 @@ interface StoreState {
     quotesData: any;
     setQuotesData: (x: any) => void;
 
-    quotes: any[];
-    setQuotes: (x: any) => void;
+
 
     dataGet: any;
     setDataGet: (x: any) => void;
@@ -31,30 +39,41 @@ interface StoreState {
 }
 
 export const storeQuotation = create<StoreState>((set) => ({
-    clientsModal: '',
-    setClientsModal: (x) => set({clientsModal: x}),
 
-    quotes: [],
-    setQuotes: (x) => set({quotes: x}),
+
+    quotesConcepts: { normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [] },
+    setQuotesConcepts: (newQuotesConcepts) =>
+        set((state) => ({
+            quotesConcepts: {
+                ...state.quotesConcepts,
+                ...newQuotesConcepts,
+            },
+        })),
+
+    quotesPers: [],
+    setQuotesPers: (x) => set({ quotesPers: x }),
+
+    clientsModal: '',
+    setClientsModal: (x) => set({ clientsModal: x }),
 
     quatation: [],
-    setQuatation: (x) => set({quatation: x}),
+    setQuatation: (x) => set({ quatation: x }),
 
     identifier: 0,
-    setIdentifier: (x) => set({identifier: x}),
+    setIdentifier: (x) => set({ identifier: x }),
 
     client: null,
-    setClient: (x) => set({client: x}),
+    setClient: (x) => set({ client: x }),
 
     quotesData: [],
-    setQuotesData: (x) => set({quotesData: x}),
+    setQuotesData: (x) => set({ quotesData: x }),
 
     dataGet: {},
-    setDataGet: (x) => set({dataGet: x}),
+    setDataGet: (x) => set({ dataGet: x }),
 
     camposPlantillas: '',
-    setCamposPlantillas: (x) => set({camposPlantillas: x}),
+    setCamposPlantillas: (x) => set({ camposPlantillas: x }),
     camposPlantillasModal: '',
-    setCamposPlantillasModal: (x) => set({camposPlantillasModal: x}),
+    setCamposPlantillasModal: (x) => set({ camposPlantillasModal: x }),
 }));
 

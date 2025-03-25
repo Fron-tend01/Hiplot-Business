@@ -27,22 +27,17 @@ const Header: React.FC = () => {
   const [showUsers] = useState<boolean>(false);
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
-  console.log('USER STATE', userState);
 
   const setToggle = storeHeader(state => state.setToggle)
   const { toggle } = storeHeader()
 
   const setModalArticleView = storeArticleView((state) => state.setModalArticleView);
 
-  const setSaleOrdersCart = storeSaleOrder((state) => state.setSaleOrdersCart);
-  const { saleOrdersCart }: any = useStore(storeSaleOrder);
+  const setSaleOrdersConcepts = storeSaleOrder((state) => state.setSaleOrdersConcepts);
+  const { saleOrdersConcepts }: any = useStore(storeSaleOrder);
 
-  const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts)
-  const { normalConcepts }: any = useStore(storePersonalized);
-
-
-  const setQuotes = storeQuotation(state => state.setQuotes)
-  const { quotes }: any = useStore(storeQuotation);
+  const setQuotesConcepts = storeQuotation(state => state.setQuotesConcepts)
+  const { quotesConcepts }: any = useStore(storeQuotation);
 
   const toggleUsersDisplay = () => {
     // setShowUsers(!showUsers);
@@ -65,29 +60,29 @@ const Header: React.FC = () => {
     const storedQuotes = JSON.parse(localStorage.getItem("cotizacion") || "[]");
 
     if (storedData.length > 0) {
-      setSaleOrdersCart(storedData);
-    } else {
-      setSaleOrdersCart([]); // Asegurar que el estado no quede undefined
+      setSaleOrdersConcepts({normal_concepts: storedData});
     }
 
-    if (storedQuotes.length > 0) {
-      setQuotes(storedQuotes);
-    } else {
-      setQuotes([]); // Asegurar que el estado no quede undefined
-    }
+    if (storedQuotes.length > 0) {   
+      setQuotesConcepts({ normal_concepts: storedQuotes });
+      
+
+    } 
   };
+
+  console.log('saleOrdersConcepts', saleOrdersConcepts)
 
   useEffect(() => {
     getOrders();
   }, []);
 
   useEffect(() => {
-    let totalSale = saleOrdersCart.reduce((acc, item) => acc + parseInt(item.cantidad || "0"), 0);
-    let totalQuote = quotes.reduce((acc, item) => acc + parseInt(item.cantidad || "0"), 0);
+    // let totalSale = saleOrdersConcepts.reduce((acc, item) => acc + parseInt(item.cantidad || "0"), 0);
+    // let totalQuote = quotes.reduce((acc, item) => acc + parseInt(item.cantidad || "0"), 0);
 
-    setTotalSales(totalSale);
-    setTotalQuotes(totalQuote);
-  }, [saleOrdersCart, quotes]);
+    // setTotalSales(totalSale);
+    // setTotalQuotes(totalQuote);
+  }, [saleOrdersConcepts, quotesConcepts]);
 
 
 
@@ -203,21 +198,16 @@ const Header: React.FC = () => {
 
     console.log('modalLoading en header', modalLoading);
   }, [modalLoading]);
-
-
   const deleteArticle = (_: any, i: number, type: string) => {
 
     if (type == 'quotes') {
-      const filter = normalConcepts.filter((_: any, index: number) => index !== i)
-      const filterQuotes = quotes.filter((_: any, index: number) => index !== i)
-      setNormalConcepts(filter);
-      setQuotes(filterQuotes)
+      const filter = quotesConcepts.normal_concepts.filter((_: any, index: number) => index !== i)
+      setQuotesConcepts({ normal_concepts: filter });
+      
       localStorage.setItem('cotizacion', JSON.stringify(filter));
     } else {
-      const filter = normalConcepts.filter((_: any, index: number) => index !== i)
-      const filterSaleOrders = saleOrdersCart.filter((_: any, index: number) => index !== i)
-      setNormalConcepts(filter);
-      setSaleOrdersCart(filterSaleOrders)
+      const filter = saleOrdersConcepts.normal_concepts.filter((_: any, index: number) => index !== i)
+      setSaleOrdersConcepts({ normal_concepts: filter });
       localStorage.setItem('sale-order', JSON.stringify(filter));
     }
 
@@ -267,9 +257,9 @@ const Header: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  {quotes ? (
+                  {quotesConcepts.normal_concepts ? (
                     <div className='table__body'>
-                      {quotes.map((x: any, index: number) => {
+                      {quotesConcepts.normal_concepts.map((x: any, index: number) => {
                         return (
                           <div className='tbody__container' key={x.id}>
                             <div className='tbody'>
@@ -293,7 +283,35 @@ const Header: React.FC = () => {
                       })}
                     </div>
                   ) : (
-                    <p>Cargando datos...</p>
+                    ''
+                  )}
+                  {quotesConcepts.personalized_concepts ? (
+                    <div className='table__body'>
+                      {quotesConcepts.personalized_concepts.map((x: any, index: number) => {
+                        return (
+                          <div className='tbody__container' key={x.id}>
+                            <div className='tbody'>
+                              <div className='td code'>
+                                <p>{x.codigo}</p>
+                              </div>
+                              <div className='td description'>
+                                <p>{x.descripcion}</p>
+                              </div>
+                              <div className='td amount'>
+                                <p>{x.cantidad}</p>
+                              </div>
+                              <div className='td delete'>
+                                <div className='delete-icon' onClick={() => deleteArticle(x, index, 'quotes')} title='Eliminar concepto'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    ''
                   )}
                 </div>
                 <div className='row__three'>
@@ -331,9 +349,9 @@ const Header: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  {saleOrdersCart ? (
+                  {saleOrdersConcepts?.normal_concepts ? (
                     <div className='table__body'>
-                      {saleOrdersCart.map((x: any, index: number) => {
+                      {saleOrdersConcepts?.normal_concepts?.map((x: any, index: number) => {
                         return (
                           <div className='tbody__container' key={x.id}>
                             <div className='tbody'>
@@ -357,7 +375,35 @@ const Header: React.FC = () => {
                       })}
                     </div>
                   ) : (
-                    <p>Cargando datos...</p>
+                    ''
+                  )}
+                  {saleOrdersConcepts?.personalized_concepts ? (
+                    <div className='table__body'>
+                      {saleOrdersConcepts?.personalized_concepts?.map((x: any, index: number) => {
+                        return (
+                          <div className='tbody__container' key={x.id}>
+                            <div className='tbody'>
+                              <div className='td code'>
+                                <p>{x.codigo}</p>
+                              </div>
+                              <div className='td description'>
+                                <p>{x.descripcion}</p>
+                              </div>
+                              <div className='td amount'>
+                                <p>{x.cantidad}</p>
+                              </div>
+                              <div className='td delete'>
+                                <div className='delete-icon' onClick={() => deleteArticle(x, index, 'sales')} title='Eliminar concepto'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    ''
                   )}
                 </div>
                 <div className='row__three'>

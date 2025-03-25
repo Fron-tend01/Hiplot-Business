@@ -14,8 +14,10 @@ interface StoreState {
     saleOrders: any;
     setSaleOrders: (x: any) => void;
 
-    saleOrdersCart: any;
-    setSaleOrdersCart: (x: any) => void;
+    saleOrdersConcepts: any;
+    setSaleOrdersConcepts: (x: any) => void;
+
+
 
     dataGet: any;
     setDataGet: (x: any) => void;
@@ -35,11 +37,29 @@ interface StoreState {
 }
 
 export const storeSaleOrder = create<StoreState>((set) => ({
+
+    saleOrdersConcepts: {normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: []},
+    setSaleOrdersConcepts: (x) => set({saleOrdersConcepts: x}),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     IdArticle: [],
     setIdArticle: (x) => set({IdArticle: x}),
 
-    saleOrdersCart: [],
-    setSaleOrdersCart: (x) => set({saleOrdersCart: x}),
+    
 
 
     changeLength: false,
