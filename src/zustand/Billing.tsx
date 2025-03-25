@@ -23,9 +23,22 @@ interface StoreState {
 
     conceptsBack: any;
     setConceptsBack: (x: any) => void;
+
+    billing: any;
+    setBilling: (x: any) => void;
 }
 
 export const storeBilling = create<StoreState>((set) => ({
+
+    billing: { sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] },
+    setBilling: (x) =>
+        set((state) => ({
+            billing: {
+                ...state.billing,
+                ...x,
+            },
+        })),
+
 
     DataUpdate: [],
     setDataUpdate: (x) => set({ DataUpdate: x }),
@@ -38,7 +51,7 @@ export const storeBilling = create<StoreState>((set) => ({
 
     dates: [],
     setDates: (x) => set({ dates: x }),
-    
+
     dataBillign: [],
     setDataBillign: (x) => set({ dataBillign: x }),
 

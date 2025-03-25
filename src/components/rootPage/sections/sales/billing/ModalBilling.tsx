@@ -24,7 +24,12 @@ import Swal from 'sweetalert2'
 import DynamicVariables from '../../../../../utils/DynamicVariables'
 
 
+
+
 const ModalBilling: React.FC = () => {
+
+    const setBilling = storeBilling((state) => state.setBilling);
+    const { billing }: any = useStore(storeBilling);
     // const [factura, setFactura] = useState<any>({
     //     id: 0,
     //     id_folio: 0,
@@ -546,10 +551,8 @@ const ModalBilling: React.FC = () => {
 
         let totalConcepts = [...newConcepts, ...newConceptsPers];
         setTotals(copy_totals);
-        setNormalConcepts([...normalConcepts, ...newConcepts]);
-        setCustomConcepts([...customConcepts, ...newConceptsPers]);
+        setBilling({ normal_concepts: newConcepts, personalized_concepts: newConceptsPers });
         setDataBillign([...dataBillign, ...totalConcepts]);
-        setIdentifier(newIdentifier);
         //------------------------------------------------------------------RELLENAR INFORMACIÓN AUTOMATICA DE CLIENTE Y TITULO
         setTitle(order.titulo == undefined ? 'Cobro PAF' : order.titulo)
         if (order.rfc != undefined) {
@@ -640,8 +643,8 @@ const ModalBilling: React.FC = () => {
                 DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total_restante))
             }
 
-            const filterNormal = normalConcepts.filter((x: any, index: number) => index !== i);
-            setNormalConcepts(filterNormal);
+            const filterNormal = billing?.normal_concepts.filter((_: any, index: number) => index !== i);
+            setBilling({normal_concepts: filterNormal});
 
         } else {
             if (c.id_concepto_comercial != undefined) {
@@ -684,8 +687,8 @@ const ModalBilling: React.FC = () => {
                 const filter = conceptsBack.filter((x: any) => x.id !== c.id);
                 setConceptsBack(filter);
 
-                const filterNormal = normalConcepts.filter((x: any, index: number) => index !== i);
-                setNormalConcepts(filterNormal);
+                const filterNormal = billing?.normal_concepts.filter((_: any, index: number) => index !== i);
+                setBilling({normal_concepts: filterNormal});
 
             }
         }
@@ -694,26 +697,25 @@ const ModalBilling: React.FC = () => {
 
     const undoConceptos = (concept: any, i: number) => {
         if (subModal == 'billing__modal-create') {
-            const deleteItemCustomC = customConcepts.filter((x: any, index: number) => index !== i);
+            const deleteItemCustomC = billing?.personalized_concepts.filter((_: any, index: number) => index !== i);
             const updatedConcepts = concept.conceptos.map((element: any) => ({
                 ...element,
                 id_pers: 0,
                 check: false,
             }));
 
-            setCustomConcepts(deleteItemCustomC)
-            setNormalConcepts([...normalConcepts, ...updatedConcepts])
+            setBilling({ normal_concepts: [...(billing?.normal_concepts ?? []), ...updatedConcepts], personalized_concepts: deleteItemCustomC, ...(concept.id && { normal_concepts_eliminate: [ ...(billing?.normal_concepts_eliminate ?? []), concept.id ] })});
+
 
         } else {
-            const deleteItemCustomC = customConcepts.filter((x: any, index: number) => index !== i);
+            const deleteItemCustomC = billing?.personalized_concepts.filter((_: any, index: number) => index !== i);
             const updatedConcepts = concept.conceptos.map((element: any) => ({
                 ...element,
                 id_pers: 0,
                 check: false,
             }));
-
-            setCustomConcepts(deleteItemCustomC)
-            setNormalConcepts([...normalConcepts, ...updatedConcepts])
+            setBilling({ normal_concepts: [...(billing?.normal_concepts ?? []), ...updatedConcepts], personalized_concepts: deleteItemCustomC, ...(concept.id && { normal_concepts_eliminate: [ ...(billing?.normal_concepts_eliminate ?? []), concept.id ] })});
+ 
         }
 
 
@@ -751,7 +753,7 @@ const ModalBilling: React.FC = () => {
 
     const personalizedCreate = () => {
         setPersonalizedModal('personalized_modal-billing')
-        setCustomConceptView(normalConcepts);
+        setCustomConceptView(billing.normal_concepts);
     }
 
     const [idItem, setIdItem] = useState<number>()
@@ -1044,7 +1046,7 @@ const ModalBilling: React.FC = () => {
                             <button className='btn__general-primary' onClick={personalizedCreate}>Personalizados</button>
                         </div>
                         <div className='table__billing_concepts'>
-                            {normalConcepts ? (
+                            {billing.normal_concepts || billing.personalized_concepts ? (
                                 <div className='w-full my-3 d-flex justify-content-between'>
                                     <div className='table__numbers'>
                                         <div className='col-12'>
@@ -1083,7 +1085,7 @@ const ModalBilling: React.FC = () => {
                                 </div>
                             </div>
                             <div className='table__body'>
-                                {normalConcepts?.map((concept: any, index: number) => {
+                                {billing.normal_concepts?.map((concept: any, index: number) => {
                                     return (
                                         <div className={`tbody__container `} key={concept.id}>
                                             <div className='tbody'>
@@ -1107,7 +1109,8 @@ const ModalBilling: React.FC = () => {
                                                     <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <button type='button' className='btn__general-purple' onClick={() => handleAddDivisionChange(concept)}>Division</button>
+                                                    <svg onClick={() => handleAddDivisionChange(concept)} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-divide"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><circle cx="12" cy="6" r="1" fill="currentColor" /><circle cx="12" cy="18" r="1" fill="currentColor" /><path d="M5 12l14 0" /></svg>
+
                                                 </div>
                                                 <div className='td'>
                                                     <div className='delete-icon' onClick={() => { deleteConceptos(concept, index) }} title='Eliminar concepto'>
@@ -1121,7 +1124,7 @@ const ModalBilling: React.FC = () => {
                                         </div>
                                     )
                                 })}
-                                {customConcepts?.map((concept: any, index: number) => {
+                                {billing.personalized_concepts?.map((concept: any, index: number) => {
                                     return (
                                         <div className={`tbody__container `} key={concept.id}>
 
@@ -1150,9 +1153,14 @@ const ModalBilling: React.FC = () => {
                                                 </div>
                                                 <div className='td'>
                                                     {concept.concept ?
-                                                        <button type='button' className='btn__general-purple' onClick={() => personalizedUpdate(concept, index)}>Conceptos</button>
+                                                        <div onClick={() => personalizedUpdate(concept, index)} className='conept-icon'>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
+                                                        </div>
                                                         :
-                                                        <button type='button' className='btn__general-purple' onClick={() => personalizedUpdate(concept, index)}>Conceptos</button>
+                                                        <div onClick={() => personalizedUpdate(concept, index)} className='conept-icon'>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
+                                                        </div>
+                                                       
 
                                                     }
                                                 </div>
@@ -1160,7 +1168,9 @@ const ModalBilling: React.FC = () => {
                                                     ''
                                                     :
                                                     <div className='td'>
-                                                        <button type='button' className='btn__general-purple' onClick={() => handleAddDivisionChange(concept)}>Division</button>
+                                                        <div className='conept-icon-yellow'>
+                                                            <svg onClick={() => handleAddDivisionChange(concept)} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-divide"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><circle cx="12" cy="6" r="1" fill="currentColor" /><circle cx="12" cy="18" r="1" fill="currentColor" /><path d="M5 12l14 0" /></svg>
+                                                        </div>
                                                     </div>
                                                 }
                                                 <div>

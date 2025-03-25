@@ -26,8 +26,7 @@ const SeeCamposPlantillas: React.FC = () => {
     }
 
 
-    console.log('normalConcepts', normalConcepts)
-    
+  
 
     return (
         <div className={`overlay__templates_fields_modal ${modalSub === 'see_cp' || modalSub === 'see_cp-personalized'  ? 'active' : ''}`}>

@@ -32,7 +32,7 @@ const ModalProduction: React.FC = () => {
 
 
     const [areasGral, setAreasGral] = useState<any>()
-    console.log()
+ 
 
     useEffect(() => {
         if (productionToUpdate) {
@@ -288,9 +288,8 @@ const ModalProduction: React.FC = () => {
 
     const checkPermission = (elemento: string) => {
         const permisosxVista = storeDv.getState().permisosxvista; // Obtiene el estado actual
-        console.log(permisosxVista);
-        console.log(elemento);
-
+     
+      
         return permisosxVista.some((x: any) => x.titulo === elemento);
     };
     return (
@@ -343,7 +342,7 @@ const ModalProduction: React.FC = () => {
                                         <div className='mr-4'>
                                             <button className='btn__general-orange' type='button' onClick={getPDF}>Imprimir ticket</button>
                                         </div>
-                                        <div className='d-flex mr-4'>
+                                        <div className='mr-4 d-flex'>
                                             <div className='mr-3'>
                                                 <Select dataSelects={areasGral} instanceId='areasGral' nameSelect='Enviar todo a Otra Area:' />
                                             </div>
@@ -361,7 +360,7 @@ const ModalProduction: React.FC = () => {
                                     </div>
                                     <div className='d-flex align-items-end'>
                                     {checkPermission('terminar') && (
-                                        <button className='btn__general-danger mr-3' onClick={() => finishConcept()}>Terminar orden</button>
+                                        <button className='mr-3 btn__general-danger' onClick={() => finishConcept()}>Terminar orden</button>
 
                                     )}
                                         {checkPermission('cancelar') && (
@@ -442,7 +441,7 @@ const ModalProduction: React.FC = () => {
                                                     </div>
                                                 </div>
                                                 <div className='td'>
-                                                    <select className="traditional__selector mr-3" value={article.id_area_produccion} onChange={(e) => onChangeAreaConcepto(index, e.target.value)}>
+                                                    <select className="mr-3 traditional__selector" value={article.id_area_produccion} onChange={(e) => onChangeAreaConcepto(index, e.target.value)}>
                                                         <option value="" disabled>-- Selecciona una opción --</option>
                                                         {article.areas_produccion.map((option: any, idx: number) => (
                                                             <option key={idx} value={option.id_area

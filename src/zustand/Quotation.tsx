@@ -41,7 +41,7 @@ interface StoreState {
 export const storeQuotation = create<StoreState>((set) => ({
 
 
-    quotesConcepts: { normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [] },
+    quotesConcepts: { sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] },
     setQuotesConcepts: (newQuotesConcepts) =>
         set((state) => ({
             quotesConcepts: {

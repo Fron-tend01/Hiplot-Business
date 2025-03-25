@@ -343,7 +343,7 @@
 
 .table__billing_concepts .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr)) 50px;
+    grid-template-columns: repeat(6, minmax(0, 1fr)) 50px 50px 50px;
     padding: 10px;
     font-weight: 600;
 }
@@ -401,7 +401,7 @@
 
 .table__billing_concepts .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr)) 50px;
+    grid-template-columns: repeat(6, minmax(0, 1fr)) 50px 50px 50px;
     padding: 10px;
 
 }
@@ -410,6 +410,8 @@
     display: flex;
     
 }
+
+
 
 .table__billing_concepts .concept__personalized {
     display: flex;

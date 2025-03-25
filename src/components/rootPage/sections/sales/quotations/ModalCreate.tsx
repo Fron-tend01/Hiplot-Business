@@ -43,8 +43,12 @@ const ModalCreate: React.FC = () => {
   const setCustomLocal = storePersonalized(state => state.setCustomLocal)
 
   ////////////////// Personalized Variations////////////////////////////////// 
-  const { normalConcepts, deleteNormalConcepts, customConcepts, deleteCustomConcepts, conceptView, dataUpdate, personalizedModal, normalConceptsView }: any = useStore(storePersonalized)
+  const { normalConcepts, customConcepts, dataUpdate, personalizedModal }: any = useStore(storePersonalized)
   const permisosxVista = storeDv((state) => state.permisosxvista);
+
+
+  const setQuotesConcepts = storeQuotation(state => state.setQuotesConcepts)
+  const { quotesConcepts }: any = useStore(storeQuotation);
 
   const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
 
@@ -68,10 +72,6 @@ const ModalCreate: React.FC = () => {
 
   const [company, setCompany] = useState<any>([])
   const [branch, setBranch] = useState<any>([])
-
-  const setQuotes = storeQuotation(state => state.setQuotes)
-  const { quotes }: any = useStore(storeQuotation);
-
 
 
   const [name, setName] = useState<any>()
@@ -253,8 +253,8 @@ const ModalCreate: React.FC = () => {
 
 
 
-    if (customConcepts.length > 0) {
-      customConcepts?.forEach((element: any) => {
+    if (quotesConcepts?.personalized_concepts.length > 0) {
+      quotesConcepts?.personalized_concepts?.forEach((element: any) => {
         element.conceptos.forEach((x: any) => {
           x.unidad = x.id_unidad
           x.total = x.precio_total
@@ -273,10 +273,10 @@ const ModalCreate: React.FC = () => {
       id_usuario_crea: user_id,
       titulo: title,
       comentarios: comments,
-      conceptos: normalConcepts,
-      conceptos_pers: customConcepts,
-      conceptos_elim: deleteNormalConcepts,
-      conceptos_pers_elim: deleteCustomConcepts,
+      conceptos: quotesConcepts?.normal_concepts,
+      conceptos_pers: quotesConcepts?.personalized_concepts,
+      conceptos_elim: quotesConcepts?.normal_concepts_eliminate,
+      conceptos_pers_elim: quotesConcepts?.personalized_concepts_eliminate,
       id_solicitud_cotizacion: info_sc.cot_propia ? user_id : info_sc.folio_sc == '' ? info_sc.folio_sc : 0,
     };
 
@@ -308,16 +308,9 @@ const ModalCreate: React.FC = () => {
           setModal('')
         }
       }
+      setQuotesConcepts({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] })
       setComments('')
       setName('')
-      setCustomLocal([])
-      setNormalConceptsView([])
-      setNormalConcepts([])
-      setDeleteNormalConcepts([])
-      setDeleteCustomConcepts([])
-      setCustomConcepts([])
-      setConceptView([])
-      setCustomConceptView([])
       localStorage.removeItem("cotizacion");
     } catch (error) {
       Swal.fire('Error', 'Hubo un error al crear la cotizacion', 'error');
@@ -327,39 +320,23 @@ const ModalCreate: React.FC = () => {
 
 
   const undoConcepts = (concept: any, i: number) => {
-    const deleteItemCustomC = customConcepts.filter((_: any, index: number) => index !== i);
+    const deleteItemCustomC = quotesConcepts?.personalized_concepts.filter((_: any, index: number) => index !== i);
     const updatedConcepts = concept.conceptos.map((element: any) => ({
       ...element,
       id_pers: 0,
       check: false,
     }));
-
-    setCustomConcepts(deleteItemCustomC)
-    setNormalConcepts([...normalConcepts, ...updatedConcepts])
+    setQuotesConcepts({ normal_concepts: [...quotesConcepts?.normal_concepts, ...updatedConcepts], personalized_concepts: deleteItemCustomC, personalized_concepts_eliminate: concept.id ? [...quotesConcepts.personalized_concepts_eliminate, concept.id] : [...quotesConcepts.personalized_concepts_eliminate]});
 
   };
 
+  console.log('quotesConcepts', quotesConcepts)
+
   const deleteNormalConcept = (item: any, i: number) => {
-    // if (modal === 'create-modal__qoutation') {
-
-    //   const filter = normalConcepts.filter((c: any, index: number) => index !== i)
-    //   setNormalConcepts(filter)
-    //   toast.success('Concepto eliminado')
-    //   localStorage.setItem('cotizacion', JSON.stringify(filter));
-
-    // } else {
-    //   const filter = normalConcepts.filter((c: any, index: number) => index !== i)
-    //   setNormalConcepts(filter)
-    //   toast.success('Concepto eliminado')
-    //   localStorage.setItem('cotizacion', JSON.stringify(filter));
-    // }
-
-    const filter = normalConcepts.filter((c: any, index: number) => index !== i)
-    const filterQuotes = quotes.filter((c: any, index: number) => index !== i)
-    setNormalConcepts(filter)
-    toast.success('Concepto eliminado')
+    const filter = quotesConcepts?.normal_concepts.filter((_: any, index: number) => index !== i)
+    setQuotesConcepts({ normal_concepts: filter, normal_concepts_eliminate: item.id ? [...quotesConcepts.normal_concepts_eliminate, item.id] : [...quotesConcepts.normal_concepts_eliminate]});
     localStorage.setItem('cotizacion', JSON.stringify(filter));
-    setQuotes(filterQuotes)
+    toast.success('Concepto eliminado')
   }
 
 
@@ -412,7 +389,7 @@ const ModalCreate: React.FC = () => {
 
   const modalPersonalized = () => {
     setPersonalizedModal('personalized_modal-quotation')
-    setCustomConceptView(normalConcepts)
+    setCustomConceptView(quotesConcepts.normal_concepts)
   }
 
 
@@ -421,37 +398,16 @@ const ModalCreate: React.FC = () => {
 
   const modalPersonalizedUpdate = (concept: any, index: number) => {
     setIndexItem(index)
-    localStorage.removeItem("contizacion");
     if (concept.con_adicional) {
       setPersonalizedModal('personalized_modal-quotation-update-additional');
     } else {
       setPersonalizedModal('personalized_modal-quotation-update');
-
     }
     setIdItem(concept);
     concept.conceptos.forEach((element: any) => {
       element.check = true;
-      // Incrementar y asignar
     });
-    setCustomConceptView([...concept.conceptos, ...normalConcepts]);
-
-    // if (modal == 'create-modal__qoutation') {
-
-    // } else {
-    //   concept.conceptos.forEach((element: any) => {
-    //     element.check = true;
-    //     // Incrementar y asignar
-    //   });
-    //   setCustomConceptView([...concept.conceptos, ...normalConcepts]);
-
-
-    // }
-    // if (concept.con_adicional) {
-    //   setCustomConceptView(concept.conceptos);
-    // } else {
-    //   setCustomConceptView([...concept.conceptos, ...normalConcepts]);
-    // }
-
+    setCustomConceptView([...concept.conceptos, ...quotesConcepts.normal_concepts]);
   }
 
 
@@ -519,11 +475,7 @@ const ModalCreate: React.FC = () => {
 
 
   }, [normalConcepts, customConcepts])
-  // const cambioInputsPers = async (valor: number, index: number, key: string) => {
-  //   const newConcept = [...normalConcepts];
-  //   newConcept[index][key] = valor;
-  //   setNormalConcepts(newConcept);
-  // };
+ 
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
   const [dataArticle, setDataArticle] = useState<any>();
@@ -824,9 +776,8 @@ const ModalCreate: React.FC = () => {
                 </div>
               </div>
               <div className='table__quotations-modal-body-desk'>
-                {normalConcepts ? (
                   <div className='table__body'>
-                    {normalConcepts?.map((article: any, index: number) => {
+                    {quotesConcepts?.normal_concepts.map((article: any, index: number) => {
                       return (
                         <div className='tbody__container' key={index}>
                           {article.personalized ?
@@ -961,7 +912,7 @@ const ModalCreate: React.FC = () => {
                         </div>
                       )
                     })}
-                    {customConcepts?.map((article: any, index: number) => {
+                    {quotesConcepts?.personalized_concepts.map((article: any, index: number) => {
                       return (
                         <div className='tbody__container' key={index}>
                           <div className='concept__personalized'>
@@ -1024,13 +975,11 @@ const ModalCreate: React.FC = () => {
                       )
                     })}
                   </div>
-                ) : (
-                  <p className="text">Cargando datos...</p>
-                )}
+               
               </div>
               <div className='table__quotations-modal-body-response'>
                 <div className='table__body'>
-                  {normalConcepts?.map((article: any, index: number) => {
+                  {quotesConcepts?.normal_concepts.map((article: any, index: number) => {
                     return (
                       <div className='tbody__container' key={index}>
                         <div className='tbody'>
@@ -1104,7 +1053,7 @@ const ModalCreate: React.FC = () => {
                       </div>
                     )
                   })}
-                  {customConcepts?.map((article: any, index: number) => {
+                  {quotesConcepts?.personalized_concepts.map((article: any, index: number) => {
                     return (
                       <div className='tbody__container' key={index}>
                         <div className='concept__personalized'>

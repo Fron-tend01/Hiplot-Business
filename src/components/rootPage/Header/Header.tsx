@@ -56,32 +56,36 @@ const Header: React.FC = () => {
   const [totalQuotes, setTotalQuotes] = useState<number>(0);
 
   const getOrders = () => {
-    const storedData = JSON.parse(localStorage.getItem("sale-order") || "[]");
-    const storedQuotes = JSON.parse(localStorage.getItem("cotizacion") || "[]");
+    const sale_order = JSON.parse(localStorage.getItem("sale-order") || "[]");
+    const sale_order_pers = JSON.parse(localStorage.getItem("sale-order-pers") || "[]");
+    const cotizacion = JSON.parse(localStorage.getItem("cotizacion") || "[]");
 
-    if (storedData.length > 0) {
-      setSaleOrdersConcepts({normal_concepts: storedData});
+    const cotizacion_pers = JSON.parse(localStorage.getItem('cotizacion-pers') || "[]");
+
+    if (sale_order.length > 0 || sale_order_pers.length > 0) {
+      setSaleOrdersConcepts({normal_concepts: sale_order, personalized_concepts: sale_order_pers });
     }
 
-    if (storedQuotes.length > 0) {   
-      setQuotesConcepts({ normal_concepts: storedQuotes });
+    if (cotizacion.length > 0 || cotizacion_pers.length > 0) {   
+      setQuotesConcepts({ normal_concepts: cotizacion, personalized_concepts: cotizacion_pers });
       
 
     } 
   };
-
-  console.log('saleOrdersConcepts', saleOrdersConcepts)
 
   useEffect(() => {
     getOrders();
   }, []);
 
   useEffect(() => {
-    // let totalSale = saleOrdersConcepts.reduce((acc, item) => acc + parseInt(item.cantidad || "0"), 0);
-    // let totalQuote = quotes.reduce((acc, item) => acc + parseInt(item.cantidad || "0"), 0);
+    let n_sale = saleOrdersConcepts?.normal_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
+    let p_sale = saleOrdersConcepts?.personalized_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
+    let n_quotes = quotesConcepts?.normal_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
+    let p_quotes = quotesConcepts?.personalized_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
 
-    // setTotalSales(totalSale);
-    // setTotalQuotes(totalQuote);
+
+    setTotalSales(n_sale + p_sale);
+    setTotalQuotes(n_quotes + p_quotes);
   }, [saleOrdersConcepts, quotesConcepts]);
 
 
@@ -239,7 +243,7 @@ const Header: React.FC = () => {
                 <svg className='icon-change_history' xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(12,36,60)"><path d="M152-160q-23 0-35-20.5t1-40.5l328-525q12-19 34-19t34 19l328 525q13 20 1 40.5T808-160H152Z" /></svg>
                 <div className='row__one'>
                   <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-shopping-cart"><circle cx="8" cy="21" r="1" /><circle cx="19" cy="21" r="1" /><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M440-240v20q0 8 6 14t14 6h40q8 0 14-6t6-14v-20h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h120q17 0 28.5-11.5T600-520q0-17-11.5-28.5T560-560h-40v-20q0-8-6-14t-14-6h-40q-8 0-14 6t-6 14v20h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H400q-17 0-28.5 11.5T360-280q0 17 11.5 28.5T400-240h40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h360l200 200v520q0 33-23.5 56.5T720-80H240Zm0-80h480v-480H600q-17 0-28.5-11.5T560-680v-120H240v640Zm0-640v160-160 640-640Z" /></svg>
                   </div>
                   <p>Detalles de las cotizaciones</p>
                 </div>
@@ -349,6 +353,7 @@ const Header: React.FC = () => {
                       </div>
                     </div>
                   </div>
+                  <div className='table_concepts_header'>
                   {saleOrdersConcepts?.normal_concepts ? (
                     <div className='table__body'>
                       {saleOrdersConcepts?.normal_concepts?.map((x: any, index: number) => {
@@ -405,6 +410,7 @@ const Header: React.FC = () => {
                   ) : (
                     ''
                   )}
+                  </div>
                 </div>
                 <div className='row__three'>
                   <div className='total'>

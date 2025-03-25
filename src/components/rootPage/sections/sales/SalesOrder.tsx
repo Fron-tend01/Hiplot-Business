@@ -22,11 +22,9 @@ const SalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
     const user_id = userState.id
 
-    const setConceptView = storePersonalized(state => state.setConceptView)
-    const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
-    const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
-    const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
-    const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
+
+     const setSaleOrdersConcepts = storeSaleOrder(state => state.setSaleOrdersConcepts)
+      const { saleOrdersConcepts }: any = useStore(storeSaleOrder);
 
 
     const { getUsers }: any = usersRequests()
@@ -48,12 +46,11 @@ const SalesOrder: React.FC = () => {
 
     const modalOpen = () => {
         setModalSalesOrder('sale-order__modal')
-        const storedData = JSON.parse(localStorage.getItem("sale-order") || "[]");
-        if (storedData.length > 0) {
-            // Obtener la longitud de storedData
+        const sale_order = JSON.parse(localStorage.getItem("sale-order") || "[]");
+        const sale_order_pers = JSON.parse(localStorage.getItem("sale-order-pers") || "[]");
     
-            setNormalConcepts(storedData)
-
+        if (sale_order.length > 0 || sale_order_pers.length > 0) {
+            setSaleOrdersConcepts({normal_concepts: sale_order, personalized_concepts: sale_order_pers });
         }
     }
 
@@ -150,17 +147,16 @@ const SalesOrder: React.FC = () => {
         }
         const result = await getSaleOrders(dataSaleOrders)
         setModalLoading(false)
+        setSaleOrders(result)
 
         setDataGet(dataSaleOrders)
-        setSaleOrders(result)
     }
 
     const modalUpdate = (order: any) => {
         console.log(order)
         setModalSalesOrder('sale-order__modal-update')
+        setSaleOrdersConcepts({sale_order: order, normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers});
         setSaleOrdersToUpdate(order)
-        setCustomConcepts(order.conceptos_pers);
-        setNormalConcepts(order.conceptos);
 
     }
 
@@ -176,7 +172,6 @@ const SalesOrder: React.FC = () => {
     return (
         <div className='sales__order'>
             <div className='sales__order_container'>
-             
                 <div className='row__one'>
                     <div className='row'>
                         <div className='col-8'>

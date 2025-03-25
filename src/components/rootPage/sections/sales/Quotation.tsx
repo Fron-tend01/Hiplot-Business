@@ -35,6 +35,7 @@ const Quotation: React.FC = () => {
   const setQuatation = storeQuotation(state => state.setQuatation)
   const setPersonalized = storePersonalized(state => state.setPersonalized)
 
+  const setQuotesConcepts = storeQuotation(state => state.setQuotesConcepts)
 
 
   const setDataGet = storeQuotation(state => state.setDataGet);
@@ -59,14 +60,10 @@ const Quotation: React.FC = () => {
 
   const modal = () => {
     setModal('create-modal__qoutation')
-    const storedData = JSON.parse(localStorage.getItem('cotizacion') || "[]");
-
-    if (storedData) {
-      const dataLength = storedData.length;
-      storePersonalized.getState().setIdentifier(dataLength);
-      setNormalConcepts(storedData)
-      setNormalConceptsView(storedData)
-      setConceptView(storedData)
+    const cotizacion = JSON.parse(localStorage.getItem('cotizacion') || "[]");
+    const cotizacion_pers = JSON.parse(localStorage.getItem('cotizacion-pers') || "[]");
+    if (cotizacion) {
+      setQuotesConcepts({ normal_concepts: cotizacion, personalized_concepts: cotizacion_pers });
     }
 
   }
@@ -177,10 +174,8 @@ const Quotation: React.FC = () => {
 
   const updateQuotation = (quotation: any) => {
     console.log('quotation', quotation)
-    // Cambia el estado del modal
     setModal('update-modal__qoutation');
-    setCustomConcepts(quotation.conceptos_pers);
-    setNormalConcepts(quotation.conceptos);
+    setQuotesConcepts({ normal_concepts: quotation.conceptos, personalized_concepts: quotation.conceptos_pers});
     setQuatation(quotation);
   };
 
