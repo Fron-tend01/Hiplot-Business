@@ -494,6 +494,7 @@
 
 .table__sales_modal .table__body .tbody {
 	display: flex;
+	
 }
 
 .table__sales_modal .table__body .tbody.personalized {
