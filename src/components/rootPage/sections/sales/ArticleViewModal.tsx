@@ -76,6 +76,7 @@ const ArticleViewModal = () => {
     const [i, setI] = useState(0);
 
     const [dentroColeccion, setDentroColeccion] = useState<boolean>(false)
+    const [id_col, setid_col] = useState<any>({})
     const [dentroColeccionNombre, setDentroColeccionNombre] = useState<string>('')
     const modal = async (x: any) => {
         setStatusArticle(false);
@@ -114,6 +115,7 @@ const ArticleViewModal = () => {
                 setDentroColeccionNombre(x.codigo)
                 setDentroColeccion(true)
                 setModalLoading(true)
+                setid_col(x)
                 const result = await getArticlesForVendedor(data);
                 setArticles(result);
                 setModalLoading(false)
@@ -134,46 +136,86 @@ const ArticleViewModal = () => {
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
     const [selectedFamily, setSelectedFamily] = useState<number>(0)
-    const search = async (reinicio_page: boolean) => {
+    const search = async (reinicio_page: boolean, saliendo_col:boolean = false) => {
         let pag = page
-        setDentroColeccion(false)
-        setDentroColeccionNombre('')
-        setArticles([])
-        if (reinicio_page) {
-            setPage(1)
-            pag = 1
-        }
-        const data = {
-            id: 0,
-            activos: true,
-            nombre: inputs.name,
-            codigo: inputs.code,
-            familia: selectedFamily,
-            proveedor: 0,
-            materia_prima: 99,
-            get_sucursales: false,
-            get_proveedores: false,
-            get_max_mins: false,
-            get_plantilla_data: false,
-            get_areas_produccion: false,
-            get_stock: false,
-            coleccion: isChecked,
-            // id_coleccion: isChecked ? dataCollection.id : 0,
-            get_web: false,
-            get_unidades: false,
-            for_vendedor: true,
-            page: pag,
-            id_usuario: user_id,
-            light: true
-        };
-        try {
-            setModalLoading(true)
-            const result = await getArticlesForVendedor(data)
-            setArticles(result);
-            setModalLoading(false)
+        if (dentroColeccion && !saliendo_col) {
+            const data = {
+                id: 0,
+                activos: true,
+                nombre: '',
+                codigo: '',
+                familia: 0,
+                proveedor: 0,
+                materia_prima: 99,
+                get_sucursales: false,
+                get_proveedores: false,
+                get_max_mins: false,
+                get_plantilla_data: false,
+                get_areas_produccion: false,
+                coleccion: false,
+                id_coleccion: id_col.id,
+                get_stock: false,
+                get_web: false,
+                get_unidades: false,
+                for_vendedor: true,
+                page: page,
+                id_usuario: user_id,
+                light: true
+            };
+            try {
+                setDentroColeccionNombre(id_col.codigo)
+                setDentroColeccion(true)
+                setModalLoading(true)
+                // setid_col(id)
+                const result = await getArticlesForVendedor(data);
+                setArticles(result);
+                setModalLoading(false)
 
-        } catch (error) {
-            setModalLoading(false)
+            } catch (error) {
+                setModalLoading(false)
+
+            }
+        }else {
+            setDentroColeccion(false)
+            setDentroColeccionNombre('')
+            setArticles([])
+            if (reinicio_page) {
+                setPage(1)
+                pag = 1
+            }
+            const data = {
+                id: 0,
+                activos: true,
+                nombre: inputs.name,
+                codigo: inputs.code,
+                familia: selectedFamily,
+                proveedor: 0,
+                materia_prima: 99,
+                get_sucursales: false,
+                get_proveedores: false,
+                get_max_mins: false,
+                get_plantilla_data: false,
+                get_areas_produccion: false,
+                get_stock: false,
+                coleccion: isChecked,
+                // id_coleccion: isChecked ? dataCollection.id : 0,
+                get_web: false,
+                get_unidades: false,
+                for_vendedor: true,
+                page: pag,
+                id_usuario: user_id,
+                light: true
+            };
+            try {
+                setModalLoading(true)
+                const result = await getArticlesForVendedor(data)
+                setArticles(result);
+                setModalLoading(false)
+    
+            } catch (error) {
+                setModalLoading(false)
+            }
+
         }
 
     }
@@ -297,7 +339,7 @@ const ArticleViewModal = () => {
                     {dentroColeccion ?
                         <div className='row'>
                             <div className='col-12'>
-                                <button className='btn__general-orange' style={{ maxHeight: '50px', width: '100%' }} onClick={() => search(true)}>Salir de Colección</button>
+                                <button className='btn__general-orange' style={{ maxHeight: '50px', width: '100%' }} onClick={() => search(true, true)}>Salir de Colección</button>
                                 <div className='text-center'>
                                     <h2 >{dentroColeccionNombre}</h2>
                                 </div>

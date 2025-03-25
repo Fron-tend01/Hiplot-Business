@@ -24,6 +24,7 @@ import Binnacle from './components/Binnacle'
 import { saleOrdersRequests } from '../../../../../fuctions/SaleOrders'
 import { storeArticles } from '../../../../../zustand/Articles'
 import { storeProduction } from '../../../../../zustand/Production'
+import ModalProduction from '../../production/ModalProduction'
 
 const ModalSalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -931,9 +932,32 @@ const ModalSalesOrder: React.FC = () => {
     };
     const setProductionToUpdate = storeProduction(state => state.setProductionToUpdate)
 
-    const verProduccion = () => {
-        setModalSub('production__modal')
-        // setProductionToUpdate(order)
+    const verProduccion = async (id: number) => {
+        const dataProductionOrders = {
+            id: id,
+            folio: 0,
+            id_sucursal: 0,
+            id_serie: 0,
+            id_area: 0,
+            // id_cliente: client,
+            desde: dates[0].toString().split('T')[0], // Solo la fecha
+            hasta: dates[1].toString().split('T')[0],
+            id_usuario: user_id,
+            status: 0,
+        }
+        setModalLoading(true)
+        try {
+            APIs.getProoductionOrders(dataProductionOrders).then((resp: any) => {
+                setModalLoading(false)
+                setProductionToUpdate(resp[0])
+                setModalSub('production__modal')
+            }).finally(() => {
+                setModalLoading(false)
+            })
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -1126,7 +1150,9 @@ const ModalSalesOrder: React.FC = () => {
                                         <div className='table__body'>
                                             {saleOrdersToUpdate.ordenes_produccion.map((facts: any) => {
                                                 return (
-                                                    <div className='tbody__container'>
+                                                    <div className='tbody__container' style={{borderRadius:'10px', background:'repeating-linear-gradient(344deg, #2087b1, #e5e5e500 100px)',
+                                                        cursor:'pointer'
+                                                    }} onClick={() => verProduccion(facts.id)}>
                                                         <div className='tbody'>
                                                             <div className='td'>
                                                                 <p className='folio'>{facts.folio_completo}</p>
@@ -1613,6 +1639,7 @@ const ModalSalesOrder: React.FC = () => {
                 <Personalized idItem={idItem} indexItem={indexItem} />
                 <SeeCamposPlantillas />
                 <Binnacle />
+                <ModalProduction />
 
             </div>
         </div>
