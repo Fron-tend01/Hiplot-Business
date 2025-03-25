@@ -19,12 +19,11 @@ import { saleOrdersRequests } from '../../../../fuctions/SaleOrders'
 const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
+
   const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
 
-
-  const setConceptView = storePersonalized(state => state.setConceptView)
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
-  const setIdItem = storePersonalized(state => state.setIdItem)
+
 
   const { saleOrdersToUpdate }: any = useStore(storeSaleOrder);
   const { getSaleOrders }: any = saleOrdersRequests()
@@ -38,13 +37,9 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
 
   const setSelectedId = useSelectStore((state) => state.setSelectedId);
 
-  const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
-  const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
   const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
 
   const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
-
-  const setCustomLocal = storePersonalized(state => state.setCustomLocal)
 
   const { normalConcepts, customConceptView, deleteCustomConcepts, customConcepts, customLocal, personalizedModal, customData, dataUpdate, normalConceptsView }: any = useStore(storePersonalized)
   const { identifier }: any = useStore(storePersonalized)

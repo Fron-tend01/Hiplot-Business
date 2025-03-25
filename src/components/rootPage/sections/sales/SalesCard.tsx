@@ -54,11 +54,13 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
 
-  const setSaleOrdersCart = storeSaleOrder(state => state.setSaleOrdersCart)
-  const { saleOrdersCart }: any = useStore(storeSaleOrder);
+  const setSaleOrdersConcepts = storeSaleOrder(state => state.setSaleOrdersConcepts)
+  const { saleOrdersConcepts }: any = useStore(storeSaleOrder);
 
-  const setQuotes = storeQuotation(state => state.setQuotes)
-  const { quotes }: any = useStore(storeQuotation);
+
+  const setQuotesConcepts = storeQuotation(state => state.setQuotesConcepts)
+  const { quotesConcepts }: any = useStore(storeQuotation);
+  
 
 
   const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
@@ -591,6 +593,7 @@ console.log('data', data)
 
 
   const addQua = () => {
+    console.log('quotesConcepts', quotesConcepts)
     if (Adicional != null) { //SI ADICIONAL TIENE ALGO SE DEBE CREAR EL PERSONALIZADO PARA ENVIARLO A COT/OV
       //-------------------------------SIMULAR EL INGRESO DIRECTO A NORMALCONCEPTS
       Swal.fire({
@@ -643,21 +646,20 @@ console.log('data', data)
           }
 
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
-          setCustomConcepts([...customConcepts, data_pers])
-          // localStorage.setItem('cotizacion', JSON.stringify([...normalConcepts, data_pers]));
+          setQuotesConcepts({personalized_concepts: [...quotesConcepts.personalized_concepts, data_pers]})
+          localStorage.setItem('cotizacion-pers', JSON.stringify([...quotesConcepts.personalized_concepts, data_pers]));
         }
       });
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
-      setNormalConcepts([...normalConcepts, data])
-      setQuotes([...quotes, data])
-      localStorage.setItem('cotizacion', JSON.stringify([...normalConcepts, data]));
+
+      setQuotesConcepts({ normal_concepts: [...quotesConcepts?.normal_concepts, data]})
+      localStorage.setItem('cotizacion', JSON.stringify([...quotesConcepts?.normal_concepts, data]));
 
     }
 
     // localStorage.setItem('typeLocalStogare', normalConcepts)
     toast.success('Artículo agregado')
   };
-
 
   const addSaleOrder = () => {
 
@@ -713,11 +715,8 @@ console.log('data', data)
 
           }
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
-          setCustomConcepts([...customConcepts, data_pers])
-
-          setConceptView([...normalConcepts, data_pers])
-          setCustomConceptView(normalConcepts)
-          localStorage.setItem('sale-order', JSON.stringify([...normalConcepts, data_pers]));
+          setSaleOrdersConcepts({personalized_concepts: [...saleOrdersConcepts.personalized_concepts, data]})
+          localStorage.setItem('sale-order-pers', JSON.stringify([...saleOrdersConcepts.personalized_concepts, data_pers]));
           setPrices(0)
           setDescuento(0)
           setPricesFranquicia(0)
@@ -726,9 +725,8 @@ console.log('data', data)
       });
 
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
-      setNormalConcepts([...normalConcepts, data])
-      setSaleOrdersCart([...saleOrdersCart, data])
-      localStorage.setItem('sale-order', JSON.stringify([...normalConcepts, data]));
+      setSaleOrdersConcepts({normal_concepts: [...saleOrdersConcepts.normal_concepts, data]})
+      localStorage.setItem('sale-order', JSON.stringify([...saleOrdersConcepts.normal_concepts, data]));
     }
     toast.success('Artículo agregado')
     setChangeLength(!changeLength)
