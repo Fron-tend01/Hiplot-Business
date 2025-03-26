@@ -154,14 +154,16 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           }
 
           setArticle({ ...art, plantilla_data: plantillaData });
+          setStatusArticle(true);
+          setModalLoading(false);
 
           // if (art.vender_sin_stock) Swal.fire('Notificación', 'Este articulo se puede vender sin stock disponible', 'success');
-          if (art.bajo_pedido) Swal.fire('Notificación', 'Este articulo puede levantar requisición automática...', 'warning');
-          if (art.desabasto) Swal.fire('Notificación', 'Hay desabasto de este articulo...', 'warning');
-          if (art.precio_libre) Swal.fire('Notificación', 'Puedes añadir el precio manualmente...', 'success');
-          if (art.ultimas_piezas) Swal.fire('Notificación', 'El stock disponible son las ULTIMAS PIEZAS...', 'warning');
-          if (art.consultar_te) Swal.fire('Notificación', 'Este articulo se debe consultar el tiempo de entrega', 'warning');
-          if (art.consultar_cotizador) Swal.fire('Notificación', 'Este articulo debe consultar el precio con cotizador', 'warning');
+          if (art.bajo_pedido) await Swal.fire('Notificación', 'Este articulo es BAJO PEDIDO, la orden de venta creada se pondrá en status PENDIENTE, hasta la llegada del material faltante', 'warning');
+          if (art.desabasto) await Swal.fire('Notificación', 'Hay desabasto de este articulo...', 'warning');
+          if (art.precio_libre) await Swal.fire('Notificación', 'El precio arrojado por este articulo es una SUGERENCIA DE VENTA, realiza la confirmación con tu superior de este precio, verifica tu lista de precios o consulta con cotizador.', 'success');
+          if (art.ultimas_piezas) await Swal.fire('Notificación', 'El stock disponible son las ULTIMAS PIEZAS...', 'warning');
+          if (art.consultar_te) await Swal.fire('Notificación', 'Consulta el Tiempo de Entrega de este articulo con el area de producción correspondiente', 'warning');
+          if (art.consultar_cotizador) await Swal.fire('Notificación', 'Este articulo debe consultar el precio con cotizador', 'warning');
         })
         .catch((error) => {
           console.error('Error fetching data:', error);
