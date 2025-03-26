@@ -4,8 +4,8 @@ import { create } from 'zustand';
 
 interface StoreState {
 
-    quotesConcepts: any;
-    setQuotesConcepts: (x: any) => void;
+    quotes: any;
+    setQuotes: (x: any) => void;
 
 
 
@@ -41,12 +41,12 @@ interface StoreState {
 export const storeQuotation = create<StoreState>((set) => ({
 
 
-    quotesConcepts: { sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] },
-    setQuotesConcepts: (newQuotesConcepts) =>
+    quotes: { quotes: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] },
+    setQuotes: (prev) =>
         set((state) => ({
-            quotesConcepts: {
-                ...state.quotesConcepts,
-                ...newQuotesConcepts,
+            quotes: {
+                ...state.quotes,
+                ...prev,
             },
         })),
 

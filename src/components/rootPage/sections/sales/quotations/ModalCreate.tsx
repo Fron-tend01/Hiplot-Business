@@ -31,31 +31,19 @@ const ModalCreate: React.FC = () => {
   const user_id = userState.id
   const setModalArticleView = storeArticleView((state) => state.setModalArticleView);
   const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
-  const setNormalConceptsView = storePersonalized((state) => state.setNormalConceptsView);
-  // Temporal
+  const setCustomConceptView = storePersonalized((state) => state.setCustomConceptView);
 
-  const setConceptView = storePersonalized(state => state.setConceptView)
-  const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
-  const setDeleteNormalConcepts = storePersonalized(state => state.setDeleteNormalConcepts)
-  const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
-  const setDeleteCustomConcepts = storePersonalized(state => state.setDeleteCustomConcepts)
-  const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
-  const setCustomLocal = storePersonalized(state => state.setCustomLocal)
+  const setQuotesData = storeQuotation(state => state.setQuotesData)
+  const { dataGet }: any = useStore(storeQuotation);
 
   ////////////////// Personalized Variations////////////////////////////////// 
-  const { normalConcepts, customConcepts, dataUpdate, personalizedModal }: any = useStore(storePersonalized)
+  const { dataUpdate, personalizedModal }: any = useStore(storePersonalized)
   const permisosxVista = storeDv((state) => state.permisosxvista);
 
-
-  const setQuotesConcepts = storeQuotation(state => state.setQuotesConcepts)
-  const { quotesConcepts }: any = useStore(storeQuotation);
+  const setQuotes = storeQuotation(state => state.setQuotes)
+  const { quotes }: any = useStore(storeQuotation);
 
   const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
-
-  const setQuotesData = storeQuotation(state => state.setQuotesData);
-  const setIdArticle = storeSaleCard(state => state.setIdArticle)
-
-  const { dataGet }: any = useStore(storeQuotation);
 
   const setDataQuotation = storeSaleCard(state => state.setDataQuotation)
   const setModal = storeModals((state) => state.setModal);
@@ -73,22 +61,24 @@ const ModalCreate: React.FC = () => {
   const [company, setCompany] = useState<any>([])
   const [branch, setBranch] = useState<any>([])
 
+  const [calculations, setCalculations] = useState<any>({
+    subtotal: 0,
+    descuento: 0,
+    urgencia: 0,
+    total: 0,
 
-  const [name, setName] = useState<any>()
-  const [comments, setComments] = useState<any>()
-  const [title, setTitle] = useState<any>('')
-  const [subtotal, setSubtotal] = useState<number>(0)
-  const [descuento, setDescuento] = useState<number>(0)
-  const [urgencia, setUrgencia] = useState<number>(0)
-  const [total, setTotal] = useState<number>(0)
+    subtotalf: 0,
+    urgenciaf: 0,
+    totalf: 0
+  })
 
-  const [subtotalf, setSubtotalf] = useState<number>(0)
-  const [urgenciaf] = useState<number>(0)
-  const [totalf, setTotalf] = useState<number>(0)
 
-  const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
+  const modalPersonalized = () => {
+    setPersonalizedModal('personalized_modal-quotation')
+    setCustomConceptView(quotes.normal_concepts)
+  }
 
-  const [, setDataSelects] = useState<any>([])
+  const [selectedResult, setSelectedResult] = useState<any>(null);
   const [info_sc, setInfo_sc] = useState<any>({
     vendedor: 0,
     vendedores: [],
@@ -96,6 +86,29 @@ const ModalCreate: React.FC = () => {
     folio_sc: 0,
     folios_solicitudes: []
   })
+
+
+  const [quoteFields, setQuoteFields] = useState<any>({})
+  const setData = () => {
+    setQuoteFields({
+      id: modal === 'create-modal__qoutation' ? 0 : quotes.quotes.id,
+      id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
+      id_cliente: selectedResult?.id ?? quatation.id_cliente,
+      id_usuario_crea: user_id,
+      titulo: '',
+      comentarios: '',
+      conceptos: quotes?.normal_concepts,
+      conceptos_pers: quotes?.personalized_concepts,
+      conceptos_elim: quotes?.normal_concepts_eliminate,
+      conceptos_pers_elim: quotes?.personalized_concepts_eliminate,
+      id_solicitud_cotizacion: info_sc.cot_propia ? user_id : info_sc.folio_sc == '' ? info_sc.folio_sc : 0,
+    })
+  }
+  useEffect(() => {
+    setData()
+  }, [modal])
+
+
 
   const fetch = async () => {
     let dataUsers = {
@@ -115,8 +128,8 @@ const ModalCreate: React.FC = () => {
     const copiaQuatation = {
       ...quatation,
       conceptos: quatation.conceptos.map((concepto: any) => {
-        const { id, ...rest } = concepto; // Extrae "id" y deja el resto
-        return rest; // Retorna el objeto sin "id"
+        const { id, ...rest } = concepto; 
+        return rest;
       })
     };
     copiaQuatation?.conceptos.forEach((element: any) => {
@@ -144,6 +157,7 @@ const ModalCreate: React.FC = () => {
       nombre: quatation.rfc
     }
 
+
     try {
       const resultClients = await getClients(data)
       setClients(resultClients)
@@ -157,28 +171,15 @@ const ModalCreate: React.FC = () => {
 
 
   useEffect(() => {
-
-    if (modal === 'update-modal__qoutation') {
-      forupdate()
+    if (modal == 'update-modal__qoutation') {
+      setQuoteFields((prev: any) => ({
+        ...prev,
+        comentarios: quotes.quotes.comentarios,
+      }));
     }
-  }, [quatation])
-  const forupdate = async () => {
-    await client()
+  }, [modal])
 
-    setCompany({ id: quatation.id_empresa })
-    setBranch({ id: quatation.id_sucursal })
-    setComments(quatation.comentarios)
-    selectedResult(quatation.id_cliente)
-  }
 
-  useEffect(() => {
-    if (personalizedModal == 'personalized_modal-quotation-update') {
-
-    } else {
-
-    }
-
-  }, [])
 
 
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
@@ -207,22 +208,13 @@ const ModalCreate: React.FC = () => {
 
 
 
-  useEffect(() => {
-
-  }, [selectedIds])
-
-  const seeClient = () => {
-    setClientsModal('clients_modal')
-
-  }
-
   const setIndexVM = storeDv(state => state.setIndex)
   const seeVerMas = (index: number) => {
     setIndexVM(index)
     setModalSub('see_cp')
   }
   const [selectResults, setSelectResults] = useState<boolean>(false);
-  const [selectedResult, setSelectedResult] = useState<any>(null);
+
 
   const openSelectResults = () => {
     setSelectResults(!selectResults)
@@ -235,69 +227,25 @@ const ModalCreate: React.FC = () => {
   };
 
 
-
-  // console.log('DATA QUE SE ENVIA AL BEKEND', personalized)
-
   const createQuotation = async () => {
 
-    const filter = normalConcepts.filter((x: any) => x.personalized !== true)
-
-    filter.forEach((element: any) => {
-      element.unidad = element.id_unidad
-      element.total = element.precio_total
-      element.urgencia = element.monto_urgencia
-      element.campos_plantilla.forEach((cp: any) => {
-        cp.valor = cp.valor.toString()
-      });
-    });
 
 
 
-    if (quotesConcepts?.personalized_concepts.length > 0) {
-      quotesConcepts?.personalized_concepts?.forEach((element: any) => {
-        element.conceptos.forEach((x: any) => {
-          x.unidad = x.id_unidad
-          x.total = x.precio_total
-          x.urgencia = x.monto_urgencia
-          x?.campos_plantilla?.forEach((cp: any) => {
-            cp.valor = cp.valor.toString()
-          });
-        });
-      });
-    }
-    const data = {
-      id: modal === 'create-modal__qoutation' ? 0 : quatation.id,
-      id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
-      // id_cliente: modal === 'create-modal__qoutation' ? selectedResult?.id : quatation.id_cliente,
-      id_cliente: selectedResult?.id ? selectedResult?.id : quatation.id_cliente,
-      id_usuario_crea: user_id,
-      titulo: title,
-      comentarios: comments,
-      conceptos: quotesConcepts?.normal_concepts,
-      conceptos_pers: quotesConcepts?.personalized_concepts,
-      conceptos_elim: quotesConcepts?.normal_concepts_eliminate,
-      conceptos_pers_elim: quotesConcepts?.personalized_concepts_eliminate,
-      id_solicitud_cotizacion: info_sc.cot_propia ? user_id : info_sc.folio_sc == '' ? info_sc.folio_sc : 0,
-    };
-
-
-    // console.log(data);
-
-    // return
 
     try {
       if (modal === 'create-modal__qoutation') {
-        const response: any = await APIs.createQuotation(data)
+        const response: any = await APIs.createQuotation(quoteFields)
         if (response.error == true) {
           return Swal.fire('Advertencia', response.mensaje, 'warning');
         } else {
           Swal.fire('Cotizacion creada exitosamente', '', 'success');
-          let response = await APIs.getQuotation(dataGet);
+          let response: any = await APIs.getQuotation(dataGet);
           setQuotesData(response)
           setModal('')
         }
       } else {
-        let response: any = await APIs.updateQuotation(data)
+        let response: any = await APIs.updateQuotation(quoteFields)
         if (response.error == true) {
           return Swal.fire('Advertencia', response.mensaje, 'warning');
         } else {
@@ -308,9 +256,7 @@ const ModalCreate: React.FC = () => {
           setModal('')
         }
       }
-      setQuotesConcepts({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] })
-      setComments('')
-      setName('')
+      setQuotes({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] })
       localStorage.removeItem("cotizacion");
     } catch (error) {
       Swal.fire('Error', 'Hubo un error al crear la cotizacion', 'error');
@@ -318,81 +264,34 @@ const ModalCreate: React.FC = () => {
 
   }
 
-
   const undoConcepts = (concept: any, i: number) => {
-    const deleteItemCustomC = quotesConcepts?.personalized_concepts.filter((_: any, index: number) => index !== i);
+    const deleteItemCustomC = quotes?.personalized_concepts.filter((_: any, index: number) => index !== i);
     const updatedConcepts = concept.conceptos.map((element: any) => ({
       ...element,
       id_pers: 0,
       check: false,
     }));
-    setQuotesConcepts({ normal_concepts: [...quotesConcepts?.normal_concepts, ...updatedConcepts], personalized_concepts: deleteItemCustomC, personalized_concepts_eliminate: concept.id ? [...quotesConcepts.personalized_concepts_eliminate, concept.id] : [...quotesConcepts.personalized_concepts_eliminate]});
+    setQuotes({ normal_concepts: [...quotes?.normal_concepts, ...updatedConcepts], personalized_concepts: deleteItemCustomC, personalized_concepts_eliminate: concept.id ? [...quotes.personalized_concepts_eliminate, concept.id] : [...quotes.personalized_concepts_eliminate] });
 
   };
 
-  console.log('quotesConcepts', quotesConcepts)
 
   const deleteNormalConcept = (item: any, i: number) => {
-    const filter = quotesConcepts?.normal_concepts.filter((_: any, index: number) => index !== i)
-    setQuotesConcepts({ normal_concepts: filter, normal_concepts_eliminate: item.id ? [...quotesConcepts.normal_concepts_eliminate, item.id] : [...quotesConcepts.normal_concepts_eliminate]});
+    const filter = quotes?.normal_concepts.filter((_: any, index: number) => index !== i)
+    setQuotes({ normal_concepts: filter, normal_concepts_eliminate: item.id ? [...quotes.normal_concepts_eliminate, item.id] : [...quotes.normal_concepts_eliminate] });
     localStorage.setItem('cotizacion', JSON.stringify(filter));
     toast.success('Concepto eliminado')
   }
 
 
 
-  // const deleteCustomConcept = (item: any) => {
-  //   if (modal === 'create-modal__qoutation') {
-  //     const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
-  //     setConceptView(filter_view)
-
-  //     const filter_normal = customConcepts.filter((c: any) => c.id_identifier !== item.id_identifier)
-  //     setCustomConcepts(filter_normal)
-  //     toast.success('Concepto eliminado')
-  //   } else {
-  //     const filter = customConcepts.filter((c: any) => c.id_identifier !== item.id_identifier)
-  //     setCustomConcepts(filter)
-  //     const filter_view = conceptView.filter((c: any) => c.id_identifier !== item.id_identifier)
-  //     setConceptView(filter_view)
-  //     setCustomConceptView(filter_view)
-  //     setDeleteCustomConcepts([...deleteCustomConcepts, item.id])
-  //     toast.success('Concepto eliminado')
-  //   }
-  // }
-
-
-
-  useEffect(() => {
-
-  }, [dataUpdate])
-
-
 
   const closeModal = () => {
     setModal('')
-    setCustomLocal([])
-    setNormalConceptsView([])
-
-    // setNormalConcepts([])
-    setDeleteNormalConcepts([])
-
-    setCustomConcepts([])
-    setDeleteNormalConcepts([])
-    setConceptView([])
-    setCustomConceptView([])
     setDataQuotation([])
   }
 
   const [typeLocalStogare, setTypeLocalStogare] = useState<any>()
-
-
-
-  const modalPersonalized = () => {
-    setPersonalizedModal('personalized_modal-quotation')
-    setCustomConceptView(quotesConcepts.normal_concepts)
-  }
-
-
   const [idItem, setIdItem] = useState<number>()
   const [indexItem, setIndexItem] = useState<any>()
 
@@ -407,21 +306,18 @@ const ModalCreate: React.FC = () => {
     concept.conceptos.forEach((element: any) => {
       element.check = true;
     });
-    setCustomConceptView([...concept.conceptos, ...quotesConcepts.normal_concepts]);
+    setCustomConceptView([...concept.conceptos, ...quotes.normal_concepts]);
   }
-
-
-
 
 
 
   const handleUrgencyChange = async (index: number) => { //FALTA APLICAR FRANQUICIA
     let data = {
-      "id_articulo": normalConcepts[index].id_articulo,
+      "id_articulo": quotes?.normal_concepts[index].id_articulo,
       "id_sucursal": branch.id,
-      "total": normalConcepts[index].precio_total
+      "total": quotes?.normal_concepts[index].precio_total
     }
-    const newConcept = [...normalConcepts];
+    const newConcept = [...quotes?.normal_concepts];
     newConcept[index].urgency = !newConcept[index]?.urgency;
 
     if (newConcept[index].urgency) {
@@ -439,54 +335,53 @@ const ModalCreate: React.FC = () => {
       newConcept[index].precio_total = (parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia)).toFixed(2);
       newConcept[index].monto_urgencia = 0;
     }
-    setNormalConcepts(newConcept);
+    // setNormalConcepts(newConcept);
 
   };
 
   //EFFECT PARA CALCULAR LOS TOTALES CUANDO CAMBIE NORMALCONCEPTS-----------------------------------------------------------------------------
   useEffect(() => {
-    const precios = normalConcepts.reduce(
-      (acc: any, item: any) => ({
-        precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
-        descuento: acc.descuento + (parseFloat(item.descuento) || 0),
-        monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
-        total: acc.total + (parseFloat(item.precio_total) || 0),
-        total_franquicia: acc.total_franquicia + (parseFloat(item.total_franquicia) || 0),
-      }),
-      { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0, total_franquicia: 0 }
-    );
-    const preciospers = customConcepts.reduce(
-      (acc: any, item: any) => ({
-        precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
-        descuento: acc.descuento + (parseFloat(item.descuento) || 0),
-        monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
-        total: acc.total + (parseFloat(item.precio_total) || 0),
-        total_franquicia: acc.total_franquicia + (parseFloat(item.total_franquicia) || 0),
-      }),
-      { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0, total_franquicia: 0 }
-    );
-    setSubtotal(preciospers.total + preciospers.descuento - preciospers.monto_urgencia + precios.total + precios.descuento - precios.monto_urgencia);
-    setDescuento(preciospers.descuento + precios.descuento);
-    setUrgencia(preciospers.monto_urgencia + precios.monto_urgencia);
-    setTotal(preciospers.total + precios.total);
+    const calculateTotals = (concepts: any[]) => 
+      concepts.reduce(
+        (acc, item) => ({
+          precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
+          descuento: acc.descuento + (parseFloat(item.descuento) || 0),
+          monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
+          total: acc.total + (parseFloat(item.precio_total) || 0),
+          total_franquicia: acc.total_franquicia + (parseFloat(item.total_franquicia) || 0),
+        }),
+        { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0, total_franquicia: 0 }
+      );
+  
+    const precios = calculateTotals(quotes?.normal_concepts || []);
+    const preciospers = calculateTotals(quotes?.personalized_concepts || []);
+  
+    setCalculations((prev) => ({
+      ...prev,
+      subtotal: preciospers.total + preciospers.descuento - preciospers.monto_urgencia + precios.total + precios.descuento - precios.monto_urgencia,
+      descuento: preciospers.descuento + precios.descuento,
+      urgencia: preciospers.monto_urgencia + precios.monto_urgencia,
+      total: preciospers.total + precios.total,
+  
+      subtotalf: preciospers.total_franquicia + precios.total_franquicia,
+      urgenciaf: 0,
+      totalf: preciospers.total_franquicia + precios.total_franquicia,
+    }));
+  }, [quotes]);
+    
 
-    setSubtotalf(preciospers.total_franquicia + precios.total_franquicia);
-    setTotalf(preciospers.total_franquicia + precios.total_franquicia);
-
-
-  }, [normalConcepts, customConcepts])
- 
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
+
+
 
   const [dataArticle, setDataArticle] = useState<any>();
   const [idA, setIdA] = useState<any>(null);
 
+
+
   const [i, setI] = useState(0);
-
   const [indexUpdate, setIndexUpdate] = useState<any>(null)
-
   const abrirFichaModifyConcept = async (x: any, index: number) => {
-
     setI((prevI) => {
       const newI = prevI + 1;
       setIdA(newI); // Ahora usará el valor actualizado
@@ -494,12 +389,11 @@ const ModalCreate: React.FC = () => {
     });
 
     setIndexUpdate(index)
-
-    setIdArticle(x.id_articulo)
     setDataArticle(x)
-
     setModalSalesCard('sale-card-quotation')
   }
+
+
   const getTicket = async () => {
     try {
       // Abrimos el PDF en una nueva pestaña
@@ -521,14 +415,13 @@ const ModalCreate: React.FC = () => {
         }
       );
       DynamicVariables.updateAnyVar(setInfo_sc, 'folios_solicitudes', response.data)
-
-
       DynamicVariables.updateAnyVar(setInfo_sc, 'folio_sc', response.data[0].id)
       console.log(response); // Ver qué está recibiendo
     } catch (error) {
       console.error("Error en la petición:", error);
     }
   };
+  const [name, setName] = useState<string>('')
 
   console.log(info_sc)
   return (
@@ -553,18 +446,18 @@ const ModalCreate: React.FC = () => {
             :
             <div className="row__one card ">
               <div className="card-body bg-standar">
-                <h3 className="text">{quatation.serie}-{quatation.folio}-{quatation.anio}</h3>
+                <h3 className="text">{quotes.quotes.serie}-{quotes.quotes.folio}-{quotes.quotes.anio}</h3>
                 <hr />
                 <div className='row'>
                   <div className='col-6 md-col-12'>
-                    <span className='text'>Creado por: <b>{quatation.usuario_crea}</b></span><br />
-                    <span className='text'>Fecha de Creación: <b>{quatation.fecha_creacion}</b></span><br />
-                    {quatation.status === 0 ? (
+                    <span className='text'>Creado por: <b>{quotes.quotes.usuario_crea}</b></span><br />
+                    <span className='text'>Fecha de Creación: <b>{quotes.quotes.fecha_creacion}</b></span><br />
+                    {quotes.quotes.status === 0 ? (
                       <span className="active-status">Activo</span>
-                    ) : quatation.status === 1 ? (
+                    ) : quotes.quotes.status === 1 ? (
                       <span className="canceled-status">Cancelada</span>
                     ) : (
-                      quatation.status === 2 ? (
+                      quotes.quotes.status === 2 ? (
                         <span className="end-status">Terminado</span>
                       ) : (
                         ""
@@ -572,8 +465,8 @@ const ModalCreate: React.FC = () => {
                     )}
                   </div>
                   <div className='col-6 md-col-12'>
-                    <span className='text'>Empresa: <b>{quatation.empresa}</b></span><br />
-                    <span className='text'>Sucursal: <b>{quatation.sucursal}</b></span><br />
+                    <span className='text'>Empresa: <b>{quotes.quotes.empresa}</b></span><br />
+                    <span className='text'>Sucursal: <b>{quotes.quotes.sucursal}</b></span><br />
                   </div>
                 </div>
                 <div className='mt-3'>
@@ -683,7 +576,7 @@ const ModalCreate: React.FC = () => {
                       <div className='col-4'>
                         <label className='label__general'>Título</label>
                         <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                        <input className={`inputs__general`} type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder='Ingresa el título' />
+                        <input className={`inputs__general`} type="text" value={quoteFields.titulo} onChange={(e) => setQuoteFields({ ...quoteFields, titulo: e.target.value })} placeholder='Ingresa el título' />
                       </div>
                     </div>
                     :
@@ -700,7 +593,7 @@ const ModalCreate: React.FC = () => {
                 <div className='col-12'>
                   <label className='label__general'>Comentarios</label>
                   <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                  <textarea className={`textarea__general`} value={comments} onChange={(e) => setComments(e.target.value)} placeholder='Comentarios'></textarea>
+                  <textarea className={`textarea__general`} value={quoteFields.comentarios} onChange={(e) => setQuoteFields({ ...quoteFields, comentarios: e.target.value })} placeholder='Comentarios'></textarea>
                 </div>
 
               </div>
@@ -727,7 +620,7 @@ const ModalCreate: React.FC = () => {
                   <div className={`select-btn__general`}>
                     <div className={`select-btn ${selectResults ? 'active' : ''}`} onClick={openSelectResults}>
                       <div className='select__container_title'>
-                        <p>{selectedResult ? clients?.find((s: { id: number }) => s.id === selectedResult.id)?.razon_social : 'Selecciona'}</p>
+                        <p>{selectedResult ? clients?.find((s: { id: number }) => s.id === selectedResult.id)?.razon_social : `${quotes.quotes.id_cliente ? quotes.quotes.cliente_contacto : 'Selecionar' }`}</p>
                       </div>
                       <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                     </div>
@@ -744,7 +637,7 @@ const ModalCreate: React.FC = () => {
                 </div>
               </div>
               <div className='d-flex align-items-end'>
-                <button className='btn__general-purple' onClick={seeClient}>ver cliente</button>
+                <button className='btn__general-purple' onClick={() => setClientsModal('clients_modal')}>ver cliente</button>
               </div>
               <div className='d-flex align-items-end'>
                 <button className='btn__general-purple' onClick={modalPersonalized}>Crear personalizados</button>
@@ -776,148 +669,18 @@ const ModalCreate: React.FC = () => {
                 </div>
               </div>
               <div className='table__quotations-modal-body-desk'>
-                  <div className='table__body'>
-                    {quotesConcepts?.normal_concepts.map((article: any, index: number) => {
-                      return (
-                        <div className='tbody__container' key={index}>
-                          {article.personalized ?
-                            <div className='concept__personalized'>
-                              <p>Concepto Personalizado</p>
-                            </div>
-                            :
-                            ''
-                          }
-                          {article.personalized ?
-                            <div className={`tbody personalized`}>
-                              <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article, index)}>
-                                <p className='article'>{article.codigo}-{article.descripcion}</p>
-                              </div>
-                              <div className='td'>
-                                <p className='amount'>{article.cantidad}</p>
-                              </div>
-                              <div className='td'>
-                                <p>{article.name_unidad || article.unidad}</p>
-                              </div>
-                              <div className='td'>
-                                <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
-                                  <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small></p>
-                              </div>
-                              <div className='td'>
-                                <div className='d-flex'>
-                                  <div>
-                                    <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                    <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                      <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className='td'>
-                                {article?.personalized ?
-                                  <div onClick={() => modalPersonalizedUpdate(article, index)} className='conept-icon'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
-                                  </div>
-                                  :
-                                  ''
-                                }
-                              </div>
-                              <div className='td'>
-                                <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
-                                </div>
-                              </div>
-                              {article.con_adicional ?
-                                <div className='td'>
-                                  <div className='delete-icon' onClick={() => deleteNormalConcept(article, index)} title='Eliminar concepto'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                  </div>
-                                </div>
-                                :
-                                <div className='td'>
-                                  <div className='undo-icon' onClick={() => undoConcepts(article, index)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
-                                  </div>
-                                </div>
-                              }
-
-                            </div>
-                            :
-                            <div className='tbody'>
-                              <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article, index)}>
-                                <p className='article'>{article.codigo}-{article.descripcion}</p>
-                              </div>
-                              <div className='td'>
-                                <p className='amount'>{article.cantidad}</p>
-                              </div>
-                              <div className='td'>
-                                <p>{article.name_unidad || article.unidad}</p>
-                              </div>
-                              <div className='td'>
-                                <p className=''>$ {article.precio_unitario?.toFixed(2)}<br />
-                                  {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                    <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
-                                </p>
-                              </div>
-                              <div className='td '>
-                                {article.urgency ?
-                                  <div className='container__total'>
-                                    <div>
-                                      <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                      <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                        <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
-                                    </div>
-                                    <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.monto_urgencia).toFixed(2)})</p>
-                                  </div>
-                                  :
-                                  <div>
-                                    <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                    <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                      <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
-                                  </div>
-
-                                }
-                                {article.descuento > 0 ?
-                                  <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
-                                  : ''}
-                              </div>
-
-                              <div className='td urgency'>
-                                {article?.urgency ?
-                                  <div>
-                                    <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
-                                    </div>
-                                  </div>
-                                  :
-                                  <div>
-                                    <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
-                                    </div>
-                                  </div>
-                                }
-                              </div>
-                              <div className='td'>
-                                <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
-                                </div>
-                              </div>
-
-                              <div className='td'>
-                                <div className='delete-icon' onClick={() => deleteNormalConcept(article, index)} title='Eliminar concepto'>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                </div>
-                              </div>
-
-                            </div>
-                          }
-                        </div>
-                      )
-                    })}
-                    {quotesConcepts?.personalized_concepts.map((article: any, index: number) => {
-                      return (
-                        <div className='tbody__container' key={index}>
+                <div className='table__body'>
+                  {quotes?.normal_concepts.map((article: any, index: number) => {
+                    return (
+                      <div className='tbody__container' key={index}>
+                        {article.personalized ?
                           <div className='concept__personalized'>
                             <p>Concepto Personalizado</p>
                           </div>
+                          :
+                          ''
+                        }
+                        {article.personalized ?
                           <div className={`tbody personalized`}>
                             <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article, index)}>
                               <p className='article'>{article.codigo}-{article.descripcion}</p>
@@ -970,16 +733,146 @@ const ModalCreate: React.FC = () => {
                             }
 
                           </div>
+                          :
+                          <div className='tbody'>
+                            <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article, index)}>
+                              <p className='article'>{article.codigo}-{article.descripcion}</p>
+                            </div>
+                            <div className='td'>
+                              <p className='amount'>{article.cantidad}</p>
+                            </div>
+                            <div className='td'>
+                              <p>{article.name_unidad || article.unidad}</p>
+                            </div>
+                            <div className='td'>
+                              <p className=''>$ {article.precio_unitario?.toFixed(2)}<br />
+                                {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                  <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
+                              </p>
+                            </div>
+                            <div className='td '>
+                              {article.urgency ?
+                                <div className='container__total'>
+                                  <div>
+                                    <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                    <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                      <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                  </div>
+                                  <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.monto_urgencia).toFixed(2)})</p>
+                                </div>
+                                :
+                                <div>
+                                  <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                  <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                    <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                </div>
+
+                              }
+                              {article.descuento > 0 ?
+                                <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
+                                : ''}
+                            </div>
+
+                            <div className='td urgency'>
+                              {article?.urgency ?
+                                <div>
+                                  <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                  </div>
+                                </div>
+                                :
+                                <div>
+                                  <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                  </div>
+                                </div>
+                              }
+                            </div>
+                            <div className='td'>
+                              <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
+                              </div>
+                            </div>
+
+                            <div className='td'>
+                              <div className='delete-icon' onClick={() => deleteNormalConcept(article, index)} title='Eliminar concepto'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                              </div>
+                            </div>
+
+                          </div>
+                        }
+                      </div>
+                    )
+                  })}
+                  {quotes?.personalized_concepts.map((article: any, index: number) => {
+                    return (
+                      <div className='tbody__container' key={index}>
+                        <div className='concept__personalized'>
+                          <p>Concepto Personalizado</p>
+                        </div>
+                        <div className={`tbody personalized`}>
+                          <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(article, index)}>
+                            <p className='article'>{article.codigo}-{article.descripcion}</p>
+                          </div>
+                          <div className='td'>
+                            <p className='amount'>{article.cantidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{article.name_unidad || article.unidad}</p>
+                          </div>
+                          <div className='td'>
+                            <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
+                              <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small></p>
+                          </div>
+                          <div className='td'>
+                            <div className='d-flex'>
+                              <div>
+                                <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                  <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className='td'>
+                            {article?.personalized ?
+                              <div onClick={() => modalPersonalizedUpdate(article, index)} className='conept-icon'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
+                              </div>
+                              :
+                              ''
+                            }
+                          </div>
+                          <div className='td'>
+                            <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
+                            </div>
+                          </div>
+                          {article.con_adicional ?
+                            <div className='td'>
+                              <div className='delete-icon' onClick={() => deleteNormalConcept(article, index)} title='Eliminar concepto'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                              </div>
+                            </div>
+                            :
+                            <div className='td'>
+                              <div className='undo-icon' onClick={() => undoConcepts(article, index)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
+                              </div>
+                            </div>
+                          }
 
                         </div>
-                      )
-                    })}
-                  </div>
-               
+
+                      </div>
+                    )
+                  })}
+                </div>
+
               </div>
               <div className='table__quotations-modal-body-response'>
                 <div className='table__body'>
-                  {quotesConcepts?.normal_concepts.map((article: any, index: number) => {
+                  {quotes?.normal_concepts.map((article: any, index: number) => {
                     return (
                       <div className='tbody__container' key={index}>
                         <div className='tbody'>
@@ -1053,7 +946,7 @@ const ModalCreate: React.FC = () => {
                       </div>
                     )
                   })}
-                  {quotesConcepts?.personalized_concepts.map((article: any, index: number) => {
+                  {quotes?.personalized_concepts.map((article: any, index: number) => {
                     return (
                       <div className='tbody__container' key={index}>
                         <div className='concept__personalized'>
@@ -1123,25 +1016,25 @@ const ModalCreate: React.FC = () => {
               <div className='subtotal'>
                 <div>
                   <p className='name'>Subtotal</p>
-                  <p className='value'>$ {subtotal}</p>
+                  <p className='value'>$ {calculations.subtotal}</p>
                 </div>
               </div>
               <div className='discount'>
                 <div>
                   <p className='name'>Descuento</p>
-                  <p className='value'>$ {descuento}</p>
+                  <p className='value'>$ {calculations.descuento}</p>
                 </div>
               </div>
               <div className='urgency'>
                 <div>
                   <p className='name'>Urgencia</p>
-                  <p className='value'>$ {urgencia}</p>
+                  <p className='value'>$ {calculations.urgencia}</p>
                 </div>
               </div>
               <div className='total'>
                 <div>
                   <p className='name'>Total</p>
-                  <p className='value'>$ {total}</p>
+                  <p className='value'>$ {calculations.total}</p>
                 </div>
               </div>
             </div>
@@ -1149,20 +1042,20 @@ const ModalCreate: React.FC = () => {
               <div className='subtotal'>
                 <div>
                   <p className='name'>Subtotal Franquicia</p>
-                  <p className='value'>$ {subtotalf}</p>
+                  <p className='value'>$ {calculations.subtotalf}</p>
                 </div>
               </div>
 
               <div className='urgency'>
                 <div>
                   <p className='name'>Urgencia Franquicia</p>
-                  <p className='value'>$ {urgenciaf}</p>
+                  <p className='value'>$ {calculations.urgenciaf}</p>
                 </div>
               </div>
               <div className='total'>
                 <div>
                   <p className='name'>Total Franquicia</p>
-                  <p className='value'>$ {totalf}</p>
+                  <p className='value'>$ {calculations.totalf}</p>
                 </div>
               </div>
             </div>

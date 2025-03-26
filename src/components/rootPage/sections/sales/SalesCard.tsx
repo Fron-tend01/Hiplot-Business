@@ -58,8 +58,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const { saleOrdersConcepts }: any = useStore(storeSaleOrder);
 
 
-  const setQuotesConcepts = storeQuotation(state => state.setQuotesConcepts)
-  const { quotesConcepts }: any = useStore(storeQuotation);
+  const setQuotes = storeQuotation(state => state.setQuotes)
+  const { quotes }: any = useStore(storeQuotation);
   
 
 
@@ -595,7 +595,7 @@ console.log('data', data)
 
 
   const addQua = () => {
-    console.log('quotesConcepts', quotesConcepts)
+    
     if (Adicional != null) { //SI ADICIONAL TIENE ALGO SE DEBE CREAR EL PERSONALIZADO PARA ENVIARLO A COT/OV
       //-------------------------------SIMULAR EL INGRESO DIRECTO A NORMALCONCEPTS
       Swal.fire({
@@ -648,14 +648,14 @@ console.log('data', data)
           }
 
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
-          setQuotesConcepts({personalized_concepts: [...quotesConcepts.personalized_concepts, data_pers]})
-          localStorage.setItem('cotizacion-pers', JSON.stringify([...quotesConcepts.personalized_concepts, data_pers]));
+          setQuotes({personalized_concepts: [...quotes.personalized_concepts, data_pers]})
+          localStorage.setItem('cotizacion-pers', JSON.stringify([...quotes.personalized_concepts, data_pers]));
         }
       });
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
 
-      setQuotesConcepts({ normal_concepts: [...quotesConcepts?.normal_concepts, data]})
-      localStorage.setItem('cotizacion', JSON.stringify([...quotesConcepts?.normal_concepts, data]));
+      setQuotes({ normal_concepts: [...quotes?.normal_concepts, data]})
+      localStorage.setItem('cotizacion', JSON.stringify([...quotes?.normal_concepts, data]));
 
     }
 
