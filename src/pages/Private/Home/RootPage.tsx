@@ -120,7 +120,7 @@ const RootHome: React.FC = () => {
     return (
         <div className='root__dashboard'>
             <div className={`sidebar ${toggle ? 'active' : ''} ${activeSidebar ? 'close' : ''}`}>
-            <div className="logo__sidebar">
+                <div className="logo__sidebar">
                     <img className='logo__image' src={Logo} alt="" />
                     <div className='toggle' onClick={toggleMen}>
                         <button className={`toggle__botton ${toggle ? 'activo' : ''}`}>
@@ -131,11 +131,15 @@ const RootHome: React.FC = () => {
                     </div>
                 </div>
                 <div className='arrow__sidebar' onClick={toggleMenu}>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 6l6 6l-6 6" /></svg>
+                    {activeSidebar ?
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 6l6 6l-6 6" /></svg>
+                        :
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-left"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M15 6l-6 6l6 6" /></svg>
+                    }
                 </div>
                 <ul className='nav__items'>
                     <div className={`nav__item ${activeMenuIndex === 0 ? 'activeMenu' : ''}`} >
-                        <AnchorTag to='/' className={`nav__link ${active == 'dashboard' ? 'active' : ''}`} onClick={() => {toggleSubMenu(0, 'dashboard') }} >
+                        <AnchorTag to='/' className={`nav__link ${active == 'dashboard' ? 'active' : ''}`} onClick={() => { toggleSubMenu(0, 'dashboard') }} >
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-layout-dashboard"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 3a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2zm0 12a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-2a2 2 0 0 1 2 -2zm10 -4a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2zm0 -8a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-2a2 2 0 0 1 2 -2z" /></svg>
                             <span>Dashboard</span>
                         </AnchorTag>

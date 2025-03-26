@@ -23,11 +23,6 @@ const Quotation: React.FC = () => {
   const user_id = userState.id
 
   ////////////////// Personalized Variations////////////////////////////////// 
-  const setConceptView = storePersonalized(state => state.setConceptView)
-  const setNormalConcepts = storePersonalized(state => state.setNormalConcepts)
-  const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
-  const setCustomConcepts = storePersonalized(state => state.setCustomConcepts)
-  const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
 
   const setModal = storeModals(state => state.setModal)

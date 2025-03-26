@@ -19,7 +19,7 @@ import { PrivateRoutes } from '../../../models/routes';
 import { storeSaleOrder } from '../../../zustand/SalesOrder';
 import { storeQuotation } from '../../../zustand/Quotation';
 import { useStore } from 'zustand';
-import { storePersonalized } from '../../../zustand/Personalized';
+import { storeModals } from '../../../zustand/Modals';
 
 const Header: React.FC = () => {
 
@@ -30,6 +30,8 @@ const Header: React.FC = () => {
 
   const setToggle = storeHeader(state => state.setToggle)
   const { toggle } = storeHeader()
+
+  const setModal = storeModals(state => state.setModal)
 
   const setModalArticleView = storeArticleView((state) => state.setModalArticleView);
 
@@ -323,7 +325,7 @@ const Header: React.FC = () => {
                     <p className='title'>Total</p>
                     <p className='text'>$ {totalQuotes}</p>
                   </div>
-                  <Link to={`${PrivateRoutes.SALES}/${PrivateRoutes.QUOTATION}`} className='sale-btn'>cotizacion</Link>
+                  <Link to={`${PrivateRoutes.SALES}/${PrivateRoutes.QUOTATION}`} onClick={setModal('create-modal__qoutation')} className='sale-btn'>cotizacion</Link>
                 </div>
               </div>
             </div>

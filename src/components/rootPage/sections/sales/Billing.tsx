@@ -114,6 +114,7 @@ const Billing: React.FC = () => {
     }
     const modalUpdate = (dat: any) => {
         setSubModal('billing__modal-update');
+        console.log('dat', dat)
 
         // Actualizar el estado local
         setDataUpdate(dat);

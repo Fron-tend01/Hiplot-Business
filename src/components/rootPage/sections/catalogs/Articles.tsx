@@ -10,10 +10,30 @@ import { Toaster } from 'sonner'
 import Companies_Branches from '../../Dynamic_Components/Companies_Branches';
 
 import { useStore } from 'zustand';
+import APIs from '../../../../services/services/APIs';
 
 
 const Articles: React.FC = () => {
   const effectRan = useRef(false)
+
+//   const fetch = async () => {
+//     const resultCompanies = await APIs.getCompaniesXUsers(user_id)
+    
+//     setEmpresas(resultCompanies)
+//     await setEmpresaDyn(resultCompanies[0])
+//     if(!just_empresa) {
+//         const resultBranch = await getBranchOffices(resultCompanies[0].id, user_id)
+//         if (all) {
+//             resultBranch.unshift({ nombre: 'Todos', id: 0 });
+//         }
+//         setSucursales(resultBranch)
+//         await setSucursalDyn(resultBranch[0])
+//     }
+// }
+
+// useEffect(() => {
+//     fetch()
+// }, [modeUpdate])
 
   const setModalArticle = storeArticles(state => state.setModalArticle)
   const setImagesArticles = storeArticles(state => state.setImagesArticles)

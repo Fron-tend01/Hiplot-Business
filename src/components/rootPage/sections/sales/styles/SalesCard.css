@@ -122,6 +122,13 @@
     gap: 20px;
 }
 
+ .fields__templates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  grid-column: 1 / 5;
+}
+
 
 
 .conatiner__create_sale-card > .row__two > .row__one .row__three  {

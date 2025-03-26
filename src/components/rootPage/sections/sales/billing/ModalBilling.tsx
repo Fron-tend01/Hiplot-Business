@@ -46,7 +46,7 @@ const ModalBilling: React.FC = () => {
     const setConceptView = storePersonalized((state) => state.setConceptView);
 
     const setPersonalizedModal = storePersonalized((state) => state.setPersonalizedModal);
-    const { normalConcepts, deleteNormalConcepts, customConcepts, customConceptView, deleteCustomConcepts, conceptView, identifier }: any = useStore(storePersonalized)
+    const { normalConcepts }: any = useStore(storePersonalized)
 
     const { subModal }: any = useStore(storeArticles)
     const { conceptsBack }: any = storeBilling()
@@ -176,21 +176,6 @@ const ModalBilling: React.FC = () => {
     const [cfdi, setCfdi] = useState<any>()
 
     const fetch = async () => {
-
-        // let dataSaleOrders = {
-        //     folio: fol,
-        //     id_sucursal: branchOffices.id,
-        //     id_serie: selectedIds?.series.id,
-        //     id_cliente: client,
-        //     desde: date[0],
-        //     hasta: date[1],
-        //     id_usuario: user_id,
-        //     id_vendedor: selectedIds?.users.id,
-        //     status: 0
-        // }
-
-        // let result = await getSaleOrders(dataSaleOrders)
-        // setSaleOrders(result)
 
         const data = {
             nombre: '',
@@ -363,7 +348,7 @@ const ModalBilling: React.FC = () => {
             Swal.fire('Notificacion', 'Selecciona un uso de CFDI', 'info')
             return
         }
-        for (const element of normalConcepts) {
+        for (const element of billing.normal_concepts) {
             element.precio_unitario = element.order == null ? element.precio_unitario : element.total_restante / element.cantidad;
             element.orden = null
             element.produccion_interna = false
@@ -395,10 +380,10 @@ const ModalBilling: React.FC = () => {
             id_usuario_crea: user_id,
             id_vendedor: selectedIds?.vendedores?.id ?? selectedIds?.vendedores,
             titulo: title,
-            conceptos: normalConcepts,
-            conceptos_pers: customConcepts,
-            conceptos_elim: deleteNormalConcepts,
-            conceptos_pers_elim: deleteCustomConcepts
+            conceptos: billing.normal_concepts,
+            conceptos_pers: billing.personalized_concepts,
+            conceptos_elim: billing.normal_concepts_eliminate,
+            conceptos_pers_elim: billing.personalized_concepts_eliminate
         };
 
         // return
@@ -418,13 +403,7 @@ const ModalBilling: React.FC = () => {
                             if (!response.error) {
                                 Swal.fire('Notificación', response.mensaje, 'success');
                                 setSubModal('')
-                                setNormalConcepts([])
-                                setCustomConceptView([])
-                                setCustomConcepts([])
-                                setDeleteCustomConcepts([])
-                                setNormalConceptsView([])
-                                setCustomLocal([])
-                                setConceptView([])
+                                setBilling({billing: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] })
                                 setTitle('')
                                 setClient('')
                                 setSelectedIds('series', 0)
@@ -452,13 +431,7 @@ const ModalBilling: React.FC = () => {
                             if (!response.error) {
                                 Swal.fire('Notificación', response.mensaje, 'success');
                                 setSubModal('')
-                                setNormalConcepts([])
-                                setCustomConceptView([])
-                                setCustomConcepts([])
-                                setDeleteCustomConcepts([])
-                                setNormalConceptsView([])
-                                setCustomLocal([])
-                                setConceptView([])
+                                setBilling({billing: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] })
                                 setTitle('')
                                 setClient('')
                             } else {
@@ -468,6 +441,7 @@ const ModalBilling: React.FC = () => {
                 }
             });
         }
+      
     }
 
     const [title, setTitle] = useState<any>()
@@ -477,8 +451,6 @@ const ModalBilling: React.FC = () => {
     };
 
     const handleAddConceptsChange = (order: any, i: number) => {
-
-        let newIdentifier = identifier + 1;
         let copy_totals = { ...totals };
 
         let newConcepts = order.conceptos.map((el: any) => {
@@ -488,8 +460,7 @@ const ModalBilling: React.FC = () => {
                 anio: order.anio,
             };
             el.pers_div = false;
-            el.id_identifier = newIdentifier;
-            newIdentifier++;
+
 
             if (type === 2) {
                 copy_totals.subtotal += parseFloat(el.total);
@@ -512,8 +483,9 @@ const ModalBilling: React.FC = () => {
                     folio: order.folio,
                     anio: order.anio,
                 };
-                el.id_identifier = newIdentifier;
-                newIdentifier++;
+                el.id = 0
+
+           
 
                 if (type === 2) {
                     copy_totals.subtotal += parseFloat(el.total);
@@ -531,8 +503,11 @@ const ModalBilling: React.FC = () => {
 
         let totalConcepts = [...newConcepts, ...newConceptsPers];
         setTotals(copy_totals);
-        setBilling({ normal_concepts: newConcepts, personalized_concepts: newConceptsPers });
-        setDataBillign([...dataBillign, ...totalConcepts]);
+        setBilling({
+            normal_concepts: [...(billing?.normal_concepts || []), ...newConcepts],
+            personalized_concepts: [...(billing?.personalized_concepts || []), ...newConceptsPers]
+          });
+                  setDataBillign([...dataBillign, ...totalConcepts]);
         //------------------------------------------------------------------RELLENAR INFORMACIÓN AUTOMATICA DE CLIENTE Y TITULO
         setTitle(order.titulo == undefined ? 'Cobro PAF' : order.titulo)
         if (order.rfc != undefined) {
@@ -763,13 +738,6 @@ const ModalBilling: React.FC = () => {
     const closeModal = () => {
         setSubModal('')
         setModoUpdate(false)
-        setNormalConcepts([])
-        setCustomConceptView([])
-        setCustomConcepts([])
-        setDeleteCustomConcepts([])
-        setNormalConceptsView([])
-        setCustomLocal([])
-        setConceptView([])
     }
 
     return (
@@ -1068,11 +1036,10 @@ const ModalBilling: React.FC = () => {
                                         <div className={`tbody__container `} key={concept.id}>
                                             <div className='tbody'>
                                                 <div className='td'>
-                                                    <p>{concept.codigo}-{concept.descripcion}</p>
-
+                                                    <p className='folio-identifier'>{concept.codigo}-{concept.descripcion}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>{concept.cantidad} {concept.unidad}</p>
+                                                    <p className='amount-identifier'>{concept.cantidad} {concept.unidad}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <p>${(concept.total_restante || concept.total) / concept.cantidad}</p>
@@ -1081,23 +1048,25 @@ const ModalBilling: React.FC = () => {
                                                     <p>${concept.total || concept.total_restante}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>${concept.total || concept.total_restante}</p>
+                                                    <p className='total-identifier'>${concept.total || concept.total_restante}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
                                                 </div>
-                                                <div className='td'>
-                                                    <svg onClick={() => handleAddDivisionChange(concept)} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-divide"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><circle cx="12" cy="6" r="1" fill="currentColor" /><circle cx="12" cy="18" r="1" fill="currentColor" /><path d="M5 12l14 0" /></svg>
-
+                                                <div>
+                                                    
                                                 </div>
                                                 <div className='td'>
+                                                    <div className='conept-icon-yellow'>
+                                                     <svg onClick={() => handleAddDivisionChange(concept)} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-divide"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><circle cx="12" cy="6" r="1" fill="currentColor" /><circle cx="12" cy="18" r="1" fill="currentColor" /><path d="M5 12l14 0" /></svg>
+                                                    </div>
+                                                </div>
+                                                <div className='td delete'>
                                                     <div className='delete-icon' onClick={() => { deleteConceptos(concept, index) }} title='Eliminar concepto'>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                                     </div>
                                                 </div>
-                                                {/* <div className='td'>            HABILITAR Y CONDICIONAR SOLO EN PERSONALIZADO
-                                                    <button type='button' className='btn__general-purple' onClick={() => handleAddConceptsChange(concept)}>Desperzonalizado</button>
-                                                </div> */}
+                                            
                                             </div>
                                         </div>
                                     )
@@ -1138,8 +1107,6 @@ const ModalBilling: React.FC = () => {
                                                         <div onClick={() => personalizedUpdate(concept, index)} className='conept-icon'>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
                                                         </div>
-                                                       
-
                                                     }
                                                 </div>
                                                 {concept.concept ?
@@ -1169,8 +1136,10 @@ const ModalBilling: React.FC = () => {
                                 })}
                             </div>
                             {subModal == 'billing__modal-update' && conceptsBack ? (
-                                <div className='table__body'>
-                                    <p style={{ color: 'red' }}>Estos conceptos se encuentran en tu factura</p>
+                                <div className='table__body billing__modal-update'>
+                                    <div className='title_concepts'>
+                                        <p>Estos conceptos se encuentran en tu factura</p>
+                                    </div>
                                     {conceptsBack?.map((concept: any, index: number) => {
                                         return (
                                             <div className={`tbody__container `} key={concept.id}>
@@ -1184,11 +1153,10 @@ const ModalBilling: React.FC = () => {
                                                 {concept?.personalized ?
                                                     <div className={`tbody ${concept?.conceptos[0]?.pers_div ? 'personalized_div' : 'personalized'}`}>
                                                         <div className='td'>
-                                                            <p>{concept.codigo}-{concept.descripcion}</p>
-
+                                                            <p className='article-identifier'>{concept.codigo}-{concept.descripcion}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <p>{concept.cantidad} {concept.name_unidad}</p>
+                                                            <p className='amount-identifier'>{concept.cantidad} {concept.name_unidad}</p>
                                                         </div>
                                                         <div className='td'>
                                                             <p>${(concept.precio_total) / concept.cantidad}</p>
@@ -1209,11 +1177,11 @@ const ModalBilling: React.FC = () => {
                                                     :
                                                     <div className='tbody'>
                                                         <div className='td'>
-                                                            <p>{concept.codigo}-{concept.descripcion}</p>
+                                                            <p className='article-identifier'>{concept.codigo}-{concept.descripcion}</p>
 
                                                         </div>
                                                         <div className='td'>
-                                                            <p>{concept.cantidad} {concept.unidad}</p>
+                                                            <p className='amount-identifier'>{concept.cantidad} {concept.unidad}</p>
                                                         </div>
                                                         <div className='td'>
                                                             <p>${(concept.total_restante || concept.total) / concept.cantidad}</p>
@@ -1222,10 +1190,16 @@ const ModalBilling: React.FC = () => {
                                                             <p>${concept.total || concept.total_restante}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <p>${concept.total || concept.total_restante}</p>
+                                                            <p className='total-identifier'>${concept.total || concept.total_restante}</p>
                                                         </div>
                                                         <div className='td'>
                                                             <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
+                                                        </div>
+                                                        <div>
+                                                            
+                                                        </div>
+                                                        <div>
+                                                            
                                                         </div>
                                                         <div className='td'>
                                                             <div className='delete-icon' onClick={() => { deleteConceptos(concept, index) }} title='Eliminar concepto'>
@@ -1241,7 +1215,7 @@ const ModalBilling: React.FC = () => {
                                     })}
                                 </div>
                             ) : (
-                                <p className="text">Cargando datos...</p>
+                                ''
                             )}
                         </div>
 

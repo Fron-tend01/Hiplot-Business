@@ -30,7 +30,7 @@ interface StoreState {
 
 export const storeBilling = create<StoreState>((set) => ({
 
-    billing: { sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] },
+    billing: { billing: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] },
     setBilling: (x) =>
         set((state) => ({
             billing: {

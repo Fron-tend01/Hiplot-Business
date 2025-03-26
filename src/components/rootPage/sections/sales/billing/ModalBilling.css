@@ -247,7 +247,7 @@
 
 .table__billing_sale-orders .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(4, 1fr) 100px 100px;
+    grid-template-columns: repeat(5, 1fr) 100px 100px;
     padding: 10px;
     font-weight: 600;
 }
@@ -289,7 +289,7 @@
 
 .table__billing_sale-orders .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(4, 1fr) 100px 100px;
+    grid-template-columns: repeat(5, 1fr) 100px 100px;
     padding: 10px;
 }
 
@@ -312,7 +312,7 @@
     display: grid;
     grid-template-rows: repeat(2, auto) 1fr;
     border: 3px solid var(--input-color);
-    padding: 20px;
+
     color: var(--text-color);
     border-radius: 5px;
 
@@ -396,6 +396,7 @@
 
 .table__billing_concepts .table__body .tbody {
     display: flex;
+    align-items: center;
 
 }
 
@@ -411,7 +412,11 @@
     
 }
 
-
+.table__billing_concepts .table__body .tbody .td.delete {
+    display: flex;
+    justify-content: end;
+    
+}
 
 .table__billing_concepts .concept__personalized {
     display: flex;
@@ -419,7 +424,7 @@
 
 .table__billing_concepts .concept__personalized > p {
     padding: 5px;
-    background-color: var(--primary-color);
+    background-color: #5b2abd;
     border-radius: 5px 5px 0 0;
     color: #fff;
 }
@@ -432,7 +437,7 @@
 }
 
 .table__billing_concepts .tbody.personalized {
-    border: 2px solid var(--primary-color);
+    border: 2px solid #5b2abd;
 }
 
 
@@ -444,67 +449,57 @@
 
 
 .table__billing_concepts .table__body .tbody:hover {
-    background-color: var(--secundary-color);
+    background-color: var(--table-hover-color);
     color: #fff;
 }
 
-
-.add-client__container .title {
-    display: flex;
-    margin-bottom: 10px;
+.table__billing_concepts .table__body .tbody:hover>.td .folio-identifier {
+	background-color: var(--primary-100);
+	color: #ffffff;
 }
 
-.add-client__container .title>p {
+.table__billing_concepts .table__body .tbody:hover>.td .article-identifier {
+	background-color: var(--primary-100);
+	color: #ffffff;
+}
+
+.table__billing_concepts .table__body .tbody:hover>.td .amount-identifier {
+	background-color: #FF8F00;
+	color: #ffffff;
+}
+
+
+.table__billing_concepts .table__body .tbody:hover>.td .total-identifier {
+	background-color: #6e34e2;
+	color: #ffffff;
+}
+
+
+.table__billing_concepts .table__body .tbody:hover>.td .delete-icon {
+	background-color: #ff5252;
+	color: #ffffff;
+}
+
+.table__billing_concepts .table__body .tbody:hover>.td .conept-icon-yellow {
+	background-color: #FF8F00;
+	color: #ffffff;
+}
+
+
+
+.table__billing_concepts .table__body .title_concepts {
+
+}
+
+
+.table__billing_concepts .table__body .title_concepts > p {
     padding: 5px;
-    border: 2px solid #5d35b0;
-    background-color: #5d35b0;
+    background-color: #3d86c6;
     font-weight: 600;
-    color: #fff;
-    border-radius: 5px;
+    color: #ffffff;
+    text-align: center;
 }
 
-
-.billing-modal .information_of_pay {
-    /* background-color: #3d4353; */
-    border: 3px solid var(--input-color);
-    padding: 20px;
-    color: var(--text-color);
-    border-radius: 5px;
-}
-
-.billing-modal .information_of_pay .title {
-    display: flex;
-    margin-bottom: 10px;
-}
-
-.billing-modal .information_of_pay .title>p {
-    padding: 5px;
-    border: 2px solid #5d35b0;
-    background-color: #5d35b0;
-    font-weight: 600;
-    color: #fff;
-    border-radius: 5px;
-}
-
-.billing-modal .searchs__orders {
-    /* background-color: #3d4353; */
-    border: 3px solid var(--input-color);
-    padding: 20px;
-    color: var(--text-color);
-    border-radius: 5px;
-    margin: 20px 0;
-}
-
-.billing-modal .searchs__orders .title {
-    display: flex;
-    margin-bottom: 10px;
-}
-
-.billing-modal .searchs__orders .title>p {
-    padding: 5px;
-    border: 2px solid #ec7f00;
-    background-color: #ec7f00;
-    font-weight: 600;
-    color: #fff;
-    border-radius: 5px;
+.table__billing_concepts .table__body.billing__modal-update  {
+    border: 2px solid #3d86c6;
 }

@@ -321,7 +321,10 @@ console.log('data', data)
     updatedArticle.plantilla_data[index].valor = value;
 
     setArticle(updatedArticle);
-    getPrices()
+    if (article.plantilla_data[index].tipo == 'numero') {
+      getPrices()
+    }
+
   };
 
 
@@ -1211,7 +1214,6 @@ console.log('data', data)
                     </div>
                     {article.fyv ?
                       <div className=''>
-
                         <p className='label__general'>Frente y Vuelta</p>
                         <label className="switch">
                           <input type="checkbox" checked={fyv} onChange={(e) => {
@@ -1227,11 +1229,23 @@ console.log('data', data)
                       </div>
                       : ''}
                     {article?.plantilla_data.length > 0 ?
-                      <div className=''>
+                      <div className='fields__templates'>
                         {article?.plantilla_data?.map((x: any, index: any) => (
                           <div>
-                            {x.tipo != 'txtvisual' ?
+                            {x.tipo == 'texto' ?
                               <div>
+                                <label className='label__general'>{x.nombre}</label>
+                                <input
+                                  className={`inputs__general`}
+                                  type="text"
+                                  value={x.valor}
+                                  onChange={(e) => handleTemplatesChange(e, index)}
+                                  placeholder={x.nombre}
+                                />
+                              </div>
+                              :
+                              x.tipo == 'numero' ? 
+                                <div>
                                 <label className='label__general'>{x.nombre}</label>
                                 <input
                                   className={`inputs__general`}
@@ -1240,8 +1254,10 @@ console.log('data', data)
                                   onChange={(e) => handleTemplatesChange(e, index)}
                                   placeholder={x.nombre}
                                 />
-                              </div>
-                              : ''}
+                                </div>
+                              :
+                              ''
+                              }
                           </div>
                         ))}
                       </div>
