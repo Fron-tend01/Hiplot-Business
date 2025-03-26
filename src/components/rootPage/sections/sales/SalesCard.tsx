@@ -42,8 +42,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const { modalSalesOrder }: any = useStore(storeSaleOrder)
 
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
-    const setChangeLength = storeSaleOrder((state) => state.setChangeLength);
-    const { changeLength }: any = useStore(storeSaleOrder);
+  const setChangeLength = storeSaleOrder((state) => state.setChangeLength);
+  const { changeLength }: any = useStore(storeSaleOrder);
 
 
   const [data, setData] = useState<any>({
@@ -60,11 +60,11 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   const setQuotes = storeQuotation(state => state.setQuotes)
   const { quotes }: any = useStore(storeQuotation);
-  
+
 
 
   const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
-  
+
 
   const setConceptView = storePersonalized(state => state.setConceptView)
   const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
@@ -205,8 +205,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   const fetchUser = async () => {
 
-   await APIs.getUserGroups(user_id).then(async (resultUsers: any) => {
-      await  setUsersGroups(resultUsers);
+    await APIs.getUserGroups(user_id).then(async (resultUsers: any) => {
+      await setUsersGroups(resultUsers);
       setSelectedUserGroup(resultUsers[0].id);
     }).catch((error) => {
       console.error("Error obteniendo los grupos del usuario:", error);
@@ -234,8 +234,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       setAmount(0)
       setBillingComment('')
       setproductionComments('')
-    
-      setCombinacionesSeleccionadas([])     
+
+      setCombinacionesSeleccionadas([])
     }
 
     if (modalSalesCard === 'sale-card-quotation') {
@@ -268,7 +268,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
 
 
-console.log('data', data)
+  console.log('data', data)
 
 
 
@@ -331,13 +331,6 @@ console.log('data', data)
 
 
 
-  useEffect(() => {
-
-  }, [prices])
-
-
-
-
 
   const controllerRef = useRef<AbortController | null>(null);
   const [outOfRange, setOutOfRange] = useState<any>(false)
@@ -350,6 +343,7 @@ console.log('data', data)
     if (controllerRef.current) {
       controllerRef.current.abort();
     }
+
 
     controllerRef.current = new AbortController();
 
@@ -371,6 +365,10 @@ console.log('data', data)
       const result: any = await APIs.getTotalPriceWSignal(dataArticle, {
         signal: controllerRef.current.signal, // Pasa la señal aquí
       });
+
+
+      console.log('resultresultresultresultresultresultresultresultresultresultresultresultresultresult', article)
+
       if (result.error2) {
         setOutOfRange(true)
         // // Crear una copia de `article` y modificar `precio_libre`
@@ -384,8 +382,6 @@ console.log('data', data)
       } else {
         setOutOfRange(false)
         if (result.error == true) {
-
-
           toast.warning(result.mensaje)
           setData({
             id_pers: 0,
@@ -435,18 +431,20 @@ console.log('data', data)
           return
         }
 
-       if(result.txtvisual_campos.length > 0) {
-        article.plantilla_data.forEach((c: any) => {
-          let buscar_in_result = result.txtvisual_campos.filter(
-            (x: any) => x.id_plantillas_art_campos == c.id
-          );
+        if (result.txtvisual_campos.length > 0) {
+          article.plantilla_data.forEach((c: any) => {
+            let buscar_in_result = result.txtvisual_campos.filter(
+              (x: any) => x.id_plantillas_art_campos == c.id
+            );
 
-          if (buscar_in_result.length > 0) {
-            let valor = buscar_in_result[0].valor;
-            c.valor = valor; // Actualiza el valor en el objeto clonado
-          }
-        });
-       }
+            if (buscar_in_result.length > 0) {
+              let valor = buscar_in_result[0].valor;
+              c.valor = valor; // Actualiza el valor en el objeto clonado
+            }
+          });
+        }
+
+
 
 
         if (result.error == false) {
@@ -569,7 +567,7 @@ console.log('data', data)
     getPrices()
   }, [amount, fyv])
   useEffect(() => {
-    setData((prev:any) => ({
+    setData((prev: any) => ({
       ...prev,
       precio_unitario: prices / prev.cantidad
     }));
@@ -598,7 +596,7 @@ console.log('data', data)
 
 
   const addQua = () => {
-    
+
     if (Adicional != null) { //SI ADICIONAL TIENE ALGO SE DEBE CREAR EL PERSONALIZADO PARA ENVIARLO A COT/OV
       //-------------------------------SIMULAR EL INGRESO DIRECTO A NORMALCONCEPTS
       Swal.fire({
@@ -651,13 +649,13 @@ console.log('data', data)
           }
 
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
-          setQuotes({personalized_concepts: [...quotes.personalized_concepts, data_pers], normal_concepts: quotes?.normal_concepts})
+          setQuotes({ personalized_concepts: [...quotes.personalized_concepts, data_pers], normal_concepts: quotes?.normal_concepts })
           localStorage.setItem('cotizacion-pers', JSON.stringify([...quotes.personalized_concepts, data_pers]));
         }
       });
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
 
-      setQuotes({ normal_concepts: [...quotes?.normal_concepts, data], personalized_concepts: quotes.personalized_concepts})
+      setQuotes({ normal_concepts: [...quotes?.normal_concepts, data], personalized_concepts: quotes.personalized_concepts })
       localStorage.setItem('cotizacion', JSON.stringify([...quotes?.normal_concepts, data]));
 
     }
@@ -720,7 +718,7 @@ console.log('data', data)
 
           }
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
-          setSaleOrdersConcepts({personalized_concepts: [...saleOrdersConcepts.personalized_concepts, data], normal_concepts: saleOrdersConcepts?.normal_concepts})
+          setSaleOrdersConcepts({ personalized_concepts: [...saleOrdersConcepts.personalized_concepts, data], normal_concepts: saleOrdersConcepts?.normal_concepts })
           localStorage.setItem('sale-order-pers', JSON.stringify([...saleOrdersConcepts.personalized_concepts, data_pers]));
           setPrices(0)
           setDescuento(0)
@@ -730,7 +728,7 @@ console.log('data', data)
       });
 
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
-      setSaleOrdersConcepts({normal_concepts: [...saleOrdersConcepts.normal_concepts, data], personalized_concepts: saleOrdersConcepts.personalized_concepts})
+      setSaleOrdersConcepts({ normal_concepts: [...saleOrdersConcepts.normal_concepts, data], personalized_concepts: saleOrdersConcepts.personalized_concepts })
       localStorage.setItem('sale-order', JSON.stringify([...saleOrdersConcepts.normal_concepts, data]));
     }
     toast.success('Artículo agregado')
@@ -892,7 +890,7 @@ console.log('data', data)
         setSelectedUserGroup(resultUsers[0].id);
       }
       setPrices(0)
-    
+
       setAmount(0)
 
 
@@ -1233,34 +1231,37 @@ console.log('data', data)
                     {article?.plantilla_data.length > 0 ?
                       <div className='fields__templates'>
                         {article?.plantilla_data?.map((x: any, index: any) => (
-                          <div>
-                            {x.tipo == 'texto' ?
-                              <div>
-                                <label className='label__general'>{x.nombre}</label>
-                                <input
-                                  className={`inputs__general`}
-                                  type="text"
-                                  value={x.valor}
-                                  onChange={(e) => handleTemplatesChange(e, index)}
-                                  placeholder={x.nombre}
-                                />
-                              </div>
-                              :
-                              x.tipo == 'numero' ? 
+                          x.id == 18 ?
+                            ''
+                            :
+                            <div>
+                              {x.tipo == 'texto' ?
                                 <div>
-                                <label className='label__general'>{x.nombre}</label>
-                                <input
-                                  className={`inputs__general`}
-                                  type="number"
-                                  value={x.valor}
-                                  onChange={(e) => handleTemplatesChange(e, index)}
-                                  placeholder={x.nombre}
-                                />
+                                  <label className='label__general'>{x.nombre}</label>
+                                  <input
+                                    className={`inputs__general`}
+                                    type="text"
+                                    value={x.valor}
+                                    onChange={(e) => handleTemplatesChange(e, index)}
+                                    placeholder={x.nombre}
+                                  />
                                 </div>
-                              :
-                              ''
+                                :
+                                x.tipo == 'numero' ?
+                                  <div>
+                                    <label className='label__general'>{x.nombre}</label>
+                                    <input
+                                      className={`inputs__general`}
+                                      type="number"
+                                      value={x.valor}
+                                      onChange={(e) => handleTemplatesChange(e, index)}
+                                      placeholder={x.nombre}
+                                    />
+                                  </div>
+                                  :
+                                  ''
                               }
-                          </div>
+                            </div>
                         ))}
                       </div>
 
@@ -1296,7 +1297,7 @@ console.log('data', data)
                     <div className='row'>
                       <div className='col-6'>
                         <label className='label__general'>Coment. factura</label>
-                        <textarea className={`inputs__general`}  value={data.obs_factura} onChange={(e) => setData((prev: any) => ({ ...prev, obs_factura: e.target.value }))} placeholder='Factura' />
+                        <textarea className={`inputs__general`} value={data.obs_factura} onChange={(e) => setData((prev: any) => ({ ...prev, obs_factura: e.target.value }))} placeholder='Factura' />
                       </div>
                       <div className='col-6'>
                         <label className='label__general'>Coment. producción</label>

@@ -1401,7 +1401,7 @@ const ModalSalesOrder: React.FC = () => {
                                                             <select className="traditional__selector" value={article.id_area_produccion} onChange={(event) => handleAreasChange(event, index)}>
                                                                 {article?.areas_produccion?.map((item: any) => (
                                                                     <option key={item.id} value={item.id_area}>
-                                                                        {item.nombre_area}
+                                                                        {item.nombre_area}-{item.nombre_sucursal}
                                                                     </option>
                                                                 ))}
                                                             </select>
