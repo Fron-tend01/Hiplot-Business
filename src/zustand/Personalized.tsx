@@ -76,7 +76,6 @@ interface SelectStore {
 
 export const storePersonalized = create<SelectStore>((set) => ({
 
-  setConcepts: (x) => set({ concepts: x }),
 
   idItem: {},
   setIdItem: (x) => set({ idItem: x }),

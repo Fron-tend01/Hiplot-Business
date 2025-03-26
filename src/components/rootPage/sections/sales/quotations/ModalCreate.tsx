@@ -142,7 +142,7 @@ const ModalCreate: React.FC = () => {
         x.id_area_produccion = x.areas_produccion[0].id_area
       });
     });
-    setSaleOrdersToUpdate(copiaQuatation)
+    // setSaleOrdersToUpdate(copiaQuatation)
     setModalSalesOrder('sale-order__modal_bycot')
   }
 

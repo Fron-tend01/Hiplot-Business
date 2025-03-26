@@ -7,9 +7,10 @@ import './styles/Articles.css';
 import ModalArticle from './articles/modalArticle'
 import { articleRequests } from '../../../../fuctions/Articles';
 import { Toaster } from 'sonner'
+import Companies_Branches from '../../Dynamic_Components/Companies_Branches';
 
 import { useStore } from 'zustand';
-import LoadingInfo from '../../../loading/LoadingInfo';
+
 
 const Articles: React.FC = () => {
   const effectRan = useRef(false)
@@ -301,10 +302,9 @@ const Articles: React.FC = () => {
                 <input className='checkbox' type="checkbox" checked={typeActive == 0 ? true : false} onChange={() => handleActivesArticleChange(0)} />
                 <span className="checkmark__general"></span>
               </label>
-              <p className='text'>Desactivados</p>
+                <p className='text'>Desactivados</p>
+              </div>
             </div>
-          </div>
-
         </div>
         <div className='mt-4 row__three'>
           <div>
