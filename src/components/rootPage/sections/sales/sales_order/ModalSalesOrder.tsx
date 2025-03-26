@@ -236,7 +236,32 @@ const ModalSalesOrder: React.FC = () => {
                 setCustomConcepts([])
                 setConceptView([])
                 setCustomConceptView([])
+                setSaleOrdersConcepts({normal_concepts: [], personalized_concepts: []});
+
+                const dataSaleOrders = {
+                    id: result.id,
+                    folio: 0,
+                    id_sucursal: branchOffices.id,
+                    id_serie: 0,
+                    id_cliente: dataGet,
+                    desde: dataGet.desde,
+                    hasta: dataGet.hasta,
+                    id_usuario: dataGet.id_usuario,
+                    id_vendedor: 0,
+                    status: 0,
+                    page: 1
+                }
                 localStorage.removeItem("sale-order");
+                const resultData = await getSaleOrders(dataSaleOrders)
+        
+                setSaleOrders(resultData)
+                let order = resultData[0]
+                setModalSalesOrder('sale-order__modal-update')
+                setSaleOrdersConcepts({sale_order: order, normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers});
+                setSaleOrdersToUpdate(order)
+        
+
+
             }
         } catch (error) {
             console.error("Error al crear la orden de compra:", error);
@@ -304,24 +329,30 @@ const ModalSalesOrder: React.FC = () => {
 
     const SaleOrderProduction = async () => {
         let concetps: any = []
-
+    
         customConcepts.forEach((element: any) => {
             concetps = [...concetps, ...element.conceptos]
-
+    
         });
-
+    
         setConceptsProductions([...normalConcepts, ...concetps])
-
-
+    
+    
         setModalProduction('sale-order-production__modal')
         if (!modify_te) {
             let data = {
                 articulos: saleOrdersToUpdate.conceptos,
                 id_sucursal: saleOrdersToUpdate.id_sucursal
             }
-            let response = await APIs.calculateSalesDeliveryDime(data)
-            setDataProduction(response)
-
+            let response:any = await APIs.calculateSalesDeliveryDime(data)
+            if (response.hora_cliente && response.hora_produccion) {
+                setDataProduction(response)
+                setDates([`${response.fecha_produccion}T${response.hora_produccion}`, `${response.fecha_cliente}T${response.hora_cliente}`])
+                setModifyTe(0)
+            } else {
+                setDates([`${response.fecha_produccion}T${hora}`, `${response.fecha_cliente}T${hora}`])
+            }
+    
         }
     }
 
@@ -350,11 +381,11 @@ const ModalSalesOrder: React.FC = () => {
                         .then(async (response: any) => {
                             let order = response[0]
                             setSaleOrdersToUpdate(order)
-                            setCustomConcepts(order.conceptos_pers);
-                            setNormalConcepts(order.conceptos);
                             setModalLoading(false)
                         })
                 }
+            }).finally(()=>{
+                setModalLoading(false)
             })
         } catch (error) {
             setModalLoading(false)
@@ -408,10 +439,9 @@ const ModalSalesOrder: React.FC = () => {
                 await APIs.CreateAny(d, "get_orden_venta")
                     .then(async (response: any) => {
                         let order = response[0]
-                        setSaleOrdersToUpdate(order)
-                        setCustomConcepts(order.conceptos_pers);
-                        setNormalConcepts(order.conceptos);
-                        setModalLoading(false)
+                        // setSaleOrdersToUpdate(order)
+                        setSaleOrdersConcepts({normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers});
+
                         setModalLoading(false)
 
                     })
@@ -462,36 +492,51 @@ const ModalSalesOrder: React.FC = () => {
 
 
     const calcular_totales = () => {
-
-        const precios = normalConcepts?.reduce(
-            (acc: any, item: any) => ({
+        // Definir valores iniciales en 0
+        const initialValues = { 
+            precio_unitario: 0, 
+            descuento: 0, 
+            monto_urgencia: 0, 
+            total: 0, 
+            total_franquicia: 0 
+        };
+    
+        // Validar que saleOrdersConcepts existe y que normal_concepts no sea null/undefined
+        const precios = (saleOrdersConcepts?.normal_concepts || []).reduce(
+            (acc, item) => ({
                 precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
                 descuento: acc.descuento + (parseFloat(item.descuento) || 0),
                 monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
                 total: acc.total + (parseFloat(item.precio_total) || 0),
                 total_franquicia: acc.total_franquicia + (parseFloat(item.total_franquicia) || 0),
             }),
-            { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0, total_franquicia: 0 }
+            initialValues
         );
-        const preciospers = customConcepts.reduce(
-            (acc: any, item: any) => ({
+    
+        // Validar que saleOrdersConcepts existe y que personalized_concepts no sea null/undefined
+        const preciospers = (saleOrdersConcepts?.personalized_concepts || []).reduce(
+            (acc, item) => ({
                 precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
                 descuento: acc.descuento + (parseFloat(item.descuento) || 0),
                 monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
                 total: acc.total + (parseFloat(item.precio_total) || 0),
                 total_franquicia: acc.total_franquicia + (parseFloat(item.total_franquicia) || 0),
             }),
-            { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0, total_franquicia: 0 }
+            initialValues
         );
-        setAmount(preciospers.total + preciospers.descuento - preciospers.monto_urgencia + precios.total + precios.descuento - precios.monto_urgencia);
-        setdDiscount(preciospers.descuento + precios.descuento);
-        setdUrgency(preciospers.monto_urgencia + precios.monto_urgencia);
-        setdTotalGeneral(preciospers.total + precios.total);
-
-        setSubtotalf(preciospers.total_franquicia + precios.total_franquicia);
-        setTotalf(preciospers.total_franquicia + precios.total_franquicia);
-
-    }
+    
+        // Asegurar que las variables siempre existen y tienen un valor numérico
+        setAmount(
+            (preciospers.total || 0) + (preciospers.descuento || 0) - (preciospers.monto_urgencia || 0) +
+            (precios.total || 0) + (precios.descuento || 0) - (precios.monto_urgencia || 0)
+        );
+        setdDiscount((preciospers.descuento || 0) + (precios.descuento || 0));
+        setdUrgency((preciospers.monto_urgencia || 0) + (precios.monto_urgencia || 0));
+        setdTotalGeneral((preciospers.total || 0) + (precios.total || 0));
+        setSubtotalf((preciospers.total_franquicia || 0) + (precios.total_franquicia || 0));
+        setTotalf((preciospers.total_franquicia || 0) + (precios.total_franquicia || 0));
+    };
+    
 
     const getTicket = async () => {
         try {
@@ -514,9 +559,7 @@ const ModalSalesOrder: React.FC = () => {
             setCompanies({ id: saleOrdersToUpdate.id_empresa })
             setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
             if (modalSalesOrder == 'sale-order__modal_bycot') {
-                setNormalConcepts(saleOrdersToUpdate.conceptos)
-                setCustomConcepts(saleOrdersToUpdate.conceptos_pers)
-
+                setSaleOrdersConcepts({normal_concepts: saleOrdersToUpdate.conceptos, personalized_concepts: saleOrdersToUpdate.conceptos_pers});
             }
             setTitle(saleOrdersToUpdate.titulo)
             console.log('saleOrdersToUpdate', saleOrdersToUpdate)
@@ -557,13 +600,14 @@ const ModalSalesOrder: React.FC = () => {
 
     const calcular_tiempos_entrega = async () => {
         let conceptos_a_enviar: any[] = []
-        if (normalConcepts.length > 0) {
-            normalConcepts.forEach((n: any) => {
+
+        if (saleOrdersConcepts?.normal_concepts?.length > 0) {
+            saleOrdersConcepts.normal_concepts.forEach((n: any) => {
                 conceptos_a_enviar.push(n)
             });
         }
-        if (customConcepts.length > 0) {
-            customConcepts.forEach((p: any) => {
+        if (saleOrdersConcepts?.personalized_concepts?.length > 0) {
+            saleOrdersConcepts.personalized_concepts.forEach((p: any) => {
                 if (p.conceptos.length > 0) {
                     p.conceptos.forEach((c: any) => {
                         conceptos_a_enviar.push(c)
@@ -581,10 +625,10 @@ const ModalSalesOrder: React.FC = () => {
         await APIs.CreateAny(data, "calcular_tiempo_entrega")
             .then(async (response: any) => {
                 console.log('response', response)
+                setModifyTe(0)
                 if (response.hora_cliente && response.hora_produccion) {
                     setDataProduction(response)
                     setDates([`${response.fecha_produccion}T${response.hora_produccion}`, `${response.fecha_cliente}T${response.hora_cliente}`])
-                    setModifyTe(0)
                 } else {
                     setDates([`${response.fecha_produccion}T${hora}`, `${response.fecha_cliente}T${hora}`])
                 }
@@ -632,6 +676,7 @@ const ModalSalesOrder: React.FC = () => {
         setSaleOrdersConcepts({normal_concepts: newConcept, personalized_concepts: saleOrdersConcepts.personalized_concepts});
 
     };
+    
 
     const handleUrgencyChangePers = async (index: number, idx: number) => {
         let data = {
@@ -692,8 +737,8 @@ const ModalSalesOrder: React.FC = () => {
                         .then(async (response: any) => {
                             let order = response[0]
                             setSaleOrdersToUpdate(order)
-                            setCustomConcepts(order.conceptos_pers);
-                            setNormalConcepts(order.conceptos);
+                            // setCustomConcepts(order.conceptos_pers);
+                            // setNormalConcepts(order.conceptos);
                             setModalLoading(false)
 
                         })
@@ -708,7 +753,7 @@ const ModalSalesOrder: React.FC = () => {
 
             })
         search()
-        setSaleOrdersConcepts({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], concepto: {}, indexConcepto: 0 })
+        // setSaleOrdersConcepts({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], concepto: {}, indexConcepto: 0 })
 
     }
     const [urgenciaG, setUrgenciaG] = useState<boolean>(false)
@@ -800,7 +845,7 @@ const ModalSalesOrder: React.FC = () => {
         const resultData = await getSaleOrders(dataSaleOrders)
 
         setSaleOrders(resultData)
-        setModalSalesOrder('')
+        // setModalSalesOrder('')
     }
 
 
@@ -835,7 +880,8 @@ const ModalSalesOrder: React.FC = () => {
         try {
             let response: any = await APIs.cancelConceptsOrder(data)
             const result = await getSaleOrders(dataSaleOrders)
-            setNormalConcepts(result[0].conceptos);
+            // setNormalConcepts(result[0].conceptos);
+            setSaleOrdersConcepts({normal_concepts: result[0].conceptos, personalized_concepts: result[0].conceptos_pers});
 
             Swal.fire('Exito', response.mensaje, 'success');
         } catch (error) {
