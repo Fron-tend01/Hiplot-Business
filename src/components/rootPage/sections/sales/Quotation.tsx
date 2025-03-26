@@ -35,7 +35,7 @@ const Quotation: React.FC = () => {
   const setQuatation = storeQuotation(state => state.setQuatation)
   const setPersonalized = storePersonalized(state => state.setPersonalized)
 
-  const setQuotesConcepts = storeQuotation(state => state.setQuotesConcepts)
+  const setQuotes = storeQuotation(state => state.setQuotes)
 
 
   const setDataGet = storeQuotation(state => state.setDataGet);
@@ -63,7 +63,7 @@ const Quotation: React.FC = () => {
     const cotizacion = JSON.parse(localStorage.getItem('cotizacion') || "[]");
     const cotizacion_pers = JSON.parse(localStorage.getItem('cotizacion-pers') || "[]");
     if (cotizacion) {
-      setQuotesConcepts({ normal_concepts: cotizacion, personalized_concepts: cotizacion_pers });
+      setQuotes({ normal_concepts: cotizacion, personalized_concepts: cotizacion_pers });
     }
 
   }
@@ -172,11 +172,11 @@ const Quotation: React.FC = () => {
     }
   }
 
-  const updateQuotation = (quotation: any) => {
-    console.log('quotation', quotation)
+  const updateQuotation = (x: any) => {
+    console.log('quotation', x)
     setModal('update-modal__qoutation');
-    setQuotesConcepts({ normal_concepts: quotation.conceptos, personalized_concepts: quotation.conceptos_pers});
-    setQuatation(quotation);
+    setQuotes({ quotes: x, normal_concepts: x.conceptos, personalized_concepts: x.conceptos_pers});
+    setQuatation(x);
   };
 
 

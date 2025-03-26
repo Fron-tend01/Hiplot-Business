@@ -31,27 +31,7 @@ const ModalBilling: React.FC = () => {
     const setBilling = storeBilling((state) => state.setBilling);
     const { billing }: any = useStore(storeBilling);
     // const [factura, setFactura] = useState<any>({
-    //     id: 0,
-    //     id_folio: 0,
-    //     id_sucursal: 0,
-    //     id_cliente: 0,
-    //     subtotal: 0,
-    //     urgencia: 0,
-    //     descuento: 0,
-    //     total: 0,
-    //     divisa: 0,
-    //     cfdi: 0,
-    //     condiciones_pago: 0,
-    //     forma_pago: 0,
-    //     metodo_pago: 0,
-    //     id_usuario_crea: 0,
-    //     fecha_creacion: '',
-    //     status: 0,
-    //     titulo: '',
-    //     conceptos: [],
-    //     ovs_enlazadas: [],
-    //     conceptos_elim: []
-    // })
+    
     const setSubModal = storeArticles(state => state.setSubModal)
     const setNormalConcepts = storePersonalized((state) => state.setNormalConcepts);
 
@@ -679,7 +659,6 @@ const ModalBilling: React.FC = () => {
                 if (type == 2) {
                     DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total))
                     DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
-
                 } else {
                     DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total_restante))
                     DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total_restante))
@@ -689,7 +668,6 @@ const ModalBilling: React.FC = () => {
 
                 const filterNormal = billing?.normal_concepts.filter((_: any, index: number) => index !== i);
                 setBilling({normal_concepts: filterNormal});
-
             }
         }
     }

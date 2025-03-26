@@ -36,8 +36,8 @@ const Header: React.FC = () => {
   const setSaleOrdersConcepts = storeSaleOrder((state) => state.setSaleOrdersConcepts);
   const { saleOrdersConcepts }: any = useStore(storeSaleOrder);
 
-  const setQuotesConcepts = storeQuotation(state => state.setQuotesConcepts)
-  const { quotesConcepts }: any = useStore(storeQuotation);
+  const setQuotes = storeQuotation(state => state.setQuotes)
+  const { quotes }: any = useStore(storeQuotation);
 
   const toggleUsersDisplay = () => {
     // setShowUsers(!showUsers);
@@ -67,7 +67,7 @@ const Header: React.FC = () => {
     }
 
     if (cotizacion.length > 0 || cotizacion_pers.length > 0) {   
-      setQuotesConcepts({ normal_concepts: cotizacion, personalized_concepts: cotizacion_pers });
+      setQuotes({ normal_concepts: cotizacion, personalized_concepts: cotizacion_pers });
       
 
     } 
@@ -80,13 +80,13 @@ const Header: React.FC = () => {
   useEffect(() => {
     let n_sale = saleOrdersConcepts?.normal_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
     let p_sale = saleOrdersConcepts?.personalized_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
-    let n_quotes = quotesConcepts?.normal_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
-    let p_quotes = quotesConcepts?.personalized_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
+    let n_quotes = quotes?.normal_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
+    let p_quotes = quotes?.personalized_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
 
 
     setTotalSales(n_sale + p_sale);
     setTotalQuotes(n_quotes + p_quotes);
-  }, [saleOrdersConcepts, quotesConcepts]);
+  }, [saleOrdersConcepts, quotes]);
 
 
 
@@ -205,8 +205,8 @@ const Header: React.FC = () => {
   const deleteArticle = (_: any, i: number, type: string) => {
 
     if (type == 'quotes') {
-      const filter = quotesConcepts.normal_concepts.filter((_: any, index: number) => index !== i)
-      setQuotesConcepts({ normal_concepts: filter });
+      const filter = quotes.normal_concepts.filter((_: any, index: number) => index !== i)
+      setQuotes({ normal_concepts: filter });
       
       localStorage.setItem('cotizacion', JSON.stringify(filter));
     } else {
@@ -261,9 +261,9 @@ const Header: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  {quotesConcepts.normal_concepts ? (
+                  {quotes.normal_concepts ? (
                     <div className='table__body'>
-                      {quotesConcepts.normal_concepts.map((x: any, index: number) => {
+                      {quotes.normal_concepts.map((x: any, index: number) => {
                         return (
                           <div className='tbody__container' key={x.id}>
                             <div className='tbody'>
@@ -289,9 +289,9 @@ const Header: React.FC = () => {
                   ) : (
                     ''
                   )}
-                  {quotesConcepts.personalized_concepts ? (
+                  {quotes.personalized_concepts ? (
                     <div className='table__body'>
-                      {quotesConcepts.personalized_concepts.map((x: any, index: number) => {
+                      {quotes.personalized_concepts.map((x: any, index: number) => {
                         return (
                           <div className='tbody__container' key={x.id}>
                             <div className='tbody'>

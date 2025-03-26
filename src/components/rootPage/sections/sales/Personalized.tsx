@@ -29,8 +29,8 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
   const { saleOrdersConcepts, modalSalesOrder }: any = useStore(storeSaleOrder);
 
 //////////////////////////////////////Store of Quotes //////////////////////////////////////////
-  const setQuotesConcepts = storeQuotation(state => state.setQuotesConcepts)
-  const { quotesConcepts }: any = useStore(storeQuotation);
+  const setQuotes = storeQuotation(state => state.setQuotes)
+  const { quotes }: any = useStore(storeQuotation);
 //////////////////////////////////////Store of Billing //////////////////////////////////////////
 const setBilling = storeBilling(state => state.setBilling)
 const { billing }: any = useStore(storeBilling);
@@ -133,8 +133,8 @@ const { billing }: any = useStore(storeBilling);
 
         let filterDelete = customConceptView.filter((x: any) => x.check !== true)
         if (personalizedModal == 'personalized_modal-quotation') {
-          setQuotesConcepts({ normal_concepts: filterDelete, personalized_concepts: [...quotesConcepts?.personalized_concepts ?? [], data] });
-          localStorage.setItem('cotizacion-pers', JSON.stringify([...(quotesConcepts?.personalized_concepts ?? []), data ]));
+          setQuotes({ normal_concepts: filterDelete, personalized_concepts: [...quotes?.personalized_concepts ?? [], data] });
+          localStorage.setItem('cotizacion-pers', JSON.stringify([...(quotes?.personalized_concepts ?? []), data ]));
           localStorage.setItem('cotizacion', JSON.stringify(filterDelete))
         }
         if (personalizedModal == 'personalized_modal-sale') {
