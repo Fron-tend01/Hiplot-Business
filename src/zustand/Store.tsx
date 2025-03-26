@@ -17,6 +17,8 @@ interface StoreState {
     modalState: any;
     setModalState: (modal: any) => void;
 
+    companiesBranches: any;
+    setCompaniesBranches: (modal: any) => void;
     
     storeToUpdate: any;
     setStoreToUpdate: (store: any) => void;
@@ -30,6 +32,9 @@ interface StoreState {
 export const storeStore = create<StoreState>((set) => ({
     store: [],
     setStore: (modal) => set({ store: modal }),
+
+    companiesBranches: [],
+    setCompaniesBranches: (modal) => set({ store: modal }),
 
     modalState: '',
     setModalState: (modal) => set({ modalState: modal }),

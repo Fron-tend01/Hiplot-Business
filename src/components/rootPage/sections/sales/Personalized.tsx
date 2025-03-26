@@ -42,7 +42,7 @@ const { billing }: any = useStore(storeBilling);
   const hoy = new Date();
   const haceUnaSemana = new Date();
 
-  const { normalConcepts, customConceptView, deleteCustomConcepts, customConcepts, personalizedModal, customData, dataUpdate }: any = useStore(storePersonalized)
+  const { customConceptView, personalizedModal, customData, dataUpdate }: any = useStore(storePersonalized)
 
   const setModalSub = storeModals((state) => state.setModalSub);
 
@@ -166,7 +166,7 @@ const { billing }: any = useStore(storeBilling);
       let length: number = 0;
       let filter = customConceptView.filter((x: any) => x.check == true)
       let filterDeleteNormal = customConceptView.filter((x: any) => x.check !== true)
-      const updatedConceptView = quotesConcepts?.personalized_concepts.map((x: any, index: number) => {
+      const updatedConceptView = quotes?.personalized_concepts.map((x: any, index: number) => {
         if (index == indexItem) {
           length = filter.length
           return {
@@ -188,13 +188,13 @@ const { billing }: any = useStore(storeBilling);
 
       if (length > 0) {
         console.log('Se mantiene por que todavia le quedan conceptos', length)
-        setQuotesConcepts({ normal_concepts: filterDeleteNormal, personalized_concepts: updatedConceptView });
+        setQuotes({ normal_concepts: filterDeleteNormal, personalized_concepts: updatedConceptView });
         setPersonalizedModal('')
         return
 
       } else {
         let filterDelete = saleOrdersConcepts?.personalized_concepts.filter((_: any, index: number) => index !== indexItem)
-        setQuotesConcepts({ normal_concepts: filterDeleteNormal, personalized_concepts: filterDelete });
+        setQuotes({ normal_concepts: filterDeleteNormal, personalized_concepts: filterDelete });
         setPersonalizedModal('')
       }
     }
@@ -271,7 +271,7 @@ const { billing }: any = useStore(storeBilling);
         try {
           let response: any = await APIs.updateConceptPersonalized(data)
           const result = await getSaleOrders(dataSaleOrders)
-          setQuotesConcepts({ personalized_concepts: result[0].conceptos_pers });
+          setQuotes({ personalized_concepts: result[0].conceptos_pers });
           setPersonalizedModal('')
           return Swal.fire('Éxito', response.mensaje, 'success');
         } catch (error: any) {
@@ -289,7 +289,7 @@ const { billing }: any = useStore(storeBilling);
         let filter = customConceptView.filter((x: any) => x.check == true)
         console.log('filter', filter)
         let filterDeleteNormal = customConceptView.filter((x: any) => x.check !== true)
-        const updatedConceptView = customConcepts.map((x: any, index: number) => {
+        const updatedConceptView = billing.personalized_concepts.map((x: any, index: number) => {
           if (index == indexItem) {
 
             length = filter.length
@@ -315,17 +315,17 @@ const { billing }: any = useStore(storeBilling);
 
         if (length > 0) {
           console.log('Se mantiene por que todavia le quedan conceptos', length)
-          setNormalConcepts(filterDeleteNormal)
-          setCustomConcepts(updatedConceptView)
+          // setNormalConcepts(filterDeleteNormal)
+          // setCustomConcepts(updatedConceptView)
           setPersonalizedModal('')
           return
 
         } else {
           console.log('Se elimina', length)
-          let filterDelete = customConcepts.filter((_: any, index: number) => index !== indexItem)
+          let filterDelete = billing.personalized_concepts.filter((_: any, index: number) => index !== indexItem)
 
-          setCustomConcepts(filterDelete)
-          setNormalConcepts(filterDeleteNormal)
+          // setCustomConcepts(filterDelete)
+          // setNormalConcepts(filterDeleteNormal)
           setPersonalizedModal('')
         }
         return
@@ -360,7 +360,7 @@ const { billing }: any = useStore(storeBilling);
         try {
           let response: any = await APIs.updateConceptPersonalized(data)
           const result = await getSaleOrders(dataSaleOrders)
-          setCustomConcepts(result[0].conceptos_pers);
+          // setCustomConcepts(result[0].conceptos_pers);
           setPersonalizedModal('')
           return Swal.fire('Éxito', response.mensaje, 'success');
         } catch (error: any) {
@@ -473,7 +473,7 @@ const { billing }: any = useStore(storeBilling);
       newConcept[index].precio_total = parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia);
       newConcept[index].monto_urgencia = 0;
     }
-    setNormalConcepts(newConcept);
+    // setNormalConcepts(newConcept);
 
   };
 
@@ -482,8 +482,8 @@ const { billing }: any = useStore(storeBilling);
   }
 
   const deleteArticle = (_: any, i: number) => {
-    const filter = normalConcepts.filter((_: any, index: number) => index !== i)
-    setNormalConcepts(filter)
+    // const filter = normalConcepts.filter((_: any, index: number) => index !== i)
+    // setNormalConcepts(filter)
 
   }
 
@@ -598,7 +598,7 @@ const { billing }: any = useStore(storeBilling);
     try {
       let response: any = await APIs.cancelConceptsOrder(data)
       const result = await getSaleOrders(dataSaleOrders)
-      setCustomConcepts(result[0].conceptos_pers);
+      // setCustomConcepts(result[0].conceptos_pers);
       setPersonalizedModal('')
 
       Swal.fire('Exito', response.mensaje, 'success');
