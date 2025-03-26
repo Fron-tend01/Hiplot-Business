@@ -714,8 +714,11 @@ const ModalBilling: React.FC = () => {
 
     const [indexItem, setIndexItem] = useState<any>()
 
-    const personalizedUpdate = (concept: any, index: number) => {
+    const [identifierBilling, setIdentifierBilling] = useState<any>('')
+
+    const personalizedUpdate = (concept: any, index: number, identifier: boolean) => {
         setPersonalizedModal('personalized_modal-billing-update');
+        setIdentifierBilling(identifier)
         setIdItem(concept);
         setIndexItem(index)
         console.log(concept)
@@ -1100,11 +1103,11 @@ const ModalBilling: React.FC = () => {
                                                 </div>
                                                 <div className='td'>
                                                     {concept.concept ?
-                                                        <div onClick={() => personalizedUpdate(concept, index)} className='conept-icon'>
+                                                        <div onClick={() => personalizedUpdate(concept, index, false)} className='conept-icon'>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
                                                         </div>
                                                         :
-                                                        <div onClick={() => personalizedUpdate(concept, index)} className='conept-icon'>
+                                                        <div onClick={() => personalizedUpdate(concept, index, false)} className='conept-icon'>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
                                                         </div>
                                                     }
@@ -1120,7 +1123,6 @@ const ModalBilling: React.FC = () => {
                                                 }
                                                 <div>
                                                     {concept.conceptos[0].pers_div ?
-
                                                         <div className='delete-icon' onClick={() => { deleteConceptos(concept, index) }} title='Eliminar concepto'>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                                         </div>
@@ -1170,7 +1172,7 @@ const ModalBilling: React.FC = () => {
                                                         <div className='td'>
                                                             <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
                                                         </div>
-                                                        <div onClick={() => personalizedUpdate(concept, index)} className='conept-icon'>
+                                                        <div onClick={() => personalizedUpdate(concept, index, true)} className='conept-icon'>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
                                                         </div>
                                                     </div>
@@ -1258,7 +1260,7 @@ const ModalBilling: React.FC = () => {
                     </div>
                 </div>
                 <Division />
-                <Personalized idItem={idItem} indexItem={indexItem} />
+                <Personalized idItem={idItem} indexItem={indexItem} identifierBilling={identifierBilling} />
 
             </div>
         </div >

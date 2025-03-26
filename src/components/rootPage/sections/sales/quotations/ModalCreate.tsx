@@ -272,7 +272,8 @@ const ModalCreate: React.FC = () => {
       check: false,
     }));
     setQuotes({ normal_concepts: [...quotes?.normal_concepts, ...updatedConcepts], personalized_concepts: deleteItemCustomC, personalized_concepts_eliminate: concept.id ? [...quotes.personalized_concepts_eliminate, concept.id] : [...quotes.personalized_concepts_eliminate] });
-
+    localStorage.setItem('cotizacion', JSON.stringify([...(quotes?.normal_concepts ?? []), ...updatedConcepts]));
+    localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
   };
 
 

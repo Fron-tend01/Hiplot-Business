@@ -443,6 +443,13 @@
 
 }
 
+.table__cart_concepts .table__body .tbody .td.undo {
+    display: flex;
+    justify-content: end;
+
+
+}
+
 
 
 /* 

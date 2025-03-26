@@ -178,6 +178,8 @@ const ModalSalesOrder: React.FC = () => {
     }, [saleOrdersToUpdate])
 
 
+    console.log('saleOrdersConcepts', saleOrdersConcepts)
+
     const handleCreateSaleOrder = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const [datePartOne, timePartOne] = dates[0] ? dates[0].split("T") : ["", ""];
@@ -236,7 +238,7 @@ const ModalSalesOrder: React.FC = () => {
                 setCustomConcepts([])
                 setConceptView([])
                 setCustomConceptView([])
-                setSaleOrdersConcepts({normal_concepts: [], personalized_concepts: []});
+                setSaleOrdersConcepts({ normal_concepts: [], personalized_concepts: [] });
 
                 const dataSaleOrders = {
                     id: result.id,
@@ -253,13 +255,13 @@ const ModalSalesOrder: React.FC = () => {
                 }
                 localStorage.removeItem("sale-order");
                 const resultData = await getSaleOrders(dataSaleOrders)
-        
+
                 setSaleOrders(resultData)
                 let order = resultData[0]
                 setModalSalesOrder('sale-order__modal-update')
-                setSaleOrdersConcepts({sale_order: order, normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers});
+                setSaleOrdersConcepts({ sale_order: order, normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
                 setSaleOrdersToUpdate(order)
-        
+
 
 
             }
@@ -329,22 +331,22 @@ const ModalSalesOrder: React.FC = () => {
 
     const SaleOrderProduction = async () => {
         let concetps: any = []
-    
+
         customConcepts.forEach((element: any) => {
             concetps = [...concetps, ...element.conceptos]
-    
+
         });
-    
+
         setConceptsProductions([...normalConcepts, ...concetps])
-    
-    
+
+
         setModalProduction('sale-order-production__modal')
         if (!modify_te) {
             let data = {
                 articulos: saleOrdersToUpdate.conceptos,
                 id_sucursal: saleOrdersToUpdate.id_sucursal
             }
-            let response:any = await APIs.calculateSalesDeliveryDime(data)
+            let response: any = await APIs.calculateSalesDeliveryDime(data)
             if (response.hora_cliente && response.hora_produccion) {
                 setDataProduction(response)
                 setDates([`${response.fecha_produccion}T${response.hora_produccion}`, `${response.fecha_cliente}T${response.hora_cliente}`])
@@ -352,7 +354,7 @@ const ModalSalesOrder: React.FC = () => {
             } else {
                 setDates([`${response.fecha_produccion}T${hora}`, `${response.fecha_cliente}T${hora}`])
             }
-    
+
         }
     }
 
@@ -384,7 +386,7 @@ const ModalSalesOrder: React.FC = () => {
                             setModalLoading(false)
                         })
                 }
-            }).finally(()=>{
+            }).finally(() => {
                 setModalLoading(false)
             })
         } catch (error) {
@@ -403,7 +405,7 @@ const ModalSalesOrder: React.FC = () => {
             }
             return x;
         });
-        setSaleOrdersConcepts({normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts});
+        setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
     };
 
 
@@ -440,7 +442,7 @@ const ModalSalesOrder: React.FC = () => {
                     .then(async (response: any) => {
                         let order = response[0]
                         // setSaleOrdersToUpdate(order)
-                        setSaleOrdersConcepts({normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers});
+                        setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
 
                         setModalLoading(false)
 
@@ -459,10 +461,10 @@ const ModalSalesOrder: React.FC = () => {
     }
 
     const handleStatusChange = (status: number, index: number) => {
-        let data =  saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
+        let data = saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
             i === index ? { ...item, enviar_a_produccion: !status } : item
         )
-        setSaleOrdersConcepts({normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts});
+        setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
 
     };
 
@@ -493,14 +495,14 @@ const ModalSalesOrder: React.FC = () => {
 
     const calcular_totales = () => {
         // Definir valores iniciales en 0
-        const initialValues = { 
-            precio_unitario: 0, 
-            descuento: 0, 
-            monto_urgencia: 0, 
-            total: 0, 
-            total_franquicia: 0 
+        const initialValues = {
+            precio_unitario: 0,
+            descuento: 0,
+            monto_urgencia: 0,
+            total: 0,
+            total_franquicia: 0
         };
-    
+
         // Validar que saleOrdersConcepts existe y que normal_concepts no sea null/undefined
         const precios = (saleOrdersConcepts?.normal_concepts || []).reduce(
             (acc, item) => ({
@@ -512,7 +514,7 @@ const ModalSalesOrder: React.FC = () => {
             }),
             initialValues
         );
-    
+
         // Validar que saleOrdersConcepts existe y que personalized_concepts no sea null/undefined
         const preciospers = (saleOrdersConcepts?.personalized_concepts || []).reduce(
             (acc, item) => ({
@@ -524,7 +526,7 @@ const ModalSalesOrder: React.FC = () => {
             }),
             initialValues
         );
-    
+
         // Asegurar que las variables siempre existen y tienen un valor numérico
         setAmount(
             (preciospers.total || 0) + (preciospers.descuento || 0) - (preciospers.monto_urgencia || 0) +
@@ -536,7 +538,7 @@ const ModalSalesOrder: React.FC = () => {
         setSubtotalf((preciospers.total_franquicia || 0) + (precios.total_franquicia || 0));
         setTotalf((preciospers.total_franquicia || 0) + (precios.total_franquicia || 0));
     };
-    
+
 
     const getTicket = async () => {
         try {
@@ -559,7 +561,7 @@ const ModalSalesOrder: React.FC = () => {
             setCompanies({ id: saleOrdersToUpdate.id_empresa })
             setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
             if (modalSalesOrder == 'sale-order__modal_bycot') {
-                setSaleOrdersConcepts({normal_concepts: saleOrdersToUpdate.conceptos, personalized_concepts: saleOrdersToUpdate.conceptos_pers});
+                setSaleOrdersConcepts({ normal_concepts: saleOrdersToUpdate.conceptos, personalized_concepts: saleOrdersToUpdate.conceptos_pers });
             }
             setTitle(saleOrdersToUpdate.titulo)
             console.log('saleOrdersToUpdate', saleOrdersToUpdate)
@@ -673,10 +675,10 @@ const ModalSalesOrder: React.FC = () => {
             newConcept[index].precio_total = parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia);
             newConcept[index].monto_urgencia = 0;
         }
-        setSaleOrdersConcepts({normal_concepts: newConcept, personalized_concepts: saleOrdersConcepts.personalized_concepts});
+        setSaleOrdersConcepts({ normal_concepts: newConcept, personalized_concepts: saleOrdersConcepts.personalized_concepts });
 
     };
-    
+
 
     const handleUrgencyChangePers = async (index: number, idx: number) => {
         let data = {
@@ -703,7 +705,7 @@ const ModalSalesOrder: React.FC = () => {
             newConcept[index].conceptos[idx].monto_urgencia = 0;
         }
 
-        setSaleOrdersConcepts({normal_concepts: saleOrdersConcepts.normal_concepts, personalized_concepts: newConcept});
+        setSaleOrdersConcepts({ normal_concepts: saleOrdersConcepts.normal_concepts, personalized_concepts: newConcept });
 
     };
     const updateOrdenVenta = async () => {
@@ -797,20 +799,23 @@ const ModalSalesOrder: React.FC = () => {
     }
 
     const undoConcepts = (concept: any, i: number) => {
-        const deleteItemCustomC = customConcepts.filter((_: any, index: number) => index !== i);
+        const deleteItemCustomC = saleOrdersConcepts?.personalized_concepts?.filter((_: any, index: number) => index !== i);
         const updatedConcepts = concept.conceptos.map((element: any) => ({
             ...element,
             id_pers: 0,
             check: false,
         }));
-        setSaleOrdersConcepts({ normal_concepts: [...(saleOrdersConcepts?.normal_concepts ?? []), ...updatedConcepts], personalized_concepts: deleteItemCustomC, ...(concept.id && { normal_concepts_eliminate: [ ...(saleOrdersConcepts?.normal_concepts_eliminate ?? []), concept.id ] })});
+        setSaleOrdersConcepts({ normal_concepts: [...(saleOrdersConcepts?.normal_concepts ?? []), ...updatedConcepts], personalized_concepts: deleteItemCustomC, ...(concept.id && { normal_concepts_eliminate: [...(saleOrdersConcepts?.normal_concepts_eliminate ?? []), concept.id] }) });
+        localStorage.setItem('sale-order', JSON.stringify([...(saleOrdersConcepts?.normal_concepts ?? []), ...updatedConcepts]));
+        localStorage.setItem('sale-order-pers', JSON.stringify(deleteItemCustomC));
     };
+
 
     const deleteArticle = async (item: any, i: number, type) => {
         if (type == 'modal-sale') {
             if (modalSalesOrder == 'sale-order__modal') {
                 const filter = saleOrdersConcepts?.normal_concepts.filter((_: any, index: number) => index !== i)
-                setSaleOrdersConcepts({ normal_concepts: filter, ...(item.id && { normal_concepts_eliminate: [ ...(saleOrdersConcepts?.normal_concepts_eliminate ?? []), item.id]})});
+                setSaleOrdersConcepts({ normal_concepts: filter, ...(item.id && { normal_concepts_eliminate: [...(saleOrdersConcepts?.normal_concepts_eliminate ?? []), item.id] }) });
                 localStorage.setItem('sale-order', JSON.stringify(filter));
                 toast.success('Concepto eliminado')
 
@@ -852,7 +857,12 @@ const ModalSalesOrder: React.FC = () => {
 
     const closeModal = () => {
         setModalSalesOrder('')
-        setSaleOrdersConcepts({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], concepto: {}, indexConcepto: 0 })
+        const sale_order = JSON.parse(localStorage.getItem("sale-order") || "[]");
+        const sale_order_pers = JSON.parse(localStorage.getItem("sale-order-pers") || "[]");
+        if (sale_order.length > 0 || sale_order_pers.length > 0) {
+            setSaleOrdersConcepts({ normal_concepts: sale_order, personalized_concepts: sale_order_pers });
+        }
+        // setSaleOrdersConcepts({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], concepto: {}, indexConcepto: 0 })
         // setCustomConceptView([])
     }
 
@@ -881,7 +891,7 @@ const ModalSalesOrder: React.FC = () => {
             let response: any = await APIs.cancelConceptsOrder(data)
             const result = await getSaleOrders(dataSaleOrders)
             // setNormalConcepts(result[0].conceptos);
-            setSaleOrdersConcepts({normal_concepts: result[0].conceptos, personalized_concepts: result[0].conceptos_pers});
+            setSaleOrdersConcepts({ normal_concepts: result[0].conceptos, personalized_concepts: result[0].conceptos_pers });
 
             Swal.fire('Exito', response.mensaje, 'success');
         } catch (error) {
@@ -891,10 +901,10 @@ const ModalSalesOrder: React.FC = () => {
 
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = parseFloat(e.target.value); // Convertir el valor de entrada a número
-        let data =  saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
-            i === index ? { ...item, precio_unitario: value / item.cantidad, precio_total: value} : item
+        let data = saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
+            i === index ? { ...item, precio_unitario: value / item.cantidad, precio_total: value } : item
         )
-        setSaleOrdersConcepts({normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts});
+        setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
     };
     const setProductionToUpdate = storeProduction(state => state.setProductionToUpdate)
 

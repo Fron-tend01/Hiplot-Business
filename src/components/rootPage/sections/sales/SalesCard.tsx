@@ -651,13 +651,13 @@ console.log('data', data)
           }
 
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
-          setQuotes({personalized_concepts: [...quotes.personalized_concepts, data_pers]})
+          setQuotes({personalized_concepts: [...quotes.personalized_concepts, data_pers], normal_concepts: quotes?.normal_concepts})
           localStorage.setItem('cotizacion-pers', JSON.stringify([...quotes.personalized_concepts, data_pers]));
         }
       });
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
 
-      setQuotes({ normal_concepts: [...quotes?.normal_concepts, data]})
+      setQuotes({ normal_concepts: [...quotes?.normal_concepts, data], personalized_concepts: quotes.personalized_concepts})
       localStorage.setItem('cotizacion', JSON.stringify([...quotes?.normal_concepts, data]));
 
     }
@@ -720,7 +720,7 @@ console.log('data', data)
 
           }
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
-          setSaleOrdersConcepts({personalized_concepts: [...saleOrdersConcepts.personalized_concepts, data]})
+          setSaleOrdersConcepts({personalized_concepts: [...saleOrdersConcepts.personalized_concepts, data], normal_concepts: saleOrdersConcepts?.normal_concepts})
           localStorage.setItem('sale-order-pers', JSON.stringify([...saleOrdersConcepts.personalized_concepts, data_pers]));
           setPrices(0)
           setDescuento(0)
@@ -730,7 +730,7 @@ console.log('data', data)
       });
 
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
-      setSaleOrdersConcepts({normal_concepts: [...saleOrdersConcepts.normal_concepts, data]})
+      setSaleOrdersConcepts({normal_concepts: [...saleOrdersConcepts.normal_concepts, data], personalized_concepts: saleOrdersConcepts.personalized_concepts})
       localStorage.setItem('sale-order', JSON.stringify([...saleOrdersConcepts.normal_concepts, data]));
     }
     toast.success('Artículo agregado')

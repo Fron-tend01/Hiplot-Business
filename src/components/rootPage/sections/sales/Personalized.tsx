@@ -18,22 +18,22 @@ import { saleOrdersRequests } from '../../../../fuctions/SaleOrders'
 import { storeQuotation } from '../../../../zustand/Quotation'
 import { storeBilling } from '../../../../zustand/Billing'
 
-const Personalized: React.FC<any> = ({ branch, idItem, indexItem }: any,) => {
+const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBilling }: any,) => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
 
   const { subModal }: any = useStore(storeArticles)
   const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
-//////////////////////////////////////Store of Sale Orders //////////////////////////////////////////
+  //////////////////////////////////////Store of Sale Orders //////////////////////////////////////////
   const setSaleOrdersConcepts = storeSaleOrder((state) => state.setSaleOrdersConcepts);
   const { saleOrdersConcepts, modalSalesOrder }: any = useStore(storeSaleOrder);
 
-//////////////////////////////////////Store of Quotes //////////////////////////////////////////
+  //////////////////////////////////////Store of Quotes //////////////////////////////////////////
   const setQuotes = storeQuotation(state => state.setQuotes)
   const { quotes }: any = useStore(storeQuotation);
-//////////////////////////////////////Store of Billing //////////////////////////////////////////
-const setBilling = storeBilling(state => state.setBilling)
-const { billing }: any = useStore(storeBilling);
+  //////////////////////////////////////Store of Billing //////////////////////////////////////////
+  const setBilling = storeBilling(state => state.setBilling)
+  const { billing }: any = useStore(storeBilling);
 
   const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
@@ -59,7 +59,6 @@ const { billing }: any = useStore(storeBilling);
       options: 'nombre',
       dataSelect: result
     });
-
   }
 
   useEffect(() => {
@@ -134,7 +133,7 @@ const { billing }: any = useStore(storeBilling);
         let filterDelete = customConceptView.filter((x: any) => x.check !== true)
         if (personalizedModal == 'personalized_modal-quotation') {
           setQuotes({ normal_concepts: filterDelete, personalized_concepts: [...quotes?.personalized_concepts ?? [], data] });
-          localStorage.setItem('cotizacion-pers', JSON.stringify([...(quotes?.personalized_concepts ?? []), data ]));
+          localStorage.setItem('cotizacion-pers', JSON.stringify([...(quotes?.personalized_concepts ?? []), data]));
           localStorage.setItem('cotizacion', JSON.stringify(filterDelete))
         }
         if (personalizedModal == 'personalized_modal-sale') {
@@ -283,90 +282,53 @@ const { billing }: any = useStore(storeBilling);
 
     if (personalizedModal == 'personalized_modal-billing-update') {
 
-      if (subModal == 'billing__modal-create') {
-        let length: number = 0;
 
-        let filter = customConceptView.filter((x: any) => x.check == true)
-        console.log('filter', filter)
-        let filterDeleteNormal = customConceptView.filter((x: any) => x.check !== true)
-        const updatedConceptView = billing.personalized_concepts.map((x: any, index: number) => {
-          if (index == indexItem) {
+      let length: number = 0;
 
-            length = filter.length
-            return {
-              ...x,
-              // conceptos: customLocal,
-              id: idItem.id,
-              descripcion: inpust.descripcion,
-              codigo: inpust.codigo,
-              cantidad: inpust.cantidad,
-              unidad: selectedIds?.units?.id,
-              precio_total: inpust.precio_total,
-              clave_sat: selectedKey ? selectedKey : selectedSatKey?.Clave ? parseInt(selectedSatKey.Clave) : idItem.clave_sat,
-              comentarios_produccion: inpust.comentarios_produccion,
-              comentarios_factura: inpust.comentarios_factura,
-              conceptos: filter,
-            };
-          }
-          return x;
-        });
+      let filter = customConceptView.filter((x: any) => x.check == true)
+      let filterDeleteNormal = customConceptView.filter((x: any) => x.check !== true)
+      const updatedConceptView = billing.personalized_concepts.map((x: any, index: number) => {
+        if (index == indexItem) {
 
-        console.log('updatedConceptView', updatedConceptView)
-
-        if (length > 0) {
-          console.log('Se mantiene por que todavia le quedan conceptos', length)
-          // setNormalConcepts(filterDeleteNormal)
-          // setCustomConcepts(updatedConceptView)
-          setPersonalizedModal('')
-          return
-
-        } else {
-          console.log('Se elimina', length)
-          let filterDelete = billing.personalized_concepts.filter((_: any, index: number) => index !== indexItem)
-
-          // setCustomConcepts(filterDelete)
-          // setNormalConcepts(filterDeleteNormal)
-          setPersonalizedModal('')
+          length = filter.length
+          return {
+            ...x,
+            id: idItem.id,
+            order: {
+              serie: customConceptView[0].serie,
+              folio: customConceptView[0].folio,
+              anio: customConceptView[0].anio
+            },
+            descripcion: inpust.descripcion,
+            codigo: inpust.codigo,
+            cantidad: inpust.cantidad,
+            unidad: selectedIds?.units?.id,
+            precio_total: inpust.precio_total,
+            clave_sat: selectedKey ? selectedKey : selectedSatKey?.Clave ? parseInt(selectedSatKey.Clave) : idItem.clave_sat,
+            comentarios_produccion: inpust.comentarios_produccion,
+            comentarios_factura: inpust.comentarios_factura,
+            conceptos: filter,
+          };
         }
+        return x;
+      });
+
+      console.log('updatedConceptView', updatedConceptView)
+
+      if (length > 0) {
+        console.log('Se mantiene por que todavia le quedan conceptos', length)
+        setBilling({ normal_concepts: filterDeleteNormal, personalized_concepts: updatedConceptView });
+        setPersonalizedModal('')
         return
+
       } else {
-        let data = {
-          id: idItem.id,
-          codigo: inpust.codigo,
-          descripcion: inpust.descripcion,
-          cantidad: inpust.cantidad,
-          unidad: selectedIds.units.id,
-          precio_total: inpust.precio_total,
-          comentarios_factura: inpust.comentarios_factura,
-          comentarios_produccion: inpust.comentarios_produccion,
-          clave_sat: inpust.clave_sat,
-          conceptos: []
-        }
-
-        const dataSaleOrders = {
-          id: saleOrdersConcepts.id,
-          folio: 0,
-          id_sucursal: 0,
-          id_serie: 0,
-          id_cliente: 0,
-          desde: haceUnaSemana.toISOString().split('T')[0],
-          hasta: hoy.toISOString().split('T')[0],
-          id_usuario: user_id,
-          id_vendedor: selectedIds?.users?.id,
-          status: 0,
-          page: 1,
-        }
-
-        try {
-          let response: any = await APIs.updateConceptPersonalized(data)
-          const result = await getSaleOrders(dataSaleOrders)
-          // setCustomConcepts(result[0].conceptos_pers);
-          setPersonalizedModal('')
-          return Swal.fire('Éxito', response.mensaje, 'success');
-        } catch (error: any) {
-          return Swal.fire('Error', error.mensaje, 'error');
-        }
+        let filterDelete = saleOrdersConcepts?.personalized_concepts.filter((_: any, index: number) => index !== indexItem)
+        setBilling({ normal_concepts: filterDeleteNormal, personalized_concepts: filterDelete });
+        setPersonalizedModal('')
       }
+      return
+
+
 
 
     }
@@ -1772,7 +1734,12 @@ const { billing }: any = useStore(storeBilling);
               :
               <div className='d-flex justify-content-center'>
                 {idItem?.id !== 0 && personalizedModal == 'personalized_modal-billing-update' ?
-                  ''
+                  identifierBilling ?
+                    ''
+                    :
+                    <div>
+                      <button className='btn__general-purple' type='button' onClick={updatePersonalized}>Actulizar personalizado</button>
+                    </div>
                   :
                   <div>
                     <button className='btn__general-purple' type='button' onClick={updatePersonalized}>Actulizar personalizado</button>

@@ -32,6 +32,7 @@ const Header: React.FC = () => {
   const { toggle } = storeHeader()
 
   const setModal = storeModals(state => state.setModal)
+  const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
 
   const setModalArticleView = storeArticleView((state) => state.setModalArticleView);
 
@@ -61,19 +62,20 @@ const Header: React.FC = () => {
     const sale_order = JSON.parse(localStorage.getItem("sale-order") || "[]");
     const sale_order_pers = JSON.parse(localStorage.getItem("sale-order-pers") || "[]");
     const cotizacion = JSON.parse(localStorage.getItem("cotizacion") || "[]");
-
     const cotizacion_pers = JSON.parse(localStorage.getItem('cotizacion-pers') || "[]");
 
     if (sale_order.length > 0 || sale_order_pers.length > 0) {
-      setSaleOrdersConcepts({normal_concepts: sale_order, personalized_concepts: sale_order_pers });
+      setSaleOrdersConcepts({ normal_concepts: sale_order, personalized_concepts: sale_order_pers });
     }
 
-    if (cotizacion.length > 0 || cotizacion_pers.length > 0) {   
+    if (cotizacion.length > 0 || cotizacion_pers.length > 0) {
       setQuotes({ normal_concepts: cotizacion, personalized_concepts: cotizacion_pers });
-      
 
-    } 
+
+    }
   };
+
+  console.log('saleOrdersConcepts', saleOrdersConcepts)
 
   useEffect(() => {
     getOrders();
@@ -209,7 +211,7 @@ const Header: React.FC = () => {
     if (type == 'quotes') {
       const filter = quotes.normal_concepts.filter((_: any, index: number) => index !== i)
       setQuotes({ normal_concepts: filter });
-      
+
       localStorage.setItem('cotizacion', JSON.stringify(filter));
     } else {
       const filter = saleOrdersConcepts.normal_concepts.filter((_: any, index: number) => index !== i)
@@ -218,6 +220,30 @@ const Header: React.FC = () => {
     }
 
   }
+
+  const undoSaleOrders = (concept: any, i: number) => {
+    const deleteItemCustomC = saleOrdersConcepts?.personalized_concepts?.filter((_: any, index: number) => index !== i);
+    const updatedConcepts = concept.conceptos.map((element: any) => ({
+      ...element,
+      id_pers: 0,
+      check: false,
+    }));
+    setSaleOrdersConcepts({ normal_concepts: [...(saleOrdersConcepts?.normal_concepts ?? []), ...updatedConcepts], personalized_concepts: deleteItemCustomC, ...(concept.id && { normal_concepts_eliminate: [...(saleOrdersConcepts?.normal_concepts_eliminate ?? []), concept.id] }) });
+    localStorage.setItem('sale-order', JSON.stringify([...(saleOrdersConcepts?.normal_concepts ?? []), ...updatedConcepts]));
+    localStorage.setItem('sale-order-pers', JSON.stringify(deleteItemCustomC));
+  };
+
+  const undoQuotes = (concept: any, i: number) => {
+    const deleteItemCustomC = quotes?.personalized_concepts?.filter((_: any, index: number) => index !== i);
+    const updatedConcepts = concept.conceptos.map((element: any) => ({
+      ...element,
+      id_pers: 0,
+      check: false,
+    }));
+    setQuotes({ normal_concepts: [...(quotes?.normal_concepts ?? []), ...updatedConcepts], personalized_concepts: deleteItemCustomC, ...(concept.id && { normal_concepts_eliminate: [...(quotes?.normal_concepts_eliminate ?? []), concept.id] }) });
+    localStorage.setItem('cotizacion', JSON.stringify([...(quotes?.normal_concepts ?? []), ...updatedConcepts]));
+    localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
+  };
 
   return (
     <div className='hero'>
@@ -306,11 +332,12 @@ const Header: React.FC = () => {
                               <div className='td amount'>
                                 <p>{x.cantidad}</p>
                               </div>
-                              <div className='td delete'>
-                                <div className='delete-icon' onClick={() => deleteArticle(x, index, 'quotes')} title='Eliminar concepto'>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                              <div className='td undo'>
+                                  <div className='undo-icon' onClick={() => undoQuotes(x, index)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
+                                  </div>
                                 </div>
-                              </div>
+                             
                             </div>
                           </div>
                         );
@@ -325,7 +352,7 @@ const Header: React.FC = () => {
                     <p className='title'>Total</p>
                     <p className='text'>$ {totalQuotes}</p>
                   </div>
-                  <Link to={`${PrivateRoutes.SALES}/${PrivateRoutes.QUOTATION}`} onClick={setModal('create-modal__qoutation')} className='sale-btn'>cotizacion</Link>
+                  <Link to={`${PrivateRoutes.SALES}/${PrivateRoutes.QUOTATION}`} onClick={() => setModal('create-modal__qoutation')} className='sale-btn'>cotizacion</Link>
                 </div>
               </div>
             </div>
@@ -356,62 +383,67 @@ const Header: React.FC = () => {
                     </div>
                   </div>
                   <div className='table_concepts_header'>
-                  {saleOrdersConcepts?.normal_concepts ? (
-                    <div className='table__body'>
-                      {saleOrdersConcepts?.normal_concepts?.map((x: any, index: number) => {
-                        return (
-                          <div className='tbody__container' key={x.id}>
-                            <div className='tbody'>
-                              <div className='td code'>
-                                <p>{x.codigo}</p>
-                              </div>
-                              <div className='td description'>
-                                <p>{x.descripcion}</p>
-                              </div>
-                              <div className='td amount'>
-                                <p>{x.cantidad}</p>
-                              </div>
-                              <div className='td delete'>
-                                <div className='delete-icon' onClick={() => deleteArticle(x, index, 'sales')} title='Eliminar concepto'>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                    {saleOrdersConcepts?.normal_concepts ? (
+                      <div className='table__body'>
+                        {saleOrdersConcepts?.normal_concepts?.map((x: any, index: number) => {
+                          return (
+                            <div className='tbody__container' key={x.id}>
+                              <div className='tbody'>
+                                <div className='td code'>
+                                  <p>{x.codigo}</p>
+                                </div>
+                                <div className='td description'>
+                                  <p>{x.descripcion}</p>
+                                </div>
+                                <div className='td amount'>
+                                  <p>{x.cantidad}</p>
+                                </div>
+                                <div className='td delete'>
+                                  <div className='delete-icon' onClick={() => deleteArticle(x, index, 'sales')} title='Eliminar concepto'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    ''
-                  )}
-                  {saleOrdersConcepts?.personalized_concepts ? (
-                    <div className='table__body'>
-                      {saleOrdersConcepts?.personalized_concepts?.map((x: any, index: number) => {
-                        return (
-                          <div className='tbody__container' key={x.id}>
-                            <div className='tbody'>
-                              <div className='td code'>
-                                <p>{x.codigo}</p>
-                              </div>
-                              <div className='td description'>
-                                <p>{x.descripcion}</p>
-                              </div>
-                              <div className='td amount'>
-                                <p>{x.cantidad}</p>
-                              </div>
-                              <div className='td delete'>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                    {saleOrdersConcepts?.personalized_concepts ? (
+                      <div className='table__body'>
+                        {saleOrdersConcepts?.personalized_concepts?.map((x: any, index: number) => {
+                          return (
+                            <div className='tbody__container' key={x.id}>
+                              <div className='tbody'>
+                                <div className='td code'>
+                                  <p>{x.codigo}</p>
+                                </div>
+                                <div className='td description'>
+                                  <p>{x.descripcion}</p>
+                                </div>
+                                <div className='td amount'>
+                                  <p>{x.cantidad}</p>
+                                </div>
+                                <div className='td undo'>
+                                  <div className='undo-icon' onClick={() => undoSaleOrders(x, index)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
+                                  </div>
+                                </div>
+                                {/* <div className='td delete'>
                                 <div className='delete-icon' onClick={() => deleteArticle(x, index, 'sales')} title='Eliminar concepto'>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                 </div>
+                              </div> */}
                               </div>
                             </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    ''
-                  )}
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      ''
+                    )}
                   </div>
                 </div>
                 <div className='row__three'>
@@ -419,7 +451,7 @@ const Header: React.FC = () => {
                     <p className='title'>Total</p>
                     <p className='text'>$ {totalSales}</p>
                   </div>
-                  <Link to={`${PrivateRoutes.SALES}/${PrivateRoutes.SALESORDER}`} className='sale-btn'>venta</Link>
+                  <Link to={`${PrivateRoutes.SALES}/${PrivateRoutes.SALESORDER}`} onClick={() => setModalSalesOrder('sale-order__modal')} className='sale-btn'>venta</Link>
                 </div>
               </div>
             </div>

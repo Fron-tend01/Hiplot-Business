@@ -48,10 +48,13 @@ const SalesOrder: React.FC = () => {
         setModalSalesOrder('sale-order__modal')
         const sale_order = JSON.parse(localStorage.getItem("sale-order") || "[]");
         const sale_order_pers = JSON.parse(localStorage.getItem("sale-order-pers") || "[]");
+        console.log('sale_order', sale_order)
+        console.log('sale_order_pers', sale_order_pers)
     
         if (sale_order.length > 0 || sale_order_pers.length > 0) {
             setSaleOrdersConcepts({normal_concepts: sale_order, personalized_concepts: sale_order_pers });
         }
+        
     }
 
 
