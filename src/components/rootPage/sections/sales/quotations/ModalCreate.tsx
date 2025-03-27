@@ -122,27 +122,40 @@ const ModalCreate: React.FC = () => {
     DynamicVariables.updateAnyVar(setInfo_sc, 'vendedores', resultUsers)
     traerSolicitudes(resultUsers[0].id)
   }
+  const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
 
   const mandarAOV = () => {
     const copiaQuatation = {
       ...quatation,
       conceptos: quatation.conceptos.map((concepto: any) => {
-        const { id, ...rest } = concepto; 
+        const { id, ...rest } = concepto;
         return rest;
       })
     };
     copiaQuatation?.conceptos.forEach((element: any) => {
-      element.id_area_produccion = element.areas_produccion[0].id_area
+      if (element.areas_produccion.length > 0) {
+        element.id_area_produccion = element.areas_produccion[0].id_area
+
+      } else {
+        element.id_area_produccion = 2496
+
+      }
     });
 
 
     copiaQuatation?.conceptos_pers.forEach((element: any) => {
       element.conceptos.forEach((x: any) => {
-        x.id_area_produccion = x.areas_produccion[0].id_area
+        if (x.areas_produccion.length > 0) {
+          x.id_area_produccion = x.areas_produccion[0].id_area
+
+        } else {
+          x.id_area_produccion = 2496
+
+        }
       });
     });
-    // setSaleOrdersToUpdate(copiaQuatation)
+    setSaleOrdersToUpdate(copiaQuatation)
     setModalSalesOrder('sale-order__modal_bycot')
   }
 
@@ -235,7 +248,26 @@ const ModalCreate: React.FC = () => {
 
     try {
       if (modal === 'create-modal__qoutation') {
-        const response: any = await APIs.createQuotation(quoteFields)
+        let copy_data = { ...quoteFields }
+        copy_data.id_sucursal = branch?.id
+        // debugger
+        if (copy_data?.conceptos != undefined && copy_data?.conceptos?.length > 0) {
+          copy_data?.conceptos?.forEach(element => {
+            element.campos_plantilla.forEach(el => {
+              el.valor = el.valor.toString()
+            });
+          });
+        }
+        if (copy_data?.conceptos_pers != undefined && copy_data?.conceptos_pers?.length > 0) {
+          copy_data?.conceptos_pers?.forEach(element => {
+            element?.conceptos?.forEach(el => {
+              el.campos_plantilla.forEach(e => {
+                e.valor = e.valor.toString()
+              });
+            });
+          });
+        }
+        const response: any = await APIs.createQuotation(copy_data)
         if (response.error == true) {
           return Swal.fire('Advertencia', response.mensaje, 'warning');
         } else {
@@ -259,7 +291,7 @@ const ModalCreate: React.FC = () => {
       setQuotes({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] })
       localStorage.removeItem("cotizacion");
     } catch (error) {
-      Swal.fire('Error', 'Hubo un error al crear la cotizacion', 'error');
+      Swal.fire('Error', 'Hubo un error al crear la cotizacion:' + error, 'error');
     }
 
   }
@@ -342,7 +374,7 @@ const ModalCreate: React.FC = () => {
 
   //EFFECT PARA CALCULAR LOS TOTALES CUANDO CAMBIE NORMALCONCEPTS-----------------------------------------------------------------------------
   useEffect(() => {
-    const calculateTotals = (concepts: any[]) => 
+    const calculateTotals = (concepts: any[]) =>
       concepts.reduce(
         (acc, item) => ({
           precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
@@ -353,23 +385,23 @@ const ModalCreate: React.FC = () => {
         }),
         { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0, total_franquicia: 0 }
       );
-  
+
     const precios = calculateTotals(quotes?.normal_concepts || []);
     const preciospers = calculateTotals(quotes?.personalized_concepts || []);
-  
+
     setCalculations((prev) => ({
       ...prev,
       subtotal: preciospers.total + preciospers.descuento - preciospers.monto_urgencia + precios.total + precios.descuento - precios.monto_urgencia,
       descuento: preciospers.descuento + precios.descuento,
       urgencia: preciospers.monto_urgencia + precios.monto_urgencia,
       total: preciospers.total + precios.total,
-  
+
       subtotalf: preciospers.total_franquicia + precios.total_franquicia,
       urgenciaf: 0,
       totalf: preciospers.total_franquicia + precios.total_franquicia,
     }));
   }, [quotes]);
-    
+
 
   const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
 
@@ -621,7 +653,7 @@ const ModalCreate: React.FC = () => {
                   <div className={`select-btn__general`}>
                     <div className={`select-btn ${selectResults ? 'active' : ''}`} onClick={openSelectResults}>
                       <div className='select__container_title'>
-                        <p>{selectedResult ? clients?.find((s: { id: number }) => s.id === selectedResult.id)?.razon_social : `${quotes.quotes.id_cliente ? quotes.quotes.cliente_contacto : 'Selecionar' }`}</p>
+                        <p>{selectedResult ? clients?.find((s: { id: number }) => s.id === selectedResult.id)?.razon_social : `${quotes.quotes.id_cliente ? quotes.quotes.cliente_contacto : 'Selecionar'}`}</p>
                       </div>
                       <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                     </div>

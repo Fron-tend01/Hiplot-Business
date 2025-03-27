@@ -640,8 +640,8 @@ const ModalSalesOrder: React.FC = () => {
     }
     const setModalSub = storeModals((state) => state.setModalSub);
 
-    const setIndexVM = storeDv(state => state.setIndex)
-    const seeVerMas = (index: number) => {
+    const setIndexVM = storeDv(state => state.setIndex) 
+    const seeVerMas = (index: number) => { //AL ABRIR SEE-CP NO SE VISUALIZA LA INFORMACIÓN DE LAS PLANTILLAS PORQUE SIGUE USANDO NORMALCONCEPTS CORREGIR AQUÍ Y EN LA COTIZACIÓN
         setIndexVM(index)
         setModalSub('see_cp')
     }
