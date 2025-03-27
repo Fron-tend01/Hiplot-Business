@@ -1021,20 +1021,16 @@ const ModalSalesOrder: React.FC = () => {
                                                                     </div>
                                                                     <div className='td'>
                                                                         <div className='send-areas'>
-                                                                            <div>
-                                                                                <label>Area</label>
-                                                                            </div>
+                                                                           
                                                                             <select className="traditional__selector" disabled value={article.id_area_produccion}>
                                                                                 {article?.areas_produccion?.map((item: any) => (
                                                                                     <option key={item.id} value={item.id_area}>
-                                                                                        {item.nombre_area}
+                                                                                        {item.nombre_area}-{item.nombre_sucursal}
                                                                                     </option>
                                                                                 ))}
                                                                             </select>
                                                                         </div>
                                                                     </div>
-
-
                                                                     {article.status == 1 ?
                                                                         <div className="td">
                                                                             <p className='cancel-identifier'>Cancelado</p>
