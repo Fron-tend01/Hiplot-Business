@@ -238,7 +238,10 @@ const ModalCreate: React.FC = () => {
     setSelectedResult(result);
     setSelectResults(!selectResults)
   };
-
+  const permisosxVistaheader = storeDv((state) => state.permisosxvistaheader);
+  const checkPermission = (elemento: string) => {
+    return permisosxVistaheader.some((x: any) => x.titulo == elemento)
+  }
 
   const createQuotation = async () => {
 
@@ -726,14 +729,24 @@ const ModalCreate: React.FC = () => {
                             </div>
                             <div className='td'>
                               <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
-                                <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small></p>
+                              {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
+
+                                <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small>
+                              )}
+
+                                </p>
                             </div>
                             <div className='td'>
                               <div className='d-flex'>
                                 <div>
                                   <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                  <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                    <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                  {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
+
+                                    <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                      <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}
+
+                                    </p>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -779,7 +792,7 @@ const ModalCreate: React.FC = () => {
                             </div>
                             <div className='td'>
                               <p className=''>$ {article.precio_unitario?.toFixed(2)}<br />
-                                {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermission('totales_franquicia')?
                                   <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
                               </p>
                             </div>
@@ -788,7 +801,8 @@ const ModalCreate: React.FC = () => {
                                 <div className='container__total'>
                                   <div>
                                     <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                    <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                    <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) 
+                                    && permisosxVistaheader.length > 0 && checkPermission('totales_franquicia')?
                                       <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                   </div>
                                   <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.monto_urgencia).toFixed(2)})</p>
@@ -796,7 +810,7 @@ const ModalCreate: React.FC = () => {
                                 :
                                 <div>
                                   <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                  <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                  <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermission('totales_franquicia')?
                                     <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                 </div>
 
@@ -856,14 +870,23 @@ const ModalCreate: React.FC = () => {
                           </div>
                           <div className='td'>
                             <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
-                              <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small></p>
+                            {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
+
+                              <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small>
+                            )}
+
+                              </p>
                           </div>
                           <div className='td'>
                             <div className='d-flex'>
                               <div>
                                 <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
+
                                 <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
                                   <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                )}
+
                               </div>
                             </div>
                           </div>
@@ -920,8 +943,11 @@ const ModalCreate: React.FC = () => {
                           </div>
                           <div className='td'>
                             <p className=''>$ {article.precio_unitario?.toFixed(2)}<br />
-                              {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
+                              {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
+                                article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                  <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''
+
+                              )}
                             </p>
                           </div>
                           <div className='td '>
@@ -997,14 +1023,20 @@ const ModalCreate: React.FC = () => {
                           </div>
                           <div className='td'>
                             <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
-                              <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small></p>
+                              {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
+                                <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small>
+                              )}
+                            </p>
                           </div>
                           <div className='td'>
                             <div className='d-flex'>
                               <div>
                                 <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                  <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
+                                  <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                    <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                )}
+
                               </div>
                             </div>
                           </div>
@@ -1071,27 +1103,30 @@ const ModalCreate: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className='mt-1 btns'>
-              <div className='subtotal'>
-                <div>
-                  <p className='name'>Subtotal Franquicia</p>
-                  <p className='value'>$ {calculations.subtotalf}</p>
-                </div>
-              </div>
+            {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
 
-              <div className='urgency'>
-                <div>
-                  <p className='name'>Urgencia Franquicia</p>
-                  <p className='value'>$ {calculations.urgenciaf}</p>
+              <div className='mt-1 btns'>
+                <div className='subtotal'>
+                  <div>
+                    <p className='name'>Subtotal Franquicia</p>
+                    <p className='value'>$ {calculations.subtotalf}</p>
+                  </div>
+                </div>
+
+                <div className='urgency'>
+                  <div>
+                    <p className='name'>Urgencia Franquicia</p>
+                    <p className='value'>$ {calculations.urgenciaf}</p>
+                  </div>
+                </div>
+                <div className='total'>
+                  <div>
+                    <p className='name'>Total Franquicia</p>
+                    <p className='value'>$ {calculations.totalf}</p>
+                  </div>
                 </div>
               </div>
-              <div className='total'>
-                <div>
-                  <p className='name'>Total Franquicia</p>
-                  <p className='value'>$ {calculations.totalf}</p>
-                </div>
-              </div>
-            </div>
+            )}
             {modal === 'create-modal__qoutation' ?
               <div className='mt-3 d-flex justify-content-center'>
                 <button className='btn__general-purple' onClick={createQuotation}>Crear cotizacion</button>

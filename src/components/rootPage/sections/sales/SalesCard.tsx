@@ -28,6 +28,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
 import { storeArticles } from '../../../../zustand/Articles';
 import { storeArticleView } from '../../../../zustand/ArticleView';
+import { storeDv } from '../../../../zustand/Dynamic_variables';
 
 
 
@@ -62,12 +63,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const { quotes }: any = useStore(storeQuotation);
 
 
+  const permisosxVistaheader = storeDv((state) => state.permisosxvistaheader);
 
-  const setNormalConceptsView = storePersonalized(state => state.setNormalConceptsView)
-
-
-  const setConceptView = storePersonalized(state => state.setConceptView)
-  const setCustomConceptView = storePersonalized(state => state.setCustomConceptView)
 
   const { modalArticleView }: any = useStore(storeArticleView)
   const { normalConcepts, conceptView, customConceptView, customConcepts, normalConceptsView }: any = useStore(storePersonalized);
@@ -917,7 +914,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     setModalSalesCard('')
 
   }
-
+  const checkPermission = (elemento: string) => {
+    return permisosxVistaheader.some((x: any) => x.titulo == elemento)
+  }
 
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' || modalSalesCard === 'sale-card-quotation' ? 'active' : ''}`}>
@@ -1458,7 +1457,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                 </div>
 
               </div>
-              {article?.precios_franquicia != null && article?.precios_franquicia.length > 0 ? //FALTA VALIDAR EL PERMISO 
+              {article?.precios_franquicia != null && article?.precios_franquicia.length > 0 && 
+              permisosxVistaheader.length > 0 &&
+              checkPermission('totales_franquicia')? //FALTA VALIDAR EL PERMISO 
                 <div className='row__four'>
                   <div className='price_x_unit'>
                     <p className='title__price_x_unit'>Precio por unidad Franquicia:</p>

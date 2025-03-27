@@ -3,13 +3,17 @@ import { storeModals } from '../../../../../zustand/Modals'
 import { useStore } from 'zustand'
 import { storeSaleCard } from '../../../../../zustand/SaleCard'
 import './styles/Prices.css'
+import { storeDv } from '../../../../../zustand/Dynamic_variables'
 
 const Prices: React.FC<any> = ({ id_grupo_us }) => {
+  const permisosxVistaheader = storeDv((state) => state.permisosxvistaheader);
 
   const setModalSub = storeModals(state => state.setModalSub)
   const { modalSub }: any = useStore(storeModals)
   const { article }: any = useStore(storeSaleCard)
-
+  const checkPermission = (elemento: string) => {
+    return permisosxVistaheader.some((x: any) => x.titulo == elemento)
+  }
   return (
     <div className={`overlay__sale-card_modal ${modalSub === 'prices_modal' ? 'active' : ''}`}>
       <div className={`popup__sale-card_modal ${modalSub === 'prices_modal' ? 'active' : ''}`}>
@@ -71,7 +75,7 @@ const Prices: React.FC<any> = ({ id_grupo_us }) => {
                   ))}
               </div>
             </div>
-            {article?.precios_franquicia != null ?
+            {article?.precios_franquicia != null && permisosxVistaheader.length>0 && checkPermission('totales_franquicia')?
               <>
                 <b>PRECIOS DE FRANQUICIA</b>
                 <div className='table__head'>
