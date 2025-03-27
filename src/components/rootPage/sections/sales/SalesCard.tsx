@@ -94,6 +94,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const [billingComment, setBillingComment] = useState<any>('')
   const [productionComments, setproductionComments] = useState<string>('')
   const [opciones, setOpciones] = useState<any>(null);
+  const [imgs, setImgs] = useState<any[]>([]);
+  const [statusImages, setStatusImages] = useState<boolean>(false);
 
   const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
@@ -108,7 +110,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       proveedor: 0,
       materia_prima: 0,
       get_sucursales: false,
-      get_imagenes: true,
+      get_imagenes: false,
       // get_adicional: true,
       get_proveedores: false,
       get_max_mins: true,
@@ -135,8 +137,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           if (!response || response.length === 0) {
             throw new Error('No se encontraron artículos');
           }
-
           const art = response[0];
+
 
 
 
@@ -154,6 +156,11 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           setStatusArticle(true);
           setModalLoading(false);
 
+
+          // setArticle({ ...art, imagenes: imgs, plantilla_data: plantillaData });
+
+          //--------------------------------------------------------------------
+
           // if (art.vender_sin_stock) Swal.fire('Notificación', 'Este articulo se puede vender sin stock disponible', 'success');
           if (art.bajo_pedido) await Swal.fire('Notificación', 'Este articulo es BAJO PEDIDO, la orden de venta creada se pondrá en status PENDIENTE, hasta la llegada del material faltante', 'warning');
           if (art.desabasto) await Swal.fire('Notificación', 'Hay desabasto de este articulo...', 'warning');
@@ -161,6 +168,17 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           if (art.ultimas_piezas) await Swal.fire('Notificación', 'El stock disponible son las ULTIMAS PIEZAS...', 'warning');
           if (art.consultar_te) await Swal.fire('Notificación', 'Consulta el Tiempo de Entrega de este articulo con el area de producción correspondiente', 'warning');
           if (art.consultar_cotizador) await Swal.fire('Notificación', 'Este articulo debe consultar el precio con cotizador', 'warning');
+
+          // VUELVE A TIRAR LA PETICIÓN PERO YA SIN EL CARGANDO 
+
+          let imgs = []
+          setStatusImages(true)
+          await APIs.GetAny('articulo_imagenes_get/' + IdArticle).then((resp: any) => {
+            imgs = resp
+            setImgs(imgs)
+            setStatusImages(false)
+
+          })
         })
         .catch((error) => {
           console.error('Error fetching data:', error);
@@ -275,6 +293,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       setUnits(article.unidades || []);
       setSelectedUnit(article?.unidades[0])
       setOpciones(article.opciones_de_variacion2 || []);
+      //--------------------------------------------------------------------
+
     }
 
   }, [article]);
@@ -828,10 +848,10 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       proveedor: 0,
       materia_prima: 0,
       get_sucursales: false,
-      get_imagenes: true,
+      get_imagenes: false,
       // get_adicional: true,
       get_proveedores: false,
-      get_max_mins: true,
+      get_max_mins: false,
       get_precios: true,
       get_combinaciones: true,
       get_plantilla_data: true,
@@ -839,7 +859,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       get_tiempos_entrega: true,
       get_componentes: true,
       get_stock: true,
-      get_web: true,
+      get_web: false,
       for_ventas: true,
       get_unidades: true,
       id_usuario: user_id,
@@ -877,7 +897,16 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           setOpciones(response[0].opciones_de_variacion2)
         }
         setModalLoading(false)
+        // VUELVE A TIRAR LA PETICIÓN PERO YA SIN EL CARGANDO 
 
+        let imgs = []
+        setStatusImages(true)
+        await APIs.GetAny('articulo_imagenes_get/' + article.id).then((resp: any) => {
+          imgs = resp
+          setImgs(imgs)
+          setStatusImages(false)
+
+        })
       }
 
       const resultUsers = await getUserGroups(user_id);
@@ -934,21 +963,22 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           <div className='row__two'>
             <div className='card__images_container'>
               {statusArticle !== false ?
-                <div className='images__card-sale__container'>
-                  <Swiper cssMode={true} navigation={true} pagination={true} mousewheel={true} keyboard={true} modules={[Navigation, Pagination, Mousewheel, Keyboard]} className="mySwiper">
-                    {article?.imagenes.map((image: any) => (
-                      <SwiperSlide>
-                        <div className='images__container'>
-                          <div className='images' style={{ backgroundImage: `url(${image?.img_base64})` }}>
+                statusImages ? <span className="loader_big"></span>
+                  : <div className='images__card-sale__container'>
+                    <Swiper cssMode={true} navigation={true} pagination={true} mousewheel={true} keyboard={true} modules={[Navigation, Pagination, Mousewheel, Keyboard]} className="mySwiper">
+                      {imgs?.map((image: any) => (
+                        <SwiperSlide>
+                          <div className='images__container'>
+                            <div className='images' style={{ backgroundImage: `url(${image?.img_base64})` }}>
 
+                            </div>
+                            <div className='buttons-sale-card'>
+                            </div>
                           </div>
-                          <div className='buttons-sale-card'>
-                          </div>
-                        </div>
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-                </div>
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                  </div>
                 :
                 <div className='images-pulse-card'></div>
               }
@@ -1227,7 +1257,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                         </label>
                       </div>
                       : ''}
-                    {article?.plantilla_data.length > 0 ?
+                    {article?.plantilla_data?.length > 0 ?
                       <div className='fields__templates'>
                         {article?.plantilla_data?.map((x: any, index: any) => (
                           x.id == 18 ?
@@ -1457,9 +1487,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                 </div>
 
               </div>
-              {article?.precios_franquicia != null && article?.precios_franquicia.length > 0 && 
-              permisosxVistaheader.length > 0 &&
-              checkPermission('totales_franquicia')? //FALTA VALIDAR EL PERMISO 
+              {article?.precios_franquicia != null && article?.precios_franquicia.length > 0 &&
+                permisosxVistaheader.length > 0 &&
+                checkPermission('totales_franquicia') ? //FALTA VALIDAR EL PERMISO 
                 <div className='row__four'>
                   <div className='price_x_unit'>
                     <p className='title__price_x_unit'>Precio por unidad Franquicia:</p>

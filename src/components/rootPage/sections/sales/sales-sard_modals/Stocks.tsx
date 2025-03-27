@@ -23,7 +23,7 @@ const Stocks: React.FC = () => {
         </a>
  
         <div className='conatiner__create_sale-card-stock' >
-          {article?.componentes.length > 0 ?
+          {article?.componentes?.length > 0 ?
             <div className='row__one'>
               <div className='title_stock'>
                 <h3>Stock Total: </h3>

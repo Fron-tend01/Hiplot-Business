@@ -1511,3 +1511,24 @@ html, body {
       transform: rotate(360deg);
   }
   } 
+
+  .loader_big {
+    width: 100px; /* Tamaño del loader */
+    height: 100px; /* Tamaño del loader */
+    border: 5px solid var(--primary-100); /* Grosor del borde */
+    border-top-color: transparent; /* Deja la parte superior del aro transparente */
+    border-radius: 50%; /* Crea el círculo */
+    animation: rotar 1.5s linear infinite; /* Animación de rotación */
+    display: inline-block;
+    box-sizing: border-box;
+  }
+  
+  @keyframes rotar {
+    0% {
+      transform: rotate(0deg); /* Inicia en 0 grados */
+    }
+    100% {
+      transform: rotate(360deg); /* Gira hasta 360 grados */
+    }
+  }
+  
