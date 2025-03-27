@@ -420,7 +420,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
             cobrado: 0,
             id_unidad: selectedUnit.id_unidad,
             campos_plantilla: article.plantilla_data.map((x: any) => ({
-
+              considerado_total: x.considerado_total,
               nombre_campo_plantilla: x.nombre,
               tipo_campo_plantilla: x.tipo,
               valor: x.tipo == 'texto' ? x.valor.toString() : x.valor
