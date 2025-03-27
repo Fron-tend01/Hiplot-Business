@@ -118,7 +118,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       get_areas_produccion: true,
       get_tiempos_entrega: true,
       get_componentes: true,
-      get_stock: true,
+      get_stock: false,
       get_web: true,
       for_ventas: true,
       get_unidades: true,

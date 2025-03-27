@@ -640,7 +640,7 @@ const ModalSalesOrder: React.FC = () => {
     }
     const setModalSub = storeModals((state) => state.setModalSub);
 
-    const setIndexVM = storeDv(state => state.setIndex) 
+    const setIndexVM = storeDv(state => state.setIndex)
     const seeVerMas = (index: number) => { //AL ABRIR SEE-CP NO SE VISUALIZA LA INFORMACIÓN DE LAS PLANTILLAS PORQUE SIGUE USANDO NORMALCONCEPTS CORREGIR AQUÍ Y EN LA COTIZACIÓN
         setIndexVM(index)
         setModalSub('see_cp')
@@ -935,7 +935,10 @@ const ModalSalesOrder: React.FC = () => {
             console.log(error)
         }
     }
-
+    const permisosxVistaheader = storeDv((state) => state.permisosxvistaheader);
+    const checkPermissionHeader = (elemento: string) => {
+        return permisosxVistaheader.some((x: any) => x.titulo == elemento)
+    }
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
             <div className={`popup__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
@@ -1021,7 +1024,7 @@ const ModalSalesOrder: React.FC = () => {
                                                                     </div>
                                                                     <div className='td'>
                                                                         <div className='send-areas'>
-                                                                           
+
                                                                             <select className="traditional__selector" disabled value={article.id_area_produccion}>
                                                                                 {article?.areas_produccion?.map((item: any) => (
                                                                                     <option key={item.id} value={item.id_area}>
@@ -1299,7 +1302,7 @@ const ModalSalesOrder: React.FC = () => {
                                                     </div>
                                                     <div className='td'>
                                                         <p className=''>$ {article.precio_unitario} <br />
-                                                            {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                                            {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) &&permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia')?
                                                                 <small >PUF: ${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
                                                         </p>
                                                     </div>
@@ -1309,7 +1312,7 @@ const ModalSalesOrder: React.FC = () => {
                                                                 <div>
                                                                     {checkPermission('cambiar_totales') ? <input type="text" className='inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} /> : <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
                                                                     <p className='total-identifier'>
-                                                                        {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                                                        {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
                                                                             <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small>
                                                                             :
                                                                             ''
@@ -1320,7 +1323,7 @@ const ModalSalesOrder: React.FC = () => {
                                                             :
                                                             <div>
                                                                 {checkPermission('cambiar_totales') ? <input type="text" className='inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} /> : <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
-                                                                <p className='mt-2 total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                                                <p className='mt-2 total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
                                                                     <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                                             </div>
                                                         }
@@ -1480,12 +1483,15 @@ const ModalSalesOrder: React.FC = () => {
                                                     </div>
                                                     <div className='td'>
                                                         <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
-                                                            <small style={{ color: 'red' }}>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small></p>
+                                                            {permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
+                                                                <small style={{ color: 'red' }}>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small>
+                                                                : ''}
+                                                        </p>
                                                     </div>
                                                     <div className='td'>
                                                         <div className=''>
                                                             <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                                            <p className='total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                                            <p className='total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) &&permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia')?
                                                                 <small style={{ color: 'red' }}>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                                         </div>
                                                     </div>
@@ -1566,6 +1572,7 @@ const ModalSalesOrder: React.FC = () => {
                                 </div>
                             </div>
                         </div>
+                        {permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ? 
                         <div className='mt-1 btns'>
                             <div className='subtotal'>
                                 <div>
@@ -1587,6 +1594,7 @@ const ModalSalesOrder: React.FC = () => {
                                 </div>
                             </div>
                         </div>
+                        : ''}
                     </div>
 
                     {modalSalesOrder !== '' ?

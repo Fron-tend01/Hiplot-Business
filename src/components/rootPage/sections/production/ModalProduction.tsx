@@ -32,7 +32,7 @@ const ModalProduction: React.FC = () => {
 
 
     const [areasGral, setAreasGral] = useState<any>()
- 
+
 
     useEffect(() => {
         if (productionToUpdate) {
@@ -288,10 +288,14 @@ const ModalProduction: React.FC = () => {
 
     const checkPermission = (elemento: string) => {
         const permisosxVista = storeDv.getState().permisosxvista; // Obtiene el estado actual
-     
-      
+
+
         return permisosxVista.some((x: any) => x.titulo === elemento);
     };
+
+
+    const [data, setData] = useState<any>(["fdsfsadfdsasamdnsajdasdasdasdnasnjds", "sdfdafgf", "fghfh", "fghgfhgf", "werewr", "23432432"])
+
     return (
         <div className={`overlay__production-modal__article-modal ${modalSub == 'production__modal' ? 'active' : ''}`}>
             <div className={`popup__production-modal__article-modal ${modalSub == 'production__modal' ? 'active' : ''}`}>
@@ -328,7 +332,7 @@ const ModalProduction: React.FC = () => {
                                     <div className='col-6 md-col-12'>
                                         <span className='text'>Empresa: <b>{productionToUpdate.empresa}</b></span><br />
                                         <span className='text'>Sucursal de origen: <b>{productionToUpdate.sucursal}</b></span><br />
-                                        <span className='text'>Orden de Venta: <b>{productionToUpdate.usuario_crea}</b></span><br />
+                                        <span className='text'>Orden de Venta: <b>{productionToUpdate.folio_ov}</b></span><br />
 
                                     </div>
                                 </div>
@@ -359,12 +363,12 @@ const ModalProduction: React.FC = () => {
                                         )}
                                     </div>
                                     <div className='d-flex align-items-end'>
-                                    {checkPermission('terminar') && (
-                                        <button className='mr-3 btn__general-danger' onClick={() => finishConcept()}>Terminar orden</button>
+                                        {checkPermission('terminar') && (
+                                            <button className='mr-3 btn__general-danger' onClick={() => finishConcept()}>Terminar orden</button>
 
-                                    )}
+                                        )}
                                         {checkPermission('cancelar') && (
-                                        <button className='btn__general-danger' onClick={() => cancelarOp()}>Cancelar</button>
+                                            <button className='btn__general-danger' onClick={() => cancelarOp()}>Cancelar</button>
                                         )}
                                     </div>
                                 </div>
@@ -415,25 +419,40 @@ const ModalProduction: React.FC = () => {
                                                 <div className='td'>
                                                     <p className='folio-identifier'>{article.codigo}-{article.descripcion}</p>
                                                 </div>
-                                                <div className='td'>
-                                                    <p className='amount-identifier'>{article.cantidad} {article.name_unidad || article.unidad}</p>
-                                                </div>
-                                                <div className='td'>
-                                                    <p>$ {article.total / article.cantidad}</p>
-                                                </div>
-                                                <div className='td'>
-                                                    {article.monto_urgencia != undefined && article.monto_urgencia > 0 ?
-                                                        <div className='d-flex'>
-                                                            <p className='total-identifier'>$ {article.total}</p>
-                                                            <p>${article.monto_urgencia}</p>
+                                                <div className='td max'>
+                                                    <div className='row__one'>
+                                                        <div className='td-one'>
+                                                            <p className='amount-identifier'>{article.cantidad} {article.name_unidad || article.unidad}</p>
                                                         </div>
-                                                        :
-                                                        <p className='total-identifier'>$ {article.total}</p>}
-                                                </div>
-                                                <div className='td'>
-                                                    <p>{article.status_produccion == 0 ? <b className='active-identifier'>ACTIVO</b> :
-                                                        article.status_produccion == 1 ? <b className='cancel-identifier'>CANCELADO</b> :
-                                                            article.status_produccion == 2 ? <b className='finished-identifier'>TERMINADO</b> : <b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
+                                                        <div className='td-one'>
+                                                            <p>$ {article.total / article.cantidad}</p>
+                                                        </div>
+                                                        <div className='td-one'>
+                                                            {article.monto_urgencia != undefined && article.monto_urgencia > 0 ?
+                                                                <div className='d-flex'>
+                                                                    <p className='total-identifier'>$ {article.total}</p>
+                                                                    <p>${article.monto_urgencia}</p>
+                                                                </div>
+                                                                :
+                                                                <p className='total-identifier'>$ {article.total}</p>}
+                                                        </div>
+                                                        <div className='td-one'>
+                                                            <p>{article.status_produccion == 0 ? <b className='active-identifier'>ACTIVO</b> :
+                                                                article.status_produccion == 1 ? <b className='cancel-identifier'>CANCELADO</b> :
+                                                                    article.status_produccion == 2 ? <b className='finished-identifier'>TERMINADO</b> : <b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className='row__two'>
+                                                        {article.campos_plantilla.map((x: any) => (
+                                                            <div className='td-two'>
+                                                                {x.considerado_total ?
+                                                                    <p><b>{x.nombre_campo_plantilla} : {x.valor}</b></p>
+                                                                    :
+                                                                    <p>{x.nombre_campo_plantilla} : {x.valor}</p>
+                                                                }
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                                 <div className='td'>
                                                     <div>
@@ -450,7 +469,7 @@ const ModalProduction: React.FC = () => {
                                                             </option>
                                                         ))}
                                                     </select>
-                                                    
+
                                                     <div className='d-flex'>
                                                         <div className='d-flex align-items-end'>
                                                             <button type='button' className='btn__general-purple' onClick={() => sendConceptoAreas(article)}>Enviar</button>
@@ -459,30 +478,30 @@ const ModalProduction: React.FC = () => {
                                                 </div>
 
                                                 <div className='td'>
-                                                {checkPermission('terminar') && (
-                                                    <div>
-                                                        <button className='btn__general-purple' type='button' onClick={() => terminarConcepto(article, index)}>Terminar conceptos</button>
-                                                    </div>
+                                                    {checkPermission('terminar') && (
+                                                        <div>
+                                                            <button className='btn__general-purple' type='button' onClick={() => terminarConcepto(article, index)}>Terminar conceptos</button>
+                                                        </div>
 
-                                                )}
-
-                                                </div>
-                                                <div className='td'>
-                                                {checkPermission('enviar_a_sucursal') && (
-                                                    <div>
-                                                        <button className='btn__general-purple' type='button' onClick={() => enviarASucursalConcepto(article, index)}>Enviar concepto a sucursal</button>
-                                                    </div>
-
-                                                )}
+                                                    )}
 
                                                 </div>
                                                 <div className='td'>
-                                                {checkPermission('cancelar') && (
-                                                    <div>
-                                                        <button className='btn__general-danger' type='button' onClick={() => cancelarConcepto(article, index)}>Cancelar Concepto</button>
-                                                    </div>
+                                                    {checkPermission('enviar_a_sucursal') && (
+                                                        <div>
+                                                            <button className='btn__general-purple' type='button' onClick={() => enviarASucursalConcepto(article, index)}>Enviar concepto a sucursal</button>
+                                                        </div>
 
-                                                )}
+                                                    )}
+
+                                                </div>
+                                                <div className='td'>
+                                                    {checkPermission('cancelar') && (
+                                                        <div>
+                                                            <button className='btn__general-danger' type='button' onClick={() => cancelarConcepto(article, index)}>Cancelar Concepto</button>
+                                                        </div>
+
+                                                    )}
 
                                                 </div>
 

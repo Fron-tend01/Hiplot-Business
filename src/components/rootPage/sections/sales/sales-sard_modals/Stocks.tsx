@@ -10,8 +10,8 @@ const Stocks: React.FC = () => {
   const setModalSub = storeModals(state => state.setModalSub)
   const { modalSub }: any = useStore(storeModals)
 
-  const unidad = article?.unidades.find((unidad: any) => unidad.unidad_almacen === true);
-  const default_store = article?.stock.find((x: any) => x.id === article?.almacen_predeterminado?.id);
+  const unidad = article?.unidades?.find((unidad: any) => unidad.unidad_almacen === true);
+  const default_store = article?.stock?.find((x: any) => x.id === article?.almacen_predeterminado?.id);
  
   return (
     <div className={`overlay__stock_modal ${modalSub === 'stock_modal' ? 'active' : ''}`}>
