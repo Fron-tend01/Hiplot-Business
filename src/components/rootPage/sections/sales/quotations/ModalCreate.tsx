@@ -368,7 +368,7 @@ const ModalCreate: React.FC = () => {
       newConcept[index].precio_total = (parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia)).toFixed(2);
       newConcept[index].monto_urgencia = 0;
     }
-    // setNormalConcepts(newConcept);
+   
 
   };
 
@@ -456,7 +456,7 @@ const ModalCreate: React.FC = () => {
   };
   const [name, setName] = useState<string>('')
 
-  console.log(info_sc)
+ 
   return (
     <div className={`overlay__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
       <div className={`popup__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
