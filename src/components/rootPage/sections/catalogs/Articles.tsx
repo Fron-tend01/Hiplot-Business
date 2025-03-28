@@ -132,10 +132,10 @@ const Articles: React.FC = () => {
       get_proveedores: true,
       get_max_mins: true,
       get_plantilla_data: true,
-      get_precios: true,
+      get_precios: false,
       get_variaciones: true,
       get_combinaciones: true,
-      get_tiempos_entrega: true,
+      get_tiempos_entrega: false,
       get_areas_produccion: true,
       get_componentes: true,
       get_cargos_minimos: true,
@@ -163,11 +163,12 @@ const Articles: React.FC = () => {
     try {
 
       const result = await getArticles(data)
-      const resultImagenes = await getArticles(data2)
       await setArticleByOne(result[0])
-      setArticleToUpdate(result[0]);
-      setImagesArticles(resultImagenes[0].imagenes)
       setModalLoading(false)
+      setArticleToUpdate(result[0]);
+      const resultImagenes = await getArticles(data2)
+      setImagesArticles(resultImagenes[0].imagenes)
+     
     } catch (error) {
     } finally {
       setModalLoading(false)

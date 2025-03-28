@@ -37,6 +37,7 @@ const modalArticle: React.FC = () => {
 
     const setBranchOffices = storeArticles(state => state.setBranchOffices)
     const setMaxsMins = storeArticles(state => state.setMaxsMins)
+    const setDeliveryTimes = storeArticles(state => state.setDeliveryTimes)
     const setUnits = storeArticles(state => state.setUnits)
     const setComponents = storeArticles(state => state.setComponents)
     const setAreas = storeArticles(state => state.setAreas)
@@ -206,7 +207,7 @@ const modalArticle: React.FC = () => {
 
             setBranchOffices(articleToUpdate.sucursales)
             setMaxsMins(articleToUpdate.max_mins);
-            setPrices(articleToUpdate.precios);
+   
             setUnits(articleToUpdate.unidades);
             setComponents(articleToUpdate.componentes);
             setAreas(articleToUpdate.areas_produccion);
@@ -531,6 +532,39 @@ const modalArticle: React.FC = () => {
 
     }
 
+    const modalPrices = async () => {
+        setSubModal('modal-prices')
+        const data2 = {
+            id: articleToUpdate.id,
+            activos: true,
+            nombre: '',
+            codigo: '',
+            familia: 0,
+            proveedor: 0,
+            materia_prima: 0,
+            get_precios: true
+          }
+          const result = await APIs.getArticles(data2)
+          setPrices(result[0].precios)
+    }
+    
+    const modalDeliveryTime = async () => {
+        setSubModal('modal-delivery-times')
+        const data2 = {
+            id: articleToUpdate.id,
+            activos: true,
+            nombre: '',
+            codigo: '',
+            familia: 0,
+            proveedor: 0,
+            materia_prima: 0,
+            get_tiempos_entrega: true
+          }
+          const result = await APIs.getArticles(data2)
+          setDeliveryTimes(result[0].tiempos_entrega)
+    }
+    
+
 
     return (
         <div className={`overlay__articles ${modalArticle == 'articles-modal-create' || modalArticle == 'articles-modal-update' ? 'active' : ''}`}>
@@ -759,7 +793,7 @@ const modalArticle: React.FC = () => {
                         <div className='col-auto'>
                             <Prices />
                             <div className='tooltip-container'>
-                                <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-prices')}>
+                                <button className='btn__general-purple' type='button' onClick={modalPrices}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-receipt-dollar"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2" /><path d="M14.8 8a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1" /><path d="M12 6v10" /></svg>
                                 </button>
                                 <span className="tooltip-text">Precios</span>
@@ -848,7 +882,7 @@ const modalArticle: React.FC = () => {
                         </div>
                         <div className='col-auto'>
                             <div className='tooltip-container'>
-                                <button className='btn__general-purple' type='button' onClick={() => setSubModal('modal-delivery-times')}>
+                                <button className='btn__general-purple' type='button' onClick={modalDeliveryTime}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="icon icon-tabler icons-tabler-filled icon-tabler-clock"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 2.66a1 1 0 0 0 -.993 .883l-.007 .117v5l.009 .131a1 1 0 0 0 .197 .477l.087 .1l3 3l.094 .082a1 1 0 0 0 1.226 0l.094 -.083l.083 -.094a1 1 0 0 0 0 -1.226l-.083 -.094l-2.707 -2.708v-4.585l-.007 -.117a1 1 0 0 0 -.993 -.883z" /></svg>
                                 </button>
                                 <span className="tooltip-text">Tiempos de Entrega</span>

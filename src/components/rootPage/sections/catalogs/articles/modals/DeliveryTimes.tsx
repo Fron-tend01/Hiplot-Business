@@ -15,7 +15,7 @@ const DeliveryTimes: React.FC = () => {
   const user_id = userState.id
   const setSubModal = storeArticles(state => state.setSubModal)
 
-  const {subModal, deliveryTimes, articleToUpdate, deleteDeliveryTimes}: any = useStore(storeArticles)
+  const {subModal, deliveryTimes, deleteDeliveryTimes}: any = useStore(storeArticles)
   const setDeliveryTimes = storeArticles(state => state.setDeliveryTimes)
   const setDeleteDeliveryTimes = storeArticles(state => state.setDeleteDeliveryTimes)
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
@@ -28,14 +28,7 @@ const DeliveryTimes: React.FC = () => {
   const [name, setName] = useState<any>('')
   const [dataSelects, setDataSelects] = useState<any>()
 
-  const [deliveryTimesView, setDeliveryTimesView] = useState<any>([])
 
-  useEffect(() => {
-    if(articleToUpdate) {
-      setDeliveryTimesView(articleToUpdate?.tiempos_entrega)
-    }
-
-  }, [articleToUpdate])
 
 
   const searchDeliveryTimes = async () => {
@@ -57,7 +50,7 @@ const DeliveryTimes: React.FC = () => {
 
 
   const addDeliveryTimes = async () => {
-      setDeliveryTimesView((prevState: any) => [...prevState, ...selectedIds.deliveryTimes.tiempos_entrega_data]);
+      setDeliveryTimes((prevState: any) => [...prevState, ...selectedIds.deliveryTimes.tiempos_entrega_data]);
       const filter = await selectedIds.deliveryTimes.tiempos_entrega_data
       .filter((x: any) => x.id)    // Filtramos solo los elementos que tienen `id`
       .map((x: any) => x.id); 
@@ -67,8 +60,8 @@ const DeliveryTimes: React.FC = () => {
   
 
   const deleteDeliveryTime = (item: any) => {
-    const filter = deliveryTimesView.filter((x: any) => x.id !== item.id)
-    setDeliveryTimesView(filter);
+    const filter = deliveryTimes.filter((x: any) => x.id !== item.id)
+    setDeliveryTimes(filter);
     if(item){
       setDeleteDeliveryTimes([...deleteDeliveryTimes, item.id])
     }
@@ -105,10 +98,10 @@ const DeliveryTimes: React.FC = () => {
           </div>
           <div>
             <div className='article__modal_delivery-times_table' >
-              {deliveryTimesView ? (
+              {deliveryTimes ? (
               <div className='table__numbers'>
                   <p className='text'>Total de Ordenes</p>
-                  <div className='quantities_tables'>{deliveryTimesView?.length}</div>
+                  <div className='quantities_tables'>{deliveryTimes?.length}</div>
               </div>
               ) : (
                 <p className='text'>No hay empresas</p>
@@ -137,9 +130,9 @@ const DeliveryTimes: React.FC = () => {
                   </div>
                 </div>
               </div>
-              {deliveryTimesView?.length > 0 ? (
+              {deliveryTimes?.length > 0 ? (
                   <div className='table__body'>
-                      {deliveryTimesView?.map((item: any, index: any) => (
+                      {deliveryTimes?.map((item: any, index: any) => (
                           <div className='tbody__container' key={index}>
                               <div className='tbody'>
                                   <div className='td'>
