@@ -939,6 +939,22 @@ const ModalSalesOrder: React.FC = () => {
     const checkPermissionHeader = (elemento: string) => {
         return permisosxVistaheader.some((x: any) => x.titulo == elemento)
     }
+
+
+    const handleBranchChange = (status: number, index: number) => {
+        let data = saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
+            i === index ? { ...item, check_recibido_sucursal: !status } : item
+        )
+        setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
+    }
+
+    const handleCustomerChange = (status: number, index: number) => {
+        let data = saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
+            i === index ? { ...item, check_recibido_cliente: !status } : item
+        )
+        setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
+    }
+
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
             <div className={`popup__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
@@ -1417,6 +1433,36 @@ const ModalSalesOrder: React.FC = () => {
 
                                                                     checked={article.enviar_a_produccion}
                                                                     onChange={() => handleStatusChange(article.enviar_a_produccion, index)} disabled={article.status == !0} />
+                                                                <span className="slider"></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div className='td branch'>
+                                                        <div>
+                                                            <div className=''>
+                                                                <label>Recibido Sucursal</label>
+                                                            </div>
+                                                            <label className="switch">
+                                                                <input
+                                                                    type="checkbox"
+
+                                                                    checked={article.check_recibido_sucursal}
+                                                                    onChange={() => handleBranchChange(article.check_recibido_sucursal, index)} disabled={article.status == !0} />
+                                                                <span className="slider"></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div className='td customer'>
+                                                        <div>
+                                                            <div className=''>
+                                                                <label>Recibido Cliente</label>
+                                                            </div>
+                                                            <label className="switch">
+                                                                <input
+                                                                    type="checkbox"
+
+                                                                    checked={article.check_recibido_cliente}
+                                                                    onChange={() => handleCustomerChange(article.check_recibido_cliente, index)} disabled={article.status == !0} />
                                                                 <span className="slider"></span>
                                                             </label>
                                                         </div>

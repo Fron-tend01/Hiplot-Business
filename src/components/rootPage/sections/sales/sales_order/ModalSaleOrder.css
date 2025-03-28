@@ -509,8 +509,15 @@
 }
 
 .table__sales_modal .table__body .tbody>.td {
-	display: flex;
-	align-items: center;
+	
+}
+
+.table__sales_modal .table__body .tbody>.td.branch .slider {
+	background-color: #FF8F00;
+}
+
+.table__sales_modal .table__body .tbody>.td.customer .slider {
+	background: #6e34e2;
 }
 
 .table__sales_modal .table__body .tbody>.td .inputs__general {

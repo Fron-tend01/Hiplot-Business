@@ -476,6 +476,39 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
   };
 
 
+  const handleBranchChange = (_: any, i: any) => {
+    // Utilizamos map para crear un nuevo array con los cambios aplicados
+    if (customConceptView && customConceptView.length > 0) {
+      setCustomConceptView(
+        customConceptView.map((item: any, index: number) =>
+          index === i ? { ...item, check_recibido_sucursal: !item.check_recibido_sucursal } : item
+        )
+      );
+    } else {
+      console.error("customConceptView está vacío o no es válido");
+    }
+
+    console.log(customConceptView)
+  };
+
+  const handleCustomerChange = (_: any, i: any) => {
+    // Utilizamos map para crear un nuevo array con los cambios aplicados
+    if (customConceptView && customConceptView.length > 0) {
+      setCustomConceptView(
+        customConceptView.map((item: any, index: number) =>
+          index === i ? { ...item, check_recibido_cliente: !item.check_recibido_cliente } : item
+        )
+      );
+    } else {
+      console.error("customConceptView está vacío o no es válido");
+    }
+
+    console.log(customConceptView)
+  };
+
+
+
+
 
   const updateSaleOrderConcept = async (article: any) => {
     let data = {
@@ -1143,6 +1176,36 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                   </label>
                                 </div>
                               </div>
+                              <div className='td branch'>
+                                <div>
+                                  <div className=''>
+                                    <label>Recibido Sucursal</label>
+                                  </div>
+                                  <label className="switch">
+                                    <input
+                                      type="checkbox"
+
+                                      checked={concept.check_recibido_sucursal}
+                                      onChange={() => handleBranchChange(concept.check_recibido_sucursal, index)} disabled={concept.status == !0} />
+                                    <span className="slider"></span>
+                                  </label>
+                                </div>
+                              </div>
+                              <div className='td customer'>
+                                <div>
+                                  <div className=''>
+                                    <label>Recibido Cliente</label>
+                                  </div>
+                                  <label className="switch">
+                                    <input
+                                      type="checkbox"
+
+                                      checked={concept.check_recibido_cliente}
+                                      onChange={() => handleCustomerChange(concept.check_recibido_cliente, index)} disabled={concept.status == !0} />
+                                    <span className="slider"></span>
+                                  </label>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         )
@@ -1279,6 +1342,36 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                         handleStatusChange(concept, index)
                                       }
                                     />
+                                    <span className="slider"></span>
+                                  </label>
+                                </div>
+                              </div>
+                              <div className='td branch'>
+                                <div>
+                                  <div className=''>
+                                    <label>Recibido Sucursal</label>
+                                  </div>
+                                  <label className="switch">
+                                    <input
+                                      type="checkbox"
+
+                                      checked={concept.check_recibido_sucursal}
+                                      onChange={() => handleBranchChange(concept.check_recibido_sucursal, index)} disabled={concept.status == !0} />
+                                    <span className="slider"></span>
+                                  </label>
+                                </div>
+                              </div>
+                              <div className='td customer'>
+                                <div>
+                                  <div className=''>
+                                    <label>Recibido Cliente</label>
+                                  </div>
+                                  <label className="switch">
+                                    <input
+                                      type="checkbox"
+
+                                      checked={concept.check_recibido_cliente}
+                                      onChange={() => handleCustomerChange(concept.check_recibido_cliente, index)} disabled={concept.status == !0} />
                                     <span className="slider"></span>
                                   </label>
                                 </div>
@@ -1504,6 +1597,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                   </label>
                                 </div>
                               </div>
+
                               {concept.status == 0 ?
                                 <div className='td'>
                                   {personalizedModal == 'personalized_modal-sale-update' ?
