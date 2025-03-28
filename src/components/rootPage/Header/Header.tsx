@@ -83,10 +83,10 @@ const Header: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    let n_sale = saleOrdersConcepts?.normal_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
-    let p_sale = saleOrdersConcepts?.personalized_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
-    let n_quotes = quotes?.normal_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
-    let p_quotes = quotes?.personalized_concepts?.reduce((acc, item) => acc + parseInt(item.precio_total || "0"), 0);
+    let n_sale = saleOrdersConcepts?.normal_concepts?.reduce((acc, item) => acc + item.precio_total || "0", 0);
+    let p_sale = saleOrdersConcepts?.personalized_concepts?.reduce((acc, item) => acc + item.precio_total || "0", 0);
+    let n_quotes = quotes?.normal_concepts?.reduce((acc, item) => acc + item.precio_total || "0", 0);
+    let p_quotes = quotes?.personalized_concepts?.reduce((acc, item) => acc + item.precio_total || "0", 0);
 
 
     setTotalSales(n_sale + p_sale);
