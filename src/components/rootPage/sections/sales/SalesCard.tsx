@@ -120,7 +120,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       get_areas_produccion: true,
       get_tiempos_entrega: true,
       get_componentes: true,
-      get_stock: false,
+      get_stock: true,
       get_web: true,
       for_ventas: true,
       get_unidades: true,
@@ -173,7 +173,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
           let imgs = []
           setStatusImages(true)
-          await APIs.GetAny('articulo_imagenes_get/' + IdArticle).then((resp: any) => {
+          await APIs.GetAny('articulo_imagenes_get/' + art.id).then((resp: any) => {
             imgs = resp
             setImgs(imgs)
             setStatusImages(false)
