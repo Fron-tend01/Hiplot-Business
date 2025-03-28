@@ -905,7 +905,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
         let imgs = []
         setStatusImages(true)
-        await APIs.GetAny('articulo_imagenes_get/' + article.id).then((resp: any) => {
+        await APIs.GetAny('articulo_imagenes_get/' + response[0].id).then((resp: any) => {
           imgs = resp
           setImgs(imgs)
           setStatusImages(false)
