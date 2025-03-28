@@ -69,6 +69,7 @@ const Header: React.FC = () => {
     }
 
     if (cotizacion.length > 0 || cotizacion_pers.length > 0) {
+
       setQuotes({ normal_concepts: cotizacion, personalized_concepts: cotizacion_pers });
 
 

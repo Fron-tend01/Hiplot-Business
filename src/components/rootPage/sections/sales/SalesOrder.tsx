@@ -171,12 +171,12 @@ const SalesOrder: React.FC = () => {
     const modalLoading = storeArticles((state: any) => state.modalLoading);
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
-    useEffect(() => {
-        if (modalSalesOrder == '') {
-            setSaleOrdersConcepts({normal_concepts: [], personalized_concepts: [] });
+    // useEffect(() => {
+    //     if (modalSalesOrder == '') {
+    //         setSaleOrdersConcepts({normal_concepts: [], personalized_concepts: [] });
 
-        }
-    }, [modalSalesOrder]);
+    //     }
+    // }, [modalSalesOrder]);
     return (
         <div className='sales__order'>
             <div className='sales__order_container'>

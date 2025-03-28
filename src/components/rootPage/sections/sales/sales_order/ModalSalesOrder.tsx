@@ -578,7 +578,7 @@ const ModalSalesOrder: React.FC = () => {
                 })
 
             })
-            // calcular_tiempos_entrega()
+            calcular_tiempos_entrega()
         } else {
             setDates([saleOrdersToUpdate.fecha_entrega_produccion + 'T' + saleOrdersToUpdate.hora_entrega_produccion,
             saleOrdersToUpdate.fecha_entrega_cliente + 'T' + saleOrdersToUpdate.hora_entrega_cliente])
