@@ -533,6 +533,7 @@ const modalArticle: React.FC = () => {
     }
 
     const modalPrices = async () => {
+        setModalLoading(true)
         setSubModal('modal-prices')
         const data2 = {
             id: articleToUpdate.id,
@@ -544,8 +545,15 @@ const modalArticle: React.FC = () => {
             materia_prima: 0,
             get_precios: true
           }
-          const result = await APIs.getArticles(data2)
-          setPrices(result[0].precios)
+          try {
+            const result = await APIs.getArticles(data2)
+            setPrices(result[0].precios)
+          } catch (error) {
+            
+          } finally {
+            setModalLoading(false)
+          }
+          
     }
     
     const modalDeliveryTime = async () => {
@@ -560,8 +568,16 @@ const modalArticle: React.FC = () => {
             materia_prima: 0,
             get_tiempos_entrega: true
           }
-          const result = await APIs.getArticles(data2)
-          setDeliveryTimes(result[0].tiempos_entrega)
+
+          try {
+            const result = await APIs.getArticles(data2)
+            setDeliveryTimes(result[0].tiempos_entrega)
+          } catch (error) {
+            
+          } finally {
+            setModalLoading(false)
+          }
+        
     }
     
 

@@ -29,7 +29,7 @@ const Prices: React.FC = () => {
 
   const setModalSub = storeModals(state => state.setModalSub)
   const setHistoryPrices = storeArticles(state => state.setHistoryPrices)
-  const { articleByOne, deletePrices }: any = useStore(storeArticles);
+  const { deletePrices }: any = useStore(storeArticles);
 
   const { prices, subModal } = useStore(storeArticles);
 
@@ -38,9 +38,6 @@ const Prices: React.FC = () => {
 
   const [usersGroups, setUsersGroups] = useState<any>([]);
 
-  useEffect(() => {
-
-  }, [articleByOne])
 
 
 
@@ -61,9 +58,9 @@ const Prices: React.FC = () => {
       setTemplates(resultTemplates)
       const resultUserGroups = await getUserGroups(user_id);
       setUsersGroups(resultUserGroups)
-      if (articleByOne) {
-        setPrices(articleByOne.precios)
-      }
+      // if (articleByOne) {
+      //   setPrices(articleByOne.precios)
+      // }
       setDataSelects(
         {
           selectName: 'Grupos de usuarios',
@@ -86,21 +83,7 @@ const Prices: React.FC = () => {
           dataSelect: resultUserGroups
         }
       )
-      // setSelectRanges(
-      //   {
-      //     selectName: 'Rangos',
-      //     options: 'titulo',
-      //     dataSelect: resultRanges
-      //   }
-      // )
-      // setSelectTemplates(
-      //   {
-      //     selectName: '',
-      //     options: 'nombre',
-      //     dataSelect: resultTemplates
-      //   }
-      // )
-
+  
 
     } catch (error) {
       console.error('Error fetching ranges:', error);
