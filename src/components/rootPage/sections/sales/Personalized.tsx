@@ -496,7 +496,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
     if (customConceptView && customConceptView.length > 0) {
       setCustomConceptView(
         customConceptView.map((item: any, index: number) =>
-          index === i ? { ...item, check_recibido_cliente: !item.check_recibido_cliente } : item
+          index === i ? { ...item, check_entregado_cliente: !item.check_entregado_cliente } : item
         )
       );
     } else {
@@ -1176,7 +1176,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                   </label>
                                 </div>
                               </div>
-                              <div className='td branch'>
+                              {/* <div className='td branch'>
                                 <div>
                                   <div className=''>
                                     <label>Recibido Sucursal</label>
@@ -1200,12 +1200,12 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                     <input
                                       type="checkbox"
 
-                                      checked={concept.check_recibido_cliente}
-                                      onChange={() => handleCustomerChange(concept.check_recibido_cliente, index)} disabled={concept.status == !0} />
+                                      checked={concept.check_entregado_cliente}
+                                      onChange={() => handleCustomerChange(concept.check_entregado_cliente, index)} disabled={concept.status == !0} />
                                     <span className="slider"></span>
                                   </label>
                                 </div>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
                         )
@@ -1346,7 +1346,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                   </label>
                                 </div>
                               </div>
-                              <div className='td branch'>
+                              {/* <div className='td branch'>
                                 <div>
                                   <div className=''>
                                     <label>Recibido Sucursal</label>
@@ -1369,13 +1369,12 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                   <label className="switch">
                                     <input
                                       type="checkbox"
-
-                                      checked={concept.check_recibido_cliente}
-                                      onChange={() => handleCustomerChange(concept.check_recibido_cliente, index)} disabled={concept.status == !0} />
+                                      checked={concept.check_entregado_cliente}
+                                      onChange={() => handleCustomerChange(concept.check_entregado_cliente, index)} disabled={concept.status == !0} />
                                     <span className="slider"></span>
                                   </label>
                                 </div>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
                         )
@@ -1593,6 +1592,35 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                         handleStatusChange(concept, index)
                                       }
                                     />
+                                    <span className="slider"></span>
+                                  </label>
+                                </div>
+                              </div>
+                              <div className='td branch'>
+                                <div>
+                                  <div className=''>
+                                    <label>Recibido Sucursal</label>
+                                  </div>
+                                  <label className="switch">
+                                    <input
+                                      type="checkbox"
+
+                                      checked={concept.check_recibido_sucursal}
+                                      onChange={() => handleBranchChange(concept.check_recibido_sucursal, index)} disabled={concept.status == !0} />
+                                    <span className="slider"></span>
+                                  </label>
+                                </div>
+                              </div>
+                              <div className='td customer'>
+                                <div>
+                                  <div className=''>
+                                    <label>Recibido Cliente</label>
+                                  </div>
+                                  <label className="switch">
+                                    <input
+                                      type="checkbox"
+                                      checked={concept.check_entregado_cliente}
+                                      onChange={() => handleCustomerChange(concept.check_entregado_cliente, index)} disabled={concept.status == !0} />
                                     <span className="slider"></span>
                                   </label>
                                 </div>

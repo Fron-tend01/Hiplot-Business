@@ -420,6 +420,8 @@ const ModalSalesOrder: React.FC = () => {
             monto_urgencia: article.monto_urgencia,
             monto_descuento: article.monto_descuento,
             precio_unitario: article.precio_unitario,
+            check_recibido_sucursal: article.check_recibido_sucursal,
+            check_entregado_cliente: article.check_entregado_cliente,
             total: article.precio_total,
             id_unidad: article.id_unidad,
             obs_produccion: article.obs_produccion,
@@ -950,7 +952,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const handleCustomerChange = (status: number, index: number) => {
         let data = saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
-            i === index ? { ...item, check_recibido_cliente: !status } : item
+            i === index ? { ...item, check_entregado_cliente: !status } : item
         )
         setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
     }
@@ -1318,7 +1320,7 @@ const ModalSalesOrder: React.FC = () => {
                                                     </div>
                                                     <div className='td'>
                                                         <p className=''>$ {article.precio_unitario} <br />
-                                                            {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) &&permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia')?
+                                                            {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
                                                                 <small >PUF: ${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
                                                         </p>
                                                     </div>
@@ -1437,36 +1439,45 @@ const ModalSalesOrder: React.FC = () => {
                                                             </label>
                                                         </div>
                                                     </div>
-                                                    <div className='td branch'>
-                                                        <div>
-                                                            <div className=''>
-                                                                <label>Recibido Sucursal</label>
-                                                            </div>
-                                                            <label className="switch">
-                                                                <input
-                                                                    type="checkbox"
+                                                    {modalSalesOrder == 'sale-order__modal-update' ?
+                                                        <div className='td branch'>
+                                                            <div>
+                                                                <div className=''>
+                                                                    <label>Recibido Sucursal</label>
+                                                                </div>
+                                                                <label className="switch">
+                                                                    <input
+                                                                        type="checkbox"
 
-                                                                    checked={article.check_recibido_sucursal}
-                                                                    onChange={() => handleBranchChange(article.check_recibido_sucursal, index)} disabled={article.status == !0} />
-                                                                <span className="slider"></span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <div className='td customer'>
-                                                        <div>
-                                                            <div className=''>
-                                                                <label>Recibido Cliente</label>
+                                                                        checked={article.check_recibido_sucursal}
+                                                                        onChange={() => handleBranchChange(article.check_recibido_sucursal, index)} disabled={article.status == !0} />
+                                                                    <span className="slider"></span>
+                                                                </label>
                                                             </div>
-                                                            <label className="switch">
-                                                                <input
-                                                                    type="checkbox"
-
-                                                                    checked={article.check_recibido_cliente}
-                                                                    onChange={() => handleCustomerChange(article.check_recibido_cliente, index)} disabled={article.status == !0} />
-                                                                <span className="slider"></span>
-                                                            </label>
                                                         </div>
-                                                    </div>
+                                                        :
+                                                        ''
+                                                    }
+                                                    {modalSalesOrder == 'sale-order__modal-update' ?
+                                                          <div className='td customer'>
+                                                          <div>
+                                                              <div className=''>
+                                                                  <label>Recibido Cliente</label>
+                                                              </div>
+                                                              <label className="switch">
+                                                                  <input
+                                                                      type="checkbox"
+  
+                                                                      checked={article.check_entregado_cliente}
+                                                                      onChange={() => handleCustomerChange(article.check_entregado_cliente, index)} disabled={article.status == !0} />
+                                                                  <span className="slider"></span>
+                                                              </label>
+                                                          </div>
+                                                      </div>
+                                                        :
+                                                        ''
+                                                    }
+                                                  
                                                     {article.status == 0 ?
                                                         <div>
                                                             {modalSalesOrder == 'sale-order__modal-update' && saleOrdersToUpdate.status != 1 ?
@@ -1537,7 +1548,7 @@ const ModalSalesOrder: React.FC = () => {
                                                     <div className='td'>
                                                         <div className=''>
                                                             <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                                            <p className='total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) &&permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia')?
+                                                            <p className='total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
                                                                 <small style={{ color: 'red' }}>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                                         </div>
                                                     </div>
@@ -1618,29 +1629,29 @@ const ModalSalesOrder: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        {permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ? 
-                        <div className='mt-1 btns'>
-                            <div className='subtotal'>
-                                <div>
-                                    <p className='name'>Subtotal Franquicia</p>
-                                    <p className='value'>$ {subtotalf}</p>
+                        {permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
+                            <div className='mt-1 btns'>
+                                <div className='subtotal'>
+                                    <div>
+                                        <p className='name'>Subtotal Franquicia</p>
+                                        <p className='value'>$ {subtotalf}</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className='urgency'>
-                                <div>
-                                    <p className='name'>Urgencia Franquicia</p>
-                                    <p className='value'>$ {urgenciaf}</p>
+                                <div className='urgency'>
+                                    <div>
+                                        <p className='name'>Urgencia Franquicia</p>
+                                        <p className='value'>$ {urgenciaf}</p>
+                                    </div>
+                                </div>
+                                <div className='total'>
+                                    <div>
+                                        <p className='name'>Total Franquicia</p>
+                                        <p className='value'>$ {totalf}</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div className='total'>
-                                <div>
-                                    <p className='name'>Total Franquicia</p>
-                                    <p className='value'>$ {totalf}</p>
-                                </div>
-                            </div>
-                        </div>
-                        : ''}
+                            : ''}
                     </div>
 
                     {modalSalesOrder !== '' ?

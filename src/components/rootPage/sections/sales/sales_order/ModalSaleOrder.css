@@ -512,11 +512,11 @@
 	
 }
 
-.table__sales_modal .table__body .tbody>.td.branch .slider {
+.table__sales_modal .table__body .tbody>.td.branch input:checked + .slider {
 	background-color: #FF8F00;
 }
 
-.table__sales_modal .table__body .tbody>.td.customer .slider {
+.table__sales_modal .table__body .tbody>.td.customer input:checked + .slider {
 	background: #6e34e2;
 }
 

@@ -530,7 +530,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
             total_franquicia: precio_franq_tmp,
             clave_sat: article.clave_sat,
             check_recibido_sucursal: false,
-            check_recibido_cliente: false,
+            check_entregado_cliente: false,
             /////////////////////Para Orden de Requicicion //////////////////////////
 
             urgencia: false,
