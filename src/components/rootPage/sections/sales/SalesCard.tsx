@@ -590,7 +590,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   useEffect(() => {
     setData((prev: any) => ({
       ...prev,
-      precio_unitario: prices / prev.cantidad
+      precio_unitario: prices / prev.cantidad,
+      precio_total: parseFloat(prices)
     }));
   }, [prices]);
   const [warningContact, setWarningContact] = useState<boolean>(false)
