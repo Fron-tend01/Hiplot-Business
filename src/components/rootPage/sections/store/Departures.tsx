@@ -37,6 +37,8 @@ const Departures = () => {
     const [warningName] = useState<boolean>(false)
     const [invoice, setInvoice] = useState<any>(null)
 
+    const setDates = storeWarehouseExit(state => state.setDates)
+    const { dates }: any = useStore(storeWarehouseExit)
 
 
     const [series, setSeries] = useState<any>(null)
@@ -45,13 +47,14 @@ const Departures = () => {
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
 
-
+    const formatDate = (date: any) => date.toISOString().split("T")[0];
 
     const fecht = async () => {
 
-
-
-
+        setDates({
+            startDate:  formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+            endDate: formatDate(new Date())
+        })
 
         const resultSeries = await getSeriesXUser({ tipo_ducumento: 4, id: user_id })
         resultSeries.unshift({ 'id': 0, 'nombre': 'Todos' })
@@ -70,8 +73,8 @@ const Departures = () => {
             id_almacen: null,
             id_usuario: user_id,
             id_sucursal: branchOffices?.id,
-            desde: dates[0],
-            hasta: dates[1],
+            desde: formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+            hasta: formatDate(new Date()),
             id_serie: 0,
             folio: invoice,
             light: true,
@@ -93,40 +96,36 @@ const Departures = () => {
         if (branchOffices) {
             setSelectedBranchOffice(branchOffices.id)
         }
-
-
     }, [branchOffices])
 
-    ////////////////////////
-    /// Fechas
-    ////////////////////////
-
-    // Estado para almacenar las fechas seleccionadas
-
-
-
-    const setDates = storeWarehouseExit(state => state.setDates)
-    const { dates }: any = useStore(storeWarehouseExit)
-
-    const handleDateChange = (fechasSeleccionadas: any) => {
-        if (fechasSeleccionadas.length === 2) {
-            setDates(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
-        } else {
-            setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
-        }
-    };
-
+   
+   
 
     const modalCreate = () => {
         setModal('modal-create__departures')
-        console.log(modal)
     }
 
 
 
 
-    const searchWarehouseExit = () => {
-        fecht()
+    const searchWarehouseExit = async () => {
+        const data = {
+            id_almacen: null,
+            id_usuario: user_id,
+            id_sucursal: branchOffices?.id,
+            desde: formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+            hasta: formatDate(new Date()),
+            id_serie: 0,
+            folio: invoice,
+            light: true,
+            page: page
+        }
+        setModalLoading(true)
+        
+        const result = await getWarehouseExit(data)
+        setModalLoading(false)
+        
+        setWarehouseExit(result)
     }
 
 
@@ -176,10 +175,28 @@ const Departures = () => {
                         <div>
                             <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} all={true} />
                         </div>
-                        <div>
-                            <label className='label__general'>Fechas</label>
-                            <div className='container_dates__requisition'>
-                                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                        <div className="">
+                            <label className="label__general">Desde</label>
+                            <div className="flex gap-4 container_dates__requisition">
+                                <Flatpickr
+                                    className="date"
+                                    options={{ locale: Spanish, dateFormat: "Y-m-d" }}
+                                    value={dates?.startDate}
+                                    onChange={(e) => setDates({ endDate: e[0]?.toISOString().split("T")[0] || "" })}
+                                    placeholder="Fecha de inicio"
+                                />
+                            </div>
+                        </div>
+                        <div className="">
+                            <label className="label__general">Hasta</label>
+                            <div className="flex gap-4 container_dates__requisition">
+                                <Flatpickr
+                                    className="date"
+                                    options={{ locale: Spanish, dateFormat: "Y-m-d" }}
+                                    value={dates?.endDate}
+                                    onChange={(e) => setDates({ endDate: e[0]?.toISOString().split("T")[0] || "" })}
+                                    placeholder="Fecha de terminación"
+                                />
                             </div>
                         </div>
                         <div>

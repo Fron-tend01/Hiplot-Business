@@ -86,12 +86,12 @@ const ModalCreate = () => {
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value.trim();  // Obtener el valor ingresado sin espacios
-        console.log('STOCK DEL INDEX',concepts[index].stock);
+        console.log('STOCK DEL INDEX', concepts[index].stock);
         let total_stocks = 0
         concepts[index].stock.forEach((el: any) => {
             total_stocks += el.stock
         });
-        
+
         if (parseFloat(value) > total_stocks) {
             Swal.fire('Notificacion', 'El valor ingresado supera el stock', 'warning')
             const newArticleStates = [...concepts];
@@ -274,16 +274,18 @@ const ModalCreate = () => {
         const permisosxVista = storeDv.getState().permisosxvista; // Obtiene el estado actual
         console.log(permisosxVista);
         console.log(elemento);
-        
+
         return permisosxVista.some((x: any) => x.titulo === elemento);
     };
     return (
         <div className={`overlay__orders ${modal == 'modal-create-pedido' ? 'active' : ''}`}>
             <div className={`popup__orders ${modal == 'modal-create-pedido' ? 'active' : ''}`}>
-                <a href="#" className="btn-cerrar-popup__orders" onClick={() => setModal('')}>
-                    <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
-                </a>
-                <p className='title__modals'>Crear nuevo pedido</p>
+                <div>
+                    <a href="#" className="btn-cerrar-popup__orders" onClick={() => setModal('')}>
+                        <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+                    </a>
+                    <p className='title__modals'>Crear nuevo pedido</p>
+                </div>
                 <div className='conatiner__create_orders' >
                     <div className='row__one'>
                         <div className='container__checkbox_tickets'>
@@ -295,7 +297,7 @@ const ModalCreate = () => {
                                 <p className='text'>Directa</p>
                             </div>
                             {LPAs?.dataSelect?.length == 0 ?
-                                 checkPermission('OPCION-POR-OP') && (
+                                checkPermission('OPCION-POR-OP') && (
                                     <div className='checkbox__tickets' >
                                         <label className="checkbox__container_general">
                                             <input className='checkbox' type="radio" value="PorOC" checked={selectedOption == 1} onChange={handleOptionChange} />
@@ -389,8 +391,8 @@ const ModalCreate = () => {
                                                 </div>
                                                 <div className='td'>
                                                     <div>
-                                                        <select className='traditional__selector' disabled={concept?.orden_produccion} 
-                                                        onChange={(event) => handleSeleccion(event, index)} value={seleccionesTemporales[index] || ''}>
+                                                        <select className='traditional__selector' disabled={concept?.orden_produccion}
+                                                            onChange={(event) => handleSeleccion(event, index)} value={seleccionesTemporales[index] || ''}>
                                                             {concept?.unidades.map((item: any) => (
                                                                 <option key={item.id} value={item.id_unidad}>
                                                                     {item.nombre}
@@ -469,10 +471,11 @@ const ModalCreate = () => {
                             )}
                         </div>
                     </div>
-                    <div className="mt-4 d-flex justify-content-center">
+                   
+                </div>
+                <div className="mt-4 d-flex justify-content-center">
                         <button className='btn__general-purple' onClick={handleCreateOrders}>Crear Pedido</button>
                     </div>
-                </div>
             </div>
             {
                 modalLoading == true ? (

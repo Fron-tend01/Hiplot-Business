@@ -1,3 +1,9 @@
+.conatiner__create_orders  {
+ 
+    overflow: auto;
+}
+
+
 .conatiner__create_orders>.row__one {
     width: 50%;
     margin: 0 auto;
@@ -25,6 +31,173 @@
     row-gap: 20px;
     text-align: justify;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ /*************************************************************
+                    Modal de crear entradas
+ **************************************************************/
+
+  
+ .overlay__orders {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+	z-index: 1;
+}
+
+.overlay__orders.active {
+	visibility: visible;
+}
+
+.popup__orders {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	/* text-align: center; */
+	width: 95vw;
+    height: 95vh;
+	display: grid;
+    
+    /* max-height: 95%; */
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+.popup__orders .btn-cerrar-popup__orders {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__orders.active {	transform: scale(1); opacity: 1; }
+
+
+ /*************************************************************
+                    Modal de actualizar entradas
+ **************************************************************/
+
+  
+ .overlay__update_orders {
+	background: rgba(0,0,0,.3);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	visibility: hidden;
+	z-index: 1;
+}
+
+.overlay__update_orders.active {
+	visibility: visible;
+}
+
+.popup__update_orders {
+	background-color: var(--background-modal);
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	width: 70%;
+
+    height: 95vh;
+	transition: .3s ease all;
+	transform: scale(0.7);
+	opacity: 0;
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary-color); 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+.popup__update_orders  .btn-cerrar-popup__update_orders  {
+	font-size: 16px;
+	line-height: 16px;
+	display: block;
+	text-align: right;
+	transition: .3s ease all;
+	color: #BBBBBB;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+
+
+/* ------------------------- */
+/* ANIMACIONES */
+/* ------------------------- */
+.popup__update_orders.active {	transform: scale(1); opacity: 1; }
+
+
+
+
+ /*************************************************************
+                    Tabla de Entradas
+ **************************************************************/
+
+
+
+
+
+
 
 
 

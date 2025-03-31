@@ -33,28 +33,40 @@ const Tickets = () => {
     const [invoice, setInvoice] = useState<number>(0)
 
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
+    
+   
+
+
+
+    const setModalTickets = storeTickets(state => state.setModalTickets)
 
     const setDates = storeTickets(state => state.setDates)
 
-    const setModalTickets = storeTickets(state => state.setModalTickets)
-    const hoy = new Date();
-    const haceUnaSemana = new Date();
-    haceUnaSemana.setDate(hoy.getDate() - 30);
+
+
+
+
+    console.log('data', dates)
 
     const [series, setSeries] = useState<any>([]);
     const [page, setPage] = useState<number>(1);
 
 
+    const formatDate = (date: any) => date.toISOString().split("T")[0];
 
     const fecth = async () => {
-        setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]]);
+        setDates({
+            startDate:  formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+            endDate: formatDate(new Date())
+        })
+
 
         const data = {
             id_usuario: user_id,
             id_empresa: companies.id,
             id_sucursal: branchOffices.id,
-            desde: haceUnaSemana.toISOString().split('T')[0],
-            hasta: hoy.toISOString().split('T')[0],
+            desde: formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+            hasta: formatDate(new Date()),
             id_serie: selectedIds?.series?.id,
             status: 0,
             folio: invoice || 0,
@@ -79,19 +91,8 @@ const Tickets = () => {
         fecth()
         getCompaniesXUsers(user_id)
         getBranchOfficeXCompanies(0, user_id)
-
-
-
     }, [])
 
-
-    const handleDateChange = (fechasSeleccionadas: any) => {
-        if (fechasSeleccionadas.length === 2) {
-            setDates(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
-        } else {
-            setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
-        }
-    };
 
 
 
@@ -138,8 +139,8 @@ const Tickets = () => {
             id_usuario: user_id,
             id_empresa: companies.id,
             id_sucursal: branchOffices.id,
-            desde: dates[0],
-            hasta: dates[1],
+            desde: dates.startDate,
+            hasta: dates.endDate,
             id_serie: selectedIds?.series?.id,
             status: 0,
             folio: invoice || 0,
@@ -170,10 +171,28 @@ const Tickets = () => {
                     <div className="col-8 md-col-12">
                         <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} all={true} />
                     </div>
-                    <div className='col-4 md-col-12'>
-                        <label className='label__general'>Fechas</label>
-                        <div className='container_dates__requisition'>
-                            <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                    <div className="col-2 md-col-12">
+                        <label className="label__general">Desde</label>
+                        <div className="flex gap-4 container_dates__requisition">
+                            <Flatpickr
+                                className="date"
+                                options={{ locale: Spanish, dateFormat: "Y-m-d" }}
+                                value={dates?.startDate}
+                                onChange={(e) => setDates({ endDate: e[0]?.toISOString().split("T")[0] || "" })}
+                                placeholder="Fecha de inicio"
+                            />
+                        </div>
+                    </div>
+                    <div className="col-2 md-col-12">
+                        <label className="label__general">Hasta</label>
+                        <div className="flex gap-4 container_dates__requisition">
+                            <Flatpickr
+                                className="date"
+                                options={{ locale: Spanish, dateFormat: "Y-m-d" }}
+                                value={dates?.endDate}
+                                onChange={(e) => setDates({ endDate: e[0]?.toISOString().split("T")[0] || "" })}
+                                placeholder="Fecha de terminación"
+                            />
                         </div>
                     </div>
                     <div className="col-4 md-col-6 sm-col-12">
@@ -276,17 +295,17 @@ const Tickets = () => {
                             </div>
                         )}
                     </div>
-                </div>               
+                </div>
             </div>
             <div className='mt-4 d-flex justify-content-between'>
-                    <div>
-                        <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
-                            disabled={page == 1}>Anterior</button>
-                    </div>
-                    <div>
-                        <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
-                    </div>
+                <div>
+                    <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
+                        disabled={page == 1}>Anterior</button>
                 </div>
+                <div>
+                    <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
+                </div>
+            </div>
         </div>
     )
 }

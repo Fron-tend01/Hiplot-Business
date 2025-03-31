@@ -18,7 +18,7 @@ const ByOrder: React.FC = () => {
 
   const { concepts, setConcepts } = useStore(storeWarehouseExit);
 
-  
+
 
   const { getCompaniesXUsers }: any = companiesRequests()
 
@@ -31,7 +31,11 @@ const ByOrder: React.FC = () => {
   const [companies, setCompanies] = useState<any>()
   const [branchOffices, setBranchOffices] = useState<any>()
 
+  const formatDate = (date: any) => date.toISOString().split("T")[0];
+
   const fecht = async () => {
+    setDates([formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)), formatDate(new Date())])
+
     const companies = await getCompaniesXUsers(user_id)
     setCompanies(companies)
   }
@@ -65,7 +69,7 @@ const ByOrder: React.FC = () => {
       desde: dates[0],
       hasta: dates[1],
       status: [0],
-      for_salida:true
+      for_salida: true
     }
     const result = await getOrdedrs(data)
     setOrders(result)
@@ -92,7 +96,7 @@ const ByOrder: React.FC = () => {
 
     order.conceptos.forEach((element: any) => {
       element.unidad = element.id_unidad
-      element.ped = order.serie + '-'+order.folio + '-'+ order.anio
+      element.ped = order.serie + '-' + order.folio + '-' + order.anio
       element.pedido_almacen_concepto_id = element.id
     });
 

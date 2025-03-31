@@ -30,8 +30,15 @@ export const storeTickets = create<StoreState>((set) => ({
     modalTickets: [],
     setModalTickets: (modal) => set({ modalTickets: modal }),
 
-    dates: [],
-    setDates: (x) => set({ dates: x }),
+    
+    dates: { startDate: '', endDate: '', },
+    setDates: (prev) =>
+        set((state) => ({
+            dates: {
+                ...state.dates,
+                ...prev,
+            },
+        })),
 
     purchaseOrders: [],
     setPurchaseOrders: (x) => set({ purchaseOrders: x }),
@@ -95,10 +102,5 @@ export const storeTickets = create<StoreState>((set) => ({
     
         }
       },
-    
-
 
 }));
-
-
-

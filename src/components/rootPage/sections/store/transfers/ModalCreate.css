@@ -167,6 +167,7 @@
 .overlay__transfers .header__modal {
 	position: absolute;
 	width: 100%;
+    right: 15px;
 	top: 0;
 	display: flex;
 	justify-content: center;
