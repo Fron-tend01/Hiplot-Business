@@ -338,203 +338,206 @@ const ModalCreate: React.FC = () => {
   return (
     <div className={`overlay__transfers ${modalStateCreate == 'create' ? 'active' : ''}`}>
       <div className={`popup__transfers ${modalStateCreate == 'create' ? 'active' : ''}`}>
-        <a href="#" className="btn-cerrar-popup__transfers" onClick={modalClose}>
-          <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
-        </a>
-        <p className='title__modals'>Crear nuevo traspaso</p>
-        <div className='container__create_transfers'>
-          <div className='row card-body bg-standar'>
-            <div className='col-8'>
-              <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
-            </div>
-            <div className='col-4'>
-              <Select dataSelects={selectStore} instanceId='almacen_origin' nameSelect={'Almacen origin'} />
-            </div>
-          </div>
-          <div className='row my-4 card-body bg-standar'>
-            <div className='col-8'>
-              <Empresas_Sucursales empresaDyn={companiesTwo} sucursalDyn={branchOfficesTwo} setEmpresaDyn={setCompaniesTwo} setSucursalDyn={setBranchOfficesTwo} modeUpdate={false} />
-            </div>
-            <div className='col-4'>
-              <Select dataSelects={selectStoreTwo} instanceId='almacen_destino' nameSelect={'Almacen destino'} />
-            </div>
-          </div>
-          <div className='row__four card-body bg-standar'>
-            <div className='input__modal_store'>
-              <div className='inputs__company'>
-                <label className='label__general'>Comentarios</label>
-                <input className='inputs__general' value={comments} onChange={(e) => setComments(e.target.value)} type='text' placeholder='Comentarios' />
+        <div className='header__modal'>
+          <a href="#" className="btn-cerrar-popup__transfers" onClick={modalClose} >
+            <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+          </a>
+          <p className='title__modals'>Enviar a produccion</p>
+        </div>
+        <div className='modal__create_transfers'>
+          <div className='container__create_transfers'>
+            <div className='row card-body bg-standar'>
+              <div className='col-8'>
+                <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
+              </div>
+              <div className='col-4'>
+                <Select dataSelects={selectStore} instanceId='almacen_origin' nameSelect={'Almacen origin'} />
               </div>
             </div>
-          </div>
-          <div className='row__two card-body bg-standar'>
-            <div className='select__container'>
-              <label className='label__general'>Buscar por</label>
-              <div className='select-btn__general'>
-                <div className={`select-btn ${selectSearch ? 'active' : ''}`} onClick={openSelectSearch} >
-                  <p>{selectedSearch !== null ? searchX?.find((s: { id: number }) => s.id === selectedSearch)?.name : 'selecciona'}</p>
-                  <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                </div>
-                <div className={`content ${selectSearch ? 'active' : ''}`} >
-                  <ul className={`options ${selectSearch ? 'active' : ''}`} style={{ opacity: selectSearch ? '1' : '0' }}>
-                    {searchX?.map((search: any) => (
-                      <li key={search.id} onClick={() => handleSearchChange(search)}>
-                        {search.name}
-                      </li>
-                    ))}
-                  </ul>
+            <div className='my-4 row card-body bg-standar'>
+              <div className='col-8'>
+                <Empresas_Sucursales empresaDyn={companiesTwo} sucursalDyn={branchOfficesTwo} setEmpresaDyn={setCompaniesTwo} setSucursalDyn={setBranchOfficesTwo} modeUpdate={false} />
+              </div>
+              <div className='col-4'>
+                <Select dataSelects={selectStoreTwo} instanceId='almacen_destino' nameSelect={'Almacen destino'} />
+              </div>
+            </div>
+            <div className='row__four card-body bg-standar'>
+              <div className='input__modal_store'>
+                <div className='inputs__company'>
+                  <label className='label__general'>Comentarios</label>
+                  <input className='inputs__general' value={comments} onChange={(e) => setComments(e.target.value)} type='text' placeholder='Comentarios' />
                 </div>
               </div>
             </div>
-            <div>
-              <label className='label__general'>Buscador por nombre</label>
-              <input className='inputs__general' type='text' value={nameBy} onChange={(e) => setNameBy(e.target.value)} placeholder='Ingresa el nombre' onKeyUp={(e) => e.key === 'Enter' && searchFor()} />
-            </div>
-            <div>
-              <button className='btn__general-purple' type='button' onClick={searchFor}>Buscar</button>
-            </div>
-          </div>
-          <div className='row__three card-body bg-standar'>
-            <div className='select__container'>
-              <label className='label__general'>Resultado</label>
-              <div className='select-btn__general'>
-                <div className={`select-btn ${selectResults ? 'active' : ''}`} onClick={openSelectResults} >
-                  <p>{selectedResult ? articles.find((s: { id: number }) => s.id === selectedResult.id)?.descripcion : 'Selecciona'}</p>
-                  <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
-                </div>
-                <div className={`content ${selectResults ? 'active' : ''}`} >
-                  <ul className={`options ${selectResults ? 'active' : ''}`} style={{ opacity: selectResults ? '1' : '0' }}>
-                    {articles && articles.map((result: any) => (
-                      <li key={result.id} onClick={() => handleResultsChange(result)}>
-                        {result.descripcion}
-                      </li>
-                    ))}
-                  </ul>
+            <div className='row__two card-body bg-standar'>
+              <div className='select__container'>
+                <label className='label__general'>Buscar por</label>
+                <div className='select-btn__general'>
+                  <div className={`select-btn ${selectSearch ? 'active' : ''}`} onClick={openSelectSearch} >
+                    <p>{selectedSearch !== null ? searchX?.find((s: { id: number }) => s.id === selectedSearch)?.name : 'selecciona'}</p>
+                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                  </div>
+                  <div className={`content ${selectSearch ? 'active' : ''}`} >
+                    <ul className={`options ${selectSearch ? 'active' : ''}`} style={{ opacity: selectSearch ? '1' : '0' }}>
+                      {searchX?.map((search: any) => (
+                        <li key={search.id} onClick={() => handleSearchChange(search)}>
+                          {search.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
+              <div>
+                <label className='label__general'>Buscador por nombre</label>
+                <input className='inputs__general' type='text' value={nameBy} onChange={(e) => setNameBy(e.target.value)} placeholder='Ingresa el nombre' onKeyUp={(e) => e.key === 'Enter' && searchFor()} />
+              </div>
+              <div>
+                <button className='btn__general-purple' type='button' onClick={searchFor}>Buscar</button>
+              </div>
             </div>
-            <div className='container__btn_modal_create-requisition'>
-              <button className='btn__general-purple' type='button' onClick={addRequisition}>Agregar</button>
+            <div className='row__three card-body bg-standar'>
+              <div className='select__container'>
+                <label className='label__general'>Resultado</label>
+                <div className='select-btn__general'>
+                  <div className={`select-btn ${selectResults ? 'active' : ''}`} onClick={openSelectResults} >
+                    <p>{selectedResult ? articles.find((s: { id: number }) => s.id === selectedResult.id)?.descripcion : 'Selecciona'}</p>
+                    <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
+                  </div>
+                  <div className={`content ${selectResults ? 'active' : ''}`} >
+                    <ul className={`options ${selectResults ? 'active' : ''}`} style={{ opacity: selectResults ? '1' : '0' }}>
+                      {articles && articles.map((result: any) => (
+                        <li key={result.id} onClick={() => handleResultsChange(result)}>
+                          {result.descripcion}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className='container__btn_modal_create-requisition'>
+                <button className='btn__general-purple' type='button' onClick={addRequisition}>Agregar</button>
+              </div>
             </div>
-          </div>
+            <div className='conatiner__table_transers'>
+              <div className='table__modal_transfers'>
+                <div className='table__numbers'>
+                  <p className='text'>Total de sucursales</p>
+                  <div className='quantities_tables'>{concepts && concepts.length}</div>
+                </div>
+                <div className='table__head'>
+                  <div className='thead'>
+                    <div className='th'>
+                      <p className='table__store_title'>Articulo</p>
+                    </div>
+                    <div className='th'>
+                      <p className='table__store_title'>Cantidad</p>
+                    </div>
+                    <div className='th'>
+                      <p className='table__store_title'>Unidad</p>
+                    </div>
+                    <div className='th'>
+                      <p className='table__store_title'>Comentarios</p>
+                    </div>
+                  </div>
+                </div>
+                {concepts && concepts.length > 0 ? (
+                  <div className='container__branchOffice_table-modal'>
+                    {concepts.map((concept: any, index: any) => (
+                      <div className='tbody' key={index}>
+                        <p>{concept.codigo}-{concept.descripcion}</p>
+                        <div>
+                          <input className='inputs__general' value={concept.cantidad} onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()} />
+                        </div>
+                        <div>
+                          <select className='traditional__selector' onChange={(event) => handleUnits(event, index)} value={selectedUnit[index] || ''}>
+                            {concept.unidades && concept.unidades.map((item: any) => (
+                              <option key={item.id} value={item.id_unidad}>
+                                {item.nombre}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <input className='inputs__general' value={concept.comentarios == '' ? '' : concept.comentarios} onChange={(e) => handleComentariosChange(e, index)} type="text" placeholder='Comentarios' />
+                        </div>
+                        <button className='btn__general-purple' type='button' onClick={() => seeStock(concept, index)}>Stocks</button>
+                        <button className='btn__general-danger' type='button' onClick={() => deleteConcepts(index)}>Eliminar</button>
+                        <div className={`overlay__modal_transfers-concepts_see-stock ${modalSeeStocks[index] ? 'active' : ''}`}>
+                          <div className={`popup__modal_transfers-concepts_see-stock ${modalSeeStocks[index] ? 'active' : ''}`}>
+                            <a href="#" className="btn-cerrar-popup__modal_transfers-concepts_see-stock" onClick={() => closeModalSeeStocks(index)}>
+                              <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+                            </a>
+                            <div className='container__modal_transfers-concepts_see-stock'>
 
-          <div className='conatiner__table_transers'>
-            <div className='table__modal_transfers'>
-              <div className='table__numbers'>
-                <p className='text'>Total de sucursales</p>
-                <div className='quantities_tables'>{concepts && concepts.length}</div>
-              </div>
-              <div className='table__head'>
-                <div className='thead'>
-                  <div className='th'>
-                    <p className='table__store_title'>Articulo</p>
-                  </div>
-                  <div className='th'>
-                    <p className='table__store_title'>Cantidad</p>
-                  </div>
-                  <div className='th'>
-                    <p className='table__store_title'>Unidad</p>
-                  </div>
-                  <div className='th'>
-                    <p className='table__store_title'>Comentarios</p>
-                  </div>
-                </div>
-              </div>
-              {concepts && concepts.length > 0 ? (
-                <div className='container__branchOffice_table-modal'>
-                  {concepts.map((concept: any, index: any) => (
-                    <div className='tbody' key={index}>
-                      <p>{concept.codigo}-{concept.descripcion}</p>
-                      <div>
-                        <input className='inputs__general' value={concept.cantidad} onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()}/>
-                      </div>
-                      <div>
-                        <select className='traditional__selector' onChange={(event) => handleUnits(event, index)} value={selectedUnit[index] || ''}>
-                          {concept.unidades && concept.unidades.map((item: any) => (
-                            <option key={item.id} value={item.id_unidad}>
-                              {item.nombre}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <input className='inputs__general' value={concept.comentarios == '' ? '' : concept.comentarios} onChange={(e) => handleComentariosChange(e, index)} type="text" placeholder='Comentarios' />
-                      </div>
-                      <button className='btn__general-purple' type='button' onClick={() => seeStock(concept, index)}>Stocks</button>
-                      <button className='btn__general-danger' type='button' onClick={() => deleteConcepts(index)}>Eliminar</button>
-                      <div className={`overlay__modal_transfers-concepts_see-stock ${modalSeeStocks[index] ? 'active' : ''}`}>
-                        <div className={`popup__modal_transfers-concepts_see-stock ${modalSeeStocks[index] ? 'active' : ''}`}>
-                          <a href="#" className="btn-cerrar-popup__modal_transfers-concepts_see-stock" onClick={() => closeModalSeeStocks(index)}>
-                            <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
-                          </a>
-                          <div className='container__modal_transfers-concepts_see-stock'>
-
-                            <div className='table__modal_transfers-concepts_see-stock'>
-                              <div>
-                                {concept.stocks ? (
-                                  <div className='table__numbers'>
-                                    <p className='text'>Total de stocks</p>
-                                    <div className='quantities_tables'>{concept.stocks && concept.stocks.length}</div>
-                                  </div>
-                                ) : (
-                                  <p className='text'>No hay stock</p>
-                                )}
-                              </div>
-                              {concept.storeWarning ?
-                                <div className='store-warning'>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width='20' fill='#D9D9D9' viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24V264c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z" /></svg>
-                                  <p>Este articulo no sele asingno almacen</p>
-                                </div>
-                                :
-                                ''}
-                              <table className='table '>
-                                <thead className='thead'>
-                                  <tr>
-                                    <th>Nombre </th>
-                                    {/* Agrega una columna para cada equivalencia, si existe */}
-                                    {console.log(concept)}
-                                    {concept.stocks?.[0]?.equivalencias?.map((equivalencia: any, eqIndex: number) => (
-                                      <th key={eqIndex}>{equivalencia.nombre_unidad}</th>
-                                    ))}
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {concept.stocks?.length > 0 ? (
-                                    concept.stocks.map((x: any, index: number) => (
-                                      <tr key={index} className='table__body'>
-                                        <td>{x.nombre}</td>
-                                        {/* Mostrar valores de equivalencias en columnas adicionales */}
-                                        {x.equivalencias && x.equivalencias.length > 0 ? (
-                                          x.equivalencias.map((equivalencia: any, eqIndex: number) => (
-                                            <td key={eqIndex}>{equivalencia.cantidad}</td>
-                                          ))
-                                        ) : (
-                                          <td colSpan={x.equivalencias?.length || 1}>No hay equivalencias</td>
-                                        )}
-                                      </tr>
-                                    ))
+                              <div className='table__modal_transfers-concepts_see-stock'>
+                                <div>
+                                  {concept.stocks ? (
+                                    <div className='table__numbers'>
+                                      <p className='text'>Total de stocks</p>
+                                      <div className='quantities_tables'>{concept.stocks && concept.stocks.length}</div>
+                                    </div>
                                   ) : (
-                                    <tr>
-                                      <td >No hay conceptos</td>
-                                    </tr>
+                                    <p className='text'>No hay stock</p>
                                   )}
-                                </tbody>
-                              </table>
+                                </div>
+                                {concept.storeWarning ?
+                                  <div className='store-warning'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width='20' fill='#D9D9D9' viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24V264c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z" /></svg>
+                                    <p>Este articulo no sele asingno almacen</p>
+                                  </div>
+                                  :
+                                  ''}
+                                <table className='table '>
+                                  <thead className='thead'>
+                                    <tr>
+                                      <th>Nombre </th>
+                                      {/* Agrega una columna para cada equivalencia, si existe */}
+                                      {console.log(concept)}
+                                      {concept.stocks?.[0]?.equivalencias?.map((equivalencia: any, eqIndex: number) => (
+                                        <th key={eqIndex}>{equivalencia.nombre_unidad}</th>
+                                      ))}
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {concept.stocks?.length > 0 ? (
+                                      concept.stocks.map((x: any, index: number) => (
+                                        <tr key={index} className='table__body'>
+                                          <td>{x.nombre}</td>
+                                          {/* Mostrar valores de equivalencias en columnas adicionales */}
+                                          {x.equivalencias && x.equivalencias.length > 0 ? (
+                                            x.equivalencias.map((equivalencia: any, eqIndex: number) => (
+                                              <td key={eqIndex}>{equivalencia.cantidad}</td>
+                                            ))
+                                          ) : (
+                                            <td colSpan={x.equivalencias?.length || 1}>No hay equivalencias</td>
+                                          )}
+                                        </tr>
+                                      ))
+                                    ) : (
+                                      <tr>
+                                        <td >No hay conceptos</td>
+                                      </tr>
+                                    )}
+                                  </tbody>
+                                </table>
+                              </div>
                             </div>
-                          </div>
 
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className='text'>Sin sucursales agregadas</p>
-              )}
+                    ))}
+                  </div>
+                ) : (
+                  <p className='text'>Sin sucursales agregadas</p>
+                )}
+              </div>
             </div>
-            <div className='container__btn_create-store'>
-              <button className='btn__general-purple' onClick={(e)=>modalCreateTrnasfers(e)}>Realizar traspaso</button>
-            </div>
+          </div>
+          <div className='container__btn_create-store'>
+            <button className='btn__general-purple' onClick={(e) => modalCreateTrnasfers(e)}>Realizar traspaso</button>
           </div>
         </div>
       </div>
