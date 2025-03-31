@@ -99,9 +99,9 @@ const ModalCreate = () => {
             setConcepts(newArticleStates);
             return
         }
-        // const newArticleStates = [...concepts];
-        // newArticleStates[index].cantidad = value;
-        // setConcepts(newArticleStates);
+        const newArticleStates = [...concepts];
+        newArticleStates[index].cantidad = value;
+        setConcepts(newArticleStates);
         // Obtener los valores relevantes de `concepts`
         // const stocks = concepts[index].stock;
         // let almacenPredeterminado = concepts[index].almacenes_predeterminados.filter((x: any) => x.id_sucursal == branchOffices?.id)[0];
