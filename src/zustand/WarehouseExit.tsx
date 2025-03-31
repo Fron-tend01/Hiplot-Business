@@ -28,7 +28,7 @@ interface StoreState {
 
 const hoy = new Date();
 const haceUnaSemana = new Date();
-haceUnaSemana.setDate(hoy.getDate() - 7);
+haceUnaSemana.setDate(hoy.getDate() - 30);
 export const storeWarehouseExit = create<StoreState>((set) => ({
 
   

@@ -399,6 +399,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       } else {
         setOutOfRange(false)
         if (result.error == true) {
+          setPrices(0)
+
           toast.warning(result.mensaje)
           setData({
             id_pers: 0,
@@ -416,13 +418,14 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
             unidad: selectedUnit.id_unidad,
             name_unidad: selectedUnit.nombre,
             cantidad: amount,
-            precio_total: prices,
+            precio_total: result.mensaje,
+            total: result.mensaje,
             obs_produccion: data.obs_produccion,
             obs_factura: data.obs_factura,
             monto_urgencia: 0,
             urgencia_monto: 0,
             descuento: result.descuento_aplicado,
-            precio_unitario: prices / amount,
+            precio_unitario: result.mensaje / amount,
             total_franquicia: 0,
             clave_sat: article.clave_sat,
             check_recibido_sucursal: false,
@@ -521,6 +524,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
             name_unidad: selectedUnit.nombre,
             cantidad: amount,
             precio_total: result.mensaje,
+            total: result.mensaje,
             obs_produccion: data.obs_produccion,
             obs_factura: data.obs_factura,
             monto_urgencia: 0,
@@ -750,11 +754,35 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       });
 
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
-      setSaleOrdersConcepts({ normal_concepts: [...saleOrdersConcepts.normal_concepts, data], personalized_concepts: saleOrdersConcepts.personalized_concepts })
-      localStorage.setItem('sale-order', JSON.stringify([...saleOrdersConcepts.normal_concepts, data]));
+      // setSaleOrdersConcepts({ normal_concepts: [...saleOrdersConcepts.normal_concepts, data], personalized_concepts: saleOrdersConcepts.personalized_concepts })
+      // localStorage.setItem('sale-order', JSON.stringify([...saleOrdersConcepts.normal_concepts, data]));// EN VEZ DE METERLO A LOCAL STORAGE, METE A BASE DE DATOS
+      let data_enviar = {
+        concepto: data,
+        id_usuario: user_id
+      }
+      setModalLoading(true)
+      APIs.CreateAny(data_enviar, 'agregar_concepto_preov').then(async (resp: any) => {
+        if (!resp.error) {
+          setModalLoading(false)
+          Swal.fire('Notificación', resp.mensaje, 'success')
+          
+          setChangeLength(!changeLength)
+          await APIs.GetAny('get_carrito/'+user_id).then((r:any)=>{
+            let orden = r[0]
+            setSaleOrdersConcepts({sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts:orden.conceptos_pers});
+          })
+        } else {
+          setModalLoading(false)
+          Swal.fire('Notificación', resp.mensaje, 'warning')
+        }
+      }).catch(e => {
+        setModalLoading(false)
+        Swal.fire('Notificación', 'ERROR: ' + e, 'warning')
+
+      })
     }
     toast.success('Artículo agregado')
-    setChangeLength(!changeLength)
+
 
   }
 

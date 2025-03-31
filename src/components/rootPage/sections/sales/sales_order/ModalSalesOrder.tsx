@@ -149,6 +149,7 @@ const ModalSalesOrder: React.FC = () => {
     useEffect(() => {
         if (modalSalesOrder == 'sale-order__modal') {
             setModeUpdate(false)
+           
 
         } else {
             setModeUpdate(true)
@@ -224,7 +225,7 @@ const ModalSalesOrder: React.FC = () => {
             conceptos_elim: []
         }
         try {
-            const result: any = await APIs.createSaleOrder(data);
+            const result: any = await APIs.createSaleOrderRemastered(data);
             if (result.error == true) {
                 return Swal.fire('Advertencia', result.mensaje, 'warning');
             } else {
@@ -558,12 +559,17 @@ const ModalSalesOrder: React.FC = () => {
     useEffect(() => {
 
         if (modalSalesOrder === 'sale-order__modal_bycot' || modalSalesOrder == 'sale-order__modal') {
-            setIdCotizacion(saleOrdersToUpdate.id)
-            setDataSaleOrder(saleOrdersToUpdate?.conceptos)
-            setCompanies({ id: saleOrdersToUpdate.id_empresa })
-            setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
             if (modalSalesOrder == 'sale-order__modal_bycot') {
+                setIdCotizacion(saleOrdersToUpdate.id)
+                setDataSaleOrder(saleOrdersToUpdate?.conceptos)
+                setCompanies({ id: saleOrdersToUpdate.id_empresa })
+                setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
                 setSaleOrdersConcepts({ normal_concepts: saleOrdersToUpdate.conceptos, personalized_concepts: saleOrdersToUpdate.conceptos_pers });
+            }else {
+                APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+                    let orden = r[0]
+                    setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+                })
             }
             setTitle(saleOrdersToUpdate.titulo)
             console.log('saleOrdersToUpdate', saleOrdersToUpdate)
@@ -677,6 +683,8 @@ const ModalSalesOrder: React.FC = () => {
             newConcept[index].precio_total = parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia);
             newConcept[index].monto_urgencia = 0;
         }
+        update_carrito_concepto(newConcept[index])
+
         setSaleOrdersConcepts({ normal_concepts: newConcept, personalized_concepts: saleOrdersConcepts.personalized_concepts });
 
     };
@@ -801,15 +809,44 @@ const ModalSalesOrder: React.FC = () => {
     }
 
     const undoConcepts = (concept: any, i: number) => {
-        const deleteItemCustomC = saleOrdersConcepts?.personalized_concepts?.filter((_: any, index: number) => index !== i);
-        const updatedConcepts = concept.conceptos.map((element: any) => ({
-            ...element,
-            id_pers: 0,
-            check: false,
-        }));
-        setSaleOrdersConcepts({ normal_concepts: [...(saleOrdersConcepts?.normal_concepts ?? []), ...updatedConcepts], personalized_concepts: deleteItemCustomC, ...(concept.id && { normal_concepts_eliminate: [...(saleOrdersConcepts?.normal_concepts_eliminate ?? []), concept.id] }) });
-        localStorage.setItem('sale-order', JSON.stringify([...(saleOrdersConcepts?.normal_concepts ?? []), ...updatedConcepts]));
-        localStorage.setItem('sale-order-pers', JSON.stringify(deleteItemCustomC));
+        Swal.fire({
+            title: "Deseas eliminar el concepto personalizado " + concept.descripcion,
+            text: "Los conceptos que se encuentran adentro, saldrán del personalizado",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`,
+            icon: 'question'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setModalLoading(true)
+                APIs.deleteAny('eliminar_conceptos_pers_carrito/' + concept.id).then(async (resp: any) => {
+                    if (resp.error) {
+                        setModalLoading(false)
+
+                        Swal.fire('Notificacion', resp.mensaje, 'warning')
+                    } else {
+                        setModalLoading(false)
+                        Swal.fire('Notificacion', resp.mensaje, 'success')
+                        await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+                            let orden = r[0]
+                            setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+                        })
+                    }
+                }).finally(() => {
+                    setModalLoading(false)
+                })
+
+            }
+        });
+        // const deleteItemCustomC = saleOrdersConcepts?.personalized_concepts?.filter((_: any, index: number) => index !== i);
+        // const updatedConcepts = concept.conceptos.map((element: any) => ({
+        //     ...element,
+        //     id_pers: 0,
+        //     check: false,
+        // }));
+        // setSaleOrdersConcepts({ normal_concepts: [...(saleOrdersConcepts?.normal_concepts ?? []), ...updatedConcepts], personalized_concepts: deleteItemCustomC, ...(concept.id && { normal_concepts_eliminate: [...(saleOrdersConcepts?.normal_concepts_eliminate ?? []), concept.id] }) });
+        // localStorage.setItem('sale-order', JSON.stringify([...(saleOrdersConcepts?.normal_concepts ?? []), ...updatedConcepts]));
+        // localStorage.setItem('sale-order-pers', JSON.stringify(deleteItemCustomC));
     };
 
 
@@ -859,11 +896,11 @@ const ModalSalesOrder: React.FC = () => {
 
     const closeModal = () => {
         setModalSalesOrder('')
-        const sale_order = JSON.parse(localStorage.getItem("sale-order") || "[]");
-        const sale_order_pers = JSON.parse(localStorage.getItem("sale-order-pers") || "[]");
-        if (sale_order.length > 0 || sale_order_pers.length > 0) {
-            setSaleOrdersConcepts({ normal_concepts: sale_order, personalized_concepts: sale_order_pers });
-        }
+        // const sale_order = JSON.parse(localStorage.getItem("sale-order") || "[]");
+        // const sale_order_pers = JSON.parse(localStorage.getItem("sale-order-pers") || "[]");
+        // if (sale_order.length > 0 || sale_order_pers.length > 0) {
+        //     setSaleOrdersConcepts({ normal_concepts: sale_order, personalized_concepts: sale_order_pers });
+        // }
         // setSaleOrdersConcepts({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], concepto: {}, indexConcepto: 0 })
         // setCustomConceptView([])
     }
@@ -906,6 +943,7 @@ const ModalSalesOrder: React.FC = () => {
         let data = saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
             i === index ? { ...item, precio_unitario: value / item.cantidad, precio_total: value } : item
         )
+        update_carrito_concepto(data[index])
         setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
     };
     const setProductionToUpdate = storeProduction(state => state.setProductionToUpdate)
@@ -947,6 +985,7 @@ const ModalSalesOrder: React.FC = () => {
         let data = saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
             i === index ? { ...item, check_recibido_sucursal: !status } : item
         )
+
         setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
     }
 
@@ -954,7 +993,92 @@ const ModalSalesOrder: React.FC = () => {
         let data = saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
             i === index ? { ...item, check_entregado_cliente: !status } : item
         )
+
         setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
+    }
+    const eliminarConceptoCarrito = (concept: any) => {
+        Swal.fire({
+            title: "Deseas eliminar el concepto " + concept.descripcion,
+            text: "Si se encuentra apartado tu material, esta acción lo desapartará",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`,
+            icon: 'question'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setModalLoading(true)
+                APIs.deleteAny('eliminar_conceptos_carrito/' + concept.id).then(async (resp: any) => {
+                    if (resp.error) {
+                        setModalLoading(false)
+
+                        Swal.fire('Notificacion', resp.mensaje, 'warning')
+                    } else {
+                        setModalLoading(false)
+                        Swal.fire('Notificacion', resp.mensaje, 'success')
+                        await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+                            let orden = r[0]
+                            setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+                        })
+                    }
+                }).finally(() => {
+                    setModalLoading(false)
+                })
+
+            }
+        });
+    }
+    const update_carrito_gral = async () => {
+
+        const [datePartOne, timePartOne] = dates[0] ? dates[0].split("T") : ["", ""];
+        const [datePartTwo, timePartTwo] = dates[1] ? dates[1].split("T") : ["", ""];
+
+        let data = {
+            id: saleOrdersToUpdate.id,
+            id_usuario_actualiza: user_id,
+            id_sucursal: branchOffices.id,
+            id_usuario_crea: saleOrdersToUpdate.id_usuario_crea || 0,
+            id_cliente: selectedIds.clients == undefined ? 0 : selectedIds.clients.id,
+            titulo: title,
+            hora_entrega_produccion: timePartOne,
+            fecha_entrega_produccion: datePartOne,
+            hora_entrega_cliente: timePartTwo,
+            fecha_entrega_cliente: datePartTwo,
+            // conceptos: normalConcepts
+
+        }
+        await APIs.CreateAny(data, "update_carrito_gral")
+            .then(async (response: any) => {
+
+            })
+    }
+
+    const update_carrito_concepto = async (article: any) => {
+        let data = {
+            id: article.id,
+            id_articulo: article.id_articulo,
+            produccion_interna: article.produccion_interna,
+            id_area_produccion: article.id_area_produccion,
+            enviar_a_produccion: article.enviar_a_produccion,
+            cantidad: article.cantidad,
+            monto_urgencia: article.monto_urgencia,
+            monto_descuento: article.monto_descuento,
+            precio_unitario: article.precio_unitario,
+            check_recibido_sucursal: article.check_recibido_sucursal,
+            check_entregado_cliente: article.check_entregado_cliente,
+            total: article.precio_total,
+            id_unidad: article.id_unidad,
+            obs_produccion: article.obs_produccion,
+            obs_factura: article.obs_factura,
+            id_pers: article.id_pers,
+            id_usuario_actualiza: user_id
+        }
+
+        try {
+            let response: any = await APIs.updateOvConcepto(data).finally(() => { setModalLoading(false) })
+
+
+        } catch (error: any) {
+        }
     }
 
     return (
@@ -1400,7 +1524,7 @@ const ModalSalesOrder: React.FC = () => {
                                                     </div>
                                                     {modalSalesOrder == 'sale-order__modal' ?
                                                         <div className='td'>
-                                                            <div className='delete-icon' onClick={() => deleteArticle(article, index, 'modal-sale')} title='Eliminar concepto'>
+                                                            <div className='delete-icon' onClick={() => eliminarConceptoCarrito(article)} title='Eliminar concepto'>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                                             </div>
                                                         </div>
@@ -1459,25 +1583,25 @@ const ModalSalesOrder: React.FC = () => {
                                                         ''
                                                     }
                                                     {modalSalesOrder == 'sale-order__modal-update' ?
-                                                          <div className='td customer'>
-                                                          <div>
-                                                              <div className=''>
-                                                                  <label>Recibido Cliente</label>
-                                                              </div>
-                                                              <label className="switch">
-                                                                  <input
-                                                                      type="checkbox"
-  
-                                                                      checked={article.check_entregado_cliente}
-                                                                      onChange={() => handleCustomerChange(article.check_entregado_cliente, index)} disabled={article.status == !0} />
-                                                                  <span className="slider"></span>
-                                                              </label>
-                                                          </div>
-                                                      </div>
+                                                        <div className='td customer'>
+                                                            <div>
+                                                                <div className=''>
+                                                                    <label>Recibido Cliente</label>
+                                                                </div>
+                                                                <label className="switch">
+                                                                    <input
+                                                                        type="checkbox"
+
+                                                                        checked={article.check_entregado_cliente}
+                                                                        onChange={() => handleCustomerChange(article.check_entregado_cliente, index)} disabled={article.status == !0} />
+                                                                    <span className="slider"></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
                                                         :
                                                         ''
                                                     }
-                                                  
+
                                                     {article.status == 0 ?
                                                         <div>
                                                             {modalSalesOrder == 'sale-order__modal-update' && saleOrdersToUpdate.status != 1 ?
@@ -1582,7 +1706,7 @@ const ModalSalesOrder: React.FC = () => {
                                                         </div>
                                                     </div>
 
-                                                    {article.id ?
+                                                    {article.id && !article?.personalized ?
                                                         ""
                                                         :
                                                         <div className='td'>

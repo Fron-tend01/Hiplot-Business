@@ -363,6 +363,31 @@ const Vales: React.FC = () => {
       }
     });
   }
+  const descargarCSV = (dataVales: any[]) => {
+    const encabezados = ["Status", "Folio", "Total", "Sucursal", "Para", "Creado por", "Creación"];
+    
+    const filas = dataVales.map(dat => [
+        dat.status === 0 ? "ACTIVO" : dat.status === 1 ? "CANCELADO" : "TERMINADO",
+        `${dat.serie}-${dat.folio}-${dat.anio}`,
+        dat.total,
+        dat.sucursal,
+        dat.usuario,
+        dat.usuario_crea,
+        dat.fecha_creacion
+    ].join(","));
+
+    const csvContenido = [encabezados.join(","), ...filas].join("\n");
+    const blob = new Blob([csvContenido], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "vales.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
   return (
     <div className='vales'>
       <div className='breadcrumbs'>
@@ -406,6 +431,9 @@ const Vales: React.FC = () => {
 
               <div className=''>
                 <button type='button' className='btn__general-purple' onClick={searchVale}>Buscar</button>
+              </div>
+              <div className=''>
+                <button type='button' className='btn__general-orange' onClick={()=>descargarCSV(dataVales)}>Excel</button>
               </div>
               <div>
                 <button className='btn__general-purple' onClick={() => modalCreate(false, null)}>Crear Vale</button>

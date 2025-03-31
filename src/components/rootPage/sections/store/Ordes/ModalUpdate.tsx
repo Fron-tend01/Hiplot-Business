@@ -165,9 +165,62 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
     const permisosxVista = storeDv.getState().permisosxvista; // Obtiene el estado actual
     console.log(permisosxVista);
     console.log(elemento);
-    
+
     return permisosxVista.some((x: any) => x.titulo === elemento);
-};
+  };
+
+  const descargarCSV = () => {
+    let data = oderUpdate
+    if (!data) return;
+  
+    // Encabezado principal
+    const encabezadoPrincipal = ["SERIE", "FOLIO", "AÑO", "FECHA CREACIÓN", "USUARIO CREA", "SUCURSAL", "EMPRESA"];
+    const valoresPrincipales = [
+      data.serie,
+      data.folio,
+      data.anio,
+      data.fecha_creacion,
+      data.usuario_crea,
+      data.sucursal,
+      data.empresa
+    ].join(",");
+  
+    // Encabezado para los conceptos
+    const encabezadoConceptos = ["CODIGO", "DESCRIPCION", "CANTIDAD", "UNIDAD", "ORDEN PRODUCCIÓN", "COMENTARIOS"];
+    
+    // Filas de conceptos
+    const filasConceptos = data.conceptos.map((concepto: any) =>
+      [
+        concepto.codigo,
+        concepto.descripcion,
+        concepto.cantidad,
+        concepto.unidad,
+        concepto.orden_produccion.folio,
+        concepto.comentarios
+      ].join(",")
+    );
+  
+    // Unir todo en un solo CSV
+    const csvContenido = [
+      encabezadoPrincipal.join(","),
+      valoresPrincipales,
+      "",
+      encabezadoConceptos.join(","),
+      ...filasConceptos
+    ].join("\n");
+  
+    // Crear y descargar el archivo
+    const blob = new Blob([csvContenido], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+  
+    link.href = url;
+    link.download = `pedido_${data.id}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  
   return (
     <div className={`overlay__orders ${modal == 'modal-orders-update' ? 'active' : ''}`}>
       <div className={`popup__orders ${modal == 'modal-orders-update' ? 'active' : ''}`}>
@@ -185,15 +238,15 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                 </label>
                 <p className='text'>Directa</p>
               </div>
-              { checkPermission('OPCION-POR-OP') && (
-              <div className='checkbox__tickets'>
-                <label className="checkbox__container_general">
-                  <input className='checkbox' type="radio" value="PorOC" checked={oderUpdate.status === 1} />
-                  <span className="checkmark__general"></span>
-                </label>
-                <p className='text'>Por OP</p>
-              </div>
-            )}
+              {checkPermission('OPCION-POR-OP') && (
+                <div className='checkbox__tickets'>
+                  <label className="checkbox__container_general">
+                    <input className='checkbox' type="radio" value="PorOC" checked={oderUpdate.status === 1} />
+                    <span className="checkmark__general"></span>
+                  </label>
+                  <p className='text'>Por OP</p>
+                </div>
+              )}
             </div>
           </div>
           <div className="card ">
@@ -205,11 +258,11 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                   <span className='text'>Creado por: <b>{oderUpdate.usuario_crea}</b></span><br />
                   <span className='text'>Fecha de Creación: <b>{oderUpdate.fecha_creacion}</b></span><br />
                   {oderUpdate.status == 0 ?
-                              <b style={{ color: 'green' }}>ACTIVO</b>
-                              : oderUpdate.status == 1 ?
-                                <b style={{ color: 'red' }}>CANCELADO</b> :
-                                <b style={{ color: 'blue' }}>TERMINADO</b>}
-                 
+                    <b style={{ color: 'green' }}>ACTIVO</b>
+                    : oderUpdate.status == 1 ?
+                      <b style={{ color: 'red' }}>CANCELADO</b> :
+                      <b style={{ color: 'blue' }}>TERMINADO</b>}
+
 
                 </div>
                 <div className='col-6 md-col-12'>
@@ -313,18 +366,18 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                         </div>
                         <div className='td'>
                           <div className="d-flex">
-                          { checkPermission('cancelar') && (
+                            {checkPermission('cancelar') && (
 
-                            order.status === 0 ?
-                              <div className='cancel-icon' onClick={() => changeConceptsOrderMode(order)} title='Cancelar concepto'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
-                              </div>
-                              :
-                              <div className='active-icon' onClick={changeOrderMode} title='Activar concepto'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-power"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 6a7.75 7.75 0 1 0 10 0" /><path d="M12 4l0 8" /></svg>
-                              </div>
-                            
-                          )}
+                              order.status === 0 ?
+                                <div className='cancel-icon' onClick={() => changeConceptsOrderMode(order)} title='Cancelar concepto'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
+                                </div>
+                                :
+                                <div className='active-icon' onClick={changeOrderMode} title='Activar concepto'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-power"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 6a7.75 7.75 0 1 0 10 0" /><path d="M12 4l0 8" /></svg>
+                                </div>
+
+                            )}
 
                           </div>
                         </div>
@@ -338,25 +391,29 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
             </div>
           </div>
           <div className="row__six">
+            {checkPermission('update_btn_excel') && (
+
+              <button type="button" className='btn__general-orange' onClick={()=>descargarCSV()}>Excel</button>
+            )}
             <div>
               <button className="btn__general-purple" type="button" onClick={getPdf}>PDF</button>
             </div>
             <div>
-            { checkPermission('modificar') && (
+              {checkPermission('modificar') && (
 
-              <button type="button" className='btn__general-purple' onClick={update}>Actualizar orden</button>
-            )}
+                <button type="button" className='btn__general-purple' onClick={update}>Actualizar orden</button>
+              )}
 
             </div>
             <div>
-            { checkPermission('cancelar') && (
+              {checkPermission('cancelar') && (
 
-              modeOrder === 0 ?
-                <button className="btn__general-danger" type="button" onClick={changeOrderMode}>Cancelar</button>
-                :
-                <button className="btn__general-success" type="button" onClick={changeOrderMode}>Activar</button>
-              
-            )}
+                modeOrder === 0 ?
+                  <button className="btn__general-danger" type="button" onClick={changeOrderMode}>Cancelar</button>
+                  :
+                  <button className="btn__general-success" type="button" onClick={changeOrderMode}>Activar</button>
+
+              )}
 
             </div>
           </div>

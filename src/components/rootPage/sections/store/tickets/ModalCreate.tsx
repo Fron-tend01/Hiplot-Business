@@ -31,13 +31,15 @@ const ModalCreate = () => {
     const [store, setStore] = useState<any>()
 
     const fecth = async () => {
-        const result = await APIs.getStore(user_id)
-        setStore(result)
+        APIs.GetAny('almacen_getxsuc/'+branchOffices.id).then((resp:any) => {
+            
+            setStore(resp)
+        })
     }
 
     useEffect(() => {
         fecth()
-    }, [modalTickets])
+    }, [branchOffices])
 
     const [selectedOption, setSelectedOption] = useState<number | null>(0);
 

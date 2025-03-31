@@ -93,7 +93,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
   const [modalStatus, setModalStatus] = useState<boolean>(false)
 
   const addPersonalized = (_: any, i: number) => {
-    setSelectedIds('units', { id: customConceptView[0].unidad })
+    setSelectedIds('units', { id: customConceptView[0].id_unidad })
     setselectedKey(customConceptView[0].clave_sat)
 
     setCustomConceptView(
@@ -101,8 +101,9 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
         index === i ? { ...item, check: !item.check } : item
       )
     );
-
+    // debugger
   };
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
   const createPersonalized = async () => {
     if (personalizedModal == 'personalized_modal-quotation' || personalizedModal == 'personalized_modal-sale' || personalizedModal == 'personalized_modal-billing') {
@@ -137,9 +138,32 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
           localStorage.setItem('cotizacion', JSON.stringify(filterDelete))
         }
         if (personalizedModal == 'personalized_modal-sale') {
-          setSaleOrdersConcepts({ normal_concepts: filterDelete, personalized_concepts: [...saleOrdersConcepts?.personalized_concepts ?? [], data] });
-          localStorage.setItem('sale-order-pers', JSON.stringify([...(saleOrdersConcepts?.personalized_concepts ?? []), data]));
-          localStorage.setItem('sale-order', JSON.stringify(filterDelete));
+          let data_enviar = {
+            concepto: data,
+            id_usuario: user_id
+          }
+          setModalLoading(true)
+          APIs.CreateAny(data_enviar, 'agregar_concepto_pers_preov').then(async (resp: any) => {
+            if (!resp.error) {
+              setModalLoading(false)
+              Swal.fire('Notificación', resp.mensaje, 'success')
+
+              await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+                let orden = r[0]
+                setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+              })
+            } else {
+              setModalLoading(false)
+              Swal.fire('Notificación', resp.mensaje, 'warning')
+            }
+          }).catch(e => {
+            setModalLoading(false)
+            Swal.fire('Notificación', 'ERROR: ' + e, 'warning')
+
+          })
+          // setSaleOrdersConcepts({ normal_concepts: filterDelete, personalized_concepts: [...saleOrdersConcepts?.personalized_concepts ?? [], data] });
+          // localStorage.setItem('sale-order-pers', JSON.stringify([...(saleOrdersConcepts?.personalized_concepts ?? []), data]));
+          // localStorage.setItem('sale-order', JSON.stringify(filterDelete));
         }
         if (personalizedModal == 'personalized_modal-billing') {
           setBilling({ normal_concepts: filterDelete, personalized_concepts: [...billing?.personalized_concepts ?? [], data] });
@@ -226,7 +250,27 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
           }
           return x;
         });
+        setModalLoading(true)
+        let d = {...updatedConceptView[indexItem]}
+        d.unidad = selectedIds?.units?.id
+        APIs.CreateAny( d, 'update_carrito_concepto_pers').then(async (resp: any) => {
+          if (!resp.error) {
+            setModalLoading(false)
+            Swal.fire('Notificación', resp.mensaje, 'success')
 
+            await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+              let orden = r[0]
+              setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+            })
+          } else {
+            setModalLoading(false)
+            Swal.fire('Notificación', resp.mensaje, 'warning')
+          }
+        }).catch(e => {
+          setModalLoading(false)
+          Swal.fire('Notificación', 'ERROR: ' + e, 'warning')
+
+        })
         if (length > 0) {
           console.log('Se mantiene por que todavia le quedan conceptos', length)
           setSaleOrdersConcepts({ normal_concepts: filterDeleteNormal, personalized_concepts: updatedConceptView });

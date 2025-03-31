@@ -48,7 +48,7 @@ const Departures: React.FC = () => {
 
     const hoy = new Date();
     const haceUnaSemana = new Date();
-    haceUnaSemana.setDate(hoy.getDate() - 7);
+    haceUnaSemana.setDate(hoy.getDate() - 30);
 
     const [status, setTipo] = useState<any>([0])
 

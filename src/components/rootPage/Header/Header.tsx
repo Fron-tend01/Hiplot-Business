@@ -88,7 +88,7 @@ const Header: React.FC = () => {
     let n_quotes = quotes?.normal_concepts?.reduce((acc, item) => acc + item.precio_total || "0", 0);
     let p_quotes = quotes?.personalized_concepts?.reduce((acc, item) => acc + item.precio_total || "0", 0);
 
-
+    console.log('saleordersconcepts', saleOrdersConcepts)
     setTotalSales(n_sale + p_sale);
     setTotalQuotes(n_quotes + p_quotes);
   }, [saleOrdersConcepts, quotes]);
@@ -125,10 +125,14 @@ const Header: React.FC = () => {
   const permisosxVistaheader = storeDv((state) => state.permisosxvistaheader);
   const [permisosxvista, setPermisosxvista] = useState<any[]>([]);
 
-  const fetch = () => {
+  const fetch = async () => {
     APIs.GetAny('get_permisos_x_vista/' + user_id + '/HEADER').then((resp: any) => {
       setPermisosxVistaheader(resp)
       setPermisosxvista(resp)
+    })
+    await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+      let orden = r[0]
+      setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
     })
   }
 
@@ -216,14 +220,14 @@ const Header: React.FC = () => {
 
       localStorage.setItem('cotizacion', JSON.stringify(filter));
     } else {
-      const filter = saleOrdersConcepts.normal_concepts.filter((_: any, index: number) => index !== i)
-      setSaleOrdersConcepts({ normal_concepts: filter });
-      localStorage.setItem('sale-order', JSON.stringify(filter));
+      
     }
 
   }
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
   const undoSaleOrders = (concept: any, i: number) => {
+   
     const deleteItemCustomC = saleOrdersConcepts?.personalized_concepts?.filter((_: any, index: number) => index !== i);
     const updatedConcepts = concept.conceptos.map((element: any) => ({
       ...element,
@@ -247,6 +251,39 @@ const Header: React.FC = () => {
     localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
   };
 
+  const eliminarConceptoCarrito = (concept: any) => {
+    Swal.fire({
+      title: "Deseas eliminar el concepto " + concept.descripcion,
+      text: "Si se encuentra apartado tu material, esta acción lo desapartará",
+      showCancelButton: true,
+      confirmButtonText: "Aceptar",
+      denyButtonText: `Cancelar`,
+      icon:'question'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setModalLoading(true)
+        APIs.deleteAny('eliminar_conceptos_carrito/' + concept.id).then(async (resp: any) => {
+          if (resp.error) {
+            setModalLoading(false)
+
+            Swal.fire('Notificacion', resp.mensaje, 'warning')
+          } else {
+            setModalLoading(false)
+            Swal.fire('Notificacion', resp.mensaje, 'success')
+            await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+              let orden = r[0]
+              setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+            })
+          }
+        }).finally(() => {
+          setModalLoading(false)
+        })
+
+      }
+    });
+    
+  };
+
   return (
     <div className='hero'>
       <Toaster expand={true} position="top-right" richColors />
@@ -266,131 +303,35 @@ const Header: React.FC = () => {
           </div>
         </div>
         <div className='nav__hero'>
-          {permisosxvista.length > 0 &&checkPermission('boton_previo_cotizacion')&&(
-          <div className='icon__articles-quotation-cart-btn'>
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M440-240v20q0 8 6 14t14 6h40q8 0 14-6t6-14v-20h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h120q17 0 28.5-11.5T600-520q0-17-11.5-28.5T560-560h-40v-20q0-8-6-14t-14-6h-40q-8 0-14 6t-6 14v20h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H400q-17 0-28.5 11.5T360-280q0 17 11.5 28.5T400-240h40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h360l200 200v520q0 33-23.5 56.5T720-80H240Zm0-80h480v-480H600q-17 0-28.5-11.5T560-680v-120H240v640Zm0-640v160-160 640-640Z" /></svg>
-            <div className={`cart-quotation__container`}>
-              <div className='concepts-quotation__container'>
-                <svg className='icon-change_history' xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(12,36,60)"><path d="M152-160q-23 0-35-20.5t1-40.5l328-525q12-19 34-19t34 19l328 525q13 20 1 40.5T808-160H152Z" /></svg>
-                <div className='row__one'>
-                  <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M440-240v20q0 8 6 14t14 6h40q8 0 14-6t6-14v-20h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h120q17 0 28.5-11.5T600-520q0-17-11.5-28.5T560-560h-40v-20q0-8-6-14t-14-6h-40q-8 0-14 6t-6 14v20h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H400q-17 0-28.5 11.5T360-280q0 17 11.5 28.5T400-240h40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h360l200 200v520q0 33-23.5 56.5T720-80H240Zm0-80h480v-480H600q-17 0-28.5-11.5T560-680v-120H240v640Zm0-640v160-160 640-640Z" /></svg>
+          {permisosxvista.length > 0 && checkPermission('boton_previo_cotizacion') && (
+            <div className='icon__articles-quotation-cart-btn'>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M440-240v20q0 8 6 14t14 6h40q8 0 14-6t6-14v-20h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h120q17 0 28.5-11.5T600-520q0-17-11.5-28.5T560-560h-40v-20q0-8-6-14t-14-6h-40q-8 0-14 6t-6 14v20h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H400q-17 0-28.5 11.5T360-280q0 17 11.5 28.5T400-240h40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h360l200 200v520q0 33-23.5 56.5T720-80H240Zm0-80h480v-480H600q-17 0-28.5-11.5T560-680v-120H240v640Zm0-640v160-160 640-640Z" /></svg>
+              <div className={`cart-quotation__container`}>
+                <div className='concepts-quotation__container'>
+                  <svg className='icon-change_history' xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(12,36,60)"><path d="M152-160q-23 0-35-20.5t1-40.5l328-525q12-19 34-19t34 19l328 525q13 20 1 40.5T808-160H152Z" /></svg>
+                  <div className='row__one'>
+                    <div>
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M440-240v20q0 8 6 14t14 6h40q8 0 14-6t6-14v-20h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h120q17 0 28.5-11.5T600-520q0-17-11.5-28.5T560-560h-40v-20q0-8-6-14t-14-6h-40q-8 0-14 6t-6 14v20h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H400q-17 0-28.5 11.5T360-280q0 17 11.5 28.5T400-240h40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h360l200 200v520q0 33-23.5 56.5T720-80H240Zm0-80h480v-480H600q-17 0-28.5-11.5T560-680v-120H240v640Zm0-640v160-160 640-640Z" /></svg>
+                    </div>
+                    <p>Detalles de las cotizaciones</p>
                   </div>
-                  <p>Detalles de las cotizaciones</p>
-                </div>
-                <div className='table__cart_concepts'>
-                  <div className='table__head'>
-                    <div className='thead'>
-                      <div className='th'>
-                        <p>Codigo</p>
-                      </div>
-                      <div className='th'>
-                        <p>Descripcion</p>
-                      </div>
-                      <div className='th amount'>
-                        <p>Cantidad</p>
+                  <div className='table__cart_concepts'>
+                    <div className='table__head'>
+                      <div className='thead'>
+                        <div className='th'>
+                          <p>Codigo</p>
+                        </div>
+                        <div className='th'>
+                          <p>Descripcion</p>
+                        </div>
+                        <div className='th amount'>
+                          <p>Cantidad</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  {quotes.normal_concepts ? (
-                    <div className='table__body'>
-                      {quotes.normal_concepts.map((x: any, index: number) => {
-                        return (
-                          <div className='tbody__container' key={x.id}>
-                            <div className='tbody'>
-                              <div className='td code'>
-                                <p>{x.codigo}</p>
-                              </div>
-                              <div className='td description'>
-                                <p>{x.descripcion}</p>
-                              </div>
-                              <div className='td amount'>
-                                <p>{x.cantidad}</p>
-                              </div>
-                              <div className='td delete'>
-                                <div className='delete-icon' onClick={() => deleteArticle(x, index, 'quotes')} title='Eliminar concepto'>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    ''
-                  )}
-                  {quotes.personalized_concepts ? (
-                    <div className='table__body'>
-                      {quotes.personalized_concepts.map((x: any, index: number) => {
-                        return (
-                          <div className='tbody__container' key={x.id}>
-                            <div className='tbody'>
-                              <div className='td code'>
-                                <p>{x.codigo}</p>
-                              </div>
-                              <div className='td description'>
-                                <p>{x.descripcion}</p>
-                              </div>
-                              <div className='td amount'>
-                                <p>{x.cantidad}</p>
-                              </div>
-                              <div className='td undo'>
-                                  <div className='undo-icon' onClick={() => undoQuotes(x, index)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
-                                  </div>
-                                </div>
-                             
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    ''
-                  )}
-                </div>
-                <div className='row__three'>
-                  <div className='total'>
-                    <p className='title'>Total</p>
-                    <p className='text'>$ {totalQuotes}</p>
-                  </div>
-                  <Link to={`${PrivateRoutes.SALES}/${PrivateRoutes.QUOTATION}`} onClick={() => setModal('create-modal__qoutation')} className='sale-btn'>cotizacion</Link>
-                </div>
-              </div>
-            </div>
-          </div>
-          )}
-           {permisosxvista.length > 0 &&checkPermission('boton_previo_ov')&&(
-          <div className='icon__articles-sale-cart-btn' >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
-            <div className={`cart-sale__container `}>
-              <div className='concepts-sale__container'>
-                <svg className='icon-change_history' xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(12,36,60)"><path d="M152-160q-23 0-35-20.5t1-40.5l328-525q12-19 34-19t34 19l328 525q13 20 1 40.5T808-160H152Z" /></svg>
-                <div className='row__one'>
-                  <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-shopping-cart"><circle cx="8" cy="21" r="1" /><circle cx="19" cy="21" r="1" /><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /></svg>
-                  </div>
-                  <p>Detalles de la ventas</p>
-                </div>
-                <div className='table__cart_concepts' >
-                  <div className='table__head'>
-                    <div className='thead'>
-                      <div className='th'>
-                        <p>Codigo</p>
-                      </div>
-                      <div className='th'>
-                        <p>Descripcion</p>
-                      </div>
-                      <div className='th amount'>
-                        <p>Cantidad</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='table_concepts_header'>
-                    {saleOrdersConcepts?.normal_concepts ? (
+                    {quotes.normal_concepts ? (
                       <div className='table__body'>
-                        {saleOrdersConcepts?.normal_concepts?.map((x: any, index: number) => {
+                        {quotes.normal_concepts.map((x: any, index: number) => {
                           return (
                             <div className='tbody__container' key={x.id}>
                               <div className='tbody'>
@@ -404,7 +345,7 @@ const Header: React.FC = () => {
                                   <p>{x.cantidad}</p>
                                 </div>
                                 <div className='td delete'>
-                                  <div className='delete-icon' onClick={() => deleteArticle(x, index, 'sales')} title='Eliminar concepto'>
+                                  <div className='delete-icon' onClick={() => deleteArticle(x, index, 'quotes')} title='Eliminar concepto'>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                   </div>
                                 </div>
@@ -416,9 +357,9 @@ const Header: React.FC = () => {
                     ) : (
                       ''
                     )}
-                    {saleOrdersConcepts?.personalized_concepts ? (
+                    {quotes.personalized_concepts ? (
                       <div className='table__body'>
-                        {saleOrdersConcepts?.personalized_concepts?.map((x: any, index: number) => {
+                        {quotes.personalized_concepts.map((x: any, index: number) => {
                           return (
                             <div className='tbody__container' key={x.id}>
                               <div className='tbody'>
@@ -432,15 +373,11 @@ const Header: React.FC = () => {
                                   <p>{x.cantidad}</p>
                                 </div>
                                 <div className='td undo'>
-                                  <div className='undo-icon' onClick={() => undoSaleOrders(x, index)}>
+                                  <div className='undo-icon' onClick={() => undoQuotes(x, index)}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
                                   </div>
                                 </div>
-                                {/* <div className='td delete'>
-                                <div className='delete-icon' onClick={() => deleteArticle(x, index, 'sales')} title='Eliminar concepto'>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                </div>
-                              </div> */}
+
                               </div>
                             </div>
                           );
@@ -450,18 +387,118 @@ const Header: React.FC = () => {
                       ''
                     )}
                   </div>
-                </div>
-                <div className='row__three'>
-                  <div className='total'>
-                    <p className='title'>Total</p>
-                    <p className='text'>$ {totalSales}</p>
+                  <div className='row__three'>
+                    <div className='total'>
+                      <p className='title'>Total</p>
+                      <p className='text'>$ {totalQuotes}</p>
+                    </div>
+                    <Link to={`${PrivateRoutes.SALES}/${PrivateRoutes.QUOTATION}`} onClick={() => setModal('create-modal__qoutation')} className='sale-btn'>cotizacion</Link>
                   </div>
-                  <Link to={`${PrivateRoutes.SALES}/${PrivateRoutes.SALESORDER}`} onClick={() => setModalSalesOrder('sale-order__modal')} className='sale-btn'>venta</Link>
                 </div>
               </div>
             </div>
-          </div>
-           )}
+          )}
+          {permisosxvista.length > 0 && checkPermission('boton_previo_ov') && (
+            <div className='icon__articles-sale-cart-btn' >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
+              <div className={`cart-sale__container `}>
+                <div className='concepts-sale__container'>
+                  <svg className='icon-change_history' xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(12,36,60)"><path d="M152-160q-23 0-35-20.5t1-40.5l328-525q12-19 34-19t34 19l328 525q13 20 1 40.5T808-160H152Z" /></svg>
+                  <div className='row__one'>
+                    <div>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-shopping-cart"><circle cx="8" cy="21" r="1" /><circle cx="19" cy="21" r="1" /><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /></svg>
+                    </div>
+                    <p>Detalles de la ventas</p>
+                  </div>
+                  <div className='table__cart_concepts' >
+                    <div className='table__head'>
+                      <div className='thead'>
+                        <div className='th'>
+                          <p>Codigo</p>
+                        </div>
+                        <div className='th'>
+                          <p>Descripcion</p>
+                        </div>
+                        <div className='th amount'>
+                          <p>Cantidad</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className='table_concepts_header'>
+                      {saleOrdersConcepts?.normal_concepts ? (
+                        <div className='table__body'>
+                          {saleOrdersConcepts?.normal_concepts?.map((x: any, index: number) => {
+                            return (
+                              <div className='tbody__container' key={x.id}>
+                                <div className='tbody'>
+                                  <div className='td code'>
+                                    <p>{x.codigo}</p>
+                                  </div>
+                                  <div className='td description'>
+                                    <p>{x.descripcion}</p>
+                                  </div>
+                                  <div className='td amount'>
+                                    <p>{x.cantidad}</p>
+                                  </div>
+                                  <div className='td delete'>
+                                    <div className='delete-icon' onClick={() => eliminarConceptoCarrito(x)} title='Eliminar concepto'>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                      {saleOrdersConcepts?.personalized_concepts ? (
+                        <div className='table__body'>
+                          {saleOrdersConcepts?.personalized_concepts?.map((x: any, index: number) => {
+                            return (
+                              <div className='tbody__container' key={x.id}>
+                                <div className='tbody'>
+                                  <div className='td code'>
+                                    <p>{x.codigo}</p>
+                                  </div>
+                                  <div className='td description'>
+                                    <p>{x.descripcion}</p>
+                                  </div>
+                                  <div className='td amount'>
+                                    <p>{x.cantidad}</p>
+                                  </div>
+                                  <div className='td undo'>
+                                    <div className='undo-icon' onClick={() => undoSaleOrders(x, index)}>
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
+                                    </div>
+                                  </div>
+                                  {/* <div className='td delete'>
+                                <div className='delete-icon' onClick={() => deleteArticle(x, index, 'sales')} title='Eliminar concepto'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                </div>
+                              </div> */}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                  </div>
+                  <div className='row__three'>
+                    <div className='total'>
+                      <p className='title'>Total</p>
+                      <p className='text'>$ {totalSales}</p>
+                    </div>
+                    <Link to={`${PrivateRoutes.SALES}/${PrivateRoutes.SALESORDER}`} onClick={() => setModalSalesOrder('sale-order__modal')} className='sale-btn'>venta</Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           {permisosxvista.length > 0 && checkPermission('BOTON-CATALOGO-ARTICULOS') && (
             <div className='icon__search-btn'>
               <svg onClick={() => setModalArticleView('article-view__modal_header')} xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="d-flex lucide lucide-package-search" > <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /> <path d="m7.5 4.27 9 5.15" /> <polyline points="3.29 7 12 12 20.71 7" /> <line x1="12" x2="12" y1="22" y2="12" /> <circle cx="18.5" cy="15.5" r="2.5" /> <path d="M20.27 17.27 22 19" />

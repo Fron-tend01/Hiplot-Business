@@ -702,7 +702,10 @@ getTotalPrice: async (data: any, customPath?: string) => {
     const path = customPath || 'create_orden_venta';
     return ConfigurationAPIs.post(path, data)
   },
-
+  createSaleOrderRemastered: async (data: any, customPath?: string) => {
+    const path = customPath || 'create_ov_remastered';
+    return ConfigurationAPIs.post(path, data)
+  },
 
   
   getSaleOrders: async (data: any, customPath?: any) => {

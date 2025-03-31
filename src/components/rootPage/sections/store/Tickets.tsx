@@ -39,7 +39,7 @@ const Tickets = () => {
     const setModalTickets = storeTickets(state => state.setModalTickets)
     const hoy = new Date();
     const haceUnaSemana = new Date();
-    haceUnaSemana.setDate(hoy.getDate() - 7);
+    haceUnaSemana.setDate(hoy.getDate() - 30);
 
     const [series, setSeries] = useState<any>([]);
     const [page, setPage] = useState<number>(1);

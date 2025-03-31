@@ -57,7 +57,7 @@ const PedidoFranquicias = () => {
 
   const hoy = new Date();
   const haceUnaSemana = new Date();
-  haceUnaSemana.setDate(hoy.getDate() - 7);
+  haceUnaSemana.setDate(hoy.getDate() - 30);
 
   // Inicializa el estado con las fechas formateadas
   const [date, setDate] = useState([
@@ -130,11 +130,11 @@ const PedidoFranquicias = () => {
     console.log(searcher);
     searcher.id_sucursal = sucursalFSearcher.id
     searcher.id_serie = selectData?.serieSearcher?.id
-    searcher.desde= date[0],
-    searcher.hasta= date[1],
-    searcher.page = page
-    console.log( selectData?.proveedorSearcher);
-    
+    searcher.desde = date[0],
+      searcher.hasta = date[1],
+      searcher.page = page
+    console.log(selectData?.proveedorSearcher);
+
     searcher.id_proveedor = selectData?.proveedorSearcher?.id
     setModalLoading(true)
     await APIs.CreateAny(searcher, "pedido_franquicia/get").then((e: any) => {
@@ -243,6 +243,11 @@ const PedidoFranquicias = () => {
     e.preventDefault();
     if (articulos.length == 0) {
       Swal.fire('Notificación', 'Es necesario agregar articulos para el pedido de franquicia', 'error');
+      return
+    }
+    const todosValidos = articulos.every(c => c.cantidad && c.cantidad !== 0);
+    if (!todosValidos) {
+      Swal.fire('Notificacion', 'Verifica tus cantidades, existe al menos un concepto con cantidad en 0 o en vacio', 'warning')
       return
     }
     setPf(pfClear)

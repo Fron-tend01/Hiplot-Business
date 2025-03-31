@@ -86,11 +86,12 @@ const ModalCreate = () => {
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = e.target.value.trim();  // Obtener el valor ingresado sin espacios
-        console.log(concepts[index].stock);
+        console.log('STOCK DEL INDEX',concepts[index].stock);
         let total_stocks = 0
         concepts[index].stock.forEach((el: any) => {
             total_stocks += el.stock
         });
+        
         if (parseFloat(value) > total_stocks) {
             Swal.fire('Notificacion', 'El valor ingresado supera el stock', 'warning')
             const newArticleStates = [...concepts];
@@ -98,9 +99,9 @@ const ModalCreate = () => {
             setConcepts(newArticleStates);
             return
         }
-        const newArticleStates = [...concepts];
-        newArticleStates[index].cantidad = value;
-        setConcepts(newArticleStates);
+        // const newArticleStates = [...concepts];
+        // newArticleStates[index].cantidad = value;
+        // setConcepts(newArticleStates);
         // Obtener los valores relevantes de `concepts`
         // const stocks = concepts[index].stock;
         // let almacenPredeterminado = concepts[index].almacenes_predeterminados.filter((x: any) => x.id_sucursal == branchOffices?.id)[0];
@@ -175,13 +176,17 @@ const ModalCreate = () => {
         const id_usuario_crea = user_id;
         const comentarios = OPcomments;
 
+        if (concepts?.length == 0) {
+            Swal.fire('Notificacion', 'Agrega un concepto al pedido', 'warning')
+            return
+        }
         concepts.forEach((el: any) => {
             if (el.unidad != null && el.unidad != undefined) {
                 el.id_unidad = el.unidad
             }
         });
 
-        let filter0 = concepts.filter((x: any) => x.cantidad == '0')
+        let filter0 = concepts.filter((x: any) => x.cantidad == '0' || x.cantidad == 0 || x.cantidad == '' || x.cantidad == undefined)
 
         if (filter0.length > 0) {
             Swal.fire('Notificacion', 'No puedes enviar conceptos sin cantidad', 'warning')

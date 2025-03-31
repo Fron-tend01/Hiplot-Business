@@ -49,7 +49,7 @@ const Transfers: React.FC = () => {
 
   const hoy = new Date();
   const haceUnaSemana = new Date();
-  haceUnaSemana.setDate(hoy.getDate() - 7);
+  haceUnaSemana.setDate(hoy.getDate() - 30);
 
 
 
