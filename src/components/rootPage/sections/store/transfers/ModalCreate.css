@@ -1,5 +1,13 @@
-.container__create_transfers {
+.modal__create_transfers {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    height: 100%;
 
+}
+
+.container__create_transfers {
+    height: 100%;
+    overflow: auto;
 }
 
 .container__create_transfers > .row__one {
@@ -146,28 +154,22 @@
 .popup__transfers {
 	background-color: var(--background-modal);
 	border-radius: 5px;
-	padding: 20px;
+	padding: 40px 20px 20px 20px;
 	text-align: center;
-	width: 90%;
-	overflow-y: auto;
-    height: 95%;
+	width: 90vw;
+
+    height: 95vh;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
+}
 
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-color: #1F319D; 
-        border-radius: 5px;
-        height: 100px;
-    }
-
-    &::-webkit-scrollbar-track {
-    /* Para modificar el background */
-    }
+.overlay__transfers .header__modal {
+	position: absolute;
+	width: 100%;
+	top: 0;
+	display: flex;
+	justify-content: center;
 }
 
 .popup__transfers .btn-cerrar-popup__transfers {
@@ -177,9 +179,9 @@
 	text-align: right;
 	transition: .3s ease all;
 	color: #BBBBBB;
-    position: absolute;
-    right: 15px;
-    top: 15px;
+	position: absolute;
+	right: 0;
+	top: 10px;
 }
 
 

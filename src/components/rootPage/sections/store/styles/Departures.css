@@ -106,19 +106,6 @@
 	transform: scale(0.7);
 	opacity: 0;
 
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-color: #1F319D; 
-        border-radius: 5px;
-        height: 100px;
-    }
-
-    &::-webkit-scrollbar-track {
-    /* Para modificar el background */
-    }
 }
 
 .popup__modal-concepts_departures  .btn-cerrar-popup__modal-concepts_departures  {
