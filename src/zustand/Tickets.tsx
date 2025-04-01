@@ -29,7 +29,6 @@ interface StoreState {
 }
 
 export const storeTickets = create<StoreState>((set) => ({
-    store: [],
 
     modalTickets: [],
     setModalTickets: (modal) => set({ modalTickets: modal }),
