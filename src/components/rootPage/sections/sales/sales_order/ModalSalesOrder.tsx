@@ -224,7 +224,7 @@ const ModalSalesOrder: React.FC = () => {
             conceptos_elim: []
         }
         try {
-            const result: any = await APIs.createSaleOrder(data);
+            const result: any = await APIs.CreateAny(data, 'create_ov_remastered'); //CAMBIAR POR CREATE_OV_REMASTERED
             if (result.error == true) {
                 return Swal.fire('Advertencia', result.mensaje, 'warning');
             } else {
@@ -857,13 +857,18 @@ const ModalSalesOrder: React.FC = () => {
 
 
 
-    const closeModal = () => {
+    const closeModal = async () => {
         setModalSalesOrder('')
-        const sale_order = JSON.parse(localStorage.getItem("sale-order") || "[]");
-        const sale_order_pers = JSON.parse(localStorage.getItem("sale-order-pers") || "[]");
-        if (sale_order.length > 0 || sale_order_pers.length > 0) {
-            setSaleOrdersConcepts({ normal_concepts: sale_order, personalized_concepts: sale_order_pers });
-        }
+        await APIs.GetAny('get_carrito/'+user_id).then((r:any)=>{
+            let orden = r[0]
+            if (r.length == 0) {
+                setSaleOrdersConcepts({normal_concepts: [], personalized_concepts:[]});
+
+            }else {
+
+                setSaleOrdersConcepts({sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts:orden.conceptos_pers});
+            }
+          })
         // setSaleOrdersConcepts({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], concepto: {}, indexConcepto: 0 })
         // setCustomConceptView([])
     }
