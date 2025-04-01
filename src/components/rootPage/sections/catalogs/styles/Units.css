@@ -247,9 +247,6 @@
     padding: 10px;
 }
 
-.table__units .table__body .tbody .td {
-    color: var(--text-color);
-}
 
 
 .table__units .table__body .tbody:hover {

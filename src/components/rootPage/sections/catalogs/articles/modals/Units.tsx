@@ -164,7 +164,7 @@ const Units: React.FC = () => {
           <p className='warning__article_units'>La unidad de almacen será con el que se ingrese al almacen</p>
         </div>
         <div>
-          <div className='table__units' >
+          <div className='table__modal_units' >
             <div>
               <div>
                 {units ? (
@@ -209,7 +209,7 @@ const Units: React.FC = () => {
                             <span className="radio-custom"></span>
                           </label>
                         </div>
-                        <div className='td'>
+                        <div className='td delete'>
                           <button className='btn__delete_users' type='button' onClick={() => deleteMaxMin(item, index)}>Eliminar</button>
                         </div>
                       </div>

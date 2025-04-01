@@ -1,5 +1,5 @@
 .conatiner__create_orders  {
- 
+    padding: 20px;
     overflow: auto;
 }
 
@@ -22,6 +22,13 @@
 
 .conatiner__create_orders>.row__three {
     margin: 20px 0;
+}
+
+
+.conatiner__create_orders .by_op {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
 }
 
 .conatiner__create_orders>.conatiner__by-request>.row__one {
@@ -71,12 +78,12 @@
 .popup__orders {
 	background-color: var(--background-modal);
 	border-radius: 5px;
-	padding: 20px;
+	
 	/* text-align: center; */
 	width: 95vw;
     height: 95vh;
 	display: grid;
-    
+    grid-template-rows: auto 1fr auto;
     /* max-height: 95%; */
 	transition: .3s ease all;
 	transform: scale(0.7);
