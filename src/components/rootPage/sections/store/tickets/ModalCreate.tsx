@@ -16,19 +16,19 @@ import { storeArticles } from "../../../../../zustand/Articles";
 const ModalCreate = () => {
     const setModalTickets = storeTickets(state => state.setModalTickets)
     const setConceptos = storeTickets(state => state.setConceptos)
+    const setStore = storeTickets(state => state.setStore)
 
     const { dates, getTickets }: any = storeTickets();
 
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
-    const { createTickets, modalTickets, conceptos }: any = storeTickets();
+    const { createTickets, modalTickets, conceptos, store }: any = storeTickets();
     const userState = useUserStore(state => state.user);
     const user_id = userState.id
 
 
     const [comments, setComments] = useState<any>('')
 
-    const [store, setStore] = useState<any>()
 
     const fecth = async () => {
         APIs.GetAny('almacen_getxsuc/'+branchOffices.id).then((resp:any) => {
@@ -125,6 +125,8 @@ const ModalCreate = () => {
 
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
+    console.log('dates', dates)
+
 
     const handleCreateTickets = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
@@ -137,25 +139,32 @@ const ModalCreate = () => {
 
             if (conceptos.length > 0) {
 
+                const tieneCantidadCero = conceptos.some(element => {
+                    if (element.cantidad <= 0) {
+                        Swal.fire('Notificación', 'No puedes ingresar 0 en uno de los conceptos', 'warning');
+                        return true;
+                    }
+                    return false;
+                });
                 
-
-                console.log(conceptos);
-                setModalLoading(true)
-
-                await createTickets(id_sucursal, id_usuario_crea, comentarios, conceptos)
-                setModalLoading(false)
+                if (tieneCantidadCero) {
+                    return; 
+                }
+          
+                let response = await createTickets(id_sucursal, id_usuario_crea, comentarios, conceptos)
+          
 
                 const data = {
                     id_usuario: user_id,
                     id_empresa: companies.id,
                     id_sucursal: branchOffices.id,
-                    desde: dates[0],
-                    hasta: dates[1],
+                    desde: dates.startDate,
+                    hasta: dates.endDate,
                     id_serie: 0,
                     status: 0,
                     folio: 0
                 }
-                Swal.fire('Notificacion', 'Entrada creada correctamente', 'success')
+                Swal.fire('Notificacion', response?.mensaje, 'success')
                 await getTickets(data)
                 setModalTickets('')
                 setConceptos([])

@@ -47,14 +47,21 @@ const Departures = () => {
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
 
-    const formatDate = (date: any) => date.toISOString().split("T")[0];
+    useEffect(() => {
+        // Calcula las fechas iniciales
+        const today = new Date();
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(today.getDate() - 7);
+
+        // Formatea las fechas como cadenas en formato "YYYY-MM-DD"
+        const formattedOneWeekAgo = oneWeekAgo.toISOString().split("T")[0];
+        const formattedToday = today.toISOString().split("T")[0];
+
+        // Configura las fechas iniciales con setDates
+        setDates([formattedOneWeekAgo, formattedToday]);
+    }, [setDates]);
 
     const fecht = async () => {
-
-        setDates({
-            startDate:  formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
-            endDate: formatDate(new Date())
-        })
 
         const resultSeries = await getSeriesXUser({ tipo_ducumento: 4, id: user_id })
         resultSeries.unshift({ 'id': 0, 'nombre': 'Todos' })
@@ -73,8 +80,8 @@ const Departures = () => {
             id_almacen: null,
             id_usuario: user_id,
             id_sucursal: branchOffices?.id,
-            desde: formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
-            hasta: formatDate(new Date()),
+            desde: dates[0],
+            hasta: dates[1],
             id_serie: 0,
             folio: invoice,
             light: true,
@@ -98,8 +105,8 @@ const Departures = () => {
         }
     }, [branchOffices])
 
-   
-   
+
+
 
     const modalCreate = () => {
         setModal('modal-create__departures')
@@ -113,18 +120,18 @@ const Departures = () => {
             id_almacen: null,
             id_usuario: user_id,
             id_sucursal: branchOffices?.id,
-            desde: formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
-            hasta: formatDate(new Date()),
+            desde: dates[0],
+            hasta: dates[1],
             id_serie: 0,
             folio: invoice,
             light: true,
             page: page
         }
         setModalLoading(true)
-        
+
         const result = await getWarehouseExit(data)
         setModalLoading(false)
-        
+
         setWarehouseExit(result)
     }
 
@@ -175,30 +182,43 @@ const Departures = () => {
                         <div>
                             <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} all={true} />
                         </div>
-                        <div className="">
+                        <div>
                             <label className="label__general">Desde</label>
                             <div className="flex gap-4 container_dates__requisition">
                                 <Flatpickr
                                     className="date"
-                                    options={{ locale: Spanish, dateFormat: "Y-m-d" }}
-                                    value={dates?.startDate}
-                                    onChange={(e) => setDates({ endDate: e[0]?.toISOString().split("T")[0] || "" })}
-                                    placeholder="Fecha de inicio"
+                                    id="fecha-desde"
+                                    onChange={(date) => {
+                                        const startDate = date[0]?.toISOString().split("T")[0] || "";
+                                        setDates([startDate, dates[1]]); // Actualiza directamente el arreglo usando Zustand
+                                    }}
+                                    options={{
+                                        dateFormat: "Y-m-d", // Formato de la fecha
+                                        defaultDate: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha predeterminada: una semana atrás
+                                    }}
+                                    placeholder="Selecciona una fecha"
                                 />
                             </div>
                         </div>
-                        <div className="">
+                        <div>
                             <label className="label__general">Hasta</label>
                             <div className="flex gap-4 container_dates__requisition">
                                 <Flatpickr
                                     className="date"
-                                    options={{ locale: Spanish, dateFormat: "Y-m-d" }}
-                                    value={dates?.endDate}
-                                    onChange={(e) => setDates({ endDate: e[0]?.toISOString().split("T")[0] || "" })}
-                                    placeholder="Fecha de terminación"
+                                    id="fecha-hasta"
+                                    onChange={(date) => {
+                                        const endDate = date[0]?.toISOString().split("T")[0] || "";
+                                        setDates([dates[0], endDate]); // Actualiza directamente el arreglo usando Zustand
+                                    }}
+                                    options={{
+                                        dateFormat: "Y-m-d", // Formato de la fecha
+                                        defaultDate: new Date(), // Fecha predeterminada: hoy
+                                    }}
+                                    placeholder="Selecciona una fecha"
                                 />
                             </div>
                         </div>
+
                         <div>
                             <Select dataSelects={store} instanceId="store" nameSelect={'Almacén'} />
                         </div>

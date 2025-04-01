@@ -54,9 +54,7 @@ const Departures: React.FC = () => {
 
     const [status, setTipo] = useState<any>([0])
 
-    const id_usuario = user_id;
-    const desde = haceUnaSemana.toISOString().split('T')[0];
-    const hasta = hoy.toISOString().split('T')[0];
+
 
 
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
@@ -65,8 +63,25 @@ const Departures: React.FC = () => {
 
     const [series, setSeries] = useState<any>([])
 
+    useEffect(() => {
+        // Calcula las fechas iniciales
+        const today = new Date();
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(today.getDate() - 7);
+
+        // Formatea las fechas como cadenas en formato "YYYY-MM-DD"
+        const formattedOneWeekAgo = oneWeekAgo.toISOString().split("T")[0];
+        const formattedToday = today.toISOString().split("T")[0];
+
+        // Configura las fechas iniciales con setDates
+        setDates([formattedOneWeekAgo, formattedToday]);
+    }, [setDates]);
+
 
     const fecth = async () => {
+
+
+
         APIs.CreateAny({ id_usuario: user_id, for_pedido: 1, light: true }, "getLPA")
             .then(async (response: any) => {
                 setLPAs({
@@ -75,7 +90,7 @@ const Departures: React.FC = () => {
                     options: 'nombre'
                 })
             })
-        setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
+
         await getCompaniesXUsers(user_id)
         await getBranchOfficeXCompanies(0, user_id)
         const resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 3, })
@@ -97,13 +112,6 @@ const Departures: React.FC = () => {
     }, [])
 
 
-    const handleDateChange = (fechasSeleccionadas: any) => {
-        if (fechasSeleccionadas.length === 2) {
-            setDates(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
-        } else {
-            setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
-        }
-    };
 
 
 
@@ -147,7 +155,6 @@ const Departures: React.FC = () => {
         setModal('modal-create-pedido')
     }
 
-    console.log(selectedIds)
 
 
     const [page, setPage] = useState<number>(1);
@@ -171,18 +178,18 @@ const Departures: React.FC = () => {
     const fetchPermisos = async () => {
         await APIs.GetAny('get_permisos_x_vista/' + user_id + '/PEDIDO').then((resp: any) => {
             // console.log('--------------------------------', resp);
-            
+
             setPermisosxVista(resp)
         })
     }
     const descargarCSVPedidos = (orders: any[]) => {
         const encabezados = ["Pedido", "Status", "Empresa", "Sucursal", "Fecha y hora"];
-    
+
         const filas = orders.map((order) => {
             const statusTexto = order.status === 0 ? "Activa" :
-                                order.status === 1 ? "Cancelada" :
-                                order.status === 2 ? "Terminada" : "Desconocido";
-    
+                order.status === 1 ? "Cancelada" :
+                    order.status === 2 ? "Terminada" : "Desconocido";
+
             return [
                 `${order.serie}-${order.folio}-${order.anio}`,
                 statusTexto,
@@ -191,19 +198,19 @@ const Departures: React.FC = () => {
                 order.fecha_creacion
             ].join(",");
         });
-    
+
         const csvContenido = [encabezados.join(","), ...filas].join("\n");
         const blob = new Blob([csvContenido], { type: "text/csv" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
-    
+
         link.href = url;
         link.download = `pedidos.csv`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     };
-    
+
     return (
         <div className="orders">
             <div className='breadcrumbs'>
@@ -225,12 +232,44 @@ const Departures: React.FC = () => {
                         <div className="col-8">
                             <Empresas_Sucursales all={true} empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
                         </div>
-                        <div className='col-4'>
-                            <label className='label__general'>Fechas</label>
-                            <div className='container_dates__requisition'>
-                                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                        <div className="col-2 md-col-12">
+                            <label className="label__general">Desde</label>
+                            <div className="flex gap-4 container_dates__requisition">
+                                <Flatpickr
+                                    className="date"
+                                    id="fecha-desde"
+                                    onChange={(date) => {
+                                        const startDate = date[0]?.toISOString().split("T")[0] || "";
+                                        setDates([startDate, dates[1]]); // Actualiza directamente el arreglo usando Zustand
+                                    }}
+                                    options={{
+                                        dateFormat: "Y-m-d", // Formato de la fecha
+                                        defaultDate: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha predeterminada: una semana atrás
+                                    }}
+                                    placeholder="Selecciona una fecha"
+                                />
                             </div>
                         </div>
+
+                        <div className="col-2 md-col-12">
+                            <label className="label__general">Hasta</label>
+                            <div className="flex gap-4 container_dates__requisition">
+                                <Flatpickr
+                                    className="date"
+                                    id="fecha-hasta"
+                                    onChange={(date) => {
+                                        const endDate = date[0]?.toISOString().split("T")[0] || "";
+                                        setDates([dates[0], endDate]); // Actualiza directamente el arreglo usando Zustand
+                                    }}
+                                    options={{
+                                        dateFormat: "Y-m-d", // Formato de la fecha
+                                        defaultDate: new Date(), // Fecha predeterminada: hoy
+                                    }}
+                                    placeholder="Selecciona una fecha"
+                                />
+                            </div>
+                        </div>
+
                     </div>
                     <div className="row__two">
                         <Select dataSelects={series} instanceId="series" nameSelect={'Series'} />

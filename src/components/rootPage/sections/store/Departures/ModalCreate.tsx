@@ -154,8 +154,8 @@ const ModalCreate: React.FC = () => {
             id_almacen: null,
             id_usuario: user_id,
             id_sucursal: selectedBranchOffice,
-            desde: dates.startDate,
-            hasta: dates.endDate,  
+            desde: dates[0],
+            hasta: dates[1],  
             id_serie: 0,
             folio: null,
         }

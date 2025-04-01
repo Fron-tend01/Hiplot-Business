@@ -51,7 +51,7 @@ const Quotation: React.FC = () => {
 
   const [dates, setDates] = useState<any>()
 
-  const [fol, setFol] = useState<any>(null)
+  const [fol, setFol] = useState<any>(0)
 
   const modal = () => {
     setModal('create-modal__qoutation')
@@ -71,8 +71,23 @@ const Quotation: React.FC = () => {
 
   const [client, setClient] = useState<any>('')
 
+  useEffect(() => {
+    // Calcula las fechas iniciales
+    const today = new Date();
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(today.getDate() - 7);
+
+    // Formatea las fechas como cadenas en formato "YYYY-MM-DD"
+    const formattedOneWeekAgo = oneWeekAgo.toISOString().split("T")[0];
+    const formattedToday = today.toISOString().split("T")[0];
+
+    // Configura las fechas iniciales con setDates
+    setDates([formattedOneWeekAgo, formattedToday]);
+}, [setDates]);
+
+
   const fetch = async () => {
-    setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
+
     const dataUser = {
       folio: 0,
       id_sucursal: branchOffices?.id,
@@ -170,26 +185,26 @@ const Quotation: React.FC = () => {
   const updateQuotation = (x: any) => {
     console.log('quotation', x)
     setModal('update-modal__qoutation');
-    setQuotes({ quotes: x, normal_concepts: x.conceptos, personalized_concepts: x.conceptos_pers});
+    setQuotes({ quotes: x, normal_concepts: x.conceptos, personalized_concepts: x.conceptos_pers });
     setQuatation(x);
   };
 
 
- //-----------------------------------------APLICANDO PERMISOS-----------------------------------------------------------
- const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
- const permisosxVista = storeDv((state) => state.permisosxvista);
+  //-----------------------------------------APLICANDO PERMISOS-----------------------------------------------------------
+  const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
+  const permisosxVista = storeDv((state) => state.permisosxvista);
 
- const fetchPermisos = async () => {
-     await APIs.GetAny('get_permisos_x_vista/' + user_id + '/COTIZACION').then((resp: any) => {
-         // console.log('--------------------------------', resp);
-         
-         setPermisosxVista(resp)
-     })
- }
+  const fetchPermisos = async () => {
+    await APIs.GetAny('get_permisos_x_vista/' + user_id + '/COTIZACION').then((resp: any) => {
+      // console.log('--------------------------------', resp);
+
+      setPermisosxVista(resp)
+    })
+  }
 
   return (
     <div className='quotation'>
-      
+
       <div className='breadcrumbs'>
         <div className='breadcrumbs__container'>
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-receipt"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 17.5v-11" /></svg>
@@ -209,10 +224,43 @@ const Quotation: React.FC = () => {
             <div className='col-8 md-col-12'>
               <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
             </div>
-            <div className='dates__requisition col-4'>
-              <label className='label__general'>Fechas</label>
-              <div className='container_dates__requisition'>
-                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+            <div className='dates__requisition col-4 row'>
+              <div className="col-6">
+                <label className="label__general">Desde</label>
+                <div className="flex gap-4 container_dates__requisition">
+                  <Flatpickr
+                    className="date"
+                    id="fecha-desde"
+                    onChange={(date) => {
+                      const startDate = date[0]?.toISOString().split("T")[0] || "";
+                      setDates([startDate, dates[1]]); // Actualiza directamente el arreglo usando Zustand
+                    }}
+                    options={{
+                      dateFormat: "Y-m-d", // Formato de la fecha
+                      defaultDate: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha predeterminada: una semana atrás
+                    }}
+                    placeholder="Selecciona una fecha"
+                  />
+                </div>
+              </div>
+
+              <div className="col-6">
+                <label className="label__general">Hasta</label>
+                <div className="flex gap-4 container_dates__requisition">
+                  <Flatpickr
+                    className="date"
+                    id="fecha-hasta"
+                    onChange={(date) => {
+                      const endDate = date[0]?.toISOString().split("T")[0] || "";
+                      setDates([dates[0], endDate]); // Actualiza directamente el arreglo usando Zustand
+                    }}
+                    options={{
+                      dateFormat: "Y-m-d", // Formato de la fecha
+                      defaultDate: new Date(), // Fecha predeterminada: hoy
+                    }}
+                    placeholder="Selecciona una fecha"
+                  />
+                </div>
               </div>
             </div>
           </div>
