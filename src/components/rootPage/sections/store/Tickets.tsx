@@ -171,6 +171,7 @@ const Tickets = () => {
                     <div className="col-8 md-col-12">
                         <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} all={true} />
                     </div>
+                    
                     <div className="col-2 md-col-12">
                         <label className="label__general">Desde</label>
                         <div className="flex gap-4 container_dates__requisition">
@@ -178,7 +179,7 @@ const Tickets = () => {
                                 className="date"
                                 options={{ locale: Spanish, dateFormat: "Y-m-d" }}
                                 value={dates?.startDate}
-                                onChange={(e) => setDates({ endDate: e[0]?.toISOString().split("T")[0] || "" })}
+                                onChange={(e) => setDates({ startDate: e[0]?.toISOString().split("T")[0] || "" })}
                                 placeholder="Fecha de inicio"
                             />
                         </div>

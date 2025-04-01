@@ -47,15 +47,30 @@ const Transfers: React.FC = () => {
   const [series, setSeries] = useState<any>()
 
 
-  const hoy = new Date();
-  const haceUnaSemana = new Date();
-  haceUnaSemana.setDate(hoy.getDate() - 30);
+  useEffect(() => {
+    // Calcula las fechas iniciales
+    const today = new Date();
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(today.getDate() - 7);
 
+    // Formatea las fechas como cadenas en formato "YYYY-MM-DD"
+    const formattedOneWeekAgo = oneWeekAgo.toISOString().split("T")[0];
+    const formattedToday = today.toISOString().split("T")[0];
+
+    // Configura las fechas iniciales con setDates
+    setDates([formattedOneWeekAgo, formattedToday]);
+  }, [setDates]);
 
 
 
   const fetch = async () => {
-    setDates([haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0]])
+    const today = new Date();
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(today.getDate() - 7);
+
+    // Formatea las fechas como cadenas en formato "YYYY-MM-DD"
+    const formattedOneWeekAgo = oneWeekAgo.toISOString().split("T")[0];
+    const formattedToday = today.toISOString().split("T")[0];
 
     const resultCompanies = await getCompaniesXUsers(user_id)
     resultCompanies.unshift({ id: 0, razon_social: 'Todas' })
@@ -104,8 +119,8 @@ const Transfers: React.FC = () => {
       id_almacen: 0,
       id_sucursal: 0,
       status: 0,
-      desde: haceUnaSemana.toISOString().split('T')[0],
-      hasta: hoy.toISOString().split('T')[0],
+      desde: formattedOneWeekAgo,
+      hasta: formattedToday,
 
     }
 
@@ -168,6 +183,8 @@ const Transfers: React.FC = () => {
       page: 0
     }
 
+    console.log('dates', dates)
+
     const result = await getTransfers(data)
     console.log(result)
     setTransfers(result)
@@ -208,10 +225,43 @@ const Transfers: React.FC = () => {
           </div>
           <div className='row '>
             <div className='col-8 row'>
-              <div className='dates__requisition col-4'>
-                <label className='label__general'>Fechas</label>
-                <div className='container_dates__requisition'>
-                  <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+              <div className='dates__requisition col-4 row'>
+                <div className="col-6">
+                  <label className="label__general">Desde</label>
+                  <div className="flex gap-4 container_dates__requisition">
+                    <Flatpickr
+                      className="date"
+                      id="fecha-desde"
+                      onChange={(date) => {
+                        const startDate = date[0]?.toISOString().split("T")[0] || "";
+                        setDates([startDate, dates[1]]); // Actualiza directamente el arreglo usando Zustand
+                      }}
+                      options={{
+                        dateFormat: "Y-m-d", // Formato de la fecha
+                        defaultDate: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha predeterminada: una semana atrás
+                      }}
+                      placeholder="Selecciona una fecha"
+                    />
+                  </div>
+                </div>
+
+                <div className="col-6">
+                  <label className="label__general">Hasta</label>
+                  <div className="flex gap-4 container_dates__requisition">
+                    <Flatpickr
+                      className="date"
+                      id="fecha-hasta"
+                      onChange={(date) => {
+                        const endDate = date[0]?.toISOString().split("T")[0] || "";
+                        setDates([dates[0], endDate]); // Actualiza directamente el arreglo usando Zustand
+                      }}
+                      options={{
+                        dateFormat: "Y-m-d", // Formato de la fecha
+                        defaultDate: new Date(), // Fecha predeterminada: hoy
+                      }}
+                      placeholder="Selecciona una fecha"
+                    />
+                  </div>
                 </div>
               </div>
               <div className='col-4'>

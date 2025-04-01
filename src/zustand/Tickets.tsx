@@ -19,6 +19,10 @@ interface StoreState {
 
     conceptos: any;
     setConceptos: (modal: any) => void;
+
+    
+    store: any;
+    setStore: (modal: any) => void;
     
     tickets: any,
 
@@ -45,6 +49,9 @@ export const storeTickets = create<StoreState>((set) => ({
 
     conceptos: [],
     setConceptos: (x) => set({ conceptos: x }),
+
+    store: [],
+    setStore: (x) => set({ store: x }),
 
     tickets: [],
 

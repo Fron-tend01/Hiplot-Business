@@ -12,7 +12,7 @@ const Direct: React.FC = () => {
 //////////////////////////////////Directa////////////////////////////////////////////////
 
     const setConceptos = storeTickets(state => state.setConceptos)
-    const {conceptos}: any = useStore(storeTickets)
+    const {conceptos, store}: any = useStore(storeTickets)
     const [selectModalResults, setSelectModalResults] = useState<boolean>(false)
     const [selectedModalResult, setSelectedModalResult] = useState<any>(null)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
@@ -76,11 +76,13 @@ const Direct: React.FC = () => {
     const addArticles = () => {
         selectedModalResult.id_articulo = selectedModalResult.id
         selectedModalResult.unidad =  selectedModalResult.unidades[0].id_unidad
-        selectedModalResult.id_almacen =  1
+        selectedModalResult.id_almacen =  store[0].id
         selectedModalResult.id_proveedor =  selectedModalResult?.proveedores[0]?.id_proveedor
         selectedModalResult.comentarios = ''
         selectedModalResult.cantidad = 0
         setConceptos([...conceptos, selectedModalResult]);
+
+        console.log(store)
 
     };
 
