@@ -63,7 +63,7 @@ const ModalCreate = () => {
     const [areas, setAreas] = useState<any>()
 
     console.log('OPByareas', OPByareas)
-    
+
 
     const fecth = async () => {
         const today = new Date();
@@ -91,22 +91,36 @@ const ModalCreate = () => {
         }
 
 
+    }
 
-        const resultAreas = await getAreas(0, user_id)
-        setAreas({
-            selectName: 'Areas',
-            options: 'nombre',
-            dataSelect: resultAreas
-        })
-        setSelects('id_area', resultAreas[0])
+    
+    const fecth2 = async () => {
+        try {
+            const resultAreas = await getAreas(0, user_id)
+            setAreas({
+                selectName: 'Areas',
+                options: 'nombre',
+                dataSelect: resultAreas
+            })
+
+            setSelects('id_area', resultAreas[0])
+        } catch (error) {
+            console.log(error)
+        }
+
+
+
 
     }
 
     useEffect(() => {
         fecth()
-        setSelectedOption(0);
-
+    
     }, [])
+
+    useEffect(() => {
+        fecth2()
+    }, [modal])
     const [OPcomments, setOPcomments] = useState<string>('')
 
 
