@@ -15,6 +15,9 @@ interface StoreState {
     dates: any;
     setDates: (x: any) => void;
 
+    OPByareas: any;
+    setOPByareas: (x: any) => void;
+
     LPAs: any;
     setLPAs: (x: any) => void;
 }
@@ -27,6 +30,9 @@ export const storeOrdes = create<StoreState>((set) => ({
 
     concepts: [],
     setConcepts: (x) => set({concepts: x}),
+
+    OPByareas: [],
+    setOPByareas: (x) => set({OPByareas: x}),
 
     dates: [],
     setDates: (x) => set({dates: x}),

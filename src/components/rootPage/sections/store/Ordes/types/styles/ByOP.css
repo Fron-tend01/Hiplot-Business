@@ -1,0 +1,105 @@
+.conatiner__create_orders .conatiner__by-request {
+
+}
+
+
+.conatiner__create_orders .conatiner__by-request .row__one {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 20px;
+}
+
+
+.conatiner__create_orders .conatiner__by-request  .container_dates__requisition {
+    border: 2px solid #f2f2f2;
+    border-radius: 10px;
+}
+
+
+
+.table__modal_filter_tickets {
+    border-radius: 10px;
+    display: grid;
+    height: 100%;
+    grid-template-rows: repeat(2, auto) 1fr;
+
+}
+
+
+.table__modal_filter_tickets .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__modal_filter_tickets .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__modal_filter_tickets .table__head .thead {
+    display: grid;
+ 
+    grid-template-columns: repeat(10, 1fr);
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table__modal_filter_tickets .table__body {
+    max-height: 400px;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__modal_filter_tickets .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+	color: var(--text-table-color);
+  }
+  
+.table__modal_filter_tickets .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+	color: var(--text-table-color);
+  }
+
+.table__modal_filter_tickets .table__body .tbody {
+    display: flex;
+}
+
+.table__modal_filter_tickets .table__body .tbody {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 100px;
+    padding: 10px;
+
+}
+
+.table__modal_filter_tickets .table__body .tbody:hover {
+    background-color: var(--table-hover-color);
+	color: #fff;
+}
+
+.table__modal_filter_tickets .table__body .tbody:hover>.td .folio-identifier {
+	background-color: #3D85C6;
+	color: #ffffff;
+}
+
+
+
+
+

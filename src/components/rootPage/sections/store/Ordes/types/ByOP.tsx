@@ -8,6 +8,7 @@ import Flatpickr from "react-flatpickr";
 import { seriesRequests } from '../../../../../../fuctions/Series'
 import APIs from '../../../../../../services/services/APIs'
 import { storeOrdes } from '../../../../../../zustand/Ordes'
+import './styles/ByOP.css'
 
 const ByOP: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -16,7 +17,7 @@ const ByOP: React.FC = () => {
     const {getSeriesXUser}: any = seriesRequests()
 
     const setConcepts = storeOrdes(state => state.setConcepts)
-    const { concepts } = storeOrdes()
+    const { concepts, OPByareas } = storeOrdes()
 
     const [company, setCompany] = useState<any>([])
     const [branch, setBranch] = useState<any>([])
@@ -71,7 +72,11 @@ const ByOP: React.FC = () => {
         }
     }
 
+    console.log('orderssssssssssssssss', orders)
+
     const addArticlesByRequest = (item: any) => {
+        let filter = orders.filter((x: any) => x.id !== item.id)
+        setOrders(filter)
         setConcepts([
             ...concepts,
             ...item.conceptos.map((concepto:any) => ({
@@ -81,93 +86,31 @@ const ByOP: React.FC = () => {
                   id: item.id 
               },
               id_orden_produccion: concepto.id,
-              unidad : concepto.unidades[0].id_unidad,
-              id_unidad : concepto.unidades[0].id_unidad
+              unidad: concepto.unidades[0].id_unidad,
+              id_unidad: concepto.unidades[0].id_unidad,
             }))
-          ]);    }
+          ])
+        }
     
-    const openModalConcepts = () => {
-
-    }
 
 
 
     return (
         <div className='conatiner__by-request'>
-            <div className='row'>
-                {/* <div className='col-6'>
-                    <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
-                </div> */}
-                <div className='col-3'>
-                    <label className='label__general'>Buscar Ordenes de Producción</label>
+            <label className='label__general'>Buscar Ordenes de Producción</label>
+            <div className='row__one'>
+                <div>
                     <div className='container_dates__requisition'>
                         <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
                     </div>
                 </div>
-                {/* <div className='col-3'>
-                    <Select dataSelects={series} instanceId='series' nameSelect='Series' />
-                </div> */}
-            </div>
-            <div className='row__three mt-3'>
                 <div>
                     <div>
                         <button className='btn__general-purple' type='button' onClick={filterByRequest}>Filtrar</button>
                     </div>
                 </div>
             </div>
-            <div className='row__four'>
-
-            </div>
             <div>
-                {/* <div className={`overlay__modal_concepts ${modalStateConcepts ? 'active' : ''}`}>
-                    <div className={`popup__modal_concepts ${modalStateConcepts ? 'active' : ''}`}>
-                        <a href="#" className="btn-cerrar-popup__modal_concepts" onClick={closeModalConcepts}>
-                            <svg className='close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
-                        </a>
-                        <p className='title__modals'>Detalles de conceptos</p>
-                        <div className='conatiner__concepts'>
-                            {concepts.map((concepto: any, index: any) => (
-                                <div className='row__one' key={index}>
-                                    <div>
-                                        <p className='text'>cantidad</p>
-                                        <p className='text'>{concepto.cantidad}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>codigo</p>
-                                        <p className='text'>{concepto.codigo}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>comentarios</p>
-                                        <p className='text'>{concepto.comentarios}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>descripcion</p>
-                                        <p className='text'>{concepto.descripcion}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>iva</p>
-                                        <p className='text'>{concepto.iva_on}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>precio_unitario</p>
-                                        <p className='text'>{concepto.precio_unitario}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>proveedor</p>
-                                        <p className='text'>{concepto.proveedor}</p>
-                                    </div>
-                                    <div>
-                                        <p className='text'>unidad</p>
-                                        <p className='text'>{concepto.unidad}</p>
-                                    </div>
-                                </div>
-                            ))}
-                            <div className='row__two'>
-
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
             </div>
             <div className='row__two' >
                 <div className='' >
@@ -182,22 +125,17 @@ const ByOP: React.FC = () => {
                                     <div className='tbody__container' key={index} >
                                         <div className='tbody'>
                                             <div className='td'>
-                                                {x.serie}-{x.folio}-{x.anio}
+                                                <p className='folio-identifier'>{x.serie}-{x.folio}-{x.anio}</p>
                                             </div>
                                             <div className='td'>
-                                                {x.empresa}
+                                                <p>{x.empresa}</p>
                                             </div>
                                             <div className='td'>
-                                                ({x.sucursal})
+                                                <p>({x.sucursal})</p>
                                             </div>
                                             <div className='td'>
-                                                {x.fecha_creacion}
+                                                <p>{x.fecha_creacion}</p>
                                             </div>
-                                            {/* <div className='td'>
-                                                <div>
-                                                    <button onClick={() => openModalConcepts()} type='button' className='btn__general-purple'>Ver conceptos</button>
-                                                </div>
-                                            </div> */}
                                             <div className='td'>
                                                 <div>
                                                     <button className='btn__general-purple' type='button' onClick={() => addArticlesByRequest(x)}>Agregar</button>

@@ -23,7 +23,7 @@ const ModalCreate = () => {
     const userState = useUserStore(state => state.user);
     const user_id = userState.id
 
-    const { getOrdedrs, dates, LPAs }: any = storeOrdes();
+    const { getOrdedrs, dates, LPAs, OPByareas }: any = storeOrdes();
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
     const setSelects: any = useSelectStore((state) => state.setSelectedId);
     const setConcepts = storeOrdes(state => state.setConcepts)
@@ -31,6 +31,8 @@ const ModalCreate = () => {
 
     const { getAreas }: any = areasRequests();
     const { createOrders }: any = storeOrdes();
+
+    const setOPByareas = storeOrdes(state => state.setOPByareas)
 
 
     const setModal = storeModals(state => state.setModal)
@@ -60,7 +62,35 @@ const ModalCreate = () => {
 
     const [areas, setAreas] = useState<any>()
 
+    console.log('OPByareas', OPByareas)
+    
+
     const fecth = async () => {
+        const today = new Date();
+        const oneMonthAgo = new Date(today.setMonth(today.getMonth() - 1)).toISOString().split("T")[0];
+        const formattedToday = new Date().toISOString().split("T")[0];
+
+        let data = {
+            folio: 0,
+            id_sucursal: branchOffices.id,
+            id_area: selectedIds?.id_area?.id,
+            id_serie: selectedIds?.series?.id,
+            desde: oneMonthAgo,
+            hasta: formattedToday,
+            id_usuario: user_id,
+            status: 0,
+            pedido: false
+        }
+
+        try {
+            const result: any = await APIs.getProoductionOrders(data)
+
+            setOPByareas(result)
+        } catch (error) {
+            console.log(error)
+        }
+
+
 
         const resultAreas = await getAreas(0, user_id)
         setAreas({
@@ -198,7 +228,8 @@ const ModalCreate = () => {
 
             await createOrders({ id_area, id_sucursal, id_usuario_crea, status: 0, comentarios, conceptos: concepts })
             setModalLoading(false)
-
+            setOPcomments('')
+            setConcepts([])
             setModal('')
         } catch (error) {
             console.log(error)
@@ -277,6 +308,24 @@ const ModalCreate = () => {
 
         return permisosxVista.some((x: any) => x.titulo === elemento);
     };
+
+    const handleSelectChange = (e, i) => {
+        const selectedValue = parseInt(e.target.value);
+        console.log('selectedValue', selectedValue)
+        const updatedConcepts = concepts.map((concept, index) => {
+            if (index === i) {
+                return { ...concept, id_orden_produccion: selectedValue };
+            }
+            return concept;
+        });
+
+        setConcepts(updatedConcepts)
+    };
+
+
+    console.log('conceptssssssssssssssssssssssssss', concepts)
+
+
     return (
         <div className={`overlay__orders ${modal == 'modal-create-pedido' ? 'active' : ''}`}>
             <div className={`popup__orders ${modal == 'modal-create-pedido' ? 'active' : ''}`}>
@@ -326,25 +375,30 @@ const ModalCreate = () => {
                     </div>
                     {LPAs?.dataSelect?.length == 0 ?
                         selectedOption == 0 ?
-                            <Direct />
+                            <Direct selectedOption={selectedOption} />
                             :
-                            <ByOP />
+                            <div className="by_op">
+                                <Direct selectedOption={selectedOption} />
+                                <ByOP />
+                            </div>
+
 
                         :
                         <Select dataSelects={LPAs} instanceId='LPASelected' nameSelect={'Lista Productos Aprobados'}></Select>
                     }
                     <div className='table__modal_create_orders' >
                         <div>
-                            <div>
-                                {concepts ? (
-                                    <div className='table__numbers'>
-                                        <p className='text'>Total de articulos</p>
-                                        <div className='quantities_tables'>{concepts.length}</div>
-                                    </div>
-                                ) : (
-                                    <p className='text'>No hay empresas</p>
-                                )}
-                            </div>
+                            {concepts ? (
+                                <div className='table__numbers'>
+                                    <p className='text'>Total de articulos</p>
+                                    <div className='quantities_tables'>{concepts.length}</div>
+                                </div>
+                            ) : (
+                                <p className='text'>No hay empresas</p>
+                            )}
+                        </div>
+                        <div className="table">
+
                             <div className='table__head'>
                                 <div className='thead'>
                                     <div className='th'>
@@ -376,12 +430,27 @@ const ModalCreate = () => {
                                         <div className='tbody__container' key={index}>
                                             <div className='tbody'>
                                                 <div className='td'>
-                                                    <p>{concept?.codigo}-{concept?.descripcion}</p>
+                                                    <p className="article-identifier">{concept?.codigo}-{concept?.descripcion}</p>
                                                 </div>
                                                 <div className="td">
-                                                    <div>
-                                                        <p>{concept?.orden_produccion ? concept?.orden_produccion.folio : "N/A"}</p>
-                                                    </div>
+                                                    {selectedOption == 0 ?
+                                                        <div>
+                                                            <p>{concept?.orden_produccion ? concept?.orden_produccion.folio : "N/A"}</p>
+                                                        </div>
+                                                        :
+                                                        <select
+                                                            className="traditional__selector"
+                                                            value={concept.id_orden_produccion || "Ninguna"}
+                                                            onChange={(event) => handleSelectChange(event, index)} >
+                                                            <option value="Ninguna">Ninguna</option>
+                                                            {OPByareas?.map((area, index) => (
+                                                                <option key={index} value={area.conceptos[0].id}>
+                                                                    {`${area.serie}-${area.id_folio}-${area.anio}`}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    }
+
                                                 </div>
                                                 <div className='td'>
                                                     <div>
@@ -471,11 +540,11 @@ const ModalCreate = () => {
                             )}
                         </div>
                     </div>
-                   
+
                 </div>
                 <div className="mt-4 d-flex justify-content-center">
-                        <button className='btn__general-purple' onClick={handleCreateOrders}>Crear Pedido</button>
-                    </div>
+                    <button className='btn__general-purple' onClick={handleCreateOrders}>Crear Pedido</button>
+                </div>
             </div>
             {
                 modalLoading == true ? (

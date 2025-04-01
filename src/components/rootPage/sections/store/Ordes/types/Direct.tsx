@@ -8,17 +8,19 @@ import { useSelectStore } from '../../../../../../zustand/Select';
 import { useStore } from 'zustand';
 import useUserStore from '../../../../../../zustand/General';
 import { storeArticles } from '../../../../../../zustand/Articles';
+import './styles/Direct.css'
 
 
-const Direct: React.FC = () => {
+const Direct: React.FC<any> = ({selectedOption}: any) => {
 
     const userState = useUserStore(state => state.user);
     const user_id = userState.id
+    
 
     //////////////////////////////////Directa////////////////////////////////////////////////
 
     const setConcepts = storeOrdes(state => state.setConcepts)
-    const { concepts }: any = useStore(storeOrdes)
+    const { concepts, OPByareas }: any = useStore(storeOrdes)
     const [selectModalResults, setSelectModalResults] = useState<boolean>(false)
     const [selectedModalResult, setSelectedModalResult] = useState<any>(null)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
@@ -94,11 +96,14 @@ const Direct: React.FC = () => {
         selectedModalResult.cantidad = 0
         selectedModalResult.unidad = selectedModalResult.unidades[0].id_unidad
         selectedModalResult.id_unidad = selectedModalResult.unidades[0].id_unidad
+        selectedModalResult.id_orden_produccion = selectedOption == 0 ? 0 : 0
         selectedModalResult.comentarios = ''
         setConcepts([...concepts, { ...selectedModalResult }]);
 
 
     };
+
+    console.log('concepts', concepts)
 
     return (
         <div className='conatiner__direct'>
@@ -112,7 +117,6 @@ const Direct: React.FC = () => {
                 </div>
                 <div className='container__search'>
                     <button className='btn__general-purple btn__container' type='button' onClick={searchFor}>
-                        Buscar
                         <svg className='svg' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg>
                     </button>
                 </div>

@@ -1,0 +1,25 @@
+.conatiner__create_orders .conatiner__direct {
+
+}
+.conatiner__create_orders .conatiner__direct .row__one {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.conatiner__create_orders .conatiner__direct .row__two {
+   
+}
+
+.conatiner__create_orders .conatiner__direct .row__two {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.conatiner__create_orders .conatiner__direct .row__two .container__two {
+    max-width: 600px;
+    display: grid;
+    grid-template-columns: 1fr 100px;
+    gap: 10px;
+    align-items: end;
+}

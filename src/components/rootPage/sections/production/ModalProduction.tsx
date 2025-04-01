@@ -72,6 +72,17 @@ const ModalProduction: React.FC = () => {
     }
 
     const finishConcept = async () => {
+        const dataProductionOrders = {
+            folio: 0,
+            id: productionToUpdate.id,
+            id_sucursal: productionToUpdate.id_sucursal,
+            id_serie: 0,
+            id_area: 0,
+            desde: formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+            hasta: formatDate(new Date()),
+            id_usuario: user_id,
+            status: 0,
+        }
         let data = {
             id: productionToUpdate.id,
             id_usuario: user_id,
@@ -92,6 +103,8 @@ const ModalProduction: React.FC = () => {
                             copy.status = 2
                             setProductionToUpdate(copy)
                         })
+                        const result = await APIs.getProoductionOrders(dataProductionOrders)
+                    setProductionToUpdate(result[0])
                 } catch (error) {
                     Swal.fire('Notificacion', 'Ocurrió un error al cambiar de area, consulta con soporte', 'info')
 
@@ -100,6 +113,17 @@ const ModalProduction: React.FC = () => {
         });
     }
     const cancelarOp = async () => {
+        const dataProductionOrders = {
+            folio: 0,
+            id: productionToUpdate.id,
+            id_sucursal: productionToUpdate.id_sucursal,
+            id_serie: 0,
+            id_area: 0,
+            desde: formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+            hasta: formatDate(new Date()),
+            id_usuario: user_id,
+            status: 0,
+        }
         let data = {
             id: productionToUpdate.id,
             id_usuario: user_id,
@@ -120,6 +144,8 @@ const ModalProduction: React.FC = () => {
                             copy.status = 1
                             setProductionToUpdate(copy)
                         })
+                        const result = await APIs.getProoductionOrders(dataProductionOrders)
+                    setProductionToUpdate(result[0])
                 } catch (error) {
                     Swal.fire('Notificacion', 'Ocurrió un error al cancelar la orden, consulta con soporte', 'info')
 
@@ -128,7 +154,22 @@ const ModalProduction: React.FC = () => {
         });
 
     }
+
+    console.log('productionToUpdate', productionToUpdate)
+
+    const formatDate = (date: any) => date.toISOString().split("T")[0];
     const enviarASucursal = async () => {
+        const dataProductionOrders = {
+            folio: 0,
+            id: productionToUpdate.id,
+            id_sucursal: productionToUpdate.id_sucursal,
+            id_serie: 0,
+            id_area: 0,
+            desde: formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+            hasta: formatDate(new Date()),
+            id_usuario: user_id,
+            status: 0,
+        }
         let data = {
             id: productionToUpdate.id,
             id_usuario: user_id,
@@ -149,12 +190,18 @@ const ModalProduction: React.FC = () => {
                             copy.status = 3
                             setProductionToUpdate(copy)
                         })
+                    const result = await APIs.getProoductionOrders(dataProductionOrders)
+                    setProductionToUpdate(result[0])
                 } catch (error) {
                     Swal.fire('Notificacion', 'Ocurrió un error al cambiar de area, consulta con soporte', 'info')
 
                 }
             }
         });
+
+
+
+
 
     }
     const sendAreas = async () => {
@@ -355,20 +402,36 @@ const ModalProduction: React.FC = () => {
                                             </div>
 
                                         </div>
-                                        {checkPermission('enviar_a_sucursal') && (
-                                            <div>
-                                                <button className='btn__general-primary' onClick={() => enviarASucursal()}>Enviar a sucursal</button>
-                                            </div>
 
-                                        )}
                                     </div>
                                     <div className='d-flex align-items-end'>
+                                        {checkPermission('enviar_a_sucursal') && (
+                                            productionToUpdate.status == 0 ?
+                                                <div className='mr-3'>
+                                                    <button className='btn__general-primary' onClick={() => enviarASucursal()}>Enviar a sucursal</button>
+                                                </div>
+                                                :
+                                                ''
+
+                                        )}
                                         {checkPermission('terminar') && (
-                                            <button className='mr-3 btn__general-danger' onClick={() => finishConcept()}>Terminar orden</button>
+                                            productionToUpdate.status == 0 ?
+                                                <div className='mr-3'>
+                                                    <button className='mr-3 btn__general-danger' onClick={() => finishConcept()}>Terminar orden</button>
+                                                </div>
+                                                :
+                                                ''
+
 
                                         )}
                                         {checkPermission('cancelar') && (
-                                            <button className='btn__general-danger' onClick={() => cancelarOp()}>Cancelar</button>
+                                            productionToUpdate.status == 0 ?
+                                                <div className='mr-3'>
+                                                    <button className='btn__general-danger' onClick={() => cancelarOp()}>Cancelar</button>
+                                                </div>
+                                                :
+                                                ''
+
                                         )}
                                     </div>
                                 </div>
@@ -430,11 +493,12 @@ const ModalProduction: React.FC = () => {
                                                         <div className='td-one'>
                                                             {article.monto_urgencia != undefined && article.monto_urgencia > 0 ?
                                                                 <div className='d-flex'>
-                                                                    <p className='total-identifier'>$ {article.total}</p>
+                                                                    <p className='total-identifier'>$ {article.total.toFixed(2)}</p>
                                                                     <p>${article.monto_urgencia}</p>
                                                                 </div>
                                                                 :
-                                                                <p className='total-identifier'>$ {article.total}</p>}
+                                                                <p className='total-identifier'>$ {article.total.toFixed(2)}</p>
+                                                            }
                                                         </div>
                                                         <div className='td-one'>
                                                             <p>{article.status_produccion == 0 ? <b className='active-identifier'>ACTIVO</b> :
@@ -472,7 +536,7 @@ const ModalProduction: React.FC = () => {
 
                                                     <div className='d-flex'>
                                                         <div className='d-flex align-items-end'>
-                                                            <button type='button' className='btn__general-purple' onClick={() => sendConceptoAreas(article)}>Enviar</button>
+                                                            <button type='button' className='btn__general-purple' onClick={() => sendConceptoAreas(article)}>Enviar a otra area</button>
                                                         </div>
                                                     </div>
                                                 </div>
