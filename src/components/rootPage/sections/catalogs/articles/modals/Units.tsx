@@ -81,10 +81,10 @@ const Units: React.FC = () => {
 
 
   const addUnits = () => {
+    const lastUnit = units.length > 0 ? units[units.length - 1] : null;
     const data = {
-
       id_unidad: selectedSectionUnit,
-      id_unidad_equivalencia: selectedUnits?.id_unidad || 0,
+      id_unidad_equivalencia: lastUnit?.id_unidad == null ? 0 : lastUnit.id_unidad,
       equivalencia: valueUnits,
       unidad_almacen: false,
       unidad: unitName,
@@ -132,7 +132,7 @@ const Units: React.FC = () => {
             <label className='label__general'>Valor/Equivalencia</label>
             <input className='inputs__general' type="number" onChange={hendleEquivalencia} placeholder='Ingresa el valor' />
           </div>
-          {units?.length > 0 ?
+          {/* {units?.length > 0 ?
             <div className='select__container'>
               <label className='label__general'>Unidades</label>
               <div className='select-btn__general'>
@@ -155,7 +155,7 @@ const Units: React.FC = () => {
             </div>
             :
             ''
-          }
+          } */}
           <div>
             <button className='btn__general-purple' type='button' onClick={addUnits}>Agregar</button>
           </div>

@@ -756,6 +756,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
       // setSaleOrdersConcepts({ normal_concepts: [...saleOrdersConcepts.normal_concepts, data], personalized_concepts: saleOrdersConcepts.personalized_concepts })
       // localStorage.setItem('sale-order', JSON.stringify([...saleOrdersConcepts.normal_concepts, data]));// EN VEZ DE METERLO A LOCAL STORAGE, METE A BASE DE DATOS
+      data.campos_plantilla.forEach((cp: any) => {
+        cp.valor = cp.valor.toString()
+      });
       let data_enviar = {
         concepto: data,
         id_usuario: user_id
@@ -765,11 +768,11 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
         if (!resp.error) {
           setModalLoading(false)
           Swal.fire('Notificación', resp.mensaje, 'success')
-          
+
           setChangeLength(!changeLength)
-          await APIs.GetAny('get_carrito/'+user_id).then((r:any)=>{
+          await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
             let orden = r[0]
-            setSaleOrdersConcepts({sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts:orden.conceptos_pers});
+            setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
           })
         } else {
           setModalLoading(false)

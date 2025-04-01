@@ -281,50 +281,51 @@ const modalArticle: React.FC = () => {
             fyv: FyV,
             consultar_cotizador: ConsultarConCotizador,
             consultar_te: ConsultarTe,
-
+        
             /////////////////////////////////Modales//////////////////////////////////////// 
             sucursales: branchOffices,
-            sucursales_elim: deleteBranchOffices,
-
+            sucursales_elim: deleteBranchOffices.filter(item => item !== null && item !== undefined),
+        
             max_mins: maxsMins,
-            max_mins_elim: deleteMaxsMins,
-
+            max_mins_elim: deleteMaxsMins.filter(item => item !== null && item !== undefined),
+        
             precios: prices,
-            precios_elim: deletePrices,
-
+            precios_elim: deletePrices.filter(item => item !== null && item !== undefined),
+        
             unidades: units,
-            unidades_elim: deleteUnits,
-
+            unidades_elim: deleteUnits.filter(item => item !== null && item !== undefined),
+        
             componentes: components,
-            componentes_elim: deleteComponents,
-
+            componentes_elim: deleteComponents.filter(item => item !== null && item !== undefined),
+        
             variaciones: variations,
-            variaciones_elim: deleteVariations,
-
+            variaciones_elim: deleteVariations.filter(item => item !== null && item !== undefined),
+        
             combinaciones: combinations,
-            combinaciones_elim: deleteCombinations,
-
+            combinaciones_elim: deleteCombinations.filter(item => item !== null && item !== undefined),
+        
             proveedores: suppliers,
-            proveedores_elim: deleteSuppliers,
-
+            proveedores_elim: deleteSuppliers.filter(item => item !== null && item !== undefined),
+        
             tiempos_entrega: deliveryTimes,
-            tiempos_entrega_elim: deleteDeliveryTimes,
-
+            tiempos_entrega_elim: deleteDeliveryTimes.filter(item => item !== null && item !== undefined),
+        
             cargos_minimos: minimalCharges,
-            cargos_minimos_elim: deleteMinimalCharges,
-
+            cargos_minimos_elim: deleteMinimalCharges.filter(item => item !== null && item !== undefined),
+        
             areas_produccion: areas,
-            areas_produccion_elim: deleteAreas,
-
+            areas_produccion_elim: deleteAreas.filter(item => item !== null && item !== undefined),
+        
             adicional: additionalArticles,
-            adicional_elim: deleteAdditionalArticles,
-
+            adicional_elim: deleteAdditionalArticles.filter(item => item !== null && item !== undefined),
+        
             cobros_franquicia: cobros_franquicia,
-            cobros_franquicia_elim: deleteCobros_franquicia,
-
+            cobros_franquicia_elim: deleteCobros_franquicia.filter(item => item !== null && item !== undefined),
+        
             imagenes: imagesArticles,
-            imagenes_elim: deteleImagesArticles
+            imagenes_elim: deteleImagesArticles.filter(item => item !== null && item !== undefined),
         };
+        
 
         const dataArticle = {
             id: 0,
@@ -533,26 +534,29 @@ const modalArticle: React.FC = () => {
     }
 
     const modalPrices = async () => {
-        setModalLoading(true)
         setSubModal('modal-prices')
-        const data2 = {
-            id: articleToUpdate.id,
-            activos: true,
-            nombre: '',
-            codigo: '',
-            familia: 0,
-            proveedor: 0,
-            materia_prima: 0,
-            get_precios: true
-          }
-          try {
-            const result = await APIs.getArticles(data2)
-            setPrices(result[0].precios)
-          } catch (error) {
-            
-          } finally {
-            setModalLoading(false)
-          }
+        if (articleToUpdate.id != null) {
+            setModalLoading(true)
+            const data2 = {
+                id: articleToUpdate.id,
+                activos: true,
+                nombre: '',
+                codigo: '',
+                familia: 0,
+                proveedor: 0,
+                materia_prima: 0,
+                get_precios: true
+              }
+              try {
+                const result = await APIs.getArticles(data2)
+                setPrices(result[0].precios)
+              } catch (error) {
+                
+              } finally {
+                setModalLoading(false)
+              }
+
+        }
           
     }
     
