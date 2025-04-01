@@ -36,6 +36,8 @@ const Departures: React.FC = () => {
 
     const setModal = storeModals(state => state.setModal)
 
+    console.log('dates', dates)
+
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
 

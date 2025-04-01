@@ -148,14 +148,14 @@ const ModalCreate: React.FC = () => {
             comentarios: comments,
             conceptos: concepts
         };
-        console.log('--------------------------------------', data)
+     
 
         const dataGet = {
             id_almacen: null,
             id_usuario: user_id,
             id_sucursal: selectedBranchOffice,
-            desde: dates[0],
-            hasta: dates[1],
+            desde: dates.startDate,
+            hasta: dates.endDate,  
             id_serie: 0,
             folio: null,
         }
