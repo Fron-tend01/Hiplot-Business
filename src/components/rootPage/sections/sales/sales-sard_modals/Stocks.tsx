@@ -70,7 +70,7 @@ const Stocks: React.FC = () => {
                                 <p className='name__store'>{item?.nombre}</p>
                               </div>
                               <div className='td'>
-                                <p className='stock'>{item?.stock}-{unidad?.nombre}</p>
+                                <p className='stock'>{item?.stock}</p>
                               </div>
                             </div>
                           </div>
