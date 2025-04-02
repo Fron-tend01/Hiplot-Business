@@ -18,6 +18,58 @@ const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
 
     }
 
+    const descargarCSV = () => {
+        let data = conceptsUpdate;
+        if (!data) return;
+
+        // Encabezado principal
+        const encabezadoPrincipal = ["SERIE", "FOLIO", "AÑO", "FECHA CREACIÓN", "USUARIO CREA", "SUCURSAL", "EMPRESA"];
+        const valoresPrincipales = [
+            data.serie,
+            data.folio,
+            data.anio,
+            data.fecha_creacion,
+            data.usuario_crea,
+            data.sucursal,
+            data.empresa
+        ].join(",");
+
+        // Encabezado para los conceptos
+        const encabezadoConceptos = ["ARTÍCULO", "PEDIDO", "CANT.", "UNIDAD", "ENTRADAS AFECT.", "COMENTARIOS"];
+
+        // Filas de conceptos
+        const filasConceptos = data.conceptos.map((order) => {
+            const entradasAfectadas = order.entradas_afectadas?.map(ent => `${ent.serie}-${ent.folio}-${ent.anio}`).join(" || ") || "";
+            return [
+                `${order.codigo}-${order.descripcion}`,
+                order.ped ? order.ped : "No aplica",
+                order.cantidad,
+                order.unidad,
+                entradasAfectadas,
+                order.comentarios
+            ].join(",");
+        });
+
+        // Unir todo en un solo CSV
+        const csvContenido = [
+            encabezadoPrincipal.join(","),
+            valoresPrincipales,
+            "", // Línea vacía para separación
+            encabezadoConceptos.join(","),
+            ...filasConceptos
+        ].join("\n");
+
+        // Crear y descargar el archivo
+        const blob = new Blob([csvContenido], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = `pedido_${data.id}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
     return (
         <div className={`overlay__departures-modal-update ${modal == 'modal-update__concepts' ? 'active' : ''}`}>
             <div className={`popup__departures-modal-update ${modal == 'modal-update__concepts' ? 'active' : ''}`} style={{ overflow: 'scroll' }}>
@@ -41,6 +93,8 @@ const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
                                             <span className='text'>Sucursal: <b>{conceptsUpdate.sucursal}</b></span><br />
                                             <span className='text'>Almacen: <b>{conceptsUpdate.almacen}</b></span>
                                         </div>
+                                        <button type="button" className='btn__general-orange' onClick={() => descargarCSV()}>Excel</button>
+
                                     </div>
                                     <div className='row'>
                                         <div className='col-12'>
@@ -161,7 +215,7 @@ const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
                                                             </div>
                                                             <div className='td'>
                                                                 <p className='amount-identifier'>{order.cantidad}</p>
-                                                            </div>    
+                                                            </div>
                                                             <div className='td'>
                                                                 <p className='unit-identifier'>{order.unidad}</p>
                                                             </div>
@@ -175,7 +229,7 @@ const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
                                                             <div className='td'>
                                                                 <p>{order.comentarios}</p>
                                                             </div>
-                                                            
+
                                                         </div>
                                                     </div>
                                                 )

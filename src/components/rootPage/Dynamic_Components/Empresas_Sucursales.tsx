@@ -77,7 +77,7 @@ const Empresas_Sucursales = (props: any) => {
                     <div className='select-btn__general'>
                         <div className={`select-btn ${empresaSelectedOpen ? 'active' : ''}`} onClick={() => { !blocked && SetEmpresaSelectedOpen(!empresaSelectedOpen) }}>
                             <div className='select__container_title'>
-                                <p>{empresaDyn?.id ? empresas.find((s: { id: number }) => s.id === empresaDyn?.id)?.razon_social : all ? 'Todos' : 'Seleccionar'}</p>
+                                <p>{empresaDyn?.id ? empresas?.find((s: { id: number }) => s.id === empresaDyn?.id)?.razon_social : all ? 'Todos' : 'Seleccionar'}</p>
                             </div>
                             <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
                                 <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
@@ -85,7 +85,7 @@ const Empresas_Sucursales = (props: any) => {
                         </div>
                         <div className={`content ${empresaSelectedOpen ? 'active' : ''}`}>
                             <ul className={`options ${empresaSelectedOpen ? 'active' : ''}`} style={{ opacity: empresaSelectedOpen ? '1' : '0' }}>
-                                {empresas.map((fam: any) => (
+                                {empresas?.map((fam: any) => (
                                     <li key={fam.id} onClick={() => {
                                         SetEmpresaSelectedOpen(false);
                                         selectAutomaticSuc(fam.id);
@@ -107,7 +107,7 @@ const Empresas_Sucursales = (props: any) => {
                         <div className='select-btn__general'>
                             <div className={`select-btn ${sucursalSelectedOpen ? 'active' : ''}`} onClick={() => { !blocked && SetSucursalSelectedOpen(!sucursalSelectedOpen) }}>
                                 <div className='select__container_title'>
-                                    <p>{sucursalDyn?.id ? sucursales.find((s: { id: number }) => s.id === sucursalDyn?.id)?.nombre : all ? 'Todos' : 'Seleccionar'}</p>
+                                    <p>{sucursalDyn?.id ? sucursales?.find((s: { id: number }) => s.id === sucursalDyn?.id)?.nombre : all ? 'Todos' : 'Seleccionar'}</p>
                                 </div>
                                 <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
                                     <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
@@ -115,7 +115,7 @@ const Empresas_Sucursales = (props: any) => {
                             </div>
                             <div className={`content ${sucursalSelectedOpen ? 'active' : ''}`}>
                                 <ul className={`options ${sucursalSelectedOpen ? 'active' : ''}`} style={{ opacity: sucursalSelectedOpen ? '1' : '0' }}>
-                                    {sucursales.map((fam: any) => (
+                                    {sucursales?.map((fam: any) => (
                                         <li key={fam.id} onClick={() => {
                                             SetSucursalSelectedOpen(false);
                                             setSucursalDyn(fam);

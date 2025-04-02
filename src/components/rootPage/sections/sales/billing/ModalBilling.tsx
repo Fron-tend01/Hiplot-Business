@@ -742,7 +742,30 @@ const ModalBilling: React.FC = () => {
         setSubModal('')
         setModoUpdate(false)
     }
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
+    const cancelarFactura = () => {
+        Swal.fire({
+            title: "Seguro que deseas cancelar la Factura?",
+            text: "Al cancelar la factura se desligará las ordenes de venta y PAFs enlazadas a él. La información no se eliminará. Si deseas solo desligar las ordenes de venta, elimina los conceptos de la OV deseada, La PAF no se libera.",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`,
+            icon:'warning'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setModalLoading(true)
+                APIs.CreateAny({id:DataUpdate.id}, 'cancelar_factura').then((resp:any) => {
+                    setSubModal('')
+                    Swal.fire('Notificacion', resp.mensaje, 'success')
+                    setModalLoading(false)
+                }).finally(()=> {
+                    setModalLoading(false)
+                })
+            }
+        });
+        
+    }
     return (
         <div className={`overlay__billing-modal ${subModal == 'billing__modal-create' || subModal == 'billing__modal-update' ? 'active' : ''}`}>
             <Toaster expand={true} position="top-right" richColors />
@@ -806,6 +829,7 @@ const ModalBilling: React.FC = () => {
                                                     ""
                                                 )
                                             )}
+                                            <button className='btn__general-danger' onClick={cancelarFactura}>Cancelar</button>
                                         </div>
                                         <div className='col-6 md-col-12'>
                                             <span className='text'>Empresa: <b>{DataUpdate.empresa}</b></span><br />
