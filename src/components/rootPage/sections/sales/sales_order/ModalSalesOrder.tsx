@@ -332,15 +332,11 @@ const ModalSalesOrder: React.FC = () => {
     const [dataProduction, setDataProduction] = useState<any>()
 
     const SaleOrderProduction = async () => {
-        let concetps: any = []
+        let concepts = saleOrdersConcepts.personalized_concepts
+    .filter((element: any) => element.enviar_a_produccion === true)
+    .map((element: any) => element.conceptos);
 
-        customConcepts.forEach((element: any) => {
-            concetps = [...concetps, ...element.conceptos]
-
-        });
-
-        setConceptsProductions([...normalConcepts, ...concetps])
-
+setConceptsProductions([...saleOrdersConcepts.normal_concepts, ...concepts]);
 
         setModalProduction('sale-order-production__modal')
         if (!modify_te) {
@@ -489,7 +485,7 @@ const ModalSalesOrder: React.FC = () => {
     useEffect(() => {
 
         calcular_totales()
-        
+
         if (modalSalesOrder !== 'sale-order__modal-update') {
             calcular_tiempos_entrega();
 
@@ -497,14 +493,14 @@ const ModalSalesOrder: React.FC = () => {
     }, [modalSalesOrder, changeLength])
 
 
-    
+
     useEffect(() => {
 
         calcular_totales()
-        
+
         if (modalSalesOrder !== 'sale-order__modal-update') {
             calcular_tiempos_entrega();
-   
+
         }
     }, [modalSalesOrder, branchOffices])
 
@@ -603,7 +599,7 @@ const ModalSalesOrder: React.FC = () => {
             setTitle(saleOrdersToUpdate.titulo)
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setModifyTe(saleOrdersToUpdate.motivo_modify_te)
-         
+
             setSelectedIds('clients', saleOrdersToUpdate.id_cliente)
 
         }
@@ -826,18 +822,42 @@ const ModalSalesOrder: React.FC = () => {
     const deleteArticle = async (item: any, i: number, type) => {
         if (type == 'modal-sale') {
             if (modalSalesOrder == 'sale-order__modal') {
-                const filter = saleOrdersConcepts?.normal_concepts.filter((_: any, index: number) => index !== i)
-                setSaleOrdersConcepts({ normal_concepts: filter, ...(item.id && { normal_concepts_eliminate: [...(saleOrdersConcepts?.normal_concepts_eliminate ?? []), item.id] }) });
-                localStorage.setItem('sale-order', JSON.stringify(filter));
-                toast.success('Concepto eliminado')
-
+                Swal.fire({
+                    title: "Deseas eliminar el concepto " + item.descripcion,
+                    text: "Si se encuentra apartado tu material, esta acción lo desapartará",
+                    showCancelButton: true,
+                    confirmButtonText: "Aceptar",
+                    denyButtonText: `Cancelar`,
+                    icon:'question'
+                  }).then(async (result) => {
+                    if (result.isConfirmed) {
+                      setModalLoading(true)
+                      APIs.deleteAny('eliminar_conceptos_carrito/' + item.id).then(async (resp: any) => {
+                        if (resp.error) {
+                          setModalLoading(false)
+              
+                          Swal.fire('Notificacion', resp.mensaje, 'warning')
+                        } else {
+                          setModalLoading(false)
+                          Swal.fire('Notificacion', resp.mensaje, 'success')
+                          await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+                            let orden = r[0]
+                            setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+                          })
+                        }
+                      }).finally(() => {
+                        setModalLoading(false)
+                      })
+              
+                    }
+                  });
             } else {
 
             }
         } else {
             const filter = saleOrdersConcepts.normal_concepts.filter((_: any, index: number) => index !== i)
-            setSaleOrdersConcepts({ normal_concepts: filter });
-            localStorage.setItem('sale-order', JSON.stringify(filter));
+            setSaleOrdersConcepts({ normal_concepts: filter, personalized_concepts: saleOrdersConcepts.personalized_concepts, });
+            toast.success('Concepto eliminado')
             setChangeLength(!changeLength)
         }
 
@@ -869,16 +889,15 @@ const ModalSalesOrder: React.FC = () => {
 
     const closeModal = async () => {
         setModalSalesOrder('')
-        await APIs.GetAny('get_carrito/'+user_id).then((r:any)=>{
+        await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
             let orden = r[0]
             if (r.length == 0) {
-                setSaleOrdersConcepts({normal_concepts: [], personalized_concepts:[]});
+                setSaleOrdersConcepts({ normal_concepts: [], personalized_concepts: [] });
 
-            }else {
-
-                setSaleOrdersConcepts({sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts:orden.conceptos_pers});
+            } else {
+                setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
             }
-          })
+        })
         // setSaleOrdersConcepts({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], concepto: {}, indexConcepto: 0 })
         // setCustomConceptView([])
     }
@@ -972,9 +991,36 @@ const ModalSalesOrder: React.FC = () => {
         setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
     }
 
+    const [isDisabledBranch, setIsDisabledBranch] = useState<boolean>(false);
+    const [isDisabledClients, setIsDisabledClients] = useState<boolean>(false);
+
+    const handleBrnachChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const isChecked = event.target.checked;
+        setIsDisabledBranch(isChecked)
+        if (isChecked) {
+            saleOrdersConcepts?.normal_concepts.forEach(element => {
+                element.check_recibido_sucursal = true
+            });
+            setSaleOrdersConcepts({ normal_concepts: saleOrdersConcepts?.normal_concepts, personalized_concepts: saleOrdersConcepts.personalized_concepts });
+        } else {
+
+        }
+    }
+
+    const handleClientsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const isChecked = event.target.checked;
+        setIsDisabledClients(isChecked)
+        if (isChecked) {
+            saleOrdersConcepts?.normal_concepts.forEach(element => {
+                element.check_entregado_cliente = true
+            });
+            setSaleOrdersConcepts({ normal_concepts: saleOrdersConcepts?.normal_concepts, personalized_concepts: saleOrdersConcepts.personalized_concepts });
+        } else {
+
+        }
+    }
 
 
-    
 
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
@@ -1243,7 +1289,7 @@ const ModalSalesOrder: React.FC = () => {
                                     </div>
                                 )}
 
-                                <div className="col-6 sale-order__input_container d-flex align-items-center">
+                                <div className="col-4 sale-order__input_container d-flex align-items-center">
                                     <p className="label__general">Fecha de entrega a producción</p>
                                     <div className="container_dates__requisition">
                                         <input
@@ -1257,7 +1303,7 @@ const ModalSalesOrder: React.FC = () => {
                                 </div>
 
                                 {/* Fecha de entrega cliente */}
-                                <div className="col-6 sale-order__input_container d-flex align-items-center">
+                                <div className="col-4 sale-order__input_container d-flex align-items-center">
                                     <p className="label__general">Fecha de entrega cliente</p>
                                     <div className="container_dates__requisition">
                                         <input
@@ -1267,6 +1313,30 @@ const ModalSalesOrder: React.FC = () => {
                                             onChange={(event) => handleDateChange(event, 1)}
                                             placeholder="Selecciona la fecha de fin"
                                         />
+                                    </div>
+                                </div>
+                                <div className='col-4 row'>
+                                    <div className='col-6'>
+                                        <div>
+                                            <div className=''>
+                                                <label>Recibido Sucursal</label>
+                                            </div>
+                                            <label className="switch">
+                                                <input type="checkbox" disabled={isDisabledBranch ? true : false} onChange={handleBrnachChange} />
+                                                <span className="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div className='col-6'>
+                                        <div>
+                                            <div className=''>
+                                                <label>Recibido Cliente</label>
+                                            </div>
+                                            <label className="switch">
+                                                <input type="checkbox" disabled={isDisabledClients ? true : false} onChange={handleClientsChange} />
+                                                <span className="slider"></span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1464,9 +1534,9 @@ const ModalSalesOrder: React.FC = () => {
                                                                 <label className="switch">
                                                                     <input
                                                                         type="checkbox"
-
+                                                                        disabled={article.check_recibido_sucursal ? true : false}
                                                                         checked={article.check_recibido_sucursal}
-                                                                        onChange={() => handleBranchChange(article.check_recibido_sucursal, index)} disabled={article.status == !0} />
+                                                                        onChange={() => handleBranchChange(article.check_recibido_sucursal, index)} />
                                                                     <span className="slider"></span>
                                                                 </label>
                                                             </div>
@@ -1475,25 +1545,26 @@ const ModalSalesOrder: React.FC = () => {
                                                         ''
                                                     }
                                                     {modalSalesOrder == 'sale-order__modal-update' ?
-                                                          <div className='td customer'>
-                                                          <div>
-                                                              <div className=''>
-                                                                  <label>Recibido Cliente</label>
-                                                              </div>
-                                                              <label className="switch">
-                                                                  <input
-                                                                      type="checkbox"
-  
-                                                                      checked={article.check_entregado_cliente}
-                                                                      onChange={() => handleCustomerChange(article.check_entregado_cliente, index)} disabled={article.status == !0} />
-                                                                  <span className="slider"></span>
-                                                              </label>
-                                                          </div>
-                                                      </div>
+                                                        <div className='td customer'>
+                                                            <div>
+                                                                <div className=''>
+                                                                    <label>Recibido Cliente</label>
+                                                                </div>
+                                                                <label className="switch">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        disabled={article.check_entregado_cliente ? true : false}
+                                                                        checked={article.check_entregado_cliente}
+                                                                        onChange={() => handleCustomerChange(article.check_entregado_cliente, index)} />
+                                                                    <span className="slider"></span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
                                                         :
                                                         ''
                                                     }
-                                                  
+
                                                     {article.status == 0 ?
                                                         <div>
                                                             {modalSalesOrder == 'sale-order__modal-update' && saleOrdersToUpdate.status != 1 ?

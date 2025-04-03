@@ -452,6 +452,9 @@ const ModalCreate = () => {
                                                             <p>{concept?.orden_produccion ? concept?.orden_produccion.folio : "N/A"}</p>
                                                         </div>
                                                         :
+                                                        concept.orden_produccion ?
+                                                        <p>{concept.orden_produccion.folio}</p>
+                                                        :
                                                         <select
                                                             className="traditional__selector"
                                                             value={concept.id_orden_produccion || "Ninguna"}
@@ -463,6 +466,7 @@ const ModalCreate = () => {
                                                                 </option>
                                                             ))}
                                                         </select>
+                                                        
                                                     }
 
                                                 </div>
