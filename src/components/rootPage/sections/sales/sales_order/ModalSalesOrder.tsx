@@ -333,10 +333,10 @@ const ModalSalesOrder: React.FC = () => {
 
     const SaleOrderProduction = async () => {
         let concepts = saleOrdersConcepts.personalized_concepts
-    .filter((element: any) => element.enviar_a_produccion === true)
-    .map((element: any) => element.conceptos);
+            .filter((element: any) => element.enviar_a_produccion === true)
+            .map((element: any) => element.conceptos);
 
-setConceptsProductions([...saleOrdersConcepts.normal_concepts, ...concepts]);
+        setConceptsProductions([...saleOrdersConcepts.normal_concepts, ...concepts]);
 
         setModalProduction('sale-order-production__modal')
         if (!modify_te) {
@@ -518,16 +518,18 @@ setConceptsProductions([...saleOrdersConcepts.normal_concepts, ...concepts]);
         };
 
         // Validar que saleOrdersConcepts existe y que normal_concepts no sea null/undefined
-        const precios = (saleOrdersConcepts?.normal_concepts || []).reduce(
-            (acc, item) => ({
-                precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
-                descuento: acc.descuento + (parseFloat(item.descuento) || 0),
-                monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
-                total: acc.total + (parseFloat(item.precio_total) || 0),
-                total_franquicia: acc.total_franquicia + (parseFloat(item.total_franquicia) || 0),
-            }),
-            initialValues
-        );
+        const precios = (saleOrdersConcepts?.normal_concepts || [])
+            .filter(item => item.status !== 1) // Excluir elementos con status 1
+            .reduce(
+                (acc, item) => ({
+                    precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
+                    descuento: acc.descuento + (parseFloat(item.descuento) || 0),
+                    monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
+                    total: acc.total + (parseFloat(item.precio_total) || 0),
+                    total_franquicia: acc.total_franquicia + (parseFloat(item.total_franquicia) || 0),
+                }),
+                initialValues
+            );
 
         // Validar que saleOrdersConcepts existe y que personalized_concepts no sea null/undefined
         const preciospers = (saleOrdersConcepts?.personalized_concepts || []).reduce(
@@ -827,29 +829,29 @@ setConceptsProductions([...saleOrdersConcepts.normal_concepts, ...concepts]);
                     showCancelButton: true,
                     confirmButtonText: "Aceptar",
                     denyButtonText: `Cancelar`,
-                    icon:'question'
-                  }).then(async (result) => {
+                    icon: 'question'
+                }).then(async (result) => {
                     if (result.isConfirmed) {
-                      setModalLoading(true)
-                      APIs.deleteAny('eliminar_conceptos_carrito/' + item.id).then(async (resp: any) => {
-                        if (resp.error) {
-                          setModalLoading(false)
-              
-                          Swal.fire('Notificacion', resp.mensaje, 'warning')
-                        } else {
-                          setModalLoading(false)
-                          Swal.fire('Notificacion', resp.mensaje, 'success')
-                          await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
-                            let orden = r[0]
-                            setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
-                          })
-                        }
-                      }).finally(() => {
-                        setModalLoading(false)
-                      })
-              
+                        setModalLoading(true)
+                        APIs.deleteAny('eliminar_conceptos_carrito/' + item.id).then(async (resp: any) => {
+                            if (resp.error) {
+                                setModalLoading(false)
+
+                                Swal.fire('Notificacion', resp.mensaje, 'warning')
+                            } else {
+                                setModalLoading(false)
+                                Swal.fire('Notificacion', resp.mensaje, 'success')
+                                await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+                                    let orden = r[0]
+                                    setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+                                })
+                            }
+                        }).finally(() => {
+                            setModalLoading(false)
+                        })
+
                     }
-                  });
+                });
             } else {
 
             }
