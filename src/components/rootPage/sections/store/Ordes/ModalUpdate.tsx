@@ -220,6 +220,8 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
     link.click();
     document.body.removeChild(link);
   };
+
+  console.log('sddddddddddddddddddddd', oderUpdate)
   
   return (
     <div className={`overlay__orders ${modal == 'modal-orders-update' ? 'active' : ''}`}>
@@ -348,9 +350,9 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                         <div className='td'>
                           <div className='td'>
                             <div>
-                              <select className='traditional__selector' onChange={(event) => handleSelectUnits(event, index)} value={order.id_unidad}>
+                              <select className='traditional__selector'  value={order.id_unidad}>
                                 {order.unidades?.map((unit: any) => (
-                                  <option key={unit.id} value={unit.id}>
+                                  <option key={unit.id} value={unit.id_unidad}>
                                     {unit.nombre}
                                   </option>
                                 ))}

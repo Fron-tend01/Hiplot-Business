@@ -157,6 +157,8 @@ const ModalSalesOrder: React.FC = () => {
 
     useEffect(() => {
         if (modalSalesOrder == 'sale-order__modal-update') {
+            setCompanies({ id: saleOrdersToUpdate.id_empresa })
+            setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
             setClients({
                 selectName: 'Cliente',
                 options: 'razon_social',
@@ -487,10 +489,24 @@ const ModalSalesOrder: React.FC = () => {
     useEffect(() => {
 
         calcular_totales()
+        
         if (modalSalesOrder !== 'sale-order__modal-update') {
             calcular_tiempos_entrega();
+
         }
     }, [modalSalesOrder, changeLength])
+
+
+    
+    useEffect(() => {
+
+        calcular_totales()
+        
+        if (modalSalesOrder !== 'sale-order__modal-update') {
+            calcular_tiempos_entrega();
+   
+        }
+    }, [modalSalesOrder, branchOffices])
 
 
 
@@ -587,15 +603,9 @@ const ModalSalesOrder: React.FC = () => {
             setTitle(saleOrdersToUpdate.titulo)
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setModifyTe(saleOrdersToUpdate.motivo_modify_te)
-            setCompanies({ id: saleOrdersToUpdate.id_empresa })
-            setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
+         
             setSelectedIds('clients', saleOrdersToUpdate.id_cliente)
 
-            const data = {
-                id_sucursal: saleOrdersToUpdate.id_sucursal,
-                id_usuario: user_id,
-                nombre: saleOrdersToUpdate.razon_social
-            }
         }
     }, [modalSalesOrder]);
 
@@ -975,7 +985,6 @@ const ModalSalesOrder: React.FC = () => {
                     </a>
                     <p className='title__modals'>Orden de venta</p>
                 </div>
-
                 {modalSalesOrder == 'sale-order__modal-update' ?
                     <div className="card">
                         <div className={`overlay__sale-order_production__modal_articles ${modalProduction == 'sale-order-production__modal' ? 'active' : ''}`}>
@@ -992,14 +1001,12 @@ const ModalSalesOrder: React.FC = () => {
                                     </div>
                                     <div className='listSaleOrder__container'>
                                         <section className="listSaleOrder">
-
                                             <div className="itemDividerSaleOrder">Fecha Entrega Producción</div>
                                             <div className="itemSaleOrder">
                                                 <span className="dateSaleOrder">{dataProduction?.fecha_produccion}</span>
                                                 <span className="timeSaleOrder">{dataProduction?.hora_produccion}</span>
                                             </div>
                                         </section>
-
                                         <section className="listSaleOrder">
                                             <div className="itemDividerSaleOrder">Fecha Entrega Cliente</div>
                                             <div className="itemSaleOrder">

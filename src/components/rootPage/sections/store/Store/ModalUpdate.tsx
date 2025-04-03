@@ -44,6 +44,8 @@ const ModalCreate: React.FC = () => {
       }
      
   },  [storeToUpdate]);
+
+ 
     
     useEffect(() => {
         fetch()
@@ -68,7 +70,6 @@ const ModalCreate: React.FC = () => {
         console.log(branchOffices)
     };
 
-
       const modalCreateCompanies = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const data = {
@@ -85,7 +86,7 @@ const ModalCreate: React.FC = () => {
           filter = item.filter((x: any) => x !== idToRemove);
         }
   
-
+   
 
         const data_ext = {
           sucursales_nuevas: filter,
