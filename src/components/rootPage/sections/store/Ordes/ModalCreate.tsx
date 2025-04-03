@@ -479,7 +479,7 @@ const ModalCreate = () => {
                                                 <div className='td'>
                                                     <div>
                                                         <select className='traditional__selector' disabled={concept?.orden_produccion}
-                                                            onChange={(event) => handleSeleccion(event, index)} value={seleccionesTemporales[index] || ''}>
+                                                            onChange={(event) => handleSeleccion(event, index)} value={concept.id_unidad}>
                                                             {concept?.unidades.map((item: any) => (
                                                                 <option key={item.id} value={item.id_unidad}>
                                                                     {item.nombre}
