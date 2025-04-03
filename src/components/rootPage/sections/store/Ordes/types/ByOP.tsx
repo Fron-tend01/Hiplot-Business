@@ -72,7 +72,6 @@ const ByOP: React.FC = () => {
         }
     }
 
-    console.log('orderssssssssssssssss', orders)
 
     const addArticlesByRequest = (item: any) => {
         let filter = orders.filter((x: any) => x.id !== item.id)
@@ -86,8 +85,8 @@ const ByOP: React.FC = () => {
                   id: item.id 
               },
               id_orden_produccion: concepto.id,
-              unidad: concepto.unidades[0].id_unidad,
-              id_unidad: concepto.unidades[0].id_unidad,
+              unidad: concepto.id_unidad,
+              id_unidad: concepto.id_unidad,
             }))
           ])
         }

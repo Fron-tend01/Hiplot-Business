@@ -568,7 +568,6 @@ setConceptsProductions([...saleOrdersConcepts.normal_concepts, ...concepts]);
 
 
     useEffect(() => {
-
         if (modalSalesOrder === 'sale-order__modal_bycot' || modalSalesOrder == 'sale-order__modal') {
             setIdCotizacion(saleOrdersToUpdate.id)
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
