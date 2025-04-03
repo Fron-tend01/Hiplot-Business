@@ -17,6 +17,8 @@ const ModalCreate = () => {
     const setModalTickets = storeTickets(state => state.setModalTickets)
     const setConceptos = storeTickets(state => state.setConceptos)
     const setStore = storeTickets(state => state.setStore)
+    const setPurchaseOrders = storeTickets(state => state.setPurchaseOrders)
+    
 
     const { dates, getTickets }: any = storeTickets();
 
@@ -168,6 +170,7 @@ const ModalCreate = () => {
                 await getTickets(data)
                 setModalTickets('')
                 setConceptos([])
+                setPurchaseOrders([])
                 setComments('')
             } else {
                 setModalLoading(false)
@@ -260,7 +263,7 @@ const ModalCreate = () => {
         height: warningComments === true ? '23px' : ''
     }
 
-    console.log('sdddddddddddddddd', conceptos)
+
 
     return (
         <div className={`overlay__tickets ${modalTickets == 'modal-create_ticket' ? 'active' : ''}`}>
@@ -306,7 +309,7 @@ const ModalCreate = () => {
                             :
                             <ByOC />
                         }
-                        <div className=''>
+                        <div>
                             <div className='table__modal_create_tickets' >
                                 <div>
                                     <div className='table__numbers'>

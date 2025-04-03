@@ -180,7 +180,7 @@ const ModalSalesOrder: React.FC = () => {
     }, [saleOrdersToUpdate])
 
 
-    console.log('saleOrdersConcepts', saleOrdersConcepts)
+ 
 
     const handleCreateSaleOrder = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -332,11 +332,19 @@ const ModalSalesOrder: React.FC = () => {
     const [dataProduction, setDataProduction] = useState<any>()
 
     const SaleOrderProduction = async () => {
-        let concepts = saleOrdersConcepts.personalized_concepts
-            .filter((element: any) => element.enviar_a_produccion === true)
-            .map((element: any) => element.conceptos);
+        let data = [];
 
-        setConceptsProductions([...saleOrdersConcepts.normal_concepts, ...concepts]);
+        // Recorre cada elemento de `personalized_concepts`
+        saleOrdersConcepts.personalized_concepts.forEach(element => {
+            let concepts = element.conceptos.filter((x: any) => x.enviar_a_produccion === true);
+            // Agrega los conceptos filtrados a `data` sin sobrescribirla
+            data.push(...concepts);
+        });
+
+        let normal_concepts = saleOrdersConcepts.normal_concepts.filter(element => element.enviar_a_produccion === true);
+        
+        setConceptsProductions([...normal_concepts, ...data]);
+
 
         setModalProduction('sale-order-production__modal')
         if (!modify_te) {
@@ -655,9 +663,6 @@ const ModalSalesOrder: React.FC = () => {
         setModalSub('see_cp')
     }
 
-    // console.log('normalConcepts', normalConcepts)
-
-    // console.log('customConcepts', customConcepts)
 
 
     const handleUrgencyChange = async (index: number) => {
@@ -887,6 +892,8 @@ const ModalSalesOrder: React.FC = () => {
     }
 
 
+    console.log('selectedIdsxxxxxxxxxxxxxxxxxxxxxxx', selectedIds)
+
 
     const closeModal = async () => {
         setModalSalesOrder('')
@@ -899,9 +906,13 @@ const ModalSalesOrder: React.FC = () => {
                 setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
             }
         })
+        if(modalSalesOrder == 'sale-order__modal-update') {
+            setSelectedIds('clients', null)
+        }
         // setSaleOrdersConcepts({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], concepto: {}, indexConcepto: 0 })
         // setCustomConceptView([])
     }
+
 
 
     const canceleStatus = async (item: any) => {

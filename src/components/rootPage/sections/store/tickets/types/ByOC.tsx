@@ -27,8 +27,9 @@ const ByOC: React.FC = () => {
     const setConceptos = storeTickets(state => state.setConceptos)
     const { conceptos }: any = useStore(storeTickets)
 
+    const setPurchaseOrders = storeTickets(state => state.setPurchaseOrders)
+    const { purchaseOrders }: any = useStore(storeTickets)
 
-    const [purchaseOrders, setPurchaseOrders] = useState<any>([])
 
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
