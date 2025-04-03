@@ -47,7 +47,7 @@ function App() {
   document.documentElement.style.setProperty('--close-color', theme === 'light' ? '' : '#f5f6f7');
 
   document.documentElement.style.setProperty('--line-general', theme === 'light' ? '' : '#171717');
-
+  
   document.documentElement.style.setProperty('--background-select-content', theme === 'light' ? '' : '#252a36');
 
   document.documentElement.style.setProperty('--placeholder-color', theme === 'light' ? '' : '#bfbfbf');
@@ -59,7 +59,6 @@ function App() {
   document.documentElement.style.setProperty('--text-color-ligth', theme === 'light' ? '' : '#bfbfbf');
   document.documentElement.style.setProperty('--input-color', theme === 'light' ? '' : '#212121');
   document.documentElement.style.setProperty('--text-select-color', theme === 'light' ? '' : '#f5f6f7');
- 
  
 
   // tabla
