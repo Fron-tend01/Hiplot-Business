@@ -194,3 +194,8 @@
 .concept-description {
 	font-style: italic;
 }
+
+
+.conatiner__by-request .date {
+	border: 2px solid #f2f2f2;
+}

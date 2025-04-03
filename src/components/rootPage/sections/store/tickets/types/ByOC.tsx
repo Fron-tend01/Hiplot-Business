@@ -17,6 +17,8 @@ const ByOC: React.FC = () => {
     const userState = useUserStore(state => state.user);
     const user_id = userState.id
 
+    const [dates, setDates] = useState<any>([])
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////ByOCa///////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,16 +61,6 @@ const ByOC: React.FC = () => {
 
     //////////////////////////////////////////// Fechas //////////////////////////////////////////////////
 
-    const [dates, setDates] = useState<any>([])
-
-    const handleDateChange = (fechasSeleccionadas: any) => {
-        if (fechasSeleccionadas.length === 2) {
-            setDates(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
-        } else {
-            setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
-        }
-    };
-
 
 
     const filterByRequest = async () => {
@@ -83,7 +75,7 @@ const ByOC: React.FC = () => {
             hasta: dates[1],
             status: 0,
             page: page,
-            entrada_on:true
+            entrada_on: true
         }
         try {
             const result = await APIs.getPurchaseOrders(data);
@@ -101,7 +93,7 @@ const ByOC: React.FC = () => {
             xx.oc = `${x.serie}-${x.folio}-${x.anio}`
             xx.sumar_flete = x.sumar_flete
             xx.costo_flete = x.costo_flete
-           
+
 
         }
         setConceptos([...conceptos, ...x.conceptos]);
@@ -152,10 +144,44 @@ const ByOC: React.FC = () => {
                 <div className='col-8'>
                     <Empresas_Sucursales empresaDyn={companies} sucursalDyn={branchOffices} setEmpresaDyn={setCompanies} setSucursalDyn={setBranchOffices} modeUpdate={false} />
                 </div>
-                <div className='col-3'>
-                    <label className='label__general'>Fechas</label>
-                    <div className='container_dates__requisition'>
-                        <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                <div className='col-3 row'>
+
+                    <div className="col-6">
+                        <label className="label__general">Desde</label>
+                        <div className="flex gap-4 container_dates__requisition">
+                            <Flatpickr
+                                className="date"
+                                id="fecha-desde"
+                                onChange={(date) => {
+                                    const startDate = date[0]?.toISOString().split("T")[0] || "";
+                                    setDates([startDate, dates[1]]); // Actualiza directamente el arreglo usando Zustand
+                                }}
+                                options={{
+                                    dateFormat: "Y-m-d", // Formato de la fecha
+                                    defaultDate: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha predeterminada: una semana atrás
+                                }}
+                                placeholder="Selecciona una fecha"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="col-6">
+                        <label className="label__general">Hasta</label>
+                        <div className="flex gap-4 container_dates__requisition">
+                            <Flatpickr
+                                className="date"
+                                id="fecha-hasta"
+                                onChange={(date) => {
+                                    const endDate = date[0]?.toISOString().split("T")[0] || "";
+                                    setDates([dates[0], endDate]); // Actualiza directamente el arreglo usando Zustand
+                                }}
+                                options={{
+                                    dateFormat: "Y-m-d", // Formato de la fecha
+                                    defaultDate: new Date(), // Fecha predeterminada: hoy
+                                }}
+                                placeholder="Selecciona una fecha"
+                            />
+                        </div>
                     </div>
                 </div>
                 <div className='col-1 d-flex align-items-end justify-content-end container__search '>
