@@ -39,7 +39,7 @@ const ModalCreate = () => {
     const { modal }: any = storeModals();
 
 
-    const [selectedOption, setSelectedOption] = useState<number | null>(null);
+    const [selectedOption, setSelectedOption] = useState<number>(0);
     const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
         const value = event.target.value;
