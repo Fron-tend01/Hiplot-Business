@@ -92,9 +92,11 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
 
   const [modalStatus, setModalStatus] = useState<boolean>(false)
 
+  console.log('customConceptView', customConceptView)
+
   const addPersonalized = (_: any, i: number) => {
     setSelectedIds('units', { id: customConceptView[0].id_unidad })
-    setselectedKey(customConceptView[0].clave_sat)
+    setselectedKey(saleOrdersConcepts.normal_concepts[0].clave_sat)
 
     setCustomConceptView(
       customConceptView.map((item: any, index: number) =>

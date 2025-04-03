@@ -705,8 +705,6 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
         if (result.isConfirmed) {
           const concepto_principal = { ...data };
           const concepto_adicional = { ...Adicional };
-
-          concepto_principal.id_identifier = identifier + 1;
           concepto_principal.check = true
           concepto_principal.precio_total -= concepto_adicional.total
           concepto_principal.precio_unitario -= (concepto_adicional.total / concepto_adicional.cantidad)
