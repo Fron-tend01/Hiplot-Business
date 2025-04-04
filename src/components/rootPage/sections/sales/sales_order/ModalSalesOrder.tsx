@@ -248,8 +248,8 @@ const ModalSalesOrder: React.FC = () => {
                     id_sucursal: branchOffices.id,
                     id_serie: 0,
                     id_cliente: dataGet,
-                    desde: dataGet.desde,
-                    hasta: dataGet.hasta,
+                    desde: dataGet.desde ==null ? new Date().toISOString().split('T')[0]: dataGet.desde,
+                    hasta: dataGet.hasta ==null ? new Date().toISOString().split('T')[0]: dataGet.hasta,
                     id_usuario: dataGet.id_usuario,
                     id_vendedor: 0,
                     status: 0,
@@ -269,7 +269,7 @@ const ModalSalesOrder: React.FC = () => {
             }
         } catch (error) {
             console.error("Error al crear la orden de compra:", error);
-            Swal.fire('Hubo un error al crear la orden de compra', '', 'error');
+            Swal.fire('Hubo un error al crear la orden de venta', '', 'error');
         }
 
 
@@ -1196,7 +1196,7 @@ const ModalSalesOrder: React.FC = () => {
                                     <b>FACTURAS RELACIONADAS:</b>
                                     {saleOrdersToUpdate ? (
                                         <div className='table__body'>
-                                            {saleOrdersToUpdate.facturas.map((facts: any) => {
+                                            {saleOrdersToUpdate?.facturas?.map((facts: any) => {
                                                 return (
                                                     <div className='tbody__container'>
                                                         <div className='tbody'>
@@ -1215,7 +1215,7 @@ const ModalSalesOrder: React.FC = () => {
                                     <b>ORDENES DE PRODUCCIÓN:</b>
                                     {saleOrdersToUpdate ? (
                                         <div className='table__body'>
-                                            {saleOrdersToUpdate.ordenes_produccion.map((facts: any) => {
+                                            {saleOrdersToUpdate?.ordenes_produccion?.map((facts: any) => {
                                                 return (
                                                     <div className='tbody__container' style={{
                                                         borderRadius: '10px', background: 'repeating-linear-gradient(344deg, #2087b1, #e5e5e500 100px)',

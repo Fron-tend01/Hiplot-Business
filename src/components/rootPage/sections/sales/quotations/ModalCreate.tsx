@@ -127,9 +127,11 @@ const ModalCreate: React.FC = () => {
 
   const setModalLoading = storeArticles((state: any) => state.setModalLoading);
   const setSaleOrdersConcepts = storeSaleOrder((state) => state.setSaleOrdersConcepts);
+  // const setDataGet = storeSaleOrder((state) => state.setSaleOrders);
 
   const mandarAOV = async () => {
     setModalLoading(true)
+    quatation.fecha_creacion = new Date().toISOString().split('T')[0];
     await APIs.CreateAny(quatation, 'enviar_cot_a_ov').then(async (resp: any) => {
       if (!resp.error) {
         setModalLoading(false)
@@ -1071,25 +1073,25 @@ const ModalCreate: React.FC = () => {
               <div className='subtotal'>
                 <div>
                   <p className='name'>Subtotal</p>
-                  <p className='value'>$ {calculations.subtotal}</p>
+                  <p className='value'>$ {calculations.subtotal.toFixed(2)}</p>
                 </div>
               </div>
               <div className='discount'>
                 <div>
                   <p className='name'>Descuento</p>
-                  <p className='value'>$ {calculations.descuento}</p>
+                  <p className='value'>$ {calculations.descuento.toFixed(2)}</p>
                 </div>
               </div>
               <div className='urgency'>
                 <div>
                   <p className='name'>Urgencia</p>
-                  <p className='value'>$ {calculations.urgencia}</p>
+                  <p className='value'>$ {calculations.urgencia.toFixed(2)}</p>
                 </div>
               </div>
               <div className='total'>
                 <div>
                   <p className='name'>Total</p>
-                  <p className='value'>$ {calculations.total}</p>
+                  <p className='value'>$ {calculations.total.toFixed(2)}</p>
                 </div>
               </div>
             </div>
@@ -1099,20 +1101,20 @@ const ModalCreate: React.FC = () => {
                 <div className='subtotal'>
                   <div>
                     <p className='name'>Subtotal Franquicia</p>
-                    <p className='value'>$ {calculations.subtotalf}</p>
+                    <p className='value'>$ {calculations.subtotalf.toFixed(2)}</p>
                   </div>
                 </div>
 
                 <div className='urgency'>
                   <div>
                     <p className='name'>Urgencia Franquicia</p>
-                    <p className='value'>$ {calculations.urgenciaf}</p>
+                    <p className='value'>$ {calculations.urgenciaf.toFixed(2)}</p>
                   </div>
                 </div>
                 <div className='total'>
                   <div>
                     <p className='name'>Total Franquicia</p>
-                    <p className='value'>$ {calculations.totalf}</p>
+                    <p className='value'>$ {calculations.totalf.toFixed(2)}</p>
                   </div>
                 </div>
               </div>

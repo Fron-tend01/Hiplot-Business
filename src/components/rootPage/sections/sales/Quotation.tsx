@@ -336,13 +336,13 @@ const Quotation: React.FC = () => {
                 <div className='tbody__container' key={index} onClick={() => updateQuotation(quatation)}>
                   <div className='tbody'>
                     <div className='td'>
-                      <p className='folio'>{quatation.folio}-{quatation.anio}</p>
+                      <p className='folio'>{quatation.serie}-{quatation.folio}-{quatation.anio}</p>
                     </div>
                     <div className='td'>
                       {quatation.titulo}
                     </div>
                     <div className='td '>
-                      <p className='total'>$ {quatation.total}</p>
+                      <p className='total'>$ {quatation.total.toFixed(2)}</p>
                     </div>
                     <div className='td'>
                       {quatation.Razon_social}
@@ -374,7 +374,7 @@ const Quotation: React.FC = () => {
                 <div className='tbody__container' key={index} onClick={() => updateQuotation(quatation)}>
                   <div className='tbody'>
                     <div className='td'>
-                      <p className='folio-mobile'>{quatation.folio}-{quatation.anio}</p>
+                      <p className='folio-mobile'>{quatation.serie}-{quatation.folio}-{quatation.anio}</p>
                     </div>
                     <div className='td'>
                       {quatation.titulo}
@@ -397,7 +397,7 @@ const Quotation: React.FC = () => {
                     <div className='td total-mobile'>
                       <div className='total__mobile_container'>
                         <p>Total </p>
-                        <p className='total_mobile'>$ 567.45</p>
+                        <p className='total_mobile'>${quatation.total.toFixed(2)}</p>
                       </div>
                     </div>
                   </div>
