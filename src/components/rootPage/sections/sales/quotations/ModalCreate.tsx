@@ -23,6 +23,7 @@ import ModalSalesOrder from '../sales_order/ModalSalesOrder';
 import { toast } from 'sonner'
 import DynamicVariables from '../../../../../utils/DynamicVariables';
 import axios from 'axios';
+import { storeArticles } from '../../../../../zustand/Articles';
 
 
 
@@ -124,39 +125,28 @@ const ModalCreate: React.FC = () => {
   }
   const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
+  const setSaleOrdersConcepts = storeSaleOrder((state) => state.setSaleOrdersConcepts);
 
-  const mandarAOV = () => {
-    const copiaQuatation = {
-      ...quatation,
-      conceptos: quatation.conceptos.map((concepto: any) => {
-        const { id, ...rest } = concepto;
-        return rest;
-      })
-    };
-    copiaQuatation?.conceptos.forEach((element: any) => {
-      if (element.areas_produccion.length > 0) {
-        element.id_area_produccion = element.areas_produccion[0].id_area
-
+  const mandarAOV = async () => {
+    setModalLoading(true)
+    await APIs.CreateAny(quatation, 'enviar_cot_a_ov').then(async (resp: any) => {
+      if (!resp.error) {
+        setModalLoading(false)
+        await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+          let orden = r[0]
+          setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+          // setSaleOrdersToUpdate(orden)
+        })
+        Swal.fire('Notificacion', resp.mensaje, 'success')
       } else {
-        element.id_area_produccion = 2496
-
+        setModalLoading(false)
+        Swal.fire('Notificacion', resp.mensaje, 'warning')
       }
-    });
-
-
-    copiaQuatation?.conceptos_pers.forEach((element: any) => {
-      element.conceptos.forEach((x: any) => {
-        if (x.areas_produccion.length > 0) {
-          x.id_area_produccion = x.areas_produccion[0].id_area
-
-        } else {
-          x.id_area_produccion = 2496
-
-        }
-      });
-    });
-    setSaleOrdersToUpdate(copiaQuatation)
-    setModalSalesOrder('sale-order__modal_bycot')
+    }).finally(() => {
+      setModalLoading(false)
+    })
+    setModalSalesOrder('sale-order__modal')
   }
 
   useEffect(() => {
@@ -371,7 +361,7 @@ const ModalCreate: React.FC = () => {
       newConcept[index].precio_total = (parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia)).toFixed(2);
       newConcept[index].monto_urgencia = 0;
     }
-   
+
 
   };
 
@@ -459,7 +449,7 @@ const ModalCreate: React.FC = () => {
   };
   const [name, setName] = useState<string>('')
 
- 
+
   return (
     <div className={`overlay__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
       <div className={`popup__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
@@ -729,12 +719,12 @@ const ModalCreate: React.FC = () => {
                             </div>
                             <div className='td'>
                               <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
-                              {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
+                                {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
 
-                                <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small>
-                              )}
+                                  <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small>
+                                )}
 
-                                </p>
+                              </p>
                             </div>
                             <div className='td'>
                               <div className='d-flex'>
@@ -792,7 +782,7 @@ const ModalCreate: React.FC = () => {
                             </div>
                             <div className='td'>
                               <p className=''>$ {article.precio_unitario?.toFixed(2)}<br />
-                                {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermission('totales_franquicia')?
+                                {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') ?
                                   <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
                               </p>
                             </div>
@@ -801,8 +791,8 @@ const ModalCreate: React.FC = () => {
                                 <div className='container__total'>
                                   <div>
                                     <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                    <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) 
-                                    && permisosxVistaheader.length > 0 && checkPermission('totales_franquicia')?
+                                    <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia)
+                                      && permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') ?
                                       <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                   </div>
                                   <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.monto_urgencia).toFixed(2)})</p>
@@ -810,7 +800,7 @@ const ModalCreate: React.FC = () => {
                                 :
                                 <div>
                                   <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                  <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermission('totales_franquicia')?
+                                  <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') ?
                                     <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                 </div>
 
@@ -870,12 +860,12 @@ const ModalCreate: React.FC = () => {
                           </div>
                           <div className='td'>
                             <p className=''>$ {Number(article.precio_total / article.cantidad).toFixed(2)} <br />
-                            {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
+                              {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
 
-                              <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small>
-                            )}
+                                <small>PUF:${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small>
+                              )}
 
-                              </p>
+                            </p>
                           </div>
                           <div className='td'>
                             <div className='d-flex'>
@@ -883,8 +873,8 @@ const ModalCreate: React.FC = () => {
                                 <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
                                 {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
 
-                                <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                  <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                  <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                    <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                 )}
 
                               </div>
