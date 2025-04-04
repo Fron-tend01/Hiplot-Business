@@ -224,6 +224,11 @@ const ModalCreate: React.FC = () => {
   }
 
   const handleResultsChange = (result: any) => {
+    setQuoteFields((prev: any) => ({
+      ...prev,
+      id_cliente: result.id
+    }));
+
     setClient(result)
     setSelectedResult(result);
     setSelectResults(!selectResults)
@@ -234,11 +239,6 @@ const ModalCreate: React.FC = () => {
   }
 
   const createQuotation = async () => {
-
-
-
-
-
     try {
       if (modal === 'create-modal__qoutation') {
         let copy_data = { ...quoteFields }
