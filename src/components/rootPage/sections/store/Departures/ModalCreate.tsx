@@ -182,6 +182,7 @@ const ModalCreate: React.FC = () => {
             const resultGet: any = await APIs.getWarehouseExit(dataGet)
             setWarehouseExit(resultGet)
             setModalLoading(false)
+            setConcepts([])
 
             setModal('')
         } catch (error) {

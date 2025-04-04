@@ -34,7 +34,7 @@ const ByOrder: React.FC = () => {
   const formatDate = (date: any) => date.toISOString().split("T")[0];
 
   const fecht = async () => {
-    setDates([formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)), formatDate(new Date())])
+    setDates([formatDate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)), formatDate(new Date())])
 
     const companies = await getCompaniesXUsers(user_id)
     setCompanies(companies)

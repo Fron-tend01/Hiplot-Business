@@ -26,6 +26,8 @@ interface StoreState {
     
     tickets: any,
 
+    
+
 }
 
 export const storeTickets = create<StoreState>((set) => ({

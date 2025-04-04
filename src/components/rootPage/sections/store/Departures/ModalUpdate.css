@@ -13,8 +13,14 @@
     margin-left: 20px;
 }
 
+.container__departures-modal-update {
+    overflow: auto;
+}
 
-
+.modal-concepts_departures {
+    overflow: auto;
+    height: 100%;
+}
 
 
 
@@ -47,7 +53,8 @@
 	padding: 20px;
 	/* text-align: center; */
 	width: 95%;
-    max-height: 95%;
+    display: grid;
+    height: 95vh;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
