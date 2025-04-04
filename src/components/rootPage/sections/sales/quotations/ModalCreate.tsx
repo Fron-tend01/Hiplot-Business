@@ -501,17 +501,29 @@ const ModalCreate: React.FC = () => {
                   {modal === 'create-modal__qoutation' ?
                     ''
                     :
-                    <div className='row__bts col-12'>
-                      <div className='btn__pdf'>
-                        <button className='btn__general-orange' onClick={getTicket}>PDF</button>
+                    quotes.quotes.vencida ?
+                      <div className='row__bts col-12'>
+                        <div className='btn__pdf'>
+                          <button className='btn__general-orange'>Activar cotizacion</button>
+                        </div>
+                        <div>
+                          <p className='cancel-identifier'>Esta cotizacion esta vencida</p>
+                        </div>
                       </div>
-                      <div className='btn__update-qoutation'>
-                        <button className='btn__general-primary' onClick={createQuotation}>Actualizar cotizacion</button>
+                      :
+                      <div className='row__bts col-12'>
+                        <div className='btn__pdf'>
+                          <button className='btn__general-orange' onClick={getTicket}>PDF</button>
+
+                        </div>
+                        <div className='btn__update-qoutation'>
+                          <button className='btn__general-primary' onClick={createQuotation}>Actualizar cotizacion</button>
+                        </div>
+                        <div>
+                          <button className='btn__general-bg-100' onClick={mandarAOV}>Enviar a OV</button>
+                        </div>
                       </div>
-                      <div>
-                        <button className='btn__general-bg-100' onClick={mandarAOV}>Enviar a OV</button>
-                      </div>
-                    </div>
+
                   }
                 </div>
               </div>
