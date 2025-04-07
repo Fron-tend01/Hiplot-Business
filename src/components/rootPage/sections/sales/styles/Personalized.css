@@ -580,7 +580,7 @@
   cursor: pointer;
 }
 
-.table__personalized-update .table__body .tbody:hover .td .folio-identifier {
+.table__personalized-update .table__body .tbody:hover .td .article-identifier {
   background-color: #3d86c6;
   color: #ffffff;
 }
@@ -600,7 +600,7 @@
   color: #ffffff;
 }
 
-.table__personalized-update .table__body .tbody:hover .td .amount-identifier {
+.table__personalized-update .table__body .tbody:hover .td .urgency-true-icon {
   background-color: #FF8F00;
   color: #ffffff;
 }

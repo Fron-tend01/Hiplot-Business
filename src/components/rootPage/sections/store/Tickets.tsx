@@ -56,7 +56,7 @@ const Tickets = () => {
 
     const fecth = async () => {
         setDates({
-            startDate:  formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+            startDate:  formatDate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)),
             endDate: formatDate(new Date())
         })
 
@@ -65,7 +65,7 @@ const Tickets = () => {
             id_usuario: user_id,
             id_empresa: companies.id,
             id_sucursal: branchOffices.id,
-            desde: formatDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)),
+            desde: formatDate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)),
             hasta: formatDate(new Date()),
             id_serie: selectedIds?.series?.id,
             status: 0,

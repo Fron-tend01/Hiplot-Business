@@ -707,6 +707,11 @@ getTotalPrice: async (data: any, customPath?: string) => {
     return ConfigurationAPIs.post(path, data)
   },
 
+  updateCarritoConcepto: async (data: any, customPath?: string) => {
+    const path = customPath || 'update_carrito_concepto';
+    return ConfigurationAPIs.post(path, data)
+  },
+
   
   getSaleOrders: async (data: any, customPath?: any) => {
     const path = customPath || 'get_orden_venta';

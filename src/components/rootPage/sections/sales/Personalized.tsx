@@ -21,6 +21,7 @@ import { storeBilling } from '../../../../zustand/Billing'
 const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBilling }: any,) => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
+  const { modal }: any = useStore(storeModals)
 
   const { subModal }: any = useStore(storeArticles)
   const setPersonalizedModal = storePersonalized(state => state.setPersonalizedModal)
@@ -224,6 +225,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
       }
     }
 
+
     if (personalizedModal == 'personalized_modal-sale-update') {
 
       if (modalSalesOrder == 'sale-order__modal') {
@@ -253,9 +255,9 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
           return x;
         });
         setModalLoading(true)
-        let d = {...updatedConceptView[indexItem]}
+        let d = { ...updatedConceptView[indexItem] }
         d.unidad = selectedIds?.units?.id
-        APIs.CreateAny( d, 'update_carrito_concepto_pers').then(async (resp: any) => {
+        APIs.CreateAny(d, 'update_carrito_concepto_pers').then(async (resp: any) => {
           if (!resp.error) {
             setModalLoading(false)
             Swal.fire('Notificación', resp.mensaje, 'success')
@@ -457,33 +459,98 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
     setModalSub('see_cp-personalized')
   }
 
-  const handleUrgencyChange = async (index: number) => {
-    let data = {
-      id_articulo: dataUpdate[index].id_articulo,
-      id_sucursal: branch.id,
-      total: dataUpdate[index].precio_total
-    }
-    const newConcept = [...dataUpdate];
-    newConcept[index].urgency = !newConcept[index]?.urgency;
 
+
+
+
+
+
+  const handleUrgencySaleChange = async (index: number) => {
+    let data = {
+      "id_articulo": customConceptView[index].id_articulo,
+      "id_sucursal": saleOrdersConcepts.sale_order.id_sucursal,
+      "total": customConceptView[index].precio_total
+    }
+    const newConcept: any = [...customConceptView];
     if (newConcept[index].urgency) {
+      console.log('newConcept precio_total', newConcept[index].precio_total)
+      newConcept[index].precio_total = parseFloat(newConcept[index].precio_total);
+      newConcept[index].monto_urgencia = 0;
+
+      newConcept[index].urgency = !newConcept[index]?.urgency;
+
+    } else {
       await APIs.CreateAny(data, "calcular_urgencia")
         .then(async (response: any) => {
           if (!response.error) {
             newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
-            newConcept[index].precio_total = parseFloat(response.total_con_urgencia);
           } else {
             Swal.fire('Notificación', response.mensaje, 'warning');
             return
           }
         })
-    } else {
-      newConcept[index].precio_total = parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia);
-      newConcept[index].monto_urgencia = 0;
+      newConcept[index].urgency = !newConcept[index]?.urgency;
     }
-    // setNormalConcepts(newConcept);
+
+
+
+    // newConcept[index].urgency = !newConcept[index]?.urgency;
+    newConcept[index].id_usuario_actualiza = user_id
+
+    try {
+      APIs.updateCarritoConcepto(newConcept[index])
+
+      await APIs.GetAny('get_carrito/' + user_id)
+        .then(async (response: any) => {
+          let order = response[0]
+          setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers, sale_order: order });
+          setCustomConceptView(order.conceptos);
+          setPersonalizedModal('')
+        })
+    } catch (error) {
+
+    }
+
+   
+   
+
 
   };
+
+
+  const handleUrgencyChange = async (index: number) => {
+    let data = {
+      "id_articulo": customConceptView[index].id_articulo,
+      "id_sucursal": quotes?.quotes?.id_sucursal,
+      "total": customConceptView[index].precio_total
+    }
+    const newConcept = [...customConceptView];
+
+    if (newConcept[index].urgency) {
+      console.log('newConcept precio_total', newConcept[index].precio_total)
+      newConcept[index].precio_total = parseFloat(newConcept[index].precio_total);
+      newConcept[index].urgencia = 0;
+
+      newConcept[index].urgency = !newConcept[index]?.urgency;
+
+    } else {
+      await APIs.CreateAny(data, "calcular_urgencia")
+        .then(async (response: any) => {
+          if (!response.error) {
+            newConcept[index].urgencia = parseFloat(response.monto_urgencia);
+          } else {
+            Swal.fire('Notificación', response.mensaje, 'warning');
+            return
+          }
+        })
+      newConcept[index].urgency = !newConcept[index]?.urgency;
+    }
+    setQuotes({ normal_concepts: newConcept, personalized_concepts: quotes.personalized_concepts });
+    setCustomConceptView(newConcept);
+
+  };
+
+  console.log('quotes', quotes)
 
   const abrirFichaModifyConcept = () => {
 
@@ -564,6 +631,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
       id_area_produccion: article.id_area_produccion,
       enviar_a_produccion: article.enviar_a_produccion,
       cantidad: article.cantidad,
+      urgencia: article.urgencia,
       monto_urgencia: article.monto_urgencia,
       monto_descuento: article.monto_descuento,
       precio_unitario: article.precio_unitario,
@@ -612,7 +680,12 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
   const [realPrice, setRealPrice] = useState<any>()
 
   useEffect(() => {
-    const totalPrice = customConceptView.reduce((acc: any, element: any) => acc + element.precio_total, 0);
+    const totalPrice = customConceptView.reduce((acc: number, element: any) => {
+      const precio = parseFloat(element.precio_total) || 0;
+      const urgencia = parseFloat(element.urgencia) || parseFloat(element.monto_urgencia);
+      return acc + precio + urgencia;
+    }, 0);
+
     setRealPrice(totalPrice);
   }, [customConceptView]);
 
@@ -864,7 +937,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                           }
 
                           <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept()}>
-                            <p className='article'>{concept.codigo}-{concept.descripcion}</p>
+                            <p className='article-identifier'>{concept.codigo}-{concept.descripcion}</p>
                           </div>
                           <div className='td'>
                             <p className='amount'>{concept.cantidad}</p>
@@ -878,26 +951,26 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                           <div className='td '>
                             {concept.urgency ?
                               <div className='container__total'>
-                                <p className='total'>$ {concept.precio_total}</p>
-                                <p className='remove__urgency' title='urgencia'>(${concept.monto_urgencia})</p>
+                                <p className='total-identifier'>$ {concept.precio_total}</p>
+                                <p className='remove__urgency' title='urgencia'>(${concept.urgencia})</p>
                               </div>
                               :
-                              <p className='total'>$ {concept.precio_total}</p>
+                              <p className='total-identifier'>$ {concept.precio_total}</p>
                             }
                           </div>
 
                           <div className='td urgency'>
                             {concept?.urgency ?
                               <div>
-                                <button className='modal-create-quotations__tooltip-text no-urgency' type='button' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                <div className='modal-create-quotations__tooltip-text urgency-identifier' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
-                                </button>
+                                </div>
                               </div>
                               :
                               <div>
-                                <button className='modal-create-quotations__tooltip-text yes-urgency' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)} type='button'>
+                                <div className='modal-create-quotations__tooltip-text urgency-true-icon ' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
                                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
-                                </button>
+                                </div>
                               </div>
                             }
                           </div>
@@ -965,7 +1038,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                             {concept.urgency ?
                               <div className='container__total'>
                                 <p className='total'>$ {concept.precio_total}</p>
-                                <p className='remove__urgency' title='urgencia'>(${concept.monto_urgencia})</p>
+                                <p className='remove__urgency' title='urgencia'>(${concept.urgencia})</p>
                               </div>
                               :
                               <p className='total'>$ {concept.precio_total}</p>
@@ -1002,90 +1075,6 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
             :
             ''
           }
-
-
-
-          {/* {personalizedModal == "personalized_modal-sale" ?
-            <div className='table__personalized'>
-              {customData ? (
-                <div className='table__numbers'>
-                  <p className='text'>Total de artículos</p>
-                  <div className='quantities_tables'>{customData.length}</div>
-                </div>
-              ) : (
-                <p className="text">No hay empresas que mostras</p>
-              )}
-              <div className='table__head'>
-                <div className={`thead ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`}>
-                  {personalizedModal == 'personalized_modal-update' ?
-                    ''
-                    :
-                    <div className='th'>
-                    </div>
-                  }
-                  <div className='th'>
-                    <p>Artículo</p>
-                  </div>
-                  <div className='th'>
-                    <p>Cantidad</p>
-                  </div>
-                  <div className='th'>
-                    <p>Unidad</p>
-                  </div>
-                </div>
-              </div>
-              {customConceptView ? (
-                <div className='table__body'>
-                  {customConceptView.map((quotation: any, index: number) => {
-                    return (
-                      <div className='tbody__container'>
-                        <div className={`tbody ${personalizedModal == 'personalized_modal-update' ? 'active' : ''}`} key={quotation.id}>
-                          {personalizedModal == 'personalized_modal-update' ?
-                            ''
-                            :
-                            <div className='td'>
-                              <div className="td">
-                                <label className="custom-checkbox">
-                                  <input
-                                    type="checkbox"
-                                    checked={customConceptView[index]?.check || false}
-                                    onChange={() => addPersonalized(quotation, index)}
-                                  />
-                                  <span className="checkmark"></span>
-                                </label>
-                              </div>
-                            </div>
-                          }
-
-                          <div className='td'>
-                            <div className='article'>
-                              <p>{quotation.codigo}-{quotation.descripcion}</p>
-                            </div>
-                          </div>
-                          <div className='td'>
-                            <div>
-                              <p>{quotation.cantidad}</p>
-                            </div>
-                          </div>
-                          <div className='td'>
-                            <div>
-                              <p>{quotation.name_unidad}</p>
-                            </div>
-                          </div>
-                          <div className='td'>
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              ) : (
-                <p className="text">Cargando datos...</p>
-              )}
-            </div>
-            :
-            ''
-          } */}
           {modalSalesOrder == 'sale-order__modal' ?
             <>
               {personalizedModal == "personalized_modal-sale" ?
@@ -1171,13 +1160,13 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                               <div className='td urgency'>
                                 {concept?.urgency ?
                                   <div>
-                                    <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                    <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencySaleChange(index)}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
                                     </div>
                                   </div>
                                   :
                                   <div>
-                                    <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                    <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencySaleChange(index)}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
                                     </div>
                                   </div>
@@ -1338,13 +1327,13 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                               <div className='td urgency'>
                                 {concept?.urgency ?
                                   <div>
-                                    <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                    <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencySaleChange(index)}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
                                     </div>
                                   </div>
                                   :
                                   <div>
-                                    <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                    <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencySaleChange(index)}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
                                     </div>
                                   </div>
@@ -1589,13 +1578,13 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                               <div className='td urgency'>
                                 {concept?.urgency ?
                                   <div>
-                                    <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                    <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencySaleChange(index)}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
                                     </div>
                                   </div>
                                   :
                                   <div>
-                                    <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                    <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencySaleChange(index)}>
                                       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
                                     </div>
                                   </div>

@@ -48,7 +48,7 @@ const SalesOrder: React.FC = () => {
         setModalSalesOrder('sale-order__modal')
         await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
             let orden = r[0]
-            setSaleOrdersConcepts({normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+            setSaleOrdersConcepts({normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers, sale_order: orden});
         })
     
       
