@@ -104,12 +104,10 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
   console.log(oderUpdate)
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const value = e.target.value.trim();
-    const parsedValue = value === '' ? null : parseFloat(value);
-    const newArticleStates = oderUpdate.conceptos.map((concept: any, i: number) =>
-      i === index ? { ...concept, cantidad: parsedValue } : concept
-    );
-
+    const value = parseInt(e.target.value);
+    const newArticleStates = orderConceptsUpdate.map((concept: any, i: number) =>
+      i === index ? { ...concept, cantidad: value } : concept
+    )
     setOrderConceptsUpdate(newArticleStates);
   };
 
@@ -222,6 +220,25 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
   };
 
   console.log('sddddddddddddddddddddd', oderUpdate)
+
+  const handleSeleccion = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
+    const valueUnit = parseInt(event.target.value, 10);
+  
+    const updatedConcepts = orderConceptsUpdate.map((concept, i) => {
+      if (i === index) {
+        return {
+          ...concept,
+          unidad: valueUnit,
+          id_unidad: valueUnit,
+          cantidad: 0
+        };
+      }
+      return concept;
+    });
+  
+    setOrderConceptsUpdate(updatedConcepts);
+  };
+  
 
   return (
     <div className={`overlay__orders ${modal == 'modal-orders-update' ? 'active' : ''}`}>
@@ -351,7 +368,7 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                           <div className='td'>
                             <div className='td'>
                               <div>
-                                <select className='traditional__selector' value={order.id_unidad}>
+                                <select className='traditional__selector' onChange={(event) => handleSeleccion(event, index)} value={order.id_unidad}>
                                   {order.unidades?.map((unit: any) => (
                                     <option key={unit.id} value={unit.id_unidad}>
                                       {unit.nombre}

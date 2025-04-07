@@ -93,6 +93,8 @@ const ByOrder: React.FC = () => {
 
 
   const addOrders = async (order: any) => {
+    let filter = orders.filter((x: any) => x.id !== order.id)
+    setOrders(filter)
 
     order.conceptos.forEach((element: any) => {
       element.unidad = element.id_unidad

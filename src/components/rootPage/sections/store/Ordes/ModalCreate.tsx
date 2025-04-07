@@ -196,19 +196,13 @@ const ModalCreate = () => {
     }
 
     const handleSeleccion = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
-
         const valueUnit = event.target.value;
-        console.log(valueUnit)
         concepts[index].unidad = parseInt(valueUnit, 10);
-        // Crear una copia del arreglo de selecciones temporales
-        const newSelected = [...seleccionesTemporales];
-        // Actualizar el valor seleccionado en la posición del índice correspondiente
-        newSelected[index] = valueUnit;
-        // Actualizar el estado con las nuevas selecciones
-        setSeleccionesTemporales(newSelected);
+        concepts[index].id_unidad = parseInt(valueUnit, 10);
         const newArticleStates = [...concepts];
         newArticleStates[index].cantidad = 0;
         setConcepts(newArticleStates);
+      
     };
 
 
@@ -479,24 +473,23 @@ const ModalCreate = () => {
                                                 <div className='td'>
                                                     <div>
                                                         {/* --------------------SE COMENTO ESTE PORQUE NO FUNCIONA AL CREAR, NO PERMITE MOVER EL CONCEPTO */}
-                                                        {/* <select className='traditional__selector' disabled={concept?.orden_produccion}
-                                                            onChange={(event) => handleSeleccion(event, index)} value={concept.id_unidad}>
-                                                            {concept?.unidades.map((item: any) => (
-                                                                <option key={item.id} value={item.id_unidad}>
-                                                                    {item.nombre}
-                                                                </option>
-                                                            ))}
-                                                        </select> */}
-                                                        {/* -------------------------------PARA QUE FUNCIONE BIEN SE DEBE SEGUIR USANDO LAS SELECCIONES TEMPORALES DEL INDEX
-                                                        ALTERNAR ENTRE EL UPDATE CON UNA CONDICION PARA MOSTRAR EL DE ARRIBA Y VERIFICAR QUE EN EL UPDATE FUNCIONE */}
-                                                         <select className='traditional__selector' disabled={concept?.orden_produccion} 
-                                                        onChange={(event) => handleSeleccion(event, index)} value={seleccionesTemporales[index] || ''}>
+                                                        <select className='traditional__selector' disabled={concept?.orden_produccion} onChange={(event) => handleSeleccion(event, index)} value={concept.id_unidad}>
                                                             {concept?.unidades.map((item: any) => (
                                                                 <option key={item.id} value={item.id_unidad}>
                                                                     {item.nombre}
                                                                 </option>
                                                             ))}
                                                         </select>
+                                                        {/* -------------------------------PARA QUE FUNCIONE BIEN SE DEBE SEGUIR USANDO LAS SELECCIONES TEMPORALES DEL INDEX
+                                                        ALTERNAR ENTRE EL UPDATE CON UNA CONDICION PARA MOSTRAR EL DE ARRIBA Y VERIFICAR QUE EN EL UPDATE FUNCIONE */}
+                                                         {/* <select className='traditional__selector' disabled={concept?.orden_produccion} 
+                                                        onChange={(event) => handleSeleccion(event, index)} value={seleccionesTemporales[index] || ''}>
+                                                            {concept?.unidades.map((item: any) => (
+                                                                <option key={item.id} value={item.id_unidad}>
+                                                                    {item.nombre}
+                                                                </option>
+                                                            ))}
+                                                        </select> */}
                                                     </div>
                                                 </div>
                                                 <div className='td'>
