@@ -2,6 +2,8 @@
     overflow: auto;
     height: 100%;
     padding: 20px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
 }
 
 .conatiner__update_orders {
@@ -50,7 +52,7 @@
 }
 
 
-.popup__orders > .row__six {
+.modal_update_orders > .row__six {
     padding: 20px;
     display: flex;
     justify-content: space-between;
@@ -58,14 +60,13 @@
 }
 
 .table__modal_update_orders {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    overflow: auto;
    
 }
 
 
-.table__modal_update_orders .table {
-    border: 2px solid var(--border-table-color);
-    border-radius: 10px; 
-}
 
 .table__modal_update_orders .table__head {
     display: flex;
@@ -91,8 +92,7 @@
 }
 
 .table__modal_update_orders .table__body {
-	max-height: 300px;
-    overflow: hidden;
+
     overflow: auto;
     transition-delay: 0.0s;
     &::-webkit-scrollbar {

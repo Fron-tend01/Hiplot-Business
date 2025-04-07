@@ -223,7 +223,7 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
 
   const handleSeleccion = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
     const valueUnit = parseInt(event.target.value, 10);
-  
+
     const updatedConcepts = orderConceptsUpdate.map((concept, i) => {
       if (i === index) {
         return {
@@ -235,10 +235,10 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
       }
       return concept;
     });
-  
+
     setOrderConceptsUpdate(updatedConcepts);
   };
-  
+
 
   return (
     <div className={`overlay__orders ${modal == 'modal-orders-update' ? 'active' : ''}`}>
@@ -248,26 +248,6 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
         </a>
         <p className='title__modals'>Actualizar pedido</p>
         <div className='modal_update_orders'>
-          {/* <div className='row__one'>
-            <div className='container__checkbox_tickets'>
-              <div className='checkbox__tickets'>
-                <label className="checkbox__container_general">
-                  <input className='checkbox' type="radio" value="Directa" checked={oderUpdate.status === 0} />
-                  <span className="checkmark__general"></span>
-                </label>
-                <p className='text'>Directa</p>
-              </div>
-              {checkPermission('OPCION-POR-OP') && (
-                <div className='checkbox__tickets'>
-                  <label className="checkbox__container_general">
-                    <input className='checkbox' type="radio" value="PorOC" checked={oderUpdate.status === 1} />
-                    <span className="checkmark__general"></span>
-                  </label>
-                  <p className='text'>Por OP</p>
-                </div>
-              )}
-            </div>
-          </div> */}
           <div className="conatiner__update_orders">
             <div className="card ">
               <div className="card-body bg-standar">
@@ -299,147 +279,147 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                 </div>
               </div>
             </div>
-            <div className='table__modal_update_orders' >
-              <div>
-                {orderConceptsUpdate ? (
-                  <div className='table__numbers'>
-                    <p className='text'>Total de articulos</p>
-                    <div className='quantities_tables'>{orderConceptsUpdate.length}</div>
-                  </div>
-                ) : (
-                  <p className='text'>No hay empresas</p>
-                )}
-              </div>
-              <div className="table">
 
-                <div className='table__head'>
-                  <div className='thead'>
-                    <div className='th'>
-                      <p className=''>Articulo</p>
-                    </div>
-                    <div className='th'>
-                      <p className=''>Status</p>
-                    </div>
-                    <div className='th'>
-                      <p className=''>OP</p>
-                    </div>
-                    <div className='th'>
-                      <p className=''>Cantidad</p>
-                    </div>
-                    <div className='th'>
-                      <p className=''>Unidad</p>
-                    </div>
-                    <div className='th'>
-                      <p className=''>Comentarios</p>
-                    </div>
-                  </div>
+          </div>
+          <div className='table__modal_update_orders' >
+            <div>
+              {orderConceptsUpdate ? (
+                <div className='table__numbers'>
+                  <p className='text'>Total de articulos</p>
+                  <div className='quantities_tables'>{orderConceptsUpdate.length}</div>
                 </div>
-                {orderConceptsUpdate.length > 0 ? (
-                  <div className='table__body'>
-                    {orderConceptsUpdate.map((order: any, index: any) => (
-                      <div className='tbody__container' key={index}>
-                        <div className='tbody'>
-                          <div className='td'>
-                            <p>{order.descripcion}</p>
-                          </div>
-                          <div className="td">
-                            <div>
-                              {order.status == 0 ?
-                                <b style={{ color: 'green' }}>ACTIVO</b>
-                                : order.status == 1 ?
-                                  <b style={{ color: 'red' }}>CANCELADO</b> :
-                                  <b style={{ color: 'blue' }}>TERMINADO</b>}
+              ) : (
+                <p className='text'>No hay empresas</p>
+              )}
+            </div>
 
-                            </div>
-                          </div>
-                          <div className="td">
-                            <div>
-                              <p>{order?.orden_produccion ? order?.orden_produccion.folio : "N/A"}</p>
-                            </div>
-                          </div>
-                          <div className='td'>
-                            <div>
-                              <div>
-                                <input className='inputs__general' value={order.cantidad === null ? '' : order.cantidad}
-                                  onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()} />
-                              </div>
-                            </div>
-                          </div>
-                          <div className='td'>
-                            <div className='td'>
-                              <div>
-                                <select className='traditional__selector' onChange={(event) => handleSeleccion(event, index)} value={order.id_unidad}>
-                                  {order.unidades?.map((unit: any) => (
-                                    <option key={unit.id} value={unit.id_unidad}>
-                                      {unit.nombre}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-                            </div>
-                          </div>
+            <div className='table__head'>
+              <div className='thead'>
+                <div className='th'>
+                  <p className=''>Articulo</p>
+                </div>
+                <div className='th'>
+                  <p className=''>Status</p>
+                </div>
+                <div className='th'>
+                  <p className=''>OP</p>
+                </div>
+                <div className='th'>
+                  <p className=''>Cantidad</p>
+                </div>
+                <div className='th'>
+                  <p className=''>Unidad</p>
+                </div>
+                <div className='th'>
+                  <p className=''>Comentarios</p>
+                </div>
+              </div>
+            </div>
+            {orderConceptsUpdate.length > 0 ? (
+              <div className='table__body'>
+                {orderConceptsUpdate.map((order: any, index: any) => (
+                  <div className='tbody__container' key={index}>
+                    <div className='tbody'>
+                      <div className='td'>
+                        <p>{order.descripcion}</p>
+                      </div>
+                      <div className="td">
+                        <div>
+                          {order.status == 0 ?
+                            <b style={{ color: 'green' }}>ACTIVO</b>
+                            : order.status == 1 ?
+                              <b style={{ color: 'red' }}>CANCELADO</b> :
+                              <b style={{ color: 'blue' }}>TERMINADO</b>}
 
-                          <div className='td'>
-                            <div>
-                              <p>{order.comentarios}</p>
-                            </div>
-                          </div>
-                          <div className='td'>
-                            <div className="d-flex">
-                              {checkPermission('cancelar') && (
-
-                                order.status === 0 ?
-                                  <div className='cancel-icon' onClick={() => changeConceptsOrderMode(order)} title='Cancelar concepto'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
-                                  </div>
-                                  :
-                                  <div className='active-icon' onClick={changeOrderMode} title='Activar concepto'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-power"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 6a7.75 7.75 0 1 0 10 0" /><path d="M12 4l0 8" /></svg>
-                                  </div>
-
-                              )}
-
-                            </div>
+                        </div>
+                      </div>
+                      <div className="td">
+                        <div>
+                          <p>{order?.orden_produccion ? order?.orden_produccion.folio : "N/A"}</p>
+                        </div>
+                      </div>
+                      <div className='td'>
+                        <div>
+                          <div>
+                            <input className='inputs__general' value={order.cantidad === null ? '' : order.cantidad}
+                              onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()} />
                           </div>
                         </div>
                       </div>
-                    ))}
+                      <div className='td'>
+                        <div className='td'>
+                          <div>
+                            <select className='traditional__selector' onChange={(event) => handleSeleccion(event, index)} value={order.id_unidad}>
+                              {order.unidades?.map((unit: any) => (
+                                <option key={unit.id} value={unit.id_unidad}>
+                                  {unit.nombre}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className='td'>
+                        <div>
+                          <p>{order.comentarios}</p>
+                        </div>
+                      </div>
+                      <div className='td'>
+                        <div className="d-flex">
+                          {checkPermission('cancelar') && (
+
+                            order.status === 0 ?
+                              <div className='cancel-icon' onClick={() => changeConceptsOrderMode(order)} title='Cancelar concepto'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
+                              </div>
+                              :
+                              <div className='active-icon' onClick={changeOrderMode} title='Activar concepto'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-power"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 6a7.75 7.75 0 1 0 10 0" /><path d="M12 4l0 8" /></svg>
+                              </div>
+
+                          )}
+
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                ) : (
-                  <p className='text'>No hay aritculos que mostrar</p>
-                )}
+                ))}
               </div>
+            ) : (
+              <p className='text'>No hay aritculos que mostrar</p>
+            )}
+
+          </div>
+          <div className="row__six">
+            {checkPermission('update_btn_excel') && (
+
+              <button type="button" className='btn__general-orange' onClick={() => descargarCSV()}>Excel</button>
+            )}
+            <div>
+              <button className="btn__general-purple" type="button" onClick={getPdf}>PDF</button>
+            </div>
+            <div>
+              {checkPermission('modificar') && (
+
+                <button type="button" className='btn__general-purple' onClick={update}>Actualizar orden</button>
+              )}
+
+            </div>
+            <div>
+              {checkPermission('cancelar') && (
+
+                modeOrder === 0 ?
+                  <button className="btn__general-danger" type="button" onClick={changeOrderMode}>Cancelar</button>
+                  :
+                  <button className="btn__general-success" type="button" onClick={changeOrderMode}>Activar</button>
+
+              )}
+
             </div>
           </div>
-
         </div>
-        <div className="row__six">
-          {checkPermission('update_btn_excel') && (
 
-            <button type="button" className='btn__general-orange' onClick={() => descargarCSV()}>Excel</button>
-          )}
-          <div>
-            <button className="btn__general-purple" type="button" onClick={getPdf}>PDF</button>
-          </div>
-          <div>
-            {checkPermission('modificar') && (
-
-              <button type="button" className='btn__general-purple' onClick={update}>Actualizar orden</button>
-            )}
-
-          </div>
-          <div>
-            {checkPermission('cancelar') && (
-
-              modeOrder === 0 ?
-                <button className="btn__general-danger" type="button" onClick={changeOrderMode}>Cancelar</button>
-                :
-                <button className="btn__general-success" type="button" onClick={changeOrderMode}>Activar</button>
-
-            )}
-
-          </div>
-        </div>
       </div>
     </div>
   )
