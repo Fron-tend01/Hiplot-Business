@@ -478,8 +478,19 @@ const ModalCreate = () => {
                                                 </div>
                                                 <div className='td'>
                                                     <div>
-                                                        <select className='traditional__selector' disabled={concept?.orden_produccion}
+                                                        {/* --------------------SE COMENTO ESTE PORQUE NO FUNCIONA AL CREAR, NO PERMITE MOVER EL CONCEPTO */}
+                                                        {/* <select className='traditional__selector' disabled={concept?.orden_produccion}
                                                             onChange={(event) => handleSeleccion(event, index)} value={concept.id_unidad}>
+                                                            {concept?.unidades.map((item: any) => (
+                                                                <option key={item.id} value={item.id_unidad}>
+                                                                    {item.nombre}
+                                                                </option>
+                                                            ))}
+                                                        </select> */}
+                                                        {/* -------------------------------PARA QUE FUNCIONE BIEN SE DEBE SEGUIR USANDO LAS SELECCIONES TEMPORALES DEL INDEX
+                                                        ALTERNAR ENTRE EL UPDATE CON UNA CONDICION PARA MOSTRAR EL DE ARRIBA Y VERIFICAR QUE EN EL UPDATE FUNCIONE */}
+                                                         <select className='traditional__selector' disabled={concept?.orden_produccion} 
+                                                        onChange={(event) => handleSeleccion(event, index)} value={seleccionesTemporales[index] || ''}>
                                                             {concept?.unidades.map((item: any) => (
                                                                 <option key={item.id} value={item.id_unidad}>
                                                                     {item.nombre}
