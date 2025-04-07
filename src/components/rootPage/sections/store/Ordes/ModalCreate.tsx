@@ -331,7 +331,6 @@ const ModalCreate = () => {
     };
 
 
-    console.log('conceptssssssssssssssssssssssssss', concepts)
 
 
     return (
@@ -470,6 +469,7 @@ const ModalCreate = () => {
                                                             onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()} />
                                                     </div>
                                                 </div>
+                                               
                                                 <div className='td'>
                                                     <div>
                                                         {/* --------------------SE COMENTO ESTE PORQUE NO FUNCIONA AL CREAR, NO PERMITE MOVER EL CONCEPTO */}

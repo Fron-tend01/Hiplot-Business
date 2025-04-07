@@ -100,6 +100,8 @@ const ByOrder: React.FC = () => {
       element.unidad = element.id_unidad
       element.ped = order.serie + '-' + order.folio + '-' + order.anio
       element.pedido_almacen_concepto_id = element.id
+      element.cantidad = element.cantidad - element.surtido
+
     });
 
     setConcepts([...concepts, ...order.conceptos]);

@@ -305,6 +305,9 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                   <p className=''>OP</p>
                 </div>
                 <div className='th'>
+                  <p className=''>Surtido</p>
+                </div>
+                <div className='th'>
                   <p className=''>Cantidad</p>
                 </div>
                 <div className='th'>
@@ -337,6 +340,9 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                         <div>
                           <p>{order?.orden_produccion ? order?.orden_produccion.folio : "N/A"}</p>
                         </div>
+                      </div>
+                      <div className='td'>
+                        {order.surtido}
                       </div>
                       <div className='td'>
                         <div>
