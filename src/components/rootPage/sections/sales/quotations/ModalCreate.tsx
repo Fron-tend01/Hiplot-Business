@@ -107,8 +107,9 @@ const ModalCreate: React.FC = () => {
   }
   useEffect(() => {
     setData()
-  }, [modal])
+  }, [modal, personalizedModal])
 
+  console.log('quoteFields', quoteFields)
 
 
   const fetch = async () => {
@@ -342,28 +343,31 @@ const ModalCreate: React.FC = () => {
   const handleUrgencyChange = async (index: number) => { //FALTA APLICAR FRANQUICIA
     let data = {
       "id_articulo": quotes?.normal_concepts[index].id_articulo,
-      "id_sucursal": branch.id,
+      "id_sucursal": quotes?.quotes?.id_sucursal ? quotes.quotes.id_sucursal : branch.id,
       "total": quotes?.normal_concepts[index].precio_total
     }
     const newConcept = [...quotes?.normal_concepts];
-    newConcept[index].urgency = !newConcept[index]?.urgency;
 
     if (newConcept[index].urgency) {
-      await APIs.CreateAny(data, "calcular_urgencia")
-        .then(async (response: any) => {
-          if (!response.error) {
-            newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
-            newConcept[index].precio_total = parseFloat(response.total_con_urgencia);
-          } else {
-            Swal.fire('Notificación', response.mensaje, 'warning');
-            return
-          }
-        })
-    } else {
-      newConcept[index].precio_total = (parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia)).toFixed(2);
-      newConcept[index].monto_urgencia = 0;
-    }
+      console.log('newConcept precio_total', newConcept[index].precio_total)
+      newConcept[index].precio_total = parseFloat(newConcept[index].precio_total);
+      newConcept[index].urgencia = 0;
 
+      newConcept[index].urgency = !newConcept[index]?.urgency;
+     
+    } else {
+      await APIs.CreateAny(data, "calcular_urgencia")
+      .then(async (response: any) => {
+        if (!response.error) {
+          newConcept[index].urgencia = parseFloat(response.monto_urgencia);
+        } else {
+          Swal.fire('Notificación', response.mensaje, 'warning');
+          return
+        }
+      })
+      newConcept[index].urgency = !newConcept[index]?.urgency;
+    }
+    setQuotes({ normal_concepts: newConcept, personalized_concepts: quotes.personalized_concepts });
 
   };
 
@@ -374,11 +378,11 @@ const ModalCreate: React.FC = () => {
         (acc, item) => ({
           precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
           descuento: acc.descuento + (parseFloat(item.descuento) || 0),
-          monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
+          urgencia: acc.urgencia + (parseFloat(item.urgencia) || 0),
           total: acc.total + (parseFloat(item.precio_total) || 0),
           total_franquicia: acc.total_franquicia + (parseFloat(item.total_franquicia) || 0),
         }),
-        { precio_unitario: 0, descuento: 0, monto_urgencia: 0, total: 0, total_franquicia: 0 }
+        { precio_unitario: 0, descuento: 0, urgencia: 0, total: 0, total_franquicia: 0 }
       );
 
     const precios = calculateTotals(quotes?.normal_concepts || []);
@@ -386,9 +390,16 @@ const ModalCreate: React.FC = () => {
 
     setCalculations((prev) => ({
       ...prev,
-      subtotal: preciospers.total + preciospers.descuento - preciospers.monto_urgencia + precios.total + precios.descuento - precios.monto_urgencia,
+      subtotal:
+      preciospers.total +
+      precios.total +
+      preciospers.descuento +
+      precios.descuento +
+      (preciospers.urgencia ?? 0) +
+      (precios.urgencia ?? 0),
+    
       descuento: preciospers.descuento + precios.descuento,
-      urgencia: preciospers.monto_urgencia + precios.monto_urgencia,
+      urgencia: preciospers.urgencia + precios.urgencia,
       total: preciospers.total + precios.total,
 
       subtotalf: preciospers.total_franquicia + precios.total_franquicia,
@@ -809,7 +820,7 @@ const ModalCreate: React.FC = () => {
                                       && permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') ?
                                       <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                   </div>
-                                  <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.monto_urgencia).toFixed(2)})</p>
+                                  <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.urgencia).toFixed(2)})</p>
                                 </div>
                                 :
                                 <div>
@@ -955,14 +966,14 @@ const ModalCreate: React.FC = () => {
                             </p>
                           </div>
                           <div className='td '>
-                            {article.urgency ?
+                            {article.urgencia !== 0 ?
                               <div className='container__total'>
                                 <div>
                                   <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
                                   <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
                                     <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                 </div>
-                                <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.monto_urgencia).toFixed(2)})</p>
+                                <p className='remove__urgency' title='urgencia'>(+${parseFloat(article.urgencia).toFixed(2)})</p>
                               </div>
                               :
                               <div>

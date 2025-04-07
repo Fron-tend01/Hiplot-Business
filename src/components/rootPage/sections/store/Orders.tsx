@@ -67,7 +67,7 @@ const Departures: React.FC = () => {
         // Calcula las fechas iniciales
         const today = new Date();
         const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(today.getDate() - 7);
+        oneWeekAgo.setDate(today.getDate() - 30);
 
         // Formatea las fechas como cadenas en formato "YYYY-MM-DD"
         const formattedOneWeekAgo = oneWeekAgo.toISOString().split("T")[0];

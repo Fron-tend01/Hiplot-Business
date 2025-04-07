@@ -180,7 +180,7 @@ const ModalSalesOrder: React.FC = () => {
     }, [saleOrdersToUpdate])
 
 
- 
+
 
     const handleCreateSaleOrder = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -190,7 +190,7 @@ const ModalSalesOrder: React.FC = () => {
             element.unidad = element.id_unidad
             element.total = element.precio_total
             element.monto_descuento = element.descuento == null ? 0 : element.descuento
-            element.urgencia = element.monto_urgencia
+            element.monto_urgencia = element.monto_urgencia
             element.campos_plantilla.forEach((cp: any) => {
                 cp.valor = cp.valor.toString()
             });
@@ -202,7 +202,7 @@ const ModalSalesOrder: React.FC = () => {
                 element.conceptos.forEach((x: any) => {
                     x.unidad = x.id_unidad
                     x.total = x.precio_total
-                    x.urgencia = x.monto_urgencia
+                    x.monto_urgencia = x.monto_urgencia
                     x.monto_descuento = x.descuento == null ? 0 : x.descuento
                     x.campos_plantilla.forEach((cp: any) => {
                         cp.valor = cp.valor.toString()
@@ -248,8 +248,8 @@ const ModalSalesOrder: React.FC = () => {
                     id_sucursal: branchOffices.id,
                     id_serie: 0,
                     id_cliente: dataGet,
-                    desde: dataGet.desde ==null ? new Date().toISOString().split('T')[0]: dataGet.desde,
-                    hasta: dataGet.hasta ==null ? new Date().toISOString().split('T')[0]: dataGet.hasta,
+                    desde: dataGet.desde == null ? new Date().toISOString().split('T')[0] : dataGet.desde,
+                    hasta: dataGet.hasta == null ? new Date().toISOString().split('T')[0] : dataGet.hasta,
                     id_usuario: dataGet.id_usuario,
                     id_vendedor: 0,
                     status: 0,
@@ -342,7 +342,7 @@ const ModalSalesOrder: React.FC = () => {
         });
 
         let normal_concepts = saleOrdersConcepts.normal_concepts.filter(element => element.enviar_a_produccion === true);
-        
+
         setConceptsProductions([...normal_concepts, ...data]);
 
 
@@ -513,6 +513,14 @@ const ModalSalesOrder: React.FC = () => {
     }, [modalSalesOrder, branchOffices])
 
 
+    useEffect(() => {
+
+        calcular_totales()
+
+
+    }, [saleOrdersConcepts])
+
+
 
 
     const calcular_totales = () => {
@@ -553,8 +561,8 @@ const ModalSalesOrder: React.FC = () => {
 
         // Asegurar que las variables siempre existen y tienen un valor numérico
         setAmount(
-            (preciospers.total || 0) + (preciospers.descuento || 0) - (preciospers.monto_urgencia || 0) +
-            (precios.total || 0) + (precios.descuento || 0) - (precios.monto_urgencia || 0)
+            (preciospers.total || 0) + (preciospers.descuento || 0) + (preciospers.monto_urgencia || 0) +
+            (precios.total || 0) + (precios.descuento || 0) + (precios.monto_urgencia || 0)
         );
         setdDiscount((preciospers.descuento || 0) + (precios.descuento || 0));
         setdUrgency((preciospers.monto_urgencia || 0) + (precios.monto_urgencia || 0));
@@ -668,60 +676,51 @@ const ModalSalesOrder: React.FC = () => {
     const handleUrgencyChange = async (index: number) => {
         let data = {
             "id_articulo": saleOrdersConcepts?.normal_concepts[index].id_articulo,
-            "id_sucursal": branchOffices.id,
+            "id_sucursal": modeUpdate ? saleOrdersToUpdate.id_sucursal : branchOffices.id,
             "total": saleOrdersConcepts?.normal_concepts[index].precio_total
         }
-        const newConcept = [...saleOrdersConcepts?.normal_concepts];
-        newConcept[index].urgency = !newConcept[index]?.urgency;
-
+        const newConcept: any = [...saleOrdersConcepts?.normal_concepts];
         if (newConcept[index].urgency) {
+            console.log('newConcept precio_total', newConcept[index].precio_total)
+            newConcept[index].precio_total = parseFloat(newConcept[index].precio_total);
+            newConcept[index].monto_urgencia = 0;
+
+            newConcept[index].urgency = !newConcept[index]?.urgency;
+
+        } else {
             await APIs.CreateAny(data, "calcular_urgencia")
                 .then(async (response: any) => {
                     if (!response.error) {
                         newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
-                        newConcept[index].precio_total = parseFloat(response.total_con_urgencia);
                     } else {
                         Swal.fire('Notificación', response.mensaje, 'warning');
                         return
                     }
                 })
-        } else {
-            newConcept[index].precio_total = parseFloat(newConcept[index].precio_total) - parseFloat(newConcept[index].monto_urgencia);
-            newConcept[index].monto_urgencia = 0;
+            newConcept[index].urgency = !newConcept[index]?.urgency;
         }
-        setSaleOrdersConcepts({ normal_concepts: newConcept, personalized_concepts: saleOrdersConcepts.personalized_concepts });
-
-    };
-
-
-    const handleUrgencyChangePers = async (index: number, idx: number) => {
-        let data = {
-            "id_articulo": personalized[index].conceptos[idx].id_articulo,
-            "id_sucursal": branchOffices.id,
-            "total": personalized[index].conceptos[idx].precio_total
-        }
-        const newConcept = [...personalized];
-        newConcept[index].conceptos[idx].urgency = !newConcept[index]?.conceptos[idx].urgency;
-
-        if (newConcept[index].conceptos[idx].urgency) {
-            await APIs.CreateAny(data, "calcular_urgencia")
+       
+      
+      
+        // newConcept[index].urgency = !newConcept[index]?.urgency;
+        newConcept[index].id_usuario_actualiza = user_id
+    
+        try {
+            APIs.updateCarritoConcepto(newConcept[index])
+           
+            await APIs.GetAny('get_carrito/' + user_id)
                 .then(async (response: any) => {
-                    if (!response.error) {
-                        newConcept[index].conceptos[idx].monto_urgencia = parseFloat(response.monto_urgencia);
-                        newConcept[index].conceptos[idx].precio_total = parseFloat(response.total_con_urgencia);
-                    } else {
-                        Swal.fire('Notificación', response.mensaje, 'warning');
-                        return
-                    }
+                    let order = response[0]
+                    setSaleOrdersToUpdate(order)
+                    setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
                 })
-        } else {
-            newConcept[index].conceptos[idx].precio_total = parseFloat(newConcept[index].conceptos[idx].precio_total) - parseFloat(newConcept[index].conceptos[idx].monto_urgencia);
-            newConcept[index].conceptos[idx].monto_urgencia = 0;
+        } catch (error) {
+
         }
-
-        setSaleOrdersConcepts({ normal_concepts: saleOrdersConcepts.normal_concepts, personalized_concepts: newConcept });
-
     };
+
+
+ 
     const updateOrdenVenta = async () => {
 
         const [datePartOne, timePartOne] = dates[0] ? dates[0].split("T") : ["", ""];
@@ -776,16 +775,12 @@ const ModalSalesOrder: React.FC = () => {
 
     const urgenciaGlobal = async (urg: boolean) => {
         setUrgenciaG(urg)
-        const normal = normalConcepts.map((x: any, index: number) => ({ ...x, originalIndex: index }))
+        const normal = saleOrdersConcepts.normal_concepts.map((x: any, index: number) => ({ ...x, originalIndex: index }))
             .filter((x: any) => x.personalized == false || x.personalized == undefined);
         normal.forEach((n: any) => {
             handleUrgencyChange(n.originalIndex)
         });
-        personalized.forEach((pers: any, index: number) => {
-            pers.conceptos.forEach((_: any, idx: number) => {
-                handleUrgencyChangePers(index, idx)
-            });
-        });
+       
     }
 
 
@@ -892,9 +887,6 @@ const ModalSalesOrder: React.FC = () => {
     }
 
 
-    console.log('selectedIdsxxxxxxxxxxxxxxxxxxxxxxx', selectedIds)
-
-
     const closeModal = async () => {
         setModalSalesOrder('')
         await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
@@ -906,7 +898,7 @@ const ModalSalesOrder: React.FC = () => {
                 setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
             }
         })
-        if(modalSalesOrder == 'sale-order__modal-update') {
+        if (modalSalesOrder == 'sale-order__modal-update') {
             setSelectedIds('clients', null)
         }
         // setSaleOrdersConcepts({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], concepto: {}, indexConcepto: 0 })
@@ -1425,20 +1417,35 @@ const ModalSalesOrder: React.FC = () => {
                                                     <div className='td'>
                                                         {article.urgency ?
                                                             <div className='d-flex'>
-                                                                <div>
-                                                                    {checkPermission('cambiar_totales') ? <input type="text" className='inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} /> : <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
+                                                                {checkPermission('cambiar_totales') ?
+                                                                    <div className='d-flex'>
+                                                                        <input type="text" className='mr-2 inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} />
+                                                                        <p className='mr-2 total-identifier'>$ {article.monto_urgencia}</p>
+
+                                                                    </div>
+                                                                    :
+                                                                    <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
+
+                                                                {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
                                                                     <p className='total-identifier'>
-                                                                        {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
-                                                                            <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small>
-                                                                            :
-                                                                            ''
-                                                                        }
+                                                                        <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small>
                                                                     </p>
-                                                                </div>
+                                                                    :
+                                                                    ''
+                                                                }
+
+
                                                             </div>
                                                             :
                                                             <div>
-                                                                {checkPermission('cambiar_totales') ? <input type="text" className='inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} /> : <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
+                                                                {checkPermission('cambiar_totales') ?
+                                                                    <div>
+                                                                        <input type="text" className='inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} />
+
+
+                                                                    </div>
+                                                                    :
+                                                                    <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
                                                                 <p className='mt-2 total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
                                                                     <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                                             </div>
@@ -1477,19 +1484,24 @@ const ModalSalesOrder: React.FC = () => {
                                                     }
 
                                                     <div className='td urgency'>
-                                                        {article?.urgency ?
-                                                            <div>
-                                                                <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                                        {modalSalesOrder == 'sale-order__modal' ?
+                                                            article?.urgency ?
+                                                                <div>
+                                                                    <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
+                                                                :
+                                                                <div>
+                                                                    <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
+                                                                    </div>
+                                                                </div>
+
                                                             :
-                                                            <div>
-                                                                <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
-                                                                </div>
-                                                            </div>
+                                                            ''
                                                         }
+
                                                     </div>
                                                     <div className='td'>
                                                         <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
@@ -1652,19 +1664,7 @@ const ModalSalesOrder: React.FC = () => {
                                                         </div>
                                                     </div>
                                                     <div className='td urgency'>
-                                                        {article?.urgency ?
-                                                            <div>
-                                                                <div className='urgency-false-icon' title='Quitar urgencia' onClick={() => handleUrgencyChange(index)}>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer-off"><path d="M10 2h4" /><path d="M4.6 11a8 8 0 0 0 1.7 8.7 8 8 0 0 0 8.7 1.7" /><path d="M7.4 7.4a8 8 0 0 1 10.3 1 8 8 0 0 1 .9 10.2" /><path d="m2 2 20 20" /><path d="M12 12v-2" /></svg>
-                                                                </div>
-                                                            </div>
-                                                            :
-                                                            <div>
-                                                                <div className='urgency-true-icon' title='Agregar urgencia' onClick={() => handleUrgencyChange(index)}>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
-                                                                </div>
-                                                            </div>
-                                                        }
+                                                        
                                                     </div>
                                                     <div className='td'>
                                                         {article?.personalized ?

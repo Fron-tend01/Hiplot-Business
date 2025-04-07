@@ -283,7 +283,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
 
 
-  console.log('data', data)
+
 
 
 
@@ -432,7 +432,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
             check_recibido_cliente: false,
             /////////////////////Para Orden de Requicicion //////////////////////////
 
-            urgencia: false,
+            urgencia: 0,
             areas_produccion: article.areas_produccion,
 
             /////////////////////Para Orden de compra //////////////////////////
