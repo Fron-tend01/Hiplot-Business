@@ -41,7 +41,7 @@ const ByOC: React.FC = () => {
 
     const hoy = new Date();
     const haceUnaSemana = new Date();
-    haceUnaSemana.setDate(hoy.getDate() - 7);
+    haceUnaSemana.setDate(hoy.getDate() - 30);
     const fecth = async () => {
         const resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 2 })
         setSeries({
@@ -159,7 +159,7 @@ const ByOC: React.FC = () => {
                                 }}
                                 options={{
                                     dateFormat: "Y-m-d", // Formato de la fecha
-                                    defaultDate: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha predeterminada: una semana atrás
+                                    defaultDate: new Date(new Date().setDate(new Date().getDate() - 30)), // Fecha predeterminada: una semana atrás
                                 }}
                                 placeholder="Selecciona una fecha"
                             />

@@ -23,8 +23,8 @@ const SalesOrder: React.FC = () => {
     const user_id = userState.id
 
 
-     const setSaleOrdersConcepts = storeSaleOrder(state => state.setSaleOrdersConcepts)
-      const { saleOrdersConcepts }: any = useStore(storeSaleOrder);
+    const setSaleOrdersConcepts = storeSaleOrder(state => state.setSaleOrdersConcepts)
+    const { saleOrdersConcepts }: any = useStore(storeSaleOrder);
 
 
     const { getUsers }: any = usersRequests()
@@ -48,11 +48,11 @@ const SalesOrder: React.FC = () => {
         setModalSalesOrder('sale-order__modal')
         await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
             let orden = r[0]
-            setSaleOrdersConcepts({normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers, sale_order: orden});
+            setSaleOrdersConcepts({ normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers, sale_order: orden });
         })
-    
-      
-        
+
+
+
     }
 
 
@@ -81,19 +81,13 @@ const SalesOrder: React.FC = () => {
         hoy.toISOString().split('T')[0]
     ]);
 
-    const handleDateChange = (fechasSeleccionadas: any) => {
-        if (fechasSeleccionadas.length === 2) {
-            setDates(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
-        } else {
-            setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
-        }
-    };
+ 
 
     const fetch = async () => {
 
         APIs.GetAny('get_permisos_x_vista/' + user_id + '/ORDEN_VENTA').then((resp: any) => {
             setPermisosxVista(resp)
-          })
+        })
 
         const data = {
             nombre: '',
@@ -104,7 +98,7 @@ const SalesOrder: React.FC = () => {
         }
 
         let resultUsers = await getUsers(data)
-        resultUsers.unshift({'id':0, 'nombre': 'Todos'})
+        resultUsers.unshift({ 'id': 0, 'nombre': 'Todos' })
         setUsers({
             selectName: 'Vendedores',
             options: 'nombre',
@@ -112,7 +106,7 @@ const SalesOrder: React.FC = () => {
         })
 
         let resultSeries = await getSeriesXUser({ tipo_ducumento: 7, id: user_id })
-        resultSeries.unshift({'nombre': 'Todos'})
+        resultSeries.unshift({ 'nombre': 'Todos' })
         setSeries({
             selectName: 'Series',
             options: 'nombre',
@@ -122,7 +116,7 @@ const SalesOrder: React.FC = () => {
     }
     const { modalSalesOrder }: any = useStore(storeSaleOrder)
     const [page, setPage] = useState<number>(1)
-    
+
     const effectRan = useRef(false);
     useEffect(() => {
         fetch();
@@ -156,7 +150,7 @@ const SalesOrder: React.FC = () => {
     const modalUpdate = (order: any) => {
         console.log(order)
         setModalSalesOrder('sale-order__modal-update')
-        setSaleOrdersConcepts({sale_order: order, normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers});
+        setSaleOrdersConcepts({ sale_order: order, normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
         setSaleOrdersToUpdate(order)
 
     }
@@ -181,12 +175,45 @@ const SalesOrder: React.FC = () => {
                 <div className='row__one'>
                     <div className='row'>
                         <div className='col-8'>
-                            <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} all={true}/>
+                            <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} all={true} />
                         </div>
-                        <div className='col-4'>
-                            <label className='label__general'>Fechas</label>
-                            <div className='container_dates__requisition'>
-                                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                        <div className='col-4 row'>
+                            <div className='col-6'>
+                                <label className="label__general">Desde</label>
+                                <div className="flex gap-4 container_dates__requisition">
+                                    <Flatpickr
+                                        className="date"
+                                        id="fecha-desde"
+                                        onChange={(date) => {
+                                            const startDate = date[0]?.toISOString().split("T")[0] || "";
+                                            setDates([startDate, dates[1]]); // Actualiza directamente el arreglo usando Zustand
+                                        }}
+                                        options={{
+                                            dateFormat: "Y-m-d", // Formato de la fecha
+                                            defaultDate: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha predeterminada: una semana atrás
+                                        }}
+                                        placeholder="Selecciona una fecha"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className='col-6'>
+                                <label className="label__general">Hasta</label>
+                                <div className="flex gap-4 container_dates__requisition">
+                                    <Flatpickr
+                                        className="date"
+                                        id="fecha-hasta"
+                                        onChange={(date) => {
+                                            const endDate = date[0]?.toISOString().split("T")[0] || "";
+                                            setDates([dates[0], endDate]);
+                                        }}
+                                        options={{
+                                            dateFormat: "Y-m-d", // Formato de la fecha
+                                            defaultDate: new Date(), // Fecha predeterminada: hoy
+                                        }}
+                                        placeholder="Selecciona una fecha"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -203,7 +230,7 @@ const SalesOrder: React.FC = () => {
                         </div>
                         <div className='col-3'>
                             <label className='label__general'>Folio</label>
-                            <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio'   onKeyUp={(e) => e.key === 'Enter' && search()}/>
+                            <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' onKeyUp={(e) => e.key === 'Enter' && search()} />
                         </div>
                     </div>
                     <div className='my-4 d-flex justify-content-around'>
@@ -345,7 +372,7 @@ const SalesOrder: React.FC = () => {
                     </div>
                 </div>
             </div>
-            
+
         </div>
     )
 }

@@ -52,22 +52,15 @@ const Production: React.FC = () => {
     haceUnaSemana.setDate(hoy.getDate() - 7);
 
     // Inicializa el estado con las fechas formateadas
-    const [date, setDate] = useState([
+    const [dates, setDates] = useState([
         haceUnaSemana.toISOString().split('T')[0],
         hoy.toISOString().split('T')[0]
     ]);
 
-    const handleDateChange = (fechasSeleccionadas: any) => {
-        if (fechasSeleccionadas.length === 2) {
-            setDate(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
-        } else {
-            setDate([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
-        }
-    };
 
     const fetch = async () => {
 
-        
+
 
         const data = {
             nombre: '',
@@ -118,8 +111,8 @@ const Production: React.FC = () => {
             id_serie: selectedIds?.series?.id,
             id_area: selectedIds?.areas?.id,
             // id_cliente: client,
-            desde: date[0],
-            hasta: date[1],
+            desde: dates[0],
+            hasta: dates[1],
             id_usuario: user_id,
             status: type,
         }
@@ -163,14 +156,14 @@ const Production: React.FC = () => {
         setType(value)
     };
 
-   //-----------------------------------------APLICANDO PERMISOS-----------------------------------------------------------
-   const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
-   const permisosxVista = storeDv((state) => state.permisosxvista);
-   const fetchPermisos = async () => {
-       await APIs.GetAny('get_permisos_x_vista/' + user_id + '/PRODUCCION').then((resp: any) => {           
-           setPermisosxVista(resp)
-       })
-   }
+    //-----------------------------------------APLICANDO PERMISOS-----------------------------------------------------------
+    const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
+    const permisosxVista = storeDv((state) => state.permisosxvista);
+    const fetchPermisos = async () => {
+        await APIs.GetAny('get_permisos_x_vista/' + user_id + '/PRODUCCION').then((resp: any) => {
+            setPermisosxVista(resp)
+        })
+    }
     return (
         <div className='production'>
             <div className='production__container'>
@@ -179,14 +172,47 @@ const Production: React.FC = () => {
                         <div className='col-8'>
                             <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
                         </div>
-                        <div className='col-4'>
-                            <label className='label__general'>Fechas</label>
-                            <div className='container_dates__requisition'>
-                                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                        <div className='col-4 row'>
+                            <div className='col-6'>
+                                <label className="label__general">Desde</label>
+                                <div className="flex gap-4 container_dates__requisition">
+                                    <Flatpickr
+                                        className="date"
+                                        id="fecha-desde"
+                                        onChange={(date) => {
+                                            const startDate = date[0]?.toISOString().split("T")[0] || "";
+                                            setDates([startDate, dates[1]]); // Actualiza directamente el arreglo usando Zustand
+                                        }}
+                                        options={{
+                                            dateFormat: "Y-m-d", // Formato de la fecha
+                                            defaultDate: new Date(new Date().setDate(new Date().getDate() - 30)), // Fecha predeterminada: una semana atrás
+                                        }}
+                                        placeholder="Selecciona una fecha"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className='col-6'>
+                                <label className="label__general">Hasta</label>
+                                <div className="flex gap-4 container_dates__requisition">
+                                    <Flatpickr
+                                        className="date"
+                                        id="fecha-hasta"
+                                        onChange={(date) => {
+                                            const endDate = date[0]?.toISOString().split("T")[0] || "";
+                                            setDates([dates[0], endDate]);
+                                        }}
+                                        options={{
+                                            dateFormat: "Y-m-d", // Formato de la fecha
+                                            defaultDate: new Date(), // Fecha predeterminada: hoy
+                                        }}
+                                        placeholder="Selecciona una fecha"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className='row__two my-4'>
+                    <div className='my-4 row__two'>
                         <div className='container__checkbox_orders'>
                             <div className='checkbox__orders'>
                                 <label className="checkbox__container_general">
@@ -266,7 +292,7 @@ const Production: React.FC = () => {
                             {production.map((order: any) => {
                                 return (
                                     <div className='tbody__container' key={order.id} title='Haz Clic para ver más detalles de la Orden de Producción'>
-                                        <div className='tbody'style={{ backgroundColor: `#${order.color_estado}` }}>
+                                        <div className='tbody' style={{ backgroundColor: `#${order.color_estado}` }}>
                                             <div className='td' onClick={() => handleModalChange(order)}>
                                                 <p className='folio-identifier'>{order.serie}-{order.folio}-{order.anio}</p>
                                             </div>

@@ -41,6 +41,12 @@
     
 }
 
+.container__purchase-order > .row__one > .row__one > .row__two {
+    display: flex;
+    gap: 10px;
+    
+}
+
 .container__purchase-order > .row__one {
     padding: 15px 20px;
     background-color: var(--cards-background);

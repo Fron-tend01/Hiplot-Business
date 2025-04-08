@@ -582,7 +582,7 @@ const ModalSalesOrder: React.FC = () => {
         }
     }
 
-
+    console.log('dataProduction', dataProduction)
 
 
     useEffect(() => {
@@ -671,9 +671,10 @@ const ModalSalesOrder: React.FC = () => {
         setModalSub('see_cp')
     }
 
-
+    const [stateLoading, setStateLoading] = useState<any>(false)
 
     const handleUrgencyChange = async (index: number) => {
+        setStateLoading(true)
         let data = {
             "id_articulo": saleOrdersConcepts?.normal_concepts[index].id_articulo,
             "id_sucursal": modeUpdate ? saleOrdersToUpdate.id_sucursal : branchOffices.id,
@@ -681,17 +682,50 @@ const ModalSalesOrder: React.FC = () => {
         }
         const newConcept: any = [...saleOrdersConcepts?.normal_concepts];
         if (newConcept[index].urgency) {
-            console.log('newConcept precio_total', newConcept[index].precio_total)
             newConcept[index].precio_total = parseFloat(newConcept[index].precio_total);
             newConcept[index].monto_urgencia = 0;
-
+            newConcept[index].id_usuario_actualiza = user_id
             newConcept[index].urgency = !newConcept[index]?.urgency;
+            await APIs.CreateAny(newConcept[index], "update_carrito_concepto")
+                .then(async (response: any) => {
+                    if (!response.error) {
+                        newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
+                        await APIs.GetAny('get_carrito/' + user_id)
+                            .then(async (response: any) => {
+                                let order = response[0]
+                                setSaleOrdersToUpdate(order)
+                                setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                            })
+                    } else {
+                        Swal.fire('Notificación', response.mensaje, 'warning');
+                        return
+                    }
+                })
+
 
         } else {
             await APIs.CreateAny(data, "calcular_urgencia")
                 .then(async (response: any) => {
                     if (!response.error) {
                         newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
+                        newConcept[index].id_usuario_actualiza = user_id
+                        await APIs.CreateAny(newConcept[index], "update_carrito_concepto")
+                            .then(async (response: any) => {
+                                if (!response.error) {
+                                    newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
+                                    await APIs.GetAny('get_carrito/' + user_id)
+                                        .then(async (response: any) => {
+                                            let order = response[0]
+                                            setSaleOrdersToUpdate(order)
+                                            setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                                        })
+                                } else {
+                                    Swal.fire('Notificación', response.mensaje, 'warning');
+                                    return
+                                }
+                            })
+
+
                     } else {
                         Swal.fire('Notificación', response.mensaje, 'warning');
                         return
@@ -699,28 +733,17 @@ const ModalSalesOrder: React.FC = () => {
                 })
             newConcept[index].urgency = !newConcept[index]?.urgency;
         }
-       
-      
-      
-        // newConcept[index].urgency = !newConcept[index]?.urgency;
-        newConcept[index].id_usuario_actualiza = user_id
-    
-        try {
-            APIs.updateCarritoConcepto(newConcept[index])
-           
-            await APIs.GetAny('get_carrito/' + user_id)
-                .then(async (response: any) => {
-                    let order = response[0]
-                    setSaleOrdersToUpdate(order)
-                    setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
-                })
-        } catch (error) {
 
-        }
+
+        // newConcept[index].urgency = !newConcept[index]?.urgency;
+
+        setStateLoading(false)
+
+
     };
 
 
- 
+
     const updateOrdenVenta = async () => {
 
         const [datePartOne, timePartOne] = dates[0] ? dates[0].split("T") : ["", ""];
@@ -780,7 +803,7 @@ const ModalSalesOrder: React.FC = () => {
         normal.forEach((n: any) => {
             handleUrgencyChange(n.originalIndex)
         });
-       
+
     }
 
 
@@ -1024,6 +1047,37 @@ const ModalSalesOrder: React.FC = () => {
         }
     }
 
+    const [statusUrgency, setStatusUrgency] = useState<any>(false)
+    useEffect(() => {
+        saleOrdersConcepts.normal_concepts.forEach(element => {
+            if (element.urgency == true) {
+                setStatusUrgency(true)
+                return
+            }
+            setStatusUrgency(false)
+        });
+        saleOrdersConcepts.personalized_concepts.forEach(element => {
+            if (element.urgency == true) {
+                setStatusUrgency(true)
+                return
+            }
+            setStatusUrgency(false)
+        });
+
+    }, [saleOrdersConcepts.normal_concepts, saleOrdersConcepts.personalized_concepts])
+
+    useEffect(() => {
+        if (statusUrgency) {
+
+        } else {
+
+            calcular_tiempos_entrega();
+        }
+
+    }, [statusUrgency])
+
+    console.log('saleOrdersToUpdate', saleOrdersToUpdate)
+    console.log('datesssssssssssssssss', dates)
 
 
     return (
@@ -1297,12 +1351,16 @@ const ModalSalesOrder: React.FC = () => {
                                     <p className="label__general">Fecha de entrega a producción</p>
                                     <div className="container_dates__requisition">
                                         <input
+                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ? false : statusUrgency ? false : true : true}
+                                            // disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction.sin_tiempos ? true : statusUrgency ? false : true : dataProduction.sin_tiempos ? true : statusUrgency ? false : true  }
+
                                             type="datetime-local"
                                             value={dates[0]}
                                             className="date"
                                             onChange={(event) => handleDateChange(event, 0)}
                                             placeholder="Selecciona la fecha de inicio"
                                         />
+
                                     </div>
                                 </div>
 
@@ -1311,6 +1369,7 @@ const ModalSalesOrder: React.FC = () => {
                                     <p className="label__general">Fecha de entrega cliente</p>
                                     <div className="container_dates__requisition">
                                         <input
+                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ? false : statusUrgency ? false : true : true}
                                             type="datetime-local"
                                             value={dates[1]}
                                             className="date"
@@ -1415,41 +1474,46 @@ const ModalSalesOrder: React.FC = () => {
                                                         </p>
                                                     </div>
                                                     <div className='td'>
-                                                        {article.urgency ?
-                                                            <div className='d-flex'>
-                                                                {checkPermission('cambiar_totales') ?
-                                                                    <div className='d-flex'>
-                                                                        <input type="text" className='mr-2 inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} />
-                                                                        <p className='mr-2 total-identifier'>$ {article.monto_urgencia}</p>
-
-                                                                    </div>
-                                                                    :
-                                                                    <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
-
-                                                                {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
-                                                                    <p className='total-identifier'>
-                                                                        <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small>
-                                                                    </p>
-                                                                    :
-                                                                    ''
-                                                                }
-
-
-                                                            </div>
+                                                        {stateLoading ?
+                                                            <span className="loader_simple"></span>
                                                             :
-                                                            <div>
-                                                                {checkPermission('cambiar_totales') ?
-                                                                    <div>
-                                                                        <input type="text" className='inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} />
+                                                            article.urgency ?
+                                                                <div className='d-flex'>
+                                                                    {checkPermission('cambiar_totales') ?
+                                                                        <div className='d-flex'>
+                                                                            <input type="text" className='mr-2 inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} />
+                                                                            <p className='mr-2 cancel-identifier'>$ {article.monto_urgencia}</p>
+                                                                        </div>
+                                                                        :
+                                                                        <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
+
+                                                                    {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
+                                                                        <p className='total-identifier'>
+                                                                            <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small>
+                                                                        </p>
+                                                                        :
+                                                                        ''
+                                                                    }
 
 
-                                                                    </div>
-                                                                    :
-                                                                    <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
-                                                                <p className='mt-2 total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
-                                                                    <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
-                                                            </div>
+                                                                </div>
+                                                                :
+                                                                <div>
+                                                                    {checkPermission('cambiar_totales') ?
+                                                                        <div>
+                                                                            <input type="text" className='inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} />
+
+
+                                                                        </div>
+                                                                        :
+                                                                        <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
+                                                                    <p className='mt-2 total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
+                                                                        <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                                                </div>
+
+
                                                         }
+
                                                         {article.descuento > 0 ?
                                                             <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
                                                             : ''}
@@ -1459,15 +1523,18 @@ const ModalSalesOrder: React.FC = () => {
                                                             {article.id ?
                                                                 <div >
                                                                     {saleOrdersToUpdate.status != 1 ?
-                                                                        <div>
-                                                                            {checkPermission('cambiar_totales') ?
-                                                                                <div className='cancel-icon' onClick={() => canceleStatus(article)} title='Cancelar concepto'>
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
-                                                                                </div>
-                                                                                :
-                                                                                ''
-                                                                            }
-                                                                        </div>
+                                                                        modalSalesOrder == 'sale-order__modal' ?
+                                                                            ''
+                                                                            :
+                                                                            <div>
+                                                                                {checkPermission('cambiar_totales') ?
+                                                                                    <div className='cancel-icon' onClick={() => canceleStatus(article)} title='Cancelar concepto'>
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
+                                                                                    </div>
+                                                                                    :
+                                                                                    ''
+                                                                                }
+                                                                            </div>
                                                                         :
                                                                         ''}
                                                                 </div>
@@ -1664,7 +1731,7 @@ const ModalSalesOrder: React.FC = () => {
                                                         </div>
                                                     </div>
                                                     <div className='td urgency'>
-                                                        
+
                                                     </div>
                                                     <div className='td'>
                                                         {article?.personalized ?
@@ -1681,14 +1748,14 @@ const ModalSalesOrder: React.FC = () => {
                                                         </div>
                                                     </div>
 
-                                                    {article.id ?
-                                                        ""
-                                                        :
+                                                    {modalSalesOrder == 'sale-order__modal' ?
                                                         <div className='td'>
                                                             <div className='undo-icon' onClick={() => undoConcepts(article, index)}>
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
                                                             </div>
                                                         </div>
+                                                        :
+                                                        ''
                                                     }
                                                 </div>
 
@@ -1704,10 +1771,14 @@ const ModalSalesOrder: React.FC = () => {
                     <div className='mt-4 row__two'>
                         <div className='btns'>
                             <div className='subtotal'>
-                                <div>
-                                    <p className='name'>Subtotal</p>
-                                    <p className='value'>$ {amount}</p>
-                                </div>
+                                {stateLoading ?
+                                    <span className="loader_simple"></span>
+                                    :
+                                    <div>
+                                        <p className='name'>Subtotal</p>
+                                        <p className='value'>$ {amount}</p>
+                                    </div>
+                                }
                             </div>
                             <div className='discount'>
                                 <div>

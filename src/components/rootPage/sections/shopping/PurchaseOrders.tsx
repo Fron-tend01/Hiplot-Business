@@ -43,7 +43,7 @@ const PurchaseOrders: React.FC = () => {
 
   const hoy = new Date();
   const haceUnaSemana = new Date();
-  haceUnaSemana.setDate(hoy.getDate() - 7);
+  haceUnaSemana.setDate(hoy.getDate() - 30);
 
   const fecth = async () => {
     // setTotalPages(1)
@@ -88,19 +88,6 @@ const PurchaseOrders: React.FC = () => {
 
 
 
-  ////////////////////////
-  /// Fechas
-  ////////////////////////
-
-  const handleDateChange = (fechasSeleccionadas: any) => {
-    if (fechasSeleccionadas.length === 2) {
-      setDates(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
-    } else {
-      setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
-    }
-  };
-
-
 
   const handleClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value);
@@ -135,7 +122,6 @@ const PurchaseOrders: React.FC = () => {
   const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
   const searchOrders = async () => {
-    console.log(dates)
     const data = {
       folio: invoice,
       id_serie: selectedSerie,
@@ -178,14 +164,14 @@ const PurchaseOrders: React.FC = () => {
   useEffect(() => {
     searchOrders()
   }, [])
-   //-----------------------------------------APLICANDO PERMISOS-----------------------------------------------------------
-   const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
-   const permisosxVista = storeDv((state) => state.permisosxvista);
-   const fetchPermisos = async () => {
-       await APIs.GetAny('get_permisos_x_vista/' + user_id + '/ORDEN_COMPRA').then((resp: any) => {           
-           setPermisosxVista(resp)
-       })
-   }
+  //-----------------------------------------APLICANDO PERMISOS-----------------------------------------------------------
+  const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
+  const permisosxVista = storeDv((state) => state.permisosxvista);
+  const fetchPermisos = async () => {
+    await APIs.GetAny('get_permisos_x_vista/' + user_id + '/ORDEN_COMPRA').then((resp: any) => {
+      setPermisosxVista(resp)
+    })
+  }
   return (
     <div className='purchase-order'>
       <div className='breadcrumbs'>
@@ -208,13 +194,45 @@ const PurchaseOrders: React.FC = () => {
               <Empresas_Sucursales modeUpdate={false} empresaDyn={selectedCompany} sucursalDyn={selectedBranchOffice}
                 setEmpresaDyn={setSelectedCompany} setSucursalDyn={setSelectedBranchOffice} all={true} />
             </div>
-            <div>
-              <div className='dates__requisition'>
-                <label className='label__general'>Fechas</label>
-                <div className='container_dates__requisition'>
-                  <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+            <div className='row__two'>
+              <div>
+                <label className="label__general">Desde</label>
+                <div className="flex gap-4 container_dates__requisition">
+                  <Flatpickr
+                    className="date"
+                    id="fecha-desde"
+                    onChange={(date) => {
+                      const startDate = date[0]?.toISOString().split("T")[0] || "";
+                      setDates([startDate, dates[1]]); // Actualiza directamente el arreglo usando Zustand
+                    }}
+                    options={{
+                      dateFormat: "Y-m-d", // Formato de la fecha
+                      defaultDate: new Date(new Date().setDate(new Date().getDate() - 30)), // Fecha predeterminada: una semana atrás
+                    }}
+                    placeholder="Selecciona una fecha"
+                  />
                 </div>
               </div>
+
+              <div>
+                <label className="label__general">Hasta</label>
+                <div className="flex gap-4 container_dates__requisition">
+                  <Flatpickr
+                    className="date"
+                    id="fecha-hasta"
+                    onChange={(date) => {
+                      const endDate = date[0]?.toISOString().split("T")[0] || "";
+                      setDates([dates[0], endDate]); // Actualiza directamente el arreglo usando Zustand
+                    }}
+                    options={{
+                      dateFormat: "Y-m-d", // Formato de la fecha
+                      defaultDate: new Date(), // Fecha predeterminada: hoy
+                    }}
+                    placeholder="Selecciona una fecha"
+                  />
+                </div>
+              </div>
+
             </div>
           </div>
           <div className='row__two'>

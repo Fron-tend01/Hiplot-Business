@@ -81,7 +81,7 @@ const Requisition: React.FC = () => {
 
   const hoy = new Date();
   const haceUnaSemana = new Date();
-  haceUnaSemana.setDate(hoy.getDate() - 7);
+  haceUnaSemana.setDate(hoy.getDate() - 30);
   const setLPAs = storeOrdes(state => state.setLPAs)
 
 
@@ -179,17 +179,6 @@ const Requisition: React.FC = () => {
 
     }
   }, [selectedIds?.sucursal]);
-
-
-
-  const handleDateChange = (fechasSeleccionadas: any) => {
-    if (fechasSeleccionadas.length === 2) {
-      setDates(fechasSeleccionadas.map((fecha: any) => fecha.toISOString().split('T')[0]));
-    } else {
-      setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
-    }
-  };
-
 
 
   ////////////////////////
@@ -318,17 +307,17 @@ const Requisition: React.FC = () => {
       searchByFolio()
     }
   }, [modalStateCreate]);
-   //-----------------------------------------APLICANDO PERMISOS-----------------------------------------------------------
-   const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
-   const permisosxVista = storeDv((state) => state.permisosxvista);
+  //-----------------------------------------APLICANDO PERMISOS-----------------------------------------------------------
+  const setPermisosxVista = storeDv((state) => state.setPermisosxVista);
+  const permisosxVista = storeDv((state) => state.permisosxvista);
 
-   const fetchPermisos = async () => {
-       await APIs.GetAny('get_permisos_x_vista/' + user_id + '/REQUISICIONES').then((resp: any) => {
-           // console.log('--------------------------------', resp);
-           
-           setPermisosxVista(resp)
-       })
-   }
+  const fetchPermisos = async () => {
+    await APIs.GetAny('get_permisos_x_vista/' + user_id + '/REQUISICIONES').then((resp: any) => {
+      // console.log('--------------------------------', resp);
+
+      setPermisosxVista(resp)
+    })
+  }
   return (
     <div className='requisition'>
       <div className='breadcrumbs'>
@@ -379,9 +368,43 @@ const Requisition: React.FC = () => {
             </div>
           </div>
           <div className='row'>
-            <div className='col-6 md-col-12'>
-              <div className='container_dates__requisition'>
-                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={dates} onChange={handleDateChange} placeholder='seleciona las fechas' />
+            <div className='col-6 md-col-12 row'>
+              <div className='col-6'>
+                <label className="label__general">Desde</label>
+                <div className="flex gap-4 container_dates__requisition">
+                  <Flatpickr
+                    className="date"
+                    id="fecha-desde"
+                    onChange={(date) => {
+                      const startDate = date[0]?.toISOString().split("T")[0] || "";
+                      setDates([startDate, dates[1]]); // Actualiza directamente el arreglo usando Zustand
+                    }}
+                    options={{
+                      dateFormat: "Y-m-d", // Formato de la fecha
+                      defaultDate: new Date(new Date().setDate(new Date().getDate() - 30)), // Fecha predeterminada: una semana atrás
+                    }}
+                    placeholder="Selecciona una fecha"
+                  />
+                </div>
+              </div>
+
+              <div className='col-6'>
+                <label className="label__general">Hasta</label>
+                <div className="flex gap-4 container_dates__requisition">
+                  <Flatpickr
+                    className="date"
+                    id="fecha-hasta"
+                    onChange={(date) => {
+                      const endDate = date[0]?.toISOString().split("T")[0] || "";
+                      setDates([dates[0], endDate]);
+                    }}
+                    options={{
+                      dateFormat: "Y-m-d", // Formato de la fecha
+                      defaultDate: new Date(), // Fecha predeterminada: hoy
+                    }}
+                    placeholder="Selecciona una fecha"
+                  />
+                </div>
               </div>
             </div>
             <div className='col-6 md-col-12'>
@@ -534,7 +557,7 @@ const Requisition: React.FC = () => {
             <p>Cargando datos...</p>
           )}
         </div>
-       
+
 
 
       </div>
