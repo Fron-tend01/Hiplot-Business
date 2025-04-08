@@ -1282,25 +1282,35 @@ const ModalSalesOrder: React.FC = () => {
                             </div>
                             <div className='d-flex justify-content-between'>
                                 <div className='d-flex'>
-                                    {saleOrdersToUpdate.status === 0 ?
-                                        <>
+                                    {saleOrdersToUpdate.status === 0 || saleOrdersToUpdate.status === 2 ?
+                                      
                                             <div className='mr-4'>
                                                 <button className='btn__general-orange' onClick={getTicket}>Imprimir ticket</button>
                                             </div>
+                                        
+                                        : ''}
+
+                                    {saleOrdersToUpdate.status === 0 ?
+                            
                                             <div className='mr-4'>
                                                 <button className='btn__general-purple' onClick={SaleOrderProduction}>Mandar a producción</button>
                                             </div>
-                                        </>
+                                  
                                         : ''}
                                     <div>
                                         <button className='btn__general-orange' onClick={binnacleModal}>Bitácora</button>
                                     </div>
                                 </div>
-                                {saleOrdersToUpdate.status === 0 ?
-                                    <div>
-                                        <button className='btn__general-danger' onClick={SaleOrderStatus}>Cancelar</button>
-                                    </div>
-                                    : ''}
+                                {permisosxVista.some((x: any) => x.titulo === 'cancelar') ?
+                                    saleOrdersToUpdate.status === 0 || saleOrdersToUpdate.status === 2 ?
+                                        <div>
+                                            <button className='btn__general-danger' onClick={SaleOrderStatus}>Cancelar</button>
+                                        </div>
+                                        :
+                                        ''
+                                    :
+                                    ''
+                                }
                             </div>
                         </div>
                     </div>
