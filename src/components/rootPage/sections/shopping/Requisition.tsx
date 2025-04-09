@@ -526,7 +526,10 @@ const Requisition: React.FC = () => {
                         <p className='folio-identifier'>{requisition.serie}-{requisition.folio}-{requisition.anio}</p>
                       </div>
                       <div className='td'>
-                        <p>{requisition.tipo === 0 ? 'Normal' : 'Diferencial'}</p>
+                        <p>{(requisition.tipo === 0) && 'Manual'}</p>
+                        <p>{(requisition.tipo === 1) && 'Dif'}</p>
+                        <p>{(requisition.tipo === 2) && 'Automatica'}</p>
+                        <p>{(requisition.tipo === 3) && 'Automatica BP'}</p>
                       </div>
                       <div className='td'>
                         <p>{requisition.status == 0 ? <div><p className='active-identifier'>Activo</p></div> : ''}</p>
