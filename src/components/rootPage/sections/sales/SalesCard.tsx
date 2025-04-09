@@ -710,7 +710,6 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           concepto_principal.precio_unitario -= (concepto_adicional.total / concepto_adicional.cantidad)
           concepto_principal.descuento -= concepto_adicional.descuento
           concepto_principal.total_franquicia = pricesFranquiciaAdicional != null && !Number.isNaN(pricesFranquiciaAdicional) ? concepto_principal.total_franquicia - pricesFranquiciaAdicional : concepto_principal.total_franquicia
-          setIdentifier(identifier + 1);
           concepto_adicional.id_identifier = concepto_principal.id_identifier + 1;
           concepto_adicional.check = true
           concepto_adicional.id = null
@@ -722,11 +721,17 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           concepto_adicional.total_franquicia = pricesFranquiciaAdicional
           concepto_adicional.campos_plantilla = []
 
-          setIdentifier(identifier + 1);
+          console.log('sssssssssssssssaaaaaaaaaaaaaaaaaaaaaaaa', data)
+          data.campos_plantilla.forEach((cp: any) => {
+            cp.valor = cp.valor.toString()
+          });
+
+        
           //-------------------------------SIMULA LA CREACIÓN DEL PERSONALIZADO
           const data_pers = {
             descripcion: article.descripcion,
             personalized: true,
+            id_usuario: user_id,
             codigo: article.codigo,
             cantidad: amount,
             unidad: selectedUnit.id_unidad,
@@ -741,9 +746,33 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
             conceptos: [concepto_principal, concepto_adicional],
 
           }
+
+         
+
+          let data2 = {
+            id_usuario: user_id,
+            concepto: data_pers
+          }
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
-          setSaleOrdersConcepts({ personalized_concepts: [...saleOrdersConcepts.personalized_concepts, data], normal_concepts: saleOrdersConcepts?.normal_concepts })
-          localStorage.setItem('sale-order-pers', JSON.stringify([...saleOrdersConcepts.personalized_concepts, data_pers]));
+          APIs.CreateAny(data2, 'agregar_concepto_pers_adi_preov').then(async (resp: any) => {
+                      if (!resp.error) {
+                        setModalLoading(false)
+                        Swal.fire('Notificación', resp.mensaje, 'success')
+          
+                        await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+                          let orden = r[0]
+                          setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+                        })
+                      } else {
+                        setModalLoading(false)
+                        Swal.fire('Notificación', resp.mensaje, 'warning')
+                      }
+                    }).catch(e => {
+                      setModalLoading(false)
+                      Swal.fire('Notificación', 'ERROR: ' + e, 'warning')
+          
+                    })
+
           setPrices(0)
           setDescuento(0)
           setPricesFranquicia(0)
@@ -757,6 +786,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       data.campos_plantilla.forEach((cp: any) => {
         cp.valor = cp.valor.toString()
       });
+
       let data_enviar = {
         concepto: data,
         id_usuario: user_id
@@ -981,6 +1011,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     return permisosxVistaheader.some((x: any) => x.titulo == elemento)
   }
 
+
+
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' || modalSalesCard === 'sale-card-quotation' ? 'active' : ''}`}>
       {/* <Toaster expand={true} position="top-right" richColors /> */}
@@ -1045,13 +1077,13 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                   </div>
                   <div className='btn__sale__card-tooltip-container'>
                     <button className='btn__general-purple' type='button' onClick={() => setModalSub('stock_modal')}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-stack-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-stack-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></svg>
                     </button>
                     <span className="sale__card-tooltip-text">Stock</span>
                   </div>
                   <div className='btn__sale__card-tooltip-container'>
                     <button className='btn__general-purple' type='button' onClick={() => setModalSub('to-arrive_modal')}>
-                      <svg className="icon icon-tabler icons-tabler-outline icon-tabler-truck-delivery" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" /><path d="M3 9l4 0" /></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-directions"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 21v-4" /><path d="M12 13v-4" /><path d="M12 5v-2" /><path d="M10 21h4" /><path d="M8 5v4h11l2 -2l-2 -2z" /><path d="M14 13v4h-8l-2 -2l2 -2z" /></svg>
                     </button>
                     <span className="sale__card-tooltip-text">Indicaciones</span>
                   </div>
