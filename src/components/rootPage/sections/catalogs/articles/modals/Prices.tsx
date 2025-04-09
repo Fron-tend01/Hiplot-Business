@@ -45,6 +45,7 @@ const Prices: React.FC = () => {
   const { getUserGroups }: any = UserGroupsRequests();
   const [templates, setTemplates] = useState<any>();
   const [ranges, setRanges] = useState<any>();
+  const [ranges2, setRanges2] = useState<any>();
 
   const fetch = async () => {
     const data = {
@@ -53,6 +54,7 @@ const Prices: React.FC = () => {
     try {
       const resultRanges = await getRanges(data);
       setRanges(resultRanges)
+      setRanges2([...resultRanges])
       const resultTemplates: any = await APIs.GetAny("get_campos_plantillas/get");
       resultTemplates.unshift({ "id": 0, "nombre": 'Ninguno' })
       setTemplates(resultTemplates)
@@ -675,7 +677,7 @@ const Prices: React.FC = () => {
                                         value={item_two.id_rangos || ""}
                                         onChange={(e) => handleChangeRange(index, index_two, e.target.value)}
                                       >
-                                        {ranges.map((range:any, idx:number) => (
+                                        {ranges2.map((range:any, idx:number) => (
                                           <option key={idx} value={range.id}>
                                             {range.titulo}
                                           </option>

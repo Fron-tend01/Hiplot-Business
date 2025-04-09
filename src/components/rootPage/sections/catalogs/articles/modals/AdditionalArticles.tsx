@@ -210,7 +210,7 @@ const AdditionalArticles: React.FC = () => {
           </div>
           <div className='row'>
             <div className='col-12'>
-              <Filtrado_Articulos_Basic set_article_local={setAdditionalArticles} get_unidades={true} campos_ext={extrFields} />
+              <Filtrado_Articulos_Basic set_article_local={setAdditionalArticles} get_unidades={true} campos_ext={extrFields} materia_prima={1}/>
             </div>
           </div>
           <div className='table__modal_articles_modal_articles' >
