@@ -402,7 +402,7 @@ const ModalSalesOrder: React.FC = () => {
     }
 
 
-    const handleAreasChange = (event: any, i: number) => {
+    const handleAreasChange = async (event: any, i: number) => {
         const value = parseInt(event.target.value, 10);
 
         const data = saleOrdersConcepts?.normal_concepts.map((x: any, index: any) => {
@@ -411,7 +411,24 @@ const ModalSalesOrder: React.FC = () => {
             }
             return x;
         });
-        setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
+          
+        data[i].id_usuario_actualiza = user_id
+        await APIs.CreateAny(data[i], "update_carrito_concepto")
+                .then(async (response: any) => {
+                    if (!response.error) {
+                        await APIs.GetAny('get_carrito/' + user_id)
+                            .then(async (response: any) => {
+                                let order = response[0]
+                                setSaleOrdersToUpdate(order)
+                                setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                            })
+                    } else {
+                        // Swal.fire('Notificación', response.mensaje, 'warning');
+                        return
+                    }
+                })
+        
+     
     };
 
 
@@ -468,11 +485,27 @@ const ModalSalesOrder: React.FC = () => {
         setSubModal('logbook__sales-order-modal')
     }
 
-    const handleStatusChange = (status: number, index: number) => {
+    const handleStatusChange = async (status: number, index: number) => {
         let data = saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
             i === index ? { ...item, enviar_a_produccion: !status } : item
         )
-        setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
+        
+        data[index].id_usuario_actualiza = user_id
+        await APIs.CreateAny(data[index], "update_carrito_concepto")
+                .then(async (response: any) => {
+                    if (!response.error) {
+                        await APIs.GetAny('get_carrito/' + user_id)
+                            .then(async (response: any) => {
+                                let order = response[0]
+                                setSaleOrdersToUpdate(order)
+                                setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                            })
+                    } else {
+                        Swal.fire('Notificación', response.mensaje, 'warning');
+                        return
+                    }
+                })
+        
 
     };
 
@@ -830,16 +863,30 @@ const ModalSalesOrder: React.FC = () => {
         setCustomConceptView(saleOrdersConcepts.normal_concepts)
     }
 
-    const undoConcepts = (concept: any, i: number) => {
-        const deleteItemCustomC = saleOrdersConcepts?.personalized_concepts?.filter((_: any, index: number) => index !== i);
-        const updatedConcepts = concept.conceptos.map((element: any) => ({
-            ...element,
-            id_pers: 0,
-            check: false,
-        }));
-        setSaleOrdersConcepts({ normal_concepts: [...(saleOrdersConcepts?.normal_concepts ?? []), ...updatedConcepts], personalized_concepts: deleteItemCustomC, ...(concept.id && { normal_concepts_eliminate: [...(saleOrdersConcepts?.normal_concepts_eliminate ?? []), concept.id] }) });
-        localStorage.setItem('sale-order', JSON.stringify([...(saleOrdersConcepts?.normal_concepts ?? []), ...updatedConcepts]));
-        localStorage.setItem('sale-order-pers', JSON.stringify(deleteItemCustomC));
+    const undoConcepts = async (concept: any, i: number) => {
+        // const deleteItemCustomC = saleOrdersConcepts?.personalized_concepts?.filter((_: any, index: number) => index !== i);
+        // const updatedConcepts = concept.conceptos.map((element: any) => ({
+        //     ...element,
+        //     id_pers: 0,
+        //     check: false,
+        // }));
+
+        
+        await APIs.deleteAny(`eliminar_conceptos_pers_carrito/${concept.id}`)
+                .then(async (response: any) => {
+                    if (!response.error) {
+                        await APIs.GetAny('get_carrito/' + user_id)
+                            .then(async (response: any) => {
+                                let order = response[0]
+                                setSaleOrdersToUpdate(order)
+                                setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                            })
+                    } else {
+                        Swal.fire('Notificación', response.mensaje, 'warning');
+                        return
+                    }
+                })
+
     };
 
 
@@ -1283,19 +1330,14 @@ const ModalSalesOrder: React.FC = () => {
                             <div className='d-flex justify-content-between'>
                                 <div className='d-flex'>
                                     {saleOrdersToUpdate.status === 0 || saleOrdersToUpdate.status === 2 ?
-                                      
                                             <div className='mr-4'>
                                                 <button className='btn__general-orange' onClick={getTicket}>Imprimir ticket</button>
                                             </div>
-                                        
                                         : ''}
-
                                     {saleOrdersToUpdate.status === 0 ?
-                            
                                             <div className='mr-4'>
                                                 <button className='btn__general-purple' onClick={SaleOrderProduction}>Mandar a producción</button>
                                             </div>
-                                  
                                         : ''}
                                     <div>
                                         <button className='btn__general-orange' onClick={binnacleModal}>Bitácora</button>

@@ -97,7 +97,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
 
   const addPersonalized = (_: any, i: number) => {
     setSelectedIds('units', { id: customConceptView[0].id_unidad })
-    setselectedKey(saleOrdersConcepts.normal_concepts[0].clave_sat)
+    setselectedKey(customConceptView[0].clave_sat)
 
     setCustomConceptView(
       customConceptView.map((item: any, index: number) =>
@@ -191,7 +191,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
     if (personalizedModal == 'personalized_modal-quotation-update') {
       let length: number = 0;
       let filter = customConceptView.filter((x: any) => x.check == true)
-      let filterDeleteNormal = customConceptView.filter((x: any) => x.check !== true)
+
       const updatedConceptView = quotes?.personalized_concepts.map((x: any, index: number) => {
         if (index == indexItem) {
           length = filter.length
@@ -213,14 +213,36 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
       });
 
       if (length > 0) {
-        console.log('Se mantiene por que todavia le quedan conceptos', length)
-        setQuotes({ normal_concepts: filterDeleteNormal, personalized_concepts: updatedConceptView });
+        await APIs.CreateAny(updatedConceptView[indexItem], `update_carrito_concepto_pers`)
+          .then(async (response: any) => {
+            if (!response.error) {
+              await APIs.GetAny('get_carrito/' + user_id)
+                .then(async (response: any) => {
+                  let order = response[0]
+                  setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                })
+            } else {
+              Swal.fire('Notificación', response.mensaje, 'warning');
+              return
+            }
+          })
         setPersonalizedModal('')
         return
 
       } else {
-        let filterDelete = saleOrdersConcepts?.personalized_concepts.filter((_: any, index: number) => index !== indexItem)
-        setQuotes({ normal_concepts: filterDeleteNormal, personalized_concepts: filterDelete });
+        await APIs.deleteAny(`eliminar_conceptos_pers_carrito/${updatedConceptView[indexItem].id}`)
+        .then(async (response: any) => {
+            if (!response.error) {
+                await APIs.GetAny('get_carrito/' + user_id)
+                    .then(async (response: any) => {
+                        let order = response[0]
+                        setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                    })
+            } else {
+                Swal.fire('Notificación', response.mensaje, 'warning');
+                return
+            }
+        })
         setPersonalizedModal('')
       }
     }
@@ -467,7 +489,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
 
   const handleUrgencySaleChange = async (index: number) => {
     let data = {
-      "id_articulo": customConceptView[index].id_articulo, 
+      "id_articulo": customConceptView[index].id_articulo,
       "id_sucursal": saleOrdersConcepts.sale_order.id_sucursal,
       "total": customConceptView[index].precio_total
     }
@@ -479,56 +501,56 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
       newConcept[index].id_usuario_actualiza = user_id
       newConcept[index].urgency = !newConcept[index]?.urgency;
       await APIs.CreateAny(newConcept[index], "update_carrito_concepto")
-      .then(async (response: any) => {
+        .then(async (response: any) => {
           if (!response.error) {
-              newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
-              await APIs.GetAny('get_carrito/' + user_id)
-                  .then(async (response: any) => {
+            newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
+            await APIs.GetAny('get_carrito/' + user_id)
+              .then(async (response: any) => {
+                let order = response[0]
+                setCustomConceptView(order.conceptos);
+                setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers, sale_order: order });
+              })
+          } else {
+            Swal.fire('Notificación', response.mensaje, 'warning');
+            return
+          }
+        })
+
+
+    } else {
+      await APIs.CreateAny(data, "calcular_urgencia")
+        .then(async (response: any) => {
+          if (!response.error) {
+            newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
+            newConcept[index].id_usuario_actualiza = user_id
+            await APIs.CreateAny(newConcept[index], "update_carrito_concepto")
+              .then(async (response: any) => {
+                if (!response.error) {
+                  newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
+                  await APIs.GetAny('get_carrito/' + user_id)
+                    .then(async (response: any) => {
                       let order = response[0]
                       setCustomConceptView(order.conceptos);
-                      setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers, sale_order: order});
-                  })
-          } else {
-              Swal.fire('Notificación', response.mensaje, 'warning');
-              return
-          }
-      })
-  
-
-  } else {
-      await APIs.CreateAny(data, "calcular_urgencia")
-          .then(async (response: any) => {
-              if (!response.error) {
-                  newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
-                  newConcept[index].id_usuario_actualiza = user_id
-                  await APIs.CreateAny(newConcept[index], "update_carrito_concepto")
-                      .then(async (response: any) => {
-                          if (!response.error) {
-                              newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
-                              await APIs.GetAny('get_carrito/' + user_id)
-                                  .then(async (response: any) => {
-                                      let order = response[0]
-                                    setCustomConceptView(order.conceptos);
-                                      setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers,  sale_order: order });
-                                  })
-                          } else {
-                              Swal.fire('Notificación', response.mensaje, 'warning');
-                              return
-                          }
-                      })
-                  
-
-              } else {
+                      setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers, sale_order: order });
+                    })
+                } else {
                   Swal.fire('Notificación', response.mensaje, 'warning');
                   return
-              }
-          })
+                }
+              })
+
+
+          } else {
+            Swal.fire('Notificación', response.mensaje, 'warning');
+            return
+          }
+        })
       newConcept[index].urgency = !newConcept[index]?.urgency;
 
-  }
-         
-          setPersonalizedModal('')
-   
+    }
+
+    setPersonalizedModal('')
+
 
 
   };
