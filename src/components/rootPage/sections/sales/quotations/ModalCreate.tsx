@@ -390,17 +390,15 @@ const ModalCreate: React.FC = () => {
 
     setCalculations((prev) => ({
       ...prev,
-      subtotal:
-      preciospers.total +
+      subtotal: preciospers.total + precios.total,  
+      descuento: preciospers.descuento + precios.descuento,
+      urgencia: preciospers.urgencia + precios.urgencia,
+      total:    preciospers.total +
       precios.total +
       preciospers.descuento +
       precios.descuento +
       (preciospers.urgencia ?? 0) +
       (precios.urgencia ?? 0),
-    
-      descuento: preciospers.descuento + precios.descuento,
-      urgencia: preciospers.urgencia + precios.urgencia,
-      total: preciospers.total + precios.total,
 
       subtotalf: preciospers.total_franquicia + precios.total_franquicia,
       urgenciaf: 0,

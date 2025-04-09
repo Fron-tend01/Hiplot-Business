@@ -411,24 +411,24 @@ const ModalSalesOrder: React.FC = () => {
             }
             return x;
         });
-          
+
         data[i].id_usuario_actualiza = user_id
         await APIs.CreateAny(data[i], "update_carrito_concepto")
-                .then(async (response: any) => {
-                    if (!response.error) {
-                        await APIs.GetAny('get_carrito/' + user_id)
-                            .then(async (response: any) => {
-                                let order = response[0]
-                                setSaleOrdersToUpdate(order)
-                                setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
-                            })
-                    } else {
-                        // Swal.fire('Notificación', response.mensaje, 'warning');
-                        return
-                    }
-                })
-        
-     
+            .then(async (response: any) => {
+                if (!response.error) {
+                    await APIs.GetAny('get_carrito/' + user_id)
+                        .then(async (response: any) => {
+                            let order = response[0]
+                            setSaleOrdersToUpdate(order)
+                            setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                        })
+                } else {
+                    // Swal.fire('Notificación', response.mensaje, 'warning');
+                    return
+                }
+            })
+
+
     };
 
 
@@ -489,23 +489,23 @@ const ModalSalesOrder: React.FC = () => {
         let data = saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
             i === index ? { ...item, enviar_a_produccion: !status } : item
         )
-        
+
         data[index].id_usuario_actualiza = user_id
         await APIs.CreateAny(data[index], "update_carrito_concepto")
-                .then(async (response: any) => {
-                    if (!response.error) {
-                        await APIs.GetAny('get_carrito/' + user_id)
-                            .then(async (response: any) => {
-                                let order = response[0]
-                                setSaleOrdersToUpdate(order)
-                                setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
-                            })
-                    } else {
-                        Swal.fire('Notificación', response.mensaje, 'warning');
-                        return
-                    }
-                })
-        
+            .then(async (response: any) => {
+                if (!response.error) {
+                    await APIs.GetAny('get_carrito/' + user_id)
+                        .then(async (response: any) => {
+                            let order = response[0]
+                            setSaleOrdersToUpdate(order)
+                            setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                        })
+                } else {
+                    Swal.fire('Notificación', response.mensaje, 'warning');
+                    return
+                }
+            })
+
 
     };
 
@@ -594,12 +594,12 @@ const ModalSalesOrder: React.FC = () => {
 
         // Asegurar que las variables siempre existen y tienen un valor numérico
         setAmount(
-            (preciospers.total || 0) + (preciospers.descuento || 0) + (preciospers.monto_urgencia || 0) +
-            (precios.total || 0) + (precios.descuento || 0) + (precios.monto_urgencia || 0)
+            (preciospers.total || 0) + (precios.total || 0)
         );
         setdDiscount((preciospers.descuento || 0) + (precios.descuento || 0));
         setdUrgency((preciospers.monto_urgencia || 0) + (precios.monto_urgencia || 0));
-        setdTotalGeneral((preciospers.total || 0) + (precios.total || 0));
+        setdTotalGeneral((preciospers.total || 0) + (preciospers.descuento || 0) + (preciospers.monto_urgencia || 0) +
+            (precios.total || 0) + (precios.descuento || 0) + (precios.monto_urgencia || 0));
         setSubtotalf((preciospers.total_franquicia || 0) + (precios.total_franquicia || 0));
         setTotalf((preciospers.total_franquicia || 0) + (precios.total_franquicia || 0));
     };
@@ -723,6 +723,7 @@ const ModalSalesOrder: React.FC = () => {
                 .then(async (response: any) => {
                     if (!response.error) {
                         newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
+
                         await APIs.GetAny('get_carrito/' + user_id)
                             .then(async (response: any) => {
                                 let order = response[0]
@@ -741,6 +742,8 @@ const ModalSalesOrder: React.FC = () => {
                 .then(async (response: any) => {
                     if (!response.error) {
                         newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
+                        newConcept[index].precio_total = newConcept[index].precio_total + response.monto_urgencia;
+                        console.log(' newConcept[index].precio_total = newConcept[index].precio_total + response.monto_urgencia;', newConcept[index])
                         newConcept[index].id_usuario_actualiza = user_id
                         await APIs.CreateAny(newConcept[index], "update_carrito_concepto")
                             .then(async (response: any) => {
@@ -871,21 +874,21 @@ const ModalSalesOrder: React.FC = () => {
         //     check: false,
         // }));
 
-        
+
         await APIs.deleteAny(`eliminar_conceptos_pers_carrito/${concept.id}`)
-                .then(async (response: any) => {
-                    if (!response.error) {
-                        await APIs.GetAny('get_carrito/' + user_id)
-                            .then(async (response: any) => {
-                                let order = response[0]
-                                setSaleOrdersToUpdate(order)
-                                setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
-                            })
-                    } else {
-                        Swal.fire('Notificación', response.mensaje, 'warning');
-                        return
-                    }
-                })
+            .then(async (response: any) => {
+                if (!response.error) {
+                    await APIs.GetAny('get_carrito/' + user_id)
+                        .then(async (response: any) => {
+                            let order = response[0]
+                            setSaleOrdersToUpdate(order)
+                            setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                        })
+                } else {
+                    Swal.fire('Notificación', response.mensaje, 'warning');
+                    return
+                }
+            })
 
     };
 
@@ -1012,7 +1015,7 @@ const ModalSalesOrder: React.FC = () => {
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = parseFloat(e.target.value); // Convertir el valor de entrada a número
         let data = saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
-            i === index ? { ...item, precio_unitario: value / item.cantidad, precio_total: value } : item
+            i === index ? { ...item, precio_unitario: value / item.cantidad, total: value } : item
         )
         setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
     };
@@ -1123,8 +1126,7 @@ const ModalSalesOrder: React.FC = () => {
 
     }, [statusUrgency])
 
-    console.log('saleOrdersToUpdate', saleOrdersToUpdate)
-    console.log('datesssssssssssssssss', dates)
+
 
 
     return (
@@ -1330,14 +1332,14 @@ const ModalSalesOrder: React.FC = () => {
                             <div className='d-flex justify-content-between'>
                                 <div className='d-flex'>
                                     {saleOrdersToUpdate.status === 0 || saleOrdersToUpdate.status === 2 ?
-                                            <div className='mr-4'>
-                                                <button className='btn__general-orange' onClick={getTicket}>Imprimir ticket</button>
-                                            </div>
+                                        <div className='mr-4'>
+                                            <button className='btn__general-orange' onClick={getTicket}>Imprimir ticket</button>
+                                        </div>
                                         : ''}
                                     {saleOrdersToUpdate.status === 0 ?
-                                            <div className='mr-4'>
-                                                <button className='btn__general-purple' onClick={SaleOrderProduction}>Mandar a producción</button>
-                                            </div>
+                                        <div className='mr-4'>
+                                            <button className='btn__general-purple' onClick={SaleOrderProduction}>Mandar a producción</button>
+                                        </div>
                                         : ''}
                                     <div>
                                         <button className='btn__general-orange' onClick={binnacleModal}>Bitácora</button>
@@ -1498,6 +1500,12 @@ const ModalSalesOrder: React.FC = () => {
                                         <p>P/U</p>
                                     </div>
                                     <div>
+                                        <p>Descuento</p>
+                                    </div>
+                                    <div>
+                                        <p>Importe</p>
+                                    </div>
+                                    <div>
                                         <p>Total</p>
                                     </div>
                                 </div>
@@ -1526,6 +1534,10 @@ const ModalSalesOrder: React.FC = () => {
                                                         </p>
                                                     </div>
                                                     <div className='td'>
+                                                        <p>{article.descuento}</p>
+                                                    </div>
+
+                                                    <div className='td'>
                                                         {stateLoading ?
                                                             <span className="loader_simple"></span>
                                                             :
@@ -1533,12 +1545,11 @@ const ModalSalesOrder: React.FC = () => {
                                                                 <div className='d-flex'>
                                                                     {checkPermission('cambiar_totales') ?
                                                                         <div className='d-flex'>
-                                                                            <input type="text" className='mr-2 inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} />
+                                                                            <input type="number" className='mr-2 inputs__general' placeholder='Precio total' value={article.total} onChange={(e) => handlePriceChange(e, index)} />
                                                                             <p className='mr-2 cancel-identifier'>$ {article.monto_urgencia}</p>
                                                                         </div>
                                                                         :
-                                                                        <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
-
+                                                                        <p className='total-identifier'>$ {parseFloat(article.total).toFixed(2)}</p>}
                                                                     {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
                                                                         <p className='total-identifier'>
                                                                             <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small>
@@ -1553,12 +1564,10 @@ const ModalSalesOrder: React.FC = () => {
                                                                 <div>
                                                                     {checkPermission('cambiar_totales') ?
                                                                         <div>
-                                                                            <input type="text" className='inputs__general' placeholder='Precio total' value={article.precio_total} onChange={(e) => handlePriceChange(e, index)} />
-
-
+                                                                            <input type="number" className='inputs__general' placeholder='Precio total' value={article.total} onChange={(e) => handlePriceChange(e, index)} />
                                                                         </div>
                                                                         :
-                                                                        <p className='total-identifier'>$ {parseFloat(article.precio_total).toFixed(2)}</p>}
+                                                                        <p className='total-identifier'>$ {parseFloat(article.total).toFixed(2)}</p>}
                                                                     <p className='mt-2 total-identifier'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
                                                                         <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
                                                                 </div>
@@ -1570,6 +1579,11 @@ const ModalSalesOrder: React.FC = () => {
                                                             <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
                                                             : ''}
                                                     </div>
+                                                    <div className='td'>
+                                                        <p>{article.total + article.monto_urgencia}</p>
+                                                    </div>
+
+
                                                     {article.status == 0 ?
                                                         <div className='td'>
                                                             {article.id ?
