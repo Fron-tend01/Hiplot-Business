@@ -1099,22 +1099,10 @@ const ModalSalesOrder: React.FC = () => {
 
     const [statusUrgency, setStatusUrgency] = useState<any>(false)
     useEffect(() => {
-        saleOrdersConcepts.normal_concepts.forEach(element => {
-            if (element.urgency == true) {
-                setStatusUrgency(true)
-                return
-            }
-            setStatusUrgency(false)
-        });
-        saleOrdersConcepts.personalized_concepts.forEach(element => {
-            if (element.urgency == true) {
-                setStatusUrgency(true)
-                return
-            }
-            setStatusUrgency(false)
-        });
-
-    }, [saleOrdersConcepts.normal_concepts, saleOrdersConcepts.personalized_concepts])
+        const hasUrgency = saleOrdersConcepts.normal_concepts.some(element => element.urgency === true);
+        setStatusUrgency(hasUrgency);
+    }, [saleOrdersConcepts.normal_concepts]);
+    
 
     useEffect(() => {
         if (statusUrgency) {
@@ -1127,6 +1115,7 @@ const ModalSalesOrder: React.FC = () => {
     }, [statusUrgency])
 
 
+    console.log('statusUrgency', statusUrgency)
 
 
     return (
