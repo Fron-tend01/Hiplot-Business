@@ -15,8 +15,9 @@ const DeliveryTimes: React.FC = () => {
   const user_id = userState.id
   const setSubModal = storeArticles(state => state.setSubModal)
 
-  const {subModal, deliveryTimes, deleteDeliveryTimes}: any = useStore(storeArticles)
+  const {subModal, deliveryTimes, deliveryTimesView, deleteDeliveryTimes}: any = useStore(storeArticles)
   const setDeliveryTimes = storeArticles(state => state.setDeliveryTimes)
+  const setDeliveryTimesView = storeArticles(state => state.setDeliveryTimesView)
   const setDeleteDeliveryTimes = storeArticles(state => state.setDeleteDeliveryTimes)
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
@@ -43,16 +44,15 @@ const DeliveryTimes: React.FC = () => {
       options: 'nombre',
       dataSelect: result
     })
-
-    console.log(selectedIds)
+    
   }
 
 
 
   const addDeliveryTimes = async () => {
-      setDeliveryTimes((prevState: any) => [...prevState, ...selectedIds.deliveryTimes.tiempos_entrega_data]);
+    setDeliveryTimesView([...deliveryTimesView, ...selectedIds.deliveryTimes.tiempos_entrega_data]);
       const filter = await selectedIds.deliveryTimes.tiempos_entrega_data
-      .filter((x: any) => x.id)    // Filtramos solo los elementos que tienen `id`
+      .filter((x: any) => x.id)
       .map((x: any) => x.id); 
       setDeliveryTimes([...deliveryTimes, ...filter])
       console.log('sdsdsdsdsdsdsd', filter)
@@ -98,10 +98,10 @@ const DeliveryTimes: React.FC = () => {
           </div>
           <div>
             <div className='article__modal_delivery-times_table' >
-              {deliveryTimes ? (
+              {deliveryTimesView ? (
               <div className='table__numbers'>
                   <p className='text'>Total de Ordenes</p>
-                  <div className='quantities_tables'>{deliveryTimes?.length}</div>
+                  <div className='quantities_tables'>{deliveryTimesView?.length}</div>
               </div>
               ) : (
                 <p className='text'>No hay empresas</p>
@@ -130,9 +130,9 @@ const DeliveryTimes: React.FC = () => {
                   </div>
                 </div>
               </div>
-              {deliveryTimes?.length > 0 ? (
+              {deliveryTimesView?.length > 0 ? (
                   <div className='table__body'>
-                      {deliveryTimes?.map((item: any, index: any) => (
+                      {deliveryTimesView?.map((item: any, index: any) => (
                           <div className='tbody__container' key={index}>
                               <div className='tbody'>
                                   <div className='td'>

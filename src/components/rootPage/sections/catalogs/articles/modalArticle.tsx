@@ -37,7 +37,7 @@ const modalArticle: React.FC = () => {
 
     const setBranchOffices = storeArticles(state => state.setBranchOffices)
     const setMaxsMins = storeArticles(state => state.setMaxsMins)
-    const setDeliveryTimes = storeArticles(state => state.setDeliveryTimes)
+    const setDeliveryTimesView = storeArticles(state => state.setDeliveryTimesView)
     const setUnits = storeArticles(state => state.setUnits)
     const setComponents = storeArticles(state => state.setComponents)
     const setAreas = storeArticles(state => state.setAreas)
@@ -575,7 +575,7 @@ const modalArticle: React.FC = () => {
 
           try {
             const result = await APIs.getArticles(data2)
-            setDeliveryTimes(result[0].tiempos_entrega)
+            setDeliveryTimesView(result[0].tiempos_entrega)
           } catch (error) {
             
           } finally {
