@@ -90,6 +90,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const [usersGroups, setUsersGroups] = useState<any[]>([]);
   const [amount, setAmount] = useState<number>(0);
 
+  console.log('units', units)
 
   const [billingComment, setBillingComment] = useState<any>('')
   const [productionComments, setproductionComments] = useState<string>('')
@@ -297,6 +298,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
     }
 
+    console.log('sddddddddddddddddddddddddddddddddddddddddddddd')
+
   }, [article]);
   const [fyv, setfyv] = useState<boolean>(false)
 
@@ -316,20 +319,22 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     setSelectedUserGroup(item.id);
     setSelectUsersGroups(false);
   };
+  const [Adicional, setAdicional] = useState<any>(null);
 
   const [selectUnits, setSelectUnits] = useState<boolean>(false);
   const [selectedUnit, setSelectedUnit] = useState<any>(null);
-  const [Adicional, setAdicional] = useState<any>(null);
-  // const [AdicionalFranquicia, setAdicionalFranquicia] = useState<any>(null);
 
   const openSelectUnits = () => {
-    setSelectUnits(!selectUnits);
+    setSelectUnits(!selectUnits); // Cambiar el estado de selectUnits para mostrar/ocultar el selector
   };
 
   const handleUnitsChange = (item: any) => {
-    setSelectedUnit(item);
-    setSelectUnits(false);
+    setSelectedUnit(item); // Actualizar la unidad seleccionada
+    setSelectUnits(false); // Cerrar el selector después de seleccionar una unidad
+    console.log('Unidad seleccionada:', item); // Ver el objeto de la unidad seleccionada
   };
+
+  console.log('selectedUnit', selectedUnit)
 
   const handleTemplatesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     let value: any = e.target.value
@@ -726,7 +731,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
             cp.valor = cp.valor.toString()
           });
 
-        
+
           //-------------------------------SIMULA LA CREACIÓN DEL PERSONALIZADO
           const data_pers = {
             descripcion: article.descripcion,
@@ -748,7 +753,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
           }
 
-         
+
 
           let data2 = {
             id_usuario: user_id,
@@ -756,23 +761,23 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           }
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
           APIs.CreateAny(data2, 'agregar_concepto_pers_adi_preov').then(async (resp: any) => {
-                      if (!resp.error) {
-                        setModalLoading(false)
-                        Swal.fire('Notificación', resp.mensaje, 'success')
-          
-                        await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
-                          let orden = r[0]
-                          setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
-                        })
-                      } else {
-                        setModalLoading(false)
-                        Swal.fire('Notificación', resp.mensaje, 'warning')
-                      }
-                    }).catch(e => {
-                      setModalLoading(false)
-                      Swal.fire('Notificación', 'ERROR: ' + e, 'warning')
-          
-                    })
+            if (!resp.error) {
+              setModalLoading(false)
+              Swal.fire('Notificación', resp.mensaje, 'success')
+
+              await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+                let orden = r[0]
+                setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+              })
+            } else {
+              setModalLoading(false)
+              Swal.fire('Notificación', resp.mensaje, 'warning')
+            }
+          }).catch(e => {
+            setModalLoading(false)
+            Swal.fire('Notificación', 'ERROR: ' + e, 'warning')
+
+          })
 
           setPrices(0)
           setDescuento(0)
@@ -814,6 +819,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       })
     }
     toast.success('Artículo agregado')
+  
 
 
   }
@@ -1266,20 +1272,37 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
                     <div className='select__container'>
                       <label className='label__general'>Unidad</label>
-                      <div className={`select-btn__general`}>
-                        <div className={`select-btn ${selectUnits ? 'active' : ''}`} onClick={openSelectUnits}>
+                      <div className='select-btn__general'>
+                        <div
+                          className={`select-btn ${selectUnits ? 'active' : ''}`}
+                          onClick={openSelectUnits}
+                        >
                           <div className='select__container_title'>
-                            <p>{selectedUnit ? units?.find((s: any) => s.id || s.id_unidad === selectedUnit.id)?.nombre : 'Selecciona'}</p>
+                            <p>
+                              {selectedUnit
+                                ? units?.find((unit: any) => unit.id === selectedUnit.id)?.nombre
+                                : 'Selecciona'}
+                            </p>
                           </div>
-                          <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
+                          <svg
+                            className='chevron__down'
+                            xmlns="http://www.w3.org/2000/svg"
+                            height="16"
+                            width="16"
+                            viewBox="0 0 512 512"
+                          >
                             <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
                           </svg>
                         </div>
+
                         <div className={`content ${selectUnits ? 'active' : ''}`}>
-                          <ul className={`options ${selectUnits ? 'active' : ''}`} style={{ opacity: selectUnits ? '1' : '0' }}>
-                            {units?.map((userGroup: any) => (
-                              <li key={uuidv4()} onClick={() => handleUnitsChange(userGroup)}>
-                                {userGroup.nombre}
+                          <ul
+                            className={`options ${selectUnits ? 'active' : ''}`}
+                            style={{ opacity: selectUnits ? '1' : '0' }}
+                          >
+                            {units?.map((unit: any) => (
+                              <li key={uuidv4()} onClick={() => handleUnitsChange(unit)}>
+                                {unit.nombre}
                               </li>
                             ))}
                           </ul>
