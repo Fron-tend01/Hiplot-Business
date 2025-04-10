@@ -531,19 +531,19 @@ const ModalSalesOrder: React.FC = () => {
             calcular_tiempos_entrega();
 
         }
-    }, [modalSalesOrder, changeLength])
+    }, [modalSalesOrder, changeLength, branchOffices])
 
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        calcular_totales()
+    //     calcular_totales()
 
-        if (modalSalesOrder !== 'sale-order__modal-update') {
-            calcular_tiempos_entrega();
+    //     if (modalSalesOrder !== 'sale-order__modal-update') {
+    //         calcular_tiempos_entrega();
 
-        }
-    }, [modalSalesOrder, branchOffices])
+    //     }
+    // }, [modalSalesOrder, branchOffices])
 
 
     useEffect(() => {
@@ -688,8 +688,10 @@ const ModalSalesOrder: React.FC = () => {
                 setModifyTe(0)
                 if (response.hora_cliente && response.hora_produccion) {
                     setDataProduction(response)
+                    console.log('holaaaaaaaa')
                     setDates([`${response.fecha_produccion}T${response.hora_produccion}`, `${response.fecha_cliente}T${response.hora_cliente}`])
                 } else {
+                    setDataProduction(response)
                     setDates([`${response.fecha_produccion}T${hora}`, `${response.fecha_cliente}T${hora}`])
                 }
             }).catch(() => {
@@ -1408,7 +1410,7 @@ const ModalSalesOrder: React.FC = () => {
                                     <p className="label__general">Fecha de entrega a producción</p>
                                     <div className="container_dates__requisition">
                                         <input
-                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ? false : statusUrgency ? false : true : true}
+                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ?  statusUrgency ? true : false : true : true}
                                             // disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction.sin_tiempos ? true : statusUrgency ? false : true : dataProduction.sin_tiempos ? true : statusUrgency ? false : true  }
 
                                             type="datetime-local"
@@ -1426,7 +1428,7 @@ const ModalSalesOrder: React.FC = () => {
                                     <p className="label__general">Fecha de entrega cliente</p>
                                     <div className="container_dates__requisition">
                                         <input
-                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ? false : statusUrgency ? false : true : true}
+                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ?  statusUrgency ? true : false : true : true}
                                             type="datetime-local"
                                             value={dates[1]}
                                             className="date"
