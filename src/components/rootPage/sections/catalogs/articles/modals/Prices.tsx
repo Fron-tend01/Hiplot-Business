@@ -677,7 +677,7 @@ const Prices: React.FC = () => {
                                         value={item_two.id_rangos || ""}
                                         onChange={(e) => handleChangeRange(index, index_two, e.target.value)}
                                       >
-                                        {ranges2.map((range:any, idx:number) => (
+                                        {ranges2?.map((range:any, idx:number) => (
                                           <option key={idx} value={range.id}>
                                             {range.titulo}
                                           </option>

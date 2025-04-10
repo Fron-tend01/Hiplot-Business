@@ -730,6 +730,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           //-------------------------------SIMULA LA CREACIÓN DEL PERSONALIZADO
           const data_pers = {
             descripcion: article.descripcion,
+            is_adicional: true,
             personalized: true,
             id_usuario: user_id,
             codigo: article.codigo,

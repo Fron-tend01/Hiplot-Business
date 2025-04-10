@@ -866,16 +866,12 @@ const ModalSalesOrder: React.FC = () => {
         setCustomConceptView(saleOrdersConcepts.normal_concepts)
     }
 
-    const undoConcepts = async (concept: any, i: number) => {
-        // const deleteItemCustomC = saleOrdersConcepts?.personalized_concepts?.filter((_: any, index: number) => index !== i);
-        // const updatedConcepts = concept.conceptos.map((element: any) => ({
-        //     ...element,
-        //     id_pers: 0,
-        //     check: false,
-        // }));
-
-
-        await APIs.deleteAny(`eliminar_conceptos_pers_carrito/${concept.id}`)
+    const undoConcepts = async (concept: any, i: number) => { 
+        //----------------------------------ESTE YA TIENE LA VARIABLE IS ADICIONAL, VERIFICAR SI IS ADICIONAL SE ELIMINAN
+        //----------------------------------HASTA LOS CONCEPTITOS, SI NO ES ADICIONAL SE ELIMINA CON ESTE QUE YA TRAE POR DEFAULT
+       
+        if (concept.is_adicional) {
+            await APIs.deleteAny(`eliminar_conceptos_pers_adi_carrito/${concept.id}`)
             .then(async (response: any) => {
                 if (!response.error) {
                     await APIs.GetAny('get_carrito/' + user_id)
@@ -889,6 +885,24 @@ const ModalSalesOrder: React.FC = () => {
                     return
                 }
             })
+        }else { 
+
+            await APIs.deleteAny(`eliminar_conceptos_pers_carrito/${concept.id}`)
+                .then(async (response: any) => {
+                    if (!response.error) {
+                        await APIs.GetAny('get_carrito/' + user_id)
+                            .then(async (response: any) => {
+                                let order = response[0]
+                                setSaleOrdersToUpdate(order)
+                                setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                            })
+                    } else {
+                        Swal.fire('Notificación', response.mensaje, 'warning');
+                        return
+                    }
+                })
+        }
+
 
     };
 
