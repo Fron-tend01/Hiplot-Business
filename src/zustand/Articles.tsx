@@ -115,6 +115,10 @@ interface StoreState {
   // Tiempos de entrega 
   deliveryTimes: any[]
   setDeliveryTimes: (x: any) => void;
+
+  deliveryTimesView: any[]
+  setDeliveryTimesView: (x: any) => void;
+
   deleteDeliveryTimes: any
   setDeleteDeliveryTimes: (x: any) => void;
 
@@ -258,6 +262,10 @@ export const storeArticles = create<StoreState>((set) => ({
   //  Tiempos de entrega
   deliveryTimes: [],
   setDeliveryTimes: (x) => set({ deliveryTimes: x }),
+
+  deliveryTimesView: [],
+  setDeliveryTimesView: (x) => set({ deliveryTimesView: x }),
+
   deleteDeliveryTimes: [],
   setDeleteDeliveryTimes: (x) => set({ deleteDeliveryTimes: x }),
 
