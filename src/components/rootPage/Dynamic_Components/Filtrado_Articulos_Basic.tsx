@@ -49,6 +49,9 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
     const [familia, setFamilia] = useState<any>({})
 
 
+
+
+
     const user_id = userState.id
     const searchX = [
         {
@@ -192,6 +195,12 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
             });
         }
     }
+
+    useEffect(() => {
+        setSelectedResult('')
+    }, [id_empresa_proveedor])
+
+
     return (
         <div className='filter__article__basic'>
             <div className='row__one'>
@@ -251,8 +260,8 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
                     <button className='btn__general-purple' type='button' onClick={searchFor}>Buscar</button>
                 </div>
             </div>
-            <div className='row mt-3'>
-                <div className='row col-12 mx-auto'>
+            <div className='mt-3 row'>
+                <div className='mx-auto row col-12'>
                     <div className='col-9 md-col-10 sm-col-12'>
                         <div className='select__container'>
                             <label className='label__general'>Resultado</label>
@@ -274,7 +283,7 @@ const Filtrado_Articulos_Basic: React.FC<FiltradoArticulosBasicProps> = ({ get_s
                         </div>
                     </div>
                     <div className='col-3 md-col-2 sm-col-12 d-flex align-items-end'>
-                        <button className='btn__general-purple mr-3' type='button' onClick={() => agregar_articulos(false)}>Add+</button>
+                        <button className='mr-3 btn__general-purple' type='button' onClick={() => agregar_articulos(false)}>Add+</button>
                         <button className='btn__general-orange' type='button' onClick={() => agregar_articulos(true)}>Todos</button>
 
                     </div>

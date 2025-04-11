@@ -34,6 +34,9 @@ interface searcher {
   page: number,
   id_proveedor: number
 }
+
+
+
 const PedidoFranquicias = () => {
   const [_, setPf] = useState<pedido>({
     id: 0,
@@ -236,6 +239,7 @@ const PedidoFranquicias = () => {
       setFlag(null)
     }
     prevArticulosLength.current = length;
+    
 
   }, [articulos, searcher]);
 
@@ -557,6 +561,13 @@ const PedidoFranquicias = () => {
   useEffect(() => {
     getData()
   }, [page])
+
+
+  useEffect(()=> {
+    setArticulos([])
+ 
+  }, [selectData?.proveedor])
+
   return (
     <div className='franchise__orders'>
       <div className='franchise__orders_container'>
@@ -622,7 +633,7 @@ const PedidoFranquicias = () => {
             <button className='btn__general-purple' onClick={() => getData()}>Buscar</button>
           </div> */}
         </div>
-        <div className='row my-4'>
+        <div className='my-4 row'>
           <div className='col-12'>
             <div className='btns__create'>
               <button className='btn__general-purple' onClick={() => Modal(false, 0)}>Realizar Pedido de Franquicia</button>
@@ -859,7 +870,7 @@ const PedidoFranquicias = () => {
                                   <div className='td'>
                                     <select className={`inputs__general`}
                                       onChange={(e) => { handleUnits(e, index) }}>
-                                      {article?.unidades.map((option: any, i: number) => (
+                                      {article?.unidades?.map((option: any, i: number) => (
                                         <option key={i} value={option.id_unidad}>
                                           {option.nombre}
                                         </option>
@@ -898,12 +909,12 @@ const PedidoFranquicias = () => {
                         <p className="text">Cargando datos...</p>
                       )}
                     </div>
-                    <div className=' '>
+                    <div className=''>
 
                     </div>
                   </div>
                 </div>
-                <div className='d-flex justify-content-between mt-3'>
+                <div className='mt-3 d-flex justify-content-between'>
 
 
 
