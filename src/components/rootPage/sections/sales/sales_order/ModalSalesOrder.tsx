@@ -1410,7 +1410,7 @@ const ModalSalesOrder: React.FC = () => {
                                     <p className="label__general">Fecha de entrega a producción</p>
                                     <div className="container_dates__requisition">
                                         <input
-                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ?  statusUrgency ? true : false : true : true}
+                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ?  statusUrgency ? true : false : true : dataProduction?.sin_tiempos ? false : true}
                                             // disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction.sin_tiempos ? true : statusUrgency ? false : true : dataProduction.sin_tiempos ? true : statusUrgency ? false : true  }
 
                                             type="datetime-local"
@@ -1428,7 +1428,7 @@ const ModalSalesOrder: React.FC = () => {
                                     <p className="label__general">Fecha de entrega cliente</p>
                                     <div className="container_dates__requisition">
                                         <input
-                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ?  statusUrgency ? true : false : true : true}
+                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ?  statusUrgency ? true : false : true : dataProduction?.sin_tiempos ? false : true}
                                             type="datetime-local"
                                             value={dates[1]}
                                             className="date"
