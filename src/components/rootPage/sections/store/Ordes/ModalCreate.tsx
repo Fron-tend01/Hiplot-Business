@@ -93,7 +93,7 @@ const ModalCreate = () => {
 
     }
 
-    
+
     const fecth2 = async () => {
         try {
             const resultAreas = await getAreas(0, user_id)
@@ -115,7 +115,7 @@ const ModalCreate = () => {
 
     useEffect(() => {
         fecth()
-    
+
     }, [])
 
     useEffect(() => {
@@ -202,7 +202,7 @@ const ModalCreate = () => {
         const newArticleStates = [...concepts];
         newArticleStates[index].cantidad = 0;
         setConcepts(newArticleStates);
-      
+
     };
 
 
@@ -437,7 +437,7 @@ const ModalCreate = () => {
                                         <div className='tbody__container' key={index}>
                                             <div className='tbody'>
                                                 <div className='td'>
-                                                    <p className="article-identifier">{concept?.codigo}-{concept?.descripcion}</p>
+                                                    <p className="article-identifier ">{concept?.codigo}-{concept?.descripcion}</p>
                                                 </div>
                                                 <div className="td">
                                                     {selectedOption == 0 ?
@@ -446,20 +446,21 @@ const ModalCreate = () => {
                                                         </div>
                                                         :
                                                         concept.orden_produccion ?
-                                                        <p>{concept.orden_produccion.folio}</p>
-                                                        :
-                                                        <select
-                                                            className="traditional__selector"
-                                                            value={concept.id_orden_produccion || "Ninguna"}
-                                                            onChange={(event) => handleSelectChange(event, index)} >
-                                                            <option value="Ninguna">Ninguna</option>
-                                                            {OPByareas?.map((area, index) => (
-                                                                <option key={index} value={area.conceptos[0].id}>
-                                                                    {`${area.serie}-${area.id_folio}-${area.anio}`}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                        
+                                                            <p>{concept.urgencia && <p className="urgency-identifier">URGENCIA</p>}
+                                                                {concept.orden_produccion.folio}</p>
+                                                            :
+                                                            <select
+                                                                className="traditional__selector"
+                                                                value={concept.id_orden_produccion || "Ninguna"}
+                                                                onChange={(event) => handleSelectChange(event, index)} >
+                                                                <option value="Ninguna">Ninguna</option>
+                                                                {OPByareas?.map((area, index) => (
+                                                                    <option key={index} value={area.conceptos[0].id}>
+                                                                        {`${area.serie}-${area.id_folio}-${area.anio}`}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+
                                                     }
 
                                                 </div>
@@ -469,7 +470,7 @@ const ModalCreate = () => {
                                                             onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()} />
                                                     </div>
                                                 </div>
-                                               
+
                                                 <div className='td'>
                                                     <div>
                                                         {/* --------------------SE COMENTO ESTE PORQUE NO FUNCIONA AL CREAR, NO PERMITE MOVER EL CONCEPTO */}
@@ -482,7 +483,7 @@ const ModalCreate = () => {
                                                         </select>
                                                         {/* -------------------------------PARA QUE FUNCIONE BIEN SE DEBE SEGUIR USANDO LAS SELECCIONES TEMPORALES DEL INDEX
                                                         ALTERNAR ENTRE EL UPDATE CON UNA CONDICION PARA MOSTRAR EL DE ARRIBA Y VERIFICAR QUE EN EL UPDATE FUNCIONE */}
-                                                         {/* <select className='traditional__selector' disabled={concept?.orden_produccion} 
+                                                        {/* <select className='traditional__selector' disabled={concept?.orden_produccion} 
                                                         onChange={(event) => handleSeleccion(event, index)} value={seleccionesTemporales[index] || ''}>
                                                             {concept?.unidades.map((item: any) => (
                                                                 <option key={item.id} value={item.id_unidad}>

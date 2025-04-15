@@ -103,7 +103,7 @@ const ModalProduction: React.FC = () => {
                             copy.status = 2
                             setProductionToUpdate(copy)
                         })
-                        const result = await APIs.getProoductionOrders(dataProductionOrders)
+                    const result = await APIs.getProoductionOrders(dataProductionOrders)
                     setProductionToUpdate(result[0])
                 } catch (error) {
                     Swal.fire('Notificacion', 'Ocurrió un error al cambiar de area, consulta con soporte', 'info')
@@ -144,7 +144,7 @@ const ModalProduction: React.FC = () => {
                             copy.status = 1
                             setProductionToUpdate(copy)
                         })
-                        const result = await APIs.getProoductionOrders(dataProductionOrders)
+                    const result = await APIs.getProoductionOrders(dataProductionOrders)
                     setProductionToUpdate(result[0])
                 } catch (error) {
                     Swal.fire('Notificacion', 'Ocurrió un error al cancelar la orden, consulta con soporte', 'info')
@@ -417,7 +417,7 @@ const ModalProduction: React.FC = () => {
                                         {checkPermission('terminar') && (
                                             productionToUpdate.status == 0 ?
                                                 <div className='mr-3'>
-                                                    <button className='mr-3 btn__general-danger' onClick={() => finishConcept()}>Terminar orden</button>
+                                                    <button className='mr-3 btn__general-success' onClick={() => finishConcept()}>Terminar orden</button>
                                                 </div>
                                                 :
                                                 ''
@@ -460,6 +460,15 @@ const ModalProduction: React.FC = () => {
                                     <p>P/U</p>
                                 </div>
                                 <div className='th'>
+                                    <p>Importe</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Desc.</p>
+                                </div>
+                                <div className='th'>
+                                    <p>Urg.</p>
+                                </div>
+                                <div className='th'>
                                     <p>Total</p>
                                 </div>
                                 <div className='th'>
@@ -488,23 +497,17 @@ const ModalProduction: React.FC = () => {
                                                             <p className='amount-identifier'>{article.cantidad} {article.name_unidad || article.unidad}</p>
                                                         </div>
                                                         <div className='td-one'>
-                                                            <p>$ {article.total / article.cantidad}</p>
+                                                            <p>$ {(article.total / article.cantidad).toFixed(2)}</p>
                                                         </div>
                                                         <div className='td-one'>
-                                                            {article.monto_urgencia != undefined && article.monto_urgencia > 0 ?
-                                                                <div className='d-flex'>
-                                                                    <p className='total-identifier'>$ {article.total.toFixed(2)}</p>
-                                                                    <p>${article.monto_urgencia}</p>
-                                                                </div>
-                                                                :
-                                                                <p className='total-identifier'>$ {article.total.toFixed(2)}</p>
-                                                            }
+                                                            <p >$ {article.total.toFixed(2)}</p>
+
                                                         </div>
-                                                        <div className='td-one'>
-                                                            <p>{article.status_produccion == 0 ? <b className='active-identifier'>ACTIVO</b> :
-                                                                article.status_produccion == 1 ? <b className='cancel-identifier'>CANCELADO</b> :
-                                                                    article.status_produccion == 2 ? <b className='finished-identifier'>TERMINADO</b> : <b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
+                                                        <div className='td'>
+                                                            <p className={article.monto_descuento > 0 ? 'article-identifier' : ''}>${article.monto_descuento.toFixed(2)}</p>
+
                                                         </div>
+
                                                     </div>
                                                     <div className='row__two'>
                                                         {article.campos_plantilla.map((x: any) => (
@@ -518,12 +521,26 @@ const ModalProduction: React.FC = () => {
                                                         ))}
                                                     </div>
                                                 </div>
-                                                <div className='td'>
+
+                                                <div className='td-one'>
+                                                    <p className={article.monto_urgencia > 0 ? 'urgency-identifier' : ''}>${article.monto_urgencia.toFixed(2)}</p>
+
+                                                </div>
+                                                <div className='td-one'>
+                                                    <p className='total-identifier'>$ {article.total + article.monto_urgencia - article.monto_descuento}</p>
+
+                                                </div>
+                                                <div className='td-one'>
+                                                    <p>{article.status_produccion == 0 ? <b className='active-identifier'>ACTIVO</b> :
+                                                        article.status_produccion == 1 ? <b className='cancel-identifier'>CANCELADO</b> :
+                                                            article.status_produccion == 2 ? <b className='finished-identifier'>TERMINADO</b> : <b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
+                                                </div>
+                                                <div className='td-one'>
                                                     <div>
                                                         <textarea className='inputs__general' placeholder='Comentarios' value={article.obs_produccion} />
                                                     </div>
                                                 </div>
-                                                <div className='td'>
+                                                <div className='td-one'>
                                                     <select className="mr-3 traditional__selector" value={article.id_area_produccion} onChange={(e) => onChangeAreaConcepto(index, e.target.value)}>
                                                         <option value="" disabled>-- Selecciona una opción --</option>
                                                         {article.areas_produccion.map((option: any, idx: number) => (
@@ -536,21 +553,23 @@ const ModalProduction: React.FC = () => {
 
                                                     <div className='d-flex'>
                                                         <div className='d-flex align-items-end'>
-                                                            <button type='button' className='btn__general-purple' onClick={() => sendConceptoAreas(article)}>Enviar a otra area</button>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div className='td-one'>
+                                                    <button type='button' className='btn__general-purple' onClick={() => sendConceptoAreas(article)}>Enviar a otra area</button>
 
-                                                <div className='td'>
+                                                </div>
+                                                <div className='td-one'>
                                                     {checkPermission('terminar') && (
                                                         <div>
-                                                            <button className='btn__general-purple' type='button' onClick={() => terminarConcepto(article, index)}>Terminar conceptos</button>
+                                                            <button className='btn__general-success' type='button' onClick={() => terminarConcepto(article, index)}>Terminar conceptos</button>
                                                         </div>
 
                                                     )}
 
                                                 </div>
-                                                <div className='td'>
+                                                <div className='td-one'>
                                                     {checkPermission('enviar_a_sucursal') && (
                                                         <div>
                                                             <button className='btn__general-purple' type='button' onClick={() => enviarASucursalConcepto(article, index)}>Enviar concepto a sucursal</button>
@@ -559,7 +578,7 @@ const ModalProduction: React.FC = () => {
                                                     )}
 
                                                 </div>
-                                                <div className='td'>
+                                                <div className='td-one'>
                                                     {checkPermission('cancelar') && (
                                                         <div>
                                                             <button className='btn__general-danger' type='button' onClick={() => cancelarConcepto(article, index)}>Cancelar Concepto</button>
