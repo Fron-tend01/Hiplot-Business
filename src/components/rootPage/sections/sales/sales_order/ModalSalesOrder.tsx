@@ -757,7 +757,7 @@ const ModalSalesOrder: React.FC = () => {
                                     if (!response2.error) {
                                         newConcept[index].monto_urgencia_franquicia = parseFloat(response2.monto_urgencia);
                                         newConcept[index].total_franquicia = newConcept[index].total_franquicia;
-                                    } 
+                                    }
                                 })
                         }
                         newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
@@ -1555,28 +1555,27 @@ const ModalSalesOrder: React.FC = () => {
                                                     <div className='td'>
                                                         <p className=''>$ {article.precio_unitario} <br />
                                                             {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
-                                                                <small >PUF: ${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
+                                                                <small className='total-identifier'>PUF: ${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
                                                         </p>
                                                     </div>
-                                                    <div className='td'>
-                                                        <p>{article.descuento}</p>
-                                                    </div>
+
 
                                                     <div className='td'>
                                                         {stateLoading ?
                                                             <span className="loader_simple"></span>
                                                             :
                                                             article.urgency ?
-                                                                <div className='d-flex'>
+                                                                <div className='d-block'>
                                                                     {checkPermission('cambiar_totales') ?
                                                                         <div className='d-flex'>
                                                                             <input type="number" className='mr-2 inputs__general' placeholder='Precio total' value={article.total} onChange={(e) => handlePriceChange(e, index)} />
-                                                                            <p className='mr-2 cancel-identifier'>$ {article.monto_urgencia}</p>
+                                                                            
                                                                         </div>
                                                                         :
-                                                                        <p className='total-identifier'>$ {parseFloat(article.total).toFixed(2)}</p>}
+                                                                        <p className='total-identifier'>$ {parseFloat(article.total).toFixed(2)}</p>
+                                                                    }
                                                                     {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
-                                                                        <p className='total-identifier'>
+                                                                        <p className='mt-2 total-identifier'>
                                                                             <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small>
                                                                         </p>
                                                                         :
@@ -1605,41 +1604,19 @@ const ModalSalesOrder: React.FC = () => {
                                                             : ''}
                                                     </div>
                                                     <div className='td'>
-                                                        <p>{article.total + article.monto_urgencia}</p>
+                                                        <p>{article.descuento}</p>
+                                                    </div>
+                                                    <div className='td'>
+                                                        <p>$ {article.monto_urgencia}</p>
+                                                        <p className='total-identifier'>$ {article.monto_urgencia_franquicia}</p>
                                                     </div>
 
 
-                                                    {article.status == 0 ?
-                                                        <div className='td'>
-                                                            {article.id ?
-                                                                <div >
-                                                                    {saleOrdersToUpdate.status != 1 ?
-                                                                        modalSalesOrder == 'sale-order__modal' ?
-                                                                            ''
-                                                                            :
-                                                                            <div>
-                                                                                {checkPermission('cambiar_totales') ?
-                                                                                    <div className='cancel-icon' onClick={() => canceleStatus(article)} title='Cancelar concepto'>
-                                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
-                                                                                    </div>
-                                                                                    :
-                                                                                    ''
-                                                                                }
-                                                                            </div>
-                                                                        :
-                                                                        ''}
-                                                                </div>
-                                                                :
-                                                                <div className='td'>
+                                                    <div className='td'>
+                                                        <p>{article.total + article.monto_urgencia}</p>
 
-                                                                </div>
-                                                            }
-                                                        </div>
-                                                        :
-                                                        <div className='td'>
+                                                    </div>
 
-                                                        </div>
-                                                    }
 
                                                     <div className='td urgency'>
                                                         {modalSalesOrder == 'sale-order__modal' ?
