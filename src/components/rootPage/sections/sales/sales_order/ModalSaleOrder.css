@@ -434,7 +434,7 @@
 
 .table__sales_modal .table__head .thead {
 	display: grid;
-	grid-template-columns: repeat(5, 1fr) 2fr 1fr repeat(4, 50px);
+	grid-template-columns: repeat(4, 1fr) 1fr 1fr 1fr repeat(4, 50px);
 	padding: 10px;
 	font-weight: 600;
 	column-gap: 20px;
@@ -503,7 +503,7 @@
 
 .table__sales_modal .table__body .tbody {
 	display: grid;
-	grid-template-columns: repeat(5, 1fr) 2fr 1fr repeat(4, 50px);
+	grid-template-columns: repeat(4, 1fr) 1fr 1fr 1fr repeat(4, 50px);
 	padding: 10px;
 	column-gap: 20px;
 }
