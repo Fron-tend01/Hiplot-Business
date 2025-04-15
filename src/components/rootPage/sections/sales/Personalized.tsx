@@ -231,18 +231,18 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
 
       } else {
         await APIs.deleteAny(`eliminar_conceptos_pers_carrito/${updatedConceptView[indexItem].id}`)
-        .then(async (response: any) => {
+          .then(async (response: any) => {
             if (!response.error) {
-                await APIs.GetAny('get_carrito/' + user_id)
-                    .then(async (response: any) => {
-                        let order = response[0]
-                        setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
-                    })
+              await APIs.GetAny('get_carrito/' + user_id)
+                .then(async (response: any) => {
+                  let order = response[0]
+                  setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                })
             } else {
-                Swal.fire('Notificación', response.mensaje, 'warning');
-                return
+              Swal.fire('Notificación', response.mensaje, 'warning');
+              return
             }
-        })
+          })
         setPersonalizedModal('')
       }
     }
@@ -1142,8 +1142,17 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                       <div className='th'>
                         <p>Unidad</p>
                       </div>
+                      <div className='th'>
+                        <p>P/U</p>
+                      </div>
                       <div>
-                        <p>Precio</p>
+                        <p>Importe</p>
+                      </div>
+                      <div>
+                        <p>Descuento</p>
+                      </div>
+                      <div>
+                        <p>Urgencia</p>
                       </div>
                       <div>
                         <p>Total Per.</p>
@@ -1183,17 +1192,37 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                 <p>{concept.name_unidad || concept.unidad}</p>
                               </div>
                               <div className='td'>
-                                <p className=''>$ {concept.precio_total / concept.cantidad}</p>
+                                <div className='d-block'>
+                                  <p className=''>$ {concept.precio_total / concept.cantidad}</p>
+                                  <small className='total-identifier'>PUF: ${Number(concept.total_franquicia / concept.cantidad).toFixed(2)}</small>
+                                </div>
+                              </div>
+                              <div className='td '>
+                                <div className='d-block'>
+                                  <p>${parseFloat(concept.precio_total).toFixed(2)}</p>
+                                  <small className='total-identifier'>PF: ${parseFloat(concept.total_franquicia).toFixed(2)}</small>
+                                </div>
                               </div>
                               <div className='td'>
-                                {concept.urgency ?
-                                  <div className='d-flex'>
-                                    <p className='total-identifier'>$ {concept.precio_total}</p>
-                                    <p className='urgency-identifier'>${parseFloat(concept.monto_urgencia).toFixed(2)}</p>
-                                  </div>
-                                  :
-                                  <p className='total-identifier'>$ {concept.precio_total}</p>
+                                <p>${parseFloat(concept.descuento).toFixed(2)}</p>
+                              </div>
+                              <div className='td '>
+                                <div className='d-block'>
+                                  <p className='urgency-identifier'>${parseFloat(concept.monto_urgencia).toFixed(2)}</p>
+                                  {concept.monto_urgencia_franquicia > 0 ?
+                                <p className='total-identifier'>$ {concept.monto_urgencia_franquicia}</p>
+                                :
+                                ''
                                 }
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <p className=''>$ {concept.precio_total + concept.monto_urgencia}</p>
+                              </div>
+                              <div className='td'>
+                                <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
+                                </div>
                               </div>
                               <div className='td urgency'>
                                 {concept?.urgency ?
@@ -1209,11 +1238,6 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                     </div>
                                   </div>
                                 }
-                              </div>
-                              <div className='td'>
-                                <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
-                                </div>
                               </div>
                               <div className='td'>
                                 <div className='send-areas'>
@@ -1315,6 +1339,21 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                       <div className='th'>
                         <p>Unidad</p>
                       </div>
+                      <div className='th'>
+                        <p>P/U</p>
+                      </div>
+                      <div className='th'>
+                        <p>Importe</p>
+                      </div>
+                      <div className='th'>
+                        <p>Descuento</p>
+                      </div>
+                      <div className='th'>
+                        <p>Urgencia</p>
+                      </div>
+                      <div className='th'>
+                        <p>Total</p>
+                      </div>
                     </div>
                   </div>
                   {customConceptView ? (
@@ -1350,9 +1389,42 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                 <p>{concept.name_unidad || concept.unidad}</p>
                               </div>
                               <div className='td'>
-                                <p className=''>$ {concept.precio_total / concept.cantidad}</p>
+                                <div>
+                                  <p className=''>$ {concept.precio_total / concept.cantidad}</p>
+                                  {concept.total_franquicia ?
+                                    <small className='total-identifier'>PUF: ${Number(concept.total_franquicia / concept.cantidad).toFixed(2)}</small>
+                                    :
+                                    ''
+                                  }
+                                </div>
                               </div>
                               <div className='td'>
+                                <div>
+                                  <p className=''>$ {concept.precio_total}</p>
+                                  {concept.total_franquicia ?
+                                    <p className='total-identifier'>$ {concept.total_franquicia}</p>
+                                    :
+                                    ''
+                                  }
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <p className=''>$ {concept.descuento}</p>
+                              </div>
+                              <div className='td'>
+                                <div>
+                                  <p className=''>$ {concept.monto_urgencia}</p>
+                                  {concept.monto_urgencia_franquicia ?
+                                    <p className='total-identifier'>$ {concept.monto_urgencia_franquicia}</p>
+                                    :
+                                    ''
+                                  }
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <p className=''>$ {concept.precio_total + concept.monto_urgencia}</p>
+                              </div>
+                              {/* <div className='td'>
                                 {concept.urgency ?
                                   <div className='d-flex'>
                                     <p className='total-identifier'>$ {concept.precio_total}</p>
@@ -1361,7 +1433,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                   :
                                   <p className='total-identifier'>$ {concept.precio_total}</p>
                                 }
-                              </div>
+                              </div> */}
                               <div className='td urgency'>
                                 {concept?.urgency ?
                                   <div>
@@ -1571,6 +1643,15 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                         <p>P/U</p>
                       </div>
                       <div className='th'>
+                        <p>Importe</p>
+                      </div>
+                      <div className='th'>
+                        <p>Descuento</p>
+                      </div>
+                      <div className='th'>
+                        <p>Urgencia</p>
+                      </div>
+                      <div className='th'>
                         <p>Total</p>
                       </div>
                     </div>
@@ -1591,9 +1672,42 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                 <p>{concept.name_unidad || concept.unidad}</p>
                               </div>
                               <div className='td'>
-                                <p className=''>$ {concept.precio_total / concept.cantidad}</p>
+                                <div>
+                                  <p className=''>$ {concept.precio_total / concept.cantidad}</p>
+                                  {concept.total_franquicia ?
+                                    <small className='total-identifier'>PUF: ${Number(concept.total_franquicia / concept.cantidad).toFixed(2)}</small>
+                                    :
+                                    ''
+                                  }
+                                </div>
                               </div>
                               <div className='td'>
+                                <div>
+                                  <p className=''>$ {concept.precio_total}</p>
+                                  {concept.total_franquicia ?
+                                    <p className='total-identifier'>$ {concept.total_franquicia}</p>
+                                    :
+                                    ''
+                                  }
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <p className=''>$ {concept.descuento}</p>
+                              </div>
+                              <div className='td'>
+                                <div>
+                                  <p className=''>$ {concept.monto_urgencia}</p>
+                                  {concept.monto_urgencia_franquicia ?
+                                    <p className='total-identifier'>$ {concept.monto_urgencia_franquicia}</p>
+                                    :
+                                    ''
+                                  }
+                                </div>
+                              </div>
+                              <div className='td'>
+                                <p className=''>$ {concept.precio_total + concept.monto_urgencia}</p>
+                              </div>
+                              {/* <div className='td'>
                                 {concept.urgency ?
                                   <div className='d-flex'>
                                     <p className='total-identifier'>$ {concept.precio_total}</p>
@@ -1602,7 +1716,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                   :
                                   <p className='total-identifier'>$ {concept.precio_total}</p>
                                 }
-                              </div>
+                              </div> */}
                               <div className='td'>
                                 {concept.status == 0 ?
                                   <div className='cancel-icon' onClick={() => canceleStatus(concept)} title='Cancelar concepto'>

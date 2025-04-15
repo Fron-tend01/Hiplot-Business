@@ -168,7 +168,7 @@
 
 .table__personalized .table__head .thead {
   display: grid;
-  grid-template-columns: 100px 2fr repeat(4, 1fr) 50px 50px;
+  grid-template-columns: 100px 2fr repeat(7, 1fr) 50px 50px;
   padding: 10px;
   font-weight: 600;
   background-color: var(--table-header-color);
@@ -224,7 +224,7 @@
 
 .table__personalized .table__body .tbody {
   display: grid;
-  grid-template-columns: 100px 2fr repeat(4, 1fr) 50px 50px;
+  grid-template-columns: 100px 2fr repeat(7, 1fr) 50px 50px;
   padding: 10px;
 }
 
@@ -706,7 +706,7 @@
 
 .table__modal-sale__personalized-update .table__head .thead {
   display: grid;
-  grid-template-columns: repeat(5, 1fr) repeat(3, 50px);
+  grid-template-columns: repeat(8, 1fr) repeat(3, 50px);
   padding: 10px;
   font-weight: 600;
   column-gap: 20px;
@@ -766,7 +766,7 @@
 
 .table__modal-sale__personalized-update .table__body .tbody {
   display: grid;
-  grid-template-columns: repeat(5, 1fr) repeat(3, 50px);
+  grid-template-columns: repeat(8, 1fr) repeat(3, 50px);
   padding: 10px;
   column-gap: 20px;
 
