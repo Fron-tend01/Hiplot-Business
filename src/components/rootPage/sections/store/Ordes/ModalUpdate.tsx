@@ -314,6 +314,9 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                   <p className=''>Unidad</p>
                 </div>
                 <div className='th'>
+                  <p className=''>Salidas</p>
+                </div>
+                <div className='th'>
                   <p className=''>Comentarios</p>
                 </div>
               </div>
@@ -365,7 +368,13 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                           </div>
                         </div>
                       </div>
-
+                      <div className='td'>
+                        <div>
+                          {order.salidas?.map((sa: any) => (
+                            <p>{sa.folio}</p>
+                          ))}
+                        </div>
+                      </div>
                       <div className='td'>
                         <div>
                           <p>{order.comentarios}</p>

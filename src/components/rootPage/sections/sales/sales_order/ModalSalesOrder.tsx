@@ -719,6 +719,8 @@ const ModalSalesOrder: React.FC = () => {
         if (newConcept[index].urgency) {
             newConcept[index].precio_total = parseFloat(newConcept[index].precio_total);
             newConcept[index].monto_urgencia = 0;
+            newConcept[index].total_franquicia = parseFloat(newConcept[index].total_franquicia);
+            newConcept[index].monto_urgencia_franquicia = 0;
             newConcept[index].id_usuario_actualiza = user_id
             newConcept[index].urgency = !newConcept[index]?.urgency;
             await APIs.CreateAny(newConcept[index], "update_carrito_concepto")
@@ -743,6 +745,21 @@ const ModalSalesOrder: React.FC = () => {
             await APIs.CreateAny(data, "calcular_urgencia")
                 .then(async (response: any) => {
                     if (!response.error) {
+                        if (newConcept[index].total_franquicia > 0) {
+                            let data2 = {
+                                "id_articulo": saleOrdersConcepts?.normal_concepts[index].id_articulo,
+                                "id_sucursal": modeUpdate ? saleOrdersToUpdate.id_sucursal : branchOffices.id,
+                                "total": saleOrdersConcepts?.normal_concepts[index].total_franquicia
+                            }
+                            // ESTE CALCULA LA URGENCIA DEL MONTO DE FRANQUICIA
+                            await APIs.CreateAny(data2, "calcular_urgencia")
+                                .then(async (response2: any) => {
+                                    if (!response2.error) {
+                                        newConcept[index].monto_urgencia_franquicia = parseFloat(response2.monto_urgencia);
+                                        newConcept[index].total_franquicia = newConcept[index].total_franquicia;
+                                    } 
+                                })
+                        }
                         newConcept[index].monto_urgencia = parseFloat(response.monto_urgencia);
                         newConcept[index].precio_total = newConcept[index].precio_total + response.monto_urgencia;
                         console.log(' newConcept[index].precio_total = newConcept[index].precio_total + response.monto_urgencia;', newConcept[index])
@@ -868,26 +885,26 @@ const ModalSalesOrder: React.FC = () => {
         setCustomConceptView(saleOrdersConcepts.normal_concepts)
     }
 
-    const undoConcepts = async (concept: any, i: number) => { 
+    const undoConcepts = async (concept: any, i: number) => {
         //----------------------------------ESTE YA TIENE LA VARIABLE IS ADICIONAL, VERIFICAR SI IS ADICIONAL SE ELIMINAN
         //----------------------------------HASTA LOS CONCEPTITOS, SI NO ES ADICIONAL SE ELIMINA CON ESTE QUE YA TRAE POR DEFAULT
-       
+
         if (concept.is_adicional) {
             await APIs.deleteAny(`eliminar_conceptos_pers_adi_carrito/${concept.id}`)
-            .then(async (response: any) => {
-                if (!response.error) {
-                    await APIs.GetAny('get_carrito/' + user_id)
-                        .then(async (response: any) => {
-                            let order = response[0]
-                            setSaleOrdersToUpdate(order)
-                            setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
-                        })
-                } else {
-                    Swal.fire('Notificación', response.mensaje, 'warning');
-                    return
-                }
-            })
-        }else { 
+                .then(async (response: any) => {
+                    if (!response.error) {
+                        await APIs.GetAny('get_carrito/' + user_id)
+                            .then(async (response: any) => {
+                                let order = response[0]
+                                setSaleOrdersToUpdate(order)
+                                setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                            })
+                    } else {
+                        Swal.fire('Notificación', response.mensaje, 'warning');
+                        return
+                    }
+                })
+        } else {
 
             await APIs.deleteAny(`eliminar_conceptos_pers_carrito/${concept.id}`)
                 .then(async (response: any) => {
@@ -932,7 +949,7 @@ const ModalSalesOrder: React.FC = () => {
                                 Swal.fire('Notificacion', resp.mensaje, 'success')
                                 await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
                                     let orden = r[0]
-                                    setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+                                    setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden?.conceptos || [], personalized_concepts: orden?.conceptos_pers || [] });
                                 })
                             }
                         }).finally(() => {
@@ -1118,7 +1135,7 @@ const ModalSalesOrder: React.FC = () => {
         const hasUrgency = saleOrdersConcepts.normal_concepts.some(element => element.urgency === true);
         setStatusUrgency(hasUrgency);
     }, [saleOrdersConcepts.normal_concepts]);
-    
+
 
     useEffect(() => {
         if (statusUrgency) {
@@ -1410,7 +1427,7 @@ const ModalSalesOrder: React.FC = () => {
                                     <p className="label__general">Fecha de entrega a producción</p>
                                     <div className="container_dates__requisition">
                                         <input
-                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ?  statusUrgency ? true : false : true : dataProduction?.sin_tiempos ? false : true}
+                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ? statusUrgency ? true : false : true : dataProduction?.sin_tiempos ? false : true}
                                             // disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction.sin_tiempos ? true : statusUrgency ? false : true : dataProduction.sin_tiempos ? true : statusUrgency ? false : true  }
 
                                             type="datetime-local"
@@ -1428,7 +1445,7 @@ const ModalSalesOrder: React.FC = () => {
                                     <p className="label__general">Fecha de entrega cliente</p>
                                     <div className="container_dates__requisition">
                                         <input
-                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ?  statusUrgency ? true : false : true : dataProduction?.sin_tiempos ? false : true}
+                                            disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction?.sin_tiempos ? statusUrgency ? true : false : true : dataProduction?.sin_tiempos ? false : true}
                                             type="datetime-local"
                                             value={dates[1]}
                                             className="date"
@@ -1487,7 +1504,7 @@ const ModalSalesOrder: React.FC = () => {
                         }
                         <div className='table__sales_modal'>
                             <div className='table__numbers'>
-                                <p className='text'>Total de ordenes</p>
+                                <p className='text'>Total de Conceptos</p>
                                 <div className='quantities_tables'>{conceptView.length}</div>
                             </div>
                             <div className='table__head'>
@@ -1496,7 +1513,7 @@ const ModalSalesOrder: React.FC = () => {
                                         <p>Artículo</p>
                                     </div>
                                     <div className='th'>
-                                        <p>Cantidad</p>
+                                        <p>Cant.</p>
                                     </div>
                                     <div className='th'>
                                         <p>Unidad</p>
@@ -1505,10 +1522,13 @@ const ModalSalesOrder: React.FC = () => {
                                         <p>P/U</p>
                                     </div>
                                     <div>
-                                        <p>Descuento</p>
+                                        <p>Importe</p>
                                     </div>
                                     <div>
-                                        <p>Importe</p>
+                                        <p>Desc.</p>
+                                    </div>
+                                    <div>
+                                        <p>Urg.</p>
                                     </div>
                                     <div>
                                         <p>Total</p>
