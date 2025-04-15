@@ -11,6 +11,9 @@ interface StoreState {
 
     modalSubSub: any;
     setModalSubSub: (x: any) => void;
+
+    notfys: any[];
+    setNotfys: (x: any) => void;
 }
 
 export const storeHeader = create<StoreState>((set) => ({
@@ -23,6 +26,7 @@ export const storeHeader = create<StoreState>((set) => ({
     modalSubSub: '',
     setModalSubSub: (x) => set({modalSubSub: x}),
 
-
+    notfys: [],
+    setNotfys: (x) => set({notfys: x}),
 }));
 

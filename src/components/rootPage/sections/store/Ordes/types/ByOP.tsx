@@ -87,6 +87,7 @@ const ByOP: React.FC = () => {
               id_orden_produccion: concepto.id,
               unidad: concepto.id_unidad,
               id_unidad: concepto.id_unidad,
+              urgencia: item.urgencia,
             }))
           ])
         }

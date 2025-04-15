@@ -1,25 +1,22 @@
 import React, { useState } from "react";
 import './NotificationIcon.css';
 import Swal from 'sweetalert2';
+import { storeHeader } from "../../../zustand/Header";
 
 const NotificationIcon: React.FC = () => {
     // Estado para controlar si las notificaciones están visibles
-    const [showNotifications] = useState(false);
+    const [showNotifications,setShowNotifications] = useState(false);
+    const {notfys } = storeHeader()
   
-    // Lista de notificaciones
-    const notifications = [
-      { user: 'Juan Pérez', date: '2024-11-28 16:00', message: 'Se ha actualizado tu estado.' },
-      { user: 'Ana López', date: '2024-11-28 15:45', message: 'Nuevo comentario en tu publicación.' },
-    ];
   
     // Manejar el clic en el ícono de la campana para mostrar/ocultar las notificaciones
     const toggleNotifications = () => {
-      Swal.fire({
-        title: "Sección en desarrollo",
-        text: "Estamos trabajando para mejorar esta funcionalidad. Próximamente estará disponible.",
-        icon: "info",
-      });
-      // setShowNotifications(prevState => !prevState); // Alterna la visibilidad
+      // Swal.fire({
+      //   title: "Sección en desarrollo",
+      //   text: "Estamos trabajando para mejorar esta funcionalidad. Próximamente estará disponible.",
+      //   icon: "info",
+      // });
+      setShowNotifications(prevState => !prevState); // Alterna la visibilidad
     };
 
   
@@ -35,8 +32,8 @@ const NotificationIcon: React.FC = () => {
           <div className="notification-dropdown show">
             <div className="notification-header">Notificaciones</div>
             <ul className="notification-list">
-              {notifications.length > 0 ? (
-                notifications.map((notification, index) => (
+              {notfys.length > 0 ? (
+                notfys.map((notification, index) => (
                   <li key={index} className="notification-item">
                     <div className="notification-avatar">
                       <svg xmlns="http://www.w3.org/2000/svg" id="Outline" viewBox="0 0 24 24">
@@ -45,9 +42,9 @@ const NotificationIcon: React.FC = () => {
                       </svg>
                     </div>
                     <div className="notification-content">
-                      <div className="notification-user">{notification.user}</div>
-                      <div className="notification-message">{notification.message}</div>
-                      <div className="notification-date">{notification.date}</div>
+                      <div className="notification-user">{notification.usuario_realizando}</div>
+                      <div className="notification-message">{notification.evento}</div>
+                      <div className="notification-date">{notification.fecha}</div>
                     </div>
                   </li>
                 ))
