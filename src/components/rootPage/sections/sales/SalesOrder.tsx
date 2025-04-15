@@ -191,6 +191,7 @@ const SalesOrder: React.FC = () => {
                                         options={{
                                             dateFormat: "Y-m-d", // Formato de la fecha
                                             defaultDate: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha predeterminada: una semana atrás
+                                            locale: Spanish, // Configuración del idioma en español
                                         }}
                                         placeholder="Selecciona una fecha"
                                     />
@@ -210,6 +211,7 @@ const SalesOrder: React.FC = () => {
                                         options={{
                                             dateFormat: "Y-m-d", // Formato de la fecha
                                             defaultDate: new Date(), // Fecha predeterminada: hoy
+                                            locale: Spanish, // Configuración del idioma en español
                                         }}
                                         placeholder="Selecciona una fecha"
                                     />
