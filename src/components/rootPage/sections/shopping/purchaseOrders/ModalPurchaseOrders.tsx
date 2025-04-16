@@ -286,20 +286,13 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
       get_unidades: true
     };
     try {
-      if (selectedTypeSearch === 0) {
+     
         setModalLoading(true)
         const result: any = await APIs.getArticles(data)
         setModalLoading(false)
         setResultModalOC(result);
         setArticleResult(result[0])
-      } else if (selectedTypeSearch === 1) {
-        setModalLoading(true)
-        const result = await getArticles(data)
-        setModalLoading(false)
-        setResultModalOC(result);
-        setArticleResult(result[0])
-
-      }
+     
     } catch (error) {
 
     }
