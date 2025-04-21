@@ -1454,7 +1454,8 @@ const ModalSalesOrder: React.FC = () => {
                                         />
                                     </div>
                                 </div>
-                                <div className='col-4 row'>
+                                {/* {permisosxVista.some((x: any) => x.titulo === 'entregado_cliente_enviado_sucursal') ?
+                                    <div className='col-4 row'>
                                     <div className='col-6'>
                                         <div>
                                             <div className=''>
@@ -1478,6 +1479,9 @@ const ModalSalesOrder: React.FC = () => {
                                         </div>
                                     </div>
                                 </div>
+                                :
+                                ''
+                                } */}
                             </div>
                         </div>
                         {modalSalesOrder == 'sale-order__modal' ?
