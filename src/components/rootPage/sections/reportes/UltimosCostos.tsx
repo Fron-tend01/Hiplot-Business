@@ -40,6 +40,8 @@ const UltimosCostos: React.FC = () => {
     let filter_art = articulos.map(articulo => articulo.id);
     searcher.id_sucursal = sucursal.id
     searcher.ids_articulos = filter_art
+    searcher.desde = date[0]
+    searcher.hasta = date[1]
     await APIs.CreateAny(searcher, "reporte_ultimos_costos")
       .then(async (response: any) => {
         setData(response)

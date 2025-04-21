@@ -1,6 +1,7 @@
 .ultimosCostos {
     display: grid;
     padding: 20px;
+    overflow:scroll
 }
 
 .ultimosCostos__container {
