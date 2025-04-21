@@ -51,6 +51,7 @@ const WarehouseMovements: React.FC = () => {
         }
     };
     const [store, setStore] = useState<any>([])
+    const [permisos, setPermisos] = useState<any>([])
     const fetch = async () => {
         let response = await APIs.getStore(user_id)
         console.log(response)
@@ -59,8 +60,13 @@ const WarehouseMovements: React.FC = () => {
             options: 'nombre',
             dataSelect: response
         })
+        APIs.GetAny('get_permisos_x_vista/' + user_id + '/MOVIMIENTOS DE ALMACEN').then((resp: any) => {
+            setPermisos(resp)
+        })
     }
-
+    const checkPermission = (elemento: string) => {
+        return permisos.some((x: any) => x.titulo == elemento)
+    }
 
     useEffect(() => {
         fetch()
@@ -334,31 +340,37 @@ const WarehouseMovements: React.FC = () => {
                                                             <td>{x.cantidad}</td>
                                                             <td>
                                                                 {x.restante}
-                                                                <input
-                                                                    className="input-apartado"
-                                                                    type="text"
-                                                                    value={x.restante}
-                                                                    onChange={(e) =>
-                                                                        cambiarRestante(i, j, parseFloat(e.target.value) || 0)}
-                                                                />
-                                                            </td>
-                                                            <td>
-                                                                {x.apartado}
-                                                                <div className="input-button-group">
+                                                                {checkPermission('ajustes_almacen') && (
                                                                     <input
                                                                         className="input-apartado"
                                                                         type="text"
-                                                                        value={x.apartado}
-                                                                        onChange={(e) => cambiarApartado(i, j, parseFloat(e.target.value) || 0)}
+                                                                        value={x.restante}
+                                                                        onChange={(e) =>
+                                                                            cambiarRestante(i, j, parseFloat(e.target.value) || 0)}
                                                                     />
-                                                                    <button className="btn-guardar">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                            <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
-                                                                            <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
-                                                                            <path d="M7 3v4a1 1 0 0 0 1 1h7" />
-                                                                        </svg>
-                                                                    </button>
-                                                                </div>
+                                                                )}
+
+                                                            </td>
+                                                            <td>
+                                                                {x.apartado}
+                                                                {checkPermission('ajustes_almacen') && (
+
+                                                                    <div className="input-button-group">
+                                                                        <input
+                                                                            className="input-apartado"
+                                                                            type="text"
+                                                                            value={x.apartado}
+                                                                            onChange={(e) => cambiarApartado(i, j, parseFloat(e.target.value) || 0)}
+                                                                        />
+                                                                        <button className="btn-guardar" onClick={() => modificarRyA(x)}>
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                                <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                                                                                <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                                                                                <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    </div>
+                                                                )}
 
                                                             </td>
                                                             <td>
@@ -375,7 +387,9 @@ const WarehouseMovements: React.FC = () => {
                                                                             <th>Cantidad</th>
                                                                             <th>Unidad</th>
                                                                             <th>Motivo</th>
-                                                                            <th>Del ⚠️</th>
+                                                                            {checkPermission('ajustes_almacen') && (
+                                                                                <th>Del ⚠️</th>
+                                                                            )}
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -389,13 +403,15 @@ const WarehouseMovements: React.FC = () => {
                                                                                     <td>{ov.cantidad}</td>
                                                                                     <td>{ov.unidad_nombre}</td>
                                                                                     <td>{ov.tipo == 0 ? 'Apartado por OV' : ov.tipo == 2 ? 'Venta OV' : 'Venta con OP'}</td>
-                                                                                    <td>
-                                                                                        <button className='btn__general-danger' onClick={() => eliminarPafOv(ov)}>
-                                                                                            <div className='delete-icon' title='Eliminar'>
-                                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                                                                            </div>
-                                                                                        </button>
-                                                                                    </td>
+                                                                                    {checkPermission('ajustes_almacen') && (
+                                                                                        <td>
+                                                                                            <button className='btn__general-danger' onClick={() => eliminarPafOv(ov)}>
+                                                                                                <div className='delete-icon' title='Eliminar'>
+                                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                                                                </div>
+                                                                                            </button>
+                                                                                        </td>
+                                                                                    )}
                                                                                 </tr>
                                                                             ))
                                                                         ) : ('')}
@@ -410,13 +426,16 @@ const WarehouseMovements: React.FC = () => {
                                                                                     <td>{paf.cantidad}</td>
                                                                                     <td>{paf.unidad_nombre}</td>
                                                                                     <td>{paf.tipo == 1 ? 'Apartado por PAF' : 'Venta PAF'}</td>
-                                                                                    <td>
-                                                                                        <button className='btn__general-danger' onClick={() => eliminarPafOv(paf)}>
-                                                                                            <div className='delete-icon' title='Eliminar'>
-                                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                                                                            </div>
-                                                                                        </button>
-                                                                                    </td>
+                                                                                    {checkPermission('ajustes_almacen') && (
+                                                                                        <td>
+                                                                                            <button className='btn__general-danger' onClick={() => eliminarPafOv(paf)}>
+                                                                                                <div className='delete-icon' title='Eliminar'>
+                                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                                                                </div>
+                                                                                            </button>
+                                                                                        </td>
+
+                                                                                    )}
                                                                                 </tr>
                                                                             ))
                                                                         ) : ('')}
@@ -431,13 +450,16 @@ const WarehouseMovements: React.FC = () => {
                                                                                     <td>{salida.cantidad}</td>
                                                                                     <td>{salida.unidad_nombre}</td>
                                                                                     <td>Salida Generada</td>
-                                                                                    <td>
-                                                                                        <button className='btn__general-danger' onClick={() => eliminarSalida(salida)}>
-                                                                                            <div className='' title='Eliminar' >
-                                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                                                                            </div>
-                                                                                        </button>
-                                                                                    </td>
+                                                                                    {checkPermission('ajustes_almacen') && (
+                                                                                        <td>
+                                                                                            <button className='btn__general-danger' onClick={() => eliminarSalida(salida)}>
+                                                                                                <div className='' title='Eliminar' >
+                                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                                                                </div>
+                                                                                            </button>
+                                                                                        </td>
+
+                                                                                    )}
                                                                                 </tr>
                                                                             ))
                                                                         ) : (
