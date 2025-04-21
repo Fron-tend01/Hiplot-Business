@@ -174,10 +174,10 @@ const SalesOrder: React.FC = () => {
             <div className='sales__order_container'>
                 <div className='row__one'>
                     <div className='row'>
-                        <div className='col-8'>
+                        <div className='md-col-12 col-8'>
                             <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} all={true} />
                         </div>
-                        <div className='col-4 row'>
+                        <div className='md-col-12 col-4 row'>
                             <div className='col-6'>
                                 <label className="label__general">Desde</label>
                                 <div className="flex gap-4 container_dates__requisition">
@@ -220,22 +220,22 @@ const SalesOrder: React.FC = () => {
                         </div>
                     </div>
                     <div className='my-4 row'>
-                        <div className='col-3'>
+                        <div className='md-col-6 col-3'>
                             <label className='label__general'>Clientes</label>
                             <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Folio/RFC/Razon social' />
                         </div>
-                        <div className='col-3'>
+                        <div className='md-col-6 col-3'>
                             <Select dataSelects={users} nameSelect={'Usuarios'} instanceId='users' />
                         </div>
-                        <div className='col-3'>
+                        <div className='md-col-6 col-3'>
                             <Select dataSelects={series} nameSelect={'Series'} instanceId='serie' />
                         </div>
-                        <div className='col-3'>
+                        <div className='md-col-6 col-3'>
                             <label className='label__general'>Folio</label>
                             <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' onKeyUp={(e) => e.key === 'Enter' && search()} />
                         </div>
                     </div>
-                    <div className='my-4 d-flex justify-content-around'>
+                    <div className='my-4 row__three d-flex justify-content-around'>
                         <div className='container__checkbox_orders'>
                             <div className='checkbox__orders'>
                                 <label className="checkbox__container_general">
@@ -316,7 +316,48 @@ const SalesOrder: React.FC = () => {
                         <div className='table__body'>
                             {saleOrders.map((order: any) => {
                                 return (
-                                    <div className='tbody__container' key={order.id} onClick={() => modalUpdate(order)}>
+                                    <div className='tbody__container-desk' key={order.id} onClick={() => modalUpdate(order)}>
+                                        <div className='tbody'>
+                                            <div className='td'>
+                                                <p className='folio'>{order.serie}-{order.folio}-{order.anio}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>{order.titulo}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>$ {order.total_orden}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>$ N/A</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>$ {order.total_facturado}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>{order.usuario_crea}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>{order.fecha_creacion}</p>
+                                            </div>
+                                            <div className='td'>
+                                                {order.status == 0 ? <p className='active-identifier'>Activa</p> : ''}
+                                                {order.status == 1 ? <p className='cancel-identifier'>Cancelada</p> : ''}
+                                                {order.status == 2 ? <p className='cancel-identifier'>Terminada</p> : ''}
+                                            </div>
+                                            <div className='td'>
+                                                <p>{order.razon_social}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>{order.razon_social}</p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                            {saleOrders.map((order: any) => {
+                                return (
+                                    <div className='tbody__container-response' key={order.id} onClick={() => modalUpdate(order)}>
                                         <div className='tbody'>
                                             <div className='td'>
                                                 <p className='folio'>{order.serie}-{order.folio}-{order.anio}</p>
@@ -356,6 +397,7 @@ const SalesOrder: React.FC = () => {
                                 )
                             })}
                         </div>
+                        
                     ) : (
                         <p className="text">Cargando datos...</p>
                     )}

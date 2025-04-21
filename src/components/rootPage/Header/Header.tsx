@@ -126,16 +126,7 @@ const Header: React.FC = () => {
   const permisosxVistaheader = storeDv((state) => state.permisosxvistaheader);
   const [permisosxvista, setPermisosxvista] = useState<any[]>([]);
 
-  const fetch = async () => {
-    APIs.GetAny('get_permisos_x_vista/' + user_id + '/HEADER').then((resp: any) => {
-      setPermisosxVistaheader(resp)
-      setPermisosxvista(resp)
-    })
-    await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
-      let orden = r[0]
-      setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
-    })
-  }
+ 
   const intervalRef = useRef<number | null>(null);
 
   const getNotificaciones = async () => {

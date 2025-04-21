@@ -26,6 +26,12 @@
 
 
 
+.sales__order_container>.row__three {}
+
+
+
+
+
 
 
 
@@ -121,16 +127,23 @@
 }
 
 
-.table__sale-orders .table__body .tbody > .td {
+.table__sale-orders .table__body .tbody>.td {
 	display: flex;
 	align-items: center;
 }
 
-.table__sale-orders .table__body .tbody {
+.table__sale-orders .table__body .tbody__container-response {
+	display: none;
+}
+
+
+.table__sale-orders .table__body .tbody__container-desk .tbody {
 	display: grid;
 	grid-template-columns: repeat(10, 1fr);
 	padding: 10px;
 }
+
+
 
 .table__sale-orders .table__body .tbody .td.order>div {
 	background-color: var(--primary-color);
@@ -155,15 +168,42 @@
 .table__sale-orders .table__body .tbody:hover {
 	background-color: var(--table-hover-color);
 	color: #fff;
-  }
-  
+}
 
-.table__sale-orders .table__body .tbody:hover .td > .folio {
+
+.table__sale-orders .table__body .tbody:hover .td>.folio {
 	background-color: #3d86c6;
 	color: #ffffff;
-  }
+}
 
-  .table__sale-orders .table__body .tbody:hover .td > .active-identifier {
+.table__sale-orders .table__body .tbody:hover .td>.active-identifier {
 	background-color: #388E3C;
 	color: #ffffff;
-  }
+}
+
+@media screen and (max-width: 768px) {
+	.table__sale-orders .table__body .tbody__container-desk {
+		display: none;
+	}
+
+	.table__sale-orders .table__body .tbody__container-response .tbody {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		padding: 10px;
+	}
+
+
+	.table__sale-orders .table__head {
+		display: none;
+	}
+
+	.sales__order_container > .row__one >.row__three {
+		display: block;
+	}
+	
+	
+	
+	
+
+
+}

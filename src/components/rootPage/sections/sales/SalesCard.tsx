@@ -818,7 +818,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
       })
     }
-    toast.success('Artículo agregado')
+
   
 
 
