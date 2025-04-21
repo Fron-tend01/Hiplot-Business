@@ -274,7 +274,15 @@
     .md-p-4 { padding: 1.5rem; }
     .md-p-5 { padding: 3rem; }
 }
-
+.alert__price {
+  position: absolute;
+  top: -40px;
+  right: 23px;
+  padding: 5px;
+  background-color: #ff5252;
+  color: #fff;
+  border-radius: 5px;
+}
 /* Responsive Design for Small Screens */
 @media (max-width: 576px) {
 

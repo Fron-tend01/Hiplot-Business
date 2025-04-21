@@ -596,13 +596,13 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   useEffect(() => {
     getPrices()
   }, [amount, fyv])
-  useEffect(() => {
-    setData((prev: any) => ({
-      ...prev,
-      precio_unitario: prices / prev.cantidad,
-      precio_total: parseFloat(prices)
-    }));
-  }, [prices]);
+  // useEffect(() => {
+  //   setData((prev: any) => ({
+  //     ...prev,
+  //     precio_unitario: prices / prev.cantidad,
+  //     precio_total: parseFloat(prices)
+  //   }));
+  // }, [prices]);
   const [warningContact, setWarningContact] = useState<boolean>(false)
   const styleWarningContact = {
     opacity: warningContact === true ? '1' : '',
@@ -1018,7 +1018,15 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     return permisosxVistaheader.some((x: any) => x.titulo == elemento)
   }
 
-
+const setterPrices = (valor:any) => {
+  setPrices(valor || 0)
+  setData((prev: any) => ({
+    ...prev,
+    precio_unitario: valor / prev.cantidad,
+    precio_total: valor,
+    total: valor
+  }));
+}
 
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' || modalSalesCard === 'sale-card-quotation' ? 'active' : ''}`}>
@@ -1338,9 +1346,11 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                           <input type="checkbox" checked={fyv} onChange={(e) => {
                             setfyv(e.target.checked);
                             if (e.target.checked) {
-                              setBillingComment('FRENTE Y VUELTA'); setproductionComments('FRENTE Y VUELTA')
+                              setData((prev: any) => ({ ...prev, obs_factura: 'FRENTE Y VUELTA' })) 
+                              setData((prev: any) => ({ ...prev, obs_produccion: 'FRENTE Y VUELTA' }))
                             } else {
-                              setBillingComment(''); setproductionComments('')
+                              setData((prev: any) => ({ ...prev, obs_factura: '' })) 
+                              setData((prev: any) => ({ ...prev, obs_produccion: '' }))
                             }
                           }} />
                           <span className="slider"></span>
@@ -1568,7 +1578,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                           // className={`inputs__general`}
                           type="text"
                           value={prices}
-                          onChange={(e) => setPrices(e.target.value)}
+                          onChange={(e) => setterPrices(e.target.value)}
                         />
                         : prices}
                     </p>

@@ -99,6 +99,106 @@ const WarehouseMovements: React.FC = () => {
         })
 
     }
+    const eliminarSalida = (salida: any) => {
+        Swal.fire({
+            title: "Seguro que deseas eliminar el registro de la salida?",
+            text: "Esta acción no se puede deshacer !",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await APIs.CreateAny(salida, "eliminarRegistroSalidaDeEntrada")
+                        .then(async (resp: any) => {
+                            if (!resp.error) {
+                                Swal.fire('Notificación', resp.mensaje, 'success');
+                            } else {
+                                Swal.fire('Notificación', resp.mensaje, 'warning');
+                            }
+                        })
+                } catch (error) {
+                    Swal.fire('Notificacion', 'Ocurrió un error al eliminar el registro de salida, consulta con soporte', 'warning')
+
+                }
+            }
+        });
+    }
+    const eliminarPafOv = (data: any) => {
+        Swal.fire({
+            title: "Seguro que deseas eliminar el registro PAF/OV?",
+            text: "Esta acción no se puede deshacer !",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await APIs.CreateAny(data, "eliminarRegistroApartadoEntradaPAFOV")
+                        .then(async (resp: any) => {
+                            if (!resp.error) {
+                                Swal.fire('Notificación', resp.mensaje, 'success');
+                            } else {
+                                Swal.fire('Notificación', resp.mensaje, 'warning');
+                            }
+                        })
+                } catch (error) {
+                    Swal.fire('Notificacion', 'Ocurrió un error al eliminar el registro de salida, consulta con soporte', 'warning')
+
+                }
+            }
+        });
+    }
+    const cambiarApartado = (i: number, j: number, valor: number) => {
+
+        const newData = [...data];
+        newData[i].entradas[j].apartado = valor;
+        newData[i].entradas[j].disponible = newData[i].entradas[j].restante - valor;
+        newData[i].entradas[j].noNegativo = false
+
+        if (newData[i].entradas[j].disponible < 0) {
+            newData[i].entradas[j].noNegativo = true
+        }
+        setData(newData);
+
+    }
+    const cambiarRestante = (i: number, j: number, valor: number) => {
+        const newData = [...data];
+        newData[i].entradas[j].restante = valor;
+        newData[i].entradas[j].noNegativo = false
+
+        newData[i].entradas[j].disponible = valor - newData[i].entradas[j].apartado;
+        if (newData[i].entradas[j].disponible < 0) {
+            newData[i].entradas[j].noNegativo = true
+        }
+        setData(newData);
+    }
+    const modificarRyA = (data: any) => {
+        Swal.fire({
+            title: "Seguro que desea modificar los registros?",
+            text: "Puedes volver a ajustar estos registros, se ajustarán la cantidad RESTANTE como la APARTADA con los datos ingresados",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await APIs.CreateAny(data, "modificarRyA")
+                        .then(async (resp: any) => {
+                            if (!resp.error) {
+                                Swal.fire('Notificación', resp.mensaje, 'success');
+                            } else {
+                                Swal.fire('Notificación', resp.mensaje, 'warning');
+                            }
+                        })
+                } catch (error) {
+                    Swal.fire('Notificacion', 'Ocurrió un error al ajustar los registros, consulta con soporte', 'warning')
+
+                }
+            }
+        });
+    }
     return (
         <div className='warehouse__movements'>
             <div className='warehouse__movements_container'>
@@ -129,6 +229,36 @@ const WarehouseMovements: React.FC = () => {
                     </div>
                 </div>
                 <div className='row mb-3 mt-2'>
+                    <div className='col-6 table__warehouse-movements'>
+                        <div className='table__head'>
+                            <div className={`thead `}>
+                                <div className='th'>
+                                    <p>Almacen</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='table__body'>
+                            <div className='tbody__container'>
+                                <div className={`tbody`}>
+                                    {dataStore.map((x: any, index: number) => (
+                                        <>
+                                            <div className='td '>
+                                                <p className='article'>{x.nombre}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <div className='delete-icon' onClick={() => {
+                                                    DynamicVariables.removeObjectInArray(setDataStore, index);
+                                                }} title='Eliminar'>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                </div>
+
+                                            </div>
+                                        </>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div className=' col-6 table__warehouse-movements'>
                         <div className='table__head'>
                             <div className={`thead `}>
@@ -166,36 +296,7 @@ const WarehouseMovements: React.FC = () => {
                         </div>
 
                     </div>
-                    <div className='col-6 table__warehouse-movements'>
-                        <div className='table__head'>
-                            <div className={`thead `}>
-                                <div className='th'>
-                                    <p>Almacen</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='table__body'>
-                            <div className='tbody__container'>
-                                <div className={`tbody`}>
-                                    {dataStore.map((x: any, index: number) => (
-                                        <>
-                                            <div className='td '>
-                                                <p className='article'>{x.nombre}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <div className='delete-icon' onClick={() => {
-                                                    DynamicVariables.removeObjectInArray(setDataStore, index);
-                                                }} title='Eliminar'>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                                </div>
 
-                                            </div>
-                                        </>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div className='row'>
                     <div className='col-12 text-center'>
@@ -203,7 +304,7 @@ const WarehouseMovements: React.FC = () => {
                     </div>
                 </div>
                 <div className='row text-center m-1'>
-                    {data.map((a: any) => (
+                    {data.map((a: any, i: number) => (
                         <>
                             <b>{a.nombre}</b>
                             <div className='col-12'>
@@ -224,16 +325,45 @@ const WarehouseMovements: React.FC = () => {
                                         </thead>
                                         <tbody>
                                             {a.entradas.length > 0 ? (
-                                                a.entradas.map((x: any, index: number) => {
+                                                a.entradas.map((x: any, j: number) => {
                                                     return (
-                                                        <tr key={index}>
+                                                        <tr key={j}>
                                                             <td>{x.articulo}</td>
                                                             <td>{x.folio_entrada}</td>
                                                             <td>{x.fecha_creacion}</td>
                                                             <td>{x.cantidad}</td>
-                                                            <td>{x.restante}</td>
-                                                            <td>{x.apartado}</td>
-                                                            <td>{x.disponible}</td>
+                                                            <td>
+                                                                {x.restante}
+                                                                <input
+                                                                    className="input-apartado"
+                                                                    type="text"
+                                                                    value={x.restante}
+                                                                    onChange={(e) =>
+                                                                        cambiarRestante(i, j, parseFloat(e.target.value) || 0)}
+                                                                />
+                                                            </td>
+                                                            <td>
+                                                                {x.apartado}
+                                                                <div className="input-button-group">
+                                                                    <input
+                                                                        className="input-apartado"
+                                                                        type="text"
+                                                                        value={x.apartado}
+                                                                        onChange={(e) => cambiarApartado(i, j, parseFloat(e.target.value) || 0)}
+                                                                    />
+                                                                    <button className="btn-guardar">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                            <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                                                                            <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                                                                            <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+
+                                                            </td>
+                                                            <td>
+                                                                {x.noNegativo == true && ('⚠️')} <br />
+                                                                {x.disponible}</td>
 
                                                             <td>
                                                                 <table className="datareporte__table">
@@ -245,6 +375,7 @@ const WarehouseMovements: React.FC = () => {
                                                                             <th>Cantidad</th>
                                                                             <th>Unidad</th>
                                                                             <th>Motivo</th>
+                                                                            <th>Del ⚠️</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -257,14 +388,17 @@ const WarehouseMovements: React.FC = () => {
                                                                                     <td>{ov.usuario_nombre}</td>
                                                                                     <td>{ov.cantidad}</td>
                                                                                     <td>{ov.unidad_nombre}</td>
-                                                                                    <td>{ov.tipo==0?'Apartado por OV': ov.tipo== 2?'Venta OV': 'Venta con OP'}</td>
+                                                                                    <td>{ov.tipo == 0 ? 'Apartado por OV' : ov.tipo == 2 ? 'Venta OV' : 'Venta con OP'}</td>
+                                                                                    <td>
+                                                                                        <button className='btn__general-danger' onClick={() => eliminarPafOv(ov)}>
+                                                                                            <div className='delete-icon' title='Eliminar'>
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                                                            </div>
+                                                                                        </button>
+                                                                                    </td>
                                                                                 </tr>
                                                                             ))
-                                                                        ) : (
-                                                                            <tr>
-                                                                                <td colSpan={5}>No hay datos en Apartado OV</td>
-                                                                            </tr>
-                                                                        )}
+                                                                        ) : ('')}
 
                                                                         {/* Apartado PAF */}
                                                                         {x.apartados_paf.length > 0 ? (
@@ -275,15 +409,17 @@ const WarehouseMovements: React.FC = () => {
                                                                                     <td>{paf.usuario_nombre}</td>
                                                                                     <td>{paf.cantidad}</td>
                                                                                     <td>{paf.unidad_nombre}</td>
-                                                                                    <td>{paf.tipo==1?'Apartado por PAF':'Venta PAF'}</td>
-
+                                                                                    <td>{paf.tipo == 1 ? 'Apartado por PAF' : 'Venta PAF'}</td>
+                                                                                    <td>
+                                                                                        <button className='btn__general-danger' onClick={() => eliminarPafOv(paf)}>
+                                                                                            <div className='delete-icon' title='Eliminar'>
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                                                            </div>
+                                                                                        </button>
+                                                                                    </td>
                                                                                 </tr>
                                                                             ))
-                                                                        ) : (
-                                                                            <tr>
-                                                                                <td colSpan={5}>No hay datos en Apartado PAF</td>
-                                                                            </tr>
-                                                                        )}
+                                                                        ) : ('')}
 
                                                                         {/* Salidas */}
                                                                         {x.salidas.length > 0 ? (
@@ -295,7 +431,13 @@ const WarehouseMovements: React.FC = () => {
                                                                                     <td>{salida.cantidad}</td>
                                                                                     <td>{salida.unidad_nombre}</td>
                                                                                     <td>Salida Generada</td>
-
+                                                                                    <td>
+                                                                                        <button className='btn__general-danger' onClick={() => eliminarSalida(salida)}>
+                                                                                            <div className='' title='Eliminar' >
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                                                            </div>
+                                                                                        </button>
+                                                                                    </td>
                                                                                 </tr>
                                                                             ))
                                                                         ) : (
