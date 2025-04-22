@@ -383,7 +383,7 @@ const SalesOrder: React.FC = () => {
                                             <div className='td'>
                                                 {order.status == 0 ? <p className='active-identifier'>Activa</p> : ''}
                                                 {order.status == 1 ? <p className='cancel-identifier'>Cancelada</p> : ''}
-                                                {order.status == 2 ? <p className='cancel-identifier'>Terminada</p> : ''}
+                                                {order.status == 2 ? <p className='finished-identifier'>Pendiente</p> : ''}
                                             </div>
                                             <div className='td'>
                                                 <p>{order.razon_social}</p>

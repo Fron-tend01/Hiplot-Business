@@ -531,8 +531,18 @@ const ModalSalesOrder: React.FC = () => {
             calcular_tiempos_entrega();
 
         }
-    }, [modalSalesOrder, changeLength, branchOffices])
+    }, [modalSalesOrder,  changeLength, branchOffices])
 
+    
+    useEffect(() => {
+
+        calcular_totales()
+
+        if (modalSalesOrder !== 'sale-order__modal-update') {
+            calcular_tiempos_entrega();
+
+        }
+    }, [saleOrdersConcepts])
 
 
     // useEffect(() => {
