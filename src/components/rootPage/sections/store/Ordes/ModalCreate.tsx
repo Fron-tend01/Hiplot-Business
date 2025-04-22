@@ -275,35 +275,37 @@ const ModalCreate = () => {
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
     useEffect(() => {
-        if (selectData?.LPASelected) {
-            setModalLoading(true)
-
-            APIs.CreateAny({ id: selectData?.LPASelected.id, id_usuario: user_id, for_pedido: 1 }, "getLPAArticulos")
-                .then(async (response: any) => {
-                    setModalLoading(false)
-                    response.forEach((element: any) => {
-                        if (element.unidades.length > 0) {
-                            element.id_unidad = element.unidades[0].id_unidad
-                        }
-                    });
-                    setConcepts(response)
-
-                }).catch((error: any) => {
-                    if (error.response) {
-                        if (error.response.status === 409) {
-                            setModalLoading(false)
-                            Swal.fire(error.mensaje, '', 'warning');
-
+        if(modal == 'modal-create-pedido') {
+            if (selectData?.LPASelected) {
+                setModalLoading(true)
+    
+                APIs.CreateAny({ id: selectData?.LPASelected.id, id_usuario: user_id, for_pedido: 1 }, "getLPAArticulos")
+                    .then(async (response: any) => {
+                        setModalLoading(false)
+                        response.forEach((element: any) => {
+                            if (element.unidades.length > 0) {
+                                element.id_unidad = element.unidades[0].id_unidad
+                            }
+                        });
+                        setConcepts(response)
+    
+                    }).catch((error: any) => {
+                        if (error.response) {
+                            if (error.response.status === 409) {
+                                setModalLoading(false)
+                                Swal.fire(error.mensaje, '', 'warning');
+    
+                            } else {
+                                setModalLoading(false)
+                                Swal.fire('Error al actualizar', '', 'error');
+                            }
                         } else {
                             setModalLoading(false)
-                            Swal.fire('Error al actualizar', '', 'error');
+                            Swal.fire('Error de conexión.', '', 'error');
                         }
-                    } else {
-                        setModalLoading(false)
-                        Swal.fire('Error de conexión.', '', 'error');
-                    }
-                })
-
+                    })
+    
+            }
         }
     }, [selectData])
 
