@@ -275,10 +275,9 @@ const ModalCreate = () => {
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
     useEffect(() => {
-        if(modal == 'modal-create-pedido') {
+        if (modal == 'modal-create-pedido') {
             if (selectData?.LPASelected) {
                 setModalLoading(true)
-    
                 APIs.CreateAny({ id: selectData?.LPASelected.id, id_usuario: user_id, for_pedido: 1 }, "getLPAArticulos")
                     .then(async (response: any) => {
                         setModalLoading(false)
@@ -288,13 +287,12 @@ const ModalCreate = () => {
                             }
                         });
                         setConcepts(response)
-    
                     }).catch((error: any) => {
                         if (error.response) {
                             if (error.response.status === 409) {
                                 setModalLoading(false)
                                 Swal.fire(error.mensaje, '', 'warning');
-    
+
                             } else {
                                 setModalLoading(false)
                                 Swal.fire('Error al actualizar', '', 'error');
@@ -304,7 +302,6 @@ const ModalCreate = () => {
                             Swal.fire('Error de conexión.', '', 'error');
                         }
                     })
-    
             }
         }
     }, [selectData])

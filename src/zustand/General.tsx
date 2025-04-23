@@ -11,7 +11,7 @@ export interface UserInfo {
 }
 
 export const EmptyUserState: UserInfo = {
-  id: 0, 
+  id: 0,
   sucursal_id: 0,
   nombre: '',
   email: '',
@@ -22,13 +22,16 @@ export const EmptyUserState: UserInfo = {
 export const UserKey = 'user';
 
 interface UserStore {
+  url_img: string; // Añadir url_img aquí
   user: UserInfo;
   getUser: (payload: UserInfo) => void;
   updateUser: (payload: Partial<UserInfo>) => void;
   resetUser: () => void;
+  updateUrlImg: (url: string) => void;  // Añadir acción para actualizar url_img
 }
 
 const useUserStore = create<UserStore>((set) => ({
+  url_img: 'http://hiplot.dyndns.org:84/api_dev/', // URL base de la imagen
   user: localStorage.getItem(UserKey) ? JSON.parse(localStorage.getItem(UserKey)!) : EmptyUserState,
   getUser: (payload) => set(() => {
     persistLocalStorage(UserKey, payload);
@@ -42,7 +45,8 @@ const useUserStore = create<UserStore>((set) => ({
   resetUser: () => set(() => {
     clearLocalStorage(UserKey);
     return { user: EmptyUserState };
-  })
+  }),
+  updateUrlImg: (url) => set(() => ({ url_img: url }))  // Actualización de url_img
 }));
 
 export default useUserStore;
