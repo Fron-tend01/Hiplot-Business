@@ -3,10 +3,12 @@ import { storeArticles } from '../../../../../../zustand/Articles';
 import { useStore } from 'zustand';
 import { useDropzone,Accept  } from 'react-dropzone'; // Importa React Dropzone
 import './style/Images.css';
+import useUserStore from '../../../../../../zustand/General';
 
 const Images: React.FC = () => {
 
     const { subModal, imagesArticles, deteleImagesArticles }: any = useStore(storeArticles);
+    const urlImg = useUserStore((state) => state.url_img);
 
     const setSubModal = storeArticles(state => state.setSubModal);
     const setImagesArticles = storeArticles(state => state.setImagesArticles);
@@ -52,7 +54,7 @@ const Images: React.FC = () => {
                 <form className='article__modal_images_container'>
                     <div className='images-modal-articles'>
                         {imagesArticles?.map((image: any, index: number) => (
-                            <div className='image-container' style={{ backgroundImage: `url(${image.img_base64})` }} onClick={() => deleteImages(image, index)}>
+                            <div className='image-container' style={{ backgroundImage: `url(${urlImg}${image.img_url.replace(/\\/g, "/")})` }} onClick={() => deleteImages(image, index)}>
                                 <div>
                                     <p className='title__delete'>Eliminar</p>
                                 </div>

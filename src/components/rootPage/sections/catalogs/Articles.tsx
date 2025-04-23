@@ -132,6 +132,7 @@ const Articles: React.FC = () => {
       get_proveedores: true,
       get_max_mins: true,
       get_plantilla_data: true,
+      get_imagenes: true,
       get_precios: false,
       get_variaciones: true,
       get_combinaciones: true,
@@ -146,17 +147,7 @@ const Articles: React.FC = () => {
       get_unidades: true
     }
 
-    const data2 = {
-      id: article.id,
-      activos: true,
-      nombre: '',
-      codigo: '',
-      familia: 0,
-      proveedor: 0,
-      materia_prima: 0,
-      get_imagenes: true
-    }
-
+   
     setModalArticle('articles-modal-update')
     getFamilies(user_id)
 
@@ -166,13 +157,15 @@ const Articles: React.FC = () => {
       await setArticleByOne(result[0])
       setModalLoading(false)
       setArticleToUpdate(result[0]);
-      const resultImagenes = await getArticles(data2)
-      setImagesArticles(resultImagenes[0].imagenes)
+      
      
     } catch (error) {
     } finally {
       setModalLoading(false)
+
     }
+
+
 
   };
 
