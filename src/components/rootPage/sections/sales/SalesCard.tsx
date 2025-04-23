@@ -29,6 +29,7 @@ import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules';
 import { storeArticles } from '../../../../zustand/Articles';
 import { storeArticleView } from '../../../../zustand/ArticleView';
 import { storeDv } from '../../../../zustand/Dynamic_variables';
+import axios from 'axios';
 
 
 
@@ -36,7 +37,7 @@ import { storeDv } from '../../../../zustand/Dynamic_variables';
 const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id;
-
+  const base_img = 'http://hiplot.dyndns.org:84/api_dev/'
   const { modal }: any = useStore(storeModals)
 
 
@@ -101,7 +102,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
 
-  const fetch = async () => {
+  const fetch1 = async () => {
     const data = {
       id: IdArticle,
       activos: true,
@@ -114,7 +115,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       get_imagenes: false,
       // get_adicional: true,
       get_proveedores: false,
-      get_max_mins: true,
+      get_max_mins: false,
       get_precios: true,
       get_combinaciones: true,
       get_plantilla_data: true,
@@ -122,7 +123,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       get_tiempos_entrega: true,
       get_componentes: true,
       get_stock: true,
-      get_web: true,
+      get_web: false,
       for_ventas: true,
       get_unidades: true,
       id_usuario: user_id,
@@ -133,6 +134,13 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     try {
       // Obtener artículos
       setModalLoading(true)
+      // axios.post("http://hiplot.dyndns.org:84/cotizador_api/index.php/mantenimiento/get_articulos/", data)
+      //   .then(response => {
+      //     console.log("Datos recibidos:", response.data);
+      //   })
+      //   .catch(error => {
+      //     console.error("Error al consultar:", error);
+      //   });
       return await APIs.getArticles(data)
         .then(async (response: any) => {
           if (!response || response.length === 0) {
@@ -237,7 +245,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   useEffect(() => {
     if (modalSalesCard === 'sale-card') {
-      fetch();
+      fetch1();
       setData({
         obs_produccion: '',
         obs_factura: '',
@@ -255,7 +263,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     }
 
     if (modalSalesCard === 'sale-card-quotation') {
-      fetch();
+      fetch1();
       setPrices(dataArticle?.precio_total)
       setAdicional(null)
       setDescuento(0)
@@ -819,7 +827,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       })
     }
 
-  
+
 
 
   }
@@ -1018,15 +1026,15 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     return permisosxVistaheader.some((x: any) => x.titulo == elemento)
   }
 
-const setterPrices = (valor:any) => {
-  setPrices(valor || 0)
-  setData((prev: any) => ({
-    ...prev,
-    precio_unitario: valor / prev.cantidad,
-    precio_total: valor,
-    total: valor
-  }));
-}
+  const setterPrices = (valor: any) => {
+    setPrices(valor || 0)
+    setData((prev: any) => ({
+      ...prev,
+      precio_unitario: valor / prev.cantidad,
+      precio_total: valor,
+      total: valor
+    }));
+  }
 
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' || modalSalesCard === 'sale-card-quotation' ? 'active' : ''}`}>
@@ -1050,7 +1058,7 @@ const setterPrices = (valor:any) => {
                       {imgs?.map((image: any) => (
                         <SwiperSlide>
                           <div className='images__container'>
-                            <div className='images' style={{ backgroundImage: `url(${image?.img_base64})` }}>
+                            <div className='images' style={{ backgroundImage: `url(${base_img}/${image?.img_url.replace(/\\/g, "/")})` }}>
 
                             </div>
                             <div className='buttons-sale-card'>
@@ -1346,10 +1354,10 @@ const setterPrices = (valor:any) => {
                           <input type="checkbox" checked={fyv} onChange={(e) => {
                             setfyv(e.target.checked);
                             if (e.target.checked) {
-                              setData((prev: any) => ({ ...prev, obs_factura: 'FRENTE Y VUELTA' })) 
+                              setData((prev: any) => ({ ...prev, obs_factura: 'FRENTE Y VUELTA' }))
                               setData((prev: any) => ({ ...prev, obs_produccion: 'FRENTE Y VUELTA' }))
                             } else {
-                              setData((prev: any) => ({ ...prev, obs_factura: '' })) 
+                              setData((prev: any) => ({ ...prev, obs_factura: '' }))
                               setData((prev: any) => ({ ...prev, obs_produccion: '' }))
                             }
                           }} />
