@@ -241,7 +241,7 @@ const ModalSalesOrder: React.FC = () => {
                 setConceptView([])
                 setCustomConceptView([])
                 setSaleOrdersConcepts({ normal_concepts: [], personalized_concepts: [] });
-
+                setUrgenciaG(false)
                 const dataSaleOrders = {
                     id: result.id,
                     folio: 0,
@@ -499,6 +499,7 @@ const ModalSalesOrder: React.FC = () => {
                             let order = response[0]
                             setSaleOrdersToUpdate(order)
                             setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                            Swal.fire('Exito', 'Concepto actualizado', 'success');
                         })
                 } else {
                     Swal.fire('Notificación', response.mensaje, 'warning');

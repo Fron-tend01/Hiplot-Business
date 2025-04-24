@@ -690,9 +690,12 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           //----------------------------------------------------REVISAR ESTOS SETS, ALGO HACE FALTA QUE TIENE UN COMPORTAMIENTO EXTRAÑO
           setQuotes({ personalized_concepts: [...quotes.personalized_concepts, data_pers], normal_concepts: quotes?.normal_concepts })
           localStorage.setItem('cotizacion-pers', JSON.stringify([...quotes.personalized_concepts, data_pers]));
+          setfyv(false)
+
         }
       });
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
+      setfyv(false)
 
       setQuotes({ normal_concepts: [...quotes?.normal_concepts, data], personalized_concepts: quotes.personalized_concepts })
       localStorage.setItem('cotizacion', JSON.stringify([...quotes?.normal_concepts, data]));
@@ -791,6 +794,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           setDescuento(0)
           setPricesFranquicia(0)
           setPricesFranquiciaAdicional(0)
+          setfyv(false)
+
         }
       });
 
@@ -820,6 +825,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           setModalLoading(false)
           Swal.fire('Notificación', resp.mensaje, 'warning')
         }
+        setfyv(false)
       }).catch(e => {
         setModalLoading(false)
         Swal.fire('Notificación', 'ERROR: ' + e, 'warning')
