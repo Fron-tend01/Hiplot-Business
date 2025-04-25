@@ -1564,8 +1564,6 @@ const ModalSalesOrder: React.FC = () => {
                                     {saleOrdersConcepts?.normal_concepts?.map((article: any, index: number) => {
                                         return (
                                             <div className='tbody__container' key={article.id}>
-
-
                                                 <div className='tbody'>
                                                     <div className='td'>
                                                         <p className='folio-identifier'>{article.codigo}-{article.descripcion}</p>
@@ -1579,11 +1577,9 @@ const ModalSalesOrder: React.FC = () => {
                                                     <div className='td'>
                                                         <p className=''>$ {article.precio_unitario} <br />
                                                             {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
-                                                                <small className='total-identifier'>PUF: ${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
+                                                            <small className='total-identifier'>PUF: ${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
                                                         </p>
                                                     </div>
-
-
                                                     <div className='td'>
                                                         {stateLoading ?
                                                             <span className="loader_simple"></span>

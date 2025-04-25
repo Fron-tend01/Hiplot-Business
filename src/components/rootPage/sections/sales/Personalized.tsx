@@ -998,7 +998,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                             {concept.urgency ?
                               <div className='container__total'>
                                 <p className='total-identifier'>$ {concept.precio_total}</p>
-                                <p className='remove__urgency' title='urgencia'>(${concept.urgencia})</p>
+                                <p className='remove__urgency' title='urgencia'>${(concept.urgencia).toFixed(2)}</p>
                               </div>
                               :
                               <p className='total-identifier'>$ {concept.precio_total}</p>
@@ -1699,12 +1699,12 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                   }
                                 </div>
                               </div>
-                              <div className='td'>
+                              {/* <div className='td'>
                                 <p className=''>$ {concept.descuento}</p>
-                              </div>
+                              </div> */}
                               <div className='td'>
                                 <div>
-                                  <p className=''>$ {concept.monto_urgencia}</p>
+                                  <p className=''>$ {parseFloat(concept.monto_urgencia).toFixed(2)}</p>
                                   {concept.monto_urgencia_franquicia ?
                                     <p className='total-identifier'>$ {concept.monto_urgencia_franquicia}</p>
                                     :
@@ -1800,7 +1800,6 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                     <label className="switch">
                                       <input
                                         type="checkbox"
-
                                         checked={concept.check_recibido_sucursal}
                                         onChange={() => handleBranchChange(concept.check_recibido_sucursal, index)} disabled={concept.status == !0} />
                                       <span className="slider"></span>
