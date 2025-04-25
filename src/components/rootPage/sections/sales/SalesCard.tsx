@@ -120,9 +120,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       get_combinaciones: true,
       get_plantilla_data: true,
       get_areas_produccion: true,
-      get_tiempos_entrega: false,
+      get_tiempos_entrega: true,
       get_componentes: true,
-      get_stock: false,
+      get_stock: true,
       get_web: false,
       for_ventas: true,
       get_unidades: true,
@@ -258,6 +258,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       setAmount(0)
       setBillingComment('')
       setproductionComments('')
+      setfyv(false)
 
       setCombinacionesSeleccionadas([])
     }
@@ -279,6 +280,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       setproductionComments('')
       setCombinacionesSeleccionadas([])
       setSelectedUnit(article?.unidades[0])
+      setfyv(false)
 
 
     }

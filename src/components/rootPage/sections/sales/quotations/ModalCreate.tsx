@@ -354,17 +354,17 @@ const ModalCreate: React.FC = () => {
       newConcept[index].urgencia = 0;
 
       newConcept[index].urgency = !newConcept[index]?.urgency;
-     
+
     } else {
       await APIs.CreateAny(data, "calcular_urgencia")
-      .then(async (response: any) => {
-        if (!response.error) {
-          newConcept[index].urgencia = parseFloat(response.monto_urgencia);
-        } else {
-          Swal.fire('Notificación', response.mensaje, 'warning');
-          return
-        }
-      })
+        .then(async (response: any) => {
+          if (!response.error) {
+            newConcept[index].urgencia = parseFloat(response.monto_urgencia);
+          } else {
+            Swal.fire('Notificación', response.mensaje, 'warning');
+            return
+          }
+        })
       newConcept[index].urgency = !newConcept[index]?.urgency;
     }
     setQuotes({ normal_concepts: newConcept, personalized_concepts: quotes.personalized_concepts });
@@ -390,15 +390,15 @@ const ModalCreate: React.FC = () => {
 
     setCalculations((prev) => ({
       ...prev,
-      subtotal: preciospers.total + precios.total,  
+      subtotal: preciospers.total + precios.total,
       descuento: preciospers.descuento + precios.descuento,
       urgencia: preciospers.urgencia + precios.urgencia,
-      total:    preciospers.total +
-      precios.total +
-      preciospers.descuento +
-      precios.descuento +
-      (preciospers.urgencia ?? 0) +
-      (precios.urgencia ?? 0),
+      total: preciospers.total +
+        precios.total +
+        preciospers.descuento +
+        precios.descuento +
+        (preciospers.urgencia ?? 0) +
+        (precios.urgencia ?? 0),
 
       subtotalf: preciospers.total_franquicia + precios.total_franquicia,
       urgenciaf: 0,
@@ -460,7 +460,17 @@ const ModalCreate: React.FC = () => {
   };
   const [name, setName] = useState<string>('')
 
+    const [urgenciaG, setUrgenciaG] = useState<boolean>(false)
 
+    const urgenciaGlobal = async (urg: boolean) => {
+      setUrgenciaG(urg)
+      const normal = quotes.normal_concepts.map((x: any, index: number) => ({ ...x, originalIndex: index }))
+          .filter((x: any) => x.personalized == false || x.personalized == undefined);
+      normal.forEach((n: any) => {
+          handleUrgencyChange(n.originalIndex)
+      });
+
+  }
   return (
     <div className={`overlay__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
       <div className={`popup__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
@@ -688,7 +698,13 @@ const ModalCreate: React.FC = () => {
               <div className='d-flex align-items-end'>
                 <button className='btn__general-purple' onClick={() => setClientsModal('clients_modal')}>ver cliente</button>
               </div>
+
               <div className='d-flex align-items-end'>
+                {urgenciaG ?
+                  <button type='button' className='mr-4 btn__general-success' onClick={() => urgenciaGlobal(false)}>Remover Urgencias</button>
+                  :
+                  <button type='button' className='mr-4 btn__general-orange' onClick={() => urgenciaGlobal(true)}>Agregar Urgencia a Orden</button>
+                }
                 <button className='btn__general-purple' onClick={modalPersonalized}>Crear personalizados</button>
               </div>
               <div className='d-flex align-items-end' title='Busqueda de articulos'>
