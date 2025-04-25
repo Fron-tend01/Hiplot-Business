@@ -413,7 +413,7 @@
 	border-radius: 10px;
 	display: grid;
 	grid-template-rows: auto auto 1fr;
-	overflow: hidden;
+
 }
 
 
@@ -442,7 +442,7 @@
 
 .table__sales_modal .table__body {
 	height: 100%;
-	overflow-y: auto;
+
 	transition-delay: 0.0s;
 
 	&::-webkit-scrollbar {

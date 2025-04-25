@@ -2,6 +2,21 @@
   display: grid;
   grid-template-rows: auto auto 1fr auto;
   height: 100%;
+  overflow: auto;
+  
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #1F319D;
+    border-radius: 5px;
+    height: 100px;
+  }
+
+  &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+  }
 }
 
 .personalized_modal .row__three {
@@ -147,7 +162,7 @@
   display: grid;
   grid-template-rows: repeat(2, auto) 1fr;
   height: 100%;
-  overflow: hidden
+
 }
 
 
@@ -182,7 +197,7 @@
 .table__personalized .table__body {
   border: 2px solid var(--border-table-color);
   border-top: none;
-  overflow-y: auto;
+
   transition-delay: 0.0s;
 
   &::-webkit-scrollbar {
@@ -388,7 +403,7 @@
   display: grid;
   grid-template-rows: auto auto 1fr;
   height: 100%;
-  overflow: hidden;
+
 }
 
 
@@ -415,7 +430,7 @@
 
 .table__personalized-update .table__body {
   height: 100%;
-  overflow-y: auto;
+
   transition-delay: 0.0s;
 
   &::-webkit-scrollbar {
