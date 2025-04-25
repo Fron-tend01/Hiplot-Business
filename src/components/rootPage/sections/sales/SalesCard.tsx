@@ -91,7 +91,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const [usersGroups, setUsersGroups] = useState<any[]>([]);
   const [amount, setAmount] = useState<number>(0);
 
-  console.log('units', units)
+
 
   const [billingComment, setBillingComment] = useState<any>('')
   const [productionComments, setproductionComments] = useState<string>('')
@@ -311,7 +311,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
     }
 
-    console.log('sddddddddddddddddddddddddddddddddddddddddddddd')
+
 
   }, [article]);
   const [fyv, setfyv] = useState<boolean>(false)
@@ -347,7 +347,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     console.log('Unidad seleccionada:', item); // Ver el objeto de la unidad seleccionada
   };
 
-  console.log('selectedUnit', selectedUnit)
+ 
 
   const handleTemplatesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     let value: any = e.target.value
@@ -402,7 +402,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       });
 
 
-      console.log('resultresultresultresultresultresultresultresultresultresultresultresultresultresult', article)
+  
 
       if (result.error2) {
         setOutOfRange(true)

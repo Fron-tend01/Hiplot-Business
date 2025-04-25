@@ -77,7 +77,7 @@ const Header: React.FC = () => {
     }
   };
 
-  console.log('saleOrdersConcepts', saleOrdersConcepts)
+
 
   useEffect(() => {
     getOrders();
@@ -89,7 +89,6 @@ const Header: React.FC = () => {
     let n_quotes = quotes?.normal_concepts?.reduce((acc, item) => acc + item.precio_total || "0", 0);
     let p_quotes = quotes?.personalized_concepts?.reduce((acc, item) => acc + item.precio_total || "0", 0);
 
-    console.log('saleordersconcepts', saleOrdersConcepts)
     setTotalSales(n_sale + p_sale);
     setTotalQuotes(n_quotes + p_quotes);
   }, [saleOrdersConcepts, quotes]);

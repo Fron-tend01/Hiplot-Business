@@ -164,7 +164,7 @@ const ModalSalesOrder: React.FC = () => {
                 options: 'razon_social',
                 dataSelect: [{ id: saleOrdersToUpdate.id_cliente, razon_social: saleOrdersToUpdate.razon_social }]
             })
-            console.log('saleOrdersToUpdate', saleOrdersToUpdate)
+
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setNormalConcepts(saleOrdersToUpdate?.conceptos)
             setDates([`${saleOrdersToUpdate.fecha_entrega_cliente}T${saleOrdersToUpdate.hora_entrega_cliente}`, `${saleOrdersToUpdate.fecha_entrega_produccion}T${saleOrdersToUpdate.hora_entrega_produccion}`]);
@@ -489,23 +489,29 @@ const ModalSalesOrder: React.FC = () => {
         let data = saleOrdersConcepts?.normal_concepts.map((item: any, i: number) =>
             i === index ? { ...item, enviar_a_produccion: !status } : item
         )
+        setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
 
-        data[index].id_usuario_actualiza = user_id
-        await APIs.CreateAny(data[index], "update_carrito_concepto")
-            .then(async (response: any) => {
-                if (!response.error) {
-                    await APIs.GetAny('get_carrito/' + user_id)
-                        .then(async (response: any) => {
-                            let order = response[0]
-                            setSaleOrdersToUpdate(order)
-                            setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
-                            Swal.fire('Exito', 'Concepto actualizado', 'success');
-                        })
-                } else {
-                    Swal.fire('Notificación', response.mensaje, 'warning');
-                    return
-                }
-            })
+
+        console.log('saleOrdersConcepts', saleOrdersConcepts)
+
+        if (modalSalesOrder == 'sale-order__modal') {
+            data[index].id_usuario_actualiza = user_id
+            await APIs.CreateAny(data[index], "update_carrito_concepto")
+                .then(async (response: any) => {
+                    if (!response.error) {
+                        await APIs.GetAny('get_carrito/' + user_id)
+                            .then(async (response: any) => {
+                                let order = response[0]
+                                setSaleOrdersToUpdate(order)
+                                setSaleOrdersConcepts({ normal_concepts: order?.conceptos, personalized_concepts: order?.conceptos_pers });
+                                Swal.fire('Exito', 'Concepto actualizado', 'success');
+                            })
+                    } else {
+                        Swal.fire('Notificación', response.mensaje, 'warning');
+                        return
+                    }
+                })
+        }
 
 
     };
@@ -532,9 +538,9 @@ const ModalSalesOrder: React.FC = () => {
             calcular_tiempos_entrega();
 
         }
-    }, [modalSalesOrder,  changeLength, branchOffices])
+    }, [modalSalesOrder, changeLength, branchOffices])
 
-    
+
     useEffect(() => {
 
         calcular_totales()
@@ -626,7 +632,6 @@ const ModalSalesOrder: React.FC = () => {
         }
     }
 
-    console.log('dataProduction', dataProduction)
 
 
     useEffect(() => {
@@ -639,7 +644,7 @@ const ModalSalesOrder: React.FC = () => {
                 setSaleOrdersConcepts({ normal_concepts: saleOrdersToUpdate.conceptos, personalized_concepts: saleOrdersToUpdate.conceptos_pers });
             }
             setTitle(saleOrdersToUpdate.titulo)
-            console.log('saleOrdersToUpdate', saleOrdersToUpdate)
+
             const data = {
                 id_sucursal: saleOrdersToUpdate.id_sucursal,
                 id_usuario: user_id,
@@ -1159,7 +1164,6 @@ const ModalSalesOrder: React.FC = () => {
     }, [statusUrgency])
 
 
-    console.log('statusUrgency', statusUrgency)
 
 
     return (
@@ -1369,11 +1373,16 @@ const ModalSalesOrder: React.FC = () => {
                                             <button className='btn__general-orange' onClick={getTicket}>Imprimir ticket</button>
                                         </div>
                                         : ''}
-                                    {saleOrdersToUpdate.status === 0 ?
-                                        <div className='mr-4'>
-                                            <button className='btn__general-purple' onClick={SaleOrderProduction}>Mandar a producción</button>
-                                        </div>
-                                        : ''}
+                                    {saleOrdersToUpdate.ordenes_produccion.length > 0 ?
+                                        ''
+                                        :
+                                        saleOrdersToUpdate.status === 0 ?
+                                            <div className='mr-4'>
+                                                <button className='btn__general-purple' onClick={SaleOrderProduction}>Mandar a producción</button>
+                                            </div>
+                                            : ''
+                                    }
+
                                     <div>
                                         <button className='btn__general-orange' onClick={binnacleModal}>Bitácora</button>
                                     </div>
@@ -1584,7 +1593,7 @@ const ModalSalesOrder: React.FC = () => {
                                                                     {checkPermission('cambiar_totales') ?
                                                                         <div className='d-flex'>
                                                                             <input type="number" className='mr-2 inputs__general' placeholder='Precio total' value={article.total} onChange={(e) => handlePriceChange(e, index)} />
-                                                                            
+
                                                                         </div>
                                                                         :
                                                                         <p className='total-identifier'>$ {parseFloat(article.total).toFixed(2)}</p>
@@ -1699,41 +1708,47 @@ const ModalSalesOrder: React.FC = () => {
                                                             </label>
                                                         </div>
                                                     </div>
-                                                    {modalSalesOrder == 'sale-order__modal-update' ?
-                                                        <div className='td branch'>
-                                                            <div>
-                                                                <div className=''>
-                                                                    <label>Recibido Sucursal</label>
+                                                    {permisosxVista.some((x: any) => x.titulo === 'entregado_cliente_enviado_sucursal') ?
+                                                        modalSalesOrder == 'sale-order__modal-update' ?
+                                                            <div className='td branch'>
+                                                                <div>
+                                                                    <div className=''>
+                                                                        <label>Recibido Sucursal</label>
+                                                                    </div>
+                                                                    <label className="switch">
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            disabled={article.check_recibido_sucursal ? true : false}
+                                                                            checked={article.check_recibido_sucursal}
+                                                                            onChange={() => handleBranchChange(article.check_recibido_sucursal, index)} />
+                                                                        <span className="slider"></span>
+                                                                    </label>
                                                                 </div>
-                                                                <label className="switch">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        disabled={article.check_recibido_sucursal ? true : false}
-                                                                        checked={article.check_recibido_sucursal}
-                                                                        onChange={() => handleBranchChange(article.check_recibido_sucursal, index)} />
-                                                                    <span className="slider"></span>
-                                                                </label>
                                                             </div>
-                                                        </div>
+                                                            :
+                                                            ''
                                                         :
                                                         ''
                                                     }
-                                                    {modalSalesOrder == 'sale-order__modal-update' ?
-                                                        <div className='td customer'>
-                                                            <div>
-                                                                <div className=''>
-                                                                    <label>Recibido Cliente</label>
+                                                    {permisosxVista.some((x: any) => x.titulo === 'entregado_cliente_enviado_sucursal') ?
+                                                        modalSalesOrder == 'sale-order__modal-update' ?
+                                                            <div className='td customer'>
+                                                                <div>
+                                                                    <div className=''>
+                                                                        <label>Recibido Cliente</label>
+                                                                    </div>
+                                                                    <label className="switch">
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            disabled={article.check_entregado_cliente ? true : false}
+                                                                            checked={article.check_entregado_cliente}
+                                                                            onChange={() => handleCustomerChange(article.check_entregado_cliente, index)} />
+                                                                        <span className="slider"></span>
+                                                                    </label>
                                                                 </div>
-                                                                <label className="switch">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        disabled={article.check_entregado_cliente ? true : false}
-                                                                        checked={article.check_entregado_cliente}
-                                                                        onChange={() => handleCustomerChange(article.check_entregado_cliente, index)} />
-                                                                    <span className="slider"></span>
-                                                                </label>
                                                             </div>
-                                                        </div>
+                                                            :
+                                                            ''
 
                                                         :
                                                         ''
