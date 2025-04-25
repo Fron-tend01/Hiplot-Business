@@ -155,7 +155,7 @@ const ModalProduction: React.FC = () => {
 
     }
 
-    console.log('productionToUpdate', productionToUpdate)
+   
 
     const formatDate = (date: any) => date.toISOString().split("T")[0];
     const enviarASucursal = async () => {

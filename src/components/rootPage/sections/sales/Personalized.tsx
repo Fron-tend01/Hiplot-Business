@@ -44,7 +44,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
   const haceUnaSemana = new Date();
 
   const { customConceptView, personalizedModal, customData, dataUpdate }: any = useStore(storePersonalized)
-
+  const permisosxVista = storeDv((state) => state.permisosxvista);
   const setModalSub = storeModals((state) => state.setModalSub);
 
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
@@ -86,6 +86,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
   }, [personalizedModal])
 
 
+
   const [selectsSatKey, setSelectsSatKey] = useState<any>()
   const [selectedSatKey, setSelectedSatKey] = useState<any>()
 
@@ -93,7 +94,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
 
   const [modalStatus, setModalStatus] = useState<boolean>(false)
 
-  console.log('customConceptView', customConceptView)
+
 
   const addPersonalized = (_: any, i: number) => {
     setSelectedIds('units', { id: customConceptView[0].id_unidad })
@@ -112,6 +113,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
     if (personalizedModal == 'personalized_modal-quotation' || personalizedModal == 'personalized_modal-sale' || personalizedModal == 'personalized_modal-billing') {
       let filter: any = []
       filter = customConceptView.filter((x: any) => x.check == true)
+
 
       if (filter.length > 0) {
         const data = {
@@ -192,6 +194,8 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
       let length: number = 0;
       let filter = customConceptView.filter((x: any) => x.check == true)
 
+
+
       const updatedConceptView = quotes?.personalized_concepts.map((x: any, index: number) => {
         if (index == indexItem) {
           length = filter.length
@@ -255,6 +259,9 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
 
         let filter = customConceptView.filter((x: any) => x.check == true)
         let filterDeleteNormal = customConceptView.filter((x: any) => x.check !== true)
+
+
+
         const updatedConceptView = saleOrdersConcepts?.personalized_concepts.map((x: any, index: number) => {
           if (index == indexItem) {
 
@@ -310,6 +317,8 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
         }
         return
       } else {
+
+        console.log('customConceptView', customConceptView)
         let data = {
           id: idItem.id,
           codigo: inpust.codigo,
@@ -320,7 +329,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
           comentarios_factura: inpust.comentarios_factura,
           comentarios_produccion: inpust.comentarios_produccion,
           clave_sat: inpust.clave_sat,
-          conceptos: []
+          conceptos: customConceptView
         }
 
         const dataSaleOrders = {
@@ -383,7 +392,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
         return x;
       });
 
-      console.log('updatedConceptView', updatedConceptView)
+
 
       if (length > 0) {
         console.log('Se mantiene por que todavia le quedan conceptos', length)
@@ -588,7 +597,6 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
 
   };
 
-  console.log('quotes', quotes)
 
   const abrirFichaModifyConcept = () => {
 
@@ -1210,10 +1218,10 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                 <div className='d-block'>
                                   <p className='urgency-identifier'>${parseFloat(concept.monto_urgencia).toFixed(2)}</p>
                                   {concept.monto_urgencia_franquicia > 0 ?
-                                <p className='total-identifier'>$ {concept.monto_urgencia_franquicia}</p>
-                                :
-                                ''
-                                }
+                                    <p className='total-identifier'>$ {concept.monto_urgencia_franquicia}</p>
+                                    :
+                                    ''
+                                  }
                                 </div>
                               </div>
                               <div className='td'>
@@ -1783,35 +1791,46 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                   </label>
                                 </div>
                               </div>
-                              <div className='td branch'>
-                                <div>
-                                  <div className=''>
-                                    <label>Recibido Sucursal</label>
-                                  </div>
-                                  <label className="switch">
-                                    <input
-                                      type="checkbox"
+                              {permisosxVista.some((x: any) => x.titulo === 'entregado_cliente_enviado_sucursal') ?
+                                <div className='td branch'>
+                                  <div>
+                                    <div className=''>
+                                      <label>Recibido Sucursal</label>
+                                    </div>
+                                    <label className="switch">
+                                      <input
+                                        type="checkbox"
 
-                                      checked={concept.check_recibido_sucursal}
-                                      onChange={() => handleBranchChange(concept.check_recibido_sucursal, index)} disabled={concept.status == !0} />
-                                    <span className="slider"></span>
-                                  </label>
-                                </div>
-                              </div>
-                              <div className='td customer'>
-                                <div>
-                                  <div className=''>
-                                    <label>Recibido Cliente</label>
+                                        checked={concept.check_recibido_sucursal}
+                                        onChange={() => handleBranchChange(concept.check_recibido_sucursal, index)} disabled={concept.status == !0} />
+                                      <span className="slider"></span>
+                                    </label>
                                   </div>
-                                  <label className="switch">
-                                    <input
-                                      type="checkbox"
-                                      checked={concept.check_entregado_cliente}
-                                      onChange={() => handleCustomerChange(concept.check_entregado_cliente, index)} disabled={concept.status == !0} />
-                                    <span className="slider"></span>
-                                  </label>
                                 </div>
-                              </div>
+                                :
+                                ''
+                              }
+                              {permisosxVista.some((x: any) => x.titulo === 'entregado_cliente_enviado_sucursal') ?
+
+                                <div className='td customer'>
+                                  <div>
+                                    <div className=''>
+                                      <label>Recibido Cliente</label>
+                                    </div>
+                                    <label className="switch">
+                                      <input
+                                        type="checkbox"
+                                        checked={concept.check_entregado_cliente}
+                                        onChange={() => handleCustomerChange(concept.check_entregado_cliente, index)} disabled={concept.status == !0} />
+                                      <span className="slider"></span>
+                                    </label>
+                                  </div>
+                                </div>
+
+                                :
+                                ''
+                              }
+
 
                               {concept.status == 0 ?
                                 <div className='td'>
