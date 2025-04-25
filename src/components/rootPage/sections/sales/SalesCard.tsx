@@ -116,13 +116,13 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       // get_adicional: true,
       get_proveedores: false,
       get_max_mins: false,
-      get_precios: true,
+      get_precios: false,
       get_combinaciones: true,
       get_plantilla_data: true,
       get_areas_produccion: true,
-      get_tiempos_entrega: true,
+      get_tiempos_entrega: false,
       get_componentes: true,
-      get_stock: true,
+      get_stock: false,
       get_web: false,
       for_ventas: true,
       get_unidades: true,
@@ -300,7 +300,10 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   useEffect(() => {
     if (article) {
       setUnits(article.unidades || []);
-      setSelectedUnit(article?.unidades[0])
+      if (article?.unidades !== undefined){
+
+        setSelectedUnit(article?.unidades[0])
+      }
       setOpciones(article.opciones_de_variacion2 || []);
       //--------------------------------------------------------------------
 
@@ -1035,7 +1038,99 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       total: valor
     }));
   }
+  
+ 
+  const get_precios = async () => {
+    const data = {
+      id_articulo: IdArticle,
+      for_ventas: false,
+      id_usuario: user_id,
+      id_grupo_us: selectedUserGroup
+    };
 
+    try {
+      // Obtener artículos
+      setModalLoading(true)
+     
+      return await APIs.CreateAny(data, 'get_articulo_precios')
+        .then(async (response: any) => {
+          if (!response || response.length === 0) {
+            throw new Error('No se encontraron artículos');
+          }
+
+          // return
+          setArticle({ ...article, precios: response.precios });
+          setStatusArticle(true);
+          setModalLoading(false);
+          setModalSub('prices_modal')
+
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        })
+        .finally(() => {
+          setStatusArticle(true);
+          setModalLoading(false);
+        });
+
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setModalLoading(false)
+
+    } finally {
+      // Cambia el estado después de completar todo el proceso
+      setStatusArticle(true);
+      setModalLoading(false)
+
+    }
+  };
+
+  // const get_stock = async () => {
+  //   const data = {
+  //     id_articulo: IdArticle,
+  //     for_ventas: false,
+  //     id_usuario: user_id,
+  //     componentes: article.componentes
+  //   };
+
+  //   try {
+  //     // Obtener artículos
+  //     setModalLoading(true)
+     
+  //     return await APIs.CreateAny(data, 'get_articulo_stock')
+  //       .then(async (response: any) => {
+  //         if (!response || response.length === 0) {
+  //           throw new Error('No se encontraron artículos');
+  //         }
+
+  //         // return
+  //         setArticle({ ...article, stocks: response.stocks, componentes:response.componentes });
+  //         setStatusArticle(true);
+  //         setModalLoading(false);
+  //         setModalSub('stock_modal')
+
+  //       })
+  //       .catch((error) => {
+  //         console.error('Error fetching data:', error);
+  //       })
+  //       .finally(() => {
+  //         setStatusArticle(true);
+  //         setModalLoading(false);
+  //       });
+
+
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //     setModalLoading(false)
+
+  //   } finally {
+  //     // Cambia el estado después de completar todo el proceso
+  //     setStatusArticle(true);
+  //     setModalLoading(false)
+
+  //   }
+  // };
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' || modalSalesCard === 'sale-card-quotation' ? 'active' : ''}`}>
       {/* <Toaster expand={true} position="top-right" richColors /> */}
@@ -1093,7 +1188,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
               {statusArticle !== false ?
                 <div className='row__two'>
                   <div className='btn__sale__card-tooltip-container'>
-                    <button className='btn__general-purple' type='button' onClick={() => setModalSub('prices_modal')}>
+                    <button className='btn__general-purple' type='button' onClick={() => get_precios()}>
                       <svg className="icon icon-tabler icons-tabler-outline icon-tabler-premium-rights" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M13.867 9.75c-.246 -.48 -.708 -.769 -1.2 -.75h-1.334c-.736 0 -1.333 .67 -1.333 1.5c0 .827 .597 1.499 1.333 1.499h1.334c.736 0 1.333 .671 1.333 1.5c0 .828 -.597 1.499 -1.333 1.499h-1.334c-.492 .019 -.954 -.27 -1.2 -.75" /><path d="M12 7v2" /><path d="M12 15v2" /></svg>
                     </button>
                     <span className="sale__card-tooltip-text">Precios</span>

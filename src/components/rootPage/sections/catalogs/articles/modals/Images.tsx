@@ -23,7 +23,7 @@ const Images: React.FC = () => {
             reader.onload = () => {
                 if (reader.result) {
                     const data = {
-                        img_base64: reader.result
+                        img_url: reader.result
                     };
                     setImagesArticles([...imagesArticles, data]);
                 }
@@ -39,7 +39,8 @@ const Images: React.FC = () => {
             setDeleteImagesArticles([...deteleImagesArticles, item.id]);
         }
     };
-
+    console.log(imagesArticles);
+    
     return (
         <div className={`overlay__modal_images_articles ${subModal == 'modal-images' ? 'active' : ''}`}>
             <div className={`popup__modal_images_articles ${subModal == 'modal-images' ? 'active' : ''}`}>
@@ -54,7 +55,13 @@ const Images: React.FC = () => {
                 <form className='article__modal_images_container'>
                     <div className='images-modal-articles'>
                         {imagesArticles?.map((image: any, index: number) => (
-                            <div className='image-container' style={{ backgroundImage: `url(${urlImg}${image.img_url.replace(/\\/g, "/")})` }} onClick={() => deleteImages(image, index)}>
+                            <div className='image-container' style={{
+                                backgroundImage: `url(${
+                                    image?.img_url && image.img_url.startsWith("data:image")
+                                      ? image.img_url
+                                      : `${urlImg}${(image?.img_url || "").replace(/\\/g, "/")}`
+                                  })`
+                              }} onClick={() => deleteImages(image, index)}>
                                 <div>
                                     <p className='title__delete'>Eliminar</p>
                                 </div>

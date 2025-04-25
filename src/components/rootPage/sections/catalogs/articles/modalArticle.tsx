@@ -143,6 +143,7 @@ const modalArticle: React.FC = () => {
     const [selectFamilies, setSelectFamilies] = useState<any>()
     const [selectTypePayment, setSelectTypePayment] = useState<any>()
     const [selectTemplates, setSelectTemplates] = useState<any>()
+    const setImagesArticles = storeArticles(state => state.setImagesArticles);
 
     const fecht = async () => {
         const resultTemplates = await getTemplates(user_id)
@@ -214,6 +215,7 @@ const modalArticle: React.FC = () => {
             setMinimalCharges(articleToUpdate.cargos_minimos);
             setCobrosFranquicia(articleToUpdate.cobros_franquicia);
             setAdditionalArticles(articleToUpdate.adicionales)
+            setImagesArticles(articleToUpdate.imagenes)
         }
     }
 

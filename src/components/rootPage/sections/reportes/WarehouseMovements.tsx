@@ -115,10 +115,11 @@ const WarehouseMovements: React.FC = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await APIs.CreateAny(salida, "eliminarRegistroSalidaDeEntrada")
+                    await APIs.CreateAny({'id': salida.id}, "eliminarRegistroSalidaDeEntrada")
                         .then(async (resp: any) => {
                             if (!resp.error) {
                                 Swal.fire('Notificación', resp.mensaje, 'success');
+                                search()
                             } else {
                                 Swal.fire('Notificación', resp.mensaje, 'warning');
                             }
@@ -140,10 +141,12 @@ const WarehouseMovements: React.FC = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await APIs.CreateAny(data, "eliminarRegistroApartadoEntradaPAFOV")
+                    await APIs.CreateAny({'id':data.id}, "eliminarRegistroApartadoEntradaPAFOV")
                         .then(async (resp: any) => {
                             if (!resp.error) {
                                 Swal.fire('Notificación', resp.mensaje, 'success');
+                                search()
+
                             } else {
                                 Swal.fire('Notificación', resp.mensaje, 'warning');
                             }

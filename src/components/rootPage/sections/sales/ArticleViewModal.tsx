@@ -13,6 +13,7 @@ import { storeArticles } from '../../../../zustand/Articles';
 const ArticleViewModal = () => {
     const userState = useUserStore(state => state.user);
     const user_id = userState.id;
+    const urlImg = useUserStore((state) => state.url_img);
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const setModalSalesCard = storeSaleCard(state => state.setModalSalesCard);
@@ -366,7 +367,7 @@ const ArticleViewModal = () => {
                                     }
                                 </div>
                                 <div className='img'>
-                                    <img src={x.imagen} />
+                                    <img src={x.activo == null ? x.imagen: urlImg+x.imagen.replace(/\\/g, "/")} />
                                 </div>
                                 <div className='content'>
                                     <p className='code'>{x.codigo}</p>
