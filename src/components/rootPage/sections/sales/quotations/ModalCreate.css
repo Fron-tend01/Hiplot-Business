@@ -308,7 +308,7 @@
 
 .table__quotations_modal .table__head .thead {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr 2fr 50px 100px 100px;
+    grid-template-columns: 2fr repeat(7, 1fr) 50px 100px 100px;
     padding: 10px;
     font-weight: 600;
     column-gap: 20px;
@@ -372,7 +372,7 @@
 
 .table__quotations_modal .table__body .tbody {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr 2fr 50px 100px 100px;
+    grid-template-columns: 2fr repeat(7, 1fr) 50px 100px 100px;
     padding: 10px;
     column-gap: 20px;
 
