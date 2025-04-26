@@ -46,9 +46,13 @@ const SalesOrder: React.FC = () => {
 
     const modalOpen = async () => {
         setModalSalesOrder('sale-order__modal')
+        setModalLoading(true)
         await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
-            let orden = r[0]
-            setSaleOrdersConcepts({ normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers, sale_order: orden });
+            let orden = r
+            setSaleOrdersToUpdate(orden)
+            setSaleOrdersConcepts({ normal_concepts: orden.conceptos || [], personalized_concepts: orden.conceptos_pers || [], sale_order: orden });
+            setModalLoading(false)
+
         })
 
 

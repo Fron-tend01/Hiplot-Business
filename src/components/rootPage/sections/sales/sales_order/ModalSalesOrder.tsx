@@ -869,11 +869,22 @@ const ModalSalesOrder: React.FC = () => {
 
     const urgenciaGlobal = async (urg: boolean) => {
         setUrgenciaG(urg)
-        const normal = saleOrdersConcepts.normal_concepts.map((x: any, index: number) => ({ ...x, originalIndex: index }))
-            .filter((x: any) => x.personalized == false || x.personalized == undefined);
-        normal.forEach((n: any) => {
-            handleUrgencyChange(n.originalIndex)
-        });
+        setModalLoading(true)
+        console.log(saleOrdersConcepts);
+        // return
+        await APIs.GetAny('calcular_urgencia_global_ov/' + saleOrdersToUpdate.id + '/' + urg).then(async (resp: any) => {
+       
+            await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+                let orden = r[0]
+                // setSaleOrdersToUpdate(orden)
+                setSaleOrdersConcepts({ normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers, sale_order: orden });
+                setModalLoading(false)
+    
+            })
+        }).catch((e: any) => {
+            setModalLoading(false)
+
+        })
 
     }
 

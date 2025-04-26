@@ -263,7 +263,7 @@ const ModalCreate = () => {
                             <div className=''>
                                 <small >Correo</small>
                                 <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                                <input name="correo" className='inputs__general' type="email" value={inputs.correo} onChange={handleInputs} placeholder='Ingresa el correo' />
+                                <input name="correo" className='inputs__general' type="text" value={inputs.correo} onChange={handleInputs} placeholder='Ingresa el correo' />
                             </div>
                             <div className='d-flex align-items-end'>
                                 <button title='Este botón habilitará el cliente a tus diferentes sucursales' type='button' className='btn__general-orange' onClick={() => setModalSub('modal-sub_create_clients')}>Habilitar a Sucursales</button>
