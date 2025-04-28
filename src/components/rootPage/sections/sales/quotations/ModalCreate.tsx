@@ -105,6 +105,23 @@ const ModalCreate: React.FC = () => {
       id_solicitud_cotizacion: info_sc.cot_propia ? user_id : info_sc.folio_sc == '' ? info_sc.folio_sc : 0,
     })
   }
+
+  useEffect(() => {
+    setQuoteFields({
+      id: modal === 'create-modal__qoutation' ? 0 : quotes.quotes.id,
+      id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
+      id_cliente: selectedResult?.id ?? quatation.id_cliente,
+      id_usuario_crea: user_id,
+      titulo: '',
+      comentarios: '',
+      conceptos: quotes?.normal_concepts,
+      conceptos_pers: quotes?.personalized_concepts,
+      conceptos_elim: quotes?.normal_concepts_eliminate,
+      conceptos_pers_elim: quotes?.personalized_concepts_eliminate,
+      id_solicitud_cotizacion: info_sc.cot_propia ? user_id : info_sc.folio_sc == '' ? info_sc.folio_sc : 0,
+    })
+  }, [quotes])
+  
   useEffect(() => {
     setData()
   }, [modal, personalizedModal])
