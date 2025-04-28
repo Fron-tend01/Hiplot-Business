@@ -49,8 +49,11 @@ const SalesOrder: React.FC = () => {
         setModalLoading(true)
         await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
             let orden = r[0]
-            setSaleOrdersToUpdate(orden)
-            setSaleOrdersConcepts({ normal_concepts: orden.conceptos || [], personalized_concepts: orden.conceptos_pers || [], sale_order: orden });
+            if (r.length > 0) {
+                setSaleOrdersToUpdate(orden)
+                setSaleOrdersConcepts({ normal_concepts: orden.conceptos || [], personalized_concepts: orden.conceptos_pers || [], sale_order: orden });
+
+            }
             setModalLoading(false)
 
         })
