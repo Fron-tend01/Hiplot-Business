@@ -64,7 +64,7 @@ const ModalProduction: React.FC = () => {
 
     const getPDF = async () => {
         try {
-            await APIs.getProoductionPDF(productionToUpdate.id)
+            // await APIs.getProoductionPDF(productionToUpdate.id)
             window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_op/${productionToUpdate.id}`, '_blank');
         } catch (error) {
 
