@@ -48,7 +48,7 @@ const SalesOrder: React.FC = () => {
         setModalSalesOrder('sale-order__modal')
         setModalLoading(true)
         await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
-            let orden = r
+            let orden = r[0]
             setSaleOrdersToUpdate(orden)
             setSaleOrdersConcepts({ normal_concepts: orden.conceptos || [], personalized_concepts: orden.conceptos_pers || [], sale_order: orden });
             setModalLoading(false)
@@ -85,7 +85,7 @@ const SalesOrder: React.FC = () => {
         hoy.toISOString().split('T')[0]
     ]);
 
- 
+
 
     const fetch = async () => {
 
@@ -178,7 +178,7 @@ const SalesOrder: React.FC = () => {
             <div className='sales__order_container'>
                 <div className='row__one'>
                     <div className='row'>
-                        <div className='md-col-12 col-8'>
+                        <div className='md-col-12 col-6'>
                             <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} all={true} />
                         </div>
                         <div className='md-col-12 col-4 row'>
@@ -221,6 +221,23 @@ const SalesOrder: React.FC = () => {
                                     />
                                 </div>
                             </div>
+                        </div>
+                        <div className='col-1'>
+                            <label htmlFor="">Facturados</label>
+
+                            <select name="" id="" className='inputs__general'>
+                                <option value="0">Todos</option>
+                                <option value="1">Facturados</option>
+                                <option value="2">Sin Facturar</option>
+                            </select>
+                        </div>
+                        <div className='col-1'>
+                            <label htmlFor="">Prod.</label>
+                            <select className='inputs__general'>
+                                <option value="0">Todos</option>
+                                <option value="1">Sin Enviar</option>
+                                <option value="2">Enviados</option>
+                            </select>
                         </div>
                     </div>
                     <div className='my-4 row'>
@@ -306,7 +323,7 @@ const SalesOrder: React.FC = () => {
                                 <p>Fecha</p>
                             </div>
                             <div className='th'>
-                                <p>Sucursal</p>
+                                <p>Status</p>
                             </div>
                             <div className='th'>
                                 <p>Sucursal</p>
@@ -349,7 +366,7 @@ const SalesOrder: React.FC = () => {
                                                 {order.status == 2 ? <p className='cancel-identifier'>Terminada</p> : ''}
                                             </div>
                                             <div className='td'>
-                                                <p>{order.razon_social}</p>
+                                                <p>{order.sucursal}</p>
                                             </div>
                                             <div className='td'>
                                                 <p>{order.razon_social}</p>
@@ -401,7 +418,7 @@ const SalesOrder: React.FC = () => {
                                 )
                             })}
                         </div>
-                        
+
                     ) : (
                         <p className="text">Cargando datos...</p>
                     )}
