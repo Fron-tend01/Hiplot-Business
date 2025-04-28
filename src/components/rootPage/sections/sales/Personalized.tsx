@@ -173,6 +173,12 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
         if (personalizedModal == 'personalized_modal-billing') {
           setBilling({ normal_concepts: filterDelete, personalized_concepts: [...billing?.personalized_concepts ?? [], data] });
         }
+        DynamicVariables.updateAnyVar(setInputs, 'descripcion', '')
+        DynamicVariables.updateAnyVar(setInputs, 'codigo', '')
+        DynamicVariables.updateAnyVar(setInputs, 'cantidad', '')
+        DynamicVariables.updateAnyVar(setInputs, 'precio_total', '')
+        DynamicVariables.updateAnyVar(setInputs, 'comentarios_produccion', '')
+        DynamicVariables.updateAnyVar(setInputs, 'comentarios_factura', '')
         setCustomConceptView([])
         setPersonalizedModal('')
 
