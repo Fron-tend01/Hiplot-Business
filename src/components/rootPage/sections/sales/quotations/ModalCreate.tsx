@@ -332,6 +332,9 @@ const ModalCreate: React.FC = () => {
       setPersonalizedModal('personalized_modal-quotation-update');
     }
     setIdItem(concept);
+    quotes?.normal_concepts?.forEach((element: any) => {
+      element.check = false;
+    });
     concept.conceptos.forEach((element: any) => {
       element.check = true;
     });

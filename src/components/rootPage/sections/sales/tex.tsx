@@ -199,9 +199,8 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
     if (personalizedModal == 'personalized_modal-quotation-update') {
       let length: number = 0;
       let filter = customConceptView.filter((x: any) => x.check == true)
-      let filterDeleteNormal = customConceptView.filter((x: any) => x.check !== true)
 
-
+console.log('asasas')
 
       const updatedConceptView = quotes?.personalized_concepts.map((x: any, index: number) => {
         if (index == indexItem) {
@@ -224,15 +223,49 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
       });
 
       if (length > 0) {
-        setQuotes({ normal_concepts: filterDeleteNormal, personalized_concepts: updatedConceptView });
+        if(personalizedModal == 'personalized_modal-quotation'){
+          setQuotes({ normal_concepts: billing.normal_concepts, personalized_concepts: updatedConceptView });
+        } else {
+          await APIs.CreateAny(updatedConceptView[indexItem], `update_carrito_concepto_pers`)
+          .then(async (response: any) => {
+            if (!response.error) {
+              await APIs.GetAny('get_carrito/' + user_id)
+                .then(async (response: any) => {
+                  let order = response[0]
+                  setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                })
+            } else {
+              Swal.fire('Notificación', response.mensaje, 'warning');
+              return
+            }
+            setPersonalizedModal('')
+          })
+        }
 
-        setPersonalizedModal('')
         return
 
       } else {
-        setQuotes({ normal_concepts: billing.normal_concepts, personalized_concepts: updatedConceptView });
+        if(personalizedModal == 'personalized_modal-quotation') {
+          setQuotes({ normal_concepts: billing.normal_concepts, personalized_concepts: updatedConceptView });
 
-        setPersonalizedModal('')
+        } else {
+          await APIs.deleteAny(`eliminar_conceptos_pers_carrito/${updatedConceptView[indexItem].id}`)
+          .then(async (response: any) => {
+            if (!response.error) {
+              await APIs.GetAny('get_carrito/' + user_id)
+                .then(async (response: any) => {
+                  let order = response[0]
+                  setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                })
+            } else {
+              Swal.fire('Notificación', response.mensaje, 'warning');
+              return
+            }
+            setPersonalizedModal('')
+          })
+        }
+        
+       
       }
     }
 
