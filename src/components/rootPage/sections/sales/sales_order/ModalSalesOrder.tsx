@@ -539,15 +539,15 @@ const ModalSalesOrder: React.FC = () => {
     }, [modalSalesOrder, changeLength, branchOffices])
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        calcular_totales()
+    //     calcular_totales()
 
-        if (modalSalesOrder !== 'sale-order__modal-update') {
-            calcular_tiempos_entrega();
+    //     if (modalSalesOrder !== 'sale-order__modal-update') {
+    //         calcular_tiempos_entrega();
 
-        }
-    }, [saleOrdersConcepts])
+    //     }
+    // }, [saleOrdersConcepts])
 
 
     // useEffect(() => {

@@ -626,7 +626,9 @@ const ModalBilling: React.FC = () => {
                                     DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
                                     const filter = conceptsBack.filter((x: any) => x.id !== c.id);
                                     setConceptsBack(filter);
-
+                       
+                                    const filterNormal = billing?.normal_concepts.filter((_: any, index: number) => index !== i);
+                                    setBilling({ normal_concepts: filterNormal, normal_concepts_eliminate: [...billing.normal_concepts_eliminate, c.id] });
 
 
 
@@ -648,7 +650,8 @@ const ModalBilling: React.FC = () => {
                 setConceptsBack(filter);
 
                 const filterNormal = billing?.normal_concepts.filter((_: any, index: number) => index !== i);
-                setBilling({ normal_concepts: filterNormal });
+                console.log('filterNormal', filterNormal)
+                setBilling({ normal_concepts: filterNormal, normal_concepts_eliminate: [...billing.normal_concepts_eliminate, c.id] });
             }
         }
     }
@@ -747,6 +750,7 @@ const ModalBilling: React.FC = () => {
     const closeModal = () => {
         setSubModal('')
         setModoUpdate(false)
+        setBilling({ billing: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] })
     }
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 

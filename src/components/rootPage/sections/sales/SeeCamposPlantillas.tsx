@@ -32,7 +32,6 @@ const SeeCamposPlantillas: React.FC<any> = ({typeConcept}) => {
             } else {
                 setData(saleOrdersConcepts.personalized_concepts)
             }
-        
             return
         }
     }, [modalSub])
