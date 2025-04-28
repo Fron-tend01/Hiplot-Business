@@ -492,15 +492,13 @@ const ModalSalesOrder: React.FC = () => {
         setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
 
 
-        console.log('saleOrdersConcepts', saleOrdersConcepts)
-
         if (modalSalesOrder == 'sale-order__modal') {
             data[index].id_usuario_actualiza = user_id
             await APIs.CreateAny(data[index], "update_carrito_concepto")
                 .then(async (response: any) => {
                     if (!response.error) {
                         await APIs.GetAny('get_carrito/' + user_id)
-                            .then(async (response: any) => {
+                            .then(async (response: any) => {   
                                 let order = response[0]
                                 setSaleOrdersToUpdate(order)
                                 setSaleOrdersConcepts({ normal_concepts: order?.conceptos, personalized_concepts: order?.conceptos_pers });
@@ -510,7 +508,7 @@ const ModalSalesOrder: React.FC = () => {
                         Swal.fire('Notificación', response.mensaje, 'warning');
                         return
                     }
-                })
+            })
         }
 
 
@@ -717,9 +715,12 @@ const ModalSalesOrder: React.FC = () => {
     const setModalSub = storeModals((state) => state.setModalSub);
 
     const setIndexVM = storeDv(state => state.setIndex)
-    const seeVerMas = (index: number) => { //AL ABRIR SEE-CP NO SE VISUALIZA LA INFORMACIÓN DE LAS PLANTILLAS PORQUE SIGUE USANDO NORMALCONCEPTS CORREGIR AQUÍ Y EN LA COTIZACIÓN
+    
+    const [typeConcept, setTypeConcept] = useState<string>('')
+    const seeVerMas = (index: number, type: string) => { //AL ABRIR SEE-CP NO SE VISUALIZA LA INFORMACIÓN DE LAS PLANTILLAS PORQUE SIGUE USANDO NORMALCONCEPTS CORREGIR AQUÍ Y EN LA COTIZACIÓN
         setIndexVM(index)
         setModalSub('see_cp')
+        setTypeConcept(type)
     }
 
     const [stateLoading, setStateLoading] = useState<any>(false)
@@ -1174,7 +1175,7 @@ const ModalSalesOrder: React.FC = () => {
 
     }, [statusUrgency])
 
-
+    
 
 
     return (
@@ -1670,7 +1671,7 @@ const ModalSalesOrder: React.FC = () => {
 
                                                     </div>
                                                     <div className='td'>
-                                                        <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                                                        <div className='see-icon' onClick={() => seeVerMas(index, 'normal')} title='Ver mas campos'>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
                                                         </div>
                                                     </div>
@@ -1848,7 +1849,7 @@ const ModalSalesOrder: React.FC = () => {
                                                         }
                                                     </div>
                                                     <div className='td'>
-                                                        <div className='see-icon' onClick={() => seeVerMas(index)}>
+                                                        <div className='see-icon' onClick={() => seeVerMas(index, 'personalized')}>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
                                                         </div>
                                                     </div>
@@ -1950,7 +1951,7 @@ const ModalSalesOrder: React.FC = () => {
                 </div>
                 <ArticleViewModal />
                 <Personalized idItem={idItem} indexItem={indexItem} />
-                <SeeCamposPlantillas />
+                <SeeCamposPlantillas typeConcept={typeConcept} />
                 <Binnacle />
                 <ModalProduction />
 

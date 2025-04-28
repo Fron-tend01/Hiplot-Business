@@ -599,10 +599,10 @@ const ModalBilling: React.FC = () => {
 
             if (typeConcept == 'normal') {
                 const filterNormal = billing?.normal_concepts.filter((_: any, index: number) => index !== i);
-                setBilling({ normal_concepts: filterNormal });
+                setBilling({ normal_concepts: filterNormal, normal_concepts_eliminate: [...billing.normal_concepts_eliminate, c.id]});
             } else {
                 const filterPersonalized = billing?.personalized_concepts.filter((_: any, index: number) => index !== i);
-                setBilling({ normal_concepts: billing.normal_concepts, personalized_concepts: filterPersonalized });
+                setBilling({ normal_concepts: billing.normal_concepts, personalized_concepts: filterPersonalized, personalized_concepts_eliminate: [...billing.personalized_concepts_eliminate, c.id]});
             }
 
 

@@ -7,7 +7,7 @@ import "./styles/SeeCamposPlantillas.css"
 import { storeQuotation } from '../../../../zustand/Quotation'
 import { storeSaleOrder } from '../../../../zustand/SalesOrder'
 
-const SeeCamposPlantillas: React.FC = () => {
+const SeeCamposPlantillas: React.FC<any> = ({typeConcept}) => {
     const setModalSub = storeModals(state => state.setModalSub)
     const { modalSub, modal }: any = useStore(storeModals)
     const setQuotes = storeQuotation((state) => state.setQuotes);
@@ -18,15 +18,26 @@ const SeeCamposPlantillas: React.FC = () => {
 
     useEffect(() => {
         if(modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation') {
-            setData(quotes)
+            
+            if(typeConcept == 'normal'){
+                setData(quotes.normal_concepts)
+            } else {
+                setData(quotes.personalized_concepts)
+            }
             return
         }
         if(modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot') {
-            setData(saleOrdersConcepts)
+            if(typeConcept == 'normal'){
+                setData(saleOrdersConcepts.normal_concepts)
+            } else {
+                setData(saleOrdersConcepts.personalized_concepts)
+            }
+        
             return
         }
     }, [modalSub])
 
+    console.log(data)
 
     //   cont setDataDynamic = storeDv(state  => state.setDataDynamic)
     const { index }: any = useStore(storeDv)
@@ -105,17 +116,17 @@ const SeeCamposPlantillas: React.FC = () => {
                         <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
                     </svg>
                 </a>
-                <p className='title__modals'>Más Campos del Articulo ({data?.[index]?.codigo} -{data?.[index]?.descripcion} )</p>
+                <p className='title__modals'>Más Campos del Articulo ({data[index]?.codigo} -{data[index]?.descripcion} )</p>
                 <div className='sales__order_modal_template-fields'>
                     <div className='row__one'>
                         <div className='row__one'>
                             <div>
                                 <label className='label__general'>Coment. factura</label>
-                                <input className={`inputs__general`} type="text" value={data?.[index]?.obs_factura} onChange={(e) => ChangeInputs('obs_factura', e.target.value)} placeholder='Factura' />
+                                <input className={`inputs__general`} type="text" value={data[index]?.obs_factura} onChange={(e) => ChangeInputs('obs_factura', e.target.value)} placeholder='Factura' />
                             </div>
                             <div>
                                 <label className='label__general'>Coment. producción</label>
-                                <input className={`inputs__general`} type="text" value={data?.[index]?.obs_produccion} onChange={(e) => ChangeInputs('obs_produccion', e.target.value)} placeholder='Producción' />
+                                <input className={`inputs__general`} type="text" value={data[index]?.obs_produccion} onChange={(e) => ChangeInputs('obs_produccion', e.target.value)} placeholder='Producción' />
                             </div>
                         </div>
                         <div className='row__two'>
@@ -123,7 +134,7 @@ const SeeCamposPlantillas: React.FC = () => {
                                 <p>Campos plantilla</p>
                             </div>
                             <div className='row__two'>
-                                {data?.normal_concepts?.[index]?.campos_plantilla?.map((x: any, idx: any) => (
+                                {data[index]?.campos_plantilla?.map((x: any, idx: any) => (
                                     <div className=''>
                                         {x.tipo_campo_plantilla != 'txtvisual' ?
                                             <div>
@@ -153,7 +164,7 @@ const SeeCamposPlantillas: React.FC = () => {
                             </div>
                         </div>
                         <div className='row__three'>
-                            {data?.normal_concepts?.[index]?.campos_plantilla?.map((x: any) => (
+                            {data[index]?.campos_plantilla?.map((x: any) => (
                                 <div className=''>
                                     {x.tipo_campo_plantilla == 'txtvisual' ?
                                         <div className='price_x_unit'>
