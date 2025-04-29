@@ -49,7 +49,7 @@ const Production: React.FC = () => {
 
     const hoy = new Date();
     const haceUnaSemana = new Date();
-    haceUnaSemana.setDate(hoy.getDate() - 7);
+    haceUnaSemana.setDate(hoy.getDate() - 30);
 
     // Inicializa el estado con las fechas formateadas
     const [dates, setDates] = useState([
@@ -88,15 +88,14 @@ const Production: React.FC = () => {
     }
     const intervalRef = useRef<number | null>(null);
 
-    const fetchData = async () => {
-        search()
-    };
+
+
     useEffect(() => {
         fetch()
         fetchPermisos()
         //---------------------------SIRVE PARA ESTAR CONSULTANDO CADA CIERTO TIEMPO, EL CLEARINVERVAL ROMPE EL INTERVALO CUANDO RETURN SE EJECUTA Y EL COMPONENTE SE DESMONTA
-        fetchData();
-        intervalRef.current = setInterval(fetchData, 30000);
+        search();
+        intervalRef.current = setInterval(search, 30000);
         return () => {
             if (intervalRef.current !== null) {
                 clearInterval(intervalRef.current);
