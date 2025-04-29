@@ -582,9 +582,39 @@ const ModalBilling: React.FC = () => {
 
     }, [selectedIds?.customers])
 
+    useEffect(() => {
+        let subtotal = 0;
+        let urgencia = 0;
+        let descuento = 0;
+
+        billing.normal_concepts.forEach(element => {
+            subtotal += element.precio_total;
+            urgencia += element.monto_urgencia;
+            descuento += element.monto_descuento;
+        });
+
+        billing.personalized_concepts.forEach(element => {
+            element.conceptos.forEach((x: any) => {
+                urgencia += x.monto_urgencia;
+                descuento += x.monto_descuento;
+            });
+            subtotal += parseFloat(element.precio_total);
+        });
+
+
+        setTotals((prev: any) => ({
+            ...prev,
+            subtotal: subtotal,
+            urgencia: urgencia,
+            descuento: descuento,
+            total: subtotal + urgencia - descuento,
+        }));
+    }, [billing]);
+
+
 
     console.log('billing', billing)
-    console.log('conceptsBack', conceptsBack)
+    console.log('data', dataBillign)
 
     const deleteConceptos = (c: any, i: number, typeConcept: string) => {
         console.log('asdasd')
@@ -599,10 +629,10 @@ const ModalBilling: React.FC = () => {
 
             if (typeConcept == 'normal') {
                 const filterNormal = billing?.normal_concepts.filter((_: any, index: number) => index !== i);
-                setBilling({ normal_concepts: filterNormal, normal_concepts_eliminate: [...billing.normal_concepts_eliminate, c.id]});
+                setBilling({ normal_concepts: filterNormal, normal_concepts_eliminate: [...billing.normal_concepts_eliminate, c.id] });
             } else {
                 const filterPersonalized = billing?.personalized_concepts.filter((_: any, index: number) => index !== i);
-                setBilling({ normal_concepts: billing.normal_concepts, personalized_concepts: filterPersonalized, personalized_concepts_eliminate: [...billing.personalized_concepts_eliminate, c.id]});
+                setBilling({ normal_concepts: billing.normal_concepts, personalized_concepts: filterPersonalized, personalized_concepts_eliminate: [...billing.personalized_concepts_eliminate, c.id] });
             }
 
 
@@ -626,7 +656,7 @@ const ModalBilling: React.FC = () => {
                                     DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
                                     const filter = conceptsBack.filter((x: any) => x.id !== c.id);
                                     setConceptsBack(filter);
-                       
+
                                     const filterNormal = billing?.normal_concepts.filter((_: any, index: number) => index !== i);
                                     setBilling({ normal_concepts: filterNormal, normal_concepts_eliminate: [...billing.normal_concepts_eliminate, c.id] });
 
@@ -666,7 +696,7 @@ const ModalBilling: React.FC = () => {
                 check: false,
             }));
 
-            setBilling({ normal_concepts: [...(billing?.normal_concepts ?? []), ...updatedConcepts], personalized_concepts: deleteItemCustomC});
+            setBilling({ normal_concepts: [...(billing?.normal_concepts ?? []), ...updatedConcepts], personalized_concepts: deleteItemCustomC });
 
 
         } else {
@@ -676,7 +706,7 @@ const ModalBilling: React.FC = () => {
                 id_pers: 0,
                 check: false,
             }));
-            setBilling({ normal_concepts: [...billing.normal_concepts, ...updatedConcepts], personalized_concepts: billing.personalized_concepts, personalized_concepts_eliminate: [...billing.personalized_concepts_eliminate, concept.id]});
+            setBilling({ normal_concepts: [...billing.normal_concepts, ...updatedConcepts], personalized_concepts: billing.personalized_concepts, personalized_concepts_eliminate: [...billing.personalized_concepts_eliminate, concept.id] });
             setConceptsBack(deleteItemCustomC)
         }
 
@@ -926,7 +956,7 @@ const ModalBilling: React.FC = () => {
                                 </div>
                             </div>
                             <div className='my-4 row'>
-                                {type == 2 ? '' :
+                                {/* {type == 2 ? '' :
                                     <>
                                         <div className='col-3'>
                                             <label className='label__general'>Clientes</label>
@@ -936,7 +966,7 @@ const ModalBilling: React.FC = () => {
                                             <Select dataSelects={usersFilter} instanceId='usersFilter' nameSelect={'Vendedor'} />
                                         </div>
                                     </>
-                                }
+                                } */}
                                 <div className='col-3'>
                                     <Select dataSelects={series} instanceId='series' nameSelect={'Serie'} />
                                 </div>
@@ -1055,11 +1085,17 @@ const ModalBilling: React.FC = () => {
                                     <div className='th'>
                                         <p>Importe</p>
                                     </div>
-                                    <div className='th'>
-                                        <p>Total</p>
+                                    <div>
+                                        <p>Descuento</p>
+                                    </div>
+                                    <div>
+                                        <p>Urgencia</p>
                                     </div>
                                     <div className="th">
                                         OV/PAF
+                                    </div>
+                                    <div className='th'>
+                                        <p>Total</p>
                                     </div>
                                     <div className="th">
                                     </div>
@@ -1079,19 +1115,23 @@ const ModalBilling: React.FC = () => {
                                                     <p className='amount-identifier'>{concept.cantidad} {concept.unidad}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>${(concept.total_restante || concept.total) / concept.cantidad}</p>
+                                                    <p>${(concept.total_restante || concept.total).toFixed(2) / (concept.cantidad).toFixed(2)}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>${concept.total || concept.total_restante}</p>
+                                                    <p>${(concept.total || concept.total_restante).toFixed(2)}</p>
+                                                </div>
+
+                                                <div className='td'>
+                                                    <p>{type == 1 ? concept?.monto_descuento : 'N/A'}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p className='total-identifier'>${concept.total || concept.total_restante}</p>
+                                                    <p>{type == 1 ? concept?.monto_urgencia : 'N/A'}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
                                                 </div>
-                                                <div>
-
+                                                <div className='td'>
+                                                    <p className='total-identifier'>${(concept.total + concept?.monto_urgencia || concept.total_restante + concept?.monto_urgencia).toFixed(2)}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <div className='conept-icon-yellow'>
@@ -1126,13 +1166,16 @@ const ModalBilling: React.FC = () => {
                                                     <p>${(concept.precio_total / concept.cantidad).toFixed(2)}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>${(concept.total)?.toFixed(2) || (concept.total_restante)?.toFixed(2) || (concept.precio_total)?.toFixed(2)}</p>
+                                                    <p>${(concept?.precio_total)}</p>
+                                                </div>
+                                                <div>
+                                                    <p>N/A</p>
+                                                </div>
+                                                <div>
+                                                    <p>N/A</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>${(concept.total)?.toFixed(2) || (concept.total_restante)?.toFixed(2) || (concept.precio_total)?.toFixed(2)}</p>
-                                                </div>
-                                                <div className='td'>
-                                                    <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
+                                                    <p>N/A</p>
                                                 </div>
                                                 <div className='td'>
                                                     {concept.concept ?
@@ -1215,23 +1258,29 @@ const ModalBilling: React.FC = () => {
                                                     :
                                                     <div className='tbody'>
                                                         <div className='td'>
-                                                            <p className='article-identifier'>{concept.codigo}-{concept.descripcion}</p>
-
+                                                            <p className='folio-identifier'>{concept.codigo}-{concept.descripcion}</p>
                                                         </div>
                                                         <div className='td'>
                                                             <p className='amount-identifier'>{concept.cantidad} {concept.unidad}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <p>${(concept.total_restante || concept.total) / concept.cantidad}</p>
+                                                            <p>${(concept.total_restante || concept.total).toFixed(2) / (concept.cantidad).toFixed(2)}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <p>${concept.total || concept.total_restante}</p>
+                                                            <p>${(concept.total || concept.total_restante).toFixed(2)}</p>
+                                                        </div>
+
+                                                        <div className='td'>
+                                                            <p>{type == 1 ? concept?.monto_descuento : 'N/A'}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <p className='total-identifier'>${concept.total || concept.total_restante}</p>
+                                                            <p>{type == 1 ? concept?.monto_urgencia : 'N/A'}</p>
                                                         </div>
                                                         <div className='td'>
                                                             <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
+                                                        </div>
+                                                        <div className='td'>
+                                                            <p className='total-identifier'>${(concept.total + concept?.monto_urgencia || concept.total_restante + concept?.monto_urgencia).toFixed(2)}</p>
                                                         </div>
                                                         <div>
 
@@ -1267,16 +1316,17 @@ const ModalBilling: React.FC = () => {
                                     <p className='value'>$ {totals.subtotal}</p>
                                 </div>
                             </div>
+
                             <div className='discount'>
                                 <div>
                                     <p className='name'>Descuento</p>
-                                    <p className='value'>$ {totals.urgencia}</p>
+                                    <p className='value'>$ {totals.descuento}</p>
                                 </div>
                             </div>
                             <div className='urgency'>
                                 <div>
                                     <p className='name'>Urgencia</p>
-                                    <p className='value'>$ {totals.descuento}</p>
+                                    <p className='value'>$ {totals.urgencia}</p>
                                 </div>
                             </div>
                             <div className='total'>

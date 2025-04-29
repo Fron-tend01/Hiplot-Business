@@ -1886,6 +1886,21 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                   <div className='th'>
                     <p>Unidad</p>
                   </div>
+                  <div className='th'>
+                    <p>P/U</p>
+                  </div>
+                  <div className='th'>
+                    <p>Importe</p>
+                  </div>
+                  <div className='th'>
+                    <p>Desc.</p>
+                  </div>
+                  <div className='th'>
+                    <p>Utg.</p>
+                  </div>
+                  <div className='th'>
+                    <p>Total</p>
+                  </div>
                 </div>
               </div>
               {customConceptView ? (
@@ -1911,9 +1926,9 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                             </div>
                           }
                           <div className='td'>
-                            <div className='article'>
+                           
                               <p>{quotation.codigo}-{quotation.descripcion}</p>
-                            </div>
+                        
                           </div>
                           <div className='td'>
                             <div>
@@ -1921,11 +1936,22 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                             </div>
                           </div>
                           <div className='td'>
-                            <div>
-                              <p>{quotation.name_unidad}</p>
-                            </div>
+                              <p>{quotation.unidad}</p>
                           </div>
                           <div className='td'>
+                              <p>{quotation.precio_unitario}</p>
+                          </div>
+                          <div className='td'>
+                              <p>{quotation.precio_total}</p>
+                          </div>
+                          <div className='td'>
+                              <p>{quotation.monto_descuento}</p>
+                          </div>
+                          <div className='td'>
+                              <p>{quotation.monto_urgencia}</p>
+                          </div>
+                          <div className='td'>
+                              <p>{quotation.total + quotation.monto_urgencia}</p>
                           </div>
                         </div>
                       </div>
