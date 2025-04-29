@@ -263,17 +263,11 @@ const ModalSalesOrder: React.FC = () => {
                 setModalSalesOrder('sale-order__modal-update')
                 setSaleOrdersConcepts({ sale_order: order, normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
                 setSaleOrdersToUpdate(order)
-
-
-
             }
         } catch (error) {
             console.error("Error al crear la orden de compra:", error);
             Swal.fire('Hubo un error al crear la orden de venta', '', 'error');
         }
-
-
-
     }
 
 
@@ -411,22 +405,30 @@ const ModalSalesOrder: React.FC = () => {
             }
             return x;
         });
+        setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.conceptos_pers });
 
-        data[i].id_usuario_actualiza = user_id
-        await APIs.CreateAny(data[i], "update_carrito_concepto")
-            .then(async (response: any) => {
-                if (!response.error) {
-                    await APIs.GetAny('get_carrito/' + user_id)
-                        .then(async (response: any) => {
-                            let order = response[0]
-                            setSaleOrdersToUpdate(order)
-                            setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
-                        })
-                } else {
-                    // Swal.fire('Notificación', response.mensaje, 'warning');
-                    return
-                }
-            })
+
+        console.log(data)
+
+        if (modalSalesOrder == 'sale-order__modal') {
+            data[i].id_usuario_actualiza = user_id
+            await APIs.CreateAny(data[i], "update_carrito_concepto")
+                .then(async (response: any) => {
+                    if (!response.error) {
+                        await APIs.GetAny('get_carrito/' + user_id)
+                            .then(async (response: any) => {
+                                let order = response[0]
+                                setSaleOrdersToUpdate(order)
+                                setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                            })
+                    } else {
+                        // Swal.fire('Notificación', response.mensaje, 'warning');
+                        return
+                    }
+                })
+
+        }
+
 
 
     };
@@ -498,7 +500,7 @@ const ModalSalesOrder: React.FC = () => {
                 .then(async (response: any) => {
                     if (!response.error) {
                         await APIs.GetAny('get_carrito/' + user_id)
-                            .then(async (response: any) => {   
+                            .then(async (response: any) => {
                                 let order = response[0]
                                 setSaleOrdersToUpdate(order)
                                 setSaleOrdersConcepts({ normal_concepts: order?.conceptos, personalized_concepts: order?.conceptos_pers });
@@ -508,7 +510,7 @@ const ModalSalesOrder: React.FC = () => {
                         Swal.fire('Notificación', response.mensaje, 'warning');
                         return
                     }
-            })
+                })
         }
 
 
@@ -715,7 +717,7 @@ const ModalSalesOrder: React.FC = () => {
     const setModalSub = storeModals((state) => state.setModalSub);
 
     const setIndexVM = storeDv(state => state.setIndex)
-    
+
     const [typeConcept, setTypeConcept] = useState<string>('')
     const seeVerMas = (index: number, type: string) => { //AL ABRIR SEE-CP NO SE VISUALIZA LA INFORMACIÓN DE LAS PLANTILLAS PORQUE SIGUE USANDO NORMALCONCEPTS CORREGIR AQUÍ Y EN LA COTIZACIÓN
         setIndexVM(index)
@@ -874,13 +876,13 @@ const ModalSalesOrder: React.FC = () => {
         console.log(saleOrdersConcepts);
         // return
         await APIs.GetAny('calcular_urgencia_global_ov/' + saleOrdersToUpdate.id + '/' + urg).then(async (resp: any) => {
-       
+
             await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
                 let orden = r[0]
                 // setSaleOrdersToUpdate(orden)
                 setSaleOrdersConcepts({ normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers, sale_order: orden });
                 setModalLoading(false)
-    
+
             })
         }).catch((e: any) => {
             setModalLoading(false)
@@ -1175,7 +1177,7 @@ const ModalSalesOrder: React.FC = () => {
 
     }, [statusUrgency])
 
-    
+
 
 
     return (
@@ -1589,7 +1591,7 @@ const ModalSalesOrder: React.FC = () => {
                                                     <div className='td'>
                                                         <p className=''>$ {article.precio_unitario} <br />
                                                             {article.total_franquicia != null && !Number.isNaN(article.total_franquicia) && permisosxVistaheader.length > 0 && checkPermissionHeader('totales_franquicia') ?
-                                                            <small className='total-identifier'>PUF: ${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
+                                                                <small className='total-identifier'>PUF: ${Number(article.total_franquicia / article.cantidad).toFixed(2)}</small> : ''}
                                                         </p>
                                                     </div>
                                                     <div className='td'>
@@ -1716,6 +1718,14 @@ const ModalSalesOrder: React.FC = () => {
                                                             </label>
                                                         </div>
                                                     </div>
+                                                    
+                                                    {article.status == 0 ?
+                                                        <div className='cancel-icon' onClick={() => canceleStatus(article)} title='Cancelar concepto'>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
+                                                        </div>
+                                                        :
+                                                        ""
+                                                    }
                                                     {permisosxVista.some((x: any) => x.titulo === 'entregado_cliente_enviado_sucursal') ?
                                                         modalSalesOrder == 'sale-order__modal-update' ?
                                                             <div className='td branch'>

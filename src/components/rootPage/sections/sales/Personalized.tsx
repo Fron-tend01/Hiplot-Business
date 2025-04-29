@@ -754,6 +754,8 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
 
 
 
+
+
   return (
     <div className={`overlay__personalized_modal ${modalStatus ? 'active' : ''}`}>
       <div className={`popup__personalized_modal ${modalStatus ? 'active' : ''}`}>
@@ -1926,9 +1928,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                             </div>
                           }
                           <div className='td'>
-                           
                               <p>{quotation.codigo}-{quotation.descripcion}</p>
-                        
                           </div>
                           <div className='td'>
                             <div>
