@@ -101,8 +101,14 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
-
+  const [PermisosxVistaFicha, setPermisosxVistaFicha] = useState<any>([])
+  const checkPermissionFicha = (elemento: string) => {
+    return PermisosxVistaFicha.some((x: any) => x.titulo == elemento)
+}
   const fetch1 = async () => {
+    APIs.GetAny('get_permisos_x_vista/' + user_id + '/FICHA').then((resp: any) => {
+      setPermisosxVistaFicha(resp)
+    })
     const data = {
       id: IdArticle,
       activos: true,
@@ -302,7 +308,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   useEffect(() => {
     if (article) {
       setUnits(article.unidades || []);
-      if (article?.unidades !== undefined){
+      if (article?.unidades !== undefined) {
 
         setSelectedUnit(article?.unidades[0])
       }
@@ -347,7 +353,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     console.log('Unidad seleccionada:', item); // Ver el objeto de la unidad seleccionada
   };
 
- 
+
 
   const handleTemplatesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     let value: any = e.target.value
@@ -402,7 +408,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       });
 
 
-  
+
 
       if (result.error2) {
         setOutOfRange(true)
@@ -1046,8 +1052,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       total: valor
     }));
   }
-  
- 
+
+
   const get_precios = async () => {
     const data = {
       id_articulo: IdArticle,
@@ -1059,7 +1065,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     try {
       // Obtener artículos
       setModalLoading(true)
-     
+
       return await APIs.CreateAny(data, 'get_articulo_precios')
         .then(async (response: any) => {
           if (!response || response.length === 0) {
@@ -1105,7 +1111,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   //   try {
   //     // Obtener artículos
   //     setModalLoading(true)
-     
+
   //     return await APIs.CreateAny(data, 'get_articulo_stock')
   //       .then(async (response: any) => {
   //         if (!response || response.length === 0) {
@@ -1684,7 +1690,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                     </div>
                     :
                     <p className='result__total-price'>$
-                      {article?.precio_libre ?
+                      {article?.precio_libre || checkPermissionFicha('modificar_precio') ?
                         <input
                           // className={`inputs__general`}
                           type="text"

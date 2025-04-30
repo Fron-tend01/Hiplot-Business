@@ -145,7 +145,7 @@ const SalesOrder: React.FC = () => {
             id_vendedor: selectedIds?.users?.id,
             status: type,
             page: page,
-            // light:true
+            light:true
         }
         const result = await getSaleOrders(dataSaleOrders)
         setModalLoading(false)
