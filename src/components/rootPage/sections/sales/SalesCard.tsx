@@ -104,7 +104,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const [PermisosxVistaFicha, setPermisosxVistaFicha] = useState<any>([])
   const checkPermissionFicha = (elemento: string) => {
     return PermisosxVistaFicha.some((x: any) => x.titulo == elemento)
-}
+  }
   const fetch1 = async () => {
     APIs.GetAny('get_permisos_x_vista/' + user_id + '/FICHA').then((resp: any) => {
       setPermisosxVistaFicha(resp)
@@ -1690,14 +1690,22 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                     </div>
                     :
                     <p className='result__total-price'>$
-                      {article?.precio_libre || checkPermissionFicha('modificar_precio') ?
+                      {article?.precio_libre ?
                         <input
                           // className={`inputs__general`}
                           type="text"
                           value={prices}
                           onChange={(e) => setterPrices(e.target.value)}
                         />
-                        : prices}
+                        : PermisosxVistaFicha.some((x: any) => x.titulo === 'modificar_precio') ?
+                          <input
+                            // className={`inputs__general`}
+                            type="text"
+                            value={prices}
+                            onChange={(e) => setterPrices(e.target.value)}
+                          />
+                          :
+                          prices}
                     </p>
                   }
 
