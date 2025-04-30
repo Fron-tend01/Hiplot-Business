@@ -1632,7 +1632,6 @@ const ModalSalesOrder: React.FC = () => {
 
 
                                                         }
-
                                                         {article.descuento > 0 ?
                                                             <p style={{ color: 'green' }}>(-${parseFloat(article.descuento).toFixed(2)})</p>
                                                             : ''}
@@ -1644,14 +1643,9 @@ const ModalSalesOrder: React.FC = () => {
                                                         <p>$ {article.monto_urgencia}</p>
                                                         <p className='total-identifier'>$ {article.monto_urgencia_franquicia}</p>
                                                     </div>
-
-
                                                     <div className='td'>
                                                         <p>{article.total + article.monto_urgencia}</p>
-
                                                     </div>
-
-
                                                     <div className='td urgency'>
                                                         {modalSalesOrder == 'sale-order__modal' ?
                                                             article?.urgency ?
@@ -1666,11 +1660,9 @@ const ModalSalesOrder: React.FC = () => {
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-timer"><line x1="10" x2="14" y1="2" y2="2" /><line x1="12" x2="15" y1="14" y2="11" /><circle cx="12" cy="14" r="8" /></svg>
                                                                     </div>
                                                                 </div>
-
                                                             :
                                                             ''
                                                         }
-
                                                     </div>
                                                     <div className='td'>
                                                         <div className='see-icon' onClick={() => seeVerMas(index, 'normal')} title='Ver mas campos'>
@@ -1688,7 +1680,6 @@ const ModalSalesOrder: React.FC = () => {
 
                                                         </div>
                                                     }
-
                                                     <div className='td'>
                                                         <div className='send-areas'>
                                                             <div>
@@ -1711,20 +1702,22 @@ const ModalSalesOrder: React.FC = () => {
                                                             <label className="switch">
                                                                 <input
                                                                     type="checkbox"
-
                                                                     checked={article.enviar_a_produccion}
                                                                     onChange={() => handleStatusChange(article.enviar_a_produccion, index)} disabled={article.status == !0} />
                                                                 <span className="slider"></span>
                                                             </label>
                                                         </div>
                                                     </div>
-                                                    
-                                                    {article.status == 0 ?
-                                                        <div className='cancel-icon' onClick={() => canceleStatus(article)} title='Cancelar concepto'>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
-                                                        </div>
+
+                                                    {modalSalesOrder == 'sale-order__modal' ?
+                                                        ''
                                                         :
-                                                        ""
+                                                        article.status == 0 ?
+                                                            <div className='cancel-icon' onClick={() => canceleStatus(article)} title='Cancelar concepto'>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
+                                                            </div>
+                                                            :
+                                                            ""
                                                     }
                                                     {permisosxVista.some((x: any) => x.titulo === 'entregado_cliente_enviado_sucursal') ?
                                                         modalSalesOrder == 'sale-order__modal-update' ?

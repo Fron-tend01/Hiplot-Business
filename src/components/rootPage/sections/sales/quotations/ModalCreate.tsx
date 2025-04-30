@@ -504,7 +504,7 @@ const ModalCreate: React.FC = () => {
       setCalculations((prev) => ({
         ...prev,
         urgencia: 0,
-        
+        total: prev.subtotal + prev.descuento
       }));
       localStorage.setItem('urgency', JSON.stringify(false));
 
@@ -533,6 +533,7 @@ const ModalCreate: React.FC = () => {
       setCalculations((prev) => ({
         ...prev,
         urgencia: urgency,
+        total: prev.total + urgency
          
       }));
       localStorage.setItem('cotizacion', JSON.stringify(quotes.normal_concepts));
