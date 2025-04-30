@@ -145,7 +145,7 @@ const SalesOrder: React.FC = () => {
             id_vendedor: selectedIds?.users?.id,
             status: type,
             page: page,
-            light:true
+            // light:true
         }
         const result = await getSaleOrders(dataSaleOrders)
         setModalLoading(false)
@@ -396,12 +396,17 @@ const SalesOrder: React.FC = () => {
                                                         <p>Folio</p>
                                                         <p>Imprimir</p>
                                                     </div>
-                                                    <div className='tbody-td'>
-                                                        <p>Area</p>
-                                                        <p>Folio</p>
-                                                        <p className='imprimir'>Imprimir</p>
-                                                    </div>
-                                                
+                                                    {order?.ordenes_produccion.map((x: any) => (
+                                                        <div className='tbody-td'>
+                                                            <small>{x.area_produccion}</small>
+                                                            <small>{x.folio_completo}</small>
+                                                            <p className='imprimir'>Imprimir</p>
+                                                        </div>
+                                                    ))
+
+
+                                                    }
+
                                                 </div>
                                             </div>
                                         </div>
@@ -445,10 +450,11 @@ const SalesOrder: React.FC = () => {
                                                 <p>{order.razon_social}</p>
                                             </div>
                                             <div className='td'>
-                                                <p className='folio-identifier'>{order?.total_entregados_cliente} de {order?.conceptos?.length}</p>
+                                                <p>{order.total_entregados_cliente} de {order?.conceptos?.length}</p>
                                             </div>
+
                                             <div className='td'>
-                                                <p className='amount-identifier'>{order?.total_recibidos_sucursal} de {order?.conceptos?.length}</p>
+                                                <p>{order.total_recibidos_sucursal} de {order?.conceptos?.length}</p>
                                             </div>
 
                                         </div>

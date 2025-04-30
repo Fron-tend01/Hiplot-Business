@@ -9,6 +9,8 @@ import { seriesRequests } from '../../../../../../fuctions/Series'
 import APIs from '../../../../../../services/services/APIs'
 import { storeOrdes } from '../../../../../../zustand/Ordes'
 import './styles/ByOP.css'
+import Swal from 'sweetalert2';
+
 
 const ByOP: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -73,24 +75,35 @@ const ByOP: React.FC = () => {
     }
 
 
-    const addArticlesByRequest = (item: any) => {
+    const addArticlesByRequest = async (item: any) => {
         let filter = orders.filter((x: any) => x.id !== item.id)
         setOrders(filter)
-        setConcepts([
-            ...concepts,
-            ...item.conceptos.map((concepto:any) => ({
-              ...concepto,
-              orden_produccion: {
-                  folio: item.serie + '-' + item.folio + '-' + item.anio, 
-                  id: item.id 
-              },
-              id_orden_produccion: concepto.id,
-              unidad: concepto.id_unidad,
-              id_unidad: concepto.id_unidad,
-              urgencia: item.urgencia,
-            }))
-          ])
+
+        const filterC = await concepts.filter((x: any) => x.id == item.id)
+
+        console.log('item', item)
+        console.log('orders', orders)
+        if(filterC.length > 0) {
+               Swal.fire('Advertencia', 'El concepto ya existe', 'warning');
+        } else {
+            setConcepts([
+                ...concepts,
+                ...item.conceptos.map((concepto:any) => ({
+                  ...concepto,
+                  orden_produccion: {
+                      folio: item.serie + '-' + item.folio + '-' + item.anio, 
+                      id: item.id 
+                  },
+                  id_orden_produccion: concepto.id,
+                  unidad: concepto.id_unidad,
+                  id_unidad: concepto.id_unidad,
+                  urgencia: item.urgencia,
+                  id: item.id
+                }))
+              ])
+            }
         }
+        console.log(concepts)
     
 
 
