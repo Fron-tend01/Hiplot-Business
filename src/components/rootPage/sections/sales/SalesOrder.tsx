@@ -384,10 +384,10 @@ const SalesOrder: React.FC = () => {
                                                 <p>{order.razon_social}</p>
                                             </div>
                                             <div className='td'>
-                                                <p className='folio-identifier'>{order.total_entregados_cliente} de {order.conceptos.length}</p>
+                                                <p className='folio-identifier'>{order?.total_entregados_cliente} de {order?.conceptos?.length}</p>
                                             </div>
                                             <div className='td'>
-                                                <p className='amount-identifier'>{order.total_recibidos_sucursal} de {order.conceptos.length}</p>
+                                                <p className='amount-identifier'>{order?.total_recibidos_sucursal} de {order?.conceptos?.length}</p>
                                             </div>
                                             <div className='td'>
                                                 <div className='table-td-production'>
@@ -445,11 +445,10 @@ const SalesOrder: React.FC = () => {
                                                 <p>{order.razon_social}</p>
                                             </div>
                                             <div className='td'>
-                                                <p>{order.total_entregados_cliente} de {order.conceptos.length}</p>
+                                                <p className='folio-identifier'>{order?.total_entregados_cliente} de {order?.conceptos?.length}</p>
                                             </div>
-
                                             <div className='td'>
-                                                <p>{order.total_recibidos_sucursal} de {order.conceptos.length}</p>
+                                                <p className='amount-identifier'>{order?.total_recibidos_sucursal} de {order?.conceptos?.length}</p>
                                             </div>
 
                                         </div>
