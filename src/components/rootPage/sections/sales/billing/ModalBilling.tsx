@@ -588,27 +588,39 @@ const ModalBilling: React.FC = () => {
         let descuento = 0;
 
         billing.normal_concepts.forEach(element => {
-            subtotal += element.precio_total;
+            subtotal += type == 1 ? element.precio_total : element.total;
             urgencia += element.monto_urgencia;
             descuento += element.monto_descuento;
         });
 
-        billing.personalized_concepts.forEach(element => {
-            element.conceptos.forEach((x: any) => {
-                urgencia += x.monto_urgencia;
-                descuento += x.monto_descuento;
+        if (type == 1) {
+            billing.personalized_concepts.forEach(element => {
+                element.conceptos.forEach((x: any) => {
+                    urgencia += x.monto_urgencia;
+                    descuento += x.monto_descuento;
+                });
+                subtotal += parseFloat(element.precio_total);
             });
-            subtotal += parseFloat(element.precio_total);
-        });
+        }
 
 
-        setTotals((prev: any) => ({
-            ...prev,
-            subtotal: subtotal,
-            urgencia: urgencia,
-            descuento: descuento,
-            total: subtotal + urgencia - descuento,
-        }));
+        if (type == 1) {
+            setTotals((prev: any) => ({
+                ...prev,
+                subtotal: subtotal,
+                urgencia: urgencia,
+                descuento: descuento,
+                total: subtotal + urgencia - descuento,
+            }));
+        } else {
+            setTotals((prev: any) => ({
+                ...prev,
+                subtotal: subtotal,
+                urgencia: 0,
+                descuento: 0,
+                total: subtotal,
+            }));
+        }
     }, [billing]);
 
 
@@ -1131,7 +1143,7 @@ const ModalBilling: React.FC = () => {
                                                     <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p className='total-identifier'>${(concept.total + concept?.monto_urgencia || concept.total_restante + concept?.monto_urgencia).toFixed(2)}</p>
+                                                    <p className='total-identifier'>${type == 1 ? (concept.total + concept?.monto_urgencia || concept.total_restante + concept?.monto_urgencia).toFixed(2) : concept.total}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <div className='conept-icon-yellow'>

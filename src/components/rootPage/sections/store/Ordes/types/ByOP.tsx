@@ -80,9 +80,6 @@ const ByOP: React.FC = () => {
         setOrders(filter)
 
         const filterC = await concepts.filter((x: any) => x.id == item.id)
-
-        console.log('item', item)
-        console.log('orders', orders)
         if(filterC.length > 0) {
                Swal.fire('Advertencia', 'El concepto ya existe', 'warning');
         } else {
