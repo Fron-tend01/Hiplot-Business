@@ -73,7 +73,7 @@
 
 .table__sale-orders .table__head .thead {
 	display: grid;
-	grid-template-columns: repeat(10, 1fr);
+	grid-template-columns: repeat(12, 1fr) 2fr;
 	padding: 10px;
 	font-weight: 600;
 }
@@ -132,6 +132,33 @@
 	align-items: center;
 }
 
+.table__sale-orders .table__body .tbody>.td .table-td-production {
+	display: block;
+	border: 2px solid #f2f2f2;
+	padding: 5px;
+	border-radius: 5px;
+}
+
+.table__sale-orders .table__body .tbody>.td .table-td-production .thead-td {
+	display: flex;
+	gap: 10px;
+}
+
+.table__sale-orders .table__body .tbody>.td .table-td-production .tbody-td {
+	display: flex;
+	gap: 10px;
+}
+
+.table__sale-orders .table__body .tbody>.td .table-td-production .tbody-td .imprimir {
+	background-color: var(--primary-color);
+	color: #fff;
+	padding: 2px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+
+
 .table__sale-orders .table__body .tbody__container-response {
 	display: none;
 }
@@ -139,7 +166,7 @@
 
 .table__sale-orders .table__body .tbody__container-desk .tbody {
 	display: grid;
-	grid-template-columns: repeat(10, 1fr);
+	grid-template-columns: repeat(12, 1fr) 2fr;
 	padding: 10px;
 }
 
@@ -201,6 +228,7 @@
 		display: block;
 	}
 	
+
 	
 	
 	

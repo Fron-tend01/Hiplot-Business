@@ -334,6 +334,15 @@ const SalesOrder: React.FC = () => {
                             <div className='th'>
                                 <p>Razon social</p>
                             </div>
+                            <div className='th'>
+                                <p>Entreg. Cliente</p>
+                            </div>
+                            <div className='th'>
+                                <p>Entreg. Suc.</p>
+                            </div>
+                            <div className='th'>
+                                <p>Ordenes de produc.</p>
+                            </div>
                         </div>
                     </div>
                     {saleOrders ? (
@@ -374,7 +383,27 @@ const SalesOrder: React.FC = () => {
                                             <div className='td'>
                                                 <p>{order.razon_social}</p>
                                             </div>
-
+                                            <div className='td'>
+                                                <p className='folio-identifier'>{order.total_entregados_cliente} de {order.conceptos.length}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p className='amount-identifier'>{order.total_recibidos_sucursal} de {order.conceptos.length}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <div className='table-td-production'>
+                                                    <div className='thead-td'>
+                                                        <p>Area</p>
+                                                        <p>Folio</p>
+                                                        <p>Imprimir</p>
+                                                    </div>
+                                                    <div className='tbody-td'>
+                                                        <p>Area</p>
+                                                        <p>Folio</p>
+                                                        <p className='imprimir'>Imprimir</p>
+                                                    </div>
+                                                
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 )
@@ -414,6 +443,13 @@ const SalesOrder: React.FC = () => {
                                             </div>
                                             <div className='td'>
                                                 <p>{order.razon_social}</p>
+                                            </div>
+                                            <div className='td'>
+                                                <p>{order.total_entregados_cliente} de {order.conceptos.length}</p>
+                                            </div>
+
+                                            <div className='td'>
+                                                <p>{order.total_recibidos_sucursal} de {order.conceptos.length}</p>
                                             </div>
 
                                         </div>
