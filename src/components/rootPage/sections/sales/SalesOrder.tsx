@@ -145,7 +145,7 @@ const SalesOrder: React.FC = () => {
             id_vendedor: selectedIds?.users?.id,
             status: type,
             page: page,
-            // light:true
+            light:true
         }
         const result = await getSaleOrders(dataSaleOrders)
         setModalLoading(false)
@@ -154,11 +154,17 @@ const SalesOrder: React.FC = () => {
         setDataGet(dataSaleOrders)
     }
 
-    const modalUpdate = (order: any) => {
-        console.log(order)
+    const modalUpdate = async (order: any) => {
+        setModalLoading(true)
+        const dataSaleOrders = {
+            id:order.id
+        }
+        const result = await getSaleOrders(dataSaleOrders)
+        setModalLoading(false)
+        let order_search = result[0]
         setModalSalesOrder('sale-order__modal-update')
-        setSaleOrdersConcepts({ sale_order: order, normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
-        setSaleOrdersToUpdate(order)
+        setSaleOrdersConcepts({ sale_order: order_search, normal_concepts: order_search.conceptos, personalized_concepts: order_search.conceptos_pers });
+        setSaleOrdersToUpdate(order_search)
 
     }
 

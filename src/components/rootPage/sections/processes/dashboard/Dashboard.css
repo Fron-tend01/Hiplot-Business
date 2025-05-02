@@ -1,3 +1,73 @@
-.dashboard {
-    padding: 20px;
-}
+/* Bienvenida - Overlay */
+.bienvenida-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  /* Contenido del modal */
+  .bienvenida-content {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    animation: slideDown 0.3s ease;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden; /* Asegura que nada se desborde fuera del modal */
+  }
+  
+  /* Estilo para la imagen dentro del modal */
+  .bienvenida-content img {
+    max-width: 100%;  /* La imagen no excederá el 100% del ancho del modal */
+    max-height: 100%; /* La imagen no excederá el 100% de la altura del modal */
+    object-fit: contain; /* Asegura que la imagen mantenga sus proporciones */
+  }
+  
+  /* Botón de cerrar */
+  .bienvenida-content button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #5c6bc0;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Estilos del botón de bienvenida */
+  .btn__mostrar-bienvenida {
+    padding: 0.6rem 1.2rem;
+    background-color: #6f42c1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+  
+  /* Hover para el botón de bienvenida */
+  .btn__mostrar-bienvenida:hover {
+    background-color: #5936a1;
+  }
+  
+  /* Animación para el fade-in (aparecer) */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Animación para el slide-down (deslizar hacia abajo) */
+  @keyframes slideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  

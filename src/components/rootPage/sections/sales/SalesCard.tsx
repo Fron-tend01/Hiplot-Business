@@ -1689,23 +1689,17 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                       <span className="loader_simple"></span>
                     </div>
                     :
-                    <p className='result__total-price'>$
-                      {article?.precio_libre ?
+                    <p className="result__total-price">
+                      $
+                      {(article?.precio_libre || PermisosxVistaFicha.some((x: any) => x.titulo === 'modificar_precio')) ? (
                         <input
-                          // className={`inputs__general`}
                           type="text"
                           value={prices}
                           onChange={(e) => setterPrices(e.target.value)}
                         />
-                        : PermisosxVistaFicha.some((x: any) => x.titulo === 'modificar_precio') ?
-                          <input
-                            // className={`inputs__general`}
-                            type="text"
-                            value={prices}
-                            onChange={(e) => setterPrices(e.target.value)}
-                          />
-                          :
-                          prices}
+                      ) : (
+                        prices
+                      )}
                     </p>
                   }
 

@@ -168,7 +168,7 @@ const Clients: React.FC = () => {
                   <div>
                       {clients ? (
                           <div>
-                              <p className='text'>Total de unidades {clients.length}</p>
+                              <p className='text'>Total de Clientes {clients.length}</p>
                           </div>
                       ) : (
                           <p className='text'>No hay empresas</p>
@@ -180,13 +180,13 @@ const Clients: React.FC = () => {
                               <p className=''>Razon Social</p>
                           </div>
                           <div className='th'>
-                              <p className=''>Correo Electronico</p>
-                          </div>
-                          <div className='th'>
                               <p className=''>RFC</p>
                           </div>
                           <div className='th'>
-                            <p className=''>Status</p>
+                            <p className=''>Estado</p>
+                          </div>
+                          <div className='th'>
+                            <p className=''>CP</p>
                           </div>
                           <div className='th'>
                        
@@ -202,13 +202,13 @@ const Clients: React.FC = () => {
                                         {item.razon_social}
                                       </div>
                                       <div className='td'>
-                                        {item.correo} 
-                                      </div>
-                                      <div className='td'>
                                         {item.rfc}
                                       </div>
                                       <div className='td'>
-                                        {item.status}
+                                        {item.estado}
+                                      </div>
+                                      <div className='td'>
+                                        {item.codigo_postal}
                                       </div>
                                       <div className='td'>
                                           <button className='btn__general-purple' type='button' onClick={() => updateClients(item)}>Editar</button>

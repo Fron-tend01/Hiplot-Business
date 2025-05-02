@@ -106,7 +106,7 @@ const Production: React.FC = () => {
     const search = async () => {
         const dataProductionOrders = {
             folio: parseInt(fol) || 0,
-            id_sucursal: branchOffices.id,
+            id_sucursal: branchOffices?.id,
             id_serie: selectedIds?.series?.id,
             id_area: selectedIds?.areas?.id,
             // id_cliente: client,

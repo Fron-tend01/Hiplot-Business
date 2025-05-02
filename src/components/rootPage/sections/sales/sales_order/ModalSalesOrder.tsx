@@ -167,7 +167,7 @@ const ModalSalesOrder: React.FC = () => {
 
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setNormalConcepts(saleOrdersToUpdate?.conceptos)
-            setDates([`${saleOrdersToUpdate.fecha_entrega_cliente}T${saleOrdersToUpdate.hora_entrega_cliente}`, `${saleOrdersToUpdate.fecha_entrega_produccion}T${saleOrdersToUpdate.hora_entrega_produccion}`]);
+            setDates([`${saleOrdersToUpdate.fecha_entrega_produccion}T${saleOrdersToUpdate.hora_entrega_produccion}`,`${saleOrdersToUpdate.fecha_entrega_cliente}T${saleOrdersToUpdate.hora_entrega_cliente}` ]);
             setDataProduction({
                 "fecha_produccion": saleOrdersToUpdate.fecha_entrega_produccion,
                 "hora_produccion": saleOrdersToUpdate.hora_entrega_produccion,
@@ -1014,7 +1014,8 @@ const ModalSalesOrder: React.FC = () => {
             id_usuario: dataGet.id_usuario,
             id_vendedor: 0,
             status: 0,
-            page: 1
+            page: 1,
+            light:true
         }
         const resultData = await getSaleOrders(dataSaleOrders)
 
