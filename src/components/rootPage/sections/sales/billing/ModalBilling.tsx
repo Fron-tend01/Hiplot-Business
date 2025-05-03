@@ -141,8 +141,11 @@ const ModalBilling: React.FC = () => {
     //////////////////////////
     //////// Fechas//////////
     ////////////////////////
-
-
+    const [PermisosxVista, setPermisosxVista] = useState<any>([])
+    const checkPermission = (elemento: string) => {
+        return PermisosxVista.some((x: any) => x.titulo == elemento)
+    }
+   
 
     const hoy = new Date();
     const haceUnaSemana = new Date();
@@ -169,7 +172,9 @@ const ModalBilling: React.FC = () => {
     const [cfdi, setCfdi] = useState<any>()
 
     const fetch = async () => {
-
+        APIs.GetAny('get_permisos_x_vista/' + user_id + '/factura').then((resp: any) => {
+            setPermisosxVista(resp)
+        })
         const data = {
             nombre: '',
             id_usuario: user_id,
@@ -1350,11 +1355,14 @@ const ModalBilling: React.FC = () => {
                         </div>
                     </div>
                     <div className='d-flex justify-content-center'>
-                        {modoUpdate ?
-                            <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Actualizar factura</button>
-                            :
-                            <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Crear factura</button>
-                        }
+                        {checkPermission('enviar') && (
+                            modoUpdate ?
+                                <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Actualizar factura</button>
+                                :
+                                <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Crear factura</button>
+                            
+
+                        )}
                     </div>
                 </div>
                 <Division index={index} typeDiv={typeDiv} />

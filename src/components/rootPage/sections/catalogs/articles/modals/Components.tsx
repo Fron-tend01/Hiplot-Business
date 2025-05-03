@@ -50,8 +50,9 @@ const Components: React.FC = () => {
 
   const deleteComponent = (item: any) => {
     const filter = components.filter((x: any) => x.id !== item.id)
+    // debugger
     setComponents(filter)
-    setDeleteComponents(filter)
+    setDeleteComponents(prev => [...prev, item.id]);
   }
 
 

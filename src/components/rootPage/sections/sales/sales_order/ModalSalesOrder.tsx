@@ -167,7 +167,7 @@ const ModalSalesOrder: React.FC = () => {
 
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setNormalConcepts(saleOrdersToUpdate?.conceptos)
-            setDates([`${saleOrdersToUpdate.fecha_entrega_produccion}T${saleOrdersToUpdate.hora_entrega_produccion}`,`${saleOrdersToUpdate.fecha_entrega_cliente}T${saleOrdersToUpdate.hora_entrega_cliente}` ]);
+            setDates([`${saleOrdersToUpdate.fecha_entrega_produccion}T${saleOrdersToUpdate.hora_entrega_produccion}`, `${saleOrdersToUpdate.fecha_entrega_cliente}T${saleOrdersToUpdate.hora_entrega_cliente}`]);
             setDataProduction({
                 "fecha_produccion": saleOrdersToUpdate.fecha_entrega_produccion,
                 "hora_produccion": saleOrdersToUpdate.hora_entrega_produccion,
@@ -187,7 +187,7 @@ const ModalSalesOrder: React.FC = () => {
         const [datePartOne, timePartOne] = dates[0] ? dates[0].split("T") : ["", ""];
         const [datePartTwo, timePartTwo] = dates[1] ? dates[1].split("T") : ["", ""];
         saleOrdersConcepts.normal_concepts.forEach((element: any) => {
-            if (element.id_area_produccion == 0 ) {
+            if (element.id_area_produccion == 0) {
                 element.id_area_produccion = element.areas_produccion[0].id_area || 39
             }
             element.unidad = element.id_unidad
@@ -203,7 +203,7 @@ const ModalSalesOrder: React.FC = () => {
             saleOrdersConcepts?.personalized_concepts?.forEach((element: any) => {
                 element.id = 0
                 element.conceptos.forEach((x: any) => {
-                    if (x.id_area_produccion == 0 ) {
+                    if (x.id_area_produccion == 0) {
                         x.id_area_produccion = x.areas_produccion[0].id_area || 39
                     }
                     x.unidad = x.id_unidad
@@ -278,6 +278,7 @@ const ModalSalesOrder: React.FC = () => {
         }
     }
 
+    const setSelectData = useSelectStore(state => state.setSelectedId)
 
 
     const searchClients = async () => {
@@ -292,6 +293,9 @@ const ModalSalesOrder: React.FC = () => {
             options: 'razon_social',
             dataSelect: result
         })
+        setSelectData('clients', result[0])
+
+        
     }
 
 
@@ -416,7 +420,7 @@ const ModalSalesOrder: React.FC = () => {
         setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
 
 
-        console.log('saleOrdersConcepts',saleOrdersConcepts)
+        console.log('saleOrdersConcepts', saleOrdersConcepts)
 
         if (modalSalesOrder == 'sale-order__modal') {
             data[i].id_usuario_actualiza = user_id
@@ -1024,7 +1028,7 @@ const ModalSalesOrder: React.FC = () => {
             id_vendedor: 0,
             status: 0,
             page: 1,
-            light:true
+            light: true
         }
         const resultData = await getSaleOrders(dataSaleOrders)
 
@@ -1442,7 +1446,7 @@ const ModalSalesOrder: React.FC = () => {
                             <div className='row'>
                                 <div className='col-3'>
                                     <label className='label__general'>Buscar</label>
-                                    <input className='inputs__general' type="text" value={searCustomer} onChange={(e) => setSearchCustomer(e.target.value)} placeholder='Ingresa el contacto' />
+                                    <input className='inputs__general' type="text" value={searCustomer} onChange={(e) => setSearchCustomer(e.target.value)} placeholder='Ingresa el contacto' onKeyUp={(event) => event.key === 'Enter' && searchClients()} />
                                 </div>
                                 <div className='col-1 d-flex align-items-end'>
                                     <div>

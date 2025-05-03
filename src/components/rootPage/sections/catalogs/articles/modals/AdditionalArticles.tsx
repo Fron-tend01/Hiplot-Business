@@ -38,11 +38,10 @@ const AdditionalArticles: React.FC = () => {
 
 
   const [extrFields, setExtrFields] = useState<any>()
-
+  const [plantillasCampo, setPlantillasCampo] = useState<any[]>([])
   const fetch = async () => {
     const resutTemplates = await getTemplatesxFields()
-  
-
+    setPlantillasCampo(resutTemplates)
     setExtrFields([
       {
         nombre: 'unidad',
@@ -110,10 +109,14 @@ const AdditionalArticles: React.FC = () => {
       }
     ])
   }
-
   useEffect(() => {
-    fetch()
-  }, [branchOffices])
+    if (subModal == 'modal-additiona-articles') {
+      fetch()
+    }
+  }, [subModal])
+  // useEffect(() => {
+  //   fetch()
+  // }, [branchOffices])
 
 
   const handleAppearsByChange = (e: React.ChangeEvent<HTMLSelectElement>, index: any) => {
@@ -123,7 +126,7 @@ const AdditionalArticles: React.FC = () => {
       updatedArticulos[index].aparece_por = value;
       return updatedArticulos;
     });
-    
+
   };
 
   const handleConditionsChange = (e: React.ChangeEvent<HTMLSelectElement>, index: any) => {
@@ -153,7 +156,7 @@ const AdditionalArticles: React.FC = () => {
   }
 
   const deleteAdditionalArticle = (item: any) => {
-    const filter = additionalArticles.filter((x: {id: any}) => x.id !== item.id)
+    const filter = additionalArticles.filter((x: { id: any }) => x.id !== item.id)
     setAdditionalArticles(filter)
     setDeleteAdditionalArticles([...deleteAdditionalArticles, item.id])
   }
@@ -175,7 +178,7 @@ const AdditionalArticles: React.FC = () => {
             data_equivalencia_por: resutTemplates || []
           };
         });
-          
+
         // Retornar el array de artículos modificado
         return updatedArticulos;
       });
@@ -183,8 +186,8 @@ const AdditionalArticles: React.FC = () => {
       console.error("No hay artículos adicionales para actualizar.");
     }
   };
-  
-  
+
+
 
 
   useEffect(() => {
@@ -192,6 +195,7 @@ const AdditionalArticles: React.FC = () => {
   }, [])
 
 
+console.log('additionalArticles', additionalArticles);
 
   return (
     <div className={`overlay__modal_additional-articles_modal_articles ${subModal == 'modal-additiona-articles' ? 'active' : ''}`}>
@@ -210,7 +214,7 @@ const AdditionalArticles: React.FC = () => {
           </div>
           <div className='row'>
             <div className='col-12'>
-              <Filtrado_Articulos_Basic set_article_local={setAdditionalArticles} get_unidades={true} campos_ext={extrFields} materia_prima={1}/>
+              <Filtrado_Articulos_Basic set_article_local={setAdditionalArticles} get_unidades={true} campos_ext={extrFields} materia_prima={1} />
             </div>
           </div>
           <div className='table__modal_articles_modal_articles' >
@@ -245,7 +249,7 @@ const AdditionalArticles: React.FC = () => {
                   Valor
                 </div>
                 <div className='th'>
-                  
+
                 </div>
                 <div className='th'>
 
@@ -267,17 +271,17 @@ const AdditionalArticles: React.FC = () => {
                         {item.nombre_sucursal}
                       </div>
                       <div className='td'>
-                        <select className='traditional__selector' value={item.aparece_por}onChange={(e) => handleAppearsByChange(e, index)}>
-                          {item.data_aparece_por?.map((item: any) => (
-                            <option key={item.id} value={item.id}>
-                              {item.nombre}
+                        <select className='traditional__selector' value={item.aparece_por} onChange={(e) => handleAppearsByChange(e, index)}>
+                          {plantillasCampo.length > 0 && plantillasCampo?.map((itemx: any) => (
+                            <option key={itemx.id} value={itemx.id}>
+                              {itemx.nombre}
                             </option>
                           ))}
                         </select>
                       </div>
                       <div className='td'>
                         <select className='traditional__selector' value={item.condicion} onChange={(e) => handleConditionsChange(e, index)}>
-                          {item.data_condicion?.map((item: any) => (
+                          {dataConditional?.map((item: any) => (
                             <option key={item.id} value={item.name}>
                               {item.name}
                             </option>
@@ -300,7 +304,7 @@ const AdditionalArticles: React.FC = () => {
             ) : (
               <p className='text'>No hay máximos y mínimos que mostrar</p>
             )}
-            <Concepts />
+            <Concepts camposPlantillas={plantillasCampo}/>
           </div>
 
         </form>

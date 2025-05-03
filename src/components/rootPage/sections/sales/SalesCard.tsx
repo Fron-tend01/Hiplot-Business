@@ -646,8 +646,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
 
   const addQua = () => {
-
-    if (Adicional != null) { //SI ADICIONAL TIENE ALGO SE DEBE CREAR EL PERSONALIZADO PARA ENVIARLO A COT/OV
+    console.log(Adicional);
+    
+    if (Adicional) { //SI ADICIONAL TIENE ALGO SE DEBE CREAR EL PERSONALIZADO PARA ENVIARLO A COT/OV
       //-------------------------------SIMULAR EL INGRESO DIRECTO A NORMALCONCEPTS
       Swal.fire({
         title: "Este concepto generará un personalizado ya que contiene un articulo adicional",
@@ -702,6 +703,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           setQuotes({ personalized_concepts: [...quotes.personalized_concepts, data_pers], normal_concepts: quotes?.normal_concepts })
           localStorage.setItem('cotizacion-pers', JSON.stringify([...quotes.personalized_concepts, data_pers]));
           setfyv(false)
+          Swal.fire('Notificacion', 'Articulo Agregado Correctamente', 'success')
 
         }
       });
@@ -709,18 +711,17 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       setfyv(false)
       setQuotes({ normal_concepts: [...quotes?.normal_concepts, data], personalized_concepts: quotes.personalized_concepts })
       localStorage.setItem('cotizacion', JSON.stringify([...quotes?.normal_concepts, data]));
-      debugger
+      Swal.fire('Notificacion', 'Articulo Agregado Correctamente', 'success')
 
     }
 
-    Swal.fire('Notificacion', 'Articulo Agregado Correctamente', 'success')
     // localStorage.setItem('typeLocalStogare', normalConcepts)
     // toast.success('Artículo agregado')
   };
 
   const addSaleOrder = () => {
 
-    if (Adicional != null) { //SI ADICIONAL TIENE ALGO SE DEBE CREAR EL PERSONALIZADO PARA ENVIARLO A COT/OV
+    if (Adicional) { //SI ADICIONAL TIENE ALGO SE DEBE CREAR EL PERSONALIZADO PARA ENVIARLO A COT/OV
       //-------------------------------SIMULAR EL INGRESO DIRECTO A NORMALCONCEPTS
       Swal.fire({
         title: "Este concepto generará un personalizado ya que contiene un articulo adicional",
@@ -798,6 +799,10 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
             } else {
               setModalLoading(false)
               Swal.fire('Notificación', resp.mensaje, 'warning')
+              await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+                let orden = r[0]
+                setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+              })
             }
           }).catch(e => {
             setModalLoading(false)
@@ -1066,7 +1071,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       id_usuario: user_id,
       id_grupo_us: selectedUserGroup
     };
-
+    if (article?.opciones_de_variacion2?.length > 0) {
+      data.id_articulo = article.id
+    }
     try {
       // Obtener artículos
       setModalLoading(true)
@@ -1696,7 +1703,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                     :
                     <p className="result__total-price">
                       $
-                      {(article?.precio_libre || PermisosxVistaFicha.some((x: any) => x.titulo === 'modificar_precio')) ? (
+                      {(Boolean(checkPermissionFicha('modificar_precio') || article?.precio_libre)) ? (
                         <input
                           type="text"
                           value={prices}

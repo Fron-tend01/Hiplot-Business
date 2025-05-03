@@ -131,12 +131,12 @@ const Billing: React.FC = () => {
     useEffect(() => {
         search()
     }, [page])
-    useEffect(() => {
-        if (subModal == '') {
-            search()
+    // useEffect(() => {
+    //     if (subModal == '') {
+    //         search()
 
-        }
-    }, [subModal])
+    //     }
+    // }, [subModal])
     return (
         <div className='billing'>
             <div className='billing__container'>

@@ -16,6 +16,7 @@ import { storeWarehouseExit } from "../../../../zustand/WarehouseExit";
 import { useStore } from "zustand";
 import ModalUpdate from "./Departures/ModalUpdate";
 import { storeArticles } from "../../../../zustand/Articles";
+import { useSelectStore } from "../../../../zustand/Select";
 
 const Departures = () => {
     const userState = useUserStore(state => state.user);
@@ -46,6 +47,7 @@ const Departures = () => {
 
     const [companies, setCompanies] = useState<any>()
     const [branchOffices, setBranchOffices] = useState<any>()
+    const selectData: any = useSelectStore(state => state.selectedIds)
 
     useEffect(() => {
         // Calcula las fechas iniciales
@@ -122,7 +124,7 @@ const Departures = () => {
             id_sucursal: branchOffices?.id,
             desde: dates[0],
             hasta: dates[1],
-            id_serie: 0,
+            id_serie: selectData?.serie?.id,
             folio: invoice,
             light: true,
             page: page
@@ -219,9 +221,9 @@ const Departures = () => {
                             </div>
                         </div>
 
-                        <div>
+                        {/* <div>
                             <Select dataSelects={store} instanceId="store" nameSelect={'Almacén'} />
-                        </div>
+                        </div> */}
                     </div>
                     <div className="row__two">
                         <div >

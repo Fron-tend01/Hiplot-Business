@@ -296,8 +296,8 @@ const modalArticle: React.FC = () => {
         
             unidades: units,
             unidades_elim: deleteUnits.filter(item => item !== null && item !== undefined),
-        
-            componentes: components,
+            
+            componentes: deleteComponents,
             componentes_elim: deleteComponents.filter(item => item !== null && item !== undefined),
         
             variaciones: variations,

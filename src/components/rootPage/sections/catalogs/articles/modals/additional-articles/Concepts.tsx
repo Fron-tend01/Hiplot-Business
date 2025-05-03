@@ -6,7 +6,7 @@ import { storeDv } from '../../../../../../../zustand/Dynamic_variables'
 import { storeArticles } from '../../../../../../../zustand/Articles'
 import './Concepts.css'
 
-const Concepts = () => {
+const Concepts = ({camposPlantillas}) => {
   
 
 
@@ -92,15 +92,15 @@ const Concepts = () => {
                                         <div className='select__container_title'>
                                             <p>
                                                 {selectedEquivalence
-                                                    ? additionalArticles[index]?.data_equivalencia_por?.find((s: { id: number }) => s.id === selectedEquivalence)?.nombre
-                                                    : additionalArticles[index]?.data_equivalencia_por?.find((x: any) => x.id === additionalArticles[index]?.equivalencia_por)?.nombre}
+                                                    ? camposPlantillas?.find((s: { id: number }) => s.id === selectedEquivalence)?.nombre
+                                                    : camposPlantillas?.find((x: any) => x.id === additionalArticles[index]?.equivalencia_por)?.nombre}
                                             </p>
                                         </div>
                                         <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                                     </div>
                                     <div className={`content ${selectsEquivalence ? 'active' : ''}`}>
                                         <ul className={`options ${selectsEquivalence ? 'active' : ''}`} style={{ opacity: selectsEquivalence ? '1' : '0' }}>
-                                            {additionalArticles[index]?.data_equivalencia_por?.map((item: any) => (
+                                            {camposPlantillas?.map((item: any) => (
                                                 <li key={item.id} onClick={() => handleSelectEquivalenceChange(item)}>
                                                     {item.nombre}
                                                 </li>

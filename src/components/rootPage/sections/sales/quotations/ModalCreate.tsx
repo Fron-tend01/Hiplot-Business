@@ -231,7 +231,7 @@ const ModalCreate: React.FC = () => {
     try {
       const resultClients = await getClients(data)
       setClients(resultClients)
-
+      setSelectedResult(resultClients[0])
 
     } catch (error) {
 
@@ -762,7 +762,7 @@ const ModalCreate: React.FC = () => {
               <div>
                 <label className='label__general'>Nombre</label>
                 <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' />
+                <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre'onKeyUp={(event) => event.key === 'Enter' && searchUsers()} />
               </div>
               <div className='d-flex align-items-end justify-content-center'>
                 <div className='search-icon' onClick={searchUsers}>
