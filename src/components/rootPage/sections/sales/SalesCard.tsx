@@ -140,7 +140,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     try {
       // Obtener artículos
       setModalLoading(true)
-      // axios.post("http://hiplot.dyndns.org:84/cotizador_api/index.php/mantenimiento/get_articulos/", data)
+      // axios.post("http://hiplot.dyndns.org:84/a_api/index.php/mantenimiento/get_articulos/", data)
       //   .then(response => {
       //     console.log("Datos recibidos:", response.data);
       //   })
@@ -179,7 +179,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           // if (art.vender_sin_stock) Swal.fire('Notificación', 'Este articulo se puede vender sin stock disponible', 'success');
           if (art.bajo_pedido) await Swal.fire('Notificación', 'Este articulo es BAJO PEDIDO, la orden de venta creada se pondrá en status PENDIENTE, hasta la llegada del material faltante', 'warning');
           if (art.desabasto) await Swal.fire('Notificación', 'Hay desabasto de este articulo...', 'warning');
-          if (art.precio_libre) await Swal.fire('Notificación', 'El precio arrojado por este articulo es una SUGERENCIA DE VENTA, realiza la confirmación con tu superior de este precio, verifica tu lista de precios o consulta con cotizador.', 'success');
+          if (art.precio_libre) await Swal.fire('Notificación', 'El precio arrojado por este articulo es una SUGERENCIA DE VENTA, realiza la confirmación con tu superior de este precio, verifica tu lista de precios o consulta con a.', 'success');
           if (art.ultimas_piezas) await Swal.fire('Notificación', 'El stock disponible son las ULTIMAS PIEZAS...', 'warning');
           if (art.consultar_te) await Swal.fire('Notificación', 'Consulta el Tiempo de Entrega de este articulo con el area de producción correspondiente', 'warning');
           if (art.consultar_cotizador) await Swal.fire('Notificación', 'Este articulo debe consultar el precio con cotizador', 'warning');
@@ -707,14 +707,15 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       });
     } else { //SI NO TIENE ADICIONAL PASA COMO CONCEPTO NORMAL
       setfyv(false)
-
       setQuotes({ normal_concepts: [...quotes?.normal_concepts, data], personalized_concepts: quotes.personalized_concepts })
       localStorage.setItem('cotizacion', JSON.stringify([...quotes?.normal_concepts, data]));
+      debugger
 
     }
 
+    Swal.fire('Notificacion', 'Articulo Agregado Correctamente', 'success')
     // localStorage.setItem('typeLocalStogare', normalConcepts)
-    toast.success('Artículo agregado')
+    // toast.success('Artículo agregado')
   };
 
   const addSaleOrder = () => {
@@ -736,6 +737,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           concepto_principal.precio_total -= concepto_adicional.total
           concepto_principal.precio_unitario -= (concepto_adicional.total / concepto_adicional.cantidad)
           concepto_principal.descuento -= concepto_adicional.descuento
+          concepto_principal.enviar_a_produccion = userState.forzar_produccion
           concepto_principal.total_franquicia = pricesFranquiciaAdicional != null && !Number.isNaN(pricesFranquiciaAdicional) ? concepto_principal.total_franquicia - pricesFranquiciaAdicional : concepto_principal.total_franquicia
           concepto_adicional.id_identifier = concepto_principal.id_identifier + 1;
           concepto_adicional.check = true
@@ -746,6 +748,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           concepto_adicional.precio_total = concepto_adicional.total
           concepto_adicional.precio_unitario = concepto_adicional.total / concepto_adicional.cantidad
           concepto_adicional.total_franquicia = pricesFranquiciaAdicional
+          concepto_adicional.enviar_a_produccion = userState.forzar_produccion
+
           concepto_adicional.campos_plantilla = []
 
           console.log('sssssssssssssssaaaaaaaaaaaaaaaaaaaaaaaa', data)
@@ -816,6 +820,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       data.campos_plantilla.forEach((cp: any) => {
         cp.valor = cp.valor.toString()
       });
+      data.enviar_a_produccion = userState.forzar_produccion
 
       let data_enviar = {
         concepto: data,

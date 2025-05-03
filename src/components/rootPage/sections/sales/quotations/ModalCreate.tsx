@@ -96,7 +96,7 @@ const ModalCreate: React.FC = () => {
       id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
       id_cliente: selectedResult?.id ?? quatation.id_cliente,
       id_usuario_crea: user_id,
-      titulo: '',
+      titulo: quotes.quotes.titulo,
       comentarios: '',
       conceptos: quotes?.normal_concepts,
       conceptos_pers: quotes?.personalized_concepts,
@@ -112,7 +112,7 @@ const ModalCreate: React.FC = () => {
       id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
       id_cliente: selectedResult?.id ?? quatation.id_cliente,
       id_usuario_crea: user_id,
-      titulo: '',
+      titulo: quotes.quotes.titulo,
       comentarios: '',
       conceptos: quotes?.normal_concepts,
       conceptos_pers: quotes?.personalized_concepts,
@@ -121,7 +121,7 @@ const ModalCreate: React.FC = () => {
       id_solicitud_cotizacion: info_sc.cot_propia ? user_id : info_sc.folio_sc == '' ? info_sc.folio_sc : 0,
     })
   }, [quotes])
-  
+
   useEffect(() => {
     setData()
   }, [modal, personalizedModal])
@@ -148,14 +148,24 @@ const ModalCreate: React.FC = () => {
   // const setDataGet = storeSaleOrder((state) => state.setSaleOrders);
 
   const mandarAOV = async () => {
-    setModalLoading(true)
     quatation.fecha_creacion = new Date().toISOString().split('T')[0];
+    quatation.conceptos.forEach(element => {
+      element.enviar_a_produccion = userState.forzar_produccion
+    });
+    quatation.conceptos_pers.forEach(element => {
+      element.conceptos.forEach(el => {
+        el.enviar_a_produccion = userState.forzar_produccion
+      });
+    });
+    // debugger
+    // return
+    setModalLoading(true)
     await APIs.CreateAny(quatation, 'enviar_cot_a_ov').then(async (resp: any) => {
       if (!resp.error) {
-        setModalLoading(false)
         await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
           let orden = r[0]
           setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden.conceptos, personalized_concepts: orden.conceptos_pers });
+          setModalLoading(false)
           // setSaleOrdersToUpdate(orden)
         })
         Swal.fire('Notificacion', resp.mensaje, 'success')
@@ -232,10 +242,11 @@ const ModalCreate: React.FC = () => {
 
 
   const setIndexVM = storeDv(state => state.setIndex)
-  const seeVerMas = (index: number) => {
+  const seeVerMas = (index: number, type: string) => { //AL ABRIR SEE-CP NO SE VISUALIZA LA INFORMACIÓN DE LAS PLANTILLAS PORQUE SIGUE USANDO NORMALCONCEPTS CORREGIR AQUÍ Y EN LA COTIZACIÓN
     setIndexVM(index)
     setModalSub('see_cp')
-  }
+    setTypeConcept(type)
+}
   const [selectResults, setSelectResults] = useState<boolean>(false);
 
 
@@ -288,6 +299,8 @@ const ModalCreate: React.FC = () => {
           let response: any = await APIs.getQuotation(dataGet);
           setQuotesData(response)
           setModal('')
+          setQuotes({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] })
+          localStorage.removeItem("cotizacion");
         }
       } else {
         let response: any = await APIs.updateQuotation(quoteFields)
@@ -299,10 +312,11 @@ const ModalCreate: React.FC = () => {
           const response = await APIs.getQuotation(dataGet);
           setQuotesData(response)
           setModal('')
+          setQuotes({ normal_concepts: [], personalized_concepts: [] });
+
         }
       }
-      setQuotes({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] })
-      localStorage.removeItem("cotizacion");
+
     } catch (error) {
       Swal.fire('Error', 'Hubo un error al crear la cotizacion:' + error, 'error');
     }
@@ -335,6 +349,15 @@ const ModalCreate: React.FC = () => {
   const closeModal = () => {
     setModal('')
     setDataQuotation([])
+    // setQuotes({ normal_concepts: [], personalized_concepts: [] });
+    const cotizacion = JSON.parse(localStorage.getItem('cotizacion') || "[]");
+    const cotizacion_pers = JSON.parse(localStorage.getItem('cotizacion-pers') || "[]");
+    if (cotizacion) {
+      setQuotes({ normal_concepts: cotizacion });
+    }
+    if (cotizacion_pers) {
+      setQuotes({ personalized_concepts: cotizacion_pers });
+    }
   }
 
   const [typeLocalStogare, setTypeLocalStogare] = useState<any>()
@@ -450,6 +473,7 @@ const ModalCreate: React.FC = () => {
     setModalSalesCard('sale-card-quotation')
   }
 
+  const [typeConcept, setTypeConcept] = useState<string>('')
 
   const getTicket = async () => {
     try {
@@ -488,7 +512,7 @@ const ModalCreate: React.FC = () => {
   }, [modal])
 
   const urgenciaGlobal = async (urg: boolean) => {
-    if(urgenciaG) {
+    if (urgenciaG) {
       quotes.normal_concepts.forEach((elemen: any) => {
         elemen.urgencia = 0
         elemen.urgency = false
@@ -498,7 +522,7 @@ const ModalCreate: React.FC = () => {
           x.urgencia = 0
           x.urgency = false
         });
-       
+
       });
       setUrgenciaG(false)
       setCalculations((prev) => ({
@@ -508,7 +532,7 @@ const ModalCreate: React.FC = () => {
       }));
       localStorage.setItem('urgency', JSON.stringify(false));
 
-    
+
     } else {
       setUrgenciaG(urg)
       localStorage.setItem('urgency', JSON.stringify(true));
@@ -517,7 +541,7 @@ const ModalCreate: React.FC = () => {
       let u = urgency / length
       console.log(length)
       console.log(urgency)
-  
+
       quotes.normal_concepts.forEach((elemen: any) => {
         elemen.urgencia = u
         elemen.urgency = true
@@ -527,19 +551,19 @@ const ModalCreate: React.FC = () => {
           x.urgencia = u
           x.urgency = true
         });
-       
+
       });
       setUrgenciaG(true)
       setCalculations((prev) => ({
         ...prev,
         urgencia: urgency,
         total: prev.total + urgency
-         
+
       }));
       localStorage.setItem('cotizacion', JSON.stringify(quotes.normal_concepts));
       localStorage.setItem('cotizacion-pers', JSON.stringify(quotes.personalized_concepts));
     }
-  
+
   }
   return (
     <div className={`overlay__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
@@ -696,21 +720,23 @@ const ModalCreate: React.FC = () => {
               </div>
               <div className='col-12'>
                 <div className='row col-12 md-col-12'>
-                  {modal == 'create-modal__qoutation' ?
-                    <div className='row col-12'>
+                  <div className='row col-12'>
+                    {modal == 'create-modal__qoutation' ?
+
                       <div className='col-8 md-col-12'>
                         <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branch} setSucursalDyn={setBranch} branch={setBranch} />
 
                       </div>
-                      <div className='col-4'>
-                        <label className='label__general'>Título</label>
-                        <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                        <input className={`inputs__general`} type="text" value={quoteFields.titulo} onChange={(e) => setQuoteFields({ ...quoteFields, titulo: e.target.value })} placeholder='Ingresa el título' />
-                      </div>
+                      : ''
+                    }
+                    <div className='col-4'>
+                      <label className='label__general'>Título</label>
+                      <div className='warning__general'><small >Este campo es obligatorio</small></div>
+                      <input className={`inputs__general`} type="text" value={quoteFields.titulo} onChange={(e) => setQuoteFields({ ...quoteFields, titulo: e.target.value })} placeholder='Ingresa el título' />
                     </div>
-                    :
-                    ''
-                  }
+                  </div>
+
+
 
                   {/* <div className='col-4 md-col-6 sm-col-12'>
                     <Select dataSelects={dataSelects} instanceId="select1" nameSelect={'Vendedor'} />:''
@@ -870,7 +896,7 @@ const ModalCreate: React.FC = () => {
                             }
                           </div>
                           <div className='td'>
-                            <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                            <div className='see-icon' onClick={() => seeVerMas(index, 'normal')} title='Ver mas campos'>
                               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
                             </div>
                           </div>
@@ -933,7 +959,7 @@ const ModalCreate: React.FC = () => {
                             }
                           </div>
                           <div className='td'>
-                            <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                            <div className='see-icon' onClick={() => seeVerMas(index, 'pers')} title='Ver mas campos'>
                               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
                             </div>
                           </div>
@@ -983,11 +1009,11 @@ const ModalCreate: React.FC = () => {
                             </p>
                           </div>
                           <div className='td '>
-                              <div>
-                                <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
-                                <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
-                                  <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
-                              </div>                    
+                            <div>
+                              <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                              <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                <small>PF:${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                            </div>
                           </div>
                           <div className='td urgency'>
                             {article?.urgency ?
@@ -1005,7 +1031,7 @@ const ModalCreate: React.FC = () => {
                             }
                           </div>
                           <div className='td'>
-                            <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                            <div className='see-icon' onClick={() => seeVerMas(index, 'normal')} title='Ver mas campos'>
                               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
                             </div>
                           </div>
@@ -1064,7 +1090,7 @@ const ModalCreate: React.FC = () => {
                             }
                           </div>
                           <div className='td'>
-                            <div className='see-icon' onClick={() => seeVerMas(index)} title='Ver mas campos'>
+                            <div className='see-icon' onClick={() => seeVerMas(index, 'pers')} title='Ver mas campos'>
                               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /><circle cx="12" cy="12" r="3" /></svg>
                             </div>
                           </div>
@@ -1158,9 +1184,9 @@ const ModalCreate: React.FC = () => {
       <SalesCard typeLocalStogare={typeLocalStogare} idA={idA} dataArticle={dataArticle} indexUpdate={indexUpdate} />
       <SeeClient />
       {personalizedModal !== '' ?
-        <SeeCamposPlantillas />
+        <SeeCamposPlantillas typeConcept={typeConcept} />
         :
-        ""
+        <SeeCamposPlantillas typeConcept={typeConcept} />
       }
 
     </div>

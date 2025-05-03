@@ -46,10 +46,11 @@ const Production: React.FC = () => {
     //////////////////////////
     //////// Fechas//////////
     ////////////////////////
+    const [type, setType] = useState<any>(0)
 
     const hoy = new Date();
     const haceUnaSemana = new Date();
-    haceUnaSemana.setDate(hoy.getDate() - 30);
+    haceUnaSemana.setDate(hoy.getDate() - 7);
 
     // Inicializa el estado con las fechas formateadas
     const [dates, setDates] = useState([
@@ -87,26 +88,76 @@ const Production: React.FC = () => {
 
     }
     const intervalRef = useRef<number | null>(null);
+    const selectedIdsRef = useRef(selectedIds);
+    const fechas = useRef(dates);
+    const sucursal = useRef(branchOffices);
+    const foliosel = useRef(fol);
+    const typeRef = useRef(type);
 
+    // Mantén actualizados los refs con los últimos valores
+    useEffect(() => {
+        selectedIdsRef.current = selectedIds;
+    }, [selectedIds]);
 
+    useEffect(() => {
+        typeRef.current = type;
+    }, [type]);
+    useEffect(() => {
+        fechas.current = dates;
+    }, [dates]);
+    useEffect(() => {
+        sucursal.current = branchOffices;
+    }, [branchOffices]);
+    useEffect(() => {
+        foliosel.current = fol;
+    }, [fol]);
+    const fetchData = async () => {
+        const dataProductionOrders = {
+            folio: parseInt(foliosel.current) || 0,
+            id_sucursal: sucursal.current.id,
+            id_serie: selectedIdsRef.current?.series?.id,
+            id_area: selectedIdsRef.current?.areas?.id,
+            desde: fechas.current[0],
+            hasta: fechas.current[1],
+            id_usuario: user_id,
+            status: typeRef.current,
+        };
 
+        try {
+            const result = await APIs.getProoductionOrders(dataProductionOrders);
+            setProduction(result);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     useEffect(() => {
         fetch()
         fetchPermisos()
-        //---------------------------SIRVE PARA ESTAR CONSULTANDO CADA CIERTO TIEMPO, EL CLEARINVERVAL ROMPE EL INTERVALO CUANDO RETURN SE EJECUTA Y EL COMPONENTE SE DESMONTA
-        search();
-        intervalRef.current = setInterval(search, 30000);
-        return () => {
-            if (intervalRef.current !== null) {
-                clearInterval(intervalRef.current);
-            }
-        };
+        // //---------------------------SIRVE PARA ESTAR CONSULTANDO CADA CIERTO TIEMPO, EL CLEARINVERVAL ROMPE EL INTERVALO CUANDO RETURN SE EJECUTA Y EL COMPONENTE SE DESMONTA
+        // fetchData();
+        // intervalRef.current = setInterval(fetchData, 30000);
+        // return () => {
+        //     if (intervalRef.current !== null) {
+        //         clearInterval(intervalRef.current);
+        //     }
+        // };
     }, [])
+    useEffect(() => {
+        if (selectedIds?.areas) {
 
+            fetchData(); // Llamada inicial
+            intervalRef.current = setInterval(fetchData, 30000);
+            return () => {
+                if (intervalRef.current !== null) {
+                    clearInterval(intervalRef.current);
+                }
+            };
+        }
+    }, [selectedIds]);
     const search = async () => {
         const dataProductionOrders = {
             folio: parseInt(fol) || 0,
-            id_sucursal: branchOffices?.id,
+            id_sucursal: branchOffices.id,
             id_serie: selectedIds?.series?.id,
             id_area: selectedIds?.areas?.id,
             // id_cliente: client,
@@ -150,7 +201,6 @@ const Production: React.FC = () => {
         })
     }, [branchOffices])
 
-    const [type, setType] = useState<any>(0)
     const handleClick = (value: any) => {
         setType(value)
     };
@@ -232,7 +282,14 @@ const Production: React.FC = () => {
                                     <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 2} value={type} onChange={() => handleClick(2)} />
                                     <span className="checkmark__general"></span>
                                 </label>
-                                <p className='title__checkbox text'>Sucursal(Terminados)</p>
+                                <p className='title__checkbox text'>Terminados</p>
+                            </div>
+                            <div className='checkbox__orders'>
+                                <label className="checkbox__container_general">
+                                    <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 3} value={type} onChange={() => handleClick(3)} />
+                                    <span className="checkmark__general"></span>
+                                </label>
+                                <p className='title__checkbox text'>Enviados</p>
                             </div>
                         </div>
                         <div>

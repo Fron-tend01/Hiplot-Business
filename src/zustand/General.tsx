@@ -4,6 +4,7 @@ import { persistLocalStorage, clearLocalStorage } from '../utils/localStorage.ut
 export interface UserInfo {
   id: number;
   sucursal_id: number;
+  forzar_produccion: boolean;
   nombre: string;
   email: string;
   password: string;
@@ -13,6 +14,7 @@ export interface UserInfo {
 export const EmptyUserState: UserInfo = {
   id: 0,
   sucursal_id: 0,
+  forzar_produccion: false,
   nombre: '',
   email: '',
   password: '',

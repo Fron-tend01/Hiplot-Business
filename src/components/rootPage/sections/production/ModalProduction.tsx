@@ -367,7 +367,7 @@ const ModalProduction: React.FC = () => {
                                     <div className='col-6 md-col-12'>
                                         <span className='text'>Creado por: <b>{productionToUpdate.usuario_crea}</b></span><br />
                                         <span className='text'>Fecha envio producción: <b>{productionToUpdate.fecha_creacion}</b></span><br />
-                                        <span className='text'>Fecha Entrega: <b>{productionToUpdate.fecha_creacion}</b></span><br />
+                                        <span className='text'>Fecha Entrega: <b>{productionToUpdate.fecha_entrega} {productionToUpdate.hora_entrega}</b></span><br />
                                         {productionToUpdate.motivo_modify_te != 0 ?
                                             <b className='text' style={{ color: 'red' }} title='Esta leyenda aparece cuando las fechas son ingresadas de forma manual'>
                                                 Esta orden tiene Fechas de Entrega Modificadas</b>

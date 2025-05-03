@@ -16,6 +16,7 @@ import { storePersonalized } from '../../../../zustand/Personalized'
 import { useStore } from 'zustand'
 
 import { storeDv } from '../../../../zustand/Dynamic_variables'
+import { storeArticles } from '../../../../zustand/Articles'
 
 
 const Quotation: React.FC = () => {
@@ -50,6 +51,7 @@ const Quotation: React.FC = () => {
   const selectedIds: any = useSelectStore((state) => state.selectedIds);
 
   const [dates, setDates] = useState<any>()
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
   const [fol, setFol] = useState<any>(0)
 
@@ -83,7 +85,7 @@ const Quotation: React.FC = () => {
 
     // Configura las fechas iniciales con setDates
     setDates([formattedOneWeekAgo, formattedToday]);
-}, [setDates]);
+  }, [setDates]);
 
 
   const fetch = async () => {
@@ -95,6 +97,8 @@ const Quotation: React.FC = () => {
       desde: haceUnaSemana.toISOString().split('T')[0],
       hasta: hoy.toISOString().split('T')[0],
       id_usuario: user_id,
+      page: page,
+      light:true
     }
 
     const data = {
@@ -125,17 +129,7 @@ const Quotation: React.FC = () => {
       options: 'nombre',
       dataSelect: resultSeries
     })
-    try {
-      let response = await APIs.getQuotation(dataUser);
-      if (response) {
-        setQuotesData(response);
-        console.log('response', response)
-      } else {
-        console.log("No se obtuvieron datos");
-      }
-    } catch (error) {
-      console.error("Error en la petición:", error);
-    }
+
   }
 
 
@@ -144,7 +138,9 @@ const Quotation: React.FC = () => {
     fetchPermisos()
   }, []);
 
-
+  useEffect(() => {
+    searchQuotation()
+  }, [branchOffices]);
 
   const handleDateChange = (fechasSeleccionadas: any) => {
     if (fechasSeleccionadas.length === 2) {
@@ -153,6 +149,7 @@ const Quotation: React.FC = () => {
       setDates([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
     }
   };
+  const [page, setPage] = useState<number>(1)
 
   const searchQuotation = async () => {
     const data = {
@@ -163,6 +160,8 @@ const Quotation: React.FC = () => {
       hasta: dates[1],
       id_usuario: user_id,
       id_vendedor: selectedIds?.users?.id,
+      page: page,
+      light:true
     }
 
 
@@ -182,11 +181,17 @@ const Quotation: React.FC = () => {
     }
   }
 
-  const updateQuotation = (x: any) => {
-    console.log('quotation', x)
+  const updateQuotation = async (x: any) => {
+    const dataSaleOrders = {
+      id: x.id
+    }
+    setModalLoading(true)
+    const result = await APIs.getQuotation(dataSaleOrders)
+    let order_search = result[0]
     setModal('update-modal__qoutation');
-    setQuotes({ quotes: x, normal_concepts: x.conceptos, personalized_concepts: x.conceptos_pers });
+    setQuotes({ quotes: order_search, normal_concepts: order_search.conceptos, personalized_concepts: order_search.conceptos_pers });
     setQuatation(x);
+    setModalLoading(false)
   };
 
 
@@ -407,6 +412,17 @@ const Quotation: React.FC = () => {
           ) : (
             <p className='text'>Cargando datos...</p>
           )}
+        </div>
+        <div className='row'>
+          <div className='col-1'>
+            <button className='btn__general-primary' onClick={() => setPage(page - 1)} disabled={page == 1}>ANTERIOR</button>
+          </div>
+          <div className='col-10'>
+
+          </div>
+          <div className='col-1'>
+            <button className='btn__general-primary' onClick={() => setPage(page + 1)}>SIGUIENTE</button>
+          </div>
         </div>
         <ModalCreate />
       </div>

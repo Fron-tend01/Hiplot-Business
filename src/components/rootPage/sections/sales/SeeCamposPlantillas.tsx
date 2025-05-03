@@ -15,7 +15,9 @@ const SeeCamposPlantillas: React.FC<any> = ({typeConcept}) => {
     const { quotes }: any = useStore(storeQuotation)
     const { saleOrdersConcepts, modalSalesOrder }: any = useStore(storeSaleOrder)
     const [data, setData] = useState<any>([])
-
+    console.log(typeConcept);
+    const setQuotesData = storeQuotation(state => state.setQuotesData)
+    
     useEffect(() => {
         if(modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation') {
             
@@ -36,67 +38,84 @@ const SeeCamposPlantillas: React.FC<any> = ({typeConcept}) => {
         }
     }, [modalSub])
 
-    console.log(data)
+    const { index }: any = useStore(storeDv)
+    console.log(data[index])
 
     //   cont setDataDynamic = storeDv(state  => state.setDataDynamic)
-    const { index }: any = useStore(storeDv)
     const ChangeInputs = (key: any, valor: any) => {
-        if (!data?.normal_concepts || !Array.isArray(data.normal_concepts)) {
-            console.error("Estructura de data incorrecta", data);
-            return;
-        }
+        // if (!data?.normal_concepts || !Array.isArray(data.normal_concepts)) {
+        //     console.error("Estructura de data incorrecta", data);
+        //     return;
+        // }
     
-        const updatedConcepts = data.normal_concepts.map((concept, i) =>
-            i === index ? { ...concept, [key]: valor } : concept
-        );
-    
+        
         if (modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation') {
-            setQuotes({ ...data, normal_concepts: updatedConcepts });
+            const updatedConcepts = data.map((concept, i) =>
+                i === index ? { ...concept, [key]: valor } : concept
+            );
+            setQuotes({ ...quotes, normal_concepts: updatedConcepts });
+            setData(updatedConcepts);            
             return;
         }
-    
+        
         if (modalSalesOrder === 'sale-order__modal' || modalSalesOrder === 'sale-order__modal-update' || modalSalesOrder === 'sale-order__modal_bycot') {
+            const updatedConcepts = data.normal_concepts.map((concept, i) =>
+                i === index ? { ...concept, [key]: valor } : concept
+            );
             setSaleOrdersConcepts({ ...data, normal_concepts: updatedConcepts });
             return;
         }
     };
+    console.log('queotes',quotes);
     
     const changeCP = (valor: any, idx: number) => {
-        console.log('idx', idx)
-        if (!data?.normal_concepts || !Array.isArray(data.normal_concepts)) {
-            console.error("Estructura de data incorrecta", data);
-            return;
-        }
+        // if (!data?.normal_concepts || !Array.isArray(data.normal_concepts)) {
+        //     console.error("Estructura de data incorrecta", data);
+        //     return;
+        // }
     
-        if (index < 0 || index >= data.normal_concepts.length) {
-            console.error("Index fuera de rango:", index);
-            return;
-        }
+        // if (index < 0 || index >= data.normal_concepts.length) {
+        //     console.error("Index fuera de rango:", index);
+        //     return;
+        // }
     
-        if (!data.normal_concepts[index]?.campos_plantilla || !Array.isArray(data.normal_concepts[index].campos_plantilla)) {
-            console.error("Estructura incorrecta en campos_plantilla:", data.normal_concepts[index]);
-            return;
-        }
+        // if (!data.normal_concepts[index]?.campos_plantilla || !Array.isArray(data.normal_concepts[index].campos_plantilla)) {
+        //     console.error("Estructura incorrecta en campos_plantilla:", data.normal_concepts[index]);
+        //     return;
+        // }
     
         // Copia profunda del array de `normal_concepts`
-        const updatedConcepts = data.normal_concepts.map((concept, i) =>
-            i === index
-                ? {
-                      ...concept,
-                      campos_plantilla: concept.campos_plantilla.map((campo, j) =>
-                          j === idx ? { ...campo, valor: valor } : campo
-                      ),
-                  }
-                : concept
-        );
-        setData({ ...data, normal_concepts: updatedConcepts });
-        console.log("updatedConcepts[index].campos_plantilla[idx]", updatedConcepts[index].campos_plantilla[idx]);
-        if (modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation') {
+       
+        if (modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation') { //no actualiza bien los datos de la plantilla solo los no numeros
+            const updatedConcepts = data.map((concept, i) =>
+                i === index
+                    ? {
+                          ...concept,
+                          campos_plantilla: concept.campos_plantilla.map((campo, j) =>
+                              j === idx ? { ...campo, valor: valor } : campo
+                          ),
+                      }
+                    : concept
+            );
+            setData({ ...data, updatedConcepts });
+
             setQuotes({normal_concepts: updatedConcepts });
             return;
         }
     
         if (modalSalesOrder === 'sale-order__modal' || modalSalesOrder === 'sale-order__modal-update' || modalSalesOrder === 'sale-order__modal_bycot') {
+            const updatedConcepts = data.normal_concepts.map((concept, i) =>
+                i === index
+                    ? {
+                          ...concept,
+                          campos_plantilla: concept.campos_plantilla.map((campo, j) =>
+                              j === idx ? { ...campo, valor: valor } : campo
+                          ),
+                      }
+                    : concept
+            );
+            setData({ ...data, normal_concepts: updatedConcepts });
+
             setSaleOrdersConcepts({normal_concepts: updatedConcepts });
             return;
         }

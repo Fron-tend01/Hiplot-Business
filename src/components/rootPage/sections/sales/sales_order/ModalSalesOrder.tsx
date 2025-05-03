@@ -187,6 +187,9 @@ const ModalSalesOrder: React.FC = () => {
         const [datePartOne, timePartOne] = dates[0] ? dates[0].split("T") : ["", ""];
         const [datePartTwo, timePartTwo] = dates[1] ? dates[1].split("T") : ["", ""];
         saleOrdersConcepts.normal_concepts.forEach((element: any) => {
+            if (element.id_area_produccion == 0 ) {
+                element.id_area_produccion = element.areas_produccion[0].id_area || 39
+            }
             element.unidad = element.id_unidad
             element.total = element.precio_total
             element.monto_descuento = element.descuento == null ? 0 : element.descuento
@@ -200,6 +203,9 @@ const ModalSalesOrder: React.FC = () => {
             saleOrdersConcepts?.personalized_concepts?.forEach((element: any) => {
                 element.id = 0
                 element.conceptos.forEach((x: any) => {
+                    if (x.id_area_produccion == 0 ) {
+                        x.id_area_produccion = x.areas_produccion[0].id_area || 39
+                    }
                     x.unidad = x.id_unidad
                     x.total = x.precio_total
                     x.monto_urgencia = x.monto_urgencia
@@ -225,6 +231,8 @@ const ModalSalesOrder: React.FC = () => {
             conceptos_pers: saleOrdersConcepts.personalized_concepts,
             conceptos_elim: []
         }
+        // debugger
+        // return
         try {
             const result: any = await APIs.CreateAny(data, 'create_ov_remastered'); //CAMBIAR POR CREATE_OV_REMASTERED
             if (result.error == true) {
@@ -405,10 +413,10 @@ const ModalSalesOrder: React.FC = () => {
             }
             return x;
         });
-        setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.conceptos_pers });
+        setSaleOrdersConcepts({ normal_concepts: data, personalized_concepts: saleOrdersConcepts.personalized_concepts });
 
 
-        console.log(data)
+        console.log('saleOrdersConcepts',saleOrdersConcepts)
 
         if (modalSalesOrder == 'sale-order__modal') {
             data[i].id_usuario_actualiza = user_id
@@ -454,7 +462,8 @@ const ModalSalesOrder: React.FC = () => {
             id_pers: article.id_pers,
             id_usuario_actualiza: user_id
         }
-
+        // debugger
+        // return
         try {
             setModalLoading(true)
             let response: any = await APIs.updateOvConcepto(data).finally(() => { setModalLoading(false) })
@@ -591,7 +600,7 @@ const ModalSalesOrder: React.FC = () => {
                     precio_unitario: acc.precio_unitario + (parseFloat(item.precio_unitario) || 0),
                     descuento: acc.descuento + (parseFloat(item.descuento) || 0),
                     monto_urgencia: acc.monto_urgencia + (parseFloat(item.monto_urgencia) || 0),
-                    total: acc.total + (parseFloat(item.precio_total) || 0),
+                    total: acc.total + (parseFloat(item.total) || 0),
                     total_franquicia: acc.total_franquicia + (parseFloat(item.total_franquicia) || 0),
                 }),
                 initialValues

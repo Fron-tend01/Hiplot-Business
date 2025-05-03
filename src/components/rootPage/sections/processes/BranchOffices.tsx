@@ -20,6 +20,7 @@ const BranchOffices: React.FC = () => {
   const [empresa_id, setEmpresa_id] = useState<number | null>(null);
   const [sucursal_id, setSucursal_id] = useState<number | null>(null)
   const [ventaf, setVentaF] = useState<boolean>(false);
+  const [forzarProd, setForzarProd] = useState<boolean>(false);
   const [lunes, setlunes] = useState<boolean>(false);
   const [martes, setmartes] = useState<boolean>(false);
   const [miercoles, setmiercoles] = useState<boolean>(false);
@@ -135,6 +136,7 @@ const BranchOffices: React.FC = () => {
         empresa_id: selectedCompany,
         direccion: direccion,
         venta_franquicia: ventaf,
+        forzar_produccion: forzarProd,
         lunes: lunes,
         martes: martes,
         miercoles: miercoles,
@@ -232,6 +234,7 @@ const BranchOffices: React.FC = () => {
     setDireccion('')
     setContacto('')
     setVentaF(false)
+    setForzarProd(false)
     setlunes(false)
     setmartes(false)
     setmiercoles(false)
@@ -253,6 +256,7 @@ const BranchOffices: React.FC = () => {
       setContacto(sucursal.contacto)
       setLogo(sucursal.logo)
       setVentaF(sucursal.venta_franquicia)
+      setForzarProd(sucursal.forzar_produccion)
       setlunes(sucursal.lunes)
       setmartes(sucursal.martes)
       setmiercoles(sucursal.miercoles)
@@ -367,7 +371,7 @@ const BranchOffices: React.FC = () => {
               </div>
             </div>
             <div className='row'>
-              <div className='col-8 md-col-8 sm-col-12'>
+              <div className='col-6 md-col-8 sm-col-12'>
                 <div className='inputs__branch-office'>
                   <label className='label__general'>Dirección</label>
                   <div className='warning__general' style={styleWarningAddress}><small >Este campo es obligatorio</small></div>
@@ -387,6 +391,17 @@ const BranchOffices: React.FC = () => {
                     type="checkbox"
                     checked={ventaf} // Asignar el valor del estado al atributo 'checked'
                     onChange={(e) => { setVentaF(e.target.checked); }}
+                  />
+                  <span className="slider"></span>
+                </label>
+              </div>
+              <div className='col-2 md-col-2 sm-col-12'>
+                <label>Forzar Producción</label><br></br>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={forzarProd} // Asignar el valor del estado al atributo 'checked'
+                    onChange={(e) => { setForzarProd(e.target.checked); }}
                   />
                   <span className="slider"></span>
                 </label>
