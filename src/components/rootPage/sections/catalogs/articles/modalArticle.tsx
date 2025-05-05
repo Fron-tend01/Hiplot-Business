@@ -36,13 +36,32 @@ const modalArticle: React.FC = () => {
     const setModalArticle = storeArticles(state => state.setModalArticle)
 
     const setBranchOffices = storeArticles(state => state.setBranchOffices)
+    const setPrices = storeArticles(state => state.setPrices)
     const setMaxsMins = storeArticles(state => state.setMaxsMins)
-    const setDeliveryTimesView = storeArticles(state => state.setDeliveryTimesView)
     const setUnits = storeArticles(state => state.setUnits)
     const setComponents = storeArticles(state => state.setComponents)
     const setAreas = storeArticles(state => state.setAreas)
     const setMinimalCharges = storeArticles(state => state.setMinimalCharges)
+    const setDeliveryTimesView = storeArticles(state => state.setDeliveryTimesView)
     const setCobrosFranquicia = storeArticles(state => state.setCobrosFranquicia)
+    const setVariations = storeArticles(state => state.setVariations)
+    const setCombinations = storeArticles(state => state.setCombinations)
+    const setSuppliers = storeArticles(state => state.setSuppliers)
+    const setAdditionalArticles = storeArticles(state => state.setAdditionalArticles)
+
+    const setDeleteBranchOffices = storeArticles(state => state.setDeleteBranchOffices)
+    const setDeletePrices = storeArticles(state => state.setDeletePrices)
+    const setDeleteMaxsMins = storeArticles(state => state.setDeleteMaxsMins)
+    const setDeleteUnits = storeArticles(state => state.setDeleteUnits)
+    const setDeleteComponents = storeArticles(state => state.setDeleteComponents)
+    const setDeleteAreas = storeArticles(state => state.setDeleteAreas)
+    const setDeleteMinimalCharges = storeArticles(state => state.setDeleteMinimalCharges)
+    const setDeleteDeliveryTimes = storeArticles(state => state.setDeleteDeliveryTimes)
+    const setDeleteCobros_franquicia = storeArticles(state => state.setDeleteCobros_franquicia)
+    const setDeleteVariations = storeArticles(state => state.setDeleteVariations)
+    const setDeleteCombinations = storeArticles(state => state.setDeleteCombinations)
+    const setDeleteSuppliers = storeArticles(state => state.setDeleteSuppliers)
+    const setDeleteAdditionalArticles = storeArticles(state => state.setDeleteAdditionalArticles)
 
 
 
@@ -60,8 +79,6 @@ const modalArticle: React.FC = () => {
 
     const setSubModal = storeArticles(state => state.setSubModal)
 
-    const setAdditionalArticles = storeArticles(state => state.setAdditionalArticles)
-    const setPrices = storeArticles(state => state.setPrices)
 
     const { getTemplates }: any = TemplatesRequests()
 
@@ -169,7 +186,7 @@ const modalArticle: React.FC = () => {
             options: 'nombre',
             dataSelect: resultFamilies
         })
-
+        limpiar_submodulos()
         if (articleToUpdate) {
 
             setModalLoading(false)
@@ -208,7 +225,7 @@ const modalArticle: React.FC = () => {
 
             setBranchOffices(articleToUpdate.sucursales)
             setMaxsMins(articleToUpdate.max_mins);
-   
+
             setUnits(articleToUpdate.unidades);
             setComponents(articleToUpdate.componentes);
             setAreas(articleToUpdate.areas_produccion);
@@ -219,6 +236,35 @@ const modalArticle: React.FC = () => {
         }
     }
 
+    const limpiar_submodulos = () => {
+        setBranchOffices([])
+        setPrices([])
+        setMaxsMins([])
+        setUnits([])
+        setComponents([])
+        setAreas([])
+        setMinimalCharges([])
+        setDeliveryTimesView([])
+        setCobrosFranquicia([])
+        setVariations([])
+        setCombinations([])
+        setSuppliers([])
+        setAdditionalArticles([])
+
+        setDeleteBranchOffices([])
+        setDeletePrices([])
+        setDeleteMaxsMins([])
+        setDeleteUnits([])
+        setDeleteComponents([])
+        setDeleteAreas([])
+        setDeleteMinimalCharges([])
+        setDeleteDeliveryTimes([])
+        setDeleteCobros_franquicia([])
+        setDeleteVariations([])
+        setDeleteCombinations([])
+        setDeleteSuppliers([])
+        setDeleteAdditionalArticles([])
+    }
     useEffect(() => {
         fecht()
 
@@ -252,7 +298,6 @@ const modalArticle: React.FC = () => {
     const handleCreateArticles = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         setStateLoading(true)
-
         const data = {
             id: modalArticle == 'articles-modal-update' ? articleToUpdate.id : 0,
             tipo: type,
@@ -283,51 +328,51 @@ const modalArticle: React.FC = () => {
             fyv: FyV,
             consultar_cotizador: ConsultarConCotizador,
             consultar_te: ConsultarTe,
-        
+
             /////////////////////////////////Modales//////////////////////////////////////// 
             sucursales: branchOffices,
             sucursales_elim: deleteBranchOffices.filter(item => item !== null && item !== undefined),
-        
+
             max_mins: maxsMins,
             max_mins_elim: deleteMaxsMins.filter(item => item !== null && item !== undefined),
-        
+
             precios: prices,
             precios_elim: deletePrices.filter(item => item !== null && item !== undefined),
-        
+
             unidades: units,
             unidades_elim: deleteUnits.filter(item => item !== null && item !== undefined),
-            
-            componentes: deleteComponents,
-            componentes_elim: deleteComponents.filter(item => item !== null && item !== undefined),
-        
+
+            componentes: components,
+            componentes_elim: deleteComponents,
+
             variaciones: variations,
             variaciones_elim: deleteVariations.filter(item => item !== null && item !== undefined),
-        
+
             combinaciones: combinations,
             combinaciones_elim: deleteCombinations.filter(item => item !== null && item !== undefined),
-        
+
             proveedores: suppliers,
             proveedores_elim: deleteSuppliers.filter(item => item !== null && item !== undefined),
-        
+
             tiempos_entrega: deliveryTimes,
             tiempos_entrega_elim: deleteDeliveryTimes.filter(item => item !== null && item !== undefined),
-        
+
             cargos_minimos: minimalCharges,
             cargos_minimos_elim: deleteMinimalCharges.filter(item => item !== null && item !== undefined),
-        
+
             areas_produccion: areas,
             areas_produccion_elim: deleteAreas.filter(item => item !== null && item !== undefined),
-        
+
             adicional: additionalArticles,
             adicional_elim: deleteAdditionalArticles.filter(item => item !== null && item !== undefined),
-        
+
             cobros_franquicia: cobros_franquicia,
             cobros_franquicia_elim: deleteCobros_franquicia.filter(item => item !== null && item !== undefined),
-        
+
             imagenes: imagesArticles,
             imagenes_elim: deteleImagesArticles.filter(item => item !== null && item !== undefined),
         };
-        
+        debugger
 
         const dataArticle = {
             id: 0,
@@ -354,6 +399,7 @@ const modalArticle: React.FC = () => {
                 Swal.fire('Artículo creado exitosamente', '', 'success');
                 setStateLoading(false);
                 setModalArticle('');
+                limpiar_submodulos()
 
             } else {
                 await APIs.createArticles(data);
@@ -361,6 +407,7 @@ const modalArticle: React.FC = () => {
                 Swal.fire('Artículo actualizado exitosamente', '', 'success');
                 setStateLoading(false);
                 setModalArticle('');
+                limpiar_submodulos()
             }
         } catch (error) {
             console.error('Ocurrió un error al crear/actualizar el artículo', error);
@@ -460,43 +507,150 @@ const modalArticle: React.FC = () => {
 
 
     const clonArticle = async () => {
-        const data = {
-            id_articulo: articleToUpdate.id,
-            id_usuario: user_id
-        }
-        try {
-            const result: any = await APIs.cloneArticles(data)
-            const dataArticle = {
-                id: result.id_articulo,
-                activos: true,
-                nombre: '',
-                codigo: '',
-                familia: 0,
-                proveedor: 0,
-                materia_prima: 0,
-                get_sucursales: true,
-                get_proveedores: true,
-                get_max_mins: true,
-                get_plantilla_data: true,
-                get_precios: true,
-                get_variaciones: true,
-                get_combinaciones: true,
-                get_tiempos_entrega: true,
-                get_areas_produccion: true,
-                get_componentes: true,
-                get_cargos_minimos: true,
-                get_adicional: true,
-                get_stock: true,
-                get_web: false,
-                get_unidades: true
-            };
-            Swal.fire(result.mensaje, '', 'success');
-            const resultArticle: any = await APIs.getArticles(dataArticle);
-            setArticleToUpdate(resultArticle[0])
+        Swal.fire({
+            title: "Seguro que deseas Clonar este articulo?",
+            text: "Se copiará toda la información de este articulo a una versión nueva del mismo",
+            showCancelButton: true,
+            icon: 'warning',
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setModalLoading(true)
+                let precios = []
+                let te = []
+                // ---------------------------OBTENER PRECIOS ANTES DE MANDAR
+                const data2 = {
+                    id: articleToUpdate.id,
+                    activos: true,
+                    nombre: '',
+                    codigo: '',
+                    familia: 0,
+                    proveedor: 0,
+                    materia_prima: 0,
+                    get_precios: true,
+                    get_tiempos_entrega: true
+                }
+                try {
+                    const result = await APIs.getArticles(data2)
+                    precios = result[0].precios
+                    te = result[0].tiempos_entrega
+                } catch (error) {} 
+                try {
+                    const data = {
+                        id:  0,
+                        tipo: type,
+                        codigo: code,
+                        descripcion: description,
+                        unidad: selectedUnit,
+                        id_familia: selectedIds.selectFamilies.id,
+                        activo: activeArticles,
+                        imagen: '',
+                        tipo_de_cobro: selectedIds.selectTypePayment.id,
+                        id_plantilla: selectedIds.selectTemplates.id,
+                        base_max: baseMax,
+                        altura_max: maxHeight,
+                        multiplos_de: multiples,
+                        clave_sat: selectedSatKey.Clave,
+                        unidad_sat: satUnit,
+                        visualizacion_web: viewWeb,
+                        indicaciones: salesInstructions,
+                        notas_web: webNotes,
+                        condiciones_compra: purchaseConditions,
+                        bajo_pedido: oRequest,
+                        vender_sin_stock: sellStock,
+                        desabasto: Shortage,
+                        iva_excento: ExemptTax,
+                        precio_libre: PrecioLibre,
+                        ultimas_piezas: UltimasPiezas,
+                        agrupar_tiempos: AgruparTiempos,
+                        fyv: FyV,
+                        consultar_cotizador: ConsultarConCotizador,
+                        consultar_te: ConsultarTe,
 
-        } catch (error) {
-            Swal.fire('Hubo un error', '', 'error');
-        }
+                        /////////////////////////////////Modales//////////////////////////////////////// 
+                        sucursales: branchOffices,
+                        sucursales_elim: deleteBranchOffices.filter(item => item !== null && item !== undefined),
+
+                        max_mins: maxsMins,
+                        max_mins_elim: deleteMaxsMins.filter(item => item !== null && item !== undefined),
+
+                        precios: precios,
+                        precios_elim: [],
+
+                        unidades: units,
+                        unidades_elim: deleteUnits.filter(item => item !== null && item !== undefined),
+
+                        componentes: components,
+                        componentes_elim: deleteComponents,
+
+                        variaciones: variations,
+                        variaciones_elim: deleteVariations.filter(item => item !== null && item !== undefined),
+
+                        combinaciones: combinations,
+                        combinaciones_elim: deleteCombinations.filter(item => item !== null && item !== undefined),
+
+                        proveedores: suppliers,
+                        proveedores_elim: deleteSuppliers.filter(item => item !== null && item !== undefined),
+
+                        tiempos_entrega: te,
+                        tiempos_entrega_elim: [],
+
+                        cargos_minimos: minimalCharges,
+                        cargos_minimos_elim: deleteMinimalCharges.filter(item => item !== null && item !== undefined),
+
+                        areas_produccion: areas,
+                        areas_produccion_elim: deleteAreas.filter(item => item !== null && item !== undefined),
+
+                        adicional: additionalArticles,
+                        adicional_elim: deleteAdditionalArticles.filter(item => item !== null && item !== undefined),
+
+                        cobros_franquicia: cobros_franquicia,
+                        cobros_franquicia_elim: deleteCobros_franquicia.filter(item => item !== null && item !== undefined),
+
+                        imagenes: imagesArticles,
+                        imagenes_elim: deteleImagesArticles.filter(item => item !== null && item !== undefined),
+                    };
+                    await APIs.cloneArticles(data).then(async (result: any) => {
+                        const dataArticle = {
+                            id: result.id_articulo,
+                            activos: true,
+                            nombre: '',
+                            codigo: '',
+                            familia: 0,
+                            proveedor: 0,
+                            materia_prima: 0,
+                            get_sucursales: true,
+                            get_proveedores: true,
+                            get_max_mins: true,
+                            get_plantilla_data: true,
+                            get_precios: false,
+                            get_variaciones: true,
+                            get_combinaciones: true,
+                            get_tiempos_entrega: false,
+                            get_areas_produccion: true,
+                            get_componentes: true,
+                            get_cargos_minimos: true,
+                            get_adicional: true,
+                            get_stock: true,
+                            get_web: false,
+                            get_unidades: true
+                        };
+                        Swal.fire(result.mensaje, '', 'success');
+                        const resultArticle: any = await APIs.getArticles(dataArticle);
+                        setArticleToUpdate(resultArticle[0])
+                        setModalLoading(false)
+
+
+                    })
+                } catch (error) {
+                    setModalLoading(false)
+                    Swal.fire('Hubo un error', '', 'error');
+                }
+            }
+        });
+
+
     }
 
     const closeModal = () => {
@@ -523,14 +677,7 @@ const modalArticle: React.FC = () => {
         setConsultarConCotizador(false)
         setsetConsultarTe(false)
 
-        setBranchOffices([])
-        setMaxsMins([]);
-        setPrices([]);
-        setUnits([]);
-        setComponents([]);
-        setAreas([]);
-        setMinimalCharges([]);
-        setAdditionalArticles([])
+        limpiar_submodulos()
         // }
 
     }
@@ -548,20 +695,20 @@ const modalArticle: React.FC = () => {
                 proveedor: 0,
                 materia_prima: 0,
                 get_precios: true
-              }
-              try {
+            }
+            try {
                 const result = await APIs.getArticles(data2)
                 setPrices(result[0].precios)
-              } catch (error) {
-                
-              } finally {
+            } catch (error) {
+
+            } finally {
                 setModalLoading(false)
-              }
+            }
 
         }
-          
+
     }
-    
+
     const modalDeliveryTime = async () => {
         setSubModal('modal-delivery-times')
         const data2 = {
@@ -573,19 +720,19 @@ const modalArticle: React.FC = () => {
             proveedor: 0,
             materia_prima: 0,
             get_tiempos_entrega: true
-          }
+        }
 
-          try {
+        try {
             const result = await APIs.getArticles(data2)
             setDeliveryTimesView(result[0].tiempos_entrega)
-          } catch (error) {
-            
-          } finally {
+        } catch (error) {
+
+        } finally {
             setModalLoading(false)
-          }
-        
+        }
+
     }
-    
+
 
 
     return (
@@ -734,7 +881,7 @@ const modalArticle: React.FC = () => {
                         <div className='col-1' title='Consuktar con cotizador'>
                             <p className='label__general'>Boton consultar C</p>
                             <label className="switch">
-                                <input type="checkbox"/>
+                                <input type="checkbox" />
                                 <span className="slider"></span>
                             </label>
                         </div>

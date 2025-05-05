@@ -5,6 +5,7 @@ export interface UserInfo {
   id: number;
   sucursal_id: number;
   forzar_produccion: boolean;
+  franquicia: boolean;
   nombre: string;
   email: string;
   password: string;
@@ -15,6 +16,7 @@ export const EmptyUserState: UserInfo = {
   id: 0,
   sucursal_id: 0,
   forzar_produccion: false,
+  franquicia: false,
   nombre: '',
   email: '',
   password: '',

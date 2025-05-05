@@ -10,13 +10,14 @@ import APIs from '../../../../../../services/services/APIs'
 import { storeOrdes } from '../../../../../../zustand/Ordes'
 import './styles/ByOP.css'
 import Swal from 'sweetalert2';
+import { storeArticles } from '../../../../../../zustand/Articles'
 
 
 const ByOP: React.FC = () => {
     const userState = useUserStore(state => state.user);
     const user_id = userState.id
 
-    const {getSeriesXUser}: any = seriesRequests()
+    const { getSeriesXUser }: any = seriesRequests()
 
     const setConcepts = storeOrdes(state => state.setConcepts)
     const { concepts, OPByareas } = storeOrdes()
@@ -50,6 +51,7 @@ const ByOP: React.FC = () => {
             setDate([fechasSeleccionadas[0]?.toISOString().split('T')[0] || "", ""]);
         }
     };
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
     const [orders, setOrders] = useState<any>([])
     const filterByRequest = async () => {
@@ -64,12 +66,14 @@ const ByOP: React.FC = () => {
             status: 0,
             pedido: true
         }
-
+        setModalLoading(true)
         try {
             const result: any = await APIs.getProoductionOrders(data)
-            console.log(result, result)
+            setModalLoading(false)
             setOrders(result)
         } catch (error) {
+            setModalLoading(false)
+
             console.log(error)
         }
     }
@@ -80,28 +84,28 @@ const ByOP: React.FC = () => {
         setOrders(filter)
 
         const filterC = await concepts.filter((x: any) => x.id == item.id)
-        if(filterC.length > 0) {
-               Swal.fire('Advertencia', 'El concepto ya existe', 'warning');
+        if (filterC.length > 0) {
+            Swal.fire('Advertencia', 'El concepto ya existe', 'warning');
         } else {
             setConcepts([
                 ...concepts,
-                ...item.conceptos.map((concepto:any) => ({
-                  ...concepto,
-                  orden_produccion: {
-                      folio: item.serie + '-' + item.folio + '-' + item.anio, 
-                      id: item.id 
-                  },
-                  id_orden_produccion: concepto.id,
-                  unidad: concepto.id_unidad,
-                  id_unidad: concepto.id_unidad,
-                  urgencia: item.urgencia,
-                  id: item.id
+                ...item.conceptos.map((concepto: any) => ({
+                    ...concepto,
+                    orden_produccion: {
+                        folio: item.serie + '-' + item.folio + '-' + item.anio,
+                        id: item.id
+                    },
+                    id_orden_produccion: concepto.id,
+                    unidad: concepto.id_unidad,
+                    id_unidad: concepto.id_unidad,
+                    urgencia: item.urgencia,
+                    id: item.id
                 }))
-              ])
-            }
+            ])
         }
-        console.log(concepts)
-    
+    }
+    console.log(concepts)
+
 
 
 

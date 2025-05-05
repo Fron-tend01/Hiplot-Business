@@ -106,7 +106,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     return PermisosxVistaFicha.some((x: any) => x.titulo == elemento)
   }
   const fetch1 = async () => {
-    APIs.GetAny('get_permisos_x_vista/' + user_id + '/FICHA').then((resp: any) => {
+    APIs.GetAny('get_permisos_x_vista/' + user_id + '/FICHA').then(async (resp: any) => {
       setPermisosxVistaFicha(resp)
     })
     const data = {
@@ -122,7 +122,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       // get_adicional: true,
       get_proveedores: false,
       get_max_mins: false,
-      get_precios: false,
+      get_precios: userState?.franquicia==true ? true : false,
       get_combinaciones: true,
       get_plantilla_data: true,
       get_areas_produccion: true,
@@ -136,17 +136,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       id_grupo_us: selectedUserGroup
 
     };
-
+    debugger
     try {
-      // Obtener artículos
       setModalLoading(true)
-      // axios.post("http://hiplot.dyndns.org:84/a_api/index.php/mantenimiento/get_articulos/", data)
-      //   .then(response => {
-      //     console.log("Datos recibidos:", response.data);
-      //   })
-      //   .catch(error => {
-      //     console.error("Error al consultar:", error);
-      //   });
       return await APIs.getArticles(data)
         .then(async (response: any) => {
           if (!response || response.length === 0) {
@@ -499,8 +491,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           setAdicional(result.adicional)
           let lista_precios_franquicia = 0
           let precio_franq_tmp = 0
-
-          if (article?.precios_franquicia != null && article?.precios_franquicia.length > 0) {
+          
+          if (userState.franquicia) {
 
             lista_precios_franquicia = article?.precios_franquicia[0].id_grupos_us
             const dataArticleFranquicia = {
@@ -1049,10 +1041,11 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     setModalSalesCard('')
 
   }
-  const checkPermission = (elemento: string) => {
-    return permisosxVistaheader.some((x: any) => x.titulo == elemento)
-  }
-
+  // const checkPermission = (elemento: string) => {
+  //   return permisosxVistaheader.some((x: any) => x.titulo == elemento)
+  // }
+  console.log('PERMISOS XVISTAHEADER',permisosxVistaheader);
+  
   const setterPrices = (valor: any) => {
     setPrices(valor || 0)
     setData((prev: any) => ({
@@ -1718,9 +1711,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                 </div>
 
               </div>
-              {article?.precios_franquicia != null && article?.precios_franquicia.length > 0 &&
-                permisosxVistaheader.length > 0 &&
-                checkPermission('totales_franquicia') ? //FALTA VALIDAR EL PERMISO 
+              {permisosxVistaheader.length > 0 && permisosxVistaheader.some((x:any)=> x.titulo=='totales_franquicia') && ( 
                 <div className='row__four'>
                   <div className='price_x_unit'>
                     <p className='title__price_x_unit'>Precio por unidad Franquicia:</p>
@@ -1739,8 +1730,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                     }
 
                   </div>
-                </div>
-                : ''}
+                </div>)}
               {modalSalesCard === 'sale-card-quotation' ?
                 <div className='row__five'>
                   <div className='row__two'>

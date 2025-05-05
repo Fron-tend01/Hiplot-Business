@@ -352,61 +352,30 @@ const Prices: React.FC = () => {
       id_grupo_us_desde: selectedIds.id_groupUserDe.id,
       id_grupo_us_hasta: selectedIds.id_groupUserAl.id
     }
-    try {
-      setModalLoading(true)
-      const result: any = await APIs.cloneArticlesPrice(dataa)
-      setSubModal('')
-      const data = {
-        id: articleToUpdate.id,
-        activos: true,
-        nombre: '',
-        codigo: '',
-        familia: 0,
-        proveedor: 0,
-        page: 1,
-        materia_prima: 99,
-        get_sucursales: true,
-        get_proveedores: true,
-        get_max_mins: true,
-        get_plantilla_data: true,
-        get_precios: true,
-        get_variaciones: true,
-        get_combinaciones: true,
-        get_tiempos_entrega: true,
-        get_areas_produccion: true,
-        get_componentes: true,
-        get_cargos_minimos: true,
-        get_cobros_franquicia: true,
-        get_adicional: true,
-        get_stock: true,
-        get_web: false,
-        get_unidades: true
-      }
-
-      setModalArticle('articles-modal-update')
-      getFamilies(user_id)
-
-      try {
-
-        const result = await getArticles(data)
-        // const resultImagenes = await getArticles(data2)
-        await setArticleByOne(result[0])
-        setArticleToUpdate(result[0]);
-        setSubModal('modal-prices')
-
-        // setImagesArticles(resultImagenes[0].imagenes)
-        setModalLoading(false)
-      } catch (error) {
-      } finally {
-        setModalLoading(false)
-      }
-      Swal.fire(result.mensaje, '', 'success');
-    } catch (error) {
-      setModalLoading(false)
-      Swal.fire('Hubo un error', '', 'error');
+    let for_clone = prices
+    .filter((x: any) => x.id_grupos_us === dataa.id_grupo_us_desde)
+    .map((x: any) => ({
+      ...x,
+      id: 0,
+      id_grupos_us: dataa.id_grupo_us_hasta,
+      precios_ext: x.precios_ext
+      ? x.precios_ext.map((pe: any) => ({
+          ...pe,
+          id: 0 ,
+          id_articulos_precios: 0 
+        }))
+      : []// copiado correcto del arreglo interno
+    }));
+    debugger
+    let add = for_clone[0] || []
+    if (Array.isArray(prices)) {
+      setPrices([...prices, add])
+    } else {
+      setPrices([add])
     }
   }
-
+  console.log('PRICESSSS',prices);
+  
   const handleTemplatesChange = (e: any, index: number, index_two: number) => {
     const value = e.target.value;
     prices[index].precios_ext[index_two].variable_pc = value;

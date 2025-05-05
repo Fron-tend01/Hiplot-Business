@@ -9,6 +9,7 @@ import { storeArticles } from '../../../../zustand/Articles'
 import { FamiliesRequests } from '../../../../fuctions/Families'
 import { suppliersRequests } from '../../../../fuctions/Suppliers'
 import LoadingInfo from '../../../loading/LoadingInfo'
+import Swal from 'sweetalert2'
 const ITEMS_PER_PAGE = 10;
 
 const ExistenciaPorAlmacen: React.FC = () => {
@@ -152,6 +153,96 @@ const ExistenciaPorAlmacen: React.FC = () => {
     const descargarTodaData = (almacen: any) => {
         descargarCSV(almacen, almacen.articulos);
     };
+    const descargarPDF = (almacen: any, articulos: any) => {
+        const encabezados = ["CODIGO", "DESCRIPCION", "FAMILIA", "PROVEEDOR", "UNIDAD", "UP", "BP", "MIN", "MAX", "TOTAL", "APART.", "DV"];
+
+        let html = `<html><head><title>Inventario Almacén</title></head><body>`;
+        html += `<h2>Inventario de Almacén ${almacen.nombre || almacen.id}</h2>`;
+        html += `<table border="1" cellspacing="0" cellpadding="5"><thead><tr>`;
+
+        encabezados.forEach(enc => {
+            html += `<th>${enc}</th>`;
+        });
+
+        html += `</tr></thead><tbody>`;
+
+        articulos.forEach((articulo: any) => {
+            html += `<tr>
+                <td>${articulo.codigo}</td>
+                <td>${articulo.descripcion}</td>
+                <td>${articulo.familia}</td>
+                <td>${articulo.proveedor}</td>
+                <td>${articulo?.unidad_almacen?.nombre || 'N/A'}</td>
+                <td>${articulo.ultimas_piezas}</td>
+                <td>${articulo.bajo_pedido}</td>
+                <td>${articulo.max_min.length > 0 ? articulo.max_min[0].minimo : "0"}</td>
+                <td>${articulo.max_min.length > 0 ? articulo.max_min[0].maximo : "0"}</td>
+                <td>${articulo.restantes}</td>
+                <td>${articulo.apartados}</td>
+                <td>${articulo.disponible}</td>
+            </tr>`;
+        });
+
+        html += `</tbody></table></body></html>`;
+
+        const printWindow = window.open("", "_blank");
+        if (printWindow) {
+            printWindow.document.write(html);
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print(); // El usuario puede guardar como PDF
+            // printWindow.close(); // Descomenta si quieres cerrar automáticamente
+        }
+    };
+    const [mu, setMu] = useState<boolean>(false)
+    const [editableArticulos, setEditableArticulos] = useState<{ [key: string]: any[] }>({});
+    useEffect(() => {
+        if (mu) {
+            const initialState: any = {};
+            data.forEach((almacen: any) => {
+                const searchTerm = searchTerms[almacen.id] || "";
+                const filtered = almacen.articulos.filter((articulo: any) =>
+                    articulo.codigo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    articulo.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+                const currentPage = pages[almacen.id] || 1;
+                const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+                const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+                const current = filtered.slice(indexOfFirstItem, indexOfLastItem);
+                // initialState[almacen.id] = current.map((a: any) => ({ ...a }));
+                initialState[almacen.id] = current.map((a: any) => ({
+                    ...a,
+                    id_almacen: almacen.id, // 👈 aquí le agregas el ID
+                }));
+            });
+            setEditableArticulos(initialState);
+        }
+    }, [mu, data, searchTerms, pages]);
+
+    const actualizarArticulo = (art:any) => {
+        console.log(art);
+        
+        Swal.fire({
+            title: "Seguro que deseas ACTUALIZAR el articulo " + art.descripcion + '?',
+            text: "Puedes volver a actualizar el articulo si lo deseas.",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await APIs.CreateAny(art, "actualizar_art_x_rep")
+                    .then(async (resp: any) => {
+                        if (!resp.error) {
+                            Swal.fire('Notificación', resp.mensaje, 'success');
+
+                        }else{
+                            Swal.fire('Notificación', resp.mensaje, 'warning');
+                        }
+                       
+                    })
+            }
+        });
+    }
     return (
         <div style={{ padding: '20px', overflow: 'auto' }}>
             <div className='breadcrumbs'>
@@ -357,6 +448,50 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                 >
                                     📤 Descargar Todo
                                 </button>
+                                <button
+                                    onClick={() => descargarPDF(almacen, currentArticulos)}
+                                    style={{
+
+                                        padding: "5px 10px",
+                                        background: "#28a745",
+                                        color: "#fff",
+                                        border: "none",
+                                        cursor: "pointer",
+                                        borderRadius: "5px",
+                                    }}
+                                >
+                                    📤 Preview
+                                </button>
+                                {!mu ?
+                                    <button
+                                        onClick={() => setMu(!mu)}
+                                        style={{
+
+                                            padding: "5px 10px",
+                                            background: "#a76228",
+                                            color: "#fff",
+                                            border: "none",
+                                            cursor: "pointer",
+                                            borderRadius: "5px",
+                                        }}
+                                    >
+                                        Actualizar
+                                    </button>
+                                    :
+                                    <button
+                                        onClick={() => setMu(!mu)}
+                                        style={{
+                                            padding: "5px 10px",
+                                            background: "##a72828",
+                                            color: "#fff",
+                                            border: "none",
+                                            cursor: "pointer",
+                                            borderRadius: "5px",
+                                        }}
+                                    >
+                                        Cancelar
+                                    </button>
+                                }
                                 <div className="EPA-table-container">
                                     <table className="EPA-table">
                                         <thead>
@@ -374,32 +509,240 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                                 <th>Total</th>
                                                 <th>Apart.</th>
                                                 <th>DV</th>
+                                                {mu ?
+                                                    <>
+                                                        <th>ACT</th>
+                                                        <th>CC</th>
+                                                        <th>CT</th>
+                                                        <th>DES</th>
+                                                        <th>IE</th>
+                                                        <th>PL</th>
+                                                        <th>VSS</th>
+                                                        <th></th>
+                                                    </>
+                                                    : ''}
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {currentArticulos.map((articulo: any, i: number) => (
+                                            {(mu ? editableArticulos[almacen.id] || [] : currentArticulos).map((articulo: any, i: number) => (
                                                 <tr key={i}>
                                                     <td>{articulo.codigo}</td>
-                                                    <td>{articulo.descripcion}</td>
+                                                    <td>
+                                                        {mu ?
+                                                            <input type="text" value={articulo.descripcion} onChange={(e) => {
+                                                                const value = e.target.value;
+                                                                setEditableArticulos(prev => {
+                                                                    const copy = { ...prev };
+                                                                    copy[almacen.id][i] = { ...copy[almacen.id][i], descripcion: value };
+                                                                    return copy;
+                                                                });
+                                                            }} />
+                                                            :
+                                                            articulo.descripcion
+                                                        }
+                                                    </td>
                                                     <td>{articulo.familia}</td>
                                                     <td>{articulo.proveedor}</td>
                                                     <td>{articulo.unidad_almacen?.nombre}</td>
-                                                    <td>{articulo.ultimas_piezas ? "Sí" : "No"}</td>
-                                                    <td>{articulo.bajo_pedido ? "Sí" : "No"}</td>
                                                     <td>
-                                                        {articulo.max_min.length > 0
-                                                            ? articulo.max_min[0].accion === 0
-                                                                ? "CR"
-                                                                : articulo.max_min[0].accion === 1
-                                                                    ? "TA"
-                                                                    : "OC"
-                                                            : "NA"}
+                                                        {mu ?
+                                                            <input type="checkbox" checked={articulo.ultimas_piezas} onChange={(e) => {
+                                                                const value = e.target.checked;
+                                                                setEditableArticulos(prev => {
+                                                                    const copy = { ...prev };
+                                                                    copy[almacen.id][i] = { ...copy[almacen.id][i], ultimas_piezas: value };
+                                                                    return copy;
+                                                                });
+                                                            }} />
+                                                            :
+                                                            articulo.ultimas_piezas ? "Sí" : "No"
+                                                        }
                                                     </td>
-                                                    <td>{articulo.max_min.length > 0 ? articulo.max_min[0].minimo : "0"}</td>
-                                                    <td>{articulo.max_min.length > 0 ? articulo.max_min[0].maximo : "0"}</td>
+                                                    <td>
+
+                                                        {mu ?
+                                                            <input type="checkbox" checked={articulo.bajo_pedido} onChange={(e) => {
+                                                                const value = e.target.checked;
+                                                                setEditableArticulos(prev => {
+                                                                    const copy = { ...prev };
+                                                                    copy[almacen.id][i] = { ...copy[almacen.id][i], bajo_pedido: value };
+                                                                    return copy;
+                                                                });
+                                                            }} />
+                                                            : articulo.bajo_pedido ? "Sí" : "No"}
+                                                    </td>
+                                                    <td>
+                                                        {mu ?
+                                                            articulo.max_min.length > 0 ?
+                                                                <select
+                                                                    value={articulo.max_min[0]?.accion ?? ""}
+                                                                    onChange={(e) => {
+                                                                        const selectedAccion = parseInt(e.target.value, 10);
+                                                                        setEditableArticulos(prev => {
+                                                                            const copy = { ...prev };
+                                                                            const updatedArticulo = { ...copy[almacen.id][i] };
+
+                                                                            if (updatedArticulo.max_min && updatedArticulo.max_min.length > 0) {
+                                                                                updatedArticulo.max_min[0] = {
+                                                                                    ...updatedArticulo.max_min[0],
+                                                                                    accion: selectedAccion,
+                                                                                };
+                                                                            } else {
+                                                                                updatedArticulo.max_min = [{ accion: selectedAccion }];
+                                                                            }
+
+                                                                            copy[almacen.id][i] = updatedArticulo;
+                                                                            return copy;
+                                                                        });
+                                                                    }}
+                                                                >
+                                                                    <option value="">Selecciona acción</option>
+                                                                    <option value={0}>CR</option>
+                                                                    <option value={1}>TA</option>
+                                                                    <option value={2}>OC</option>
+                                                                </select>
+
+                                                                : 'N/A'
+                                                            :
+                                                            articulo.max_min.length > 0
+                                                                ? articulo.max_min[0].accion === 0
+                                                                    ? "CR"
+                                                                    : articulo.max_min[0].accion === 1
+                                                                        ? "TA"
+                                                                        : "OC"
+                                                                : "NA"
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        {articulo.max_min.length > 0 ?
+                                                            mu ?
+                                                                <input
+                                                                    type="number"
+                                                                    value={articulo.max_min[0].minimo}
+                                                                    onChange={(e) => {
+                                                                        const newValue = parseFloat(e.target.value);
+                                                                        setEditableArticulos(prev => {
+                                                                            const copy = { ...prev };
+                                                                            const updatedArticulo = { ...copy[almacen.id][i] };
+
+                                                                            updatedArticulo.max_min[0] = {
+                                                                                ...updatedArticulo.max_min[0],
+                                                                                minimo: isNaN(newValue) ? 0 : newValue,
+                                                                            };
+
+                                                                            copy[almacen.id][i] = updatedArticulo;
+                                                                            return copy;
+                                                                        });
+                                                                    }}
+                                                                />
+                                                                : articulo.max_min[0].minimo
+
+                                                            : "0"}</td>
+                                                    <td>
+                                                        {articulo.max_min.length > 0 ?
+                                                            mu ?
+                                                                <input
+                                                                    type="number"
+                                                                    value={articulo.max_min[0].maximo}
+                                                                    onChange={(e) => {
+                                                                        const newValue = parseFloat(e.target.value);
+                                                                        setEditableArticulos(prev => {
+                                                                            const copy = { ...prev };
+                                                                            const updatedArticulo = { ...copy[almacen.id][i] };
+
+                                                                            updatedArticulo.max_min[0] = {
+                                                                                ...updatedArticulo.max_min[0],
+                                                                                maximo: isNaN(newValue) ? 0 : newValue,
+                                                                            };
+
+                                                                            copy[almacen.id][i] = updatedArticulo;
+                                                                            return copy;
+                                                                        });
+                                                                    }}
+                                                                />
+                                                                : articulo.max_min[0].maximo
+
+                                                            : "0"}</td>
                                                     <td>{articulo.restantes}</td>
                                                     <td>{articulo.apartados}</td>
                                                     <td>{articulo.disponible}</td>
+                                                    {mu ?
+                                                        <>
+                                                            <td>
+                                                                <input type="checkbox" checked={articulo.activo} onChange={(e) => {
+                                                                    const value = e.target.checked;
+                                                                    setEditableArticulos(prev => {
+                                                                        const copy = { ...prev };
+                                                                        copy[almacen.id][i] = { ...copy[almacen.id][i], activo: value };
+                                                                        return copy;
+                                                                    });
+                                                                }} />
+                                                            </td>
+                                                            <td>
+                                                                <input type="checkbox" checked={articulo.consultar_cotizador} onChange={(e) => {
+                                                                    const value = e.target.checked;
+                                                                    setEditableArticulos(prev => {
+                                                                        const copy = { ...prev };
+                                                                        copy[almacen.id][i] = { ...copy[almacen.id][i], consultar_cotizador: value };
+                                                                        return copy;
+                                                                    });
+                                                                }} />
+                                                            </td>
+                                                            <td>
+                                                                <input type="checkbox" checked={articulo.consultar_te} onChange={(e) => {
+                                                                    const value = e.target.checked;
+                                                                    setEditableArticulos(prev => {
+                                                                        const copy = { ...prev };
+                                                                        copy[almacen.id][i] = { ...copy[almacen.id][i], consultar_te: value };
+                                                                        return copy;
+                                                                    });
+                                                                }} />
+                                                            </td>
+                                                            <td>
+                                                                <input type="checkbox" checked={articulo.desabasto} onChange={(e) => {
+                                                                    const value = e.target.checked;
+                                                                    setEditableArticulos(prev => {
+                                                                        const copy = { ...prev };
+                                                                        copy[almacen.id][i] = { ...copy[almacen.id][i], desabasto: value };
+                                                                        return copy;
+                                                                    });
+                                                                }} />
+                                                            </td>
+                                                            <td>
+                                                                <input type="checkbox" checked={articulo.iva_excento} onChange={(e) => {
+                                                                    const value = e.target.checked;
+                                                                    setEditableArticulos(prev => {
+                                                                        const copy = { ...prev };
+                                                                        copy[almacen.id][i] = { ...copy[almacen.id][i], iva_excento: value };
+                                                                        return copy;
+                                                                    });
+                                                                }} />
+                                                            </td>
+                                                            <td>
+                                                                <input type="checkbox" checked={articulo.precio_libre} onChange={(e) => {
+                                                                    const value = e.target.checked;
+                                                                    setEditableArticulos(prev => {
+                                                                        const copy = { ...prev };
+                                                                        copy[almacen.id][i] = { ...copy[almacen.id][i], precio_libre: value };
+                                                                        return copy;
+                                                                    });
+                                                                }} />
+                                                            </td>
+                                                            <td>
+                                                                <input type="checkbox" checked={articulo.vender_sin_stock} onChange={(e) => {
+                                                                    const value = e.target.checked;
+                                                                    setEditableArticulos(prev => {
+                                                                        const copy = { ...prev };
+                                                                        copy[almacen.id][i] = { ...copy[almacen.id][i], vender_sin_stock: value };
+                                                                        return copy;
+                                                                    });
+                                                                }} />
+                                                            </td>
+                                                            <td>
+                                                                <button className='btn__general-purple' onClick={()=>actualizarArticulo(articulo)}>Save</button>
+                                                            </td>
+                                                        </>
+                                                        : ''}
                                                 </tr>
                                             ))}
                                         </tbody>

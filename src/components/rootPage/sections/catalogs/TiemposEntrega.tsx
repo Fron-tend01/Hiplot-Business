@@ -43,6 +43,9 @@ const TiemposEntrega = () => {
     },
     {
       nombre: 'VIERNES'
+    },
+    {
+      nombre: 'SABADO'
     }
   ]
   const [configte, setConfigte] = useState({

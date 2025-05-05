@@ -8,6 +8,7 @@ const Components: React.FC = () => {
   const setSubModal = storeArticles(state => state.setSubModal)
   const setComponents = storeArticles(state => state.setComponents)
   const setDeleteComponents = storeArticles(state => state.setDeleteComponents)
+  const deleteComponent = storeArticles(state => state.deleteComponents)
   const { subModal, components }: any = useStore(storeArticles)
 
   const [camps] = useState<any>([
@@ -48,11 +49,16 @@ const Components: React.FC = () => {
     setComponents(updatedComponents);
   };
 
-  const deleteComponent = (item: any) => {
+  const deleteComponents = (item: any) => {
     const filter = components.filter((x: any) => x.id !== item.id)
     // debugger
     setComponents(filter)
-    setDeleteComponents(prev => [...prev, item.id]);
+    if(item) {
+      console.log('deleteComponent',deleteComponent);
+      
+      setDeleteComponents([...deleteComponent, item.id]); // ✅
+    }
+    // setDeleteComponents([...deleteComponent, item.id]); // ✅
   }
 
 
@@ -123,7 +129,7 @@ const Components: React.FC = () => {
                         <input className='inputs__general' value={item.cantidad} onChange={(e) => handleFormChange(e, index)} type="number" placeholder='Indeterminada' />
                       </div>
                       <div className='td'>
-                        <button className='btn__general-danger' type='button' onClick={() => deleteComponent(item)}>Eliminar</button>
+                        <button className='btn__general-danger' type='button' onClick={() => deleteComponents(item)}>Eliminar</button>
                       </div>
                     </div>
                   </div>
