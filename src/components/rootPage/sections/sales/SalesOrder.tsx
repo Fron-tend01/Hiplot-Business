@@ -318,12 +318,12 @@ const SalesOrder: React.FC = () => {
 
                     {saleOrders.map(order => (
                         <div className='ovtab__tbody' key={order.id} onClick={() => modalUpdate(order)}>
-                            <div className='ovtab__td'>{order.serie}-{order.folio}-{order.anio}</div>
+                            <div className='ovtab__td'><b>{order.serie}-{order.folio}-{order.anio}</b></div>
                             <div className='ovtab__td'>{order.titulo}</div>
-                            <div className='ovtab__td'>{order.usuario_crea}</div>
+                            <div className='ovtab__td'><b>{order.usuario_crea}</b></div>
                             <div className='ovtab__td'>{order.fecha_creacion}</div>
                             <div className='ovtab__td'>{order.sucursal}</div>
-                            <div className='ovtab__td'>$ {order.total_orden}</div>
+                            <div className='ovtab__td'><b>$ {order.total_orden}</b></div>
                             <div className='ovtab__td'>$ N/A</div>
                             <div className='ovtab__td'>$ {order.total_facturado}</div>
                             <div className='ovtab__td'>
