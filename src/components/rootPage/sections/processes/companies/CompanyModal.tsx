@@ -37,7 +37,7 @@ const CompanyModal = () => {
     const [dataEmpresas, setDataEmpresas] = useState<any>({})
 
 
-    const [modoUpdate] = useState<boolean>(false)
+    const [modoUpdate, setModoUpdate] = useState<boolean>(false)
     const [selectedCompany,] = useState<number | null>(null);
 
     // Estados de advertencia para validar campos
@@ -61,12 +61,16 @@ const CompanyModal = () => {
 
         getViews(user_id, 'EMPRESAS')
         setModel({ ...model, id_usuario: user_id })
+        setModoUpdate(model.modoUpdate)
     }
 
     useEffect(() => {
         fetch()
     }, []);
-
+    useEffect(() => {
+        setModel({ ...model, id_usuario: user_id })
+        setModoUpdate(model.modoUpdate)
+    }, [modal]);
 
 
     useEffect(() => {
@@ -102,6 +106,8 @@ const CompanyModal = () => {
         }
 
         if (modal == 'modal__update-companies') {
+            console.log('model',model);
+            
             await APIs.CreateAnyPut(model, "empresa_update/" + model.id)
                 .then(async (response: any) => {
                     if (response.error == false) {

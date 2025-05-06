@@ -34,6 +34,7 @@ const Companies: React.FC = () => {
   // Modal del pop
   const modal = (company: any) => {
     setModal('modal__update-companies')
+    DynamicVariables.updateAnyVar(setModel, 'modoUpdate', true)
     DynamicVariables.updateAnyVar(setModel, 'id', company.id)
     DynamicVariables.updateAnyVar(setModel, 'tyc_cotizaciones', company.tyc_cotizaciones)
     DynamicVariables.updateAnyVar(setModel, 'razon_social', company.razon_social)
@@ -43,15 +44,29 @@ const Companies: React.FC = () => {
     DynamicVariables.updateAnyVar(setModel, 'modulo_cobrofranquicia_compaqi', company.modulo_cobrofranquicia_compaqi)
 
     DynamicVariables.updateAnyVar(setModel, 'empresas_franquicias', company.empresas_franquicias)
-  }
+    DynamicVariables.updateAnyVar(setModel, 'empresas_franquicias_remove', [])
 
+  }
+  const modalCreate = () => {
+    setModal('modal__creating-companies')
+    DynamicVariables.updateAnyVar(setModel, 'modoUpdate', false)
+    DynamicVariables.updateAnyVar(setModel, 'tyc_cotizaciones', '')
+    DynamicVariables.updateAnyVar(setModel, 'razon_social', '')
+    DynamicVariables.updateAnyVar(setModel, 'nombre_comercial', '')
+    DynamicVariables.updateAnyVar(setModel, 'bd_compaqi', '')
+    DynamicVariables.updateAnyVar(setModel, 'imagen', null)
+    DynamicVariables.updateAnyVar(setModel, 'modulo_cobrofranquicia_compaqi', 0)
+
+    DynamicVariables.updateAnyVar(setModel, 'empresas_franquicias', [])
+    DynamicVariables.updateAnyVar(setModel, 'empresas_franquicias_remove', [])
+  }
   return (
     <div className='companies'>
       <div className='container__companies'>
         {views.find((x: any) => x.titulo === 'crear') ?
           <div className='create__company_btn-container'>
             <div>
-              <button className='btn__general-purple' onClick={(() => setModal('modal__creating-companies'))}>Nueva Empresa </button>
+              <button className='btn__general-purple' onClick={(() => modalCreate())}>Nueva Empresa </button>
             </div>
           </div>
           :

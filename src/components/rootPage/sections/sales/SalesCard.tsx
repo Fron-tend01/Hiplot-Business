@@ -65,6 +65,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
 
   const permisosxVistaheader = storeDv((state) => state.permisosxvistaheader);
+  const permisosxvistaFicha = storeDv((state) => state.permisosxvistaFicha);
+  const setPermisosxvistaFicha = storeDv((state) => state.setPermisosxVistaFicha);
 
 
   const { modalArticleView }: any = useStore(storeArticleView)
@@ -101,14 +103,14 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
-  const [PermisosxVistaFicha, setPermisosxVistaFicha] = useState<any>([])
-  const checkPermissionFicha = (elemento: string) => {
-    return PermisosxVistaFicha.some((x: any) => x.titulo == elemento)
-  }
   const fetch1 = async () => {
-    APIs.GetAny('get_permisos_x_vista/' + user_id + '/FICHA').then(async (resp: any) => {
-      setPermisosxVistaFicha(resp)
-    })
+
+    try {
+      const resp: any = await APIs.GetAny('get_permisos_x_vista/' + user_id + '/FICHA');
+      setPermisosxvistaFicha(resp); // Aquí actualizamos el estado
+    } catch (error) {
+      console.error('Error fetching permisos:', error);
+    }
     const data = {
       id: IdArticle,
       activos: true,
@@ -122,7 +124,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       // get_adicional: true,
       get_proveedores: false,
       get_max_mins: false,
-      get_precios: userState?.franquicia==true ? true : false,
+      get_precios: userState?.franquicia == true ? true : false,
       get_combinaciones: true,
       get_plantilla_data: true,
       get_areas_produccion: true,
@@ -136,7 +138,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       id_grupo_us: selectedUserGroup
 
     };
-    debugger
+
     try {
       setModalLoading(true)
       return await APIs.getArticles(data)
@@ -243,6 +245,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   useEffect(() => {
     if (modalSalesCard === 'sale-card') {
+      console.log('entrando sale card')
       fetch1();
       setData({
         obs_produccion: '',
@@ -290,7 +293,23 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     fetchUser()
   }, [idA])
 
+  useEffect(() => {
+      setData({
+        obs_produccion: '',
+        obs_factura: '',
+      })
+      setPrices(0)
+      setAdicional(null)
+      setDescuento(0)
+      setPricesFranquicia(0)
+      setPricesFranquiciaAdicional(0)
+      setAmount(0)
+      setBillingComment('')
+      setproductionComments('')
+      setfyv(false)
 
+      setCombinacionesSeleccionadas([])
+  }, [modalSalesCard])
 
 
 
@@ -491,8 +510,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           setAdicional(result.adicional)
           let lista_precios_franquicia = 0
           let precio_franq_tmp = 0
-          
-          if (userState.franquicia) {
+
+          if (userState.franquicia) { // VERIFICAR ESTA VALIDACIÓN, HACE QUE NO SE INSERTE EL ARTICULO A LA OV
 
             lista_precios_franquicia = article?.precios_franquicia[0].id_grupos_us
             const dataArticleFranquicia = {
@@ -520,8 +539,6 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
               // setAdicionalFranquicia(resultFranquicia.adicional)
             }
-          } else {
-
           }
           return setData({
             id_pers: 0,
@@ -587,6 +604,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     }
   };
 
+
   const getPrices = async () => {
     if (amount > 0) {
       let numbrs = article.plantilla_data.filter((x: any) => x.tipo == 'numero')
@@ -639,7 +657,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   const addQua = () => {
     console.log(Adicional);
-    
+
     if (Adicional) { //SI ADICIONAL TIENE ALGO SE DEBE CREAR EL PERSONALIZADO PARA ENVIARLO A COT/OV
       //-------------------------------SIMULAR EL INGRESO DIRECTO A NORMALCONCEPTS
       Swal.fire({
@@ -1044,8 +1062,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   // const checkPermission = (elemento: string) => {
   //   return permisosxVistaheader.some((x: any) => x.titulo == elemento)
   // }
-  console.log('PERMISOS XVISTAHEADER',permisosxVistaheader);
-  
+
   const setterPrices = (valor: any) => {
     setPrices(valor || 0)
     setData((prev: any) => ({
@@ -1150,6 +1167,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   //   }
   // };
+
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' || modalSalesCard === 'sale-card-quotation' ? 'active' : ''}`}>
       {/* <Toaster expand={true} position="top-right" richColors /> */}
@@ -1605,7 +1623,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
               }
               {statusArticle !== false ?
                 <div>
-                  {Adicional != null ?
+                  {Adicional != null && permisosxvistaFicha.some((x: any) => x.titulo = 'ver_adicional') ?
                     <div className='table__sale-card-additional'>
                       <div className='table__head'>
                         <div className='thead'>
@@ -1696,22 +1714,22 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                     :
                     <p className="result__total-price">
                       $
-                      {(Boolean(checkPermissionFicha('modificar_precio') || article?.precio_libre)) ? (
+
+                      {(article?.precio_libre || (Array.isArray(permisosxvistaFicha) && permisosxvistaFicha.length > 0 && permisosxvistaFicha.some((x: any) => x.titulo == 'modificar_precio'))) ?
                         <input
                           type="text"
                           value={prices}
                           onChange={(e) => setterPrices(e.target.value)}
                         />
-                      ) : (
-                        prices
-                      )}
+                        :
+                        prices}
                     </p>
                   }
 
                 </div>
 
               </div>
-              {permisosxVistaheader.length > 0 && permisosxVistaheader.some((x:any)=> x.titulo=='totales_franquicia') && ( 
+              {permisosxVistaheader.length > 0 && permisosxVistaheader.some((x: any) => x.titulo == 'totales_franquicia') && (
                 <div className='row__four'>
                   <div className='price_x_unit'>
                     <p className='title__price_x_unit'>Precio por unidad Franquicia:</p>

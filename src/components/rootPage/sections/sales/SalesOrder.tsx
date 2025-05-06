@@ -145,7 +145,7 @@ const SalesOrder: React.FC = () => {
             id_vendedor: selectedIds?.users?.id,
             status: type,
             page: page,
-            light:true
+            light: true
         }
         const result = await getSaleOrders(dataSaleOrders)
         setModalLoading(false)
@@ -157,7 +157,7 @@ const SalesOrder: React.FC = () => {
     const modalUpdate = async (order: any) => {
         setModalLoading(true)
         const dataSaleOrders = {
-            id:order.id
+            id: order.id
         }
         const result = await getSaleOrders(dataSaleOrders)
         setModalLoading(false)
@@ -188,7 +188,8 @@ const SalesOrder: React.FC = () => {
                 <div className='row__one'>
                     <div className='row'>
                         <div className='md-col-12 col-6'>
-                            <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} all={true} />
+                            
+                            <Empresas_Sucursales  modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} all={true} />
                         </div>
                         <div className='md-col-12 col-4 row'>
                             <div className='col-6'>
@@ -298,181 +299,53 @@ const SalesOrder: React.FC = () => {
                     </div>
                 </div>
                 <Modal />
-
-                <div className='table__sale-orders'>
-                    {saleOrders ? (
-                        <div className='table__numbers'>
-                            <p className='text'>Total de ordenes de compra</p>
-                            <div className='quantities_tables'>{saleOrders.length}</div>
-                        </div>
-                    ) : (
-                        <p className="text">No hay ordenes de compra que mostras</p>
-                    )}
-                    <div className='table__head'>
-                        <div className='thead'>
-                            <div className='th'>
-                                <p>Folio</p>
-                            </div>
-                            <div className='th'>
-                                <p>Título</p>
-                            </div>
-                            <div className='th'>
-                                <p>Total</p>
-                            </div>
-                            <div className='th'>
-                                <p>Total Franquicia</p>
-                            </div>
-                            <div className='th'>
-                                <p>Total Facturados</p>
-                            </div>
-                            <div className='th'>
-                                <p>Creada por</p>
-                            </div>
-                            <div className='th'>
-                                <p>Fecha</p>
-                            </div>
-                            <div className='th'>
-                                <p>Status</p>
-                            </div>
-                            <div className='th'>
-                                <p>Sucursal</p>
-                            </div>
-                            <div className='th'>
-                                <p>Razon social</p>
-                            </div>
-                            <div className='th'>
-                                <p>Entreg. Cliente</p>
-                            </div>
-                            <div className='th'>
-                                <p>Entreg. Suc.</p>
-                            </div>
-                            <div className='th'>
-                                <p>Ordenes de produc.</p>
-                            </div>
-                        </div>
+                <div className='ovtab__container'>
+                    <div className='ovtab__thead'>
+                        <div className='ovtab__th'>Folio</div>
+                        <div className='ovtab__th'>Título</div>
+                        <div className='ovtab__th'>Creada por</div>
+                        <div className='ovtab__th'>Fecha</div>
+                        <div className='ovtab__th'>Sucursal</div>
+                        <div className='ovtab__th'>Total</div>
+                        <div className='ovtab__th'>Total Franquicia</div>
+                        <div className='ovtab__th'>Total Facturados</div>
+                        <div className='ovtab__th'>Status</div>
+                        <div className='ovtab__th'>Razón social</div>
+                        <div className='ovtab__th'>Entreg. Cliente</div>
+                        <div className='ovtab__th'>Recib. Suc.</div>
+                        <div className='ovtab__th'>Ordenes de produc.</div>
                     </div>
-                    {saleOrders ? (
-                        <div className='table__body'>
-                            {saleOrders.map((order: any) => {
-                                return (
-                                    <div className='tbody__container-desk' key={order.id} onClick={() => modalUpdate(order)}>
-                                        <div className='tbody'>
-                                            <div className='td'>
-                                                <p className='folio'>{order.serie}-{order.folio}-{order.anio}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{order.titulo}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>$ {order.total_orden}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>$ N/A</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>$ {order.total_facturado}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{order.usuario_crea}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{order.fecha_creacion}</p>
-                                            </div>
-                                            <div className='td'>
-                                                {order.status == 0 ? <p className='active-identifier'>Activa</p> : ''}
-                                                {order.status == 1 ? <p className='cancel-identifier'>Cancelada</p> : ''}
-                                                {order.status == 2 ? <p className='cancel-identifier'>Terminada</p> : ''}
-                                            </div>
-                                            <div className='td'>
-                                                <p>{order.sucursal}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{order.razon_social}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p className='folio-identifier'>{order?.total_entregados_cliente} de {order?.conceptos?.length}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p className='amount-identifier'>{order?.total_recibidos_sucursal} de {order?.conceptos?.length}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <div className='table-td-production'>
-                                                    <div className='thead-td'>
-                                                        <p>Area</p>
-                                                        <p>Folio</p>
-                                                        <p>Imprimir</p>
-                                                    </div>
-                                                    {order?.ordenes_produccion.map((x: any) => (
-                                                        <div className='tbody-td'>
-                                                            <small>{x.area_produccion}</small>
-                                                            <small>{x.folio_completo}</small>
-                                                            <p className='imprimir'>Imprimir</p>
-                                                        </div>
-                                                    ))
 
-
-                                                    }
-
-                                                </div>
-                                            </div>
-                                        </div>
+                    {saleOrders.map(order => (
+                        <div className='ovtab__tbody' key={order.id} onClick={() => modalUpdate(order)}>
+                            <div className='ovtab__td'>{order.serie}-{order.folio}-{order.anio}</div>
+                            <div className='ovtab__td'>{order.titulo}</div>
+                            <div className='ovtab__td'>{order.usuario_crea}</div>
+                            <div className='ovtab__td'>{order.fecha_creacion}</div>
+                            <div className='ovtab__td'>{order.sucursal}</div>
+                            <div className='ovtab__td'>$ {order.total_orden}</div>
+                            <div className='ovtab__td'>$ N/A</div>
+                            <div className='ovtab__td'>$ {order.total_facturado}</div>
+                            <div className='ovtab__td'>
+                                {order.status === 0 && <span className='active-identifier'>Activa</span>}
+                                {order.status === 1 && <span className='cancel-identifier'>Cancelada</span>}
+                                {order.status === 2 && <span className='finished-identifier'>Pendiente</span>}
+                            </div>
+                            <div className='ovtab__td'>{order.razon_social}</div>
+                            <div className='ovtab__td'>{order.total_entregados_cliente} de {order?.conceptos?.length}</div>
+                            <div className='ovtab__td'>{order.total_recibidos_sucursal} de {order?.conceptos?.length}</div>
+                            <div className='ovtab__td'>
+                                {order.ordenes_produccion.map(x => (
+                                    <div key={x.folio_completo}>
+                                        <small>{x.area_produccion}</small><br />
+                                        <small>{x.folio_completo}</small>
                                     </div>
-                                )
-                            })}
-                            {saleOrders.map((order: any) => {
-                                return (
-                                    <div className='tbody__container-response' key={order.id} onClick={() => modalUpdate(order)}>
-                                        <div className='tbody'>
-                                            <div className='td'>
-                                                <p className='folio'>{order.serie}-{order.folio}-{order.anio}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{order.titulo}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>$ {order.total_orden}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>$ N/A</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>$ {order.total_facturado}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{order.usuario_crea}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{order.fecha_creacion}</p>
-                                            </div>
-                                            <div className='td'>
-                                                {order.status == 0 ? <p className='active-identifier'>Activa</p> : ''}
-                                                {order.status == 1 ? <p className='cancel-identifier'>Cancelada</p> : ''}
-                                                {order.status == 2 ? <p className='finished-identifier'>Pendiente</p> : ''}
-                                            </div>
-                                            <div className='td'>
-                                                <p>{order.razon_social}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{order.razon_social}</p>
-                                            </div>
-                                            <div className='td'>
-                                                <p>{order.total_entregados_cliente} de {order?.conceptos?.length}</p>
-                                            </div>
-
-                                            <div className='td'>
-                                                <p>{order.total_recibidos_sucursal} de {order?.conceptos?.length}</p>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                )
-                            })}
+                                ))}
+                            </div>
                         </div>
-
-                    ) : (
-                        <p className="text">Cargando datos...</p>
-                    )}
+                    ))}
                 </div>
+
 
 
                 <div className='row'>

@@ -246,7 +246,7 @@ const ModalCreate: React.FC = () => {
     setIndexVM(index)
     setModalSub('see_cp')
     setTypeConcept(type)
-}
+  }
   const [selectResults, setSelectResults] = useState<boolean>(false);
 
 
@@ -285,6 +285,8 @@ const ModalCreate: React.FC = () => {
         if (copy_data?.conceptos_pers != undefined && copy_data?.conceptos_pers?.length > 0) {
           copy_data?.conceptos_pers?.forEach(element => {
             element?.conceptos?.forEach(el => {
+              el.unidad = el.id_unidad
+              el.descuento = 0
               el.campos_plantilla.forEach(e => {
                 e.valor = e.valor.toString()
               });
@@ -322,18 +324,54 @@ const ModalCreate: React.FC = () => {
     }
 
   }
-
-  const undoConcepts = (concept: any, i: number) => {
+  const undoConcepts = (concept: any, i: number, adicional: boolean) => {
     const deleteItemCustomC = quotes?.personalized_concepts.filter((_: any, index: number) => index !== i);
-    const updatedConcepts = concept.conceptos.map((element: any) => ({
-      ...element,
-      id_pers: 0,
-      check: false,
-    }));
-    setQuotes({ normal_concepts: [...quotes?.normal_concepts, ...updatedConcepts], personalized_concepts: deleteItemCustomC, personalized_concepts_eliminate: concept.id ? [...quotes.personalized_concepts_eliminate, concept.id] : [...quotes.personalized_concepts_eliminate] });
-    localStorage.setItem('cotizacion', JSON.stringify([...(quotes?.normal_concepts ?? []), ...updatedConcepts]));
-    localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
+
+    if (adicional) {
+      // Solo elimina el concepto personalizado
+      setQuotes({
+        ...quotes,
+        personalized_concepts: deleteItemCustomC,
+        personalized_concepts_eliminate: concept.id
+          ? [...quotes.personalized_concepts_eliminate, concept.id]
+          : [...quotes.personalized_concepts_eliminate],
+      });
+      localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
+    } else {
+      // Elimina el concepto personalizado y actualiza normal_concepts
+      const updatedConcepts = concept.conceptos.map((element: any) => ({
+        ...element,
+        id_pers: 0,
+        check: false,
+      }));
+
+      setQuotes({
+        ...quotes,
+        normal_concepts: [...quotes?.normal_concepts, ...updatedConcepts],
+        personalized_concepts: deleteItemCustomC,
+        personalized_concepts_eliminate: concept.id
+          ? [...quotes.personalized_concepts_eliminate, concept.id]
+          : [...quotes.personalized_concepts_eliminate],
+      });
+      localStorage.setItem(
+        'cotizacion',
+        JSON.stringify([...(quotes?.normal_concepts ?? []), ...updatedConcepts])
+      );
+      localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
+    }
   };
+
+  // const undoConcepts = (concept: any, i: number, adicional:boolean) => {
+  //   const deleteItemCustomC = quotes?.personalized_concepts.filter((_: any, index: number) => index !== i);
+  //   const updatedConcepts = concept.conceptos.map((element: any) => ({
+  //     ...element,
+  //     id_pers: 0,
+  //     check: false,
+  //   }));
+  //   setQuotes({ normal_concepts: [...quotes?.normal_concepts, ...updatedConcepts], personalized_concepts: deleteItemCustomC, personalized_concepts_eliminate: concept.id ? [...quotes.personalized_concepts_eliminate, concept.id] : [...quotes.personalized_concepts_eliminate] });
+  //   localStorage.setItem('cotizacion', JSON.stringify([...(quotes?.normal_concepts ?? []), ...updatedConcepts]));
+  //   localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
+  // };
 
 
   const deleteNormalConcept = (item: any, i: number) => {
@@ -342,6 +380,8 @@ const ModalCreate: React.FC = () => {
     localStorage.setItem('cotizacion', JSON.stringify(filter));
     toast.success('Concepto eliminado')
   }
+
+
 
 
 
@@ -762,7 +802,7 @@ const ModalCreate: React.FC = () => {
               <div>
                 <label className='label__general'>Nombre</label>
                 <div className='warning__general'><small >Este campo es obligatorio</small></div>
-                <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre'onKeyUp={(event) => event.key === 'Enter' && searchUsers()} />
+                <input className={`inputs__general`} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre' onKeyUp={(event) => event.key === 'Enter' && searchUsers()} />
               </div>
               <div className='d-flex align-items-end justify-content-center'>
                 <div className='search-icon' onClick={searchUsers}>
@@ -950,6 +990,25 @@ const ModalCreate: React.FC = () => {
                             </div>
                           </div>
                           <div className='td'>
+                            <p>$0.00</p>
+                          </div>
+                          <div className='td'>
+                            <p>$0.00</p>
+                          </div>
+                          <div className='td'>
+                            <div className='d-flex'>
+                              <div>
+                                <p className='total'>$ {parseFloat(article.precio_total).toFixed(2)}</p>
+                                {permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') && (
+
+                                  <p className='total__franch'>{article.total_franquicia != null && !Number.isNaN(article.total_franquicia) ?
+                                    <small>PF: ${parseFloat(article.total_franquicia).toFixed(2)}</small> : ''}</p>
+                                )}
+
+                              </div>
+                            </div>
+                          </div>
+                          <div className='td'>
                             {article?.personalized ?
                               <div onClick={() => modalPersonalizedUpdate(article, index)} className='conept-icon'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
@@ -965,13 +1024,13 @@ const ModalCreate: React.FC = () => {
                           </div>
                           {article.con_adicional ?
                             <div className='td'>
-                              <div className='delete-icon' onClick={() => deleteNormalConcept(article, index)} title='Eliminar concepto'>
+                              <div className='delete-icon' onClick={() => undoConcepts(article, index, true)} title='Eliminar concepto'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                               </div>
                             </div>
                             :
                             <div className='td'>
-                              <div className='undo-icon' onClick={() => undoConcepts(article, index)}>
+                              <div className='undo-icon' onClick={() => undoConcepts(article, index, false)}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
                               </div>
                             </div>
@@ -1096,13 +1155,13 @@ const ModalCreate: React.FC = () => {
                           </div>
                           {article.con_adicional ?
                             <div className='td'>
-                              <div className='delete-icon' onClick={() => deleteNormalConcept(article, index)} title='Eliminar concepto'>
+                              <div className='delete-icon' onClick={() => undoConcepts(article, index, true)} title='Eliminar concepto adicional'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                               </div>
                             </div>
                             :
                             <div className='td'>
-                              <div className='undo-icon' onClick={() => undoConcepts(article, index)}>
+                              <div className='undo-icon' onClick={() => undoConcepts(article, index, false)}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
                               </div>
                             </div>

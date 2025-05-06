@@ -1,5 +1,6 @@
 .sales__order {
 	height: 90vh;
+	
 }
 
 
@@ -11,17 +12,21 @@
 	padding: 20px;
 	border-radius: 10px;
 	overflow: hidden;
+	
 }
 
 .sales__order_container>div {
 	width: 100%;
+	box-shadow: 7px 4px 7px rgba(0, 0, 0, 0.1); /* X Y blur color */
+
 }
 
 
 .sales__order_container>.row__one {
-	padding: 20px;
+	padding: 10px;
 	background-color: var(--cards-background);
 	border-radius: var(--general-card-border);
+	zoom:80%
 }
 
 
@@ -228,11 +233,54 @@
 	.sales__order_container > .row__one >.row__three {
 		display: block;
 	}
-	
+}
 
-	
-	
-	
+/* Define el número de columnas (13 en tu caso) */
+.ovtab__thead,
+.ovtab__tbody {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr); /* 13 columnas iguales */
+  align-items: center;
+  padding: 0.75rem 1rem;
+  gap: 0.5rem;
+}
 
+.ovtab__th, .ovtab__td {
+  text-align: center;
+  font-size: 0.65rem;
+}
 
+/* Encabezados */
+.ovtab__thead {
+  background-color: #f3f4f6;
+  font-weight: bold;
+  color: #333;
+  border-bottom: 2px solid #ccc;
+}
+
+/* Filas de datos */
+.ovtab__tbody {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.ovtab__tbody:hover {
+  background-color: #f9fafb;
+}
+
+/* Estilo general del contenedor */
+.ovtab__container {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  background: #fff;
+  font-family: 'Segoe UI', sans-serif;
+}
+.ovtab__tbody:nth-child(even) {
+  background-color: #dddddd; /* color para las filas pares */
+}
+
+.ovtab__tbody:nth-child(odd) {
+  background-color: #ffffff; /* opcional, para asegurar contraste */
 }

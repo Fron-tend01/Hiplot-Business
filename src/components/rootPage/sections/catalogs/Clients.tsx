@@ -158,6 +158,10 @@ const Clients: React.FC = () => {
                   <input name="condiciones_pago" className='inputs__general' type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder='Ingresa el nombre y pulsa ENTER'
                   onKeyUp={(event) => event.key === 'Enter' && searchClient()} />
               </div>
+              <div>
+              <button className='btn__general-purple' onClick={searchClient}>Buscar</button>
+
+              </div>
             </div>
             <div className='d-flex justify-content-center my-4'>
               <button className='btn__general-purple' type='button' onClick={() => setModal('create_clients')}>Crear clientes</button>

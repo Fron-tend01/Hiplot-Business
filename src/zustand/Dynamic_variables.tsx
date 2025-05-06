@@ -19,6 +19,10 @@ interface StoreState {
   permisosxvistaheader: any[];
   setPermisosxVistaheader: (updateFunc: any[] | ((prevArray: any[]) => any[])) => void;
 
+  permisosxvistaFicha: any[];
+  setPermisosxVistaFicha: (updateFunc: any[] | ((prevArray: any[]) => any[])) => void;
+
+
   index: any;
   setIndex: (x: any) => void;
 
@@ -44,6 +48,10 @@ export const storeDv = create<StoreState>((set) => ({
   permisosxvistaheader: [],
   setPermisosxVistaheader: (updateFunc) => set((state) => ({
     permisosxvistaheader: typeof updateFunc === 'function' ? updateFunc(state.permisosxvistaheader) : updateFunc,
+  })),
+  permisosxvistaFicha: [],
+  setPermisosxVistaFicha: (updateFunc) => set((state) => ({
+    permisosxvistaFicha: typeof updateFunc === 'function' ? updateFunc(state.permisosxvistaFicha) : updateFunc,
   })),
   index: null,
   setIndex: (x) => set({ index: x }),
