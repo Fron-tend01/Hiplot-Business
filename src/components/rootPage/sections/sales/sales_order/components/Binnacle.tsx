@@ -44,7 +44,7 @@ const Binnacle: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                        {saleOrdersToUpdate.bitacora?.length > 0 ? (
+                        {saleOrdersToUpdate?.bitacora?.length > 0 ? (
                             <div className='table__body'>
                                 {saleOrdersToUpdate?.bitacora?.map((article: any) => {
                                     return (

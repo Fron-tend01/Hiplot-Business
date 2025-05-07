@@ -103,6 +103,7 @@
   display: flex;
   visibility: hidden;
   z-index: 10;
+  height: 100%;
 }
 
 .overlay__personalized_modal.active {
@@ -119,6 +120,7 @@
   transform: scale(0.7);
   opacity: 0;
   z-index: 10;
+  overflow:auto
 }
 
 .popup__personalized_modal .btn-cerrar-popup__personalized_modal {
@@ -161,7 +163,6 @@
   border-radius: 10px;
   display: grid;
   grid-template-rows: repeat(2, auto) 1fr;
-  height: 100%;
 
 }
 

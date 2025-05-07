@@ -1928,7 +1928,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                             </div>
                           }
                           <div className='td'>
-                              <p>{quotation.codigo}-{quotation.descripcion}</p>
+                            <p>{quotation.codigo}-{quotation.descripcion}</p>
                           </div>
                           <div className='td'>
                             <div>
@@ -1936,22 +1936,22 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                             </div>
                           </div>
                           <div className='td'>
-                              <p>{quotation.unidad}</p>
+                            <p>{quotation.unidad}</p>
                           </div>
                           <div className='td'>
-                              <p>{quotation.precio_unitario}</p>
+                            <p>{quotation.precio_unitario}</p>
                           </div>
                           <div className='td'>
-                              <p>{quotation.precio_total}</p>
+                            <p>{quotation.precio_total}</p>
                           </div>
                           <div className='td'>
-                              <p>{quotation.monto_descuento}</p>
+                            <p>{quotation.monto_descuento}</p>
                           </div>
                           <div className='td'>
-                              <p>{quotation.monto_urgencia}</p>
+                            <p>{quotation.monto_urgencia}</p>
                           </div>
                           <div className='td'>
-                              <p>{quotation.total + quotation.monto_urgencia}</p>
+                            <p>{quotation.total + quotation.monto_urgencia}</p>
                           </div>
                         </div>
                       </div>

@@ -142,16 +142,16 @@ const Header: React.FC = () => {
       setNotfys(r)
     })
   };
-  useEffect(() => {
-    getNotificaciones()
-    //---------------------------SIRVE PARA ESTAR CONSULTANDO CADA CIERTO TIEMPO, EL CLEARINVERVAL ROMPE EL INTERVALO CUANDO RETURN SE EJECUTA Y EL COMPONENTE SE DESMONTA
-    intervalRef.current = setInterval(getNotificaciones, 30000);
-    return () => {
-      if (intervalRef.current !== null) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [])
+  // useEffect(() => {
+  //   getNotificaciones()
+  //   //---------------------------SIRVE PARA ESTAR CONSULTANDO CADA CIERTO TIEMPO, EL CLEARINVERVAL ROMPE EL INTERVALO CUANDO RETURN SE EJECUTA Y EL COMPONENTE SE DESMONTA
+  //   intervalRef.current = setInterval(getNotificaciones, 30000);
+  //   return () => {
+  //     if (intervalRef.current !== null) {
+  //       clearInterval(intervalRef.current);
+  //     }
+  //   };
+  // }, [])
   const effectRan = useRef(false);
 
   useEffect(() => {

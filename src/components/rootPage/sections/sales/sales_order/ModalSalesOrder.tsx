@@ -62,7 +62,9 @@ const ModalSalesOrder: React.FC = () => {
 
     const setModalArticleView = storeArticleView(state => state.setModalArticleView)
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
-    const { normalConcepts, customConcepts, conceptView, personalized, deleteCustomConcepts, normalConceptsView }: any = useStore(storePersonalized)
+    const { normalConcepts, customConcepts, conceptView, personalized, deleteCustomConcepts, normalConceptsView, ov_repo }: any = useStore(storePersonalized)
+    const setov_repo = storePersonalized((state) => state.setov_repo);
+
     const { dataGet, changeLength }: any = useStore(storeSaleOrder)
     const setSelectedIds = useSelectStore((state) => state.setSelectedId);
 
@@ -222,6 +224,7 @@ const ModalSalesOrder: React.FC = () => {
             id_usuario_crea: user_id,
             titulo: title,
             motivo_modify_te: modify_te,
+            id_ov_repo: ov_repo == null ? 0 : ov_repo?.id,
             id_cotizacion_relacionada: idCotizacion,
             hora_entrega_produccion: timePartOne,
             fecha_entrega_produccion: datePartOne,
@@ -250,6 +253,8 @@ const ModalSalesOrder: React.FC = () => {
                 setCustomConceptView([])
                 setSaleOrdersConcepts({ normal_concepts: [], personalized_concepts: [] });
                 setUrgenciaG(false)
+                setov_repo(null)
+
                 const dataSaleOrders = {
                     id: result.id,
                     folio: 0,
@@ -295,7 +300,7 @@ const ModalSalesOrder: React.FC = () => {
         })
         setSelectData('clients', result[0])
 
-        
+
     }
 
 
@@ -1039,6 +1044,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const closeModal = async () => {
         setModalSalesOrder('')
+        // setov_repo(null)
         await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
             let orden = r[0]
             if (r.length == 0) {
@@ -1192,8 +1198,43 @@ const ModalSalesOrder: React.FC = () => {
     }, [statusUrgency])
 
 
+    const cargar_repo = () => {
+        Swal.fire({
+            title: "Desea levantar una REPOSICIÓN de esta orden?",
+            text: "Esta acción ligará la orden actual a la nueva orden como una reposición",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setov_repo(saleOrdersToUpdate)
+                closeModal()
+                Swal.fire('Notificacion', 'Puedes empezar a crear tu reposición como una nueva orden', 'success')
+                setTimeout(() => {
+                    modalOpen()
+                }, 1000);
+            }
+        });
+
+    }
+    const modalOpen = async () => {
+        setModalSalesOrder('sale-order__modal')
+        setModalLoading(true)
+        await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
+            let orden = r[0]
+            if (r.length > 0) {
+                setSaleOrdersToUpdate(orden)
+                setSaleOrdersConcepts({ normal_concepts: orden.conceptos || [], personalized_concepts: orden.conceptos_pers || [], sale_order: orden });
+
+            }
+            setModalLoading(false)
+
+        })
 
 
+
+    }
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
             <div className={`popup__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
@@ -1414,6 +1455,9 @@ const ModalSalesOrder: React.FC = () => {
                                     <div>
                                         <button className='btn__general-orange' onClick={binnacleModal}>Bitácora</button>
                                     </div>
+                                    <div>
+                                        <button className='btn__general-orange' onClick={cargar_repo}>Cargar Reposición</button>
+                                    </div>
                                 </div>
                                 {permisosxVista.some((x: any) => x.titulo === 'cancelar') ?
                                     saleOrdersToUpdate.status === 0 || saleOrdersToUpdate.status === 2 ?
@@ -1434,6 +1478,15 @@ const ModalSalesOrder: React.FC = () => {
                 <div className='sale-order__modal_articles' >
                     <div className='row__one'>
                         <div className='row__one'>
+                            {ov_repo != undefined && ov_repo != null && ov_repo != 0 ?
+                                <span style={{
+                                    color: 'red', display: 'flex', justifyContent: 'space-between',
+                                }}>Estás por realizar una reposición de la orden {ov_repo?.serie}-{ov_repo?.folio}-{ov_repo?.anio}
+                                    <button type='button' className='btn__general-danger' style={{ marginLeft: 'auto' }}
+                                        onClick={() => setov_repo(null)}>Cancelar Reposición</button>
+                                </span>
+
+                                : ''}
                             <div className='row'>
                                 <div className='col-12'>
                                     {modalSalesOrder !== 'sale-order__modal-update' ?
