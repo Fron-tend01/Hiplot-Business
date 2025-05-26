@@ -128,9 +128,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       get_combinaciones: true,
       get_plantilla_data: true,
       get_areas_produccion: true,
-      get_tiempos_entrega: true,
-      get_componentes: true,
-      get_stock: true,
+      get_tiempos_entrega: false,
+      get_componentes: false,
+      get_stock: false,
       get_web: false,
       for_ventas: true,
       get_unidades: true,
@@ -141,12 +141,21 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
     try {
       setModalLoading(true)
-      return await APIs.getArticles(data)
+      // return await APIs.CreateAny(data, 'articulos_getrwk')
+      // return await APIs.getArticles(data)
+      return await axios.post(
+        "http://hiplot.dyndns.org:84/cotizador_api/index.php/mantenimiento/get_articulos",
+        data,  // Enviar el objeto directamente (sin `JSON.stringify`)
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      )
         .then(async (response: any) => {
-          if (!response || response.length === 0) {
+          if (!response || response.data.length === 0) {
             throw new Error('No se encontraron artículos');
           }
-          const art = response[0];
+          const art = response.data[0];
+          console.log(art);
 
 
 
@@ -294,21 +303,21 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   }, [idA])
 
   useEffect(() => {
-      setData({
-        obs_produccion: '',
-        obs_factura: '',
-      })
-      setPrices(0)
-      setAdicional(null)
-      setDescuento(0)
-      setPricesFranquicia(0)
-      setPricesFranquiciaAdicional(0)
-      setAmount(0)
-      setBillingComment('')
-      setproductionComments('')
-      setfyv(false)
+    setData({
+      obs_produccion: '',
+      obs_factura: '',
+    })
+    setPrices(0)
+    setAdicional(null)
+    setDescuento(0)
+    setPricesFranquicia(0)
+    setPricesFranquiciaAdicional(0)
+    setAmount(0)
+    setBillingComment('')
+    setproductionComments('')
+    setfyv(false)
 
-      setCombinacionesSeleccionadas([])
+    setCombinacionesSeleccionadas([])
   }, [modalSalesCard])
 
 
@@ -444,7 +453,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
             id_familia: article.id_familia,
             produccion_interna: false,
             id_area_produccion: article.areas_produccion[0]?.id_area,
-            enviar_a_produccion: false,
+            enviar_a_produccion: userState.forzar_produccion ? 1 : 0,
             personalized: false,
             check: false,
             status: 0,
@@ -512,32 +521,36 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           let precio_franq_tmp = 0
 
           if (userState.franquicia) { // VERIFICAR ESTA VALIDACIÓN, HACE QUE NO SE INSERTE EL ARTICULO A LA OV
+            if (article?.precios_franquicia != null && article?.precios_franquicia.length > 0) {
+              lista_precios_franquicia = article?.precios_franquicia[0].id_grupos_us
+              const dataArticleFranquicia = {
+                id_articulo: article.id,
+                id_grupo_us: lista_precios_franquicia,
+                id_unidad: selectedUnit.id_unidad,
+                id_usuario: user_id,
+                cantidad: amount,
+                fyv: fyv,
+                campos: article.plantilla_data.filter((x: any) => x.tipo == 'numero'),
+                camposTxTVisual: article.plantilla_data.filter((x: any) => x.tipo == 'txtvisual'),
+                franquicia: true
+              };
 
-            lista_precios_franquicia = article?.precios_franquicia[0].id_grupos_us
-            const dataArticleFranquicia = {
-              id_articulo: article.id,
-              id_grupo_us: lista_precios_franquicia,
-              id_unidad: selectedUnit.id_unidad,
-              id_usuario: user_id,
-              cantidad: amount,
-              fyv: fyv,
-              campos: article.plantilla_data.filter((x: any) => x.tipo == 'numero'),
-              camposTxTVisual: article.plantilla_data.filter((x: any) => x.tipo == 'txtvisual'),
-              franquicia: true
-            };
+              // const resultFranquicia: any = await APIs.getTotalPrice(dataArticleFranquicia);
+              const resultFranquicia: any = await APIs.getTotalPriceWSignal(dataArticleFranquicia, {
+                signal: controllerRef.current.signal, // Pasa la señal aquí
+              });
+              if (!resultFranquicia.error) {
+                precio_franq_tmp = resultFranquicia.mensaje
+                // precio_franq_adi_tmp = resultFranquicia?.adicional?.total
 
-            // const resultFranquicia: any = await APIs.getTotalPrice(dataArticleFranquicia);
-            const resultFranquicia: any = await APIs.getTotalPriceWSignal(dataArticleFranquicia, {
-              signal: controllerRef.current.signal, // Pasa la señal aquí
-            });
-            if (!resultFranquicia.error) {
-              precio_franq_tmp = resultFranquicia.mensaje
-              // precio_franq_adi_tmp = resultFranquicia?.adicional?.total
+                setPricesFranquicia(resultFranquicia.mensaje)
+                setPricesFranquiciaAdicional(resultFranquicia?.adicional?.total)
 
-              setPricesFranquicia(resultFranquicia.mensaje)
-              setPricesFranquiciaAdicional(resultFranquicia?.adicional?.total)
-
-              // setAdicionalFranquicia(resultFranquicia.adicional)
+                // setAdicionalFranquicia(resultFranquicia.adicional)
+              }
+            } else {
+              setPricesFranquicia(0)
+              setPricesFranquiciaAdicional(0)
             }
           }
           return setData({
@@ -547,7 +560,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
             id_familia: article.id_familia,
             produccion_interna: false,
             id_area_produccion: article.areas_produccion[0]?.id_area,
-            enviar_a_produccion: false,
+            enviar_a_produccion: userState.forzar_produccion ? 1 : 0,
             personalized: false,
             check: false,
             status: 0,
@@ -748,7 +761,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           concepto_principal.precio_total -= concepto_adicional.total
           concepto_principal.precio_unitario -= (concepto_adicional.total / concepto_adicional.cantidad)
           concepto_principal.descuento -= concepto_adicional.descuento
-          concepto_principal.enviar_a_produccion = userState.forzar_produccion
+          concepto_principal.enviar_a_produccion = userState.forzar_produccion ? 1 : 0
           concepto_principal.total_franquicia = pricesFranquiciaAdicional != null && !Number.isNaN(pricesFranquiciaAdicional) ? concepto_principal.total_franquicia - pricesFranquiciaAdicional : concepto_principal.total_franquicia
           concepto_adicional.id_identifier = concepto_principal.id_identifier + 1;
           concepto_adicional.check = true
@@ -759,7 +772,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           concepto_adicional.precio_total = concepto_adicional.total
           concepto_adicional.precio_unitario = concepto_adicional.total / concepto_adicional.cantidad
           concepto_adicional.total_franquicia = pricesFranquiciaAdicional
-          concepto_adicional.enviar_a_produccion = userState.forzar_produccion
+          concepto_adicional.enviar_a_produccion = userState.forzar_produccion ? 1 : 0
 
           concepto_adicional.campos_plantilla = []
 
@@ -835,7 +848,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       data.campos_plantilla.forEach((cp: any) => {
         cp.valor = cp.valor.toString()
       });
-      data.enviar_a_produccion = userState.forzar_produccion
+      data.enviar_a_produccion = userState.forzar_produccion ? 1 : 0
 
       let data_enviar = {
         concepto: data,
@@ -955,6 +968,19 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
 
   const fetch2 = async (selectedIds: any[]) => {
+    setData({
+      obs_produccion: '',
+      obs_factura: '',
+    })
+    setPrices(0)
+    setAdicional(null)
+    setDescuento(0)
+    setPricesFranquicia(0)
+    setPricesFranquiciaAdicional(0)
+    setAmount(0)
+    setBillingComment('')
+    setproductionComments('')
+    setfyv(false)
     const data = {
       id: 0,
       activos: true,
@@ -968,13 +994,13 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       // get_adicional: true,
       get_proveedores: false,
       get_max_mins: false,
-      get_precios: true,
+      get_precios: userState?.franquicia == true ? true : false,
       get_combinaciones: true,
       get_plantilla_data: true,
       get_areas_produccion: true,
-      get_tiempos_entrega: true,
-      get_componentes: true,
-      get_stock: true,
+      get_tiempos_entrega: false,
+      get_componentes: false,
+      get_stock: false,
       get_web: false,
       for_ventas: true,
       get_unidades: true,
@@ -987,8 +1013,15 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     try {
       // Obtener artículos
       setModalLoading(true)
-
-      const response: any = await APIs.getArticles(data);
+      let resp: any = await axios.post(
+        "http://hiplot.dyndns.org:84/cotizador_api/index.php/mantenimiento/get_articulos",
+        data,  // Enviar el objeto directamente (sin `JSON.stringify`)
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      )
+      const response = resp.data
+      // const response: any = await APIs.getArticles(data);
       if (response && response.length > 0) {
         const plantilla_data = response[0].plantilla_data || []; // Inicializar como un arreglo vacío
         const id_plantillas_art_campos = [];
@@ -1077,9 +1110,11 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const get_precios = async () => {
     const data = {
       id_articulo: IdArticle,
-      for_ventas: false,
+      for_ventas: true,
       id_usuario: user_id,
-      id_grupo_us: selectedUserGroup
+      id_grupo_us: selectedUserGroup,
+      // get_precios: userState?.franquicia == true ? true : false,
+
     };
     if (article?.opciones_de_variacion2?.length > 0) {
       data.id_articulo = article.id
@@ -1088,8 +1123,16 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       // Obtener artículos
       setModalLoading(true)
 
+      // return await axios.post(
+      //   "http://hiplot.dyndns.org:84/cotizador_api/index.php/mantenimiento/get_precios",
+      //   data,  // Enviar el objeto directamente (sin `JSON.stringify`)
+      //   {
+      //     headers: { "Content-Type": "application/json" },
+      //   }
+      // )
       return await APIs.CreateAny(data, 'get_articulo_precios')
         .then(async (response: any) => {
+          // response = response.data
           if (!response || response.length === 0) {
             throw new Error('No se encontraron artículos');
           }
@@ -1122,52 +1165,120 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     }
   };
 
-  // const get_stock = async () => {
-  //   const data = {
-  //     id_articulo: IdArticle,
-  //     for_ventas: false,
-  //     id_usuario: user_id,
-  //     componentes: article.componentes
-  //   };
+  const get_stock = async () => {
+    const data = {
+      id: IdArticle,
+      activos: true,
+      nombre: '',
+      codigo: '',
+      familia: 0,
+      proveedor: 0,
+      materia_prima: 0,
+      get_componentes: true,
+      get_stock: true,
+      for_ventas: true,
+      id_usuario: user_id,
+      por_combinacion: true,
+      componentes: article.componentes
 
-  //   try {
-  //     // Obtener artículos
-  //     setModalLoading(true)
-
-  //     return await APIs.CreateAny(data, 'get_articulo_stock')
-  //       .then(async (response: any) => {
-  //         if (!response || response.length === 0) {
-  //           throw new Error('No se encontraron artículos');
-  //         }
-
-  //         // return
-  //         setArticle({ ...article, stocks: response.stocks, componentes:response.componentes });
-  //         setStatusArticle(true);
-  //         setModalLoading(false);
-  //         setModalSub('stock_modal')
-
-  //       })
-  //       .catch((error) => {
-  //         console.error('Error fetching data:', error);
-  //       })
-  //       .finally(() => {
-  //         setStatusArticle(true);
-  //         setModalLoading(false);
-  //       });
+    };
 
 
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //     setModalLoading(false)
+    // const data = {
+    //   id_articulo: IdArticle,
+    //   for_ventas: false,
+    //   id_usuario: user_id,
+    //   componentes: article.componentes
+    // };
 
-  //   } finally {
-  //     // Cambia el estado después de completar todo el proceso
-  //     setStatusArticle(true);
-  //     setModalLoading(false)
+    try {
+      // Obtener artículos
+      setModalLoading(true)
+      return await APIs.getArticles(data)
+        .then(async (response: any) => {
+          if (!response || response.length === 0) {
+            throw new Error('No se encontraron artículos');
+          }
+          const art = response[0]
+          // return
+          setArticle({ ...article, stock: art.stock, componentes: art.componentes });
+          setStatusArticle(true);
+          setModalLoading(false);
+          setModalSub('stock_modal')
 
-  //   }
-  // };
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        })
+        .finally(() => {
+          setStatusArticle(true);
+          setModalLoading(false);
+        });
 
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setModalLoading(false)
+
+    } finally {
+      // Cambia el estado después de completar todo el proceso
+      setStatusArticle(true);
+      setModalLoading(false)
+
+    }
+  };
+  const get_tiempos = async () => {
+    const data = {
+      id: IdArticle,
+      activos: true,
+      nombre: '',
+      codigo: '',
+      familia: 0,
+      proveedor: 0,
+      materia_prima: 0,
+      get_tiempos_entrega: true,
+      for_ventas: true,
+      id_usuario: user_id,
+      por_combinacion: true,
+
+    };
+
+    try {
+      // Obtener artículos
+      setModalLoading(true)
+      return await APIs.getArticles(data)
+        .then(async (response: any) => {
+          if (!response || response.length === 0) {
+            throw new Error('No se encontraron artículos');
+          }
+          const art = response[0]
+          // return
+          setArticle({ ...article, tiempos_entrega: art.tiempos_entrega });
+          setStatusArticle(true);
+          setModalLoading(false);
+          setModalSub('delivery-time_modal')
+
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        })
+        .finally(() => {
+          setStatusArticle(true);
+          setModalLoading(false);
+        });
+
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setModalLoading(false)
+
+    } finally {
+      // Cambia el estado después de completar todo el proceso
+      setStatusArticle(true);
+      setModalLoading(false)
+
+    }
+  };
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' || modalSalesCard === 'sale-card-quotation' ? 'active' : ''}`}>
       {/* <Toaster expand={true} position="top-right" richColors /> */}
@@ -1231,7 +1342,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                     <span className="sale__card-tooltip-text">Precios</span>
                   </div>
                   <div className='btn__sale__card-tooltip-container'>
-                    <button className='btn__general-purple' type='button' onClick={() => setModalSub('stock_modal')}>
+                    <button className='btn__general-purple' type='button' onClick={() => get_stock()}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-stack-2"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 4l-8 4l8 4l8 -4l-8 -4" /><path d="M4 12l8 4l8 -4" /><path d="M4 16l8 4l8 -4" /></svg>
                     </button>
                     <span className="sale__card-tooltip-text">Stock</span>
@@ -1243,7 +1354,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                     <span className="sale__card-tooltip-text">Indicaciones</span>
                   </div>
                   <div className='btn__sale__card-tooltip-container'>
-                    <button className='btn__general-purple' type='button' onClick={() => setModalSub('delivery-time_modal')}>
+                    <button className='btn__general-purple' type='button' onClick={() => get_tiempos()}>
                       <svg className="icon icon-tabler icons-tabler-outline icon-tabler-clock-hour-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"  ><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7v5" /><path d="M12 12l2 -3" /></svg>
                     </button>
                     <span className="sale__card-tooltip-text">Tiempos de Entrega</span>

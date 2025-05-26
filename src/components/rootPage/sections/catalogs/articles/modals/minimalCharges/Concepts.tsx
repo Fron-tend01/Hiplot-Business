@@ -18,6 +18,7 @@ const Concepts: React.FC<ConceptsProps> = ({index}) => {
     const user_id = userState.id;
   
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
+    const setSelectData: any = useSelectStore((state) => state.setSelectedId);
   
     const setModalSub = storeModals((state) => state.setModalSub);
     const modalSub = storeModals((state) => state.modalSub);
@@ -36,7 +37,7 @@ const Concepts: React.FC<ConceptsProps> = ({index}) => {
     const [typeCharges, setTypeCharges] = useState<any>([]);
     const [discountVariable, setDiscountVariable] = useState<any>([]);
     const [multiplierVariable, setMultiplierVariable] = useState<any>([]);
-  
+
     useEffect(() => {
       const fetch = async () => {
         try {
@@ -114,8 +115,21 @@ const Concepts: React.FC<ConceptsProps> = ({index}) => {
             setMinimalCharges(updatedCharges);
         }
     }, [selectedIds])
-  
-
+    useEffect(() => {
+      if(modalSub == 'modal-sub-minimal-charges') {
+         seleccionar_datos()
+      }
+  }, [modalSub])
+    const seleccionar_datos = () => {
+      console.log('cargos minimos ver concepts in minimalcharge',minimalCharges);
+      
+      setSelectData('templates', minimalCharges[index].por)
+      setSelectData('discountVariable', minimalCharges[index].variable_descuento)
+      setSelectData('multiplierVariable', minimalCharges[index].variable_multiplicacion)
+      setSelectData('units', minimalCharges[index].id_unidad)
+      setSelectData('typeCharges', minimalCharges[index].tipo)
+      setSelectData('userGroups', minimalCharges[index].grupo_de_usuario)
+    }
 
 
 

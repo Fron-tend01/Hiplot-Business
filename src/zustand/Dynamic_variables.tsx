@@ -26,6 +26,12 @@ interface StoreState {
   index: any;
   setIndex: (x: any) => void;
 
+  modalCampos: any;
+  setModalCampos: (x: any) => void;
+
+  DataCampos: any;
+  setDataCampos: (x: any) => void;
+
   dataDynamic: any;
   setDataDynamic: (updateFunc: any[] | ((prevArray: any[]) => any[])) => void;
 }
@@ -55,6 +61,12 @@ export const storeDv = create<StoreState>((set) => ({
   })),
   index: null,
   setIndex: (x) => set({ index: x }),
+
+  modalCampos: null,
+  setModalCampos: (x) => set({ index: x }),
+
+  DataCampos: null,
+  setDataCampos: (x) => set({ DataCampos: x }),
 
   dataDynamic: '',
   setDataDynamic: (updateFunc) => set((state) => ({

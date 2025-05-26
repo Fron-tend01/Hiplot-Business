@@ -13,6 +13,7 @@ import { storeModals } from '../../../../zustand/Modals'
 import ModalProduction from './ModalProduction'
 import { storeProduction } from '../../../../zustand/Production'
 import { storeDv } from '../../../../zustand/Dynamic_variables';
+import { storeArticles } from '../../../../zustand/Articles';
 
 
 const Production: React.FC = () => {
@@ -121,6 +122,7 @@ const Production: React.FC = () => {
             hasta: fechas.current[1],
             id_usuario: user_id,
             status: typeRef.current,
+            light: true
         };
 
         try {
@@ -165,6 +167,8 @@ const Production: React.FC = () => {
             hasta: dates[1],
             id_usuario: user_id,
             status: type,
+            light: true
+
         }
 
         try {
@@ -174,10 +178,36 @@ const Production: React.FC = () => {
             console.log(error)
         }
     }
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
     const handleModalChange = (order: any) => {
-        setModalSub('production__modal')
-        setProductionToUpdate(order)
+        const dataProductionOrders = {
+            id: order.id,
+            folio: 0,
+            id_sucursal: 0,
+            id_serie: 0,
+            id_area: 0,
+            // id_cliente: client,
+            desde: dates[0].toString().split('T')[0], // Solo la fecha
+            hasta: dates[1].toString().split('T')[0],
+            id_usuario: user_id,
+            status: 0,
+        }
+        setModalLoading(true)
+        try {
+            APIs.getProoductionOrders(dataProductionOrders).then((resp: any) => {
+                setModalLoading(false)
+                setProductionToUpdate(resp[0])
+                setModalSub('production__modal')
+            }).finally(() => {
+                setModalLoading(false)
+            })
+
+        } catch (error) {
+            console.log(error)
+        }
+        // setModalSub('production__modal')
+        // setProductionToUpdate(order)
     }
 
     const updateAux = async (check: boolean, id_op: number, no_aux: number) => {
@@ -339,6 +369,9 @@ const Production: React.FC = () => {
                                 <p>Fecha de entrega</p>
                             </div>
                             <div className="th">
+                                <p>Pedidos</p>
+                            </div>
+                            <div className="th">
                                 <p>Aux</p>
                             </div>
                         </div>
@@ -367,6 +400,13 @@ const Production: React.FC = () => {
                                             </div>
                                             <div className='td' onClick={() => handleModalChange(order)}>
                                                 <p>{order.fecha_entrega} {order.hora_entrega}</p>
+                                            </div>
+                                            <div className='td' onClick={() => handleModalChange(order)}>
+                                                {order?.pedidos_almacen?.map((pedido, index) => (
+                                                    <div key={index}>
+                                                        {pedido.folio_pedido_almacen}
+                                                    </div>
+                                                ))}
                                             </div>
                                             <div className='td checkbox-group'>
                                                 <input type="checkbox" className='m-1 checkbox-input' checked={order.aux1}

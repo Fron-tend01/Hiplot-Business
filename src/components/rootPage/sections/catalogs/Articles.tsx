@@ -214,7 +214,7 @@ const Articles: React.FC = () => {
   }
 
   const searchArticle = async () => {
-    const data = {
+    let data = {
       id: 0,
       activos: typeActive,
       nombre: descripcion == '' ? '' : descripcion,
@@ -232,8 +232,10 @@ const Articles: React.FC = () => {
       get_unidades: false
     };
     setModalLoading(true)
-    console.log('MOSTRANDO DESDE EL SEARC');
 
+    if ( code != '') {
+      data.materia_prima = 99
+    }
     try {
       await getArticlesInGlobal(data);
       setModalLoading(false)

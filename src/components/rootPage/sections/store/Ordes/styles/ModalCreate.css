@@ -469,3 +469,37 @@
     transform: scale(1);
     opacity: 1;
 }
+
+.collapse-container {
+    width: 100%;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+  }
+
+  .collapse-toggle {
+    display: none;
+  }
+
+  .collapse-label {
+    display: block;
+    background: #6e6e6e;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  .collapse-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: #f8f9fa;
+    padding: 0 15px;
+    border: 1px solid #ddd;
+    border-top: none;
+  }
+
+  .collapse-toggle:checked + .collapse-label + .collapse-content {
+    max-height: 500px; /* ajusta según el contenido */
+    padding: 15px;
+  }

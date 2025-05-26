@@ -85,7 +85,7 @@ const Prices: React.FC = () => {
           dataSelect: resultUserGroups
         }
       )
-  
+
 
     } catch (error) {
       console.error('Error fetching ranges:', error);
@@ -286,7 +286,7 @@ const Prices: React.FC = () => {
 
   const handlePricesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value;
-    if (value!= '') {
+    if (value != '') {
       prices[index].precios = value;
       setPrices([...prices]);
     } else {
@@ -297,7 +297,7 @@ const Prices: React.FC = () => {
 
   const handlePricesFVChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value;
-    if (value!= '') {
+    if (value != '') {
       prices[index].precios_fyv = value;
       setPrices([...prices]);
     } else {
@@ -353,29 +353,27 @@ const Prices: React.FC = () => {
       id_grupo_us_hasta: selectedIds.id_groupUserAl.id
     }
     let for_clone = prices
-    .filter((x: any) => x.id_grupos_us === dataa.id_grupo_us_desde)
-    .map((x: any) => ({
-      ...x,
-      id: 0,
-      id_grupos_us: dataa.id_grupo_us_hasta,
-      precios_ext: x.precios_ext
-      ? x.precios_ext.map((pe: any) => ({
-          ...pe,
-          id: 0 ,
-          id_articulos_precios: 0 
-        }))
-      : []// copiado correcto del arreglo interno
-    }));
-    debugger
-    let add = for_clone[0] || []
+      .filter((x: any) => x.id_grupos_us === dataa.id_grupo_us_desde)
+      .map((x: any) => ({
+        ...x,
+        id: 0,
+        id_grupos_us: dataa.id_grupo_us_hasta,
+        precios_ext: x.precios_ext
+          ? x.precios_ext.map((pe: any) => ({
+            ...pe,
+            id: 0,
+            id_articulos_precios: 0
+          }))
+          : []// copiado correcto del arreglo interno
+      }));
+    // debugger
     if (Array.isArray(prices)) {
-      setPrices([...prices, add])
+      setPrices([...prices, ...for_clone]);
     } else {
-      setPrices([add])
+      setPrices([...for_clone]);
     }
   }
-  console.log('PRICESSSS',prices);
-  
+
   const handleTemplatesChange = (e: any, index: number, index_two: number) => {
     const value = e.target.value;
     prices[index].precios_ext[index_two].variable_pc = value;
@@ -387,17 +385,17 @@ const Prices: React.FC = () => {
           ...item,
           precios_ext: Array.isArray(item.precios_ext)
             ? item.precios_ext.map((rangeItem: any, j: number) =>
-                j === indexRange ? { ...rangeItem, id_rangos: newValue } : rangeItem
-              )
+              j === indexRange ? { ...rangeItem, id_rangos: newValue } : rangeItem
+            )
             : [],
         };
       }
       return item;
     });
-    
+
     // Ahora sí actualizas el estado
     setPrices(updatedPrices);
-    
+
   };
 
 
@@ -646,7 +644,7 @@ const Prices: React.FC = () => {
                                         value={item_two.id_rangos || ""}
                                         onChange={(e) => handleChangeRange(index, index_two, e.target.value)}
                                       >
-                                        {ranges2?.map((range:any, idx:number) => (
+                                        {ranges2?.map((range: any, idx: number) => (
                                           <option key={idx} value={range.id}>
                                             {range.titulo}
                                           </option>

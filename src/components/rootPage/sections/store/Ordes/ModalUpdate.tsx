@@ -8,6 +8,7 @@ import APIs from "../../../../../services/services/APIs";
 import Swal from "sweetalert2";
 import { storeArticles } from "../../../../../zustand/Articles";
 import { storeDv } from "../../../../../zustand/Dynamic_variables";
+import DynamicVariables from "../../../../../utils/DynamicVariables";
 
 
 const ModalUpdate = ({ oderUpdate }: any,) => {
@@ -59,7 +60,7 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
 
 
 
-  const changeConceptsOrderMode = async (order: any) => {
+  const changeConceptsOrderMode = async (order: any, i: number) => {
     const id = order.id;
     const data = {
       id_usuario: user_id,
@@ -71,18 +72,23 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
 
     }
     const status = order.status === 0 ? 1 : 0;
+
     try {
       setModalLoading(true)
       await updateModeConceptsOrders({ id, status })
+      const updated = [...orderConceptsUpdate];
+      updated[i] = {
+        ...updated[i],
+        status: status
+      };
+
+      setOrderConceptsUpdate(updated);
       setModalLoading(false)
-      await getOrdedrs(data)
-      setModal('')
+      // await getOrdedrs(data)
     } catch (error) {
       setModalLoading(false)
 
     }
-    await getOrdedrs(data)
-    setModal('')
   }
 
 
@@ -219,7 +225,6 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
     document.body.removeChild(link);
   };
 
-  console.log('sddddddddddddddddddddd', oderUpdate)
 
   const handleSeleccion = (event: React.ChangeEvent<HTMLSelectElement>, index: number) => {
     const valueUnit = parseInt(event.target.value, 10);
@@ -385,7 +390,7 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
                           {checkPermission('cancelar') && (
 
                             order.status === 0 ?
-                              <div className='cancel-icon' onClick={() => changeConceptsOrderMode(order)} title='Cancelar concepto'>
+                              <div className='cancel-icon' onClick={() => changeConceptsOrderMode(order, index)} title='Cancelar concepto'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban"><circle cx="12" cy="12" r="10" /><path d="m4.9 4.9 14.2 14.2" /></svg>
                               </div>
                               :

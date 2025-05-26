@@ -158,6 +158,9 @@ const ModalCreate: React.FC = () => {
             hasta: dates[1],  
             id_serie: 0,
             folio: null,
+            light: true,
+            page: 1
+
         }
         if (concepts.length == 0 || concepts == null) {
             Swal.fire('Notificacion', 'Ingresa al menos un articulo para generar su salida', 'warning')

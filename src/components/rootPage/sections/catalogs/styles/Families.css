@@ -10,7 +10,7 @@
 	background-color: var(--background-sections);
 	padding: 20px ;
 	border-radius: 10px;
-    overflow: hidden;
+    overflow: scroll;
 }
 
 .create__families_btn-container {

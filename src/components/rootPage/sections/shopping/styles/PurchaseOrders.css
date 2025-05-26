@@ -12,21 +12,7 @@
     grid-template-rows: repeat(3, auto) 50%; */
    
     border-radius: 10px;
-    overflow: auto;
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-color: var(--primary-color); 
-        border-radius: 5px;
-        height: 100px;
-    }
-
-    &::-webkit-scrollbar-track {
-    /* Para modificar el background */
-    }
- 
+    overflow-y: scroll;
 }
 
 .container__purchase-order > .row__one {
@@ -188,7 +174,6 @@
 
 .table__purchase-order .table__body {
 	height: 100%;
-    overflow-y: auto;
     transition-delay: 0.0s;
     border: 2px solid var(--border-table-color);
     border-top: none;

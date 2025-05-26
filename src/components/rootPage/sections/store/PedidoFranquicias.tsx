@@ -186,21 +186,26 @@ const PedidoFranquicias = () => {
   useEffect(() => {
     getEmpresas(franquicia.id)
   }, [franquicia])
+
   const traer_alm_pred_prov = async (index: any) => {
     const data = {
       id_empresa: selectData?.proveedor?.id,
       id_empresa_franquicia: franquicia?.id,
       id_articulo: articulos[index]?.id
     }
+    setModalLoading(true)
     await APIs.CreateAny(data, "obtener_alm_vtaf")
       .then(async (response: any) => {
         if (response.error) {
+          debugger
           Swal.fire('Notificacion', response.mensaje, 'warning');
           setArticulos((prevArticulos) => {
             const updatedArticulos = prevArticulos.slice(0, -1);
             return updatedArticulos;
           });
           setFlag(null);
+          setModalLoading(false)
+
         } else {
           DynamicVariables.updateAnyVarByIndex(setArticulos, index, 'alm_pred', response.data)
           DynamicVariables.updateAnyVarByIndex(setArticulos, index, 'precios', response.precios)
@@ -208,10 +213,14 @@ const PedidoFranquicias = () => {
             DynamicVariables.updateAnyVarByIndex(setArticulos, index, 'unidad_sel', articulos[index].unidades[0].id_unidad)
           }
           setFlag(index);
+          setModalLoading(false)
+
         }
 
       })
       .catch((error: any) => {
+        setModalLoading(false)
+
         if (error.response) {
           if (error.response.status === 409) {
             Swal.fire(error.mensaje, '', 'warning');
@@ -233,13 +242,13 @@ const PedidoFranquicias = () => {
   useEffect(() => {
     const length = articulos.length;
 
-    if (length > 0 && (flag === null || length - 1 !== flag)) {
+    if (length > prevArticulosLength.current && (flag === null || length - 1 !== flag)) {
       traer_alm_pred_prov(length - 1);
     } else {
       setFlag(null)
     }
     prevArticulosLength.current = length;
-    
+
 
   }, [articulos, searcher]);
 
@@ -436,7 +445,14 @@ const PedidoFranquicias = () => {
 
     const stocks = articulos[index].stock;
     const almacen_predeterminado = newArticleStates[index].alm_pred;
-
+    if (!almacen_predeterminado || !almacen_predeterminado.id_almacen_pred) {
+      Swal.fire({
+        icon: "warning",
+        title: "Oops...",
+        text: "Aún no se ha definido el almacén predeterminado para este artículo. Por favor, espera un momento."
+      });
+      return;
+    }
     const filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id_almacen_pred);
     if (filter) {
       const equivalencias = filter[0].equivalencias.filter((x: any) => x.id_unidad == newArticleStates[index].unidad_sel)
@@ -563,9 +579,9 @@ const PedidoFranquicias = () => {
   }, [page])
 
 
-  useEffect(()=> {
+  useEffect(() => {
     setArticulos([])
- 
+
   }, [selectData?.proveedor])
 
   return (

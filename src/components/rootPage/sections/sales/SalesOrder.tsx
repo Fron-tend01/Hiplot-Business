@@ -17,6 +17,7 @@ import { storeArticles } from '../../../../zustand/Articles'
 import LoadingInfo from '../../../loading/LoadingInfo'
 import { storeDv } from '../../../../zustand/Dynamic_variables'
 import APIs from '../../../../services/services/APIs'
+import SeeCamposPlantillas from './SeeCamposPlantillas'
 
 const SalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -147,6 +148,7 @@ const SalesOrder: React.FC = () => {
             page: page,
             light: true
         }
+        // const result = await APIs.CreateAny(dataSaleOrders, 'get_ov2')
         const result = await getSaleOrders(dataSaleOrders)
         setModalLoading(false)
         setSaleOrders(result)
@@ -159,6 +161,7 @@ const SalesOrder: React.FC = () => {
         const dataSaleOrders = {
             id: order.id
         }
+        // const result = await APIs.CreateAny(dataSaleOrders, 'get_ov_session')
         const result = await getSaleOrders(dataSaleOrders)
         setModalLoading(false)
         let order_search = result[0]
@@ -188,8 +191,8 @@ const SalesOrder: React.FC = () => {
                 <div className='row__one'>
                     <div className='row'>
                         <div className='md-col-12 col-6'>
-                            
-                            <Empresas_Sucursales  modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} all={true} />
+
+                            <Empresas_Sucursales modeUpdate={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} all={true} />
                         </div>
                         <div className='md-col-12 col-4 row'>
                             <div className='col-6'>
@@ -335,7 +338,7 @@ const SalesOrder: React.FC = () => {
                             <div className='ovtab__td'>{order.total_entregados_cliente} de {order?.conceptos?.length}</div>
                             <div className='ovtab__td'>{order.total_recibidos_sucursal} de {order?.conceptos?.length}</div>
                             <div className='ovtab__td'>
-                                {order.ordenes_produccion.map(x => (
+                                {order?.ordenes_produccion?.map(x => (
                                     <div key={x.folio_completo}>
                                         <small>{x.area_produccion}</small><br />
                                         <small>{x.folio_completo}</small>
@@ -348,18 +351,23 @@ const SalesOrder: React.FC = () => {
 
 
 
-                <div className='row'>
+                <div className='row paginado-container'>
                     <div className='col-1'>
-                        <button className='btn__general-primary' onClick={() => setPage(page - 1)} disabled={page == 1}>ANTERIOR</button>
+                        <button className="paginado-btn paginado-btn-prev" onClick={() => setPage(page - 1)} disabled={page === 1}>
+                            ← Anterior
+                        </button>
                     </div>
-                    <div className='col-10'>
-
+                    <div className='col-10 paginado-info'>
+                        Página {page}
                     </div>
                     <div className='col-1'>
-                        <button className='btn__general-primary' onClick={() => setPage(page + 1)}>SIGUIENTE</button>
+                        <button className="paginado-btn paginado-btn-next" onClick={() => setPage(page + 1)}>
+                            Siguiente →
+                        </button>
                     </div>
                 </div>
             </div>
+            <SeeCamposPlantillas />
 
         </div>
     )

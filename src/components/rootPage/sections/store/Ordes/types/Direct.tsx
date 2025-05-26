@@ -56,13 +56,14 @@ const Direct: React.FC<any> = ({selectedOption}: any) => {
             proveedor: 0,
             materia_prima: 0,
             get_sucursales: false,
-            get_proveedores: true,
+            get_proveedores: false,
             get_max_mins: false,
             get_plantilla_data: false,
             get_stock: true,
             get_web: false,
             get_unidades: true,
-            id_usuario: user_id
+            id_usuario: user_id,
+            no_resultados:20
         };
 
         try {

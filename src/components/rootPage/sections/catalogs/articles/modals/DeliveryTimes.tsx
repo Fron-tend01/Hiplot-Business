@@ -55,13 +55,12 @@ const DeliveryTimes: React.FC = () => {
       .filter((x: any) => x.id)
       .map((x: any) => x.id); 
       setDeliveryTimes([...deliveryTimes, ...filter])
-      console.log('sdsdsdsdsdsdsd', filter)
   }
   
 
   const deleteDeliveryTime = (item: any) => {
-    const filter = deliveryTimes.filter((x: any) => x.id !== item.id)
-    setDeliveryTimes(filter);
+    const filter = deliveryTimesView.filter((x: any) => x.id !== item.id)
+    setDeliveryTimesView(filter);
     if(item){
       setDeleteDeliveryTimes([...deleteDeliveryTimes, item.id])
     }

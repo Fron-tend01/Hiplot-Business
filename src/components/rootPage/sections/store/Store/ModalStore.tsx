@@ -98,6 +98,7 @@ const ModalCreate: React.FC = () => {
             }
         } else {
             try {
+                
                 const result: any = await APIs.updateStore(data, data_ext);
                 await getStore(user_id)
                 const resultStore = await getStore(user_id)
@@ -126,7 +127,7 @@ const ModalCreate: React.FC = () => {
         const filter = companies.filter((x: any) => x.id == selectedBranchOffice.empresa_id)
 
         const data = {
-            id: selectedBranchOffice.id,
+            id_sucursal: selectedBranchOffice.id,
             predeterminado_empresa: predeterminada,
             sucursal: selectedBranchOffice.nombre,
             empresa: filter[0].razon_social

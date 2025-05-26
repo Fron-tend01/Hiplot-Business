@@ -130,6 +130,9 @@ const Billing: React.FC = () => {
 
     useEffect(() => {
         search()
+    }, [subModal])
+    useEffect(() => {
+        search()
     }, [page])
     // useEffect(() => {
     //     if (subModal == '') {

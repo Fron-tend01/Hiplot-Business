@@ -286,13 +286,13 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
       get_unidades: true
     };
     try {
-     
-        setModalLoading(true)
-        const result: any = await APIs.getArticles(data)
-        setModalLoading(false)
-        setResultModalOC(result);
-        setArticleResult(result[0])
-     
+
+      setModalLoading(true)
+      const result: any = await APIs.getArticles(data)
+      setModalLoading(false)
+      setResultModalOC(result);
+      setArticleResult(result[0])
+
     } catch (error) {
 
     }
@@ -356,12 +356,32 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     setConceptos(newArticleStates);
   };
 
+  // const handlePrecioUnitarioChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  //   const newArticleStates = [...conceptos];
+  //   newArticleStates[index].precio_unitario = e.target.value;
+  //   setConceptos(newArticleStates);
+  // };
   const handlePrecioUnitarioChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const value = e.target.value;
+
     const newArticleStates = [...conceptos];
-    newArticleStates[index].precio_unitario = e.target.value;
+
+    if (value === '') {
+      // Si el campo se borra, asignamos null o vacío
+      newArticleStates[index].precio_unitario = '';
+    } else {
+      // Convertir a número, redondear a 4 decimales
+      const num = parseFloat(value);
+
+      // Solo actualizar si es un número válido
+      if (!isNaN(num)) {
+        // Limitar a 4 decimales (como número, no string)
+        newArticleStates[index].precio_unitario = parseFloat(num.toFixed(4));
+      }
+    }
+
     setConceptos(newArticleStates);
   };
-
   const handleComentariosChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value;
     const newArticleStates = [...conceptos];
@@ -547,7 +567,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
   const hanledCreateOC = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
-   
+
 
 
     setStateLoading(true);
@@ -1177,7 +1197,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                               </div>
                               <div className='td'>
                                 <div>
-                                  <input className='inputs__general' value={article.precio_unitario === null ? '' : article.precio_unitario.toString()} onChange={(e) => handlePrecioUnitarioChange(e, index)} type="number" placeholder='P/U' onWheel={(e) => e.currentTarget.blur()} />
+                                  <input className='inputs__general'
+                                    value={article.precio_unitario === null ? '' : article.precio_unitario.toString()} onChange={(e) => handlePrecioUnitarioChange(e, index)} type="number" placeholder='P/U' onWheel={(e) => e.currentTarget.blur()} />
                                 </div>
                               </div>
                               <div className='td'>
@@ -1267,8 +1288,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
               </button>
               {modal == 'modal-purchase-orders-update' ?
                 <div>
-                  {purchaseOrderToUpdate?.status == 0 && checkPermission('cancelar')? <button className='btn__general-danger' type='button' onClick={updateStatus}>Cancelar</button> : ''}
-                  {purchaseOrderToUpdate?.status == 1 && checkPermission('cancelar')? <button className='btn__general-success' type='button' onClick={updateStatus}>Activar</button> : ''}
+                  {purchaseOrderToUpdate?.status == 0 && checkPermission('cancelar') ? <button className='btn__general-danger' type='button' onClick={updateStatus}>Cancelar</button> : ''}
+                  {purchaseOrderToUpdate?.status == 1 && checkPermission('cancelar') ? <button className='btn__general-success' type='button' onClick={updateStatus}>Activar</button> : ''}
                 </div>
                 :
                 ''

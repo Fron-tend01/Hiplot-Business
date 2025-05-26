@@ -272,7 +272,7 @@ const Requisition: React.FC = () => {
       desde: dates[0],
       hasta: dates[1],
       status: status,
-      page: 1
+      page: page2
 
     };
     setPage(1)
@@ -318,6 +318,10 @@ const Requisition: React.FC = () => {
       setPermisosxVista(resp)
     })
   }
+   const [page2, setPage2] = useState<number>(1)
+   useEffect(() => {
+          searchByFolio();
+      }, [page2]);
   return (
     <div className='requisition'>
       <div className='breadcrumbs'>
@@ -335,7 +339,7 @@ const Requisition: React.FC = () => {
       </div>
       <div className='container__requisition'>
 
-        <div className='row__one'>
+        <div className='row__one' style={{zoom:'80%'}}>
           <div className='row'>
             <div className='col-3 md-col-6 sm-col-12'>
               <Select dataSelects={companiesXUsers} instanceId='empresa' nameSelect={'Empresa'} />
@@ -477,7 +481,7 @@ const Requisition: React.FC = () => {
           </div>
         </div>
         <ModalRequisition />
-        <div className='table__requisiciones'>
+        <div className='table__requisiciones' style={{zoom:'80%'}}>
           <div>
             {requisitions ? (
               <div className='table__numbers'>
@@ -564,7 +568,22 @@ const Requisition: React.FC = () => {
 
 
       </div>
-      <Pagination />
+      <div className='row paginado-container'>
+          <div className='col-1'>
+            <button className="paginado-btn paginado-btn-prev" onClick={() => setPage2(page2 - 1)} disabled={page2 === 1}>
+              ← Anterior
+            </button>
+          </div>
+          <div className='col-10 paginado-info'>
+            Página {page2}
+          </div>
+          <div className='col-1'>
+            <button className="paginado-btn paginado-btn-next" onClick={() => setPage2(page2 + 1)}>
+              Siguiente →
+            </button>
+          </div>
+        </div>
+      {/* <Pagination /> */}
     </div>
   );
 };

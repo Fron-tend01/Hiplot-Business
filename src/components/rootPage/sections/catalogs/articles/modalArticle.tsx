@@ -186,7 +186,7 @@ const modalArticle: React.FC = () => {
             options: 'nombre',
             dataSelect: resultFamilies
         })
-        limpiar_submodulos()
+        // limpiar_submodulos()
         if (articleToUpdate) {
 
             setModalLoading(false)
@@ -230,9 +230,11 @@ const modalArticle: React.FC = () => {
             setComponents(articleToUpdate.componentes);
             setAreas(articleToUpdate.areas_produccion);
             setMinimalCharges(articleToUpdate.cargos_minimos);
+            
             setCobrosFranquicia(articleToUpdate.cobros_franquicia);
             setAdditionalArticles(articleToUpdate.adicionales)
             setImagesArticles(articleToUpdate.imagenes)
+            setSuppliers(articleToUpdate.proveedores)
         }
     }
 
@@ -537,6 +539,8 @@ const modalArticle: React.FC = () => {
                     te = result[0].tiempos_entrega
                 } catch (error) {} 
                 try {
+                    const ids = te.map(obj => obj.id_te_data);
+                    const uniqueIds_te = Array.from(new Set(ids));
                     const data = {
                         id:  0,
                         tipo: type,
@@ -593,7 +597,7 @@ const modalArticle: React.FC = () => {
                         proveedores: suppliers,
                         proveedores_elim: deleteSuppliers.filter(item => item !== null && item !== undefined),
 
-                        tiempos_entrega: te,
+                        tiempos_entrega: uniqueIds_te,
                         tiempos_entrega_elim: [],
 
                         cargos_minimos: minimalCharges,

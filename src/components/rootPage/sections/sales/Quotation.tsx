@@ -17,6 +17,7 @@ import { useStore } from 'zustand'
 
 import { storeDv } from '../../../../zustand/Dynamic_variables'
 import { storeArticles } from '../../../../zustand/Articles'
+import SeeCamposPlantillas from './SeeCamposPlantillas'
 
 
 const Quotation: React.FC = () => {
@@ -60,9 +61,9 @@ const Quotation: React.FC = () => {
     const cotizacion = JSON.parse(localStorage.getItem('cotizacion') || "[]");
     const cotizacion_pers = JSON.parse(localStorage.getItem('cotizacion-pers') || "[]");
     if (cotizacion) {
-      setQuotes({ normal_concepts: cotizacion, personalized_concepts: cotizacion_pers });
+      setQuotes({  normal_concepts: cotizacion, personalized_concepts: cotizacion_pers,conceptos_elim:[], conceptos_pers_elim:[] });
+      // setQuatation(null);
     }
-
   }
 
 
@@ -98,7 +99,7 @@ const Quotation: React.FC = () => {
       hasta: hoy.toISOString().split('T')[0],
       id_usuario: user_id,
       page: page,
-      light:true
+      light: true
     }
 
     const data = {
@@ -161,7 +162,7 @@ const Quotation: React.FC = () => {
       id_usuario: user_id,
       id_vendedor: selectedIds?.users?.id,
       page: page,
-      light:true
+      light: true
     }
 
 
@@ -224,7 +225,7 @@ const Quotation: React.FC = () => {
         </div>
       </div>
       <div className='container__quotation'>
-        <div className='filter__container'>
+        <div className='filter__container' style={{ zoom: '80%' }}>
           <div className='row'>
             <div className='col-8 md-col-12'>
               <Empresas_Sucursales modeUpdate={false} empresaDyn={company} setEmpresaDyn={setCompany} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
@@ -295,7 +296,7 @@ const Quotation: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className='table__quotations-head'>
+        <div className='table__quotations-head' style={{ zoom: '80%' }}>
           <div>
             {quotesData ? (
               <div className='table__numbers'>
@@ -323,6 +324,9 @@ const Quotation: React.FC = () => {
                 </div>
                 <div className='th'>
                   <p className=''>Creado por</p>
+                </div>
+                <div className='th'>
+                  <p className=''>Cotz.</p>
                 </div>
                 <div className='th'>
                   <p className=''>Fecha de creación</p>
@@ -356,6 +360,11 @@ const Quotation: React.FC = () => {
                       <div className='by-user'>
                         {quatation.usuario_crea}
                       </div>
+                    </div>
+                    <div className='td'>
+                      {quatation.id_solicitud_cotizacion > 0 ? 'Con Cotizador'
+
+                        : 'Sin Cotizador'}
                     </div>
                     <div className='td'>
                       {quatation.fecha_creacion}
@@ -425,6 +434,8 @@ const Quotation: React.FC = () => {
           </div>
         </div>
         <ModalCreate />
+        <SeeCamposPlantillas />
+
       </div>
     </div>
   )

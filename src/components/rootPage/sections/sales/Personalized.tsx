@@ -148,7 +148,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
             id_usuario: user_id
           }
           setModalLoading(true)
-          APIs.CreateAny(data_enviar, 'agregar_concepto_pers_preov').then(async (resp: any) => {
+          APIs.CreateAny(data_enviar, 'agregar_concepto_pers_preov2').then(async (resp: any) => {
             if (!resp.error) {
               setModalLoading(false)
               Swal.fire('Notificación', resp.mensaje, 'success')
@@ -466,13 +466,20 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
 
 
 
+  const [typeConcept, setTypeConcept] = useState<string>('')
+  const [IdInPers, setIdInPers] = useState<number>(0)
 
 
   const setIndexVM = storeDv(state => state.setIndex)
+  const setDataCampos = storeDv(state => state.setDataCampos)
 
   const seeVerMas = (index: number) => {
     setIndexVM(index)
+    setIdInPers(IdInPers)
+    setDataCampos({ tipo: 'articulo_en_pers', idInPers:indexItem })
     setModalSub('see_cp-personalized')
+    setTypeConcept('articulo_en_pers')
+
   }
 
 
@@ -577,7 +584,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
         })
       newConcept[index].urgency = !newConcept[index]?.urgency;
     }
-    setQuotes({ normal_concepts: newConcept, personalized_concepts: quotes.personalized_concepts });
+    setQuotes({ personalized_concepts: quotes.personalized_concepts });
     setCustomConceptView(newConcept);
 
   };
@@ -2076,11 +2083,11 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                     ''
                     :
                     <div>
-                      <button className='btn__general-purple' type='button' onClick={updatePersonalized}>Actulizar personalizado</button>
+                      <button className='btn__general-purple' type='button' onClick={updatePersonalized}>Actualizar personalizado</button>
                     </div>
                   :
                   <div>
-                    <button className='btn__general-purple' type='button' onClick={updatePersonalized}>Actulizar personalizado</button>
+                    <button className='btn__general-purple' type='button' onClick={updatePersonalized}>Actualizar personalizado</button>
                   </div>
                 }
                 <div className='real_price'>
@@ -2091,7 +2098,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
           </div>
         </div>
       </div>
-      <SeeCamposPlantillas />
+      {/* <SeeCamposPlantillas /> */}
     </div>
   )
 }

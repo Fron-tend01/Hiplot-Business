@@ -188,7 +188,7 @@ export default function Colecciones() {
     const codigo = searchBy;
     const familia = 0;
     const proveedor = 0;
-    const materia_prima = 0;
+    const materia_prima = 99;
     const get_sucursales = false;
     const get_proveedores = false;
     const get_max_mins = false;
@@ -217,7 +217,7 @@ export default function Colecciones() {
     const data = {
       id: sel.id,
       codigo: sel.codigo,
-      nombre: sel.nombre,
+      nombre: sel.descripcion,
     }
     DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "colecciones_art_piv", data)
     DynamicVariables.updateAnyVarSetArrNoRepeat(setColeccion, "colecciones_art", data.id)
@@ -480,14 +480,14 @@ const updateColeccion = async (e: React.FormEvent)=> {
                         <label className='label__general'>Resultados</label>
                         <div className='select-btn__general'>
                           <div className={`select-btn ${selectModalResults ? 'active' : ''}`} onClick={openSelectModalResults}>
-                            <p>{selectedModalResult ? `${articles.find((s: { id: number }) => s.id === selectedModalResult)?.codigo} ${articles.find((s: { id: number }) => s.id === selectedModalResult)?.nombre}` : 'Selecciona'}</p>
+                            <p>{selectedModalResult ? `${articles.find((s: { id: number }) => s.id === selectedModalResult)?.codigo} ${articles.find((s: { id: number }) => s.id === selectedModalResult)?.descripcion}` : 'Selecciona'}</p>
                             <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                           </div>
                           <div className={`content ${selectModalResults ? 'active' : ''}`}>
                             <ul className={`options ${selectModalResults ? 'active' : ''}`} style={{ opacity: selectModalResults ? '1' : '0' }}>
                               {articles && articles.map((item: any) => (
                                 <li key={item.id} onClick={() => handleModalResultsChange(item)}>
-                                  {item.codigo}-{item.nombre}
+                                  {item.codigo}-{item.descripcion}
                                 </li>
                               ))}
                             </ul>

@@ -15,48 +15,6 @@
 }
 
 
-.breadcrumbs {
-  display: flex;
-  margin-bottom: 15px;
-
-}
-
-.breadcrumbs > .breadcrumbs__container  {
-  padding: 5px 15px;
-  background-color: #3d86c63f;
-  color: #3D85C6;
-  border-radius: 5px;
-
-}
-
-.breadcrumbs > .chevron__breadcrumbs svg {
-  color: #3D85C6;
-  font-weight: 600;
-  
-}
-
-.breadcrumbs > .breadcrumbs__container svg {
-  color: #3D85C6;
-  font-weight: 600;
-  
-}
-
-
-.breadcrumbs > div {
-  display: flex;
-  align-items: center;
-}
-
-.breadcrumbs > .chevron__breadcrumbs {
-  margin: 0 10px;
-}
-
-.breadcrumbs > .breadcrumbs__container > .title {
-  margin-left: 10px;
-  /* color: #fff; */
-  font-weight: 600;
-}
-
 
 
 
@@ -225,7 +183,7 @@
 
 .table__quotations-head .table__head .thead {
   display: grid;
-  grid-template-columns: 100px repeat(6, minmax(0, 1fr));
+  grid-template-columns: 100px repeat(7, minmax(0, 1fr));
   padding: 10px;
   column-gap: 20px;
   font-weight: 600;
@@ -294,7 +252,7 @@
 
 .table__quotations-body-desk .table__body .tbody {
   display: grid;
-  grid-template-columns: 100px repeat(6, minmax(0, 1fr));
+  grid-template-columns: 100px repeat(7, minmax(0, 1fr));
   padding: 10px;
   column-gap: 20px;
   align-items: center;

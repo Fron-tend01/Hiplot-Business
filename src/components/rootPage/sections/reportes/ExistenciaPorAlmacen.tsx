@@ -10,7 +10,6 @@ import { FamiliesRequests } from '../../../../fuctions/Families'
 import { suppliersRequests } from '../../../../fuctions/Suppliers'
 import LoadingInfo from '../../../loading/LoadingInfo'
 import Swal from 'sweetalert2'
-const ITEMS_PER_PAGE = 10;
 
 const ExistenciaPorAlmacen: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -28,6 +27,7 @@ const ExistenciaPorAlmacen: React.FC = () => {
     const [provAdded, setProvAdded] = useState<any>([])
     const { getFamilies } = FamiliesRequests()
     const { getSuppliers }: any = suppliersRequests();
+    const [NoItems, setNoItems] = useState<number>(10)
 
     const [searcher] = useState<any>({
         nombre: '',
@@ -153,11 +153,38 @@ const ExistenciaPorAlmacen: React.FC = () => {
     const descargarTodaData = (almacen: any) => {
         descargarCSV(almacen, almacen.articulos);
     };
+    const fechaActual = new Date().toLocaleString();
     const descargarPDF = (almacen: any, articulos: any) => {
-        const encabezados = ["CODIGO", "DESCRIPCION", "FAMILIA", "PROVEEDOR", "UNIDAD", "UP", "BP", "MIN", "MAX", "TOTAL", "APART.", "DV"];
+        const encabezados = ["CODIGO", "DESCRIPCION", "PROV", "UNI.", "UP", "BP", "MIN", "MAX", "TOTAL", "APART.", "DV", "NOTAS"];
 
-        let html = `<html><head><title>Inventario Almacén</title></head><body>`;
+        let html = `
+                <html>
+                <head>
+                    <title>Inventario Almacén</title>
+                    <style>
+                        table {
+                            font-size: 10px;
+                            border-collapse: collapse;
+                            font-family: 'Roboto', sans-serif;
+
+                        }
+                        th, td {
+                            border: 1px solid #000;
+                            padding: 5px;
+                        }
+                        td.descripcion {
+                            font-size: 14px;
+                            font-weight: bold;
+                            max-width: 400px;
+                            word-break: break-word;
+                        }
+                    </style>
+                </head>
+               
+                `;
         html += `<h2>Inventario de Almacén ${almacen.nombre || almacen.id}</h2>`;
+        html += `<p><strong>Fecha de impresión:</strong> ${fechaActual}</p>`;
+
         html += `<table border="1" cellspacing="0" cellpadding="5"><thead><tr>`;
 
         encabezados.forEach(enc => {
@@ -166,22 +193,29 @@ const ExistenciaPorAlmacen: React.FC = () => {
 
         html += `</tr></thead><tbody>`;
 
-        articulos.forEach((articulo: any) => {
-            html += `<tr>
-                <td>${articulo.codigo}</td>
-                <td>${articulo.descripcion}</td>
-                <td>${articulo.familia}</td>
-                <td>${articulo.proveedor}</td>
-                <td>${articulo?.unidad_almacen?.nombre || 'N/A'}</td>
-                <td>${articulo.ultimas_piezas}</td>
-                <td>${articulo.bajo_pedido}</td>
-                <td>${articulo.max_min.length > 0 ? articulo.max_min[0].minimo : "0"}</td>
-                <td>${articulo.max_min.length > 0 ? articulo.max_min[0].maximo : "0"}</td>
-                <td>${articulo.restantes}</td>
-                <td>${articulo.apartados}</td>
-                <td>${articulo.disponible}</td>
-            </tr>`;
-        });
+        articulos
+            .sort((a: any, b: any) => {
+                const descA = a.descripcion?.toLowerCase() || '';
+                const descB = b.descripcion?.toLowerCase() || '';
+                return descA.localeCompare(descB);
+            })
+            .forEach((articulo: any) => {
+                html += `<tr>
+          <td>${articulo.codigo}</td>
+          <td>${articulo.descripcion}</td>
+          <td>${articulo.proveedor == undefined ? '' : articulo.proveedor}</td>
+          <td>${articulo?.unidad_almacen?.nombre || 'N/A'}</td>
+          <td>${articulo.ultimas_piezas ? 'Si' : 'No'}</td>
+          <td>${articulo.bajo_pedido ? 'Si' : 'No'}</td>
+          <td>${articulo.max_min.length > 0 ? articulo.max_min[0].minimo : "0"}</td>
+          <td>${articulo.max_min.length > 0 ? articulo.max_min[0].maximo : "0"}</td>
+          <td>${articulo.restantes}</td>
+          <td>${articulo.apartados}</td>
+          <td>${articulo.disponible}</td>
+          <td><p></p></td>
+      </tr>`;
+            });
+
 
         html += `</tbody></table></body></html>`;
 
@@ -206,8 +240,8 @@ const ExistenciaPorAlmacen: React.FC = () => {
                     articulo.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
                 );
                 const currentPage = pages[almacen.id] || 1;
-                const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
-                const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+                const indexOfLastItem = currentPage * NoItems;
+                const indexOfFirstItem = indexOfLastItem - NoItems;
                 const current = filtered.slice(indexOfFirstItem, indexOfLastItem);
                 // initialState[almacen.id] = current.map((a: any) => ({ ...a }));
                 initialState[almacen.id] = current.map((a: any) => ({
@@ -219,9 +253,9 @@ const ExistenciaPorAlmacen: React.FC = () => {
         }
     }, [mu, data, searchTerms, pages]);
 
-    const actualizarArticulo = (art:any) => {
+    const actualizarArticulo = (art: any) => {
         console.log(art);
-        
+
         Swal.fire({
             title: "Seguro que deseas ACTUALIZAR el articulo " + art.descripcion + '?',
             text: "Puedes volver a actualizar el articulo si lo deseas.",
@@ -235,14 +269,34 @@ const ExistenciaPorAlmacen: React.FC = () => {
                         if (!resp.error) {
                             Swal.fire('Notificación', resp.mensaje, 'success');
 
-                        }else{
+                        } else {
                             Swal.fire('Notificación', resp.mensaje, 'warning');
                         }
-                       
+
                     })
             }
         });
     }
+    const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+    const getNestedValue = (obj: any, path: string) => {
+        try {
+            return path
+                .replace(/\?\./g, '.') // elimina opcionales para compatibilidad
+                .replace(/\[(\d+)\]/g, '.$1') // convierte [0] en .0
+                .split('.') // divide por puntos
+                .reduce((acc, part) => acc?.[part], obj); // navega por las propiedades
+        } catch {
+            return undefined;
+        }
+    };
+
+    const handleSort = (key: string) => {
+        setSortConfig(prev =>
+            prev?.key === key && prev.direction === 'asc'
+                ? { key, direction: 'desc' }
+                : { key, direction: 'asc' }
+        );
+    };
     return (
         <div style={{ padding: '20px', overflow: 'auto' }}>
             <div className='breadcrumbs'>
@@ -258,7 +312,7 @@ const ExistenciaPorAlmacen: React.FC = () => {
                     <small className='title'>EXISTENCIAS POR ALMACEN</small>
                 </div>
             </div>
-            <div className='row'>
+            <div className='row' style={{ zoom: '80%' }}>
                 <div className='col-4 '>
                     <div className='row mr-5'>
                         <div className='col-10 '>
@@ -395,7 +449,7 @@ const ExistenciaPorAlmacen: React.FC = () => {
                 </div>
             </div>
 
-            <div className='row'>
+            <div className='row' style={{ zoom: '80%' }}>
                 <div className='col-12'>
                     {data.map((almacen: any) => {
                         const searchTerm = searchTerms[almacen.id] || "";
@@ -404,12 +458,24 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                 articulo.codigo.toLowerCase().includes(searchTerm.toLowerCase()) ||
                                 articulo.descripcion.toLowerCase().includes(searchTerm.toLowerCase())
                         );
-                        const totalPages = Math.ceil(filteredArticulos.length / ITEMS_PER_PAGE);
+                        const totalPages = Math.ceil(filteredArticulos.length / NoItems);
                         const currentPage = pages[almacen.id] || 1;
-                        const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
-                        const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+                        const indexOfLastItem = currentPage * NoItems;
+                        const indexOfFirstItem = indexOfLastItem - NoItems;
                         const currentArticulos = filteredArticulos.slice(indexOfFirstItem, indexOfLastItem);
+                        const sortedData = [...(mu ? editableArticulos[almacen.id] || [] : currentArticulos)].sort((a, b) => {
+                            if (!sortConfig) return 0;
 
+                            const { key, direction } = sortConfig;
+                            const valueA = getNestedValue(a, key);
+                            const valueB = getNestedValue(b, key);
+
+                            if (valueA < valueB) return direction === 'asc' ? -1 : 1;
+                            if (valueA > valueB) return direction === 'asc' ? 1 : -1;
+                            if (valueA == null) return 1;
+                            if (valueB == null) return -1;
+                            return 0;
+                        });
                         return (
                             <div key={almacen.id} style={{ marginBottom: "20px", border: "1px solid #ddd", padding: "10px" }}>
                                 <h2>{almacen.nombre}</h2>
@@ -492,23 +558,54 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                         Cancelar
                                     </button>
                                 }
+                                <select style={{ zoom: '90%' }} value={NoItems} className='inputs__general' onChange={(e) => setNoItems(parseInt(e.target.value) || 10)}>
+                                    <option value="10">10</option>
+                                    <option value="30">30</option>
+                                    <option value="50">50</option>
+                                    <option value="9999999">Todas</option>
+                                </select>
                                 <div className="EPA-table-container">
                                     <table className="EPA-table">
                                         <thead>
                                             <tr>
-                                                <th>Código</th>
-                                                <th>Desc.</th>
-                                                <th>Fam.</th>
+                                                <th onClick={() => handleSort('codigo')}>
+                                                    Código {sortConfig?.key === 'codigo' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
+                                                </th>
+                                                <th onClick={() => handleSort('descripcion')}>
+                                                    Desc. {sortConfig?.key === 'descripcion' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
+                                                </th>
+                                                <th onClick={() => handleSort('familia')}>
+                                                    Fam. {sortConfig?.key === 'familia' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
+                                                </th>
                                                 <th>Prov.</th>
-                                                <th>Uni.</th>
-                                                <th>UP</th>
-                                                <th>BP</th>
-                                                <th>AM</th>
-                                                <th>Min.</th>
-                                                <th>Max.</th>
-                                                <th>Total</th>
-                                                <th>Apart.</th>
-                                                <th>DV</th>
+                                                <th onClick={() => handleSort('unidad_almacen.nombre')}>
+                                                    Uni. {sortConfig?.key === 'unidad_almacen.nombre' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
+                                                </th>
+                                                <th onClick={() => handleSort('ultimas_piezas')}>
+                                                    UP {sortConfig?.key === 'ultimas_piezas' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
+                                                </th>
+                                                <th onClick={() => handleSort('bajo_pedido')}>
+                                                    BP {sortConfig?.key === 'bajo_pedido' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
+                                                </th>
+                                                <th style={{ maxWidth: '100px' }} onClick={() => handleSort('max_min[0]?.accion')}>
+                                                    AM {sortConfig?.key === 'max_min[0]?.accion' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
+                                                </th>
+                                                <th onClick={() => handleSort('max_min[0]?.minimo')}>
+                                                    Min. {sortConfig?.key === 'max_min[0]?.minimo' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
+
+                                                </th>
+                                                <th onClick={() => handleSort('max_min[0]?.maximo')}>
+                                                    Max. {sortConfig?.key === 'max_min[0]?.maximo' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
+                                                </th>
+                                                <th onClick={() => handleSort('restantes')}>
+                                                    Total {sortConfig?.key === 'restantes' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
+                                                </th>
+                                                <th onClick={() => handleSort('apartados')}>
+                                                    Apart. {sortConfig?.key === 'apartados' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
+                                                </th>
+                                                <th onClick={() => handleSort('disponible')}>
+                                                    DV {sortConfig?.key === 'disponible' && (sortConfig.direction === 'asc' ? '▲' : '▼')}
+                                                </th>
                                                 {mu ?
                                                     <>
                                                         <th>ACT</th>
@@ -524,19 +621,19 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {(mu ? editableArticulos[almacen.id] || [] : currentArticulos).map((articulo: any, i: number) => (
+                                            {(mu ? editableArticulos[almacen.id] || [] : sortedData).map((articulo: any, i: number) => (
                                                 <tr key={i}>
                                                     <td>{articulo.codigo}</td>
-                                                    <td>
+                                                    <td  >
                                                         {mu ?
-                                                            <input type="text" value={articulo.descripcion} onChange={(e) => {
+                                                            <textarea style={{ width: '240px' }} rows={2} value={articulo.descripcion} onChange={(e) => {
                                                                 const value = e.target.value;
                                                                 setEditableArticulos(prev => {
                                                                     const copy = { ...prev };
                                                                     copy[almacen.id][i] = { ...copy[almacen.id][i], descripcion: value };
                                                                     return copy;
                                                                 });
-                                                            }} />
+                                                            }} ></textarea>
                                                             :
                                                             articulo.descripcion
                                                         }
@@ -596,20 +693,22 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                                                         });
                                                                     }}
                                                                 >
-                                                                    <option value="">Selecciona acción</option>
-                                                                    <option value={0}>CR</option>
-                                                                    <option value={1}>TA</option>
-                                                                    <option value={2}>OC</option>
+                                                                    <option value={0}>N/A</option>
+                                                                    <option value={1}>CR</option>
+                                                                    <option value={2}>TA</option>
+                                                                    <option value={3}>OC</option>
                                                                 </select>
 
                                                                 : 'N/A'
                                                             :
-                                                            articulo.max_min.length > 0
-                                                                ? articulo.max_min[0].accion === 0
+                                                            Array.isArray(articulo.max_min) && articulo.max_min.length > 0
+                                                                ? articulo.max_min[0].accion === 1
                                                                     ? "CR"
-                                                                    : articulo.max_min[0].accion === 1
+                                                                    : articulo.max_min[0].accion === 2
                                                                         ? "TA"
-                                                                        : "OC"
+                                                                        : articulo.max_min[0].accion === 3
+                                                                            ? "OC"
+                                                                            : "N/A"
                                                                 : "NA"
                                                         }
                                                     </td>
@@ -617,6 +716,7 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                                         {articulo.max_min.length > 0 ?
                                                             mu ?
                                                                 <input
+                                                                    style={{ width: '55px' }}
                                                                     type="number"
                                                                     value={articulo.max_min[0].minimo}
                                                                     onChange={(e) => {
@@ -642,6 +742,7 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                                         {articulo.max_min.length > 0 ?
                                                             mu ?
                                                                 <input
+                                                                    style={{ width: '55px' }}
                                                                     type="number"
                                                                     value={articulo.max_min[0].maximo}
                                                                     onChange={(e) => {
@@ -663,9 +764,9 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                                                 : articulo.max_min[0].maximo
 
                                                             : "0"}</td>
-                                                    <td>{articulo.restantes}</td>
-                                                    <td>{articulo.apartados}</td>
-                                                    <td>{articulo.disponible}</td>
+                                                    <td>{parseFloat(articulo.restantes).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</td>
+                                                    <td>{parseFloat(articulo.apartados).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</td>
+                                                    <td>{parseFloat(articulo.disponible).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</td>
                                                     {mu ?
                                                         <>
                                                             <td>
@@ -739,7 +840,7 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                                                 }} />
                                                             </td>
                                                             <td>
-                                                                <button className='btn__general-purple' onClick={()=>actualizarArticulo(articulo)}>Save</button>
+                                                                <button className='btn__general-purple' onClick={() => actualizarArticulo(articulo)}>Save</button>
                                                             </td>
                                                         </>
                                                         : ''}
@@ -750,7 +851,7 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                 </div>
 
                                 {/* Controles de paginación */}
-                                {filteredArticulos.length > ITEMS_PER_PAGE && (
+                                {filteredArticulos.length > NoItems && (
                                     <div style={{ marginTop: "10px" }}>
                                         <button onClick={() => changePage(almacen.id, currentPage - 1)} disabled={currentPage === 1}>
                                             Anterior

@@ -269,7 +269,7 @@ const ModalBilling: React.FC = () => {
             setType(DataUpdate.tipo)
             setSelectedIds('vendedores', DataUpdate.id_vendedor)
             setClient(DataUpdate.razon_social)
-            searchClient()
+            searchClient(DataUpdate.razon_social)
             DataUpdate.conceptos.forEach((el: any) => {
                 DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal + parseFloat(el.total))
                 DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal + parseFloat(el.total))
@@ -301,12 +301,14 @@ const ModalBilling: React.FC = () => {
                 desde: date[0],
                 hasta: date[1],
                 id_usuario: user_id,
-                id_vendedor: selectedIds?.users?.id,
+                id_vendedor: selectedIds?.vendedores?.id ?? selectedIds?.vendedores, //ESTE NO SE ESTÁ ENVIANDO A BACK----------------------------------------------------------------------------------
                 status: 0,
                 factura: true
             }
-
-            const result = await getSaleOrders(dataSaleOrders)
+            console.log('enviando esta data', dataSaleOrders);
+            
+            const result = await APIs.CreateAny(dataSaleOrders, "get_orden_venta_ori")
+            // const result = await getSaleOrders(dataSaleOrders)
             setSaleOrders(result)
         }
 
@@ -508,9 +510,9 @@ const ModalBilling: React.FC = () => {
         setDataBillign([...dataBillign, ...totalConcepts]);
         //------------------------------------------------------------------RELLENAR INFORMACIÓN AUTOMATICA DE CLIENTE Y TITULO
         setTitle(order.titulo == undefined ? 'Cobro PAF' : order.titulo)
-        if (order.rfc != undefined) {
+        if (order.razon_social != undefined) {
             setClient((prevClient: any) => {
-                const newClient = order.rfc;
+                const newClient = order.razon_social;
                 searchClient(newClient); // Llama a la función con el nuevo valor
                 return newClient; // Actualiza el estado
             });

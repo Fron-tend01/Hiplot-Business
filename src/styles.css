@@ -8,9 +8,17 @@
     display: flex;
 }
 
+.striped {
+  background-color: #ececec !important; /* o el color que prefieras */
+}
 
-
-
+.form-creator {
+  background-color: #f9f9f9 !important;
+  padding: 1rem !important;
+  border-radius: 8px !important;
+  border: 1px solid #ddd !important;
+  margin-bottom: 1rem !important;
+}
 .d-grid {
     display: grid;
 }
@@ -326,4 +334,181 @@
 
 .w-full {
     width: 100%;
+}
+
+.card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  /* max-width: 1100px; */
+  margin: auto;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: bold;
+  color: #003366;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.form-col {
+  flex: 1 1 30%;
+  min-width: 250px;
+}
+
+.submit-button {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.submit-button button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 30px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.submit-button button:hover {
+  background-color: #218838;
+}
+
+@keyframes parpadeo {
+  0%, 100% { opacity: 1; }
+  50%     { opacity: 0; }
+}
+
+.parpadeo {
+  animation: parpadeo 1s infinite;
+}
+
+
+.paginado-container {
+    text-align: center;
+}
+
+.paginado-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: #5a4ae3;
+    color: white;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.paginado-btn:hover:not(:disabled) {
+    background-color: #4437c3;
+}
+
+.paginado-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.paginado-info {
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 0 10px;
+    color: #333;
+}
+
+
+.breadcrumbs {
+	display: flex;
+	/* margin-bottom: 5px; */
+}
+
+.breadcrumbs>.breadcrumbs__container {
+	padding: 2px 2px;
+	/* background-color: var(--bg-300); */
+	border-radius: 5px;
+}
+
+
+.breadcrumbs>div {
+	display: flex;
+	align-items: center;
+}
+
+.breadcrumbs>.chevron__breadcrumbs {
+	margin: 0 5px;
+}
+
+.breadcrumbs>.breadcrumbs__container>.title {
+	/* margin-left: 10px; */
+	color: #000000;
+	font-weight: 500;
+}
+
+
+
+.help-icon-btn {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.help-module {
+  position: absolute;
+  top: 120%;
+  left: 0;
+  width: 220px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.help-icon-btn:hover .help-module {
+  opacity: 1;
+  visibility: visible;
+}
+
+.help-card {
+  padding: 8px;
+  margin-bottom: 6px;
+  background: #f9f9f9;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.help-card:hover {
+  background: #eee;
 }

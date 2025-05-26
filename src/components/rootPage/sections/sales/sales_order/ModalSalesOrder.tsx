@@ -254,7 +254,11 @@ const ModalSalesOrder: React.FC = () => {
                 setSaleOrdersConcepts({ normal_concepts: [], personalized_concepts: [] });
                 setUrgenciaG(false)
                 setov_repo(null)
-
+                setAmount(0)
+                setIdCotizacion(0)
+                setModifyTe(0)
+                setTitle('')
+                
                 const dataSaleOrders = {
                     id: result.id,
                     folio: 0,
@@ -343,27 +347,32 @@ const ModalSalesOrder: React.FC = () => {
     const [dataProduction, setDataProduction] = useState<any>()
 
     const SaleOrderProduction = async () => {
-        let data = [];
+        let data_c = [];
 
         // Recorre cada elemento de `personalized_concepts`
         saleOrdersConcepts.personalized_concepts.forEach(element => {
             let concepts = element.conceptos.filter((x: any) => x.enviar_a_produccion === true);
             // Agrega los conceptos filtrados a `data` sin sobrescribirla
-            data.push(...concepts);
+            data_c.push(...concepts);
         });
 
         let normal_concepts = saleOrdersConcepts.normal_concepts.filter(element => element.enviar_a_produccion === true);
-
-        setConceptsProductions([...normal_concepts, ...data]);
+        // Agrega los conceptos filtrados a `data` sin sobrescribirla
+        data_c.push(...normal_concepts);
+        setConceptsProductions([...data_c]);
 
 
         setModalProduction('sale-order-production__modal')
         if (!modify_te) {
             let data = {
-                articulos: saleOrdersToUpdate.conceptos,
+                articulos: data_c,
                 id_sucursal: saleOrdersToUpdate.id_sucursal
             }
-            let response: any = await APIs.calculateSalesDeliveryDime(data)
+            setModalLoading(true)
+            let response: any = await APIs.calculateSalesDeliveryDime(data).finally(() => {
+                setModalLoading(false)
+            })
+            setModalLoading(false)
             if (response.hora_cliente && response.hora_produccion) {
                 setDataProduction(response)
                 setDates([`${response.fecha_produccion}T${response.hora_produccion}`, `${response.fecha_cliente}T${response.hora_cliente}`])
@@ -642,7 +651,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const getTicket = async () => {
         try {
-            await APIs.getPdfPurchaseOrders(saleOrdersToUpdate.id);
+            // await APIs.getPdfPurchaseOrders(saleOrdersToUpdate.id);
             // Abrimos el PDF en una nueva pestaña
             window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_ov/${saleOrdersToUpdate.id}`, '_blank');
         } catch (error) {
@@ -735,12 +744,13 @@ const ModalSalesOrder: React.FC = () => {
     const setModalSub = storeModals((state) => state.setModalSub);
 
     const setIndexVM = storeDv(state => state.setIndex)
+    const setDataCampos = storeDv(state => state.setDataCampos)
 
     const [typeConcept, setTypeConcept] = useState<string>('')
     const seeVerMas = (index: number, type: string) => { //AL ABRIR SEE-CP NO SE VISUALIZA LA INFORMACIÓN DE LAS PLANTILLAS PORQUE SIGUE USANDO NORMALCONCEPTS CORREGIR AQUÍ Y EN LA COTIZACIÓN
         setIndexVM(index)
+        setDataCampos({ tipo: type })
         setModalSub('see_cp')
-        setTypeConcept(type)
     }
 
     const [stateLoading, setStateLoading] = useState<any>(false)
@@ -866,11 +876,22 @@ const ModalSalesOrder: React.FC = () => {
                     await APIs.CreateAny(d, "get_orden_venta")
                         .then(async (response: any) => {
                             let order = response[0]
-                            setSaleOrdersToUpdate(order)
                             // setCustomConcepts(order.conceptos_pers);
                             // setNormalConcepts(order.conceptos);
                             setModalLoading(false)
+                            setCustomLocal([])
+                            setNormalConceptsView([])
+                            setNormalConcepts([])
+                            setDeleteNormalConcepts([])
+                            setDeleteCustomConcepts([])
+                            setCustomConcepts([])
+                            setConceptView([])
+                            setCustomConceptView([])
+                            // setSaleOrdersConcepts({ normal_concepts: [], personalized_concepts: [] });
 
+                            setModalSalesOrder('sale-order__modal-update')
+                            setSaleOrdersConcepts({ sale_order: order, normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                            setSaleOrdersToUpdate(order)
                         })
                 } else {
                     Swal.fire('Notificación', response.mensaje, 'info');
@@ -937,24 +958,8 @@ const ModalSalesOrder: React.FC = () => {
         //----------------------------------ESTE YA TIENE LA VARIABLE IS ADICIONAL, VERIFICAR SI IS ADICIONAL SE ELIMINAN
         //----------------------------------HASTA LOS CONCEPTITOS, SI NO ES ADICIONAL SE ELIMINA CON ESTE QUE YA TRAE POR DEFAULT
 
-        if (concept.is_adicional) {
-            await APIs.deleteAny(`eliminar_conceptos_pers_adi_carrito/${concept.id}`)
-                .then(async (response: any) => {
-                    if (!response.error) {
-                        await APIs.GetAny('get_carrito/' + user_id)
-                            .then(async (response: any) => {
-                                let order = response[0]
-                                setSaleOrdersToUpdate(order)
-                                setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
-                            })
-                    } else {
-                        Swal.fire('Notificación', response.mensaje, 'warning');
-                        return
-                    }
-                })
-        } else {
 
-            await APIs.deleteAny(`eliminar_conceptos_pers_carrito/${concept.id}`)
+          await APIs.deleteAny(`eliminar_conceptos_pers_carrito/${concept.id}`)
                 .then(async (response: any) => {
                     if (!response.error) {
                         await APIs.GetAny('get_carrito/' + user_id)
@@ -968,7 +973,38 @@ const ModalSalesOrder: React.FC = () => {
                         return
                     }
                 })
-        }
+        // if (concept.is_adicional) {
+        //     await APIs.deleteAny(`eliminar_conceptos_pers_adi_carrito/${concept.id}`)
+        //         .then(async (response: any) => {
+        //             if (!response.error) {
+        //                 await APIs.GetAny('get_carrito/' + user_id)
+        //                     .then(async (response: any) => {
+        //                         let order = response[0]
+        //                         setSaleOrdersToUpdate(order)
+        //                         setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+        //                     })
+        //             } else {
+        //                 Swal.fire('Notificación', response.mensaje, 'warning');
+        //                 return
+        //             }
+        //         })
+        // } else {
+
+        //     await APIs.deleteAny(`eliminar_conceptos_pers_carrito/${concept.id}`)
+        //         .then(async (response: any) => {
+        //             if (!response.error) {
+        //                 await APIs.GetAny('get_carrito/' + user_id)
+        //                     .then(async (response: any) => {
+        //                         let order = response[0]
+        //                         setSaleOrdersToUpdate(order)
+        //                         setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+        //                     })
+        //             } else {
+        //                 Swal.fire('Notificación', response.mensaje, 'warning');
+        //                 return
+        //             }
+        //         })
+        // }
 
 
     };
@@ -2021,7 +2057,7 @@ const ModalSalesOrder: React.FC = () => {
                 </div>
                 <ArticleViewModal />
                 <Personalized idItem={idItem} indexItem={indexItem} />
-                <SeeCamposPlantillas typeConcept={typeConcept} />
+                {/* <SeeCamposPlantillas typeConcept={typeConcept} /> */}
                 <Binnacle />
                 <ModalProduction />
 

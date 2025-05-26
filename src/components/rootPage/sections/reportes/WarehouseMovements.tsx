@@ -12,6 +12,8 @@ import DynamicVariables from '../../../../utils/DynamicVariables';
 import { storeArticles } from '../../../../zustand/Articles';
 import LoadingInfo from '../../../loading/LoadingInfo';
 import Swal from 'sweetalert2';
+import { storeTickets } from '../../../../zustand/Tickets';
+import ModalUpdate from '../store/tickets/ModalUpdate';
 
 const WarehouseMovements: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -21,6 +23,7 @@ const WarehouseMovements: React.FC = () => {
 
 
     const [data, setData] = useState<any>([])
+    const [dataSalidas, setDataSalidas] = useState<any>([])
     const [companies, setCompanies] = useState<any>([])
 
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
@@ -97,6 +100,7 @@ const WarehouseMovements: React.FC = () => {
                 Swal.fire('Notificacion', resp.mensaje, 'warning')
             } else {
                 setData(resp.data)
+                setDataSalidas(resp.registros_movimientos)
             }
 
         }).catch((_e: any) => {
@@ -115,7 +119,7 @@ const WarehouseMovements: React.FC = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await APIs.CreateAny({'id': salida.id}, "eliminarRegistroSalidaDeEntrada")
+                    await APIs.CreateAny({ 'id': salida.id }, "eliminarRegistroSalidaDeEntrada")
                         .then(async (resp: any) => {
                             if (!resp.error) {
                                 Swal.fire('Notificación', resp.mensaje, 'success');
@@ -141,7 +145,7 @@ const WarehouseMovements: React.FC = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await APIs.CreateAny({'id':data.id}, "eliminarRegistroApartadoEntradaPAFOV")
+                    await APIs.CreateAny({ 'id': data.id }, "eliminarRegistroApartadoEntradaPAFOV")
                         .then(async (resp: any) => {
                             if (!resp.error) {
                                 Swal.fire('Notificación', resp.mensaje, 'success');
@@ -208,9 +212,35 @@ const WarehouseMovements: React.FC = () => {
             }
         });
     }
+    const [modalStateUpdate, setModalStateUpdate] = useState<boolean>(false)
+    const [updateTickets, setUpdateTickets] = useState<any>([])
+
+    const setModalTickets = storeTickets(state => state.setModalTickets)
+    const modalUpdate = async (ticket: any) => {
+        let data = {
+            id:ticket.id_entrada
+        }
+        await APIs.CreateAny(data,'entrada_almacen/get').then((resp: any) => {
+                setModalStateUpdate(true)
+                setUpdateTickets(resp[0])
+           
+        })
+    }
+    const modalCloseUpdate = () => {
+        setModalStateUpdate(false)
+    }
     return (
         <div className='warehouse__movements'>
             <div className='warehouse__movements_container'>
+                <div className={`overlay__update_tickets ${modalStateUpdate ? 'active' : ''}`}>
+                    <div className={`popup__update_tickets ${modalStateUpdate ? 'active' : ''}`}>
+                        <a href="#" className="btn-cerrar-popup__update_tickets" onClick={modalCloseUpdate}>
+                            <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+                        </a>
+                        <p className='title__modals'>Información de Entrada</p>
+                        <ModalUpdate updateTickets={updateTickets} />
+                    </div>
+                </div>
                 <div className='row '>
                     <div className='col-6 wm-col-izq'>
                         <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} just_empresa={true} />
@@ -396,6 +426,28 @@ const WarehouseMovements: React.FC = () => {
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
+                                                                        {/* Apartado CARRITO */}
+                                                                        {x.apartados_carrito.length > 0 ? (
+                                                                            x.apartados_carrito.map((ov: any, ovIndex: number) => (
+                                                                                <tr key={`ov-${ovIndex}`}>
+                                                                                    <td>N/A</td>
+                                                                                    <td>N/A</td>
+                                                                                    <td>{ov.usuario_nombre}</td>
+                                                                                    <td>{ov.cantidad}</td>
+                                                                                    <td>{ov.unidad_nombre}</td>
+                                                                                    <td>Carrito</td>
+                                                                                    {/* {checkPermission('ajustes_almacen') && (
+                                                                                        <td>
+                                                                                            <button className='btn__general-danger' onClick={() => eliminarPafOv(ov)}>
+                                                                                                <div className='delete-icon' title='Eliminar'>
+                                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                                                                </div>
+                                                                                            </button>
+                                                                                        </td>
+                                                                                    )} */}
+                                                                                </tr>
+                                                                            ))
+                                                                        ) : ('')}
                                                                         {/* Apartado OV */}
                                                                         {x.apartados_ov.length > 0 ? (
                                                                             x.apartados_ov.map((ov: any, ovIndex: number) => (
@@ -490,6 +542,50 @@ const WarehouseMovements: React.FC = () => {
                             </div>
                         </>
                     ))}
+                </div>
+                <div className='row card'>
+                    <div className='col-12 text-center'>
+                        SALIDAS GRAL
+                    </div>
+                </div>
+                <div className='row card'>
+                    <div className='col-12 text-center'>
+                        <table style={{ width: '100%', border: '1px solid black', borderCollapse: 'collapse' }}>
+                            <thead>
+                                <tr>
+                                    <th>Articulo</th>
+                                    <th>Folio</th>
+                                    <th>Fecha</th>
+                                    <th>Entrada</th>
+                                    <th>Usuario</th>
+                                    <th>Cantidad</th>
+                                    <th>Unidad</th>
+                                    <th>Motivo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {dataSalidas.length > 0 ? (
+                                    dataSalidas.map((x: any, index: number) => (
+                                        <tr key={index}>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{x.art_ent}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{x.folio_salida || x.folio_ovs || x.folio_paf}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{x.fecha_creacion}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px', cursor:'pointer'}} onClick={() => modalUpdate(x)} >{x.folio_entrada}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{x.usuario_nombre}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{x.cantidad}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{x.unidad_nombre}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{x.motivo}</td>
+
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6}>No hay datos disponibles</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             {

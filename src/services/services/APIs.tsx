@@ -750,7 +750,7 @@ getTotalPrice: async (data: any, customPath?: string) => {
   },
 
   calculateSalesDeliveryDime: async (data: any, customPath?: any) => {
-    const path = customPath || `api_dev/calcular_tiempo_entrega`;
+    const path = customPath || `calcular_tiempo_entrega`;
     return ConfigurationAPIs.post(path, data)
   },
 
@@ -807,12 +807,12 @@ getTotalPrice: async (data: any, customPath?: string) => {
 
 
   sendAreaProduction: async (data: any, customPath?: string) => {
-    const path = customPath || `api_dev/enviar_op_a_otra_area`;
+    const path = customPath || `enviar_op_a_otra_area`;
     return ConfigurationAPIs.post(path, data)
   },
 
   sendAreaConceptoProduction: async (data: any, customPath?: string) => {
-    const path = customPath || `api_dev/enviar_concepto_a_otra_area`;
+    const path = customPath || `enviar_concepto_a_otra_area`;
     return ConfigurationAPIs.post(path, data)
   },
 

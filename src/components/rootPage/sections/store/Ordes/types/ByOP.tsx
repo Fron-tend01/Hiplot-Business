@@ -11,6 +11,9 @@ import { storeOrdes } from '../../../../../../zustand/Ordes'
 import './styles/ByOP.css'
 import Swal from 'sweetalert2';
 import { storeArticles } from '../../../../../../zustand/Articles'
+import { storeProduction } from '../../../../../../zustand/Production'
+import { storeModals } from '../../../../../../zustand/Modals'
+import ModalProduction from '../../../production/ModalProduction'
 
 
 const ByOP: React.FC = () => {
@@ -36,7 +39,7 @@ const ByOP: React.FC = () => {
 
     const hoy = new Date();
     const haceUnaSemana = new Date();
-    haceUnaSemana.setDate(hoy.getDate() - 7);
+    haceUnaSemana.setDate(hoy.getDate() - 30);
 
     // Inicializa el estado con las fechas formateadas
     const [date, setDate] = useState([
@@ -62,6 +65,29 @@ const ByOP: React.FC = () => {
             id_serie: selectedIds?.series?.id,
             desde: date[0],
             hasta: date[1],
+            id_usuario: user_id,
+            status: 0,
+            pedido: true
+        }
+        setModalLoading(true)
+        try {
+            const result: any = await APIs.getProoductionOrders(data)
+            setModalLoading(false)
+            setOrders(result)
+        } catch (error) {
+            setModalLoading(false)
+
+            console.log(error)
+        }
+    }
+    const filterByFetch = async (dat, dat2) => {
+        let data = {
+            folio: 0,
+            id_sucursal: branch.id,
+            id_area: selectedIds?.id_area?.id,
+            id_serie: selectedIds?.series?.id,
+            desde: dat,
+            hasta: dat2,
             id_usuario: user_id,
             status: 0,
             pedido: true
@@ -105,9 +131,50 @@ const ByOP: React.FC = () => {
         }
     }
     console.log(concepts)
+    useEffect(() => {
+        setDates([
+            haceUnaSemana.toISOString().split('T')[0],
+            hoy.toISOString().split('T')[0]
+        ]);
+        filterByFetch(haceUnaSemana.toISOString().split('T')[0], hoy.toISOString().split('T')[0])
+    }, [])
 
+    const setProductionToUpdate = storeProduction(state => state.setProductionToUpdate)
+    const setModalSub = storeModals((state) => state.setModalSub);
+    const [dates, setDates] = useState(["", ""]); // Estado para las fechas
+    // useEffect(() => {
+    //    if (selectedIds.id_area) {
+    //     debugger
+    //     // filterByRequest()
+    //    }
+    // }, [selectedIds])
+    const verProduccion = async (id: number) => {
+        const dataProductionOrders = {
+            id: id,
+            folio: 0,
+            id_sucursal: 0,
+            id_serie: 0,
+            id_area: 0,
+            // id_cliente: client,
+            desde: dates[0].toString().split('T')[0], // Solo la fecha
+            hasta: dates[1].toString().split('T')[0],
+            id_usuario: user_id,
+            status: 0,
+        }
+        setModalLoading(true)
+        try {
+            APIs.getProoductionOrders(dataProductionOrders).then((resp: any) => {
+                setModalLoading(false)
+                setProductionToUpdate(resp[0])
+                setModalSub('production__modal')
+            }).finally(() => {
+                setModalLoading(false)
+            })
 
-
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <div className='conatiner__by-request'>
@@ -131,14 +198,14 @@ const ByOP: React.FC = () => {
                     {orders.length > 0 ? (
                         <div className='table__modal_filter_tickets' >
                             <div className='table__numbers'>
-                                <p className='text'>ORDENES DE PRODUCCIÓN ENCONTRADAS</p>
+                                <p className='text parpadeo' style={{ color: 'green' }}> <b>ORDENES DE PRODUCCIÓN ENCONTRADAS</b></p>
                                 <div className='quantities_tables'>{orders.length}</div>
                             </div>
                             <div className='table__body'  >
                                 {orders.map((x: any, index: any) => (
-                                    <div className='tbody__container' key={index} >
+                                    <div className={`tbody__container ${index % 2 === 0 ? 'striped' : ''}`} key={index} >
                                         <div className='tbody'>
-                                            <div className='td'>
+                                            <div className='td' onClick={() => verProduccion(x.id)} style={{ cursor: 'pointer' }} title='Haz clic para ver los detalles de la Orden de Producción'>
                                                 <p className='folio-identifier'>{x.serie}-{x.folio}-{x.anio}</p>
                                             </div>
                                             <div className='td'>
@@ -165,6 +232,8 @@ const ByOP: React.FC = () => {
                     )}
                 </div>
             </div>
+            <ModalProduction />
+
         </div>
     )
 }

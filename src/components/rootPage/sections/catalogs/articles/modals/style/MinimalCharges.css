@@ -31,10 +31,12 @@
     align-items: center;
     justify-content: center;
 	padding: 20px;
-	width: 90%;
+	width: 99%;
+    height: 95%;
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
+    overflow: auto;
 }
 
 .popup__modal_minimal-charges_modal-articles .btn-cerrar-popup__modal_minimal-charges_modal-articles {
@@ -68,6 +70,7 @@
     margin-top: 20px;
     border-radius: 10px;
 	text-align: justify;
+    
 }
 
 
@@ -88,25 +91,6 @@
     font-weight: 600;
 }
 
-.article__modal_minimal-charges_table .table__body {
-	height: 200px;
-    overflow: hidden;
-    overflow: auto;
-    transition-delay: 0.0s;
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-color: #1F319D; 
-        border-radius: 5px;
-        height: 100px;
-    }
-
-    &::-webkit-scrollbar-track {
-    /* Para modificar el background */
-    }
-}
 
 
 .article__modal_minimal-charges_table .tbody__container:nth-child(even) {

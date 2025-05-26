@@ -83,29 +83,70 @@ const ModalCreate: React.FC = () => {
   const [info_sc, setInfo_sc] = useState<any>({
     vendedor: 0,
     vendedores: [],
-    cot_propia: false,
+    cot_propia: true,
     folio_sc: 0,
+    info_sc: {},
     folios_solicitudes: []
   })
 
 
   const [quoteFields, setQuoteFields] = useState<any>({})
   const setData = () => {
-    setQuoteFields({
-      id: modal === 'create-modal__qoutation' ? 0 : quotes.quotes.id,
-      id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
-      id_cliente: selectedResult?.id ?? quatation.id_cliente,
-      id_usuario_crea: user_id,
-      titulo: quotes.quotes.titulo,
-      comentarios: '',
-      conceptos: quotes?.normal_concepts,
-      conceptos_pers: quotes?.personalized_concepts,
-      conceptos_elim: quotes?.normal_concepts_eliminate,
-      conceptos_pers_elim: quotes?.personalized_concepts_eliminate,
-      id_solicitud_cotizacion: info_sc.cot_propia ? user_id : info_sc.folio_sc == '' ? info_sc.folio_sc : 0,
-    })
-  }
+    if (modal == 'create-modal__qoutation') {
+      setQuoteFields({
+        id: 0,
+        id_sucursal: branch.id,
+        id_cliente: null,
+        id_usuario_crea: user_id,
+        titulo: '',
+        comentarios: '',
+        conceptos: quotes?.normal_concepts,
+        conceptos_pers: quotes?.personalized_concepts,
+        conceptos_elim: quotes?.normal_concepts_eliminate,
+        conceptos_pers_elim: quotes?.personalized_concepts_eliminate,
+        id_solicitud_cotizacion: info_sc.cot_propia ? user_id : info_sc.folio_sc == '' ? info_sc.folio_sc : 0,
+      })
+      setClients([])
+      setName('')
+      setSelectedId('clients', { id: 0 });
+      setSelectedResult({ id: 0 })
+    } else {
+      setQuoteFields({
+        id: modal === 'create-modal__qoutation' ? 0 : quotes.quotes.id,
+        id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
+        id_cliente: selectedResult?.id ?? quatation.id_cliente,
+        id_usuario_crea: user_id,
+        titulo: quotes.quotes.titulo,
+        comentarios: quotes.quotes.comentarios,
+        conceptos: quotes?.normal_concepts,
+        conceptos_pers: quotes?.personalized_concepts,
+        conceptos_elim: quotes?.normal_concepts_eliminate,
+        conceptos_pers_elim: quotes?.personalized_concepts_eliminate,
+        id_solicitud_cotizacion: info_sc.cot_propia ? user_id : info_sc.folio_sc == '' ? info_sc.folio_sc : 0,
+      })
+      setName(quotes.quotes.Razon_social)
+      searchCli(quotes.quotes.Razon_social)
+      
+    }
 
+  }
+  const searchCli=async  (rs:string) => {
+     const data = {
+      id_sucursal: branch.id,
+      id_usuario: user_id,
+      nombre: rs
+    }
+
+    try {
+      const resultClients = await getClients(data)
+      setClients(resultClients)
+      setSelectedResult(resultClients[0])
+
+      setSelectedId('clients', resultClients[0]);
+    } catch (error) {
+
+    }
+  }
   useEffect(() => {
     setQuoteFields({
       id: modal === 'create-modal__qoutation' ? 0 : quotes.quotes.id,
@@ -113,13 +154,14 @@ const ModalCreate: React.FC = () => {
       id_cliente: selectedResult?.id ?? quatation.id_cliente,
       id_usuario_crea: user_id,
       titulo: quotes.quotes.titulo,
-      comentarios: '',
+      comentarios: quotes.quotes.comentarios,
       conceptos: quotes?.normal_concepts,
       conceptos_pers: quotes?.personalized_concepts,
       conceptos_elim: quotes?.normal_concepts_eliminate,
       conceptos_pers_elim: quotes?.personalized_concepts_eliminate,
       id_solicitud_cotizacion: info_sc.cot_propia ? user_id : info_sc.folio_sc == '' ? info_sc.folio_sc : 0,
     })
+    fetch()
   }, [quotes])
 
   useEffect(() => {
@@ -139,7 +181,13 @@ const ModalCreate: React.FC = () => {
     }
     let resultUsers: any = await APIs.getUsers(dataUsers)
     DynamicVariables.updateAnyVar(setInfo_sc, 'vendedores', resultUsers)
-    traerSolicitudes(resultUsers[0].id)
+    if (modal == 'create-modal__qoutation') {
+      traerSolicitudes(resultUsers[0].id)
+
+
+    } else {
+
+    }
   }
   const setSaleOrdersToUpdate = storeSaleOrder(state => state.setSaleOrdersToUpdate)
 
@@ -209,6 +257,7 @@ const ModalCreate: React.FC = () => {
         ...prev,
         comentarios: quotes.quotes.comentarios,
       }));
+      DynamicVariables.updateAnyVar(setInfo_sc, 'vendedor', quotes.quotes.id_usuario_crea)
     }
   }, [modal])
 
@@ -233,6 +282,7 @@ const ModalCreate: React.FC = () => {
       setClients(resultClients)
       setSelectedResult(resultClients[0])
 
+      setSelectedId('clients', resultClients[0]);
     } catch (error) {
 
     }
@@ -240,12 +290,13 @@ const ModalCreate: React.FC = () => {
   }
 
 
-
+  // const DataCampos = storeDv(state => state.DataCampos)
+  const setDataCampos = storeDv(state => state.setDataCampos)
   const setIndexVM = storeDv(state => state.setIndex)
   const seeVerMas = (index: number, type: string) => { //AL ABRIR SEE-CP NO SE VISUALIZA LA INFORMACIÓN DE LAS PLANTILLAS PORQUE SIGUE USANDO NORMALCONCEPTS CORREGIR AQUÍ Y EN LA COTIZACIÓN
     setIndexVM(index)
+    setDataCampos({ tipo: type })
     setModalSub('see_cp')
-    setTypeConcept(type)
   }
   const [selectResults, setSelectResults] = useState<boolean>(false);
 
@@ -273,11 +324,23 @@ const ModalCreate: React.FC = () => {
     try {
       if (modal === 'create-modal__qoutation') {
         let copy_data = { ...quoteFields }
+        copy_data.id_cliente = selectedResult?.id ?? 0
+        if (copy_data.id_cliente == 0) {
+          Swal.fire('Advertencia', 'Debe seleccionar un cliente', 'warning');
+          return
+        }
+        if (!info_sc.cot_propia) {
+          copy_data.id_usuario_crea = info_sc.vendedor
+        } else {
+          copy_data.id_usuario_crea = user_id
+        }
         copy_data.id_sucursal = branch?.id
+        copy_data.id_solicitud_cotizacion = info_sc?.folio_sc || 0
         // debugger
+        // return
         if (copy_data?.conceptos != undefined && copy_data?.conceptos?.length > 0) {
           copy_data?.conceptos?.forEach(element => {
-            element.campos_plantilla.forEach(el => {
+            element?.campos_plantilla.forEach(el => {
               el.valor = el.valor.toString()
             });
           });
@@ -287,12 +350,13 @@ const ModalCreate: React.FC = () => {
             element?.conceptos?.forEach(el => {
               el.unidad = el.id_unidad
               el.descuento = 0
-              el.campos_plantilla.forEach(e => {
+              el?.campos_plantilla.forEach(e => {
                 e.valor = e.valor.toString()
               });
             });
           });
         }
+
         const response: any = await APIs.createQuotation(copy_data)
         if (response.error == true) {
           return Swal.fire('Advertencia', response.mensaje, 'warning');
@@ -303,14 +367,47 @@ const ModalCreate: React.FC = () => {
           setModal('')
           setQuotes({ sale_order: {}, normal_concepts: [], personalized_concepts: [], normal_concepts_eliminate: [], personalized_concepts_eliminate: [] })
           localStorage.removeItem("cotizacion");
+          localStorage.removeItem("cotizacion-pers");
         }
       } else {
-        let response: any = await APIs.updateQuotation(quoteFields)
+        let copy_data = { ...quoteFields }
+        copy_data.id_cliente = selectedResult?.id ?? selectedResult.id
+
+        if (!info_sc.cot_propia) {
+          copy_data.id_usuario_crea = info_sc.vendedor
+        } else {
+          copy_data.id_usuario_crea = user_id
+        }
+        copy_data.id_sucursal = copy_data.id_sucursal
+        copy_data.id_solicitud_cotizacion = info_sc?.folio_sc || 0
+        // debugger
+        // return
+        if (copy_data?.conceptos != undefined && copy_data?.conceptos?.length > 0) {
+          copy_data?.conceptos?.forEach(element => {
+            element?.campos_plantilla.forEach(el => {
+              el.valor = el.valor.toString()
+            });
+          });
+        }
+        if (copy_data?.conceptos_pers != undefined && copy_data?.conceptos_pers?.length > 0) {
+          copy_data?.conceptos_pers?.forEach(element => {
+            element?.conceptos?.forEach(el => {
+              el.unidad = el.id_unidad
+              el.descuento = 0
+              el?.campos_plantilla.forEach(e => {
+                e.valor = e.valor.toString()
+              });
+            });
+          });
+        }
+        setModalLoading(true)
+        let response: any = await APIs.updateQuotation(copy_data)
+        setModalLoading(false)
         if (response.error == true) {
           return Swal.fire('Advertencia', response.mensaje, 'warning');
         } else {
           Swal.fire('Cotizacion actualizada exitosamente', '', 'success');
-          Swal.fire('Cotizacion creada exitosamente', '', 'success');
+          // Swal.fire('Cotizacion creada exitosamente', '', 'success');
           const response = await APIs.getQuotation(dataGet);
           setQuotesData(response)
           setModal('')
@@ -327,38 +424,57 @@ const ModalCreate: React.FC = () => {
   const undoConcepts = (concept: any, i: number, adicional: boolean) => {
     const deleteItemCustomC = quotes?.personalized_concepts.filter((_: any, index: number) => index !== i);
 
-    if (adicional) {
-      // Solo elimina el concepto personalizado
-      setQuotes({
-        ...quotes,
-        personalized_concepts: deleteItemCustomC,
-        personalized_concepts_eliminate: concept.id
-          ? [...quotes.personalized_concepts_eliminate, concept.id]
-          : [...quotes.personalized_concepts_eliminate],
-      });
-      localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
-    } else {
-      // Elimina el concepto personalizado y actualiza normal_concepts
-      const updatedConcepts = concept.conceptos.map((element: any) => ({
-        ...element,
-        id_pers: 0,
-        check: false,
-      }));
+    const updatedConcepts = concept.conceptos.map((element: any) => ({
+      ...element,
+      id_pers: 0,
+      check: false,
+    }));
 
-      setQuotes({
-        ...quotes,
-        normal_concepts: [...quotes?.normal_concepts, ...updatedConcepts],
-        personalized_concepts: deleteItemCustomC,
-        personalized_concepts_eliminate: concept.id
-          ? [...quotes.personalized_concepts_eliminate, concept.id]
-          : [...quotes.personalized_concepts_eliminate],
-      });
-      localStorage.setItem(
-        'cotizacion',
-        JSON.stringify([...(quotes?.normal_concepts ?? []), ...updatedConcepts])
-      );
-      localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
-    }
+    setQuotes({
+      ...quotes,
+      normal_concepts: [...quotes?.normal_concepts, ...updatedConcepts],
+      personalized_concepts: deleteItemCustomC,
+      personalized_concepts_eliminate: concept.id
+        ? [...quotes.personalized_concepts_eliminate, concept.id]
+        : [...quotes.personalized_concepts_eliminate],
+    });
+    localStorage.setItem(
+      'cotizacion',
+      JSON.stringify([...(quotes?.normal_concepts ?? []), ...updatedConcepts])
+    );
+    localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
+    // if (adicional) {
+    //   // Solo elimina el concepto personalizado
+    //   setQuotes({
+    //     ...quotes,
+    //     personalized_concepts: deleteItemCustomC,
+    //     personalized_concepts_eliminate: concept.id
+    //       ? [...quotes.personalized_concepts_eliminate, concept.id]
+    //       : [...quotes.personalized_concepts_eliminate],
+    //   });
+    //   localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
+    // } else {
+    //   // Elimina el concepto personalizado y actualiza normal_concepts
+    //   const updatedConcepts = concept.conceptos.map((element: any) => ({
+    //     ...element,
+    //     id_pers: 0,
+    //     check: false,
+    //   }));
+
+    //   setQuotes({
+    //     ...quotes,
+    //     normal_concepts: [...quotes?.normal_concepts, ...updatedConcepts],
+    //     personalized_concepts: deleteItemCustomC,
+    //     personalized_concepts_eliminate: concept.id
+    //       ? [...quotes.personalized_concepts_eliminate, concept.id]
+    //       : [...quotes.personalized_concepts_eliminate],
+    //   });
+    //   localStorage.setItem(
+    //     'cotizacion',
+    //     JSON.stringify([...(quotes?.normal_concepts ?? []), ...updatedConcepts])
+    //   );
+    //   localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
+    // }
   };
 
   // const undoConcepts = (concept: any, i: number, adicional:boolean) => {
@@ -389,7 +505,7 @@ const ModalCreate: React.FC = () => {
   const closeModal = () => {
     setModal('')
     setDataQuotation([])
-    // setQuotes({ normal_concepts: [], personalized_concepts: [] });
+    setQuotes({ normal_concepts: [], personalized_concepts: [] });
     const cotizacion = JSON.parse(localStorage.getItem('cotizacion') || "[]");
     const cotizacion_pers = JSON.parse(localStorage.getItem('cotizacion-pers') || "[]");
     if (cotizacion) {
@@ -406,11 +522,13 @@ const ModalCreate: React.FC = () => {
 
   const modalPersonalizedUpdate = (concept: any, index: number) => {
     setIndexItem(index)
-    if (concept.con_adicional) {
-      setPersonalizedModal('personalized_modal-quotation-update-additional');
-    } else {
-      setPersonalizedModal('personalized_modal-quotation-update');
-    }
+    setPersonalizedModal('personalized_modal-quotation-update');
+
+    // if (concept.con_adicional) {
+    //   setPersonalizedModal('personalized_modal-quotation-update-additional');
+    // } else {
+    //   setPersonalizedModal('personalized_modal-quotation-update');
+    // }
     setIdItem(concept);
     quotes?.normal_concepts?.forEach((element: any) => {
       element.check = false;
@@ -524,7 +642,7 @@ const ModalCreate: React.FC = () => {
     }
   }
   const traerSolicitudes = async (usuario: any) => {
-    DynamicVariables.updateAnyVar(setInfo_sc, 'vendedor', usuario.id)
+    DynamicVariables.updateAnyVar(setInfo_sc, 'vendedor', usuario)
     let data = { vendedor: usuario.id ?? parseInt(usuario) }; // Asegurar que `usuario.id` sea un número válido
 
     try {
@@ -536,6 +654,12 @@ const ModalCreate: React.FC = () => {
         }
       );
       DynamicVariables.updateAnyVar(setInfo_sc, 'folios_solicitudes', response.data)
+      if (response.data.length == 0) {
+        DynamicVariables.updateAnyVar(setInfo_sc, 'info_sc', null)
+      } else {
+
+        DynamicVariables.updateAnyVar(setInfo_sc, 'info_sc', response.data[0])
+      }
       DynamicVariables.updateAnyVar(setInfo_sc, 'folio_sc', response.data[0].id)
       console.log(response); // Ver qué está recibiendo
     } catch (error) {
@@ -605,6 +729,14 @@ const ModalCreate: React.FC = () => {
     }
 
   }
+  const changeFolioSc = (id: number) => {
+    if (id == 0) {
+      setInfo_sc((prev: any) => ({ ...prev, folio_sc: id }))
+      let datasc = info_sc.folios_solicitudes.filter((data: any) => data.id == id)
+      setInfo_sc((prev: any) => ({ ...prev, info_sc: datasc[0] }))
+    }
+
+  }
   return (
     <div className={`overlay__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
       <div className={`popup__quotations__modal ${modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation' ? 'active' : ''}`}>
@@ -633,6 +765,12 @@ const ModalCreate: React.FC = () => {
                   <div className='col-6 md-col-12'>
                     <span className='text'>Creado por: <b>{quotes.quotes.usuario_crea}</b></span><br />
                     <span className='text'>Fecha de Creación: <b>{quotes.quotes.fecha_creacion}</b></span><br />
+                    {quotes.quotes.id_solicitud_cotizacion != 0 ?
+                      <>
+                        <span className='text end-status'>Folio de Solicitud: <b>{quotes.quotes.id_solicitud_cotizacion}</b></span>
+                      </> : ''}
+                    {/* <b className='' style={{color:'green', background:'white', padding:'10px', borderRadius:'10px'}}>Esta es una cotización creada con folio de Solicitud de Cotizador: {quotes.quotes.id_solicitud_cotizacion}</b> */}
+
                     {quotes.quotes.status === 0 ? (
                       <span className="active-status">Activo</span>
                     ) : quotes.quotes.status === 1 ? (
@@ -684,7 +822,7 @@ const ModalCreate: React.FC = () => {
           }
           {permisosxVista.map((x: any) =>
             x.titulo == 'campos_cotizador' ?
-              <div className='row' key={x.id}>
+              <div className='row card' key={x.id}>
                 <div className='col-4'>
                   <label className="">Vendedor</label>
                   <div>
@@ -713,41 +851,51 @@ const ModalCreate: React.FC = () => {
                     </label>
                   </div>
                 </div>
-                <div className='col-4'>
-                  <div className="">
-                    <label className="">Folio de Solicitud</label>
-                    <div>
-                      <select
-                        className="select_original_general"
-                        value={info_sc?.folio_sc}
-                        onChange={(e) => {
-                          console.log('Folio cambiado:', e.target.value);
-                          setInfo_sc((prev: any) => ({ ...prev, folio_sc: e.target.value }));
-                        }}
-                        title={(() => {
+                {modal == 'create-modal__qoutation' ?
+                  <>
+                    <div className='col-4'>
+                      <div className="">
+                        <label className="">Folio de Solicitud</label>
+                        <div>
+                          <select
+                            className="select_original_general"
+                            value={info_sc?.folio_sc}
+                            onChange={(e) => {
+                              console.log('Folio cambiado:', e.target.value);
+                              changeFolioSc(parseInt(e.target.value || '0'));
+                            }}
+                            title={(() => {
 
 
-                          if (!info_sc?.folio_sc) return "Seleccione una solicitud";
+                              if (!info_sc?.folio_sc) return "Seleccione una solicitud";
 
-                          const seleccionado = info_sc?.folios_solicitudes.find(
-                            (sol: any) => sol.id === info_sc?.folio_sc
-                          );
+                              const seleccionado = info_sc?.folios_solicitudes.find(
+                                (sol: any) => sol.id === info_sc?.folio_sc
+                              );
 
-                          return seleccionado
-                            ? `Cliente: ${seleccionado.cliente}, Creación: ${seleccionado.fecha_creacion}, Sucursal: ${seleccionado.sucursal}, Tipo: ${seleccionado.tipo}`
-                            : "Seleccione una solicitud";
-                        })()}
-                      >
-                        {Array.isArray(info_sc?.folios_solicitudes) && info_sc.folios_solicitudes.length > 0
-                          && info_sc?.folios_solicitudes.map((sol: any) => (
-                            <option key={sol.id} value={sol.id}
-                              title={`Cliente: ${sol.cliente}, Creación: ${sol.fecha_creacion}, Sucursal: ${sol.sucursal}, Tipo: ${sol.tipo}`}
-                            >{sol.id}</option>
-                          ))}
-                      </select>
+                              return seleccionado
+                                ? `Cliente: ${seleccionado.cliente}, Creación: ${seleccionado.fecha_creacion}, Sucursal: ${seleccionado.sucursal}, Tipo: ${seleccionado.tipo}`
+                                : "Seleccione una solicitud";
+                            })()}
+                          >
+                            {Array.isArray(info_sc?.folios_solicitudes) && info_sc.folios_solicitudes.length > 0
+                              && info_sc?.folios_solicitudes.map((sol: any) => (
+                                <option key={sol.id} value={sol.id}
+                                  title={`Cliente: ${sol.cliente}, Creación: ${sol.fecha_creacion}, Sucursal: ${sol.sucursal}, Tipo: ${sol.tipo}`}
+                                >{sol.id}</option>
+                              ))}
+                          </select>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                    <div className='col-12 parpadeo' style={{ color: 'green' }}>
+                      <b>
+                        {`Cliente: ${info_sc?.info_sc?.cliente || 'N/A'}, Creación: ${info_sc?.info_sc?.fecha_creacion || 'N/A'}, Sucursal: ${info_sc?.info_sc?.sucursal || 'N/A'}, Tipo: ${info_sc?.info_sc?.tipo || 'N/A'}`}
+
+                      </b>
+                    </div>
+                  </>
+                  : ''}
               </div>
               :
               ''
@@ -1242,11 +1390,11 @@ const ModalCreate: React.FC = () => {
       <ArticleViewModal />
       <SalesCard typeLocalStogare={typeLocalStogare} idA={idA} dataArticle={dataArticle} indexUpdate={indexUpdate} />
       <SeeClient />
-      {personalizedModal !== '' ?
+      {/* {personalizedModal !== '' ?
         <SeeCamposPlantillas typeConcept={typeConcept} />
         :
         <SeeCamposPlantillas typeConcept={typeConcept} />
-      }
+      } */}
 
     </div>
   );

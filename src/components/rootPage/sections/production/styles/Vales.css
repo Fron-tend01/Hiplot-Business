@@ -13,44 +13,6 @@
 	overflow: hidden;
 }
 
-.vales .breadcrumbs {
-	display: flex;
-	margin-bottom: 15px;
-
-}
-
-.vales .breadcrumbs>.breadcrumbs__container {
-	padding: 8px 15px;
-	background-color: var(--bg-300);
-	border-radius: 5px;
-
-}
-
-.vales .breadcrumbs>.chevron__breadcrumbs svg {
-	color: var(--bg-300);
-
-}
-
-.vales .breadcrumbs>.breadcrumbs__container svg {
-	color: #ffffff;
-
-}
-
-
-.vales .breadcrumbs>div {
-	display: flex;
-	align-items: center;
-}
-
-.vales .breadcrumbs>.chevron__breadcrumbs {
-	margin: 0 10px;
-}
-
-.vales .breadcrumbs>.breadcrumbs__container>.title {
-	margin-left: 10px;
-	color: #fff;
-	font-weight: 500;
-}
 
 .create__vales_btn-container {
 	display: flex;

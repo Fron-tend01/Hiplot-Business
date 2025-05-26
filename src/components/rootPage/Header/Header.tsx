@@ -14,7 +14,7 @@ import LoadingInfo from '../../loading/LoadingInfo';
 import { storeArticles } from '../../../zustand/Articles';
 import { storeHeader } from '../../../zustand/Header';
 import { Toaster } from 'sonner'
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { PrivateRoutes } from '../../../models/routes';
 import { storeSaleOrder } from '../../../zustand/SalesOrder';
 import { storeQuotation } from '../../../zustand/Quotation';
@@ -299,7 +299,10 @@ const Header: React.FC = () => {
     });
 
   };
-
+  const location = useLocation();
+  const rutaDesdeHome = location.pathname.includes('/Home')
+    ? location.pathname.substring(location.pathname.indexOf('/Home'))
+    : location.pathname;
   return (
     <div className='hero'>
       <Toaster expand={true} position="top-right" richColors />
@@ -315,10 +318,19 @@ const Header: React.FC = () => {
           <div className={`inputs__general_icons`}>
             {/* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg> */}
             {/* <input className='inputs__generic' placeholder='Ejemplo@gmail.com' /> */}
-            <label className='inputs__generic'> Bienvenido: {userState.nombre} ({userState.email})</label>
+            <label className='inputs__generic'> Bienvenido: {userState.nombre} ({userState.email})
+            </label>
+
           </div>
+
         </div>
         <div className='nav__hero'>
+          {permisosxvista.length > 0 && checkPermission('BOTON-CATALOGO-ARTICULOS') && (
+            <div className='icon__search-btn'>
+              <svg onClick={() => setModalArticleView('article-view__modal_header')} xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="d-flex lucide lucide-package-search" > <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /> <path d="m7.5 4.27 9 5.15" /> <polyline points="3.29 7 12 12 20.71 7" /> <line x1="12" x2="12" y1="22" y2="12" /> <circle cx="18.5" cy="15.5" r="2.5" /> <path d="M20.27 17.27 22 19" />
+              </svg>
+            </div>
+          )}
           {permisosxvista.length > 0 && checkPermission('boton_previo_cotizacion') && (
             <div className='icon__articles-quotation-cart-btn'>
               <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M440-240v20q0 8 6 14t14 6h40q8 0 14-6t6-14v-20h40q17 0 28.5-11.5T600-280v-120q0-17-11.5-28.5T560-440H440v-40h120q17 0 28.5-11.5T600-520q0-17-11.5-28.5T560-560h-40v-20q0-8-6-14t-14-6h-40q-8 0-14 6t-6 14v20h-40q-17 0-28.5 11.5T360-520v120q0 17 11.5 28.5T400-360h120v40H400q-17 0-28.5 11.5T360-280q0 17 11.5 28.5T400-240h40ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h360l200 200v520q0 33-23.5 56.5T720-80H240Zm0-80h480v-480H600q-17 0-28.5-11.5T560-680v-120H240v640Zm0-640v160-160 640-640Z" /></svg>
@@ -515,12 +527,15 @@ const Header: React.FC = () => {
               </div>
             </div>
           )}
-          {permisosxvista.length > 0 && checkPermission('BOTON-CATALOGO-ARTICULOS') && (
-            <div className='icon__search-btn'>
-              <svg onClick={() => setModalArticleView('article-view__modal_header')} xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="d-flex lucide lucide-package-search" > <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" /> <path d="m7.5 4.27 9 5.15" /> <polyline points="3.29 7 12 12 20.71 7" /> <line x1="12" x2="12" y1="22" y2="12" /> <circle cx="18.5" cy="15.5" r="2.5" /> <path d="M20.27 17.27 22 19" />
-              </svg>
+          <div className="help-icon-btn" title="Modulo de Ayuda">
+            <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-circle-help-icon lucide-circle-help"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg>
+            <div className="help-module">
+              <div className="help-card"  onClick={() => window.open('http://hiplot.dyndns.org:84/ayudafullventas/cotventprod.pdf', '_blank')}>
+                📄 Ventas y Cotización</div>
+              {/* <div className="help-card">📄 Cotizaciones</div>
+              <div className="help-card">📄 Ayuda 3</div> */}
             </div>
-          )}
+          </div>
           <div>
             <div className="btn__mode" onClick={handleClick}>
               <div className="btn__indicator">

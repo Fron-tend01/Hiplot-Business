@@ -67,7 +67,8 @@ const PurchaseOrders: React.FC = () => {
       tipo: type,
       desde: haceUnaSemana.toISOString().split('T')[0],
       hasta: hoy.toISOString().split('T')[0],
-      status: 0
+      status: 0,
+      page: 1
     }
 
     console.log(hoy)
@@ -132,7 +133,7 @@ const PurchaseOrders: React.FC = () => {
       desde: dates[0],
       hasta: dates[1],
       status: type,
-      page: 1
+      page: page2
     };
     setModalLoading(true)
     // getPurchaseOrders(0, 0, 0, user_id, 0, 0, '2024-03-14', '2024-03-16', 0)
@@ -172,9 +173,13 @@ const PurchaseOrders: React.FC = () => {
       setPermisosxVista(resp)
     })
   }
+  const [page2, setPage2] = useState<number>(1)
+ useEffect(() => {
+        searchOrders();
+    }, [page2]);
   return (
     <div className='purchase-order'>
-      <div className='breadcrumbs'>
+      <div className='breadcrumbs' >
         <div className='breadcrumbs__container'>
           <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-receipt"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 17.5v-11" /></svg>
           <small className='title'>Compras</small>
@@ -188,7 +193,7 @@ const PurchaseOrders: React.FC = () => {
         </div>
       </div>
       <div className='container__purchase-order'>
-        <div className='row__one'>
+        <div className='row__one' style={{zoom:'80%'}}>
           <div className='row__one'>
             <div>
               <Empresas_Sucursales modeUpdate={false} empresaDyn={selectedCompany} sucursalDyn={selectedBranchOffice}
@@ -304,7 +309,7 @@ const PurchaseOrders: React.FC = () => {
         </div>
         <ModalPurchaseOrders purchaseOrderToUpdate={purchaseOrderToUpdate} />
 
-        <div className='table__purchase-order'>
+        <div className='table__purchase-order' style={{zoom:'80%'}}>
           {purchaseOrders ? (
             <div className='table__numbers'>
               <p className='text'>Total de Ordenes</p>
@@ -376,18 +381,24 @@ const PurchaseOrders: React.FC = () => {
             <p>Cargando datos...</p>
           )}
         </div>
-        {/* <div className='mt-4 d-flex justify-content-between'>
-          <div>
-            <button className='btn__general-purple' onClick={() => { setPage(page - 1) }}
-              disabled={page == 1}>Anterior</button>
-          </div>
-          <div>
-            <button className='btn__general-purple' onClick={() => { setPage(page + 1) }}>Siguente</button>
-          </div>
-        </div> */}
 
       </div>
-      <Pagination />
+        <div className='row paginado-container'>
+          <div className='col-1'>
+            <button className="paginado-btn paginado-btn-prev" onClick={() => setPage2(page2 - 1)} disabled={page2 === 1}>
+              ← Anterior
+            </button>
+          </div>
+          <div className='col-10 paginado-info'>
+            Página {page2}
+          </div>
+          <div className='col-1'>
+            <button className="paginado-btn paginado-btn-next" onClick={() => setPage2(page2 + 1)}>
+              Siguiente →
+            </button>
+          </div>
+        </div>
+      {/* <Pagination /> */}
     </div>
   )
 }

@@ -33,7 +33,7 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }: 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
-        setSelects(false); 
+        setSelects(false);
       }
     }
 
@@ -43,6 +43,25 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }: 
     };
   }, []);
 
+  const liRefs = useRef<(HTMLLIElement | null)[]>([]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selects) return;
+
+      const key = e.key.toLowerCase();
+      const foundIndex = dataSelects?.dataSelect?.findIndex((select: any) =>
+        (select[dataSelects.options] || "").toLowerCase().startsWith(key)
+      );
+
+      if (foundIndex !== -1 && liRefs.current[foundIndex]) {
+        liRefs.current[foundIndex]?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selects, dataSelects]);
   return (
     <div className="select__container" ref={selectRef}>
       <label className="label__general">{nameSelect}</label>
@@ -52,8 +71,8 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }: 
             <p>
               {selectedId != null
                 ? dataSelects?.dataSelect?.find(
-                    (s: any) => s.id === selectedId.id || s.id === selectedId
-                  )?.[dataSelects?.options] || "Selecciona"
+                  (s: any) => s.id === selectedId.id || s.id === selectedId
+                )?.[dataSelects?.options] || "Selecciona"
                 : "Selecciona"}
             </p>
           </div>
@@ -69,8 +88,8 @@ const Select: React.FC<SelectProps> = ({ dataSelects, instanceId, nameSelect }: 
         </div>
         <div className={`content ${selects ? "active" : ""}`}>
           <ul className={`options ${selects ? "active" : ""}`} style={{ opacity: selects ? "1" : "0" }}>
-            {dataSelects?.dataSelect?.map((select: any) => (
-              <li key={uuidv4()} onClick={() => handleSelectsChange(select)}>
+            {dataSelects?.dataSelect?.map((select: any, index:number) => (
+              <li key={uuidv4()} onClick={() => handleSelectsChange(select)} ref={(el) => (liRefs.current[index] = el)}>
                 {select[dataSelects?.options] || "No disponible"}
               </li>
             ))}
