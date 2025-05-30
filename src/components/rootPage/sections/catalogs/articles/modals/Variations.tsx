@@ -59,7 +59,7 @@ const Variations: React.FC = () => {
       codigo: selectedSearch == 0 ? nameBy : '',
       familia: 0,
       proveedor: 0,
-      materia_prima: 0,
+      materia_prima: 99,
       get_sucursales: false,
       get_proveedores: true,
       get_max_mins: true,

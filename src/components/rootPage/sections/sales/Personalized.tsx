@@ -97,14 +97,27 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
 
 
   const addPersonalized = (_: any, i: number) => {
-    setSelectedIds('units', { id: customConceptView[0].id_unidad })
+    setSelectedIds('units', { id: parseInt(customConceptView[0].id_unidad) })
     setselectedKey(customConceptView[0].clave_sat)
+    DynamicVariables.updateAnyVar(setInputs, 'cantidad', 1);
+    
 
     setCustomConceptView(
       customConceptView.map((item: any, index: number) =>
         index === i ? { ...item, check: !item.check } : item
       )
     );
+    let total = parseFloat(customConceptView[i].precio_total) - parseFloat(customConceptView[i].monto_descuento || 0) + parseFloat(customConceptView[i].monto_urgencia);
+    let precio_total = (isNaN(parseFloat(inpust.precio_total)) ? 0 : parseFloat(inpust.precio_total))
+    debugger
+    if (!customConceptView[i].check) {
+      DynamicVariables.updateAnyVar(setInputs, 'precio_total', precio_total + total);
+    }
+    if (customConceptView[i].check && inpust.precio_total > 0) {
+      DynamicVariables.updateAnyVar(setInputs, 'precio_total', precio_total - total);
+
+    }
+    // DynamicVariables.updateAnyVar(setInputs, 'cantidad', 1)
     // debugger
   };
   const setModalLoading = storeArticles((state: any) => state.setModalLoading);
@@ -135,7 +148,12 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
           comentarios_factura: inpust.comentarios_factura,
           conceptos: filter,
         }
-
+        if (data.descripcion === '') { Swal.fire('Advertencia', 'El campo descripcion del concepto es obligatorio', 'warning'); return }
+        if (data.codigo === '') { Swal.fire('Advertencia', 'El campo codigo del concepto es obligatorio', 'warning'); return }
+        if (data.cantidad === '' || data.cantidad === 0) { Swal.fire('Advertencia', 'El campo cantidad del concepto es obligatorio', 'warning'); return }
+        if (data.unidad === null) { Swal.fire('Advertencia', 'El campo unidad del concepto es obligatorio', 'warning'); return }
+        if (data.clave_sat === null) { Swal.fire('Advertencia', 'El campo Clave Sat del concepto es obligatorio', 'warning'); return }
+        if (data.precio_total === null) { Swal.fire('Advertencia', 'El campo Precio Total del concepto es obligatorio', 'warning'); return }
         let filterDelete = customConceptView.filter((x: any) => x.check !== true)
         if (personalizedModal == 'personalized_modal-quotation') {
           setQuotes({ normal_concepts: filterDelete, personalized_concepts: [...quotes?.personalized_concepts ?? [], data] });
@@ -476,7 +494,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
   const seeVerMas = (index: number) => {
     setIndexVM(index)
     setIdInPers(IdInPers)
-    setDataCampos({ tipo: 'articulo_en_pers', idInPers:indexItem })
+    setDataCampos({ tipo: 'articulo_en_pers', idInPers: indexItem })
     setModalSub('see_cp-personalized')
     setTypeConcept('articulo_en_pers')
 
@@ -791,7 +809,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                 <input type='number' className={`inputs__general`} value={inpust?.cantidad} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'cantidad', e.target.value)} placeholder='Cantidad' />
               </div>
               <div className='col-2 md-col-6 sm-col-12'>
-                <label className='label__general'>Total personalizado</label>
+                <label className='label__general parpadeo' >Total personalizado</label>
                 <input type='number' className={`inputs__general`} value={inpust?.precio_total} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'precio_total', e.target.value)} placeholder='Precio real' />
               </div>
             </div>

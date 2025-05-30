@@ -36,6 +36,7 @@ const SalesOrder: React.FC = () => {
 
     const { getSeriesXUser }: any = seriesRequests()
     const [series, setSeries] = useState<any>([])
+    const [series2, setSeries2] = useState<any>([])
     const setModalSalesOrder = storeSaleOrder(state => state.setModalSalesOrder)
     const setDataGet = storeSaleOrder(state => state.setDataGet)
     const setSaleOrders = storeSaleOrder(state => state.setSaleOrders)
@@ -69,9 +70,11 @@ const SalesOrder: React.FC = () => {
     const [companies, setCompanies] = useState<any>([])
 
     const [branchOffices, setBranchOffices] = useState<any>([])
-    const [fol, setFol] = useState<any>(0)
+    const [fol, setFol] = useState<number>(0)
+    const [searcherTitulo, setSearcherTitulo] = useState<string>('')
 
     const selectedIds: any = useSelectStore((state) => state.selectedIds);
+    const setSelectData: any = useSelectStore((state) => state.setSelectedId);
 
     const [client, setClient] = useState<any>('')
 
@@ -120,7 +123,13 @@ const SalesOrder: React.FC = () => {
             options: 'nombre',
             dataSelect: resultSeries
         })
-
+        let resultSeries2 = await getSeriesXUser({ tipo_ducumento: 8, id: user_id })
+        resultSeries2.unshift({ 'nombre': 'Todos' })
+        setSeries2({
+            selectName: 'Series2',
+            options: 'nombre',
+            dataSelect: resultSeries2
+        })
     }
     const { modalSalesOrder }: any = useStore(storeSaleOrder)
     const [page, setPage] = useState<number>(1)
@@ -138,7 +147,7 @@ const SalesOrder: React.FC = () => {
         const dataSaleOrders = {
             folio: fol,
             id_sucursal: branchOffices.id,
-            id_serie: selectedIds?.serie?.id,
+            id_serie: buscarPor == '0' ? selectedIds?.serie?.id : selectedIds?.serie2?.id,
             id_cliente: client,
             desde: dates[0],
             hasta: dates[1],
@@ -146,7 +155,11 @@ const SalesOrder: React.FC = () => {
             id_vendedor: selectedIds?.users?.id,
             status: type,
             page: page,
-            light: true
+            light: true,
+            buscarPor: buscarPor,
+            facturados: facturados,
+            enviados: enviados,
+            valor_bp: searcherTitulo
         }
         // const result = await APIs.CreateAny(dataSaleOrders, 'get_ov2')
         const result = await getSaleOrders(dataSaleOrders)
@@ -172,10 +185,18 @@ const SalesOrder: React.FC = () => {
     }
 
     const [type, setType] = useState<any>(0)
+    const [buscarPor, setBuscarPor] = useState<string>('0')
+    const [facturados, setFacturados] = useState<number>(0)
+    const [enviados, setEnviados] = useState<number>(0)
     const handleClick = (value: any) => {
         setType(value)
     };
-
+    const changeBuscarPor = (value: any) => {
+        setBuscarPor(value)
+        setFol(0)
+        setSelectData('serie', {})
+        setSelectData('serie2', {})
+    };
     const modalLoading = storeArticles((state: any) => state.modalLoading);
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
@@ -238,7 +259,7 @@ const SalesOrder: React.FC = () => {
                         <div className='col-1'>
                             <label htmlFor="">Facturados</label>
 
-                            <select name="" id="" className='inputs__general'>
+                            <select name="" id="" className='inputs__general' onChange={(e) => setFacturados(parseInt(e.target.value))} value={facturados}>
                                 <option value="0">Todos</option>
                                 <option value="1">Facturados</option>
                                 <option value="2">Sin Facturar</option>
@@ -246,7 +267,7 @@ const SalesOrder: React.FC = () => {
                         </div>
                         <div className='col-1'>
                             <label htmlFor="">Prod.</label>
-                            <select className='inputs__general'>
+                            <select className='inputs__general' onChange={(e) => setEnviados(parseInt(e.target.value))} value={enviados}>
                                 <option value="0">Todos</option>
                                 <option value="1">Sin Enviar</option>
                                 <option value="2">Enviados</option>
@@ -254,21 +275,58 @@ const SalesOrder: React.FC = () => {
                         </div>
                     </div>
                     <div className='my-4 row'>
-                        <div className='md-col-6 col-3'>
+                        <div className='md-col-6 col-2'>
                             <label className='label__general'>Clientes</label>
                             <input className='inputs__general' type="text" value={client} onChange={(e) => setClient(e.target.value)} placeholder='Ingresa el Folio/RFC/Razon social' />
                         </div>
+                        <div className='md-col-3 col-2'>
+                            <Select dataSelects={users} nameSelect={'Usuarios'} instanceId='users' />
+                        </div>
+                        <div className='md-col-3 col-2'>
+                            <label>Por:</label>
+                            <select className='inputs__general' onChange={(e) => changeBuscarPor(e.target.value)} value={buscarPor}>
+                                <option value="0">Por Ov</option>
+                                <option value="1">Por Op</option>
+                                <option value="2">Titulo</option>
+                            </select>
+                        </div>
+                        {buscarPor == '0' && (
+                            <div className='md-col-6 col-3'>
+                                <Select dataSelects={series} nameSelect={'Series'} instanceId='serie' />
+                            </div>
+                        )}
+                        {buscarPor == '1' && (
+                            <div className='md-col-6 col-3'>
+                                <Select dataSelects={series2} nameSelect={'Series'} instanceId='serie2' />
+                            </div>
+                        )}
+                        {buscarPor == '2' && (
+                            <div className='md-col-6 col-5'>
+                                <label className='label__general'>Titulo</label>
+                                <input className='inputs__general' type="text" value={searcherTitulo} onChange={(e) => setSearcherTitulo(e.target.value)} placeholder='Ingresa el titulo de la orden' onKeyUp={(e) => e.key === 'Enter' && search()}/>
+                            </div>
+                        )}
+                        {buscarPor != '2' && (
+                            <div className='md-col-6 col-3'>
+                                <label className='label__general'>Folio</label>
+                                <input className='inputs__general' type="number" value={fol} onChange={(e) => setFol(parseInt(e.target.value) || 0)} placeholder='Ingresa el folio' onKeyUp={(e) => e.key === 'Enter' && search()} />
+                            </div>
+                        )}
+
+                    </div>
+                    {/* <div className='my-4 row'>
+                       
                         <div className='md-col-6 col-3'>
                             <Select dataSelects={users} nameSelect={'Usuarios'} instanceId='users' />
                         </div>
                         <div className='md-col-6 col-3'>
-                            <Select dataSelects={series} nameSelect={'Series'} instanceId='serie' />
+                            <Select dataSelects={series} nameSelect={'Series2'} instanceId='serie2' />
                         </div>
                         <div className='md-col-6 col-3'>
                             <label className='label__general'>Folio</label>
                             <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' onKeyUp={(e) => e.key === 'Enter' && search()} />
                         </div>
-                    </div>
+                    </div> */}
                     <div className='my-4 row__three d-flex justify-content-around'>
                         <div className='container__checkbox_orders'>
                             <div className='checkbox__orders'>

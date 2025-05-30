@@ -343,6 +343,9 @@ const Departures: React.FC = () => {
                                 <div className='th'>
                                     <p>Sucursal</p>
                                 </div>
+                                 <div className='th'>
+                                    <p>Area</p>
+                                </div>
                                 <div className='th'>
                                     <p>Fecha y hora</p>
                                 </div>
@@ -370,6 +373,9 @@ const Departures: React.FC = () => {
                                                 </div>
                                                 <div className='td'>
                                                     <p>{order.sucursal}</p>
+                                                </div>
+                                                 <div className='td'>
+                                                    <p>{order.area}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <p>{order.fecha_creacion}</p>

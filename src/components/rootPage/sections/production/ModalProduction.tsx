@@ -36,6 +36,17 @@ const ModalProduction: React.FC = () => {
 
     useEffect(() => {
         if (productionToUpdate) {
+            let total = 0
+            let st = 0
+            let urg = 0
+            productionToUpdate?.conceptos?.forEach(element => {
+                total += parseFloat(element.total) + parseFloat(element.monto_urgencia) - parseFloat(element.monto_descuento)
+                st += parseFloat(element.total)
+                urg += parseFloat(element.monto_urgencia)
+            });
+            productionToUpdate.total = total
+            productionToUpdate.st = st
+            productionToUpdate.urg = urg
             const uniqueAreas = new Set<string>(); // Usamos Set para almacenar las áreas como cadenas JSON
 
             productionToUpdate?.conceptos?.forEach((element: any) => {
@@ -155,7 +166,7 @@ const ModalProduction: React.FC = () => {
 
     }
 
-   
+
 
     const formatDate = (date: any) => date.toISOString().split("T")[0];
     const enviarASucursal = async () => {
@@ -221,6 +232,8 @@ const ModalProduction: React.FC = () => {
                 try {
                     APIs.sendAreaProduction(data).then(() => {
                         Swal.fire('Notificacion', 'Orden movida de area correctamente', 'success')
+                        search_one_op(productionToUpdate.id)
+
                     })
                 } catch (error) {
                     Swal.fire('Notificacion', 'Ocurrió un error al cambiar de area, consulta con soporte', 'info')
@@ -248,6 +261,8 @@ const ModalProduction: React.FC = () => {
                 try {
                     await APIs.sendAreaConceptoProduction(data)
                     Swal.fire('Notificacion', 'Cambio de Area realizado correctamente', 'success')
+                    search_one_op(productionToUpdate.id)
+
                 } catch (error) {
                     Swal.fire('Notificacion', 'Ocurrió un error al cambiar el area: ' + error, 'info')
 
@@ -279,9 +294,8 @@ const ModalProduction: React.FC = () => {
                 await APIs.CreateAny(data, "terminar_concepto_op")
                     .then(async (_: any) => {
                         Swal.fire('Notificación', 'Concepto terminado Correctamente', 'success');
-                        let copy = { ...productionToUpdate }
-                        copy.conceptos[index].status_produccion = 2
-                        setProductionToUpdate(copy)
+                        search_one_op(productionToUpdate.id)
+
                     })
             }
         });
@@ -302,9 +316,10 @@ const ModalProduction: React.FC = () => {
                 await APIs.CreateAny(data, "enviar_sucursal_concepto_op")
                     .then(async (_: any) => {
                         Swal.fire('Notificación', 'Concepto enviado a sucursal Correctamente', 'success');
-                        let copy = { ...productionToUpdate }
-                        copy.conceptos[index].status_produccion = 3
-                        setProductionToUpdate(copy)
+                        // let copy = { ...productionToUpdate }
+                        // copy.conceptos[index].status_produccion = 3
+                        // setProductionToUpdate(copy)
+                        search_one_op(productionToUpdate.id)
                     })
             }
         });
@@ -325,14 +340,42 @@ const ModalProduction: React.FC = () => {
                 await APIs.CreateAny(data, "cancelar_concepto_op")
                     .then(async (_: any) => {
                         Swal.fire('Notificación', 'Concepto enviado a cancelado Correctamente', 'success');
-                        let copy = { ...productionToUpdate }
-                        copy.conceptos[index].status_produccion = 1
-                        setProductionToUpdate(copy)
+                        search_one_op(productionToUpdate.id)
+
                     })
             }
         });
     }
+    const hoy = new Date();
+    const haceUnaSemana = new Date();
+    haceUnaSemana.setDate(hoy.getDate() - 7);
+    const [dates, setDates] = useState([
+        haceUnaSemana.toISOString().split('T')[0],
+        hoy.toISOString().split('T')[0]
+    ]);
+    const search_one_op = async (id: number) => {
+        const dataProductionOrders = {
+            id: id,
+            folio: 0,
+            id_sucursal: 0,
+            id_serie: 0,
+            id_area: 0,
+            // id_cliente: client,
+            desde: dates[0].toString().split('T')[0], // Solo la fecha
+            hasta: dates[1].toString().split('T')[0],
+            id_usuario: user_id,
+            status: 0,
+        }
+        try {
+            APIs.getProoductionOrders(dataProductionOrders).then((resp: any) => {
 
+                setProductionToUpdate(resp[0])
+            })
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
     const checkPermission = (elemento: string) => {
         const permisosxVista = storeDv.getState().permisosxvista; // Obtiene el estado actual
 
@@ -341,8 +384,14 @@ const ModalProduction: React.FC = () => {
     };
 
 
-    const [data, setData] = useState<any>(["fdsfsadfdsasamdnsajdasdasdasdnasnjds", "sdfdafgf", "fghfh", "fghgfhgf", "werewr", "23432432"])
 
+    const [expandedIds, setExpandedIds] = useState<number[]>([]);
+
+    const toggle = (id: number) => {
+        setExpandedIds((prev) =>
+            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+        );
+    };
     return (
         <div className={`overlay__production-modal__article-modal ${modalSub == 'production__modal' ? 'active' : ''}`}>
             <div className={`popup__production-modal__article-modal ${modalSub == 'production__modal' ? 'active' : ''}`}>
@@ -352,9 +401,8 @@ const ModalProduction: React.FC = () => {
                     </a>
                     <p className='title__modals'>Modal de produccion</p>
                 </div>
-                <div className='production-modal__article-modal'>
-                    <div>
-                        <div className="card ">
+                <div className='production-modal__article-modal' style={{overflow:'auto'}}>
+                        <div className="card " style={{zoom:'80%'}} >
                             <div className="card-body bg-standar">
                                 <div className='d-flex justify-content-between'>
                                     <h3 className="text">{productionToUpdate.serie}-{productionToUpdate.folio}-{productionToUpdate.anio}</h3>
@@ -364,8 +412,8 @@ const ModalProduction: React.FC = () => {
                                 </div>
                                 <hr />
                                 <div className='row'>
-                                    <div className='col-6 md-col-12'>
-                                        <span className='text'>Creado por: <b>{productionToUpdate.usuario_crea}</b></span><br />
+                                    <div className='col-4 md-col-4'>
+                                        <span className='text'>Creado por2: <b>{productionToUpdate.usuario_crea}</b></span><br />
                                         <span className='text'>Fecha envio producción: <b>{productionToUpdate.fecha_creacion}</b></span><br />
                                         <span className='text'>Fecha Entrega: <b>{productionToUpdate.fecha_entrega} {productionToUpdate.hora_entrega}</b></span><br />
                                         {productionToUpdate.motivo_modify_te != 0 ?
@@ -375,12 +423,38 @@ const ModalProduction: React.FC = () => {
                                         <p>{productionToUpdate.status == 0 ? <b style={{ color: 'green' }}>ACTIVO</b> :
                                             productionToUpdate.status == 1 ? <b style={{ color: 'red' }}>CANCELADO</b> :
                                                 productionToUpdate.status == 2 ? <b style={{ color: 'blue' }}>TERMINADO</b> : <b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
+                                        <span className='text'><b>Subtotal: ${productionToUpdate?.st?.toFixed(2)}</b></span><br />
+                                        {productionToUpdate.urg > 0 && (<><span className='text' style={{ color: 'red' }}><b>Urgencia: {productionToUpdate?.urg?.toFixed(2)}</b></span><br /></>)}
+                                        <span className='text'><b>Total: ${productionToUpdate?.total?.toFixed(2)}</b></span><br />
+
                                     </div>
-                                    <div className='col-6 md-col-12'>
+                                    <div className='col-4 md-col-4'>
                                         <span className='text'>Empresa: <b>{productionToUpdate.empresa}</b></span><br />
                                         <span className='text'>Sucursal de origen: <b>{productionToUpdate.sucursal}</b></span><br />
                                         <span className='text'>Orden de Venta: <b>{productionToUpdate.folio_ov}</b></span><br />
 
+                                    </div>
+                                    <div className='col-4 md-col-4'>
+                                        Ordenes relacionadas:
+                                        {productionToUpdate.relacionados?.map((dat: any, index: number) => {
+                                            const collapseId = `search_manual_xOp_${index}`;
+
+                                            return (
+                                                <div className="collapse-container" key={collapseId}>
+                                                    <input type="checkbox" id={collapseId} className="collapse-toggle" />
+                                                    <label htmlFor={collapseId} className="collapse-label">
+                                                        {dat.serie}-{dat.folio}-{dat.anio}
+                                                    </label>
+                                                    <div className="collapse-content">
+                                                        {dat.conceptos?.map((c: any, i: number) => (
+                                                            <div key={i}>
+                                                                <strong>{c.codigo}</strong> - {c.descripcion} ({c.area_actual})
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
                                     </div>
                                 </div>
                                 <div className='row'>
@@ -404,6 +478,7 @@ const ModalProduction: React.FC = () => {
                                         </div>
 
                                     </div>
+
                                     <div className='d-flex align-items-end'>
                                         {checkPermission('enviar_a_sucursal') && (
                                             productionToUpdate.status == 0 ?
@@ -437,8 +512,7 @@ const ModalProduction: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className='table__production_modal'>
+                    <div className='table__production_modal'  style={{overflow:'auto', zoom:'80%'}}>
                         {productionToUpdate.conceptos ? (
                             <div className='table__numbers'>
                                 <p className='text'>Total de articulos</p>
@@ -494,7 +568,8 @@ const ModalProduction: React.FC = () => {
                                                 <div className='td max'>
                                                     <div className='row__one'>
                                                         <div className='td-one'>
-                                                            <p className='amount-identifier'>{article.cantidad} {article.name_unidad || article.unidad}</p>
+                                                            {/* <p className='amount-identifier'>{article.cantidad} {article.name_unidad || article.unidad}</p> */}
+                                                            <p className='amount-identifier'>{article.cantidad}</p>
                                                         </div>
                                                         <div className='td-one'>
                                                             <p>$ {(article.total / article.cantidad).toFixed(2)}</p>

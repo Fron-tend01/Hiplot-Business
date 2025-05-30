@@ -267,12 +267,13 @@ const Requisition: React.FC = () => {
 
       id_sucursal: selectedIds.sucursal.id || selectedIds.sucursal,
       id_usuario: user_id,
-      id_area: selectedIds.area.id || selectedIds.area,
-      tipo: 0,
+      id_area: selectedIds.area.id || 0,
+      tipo: selectedType,
       desde: dates[0],
       hasta: dates[1],
       status: status,
-      page: page2
+      page: page2,
+      light: true
 
     };
     setPage(1)
@@ -284,12 +285,34 @@ const Requisition: React.FC = () => {
     setTotalPages(resultRequisition.total_pages)
 
   }
+const searchOne = async (id:number) => {
+    const data = {
+      id:id,
+      id_sucursal: selectedIds.sucursal.id || selectedIds.sucursal,
+      id_usuario: user_id,
+      id_area: selectedIds.area.id,
+      tipo: 0,
+      desde: dates[0],
+      hasta: dates[1],
+      status: status,
+      page: page2,
+      light: false
 
+    };
+    setPage(1)
+    setModalLoading(true)
+    const resultRequisition = await getRequisition(data)
+    setModalLoading(false)
 
-  const modalUpdate = (requisition: any) => {
+    return resultRequisition.data[0]
+
+  }
+
+  const modalUpdate = async (requisition: any) => {
+    let req = await searchOne(requisition.id)
     setModalStateCreate('update')
-    setUpdateToRequisition(requisition)
-    setConcepts(requisition.conceptos)
+    setUpdateToRequisition(req)
+    setConcepts(req.conceptos)
   }
 
 

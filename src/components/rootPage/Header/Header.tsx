@@ -90,7 +90,7 @@ const Header: React.FC = () => {
     let p_quotes = quotes?.personalized_concepts?.reduce((acc, item) => acc + item.precio_total || "0", 0);
 
     setTotalSales(n_sale + p_sale);
-    setTotalQuotes(n_quotes + p_quotes);
+    setTotalQuotes(parseFloat(n_quotes) + parseFloat(p_quotes));
   }, [saleOrdersConcepts, quotes]);
 
 
@@ -418,7 +418,7 @@ const Header: React.FC = () => {
                   <div className='row__three'>
                     <div className='total'>
                       <p className='title'>Total</p>
-                      <p className='text'>$ {totalQuotes}</p>
+                      <p className='text'>$ {totalQuotes.toFixed(4)}</p>
                     </div>
                     <Link to={`${PrivateRoutes.SALES}/${PrivateRoutes.QUOTATION}`} onClick={() => setModal('create-modal__qoutation')} className='sale-btn'>cotizacion</Link>
                   </div>

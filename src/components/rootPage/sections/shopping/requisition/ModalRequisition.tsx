@@ -159,10 +159,12 @@ const ModalRequisition: React.FC = () => {
 
   // Select y Onchange de Sucursales //
 
-  const handleModalBranchOfficesChange = (branchOffice: any) => {
+  const handleModalBranchOfficesChange = async (branchOffice: any) => {
     setSelectedBranchOffice(branchOffice.id)
     setSelectModalBranchOffices(false)
-
+      const resultAreas = await getAreas(branchOffice.id, user_id)
+    setAreas(resultAreas)
+    setSelectedModalArea(resultAreas[0].id)
   }
 
   const openSelectModalBranchOffices = () => {

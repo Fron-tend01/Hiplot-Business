@@ -126,12 +126,12 @@ const ModalCreate: React.FC = () => {
       })
       setName(quotes.quotes.Razon_social)
       searchCli(quotes.quotes.Razon_social)
-      
+
     }
 
   }
-  const searchCli=async  (rs:string) => {
-     const data = {
+  const searchCli = async (rs: string) => {
+    const data = {
       id_sucursal: branch.id,
       id_usuario: user_id,
       nombre: rs
@@ -325,7 +325,7 @@ const ModalCreate: React.FC = () => {
       if (modal === 'create-modal__qoutation') {
         let copy_data = { ...quoteFields }
         copy_data.id_cliente = selectedResult?.id ?? 0
-        if (copy_data.id_cliente == 0) {
+        if (copy_data.id_cliente == 0 || copy_data.id_cliente == undefined || copy_data.id_cliente == null) {
           Swal.fire('Advertencia', 'Debe seleccionar un cliente', 'warning');
           return
         }
@@ -641,6 +641,14 @@ const ModalCreate: React.FC = () => {
       console.log(error);
     }
   }
+  const getTicket2 = async () => {
+    try {
+      // Abrimos el PDF en una nueva pestaña
+      window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_cotizacion_no_precios/${quatation.id}`, '_blank');
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const traerSolicitudes = async (usuario: any) => {
     DynamicVariables.updateAnyVar(setInfo_sc, 'vendedor', usuario)
     let data = { vendedor: usuario.id ?? parseInt(usuario) }; // Asegurar que `usuario.id` sea un número válido
@@ -730,7 +738,7 @@ const ModalCreate: React.FC = () => {
 
   }
   const changeFolioSc = (id: number) => {
-    if (id == 0) {
+    if (id != 0) {
       setInfo_sc((prev: any) => ({ ...prev, folio_sc: id }))
       let datasc = info_sc.folios_solicitudes.filter((data: any) => data.id == id)
       setInfo_sc((prev: any) => ({ ...prev, info_sc: datasc[0] }))
@@ -805,6 +813,9 @@ const ModalCreate: React.FC = () => {
                       <div className='row__bts col-12'>
                         <div className='btn__pdf'>
                           <button className='btn__general-orange' onClick={getTicket}>PDF</button>
+                          {permisosxVista.some((x: any) => x.titulo == 'pdf_no_precios') && (
+                            <button className='btn__general-orange' onClick={getTicket2}>PDF No Precios</button>
+                          )}
 
                         </div>
                         <div className='btn__update-qoutation'>

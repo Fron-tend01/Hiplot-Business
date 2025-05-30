@@ -236,6 +236,9 @@ const ModalSalesOrder: React.FC = () => {
         }
         // debugger
         // return
+        if (title.trim() === '') {
+            return Swal.fire('Advertencia', 'El campo Titulo es obligatorio', 'warning');
+        }
         try {
             const result: any = await APIs.CreateAny(data, 'create_ov_remastered'); //CAMBIAR POR CREATE_OV_REMASTERED
             if (result.error == true) {
@@ -258,7 +261,7 @@ const ModalSalesOrder: React.FC = () => {
                 setIdCotizacion(0)
                 setModifyTe(0)
                 setTitle('')
-                
+
                 const dataSaleOrders = {
                     id: result.id,
                     folio: 0,
@@ -473,14 +476,14 @@ const ModalSalesOrder: React.FC = () => {
             precio_unitario: article.precio_unitario,
             check_recibido_sucursal: article.check_recibido_sucursal,
             check_entregado_cliente: article.check_entregado_cliente,
-            total: article.precio_total,
+            total: article.total,
             id_unidad: article.id_unidad,
             obs_produccion: article.obs_produccion,
             obs_factura: article.obs_factura,
             id_pers: article.id_pers,
             id_usuario_actualiza: user_id
         }
-        // debugger
+        debugger
         // return
         try {
             setModalLoading(true)
@@ -959,20 +962,20 @@ const ModalSalesOrder: React.FC = () => {
         //----------------------------------HASTA LOS CONCEPTITOS, SI NO ES ADICIONAL SE ELIMINA CON ESTE QUE YA TRAE POR DEFAULT
 
 
-          await APIs.deleteAny(`eliminar_conceptos_pers_carrito/${concept.id}`)
-                .then(async (response: any) => {
-                    if (!response.error) {
-                        await APIs.GetAny('get_carrito/' + user_id)
-                            .then(async (response: any) => {
-                                let order = response[0]
-                                setSaleOrdersToUpdate(order)
-                                setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
-                            })
-                    } else {
-                        Swal.fire('Notificación', response.mensaje, 'warning');
-                        return
-                    }
-                })
+        await APIs.deleteAny(`eliminar_conceptos_pers_carrito/${concept.id}`)
+            .then(async (response: any) => {
+                if (!response.error) {
+                    await APIs.GetAny('get_carrito/' + user_id)
+                        .then(async (response: any) => {
+                            let order = response[0]
+                            setSaleOrdersToUpdate(order)
+                            setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                        })
+                } else {
+                    Swal.fire('Notificación', response.mensaje, 'warning');
+                    return
+                }
+            })
         // if (concept.is_adicional) {
         //     await APIs.deleteAny(`eliminar_conceptos_pers_adi_carrito/${concept.id}`)
         //         .then(async (response: any) => {
@@ -1080,6 +1083,10 @@ const ModalSalesOrder: React.FC = () => {
 
     const closeModal = async () => {
         setModalSalesOrder('')
+        setSaleOrdersToUpdate({})
+        setTitle('')
+        setSelectedIds('clients', { id: 0, razon_social: '' })
+        setSearchCustomer('')
         // setov_repo(null)
         await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
             let orden = r[0]

@@ -2,6 +2,7 @@
     height: 100%;
     display: grid;
     grid-template-rows: auto 1fr;
+    overflow-y: auto;
 }
 
 
@@ -50,7 +51,7 @@
 	transition: .3s ease all;
 	transform: scale(0.7);
 	opacity: 0;
-    overflow: hidden;
+    /* overflow-x: scroll; */
 
 }
 
@@ -118,7 +119,7 @@
 
 .table__production_modal .table__body {
 	height: 100%;
-    overflow-y: auto;
+    /* overflow-y: auto; */
     border: 2px solid var(--border-table-color);
     border-radius: 0 0 10px 10px;
     transition-delay: 0.0s;

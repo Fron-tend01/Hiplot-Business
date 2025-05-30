@@ -145,7 +145,7 @@ const ModalBilling: React.FC = () => {
     const checkPermission = (elemento: string) => {
         return PermisosxVista.some((x: any) => x.titulo == elemento)
     }
-   
+
 
     const hoy = new Date();
     const haceUnaSemana = new Date();
@@ -306,7 +306,7 @@ const ModalBilling: React.FC = () => {
                 factura: true
             }
             console.log('enviando esta data', dataSaleOrders);
-            
+
             const result = await APIs.CreateAny(dataSaleOrders, "get_orden_venta_ori")
             // const result = await getSaleOrders(dataSaleOrders)
             setSaleOrders(result)
@@ -638,17 +638,22 @@ const ModalBilling: React.FC = () => {
     const deleteConceptos = (c: any, i: number, typeConcept: string) => {
         console.log('asdasd')
         if (!modoUpdate) {
-            if (type == 2) {
-                DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total))
-                DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
-            } else {
-                DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total_restante))
-                DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total_restante))
-            }
+            // if (type == 2) {
+            //     DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total))
+            //     DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total))
+            // } else {
+            //     DynamicVariables.updateAnyVar(setTotals, "total", totals.total - parseFloat(c.total_restante))
+            //     DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal - parseFloat(c.total_restante))
+            // }
 
             if (typeConcept == 'normal') {
-                const filterNormal = billing?.normal_concepts.filter((_: any, index: number) => index !== i);
-                setBilling({ normal_concepts: filterNormal, normal_concepts_eliminate: [...billing.normal_concepts_eliminate, c.id] });
+                const filterNormal = billing.normal_concepts.filter((_: any, index: number) => index !== i);
+
+                setBilling({
+                    ...billing,
+                    normal_concepts: filterNormal,
+                    normal_concepts_eliminate: [...billing.normal_concepts_eliminate, c.id],
+                });
             } else {
                 const filterPersonalized = billing?.personalized_concepts.filter((_: any, index: number) => index !== i);
                 setBilling({ normal_concepts: billing.normal_concepts, personalized_concepts: filterPersonalized, personalized_concepts_eliminate: [...billing.personalized_concepts_eliminate, c.id] });
@@ -727,39 +732,8 @@ const ModalBilling: React.FC = () => {
             }));
             setBilling({ normal_concepts: [...billing.normal_concepts, ...updatedConcepts], personalized_concepts: billing.personalized_concepts, personalized_concepts_eliminate: [...billing.personalized_concepts_eliminate, concept.id] });
             setConceptsBack(deleteItemCustomC)
-        }
+        } debugger
 
-
-
-
-
-
-
-
-
-
-
-
-
-        // const updatedConcepts = concept.conceptos.map((element: any) => {
-        //     element.id_pers = 0;
-        //     return element;
-        // });
-
-        // // Actualizar el estado de normalConcepts
-        // setNormalConcepts([...normalConcepts, ...updatedConcepts]);
-        // console.log('updatedConcepts', updatedConcepts)
-
-        // // Filtrar y actualizar conceptView para eliminar los conceptos con el id_identifier especificado
-        // concept.conceptos.forEach((element: any) => {
-        //     element.check = false
-        // });
-
-        // const deleteItem = conceptView.filter((x: any) => x.id_identifier !== concept.id_identifier);
-        // setConceptView([...deleteItem, ...concept.conceptos]);
-        // console.log('concept.conceptos', concept.conceptos)
-        // console.log('deleteItem', deleteItem)
-        // setCustomConceptView([...deleteItem, ...concept.conceptos])
     }
 
     const personalizedCreate = () => {
@@ -1125,7 +1099,7 @@ const ModalBilling: React.FC = () => {
                             <div className='table__body'>
                                 {billing.normal_concepts?.map((concept: any, index: number) => {
                                     return (
-                                        <div className={`tbody__container `} key={concept.id}>
+                                        <div className={`tbody__container `} key={index}>
                                             <div className='tbody'>
                                                 <div className='td'>
                                                     <p className='folio-identifier'>{concept.codigo}-{concept.descripcion}</p>
@@ -1283,10 +1257,10 @@ const ModalBilling: React.FC = () => {
                                                             <p className='amount-identifier'>{concept.cantidad} {concept.unidad}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <p>${(concept.total_restante || concept.total).toFixed(2) / (concept.cantidad).toFixed(2)}</p>
+                                                            <p>${(concept.total_restante || concept.total)?.toFixed(2) / (concept.cantidad)?.toFixed(2)}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <p>${(concept.total || concept.total_restante).toFixed(2)}</p>
+                                                            <p>${(concept.total || concept.total_restante)?.toFixed(2)}</p>
                                                         </div>
 
                                                         <div className='td'>
@@ -1362,7 +1336,7 @@ const ModalBilling: React.FC = () => {
                                 <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Actualizar factura</button>
                                 :
                                 <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Crear factura</button>
-                            
+
 
                         )}
                     </div>

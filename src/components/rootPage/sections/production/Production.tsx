@@ -63,21 +63,7 @@ const Production: React.FC = () => {
     const fetch = async () => {
 
 
-
-        const data = {
-            nombre: '',
-            id_usuario: user_id,
-            id_usuario_consulta: user_id,
-            light: true,
-            id_sucursal: 0
-        }
-
-        const resultUsers = await getUsers(data)
-        setUsers({
-            selectName: 'Vendedores',
-            options: 'nombre',
-            dataSelect: resultUsers
-        })
+        // debugger
 
         const resultSeries = await getSeriesXUser({ tipo_ducumento: 8, id: user_id })
         resultSeries.unshift({ nombre: 'Todos', id: 0 });
@@ -86,7 +72,6 @@ const Production: React.FC = () => {
             options: 'nombre',
             dataSelect: resultSeries
         })
-
     }
     const intervalRef = useRef<number | null>(null);
     const selectedIdsRef = useRef(selectedIds);
@@ -143,6 +128,10 @@ const Production: React.FC = () => {
         //         clearInterval(intervalRef.current);
         //     }
         // };
+    }, [])
+    useEffect(() => {
+        fetch()
+
     }, [])
     useEffect(() => {
         if (selectedIds?.areas) {
@@ -243,10 +232,14 @@ const Production: React.FC = () => {
             setPermisosxVista(resp)
         })
     }
+    const getPdf = (id: number) => {
+        window.open(`http://hiplot.dyndns.org:84/api_dev/pdf_op/${id}`, '_blank');
+
+    }
     return (
         <div className='production'>
             <div className='production__container'>
-                <div className='row__one'>
+                <div className='row__one'  style={{zoom:'75%'}}>
                     <div className='row'>
                         <div className='col-8'>
                             <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
@@ -339,7 +332,7 @@ const Production: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className='table__orders_production'>
+                <div className='table__orders_production' style={{zoom:'75%'}}>
                     {production ? (
                         <div className='table__numbers'>
                             <p className='text'>Total de ordenes de produccion</p>
@@ -383,7 +376,18 @@ const Production: React.FC = () => {
                                     <div className='tbody__container' key={order.id} title='Haz Clic para ver más detalles de la Orden de Producción'>
                                         <div className='tbody' style={{ backgroundColor: `#${order.color_estado}` }}>
                                             <div className='td' onClick={() => handleModalChange(order)}>
-                                                <p className='folio-identifier'>{order.serie}-{order.folio}-{order.anio}</p>
+                                                {order?.urgencia && (
+                                                    <b className='parpadeo' style={{
+                                                        color: 'red',
+                                                        background: 'white',
+                                                        padding: '3px',
+                                                        borderRadius: '5px'
+                                                    }}>URGENCIA</b>
+                                                )}
+                                                <p className='folio-identifier'>{order.serie}-{order.folio}-{order.anio}
+                                                    <br />
+
+                                                </p>
                                             </div>
                                             <div className='td' onClick={() => handleModalChange(order)}>
                                                 <p>{order.sucursal}</p>
@@ -409,6 +413,13 @@ const Production: React.FC = () => {
                                                 ))}
                                             </div>
                                             <div className='td checkbox-group'>
+                                                <button onClick={() => getPdf(order?.id)}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                        className="lucide lucide-file-text-icon lucide-file-text">
+                                                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                                                        <path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg>
+                                                </button>
                                                 <input type="checkbox" className='m-1 checkbox-input' checked={order.aux1}
                                                     onChange={(e) => { updateAux(e.target.checked, order.id, 1); }} />
                                                 <input type="checkbox" className='m-1 checkbox-input' checked={order.aux2}
@@ -431,7 +442,7 @@ const Production: React.FC = () => {
                 </div>
                 <ModalProduction />
             </div>
-        </div>
+        </div >
     )
 }
 

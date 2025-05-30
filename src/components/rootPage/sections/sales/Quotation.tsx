@@ -61,7 +61,7 @@ const Quotation: React.FC = () => {
     const cotizacion = JSON.parse(localStorage.getItem('cotizacion') || "[]");
     const cotizacion_pers = JSON.parse(localStorage.getItem('cotizacion-pers') || "[]");
     if (cotizacion) {
-      setQuotes({  normal_concepts: cotizacion, personalized_concepts: cotizacion_pers,conceptos_elim:[], conceptos_pers_elim:[] });
+      setQuotes({ normal_concepts: cotizacion, personalized_concepts: cotizacion_pers, conceptos_elim: [], conceptos_pers_elim: [] });
       // setQuatation(null);
     }
   }
@@ -120,7 +120,7 @@ const Quotation: React.FC = () => {
 
     let dataSerie = {
       id: user_id,
-      tipo_ducumento: 7,
+      tipo_ducumento: 6,
     }
 
     const resultSeries = await getSeriesXUser(dataSerie)
@@ -207,7 +207,9 @@ const Quotation: React.FC = () => {
       setPermisosxVista(resp)
     })
   }
-
+  useEffect(() => {
+    searchQuotation();
+  }, [page]);
   return (
     <div className='quotation'>
 
@@ -422,15 +424,19 @@ const Quotation: React.FC = () => {
             <p className='text'>Cargando datos...</p>
           )}
         </div>
-        <div className='row'>
+        <div className='row paginado-container'>
           <div className='col-1'>
-            <button className='btn__general-primary' onClick={() => setPage(page - 1)} disabled={page == 1}>ANTERIOR</button>
+            <button className="paginado-btn paginado-btn-prev" onClick={() => setPage(page - 1)} disabled={page === 1}>
+              ← Anterior
+            </button>
           </div>
-          <div className='col-10'>
-
+          <div className='col-10 paginado-info'>
+            Página {page}
           </div>
           <div className='col-1'>
-            <button className='btn__general-primary' onClick={() => setPage(page + 1)}>SIGUIENTE</button>
+            <button className="paginado-btn paginado-btn-next" onClick={() => setPage(page + 1)}>
+              Siguiente →
+            </button>
           </div>
         </div>
         <ModalCreate />

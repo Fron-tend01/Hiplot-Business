@@ -262,6 +262,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       })
       setPrices(0)
       setAdicional(null)
+      setLeyenda('')
       setDescuento(0)
       setPricesFranquicia(0)
       setPricesFranquiciaAdicional(0)
@@ -278,6 +279,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       setPrices(dataArticle?.precio_total)
       setAdicional(null)
       setDescuento(0)
+      setLeyenda('')
+
       setSelectedUnit({ id: dataArticle?.id_unidad, id_unidad: dataArticle?.id_unidad })
       setPricesFranquicia(0)
       setPricesFranquiciaAdicional(0)
@@ -309,6 +312,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     })
     setPrices(0)
     setAdicional(null)
+    setLeyenda('')
+
     setDescuento(0)
     setPricesFranquicia(0)
     setPricesFranquiciaAdicional(0)
@@ -359,6 +364,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     setSelectUsersGroups(false);
   };
   const [Adicional, setAdicional] = useState<any>(null);
+  const [leyenda, setLeyenda] = useState<string>('');
 
   const [selectUnits, setSelectUnits] = useState<boolean>(false);
   const [selectedUnit, setSelectedUnit] = useState<any>(null);
@@ -517,6 +523,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           setPrices(result.mensaje)
           setDescuento(result.descuento_aplicado)
           setAdicional(result.adicional)
+          // setLeyenda(result.adicional)
+          setLeyenda(result.leyenda ?? '')
           let lista_precios_franquicia = 0
           let precio_franq_tmp = 0
 
@@ -975,6 +983,8 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
     setPrices(0)
     setAdicional(null)
     setDescuento(0)
+    setLeyenda('')
+
     setPricesFranquicia(0)
     setPricesFranquiciaAdicional(0)
     setAmount(0)
@@ -1828,7 +1838,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
                       {(article?.precio_libre || (Array.isArray(permisosxvistaFicha) && permisosxvistaFicha.length > 0 && permisosxvistaFicha.some((x: any) => x.titulo == 'modificar_precio'))) ?
                         <input
-                          type="text"
+                          type="number"
                           value={prices}
                           onChange={(e) => setterPrices(e.target.value)}
                         />
