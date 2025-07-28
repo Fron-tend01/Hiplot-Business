@@ -782,7 +782,7 @@
 
 .table__modal-sale__personalized-update .table__body .tbody {
   display: grid;
-  grid-template-columns: repeat(8, 1fr) repeat(3, 50px);
+  grid-template-columns: repeat(8, 1fr) repeat(2, 50px) 100px;
   padding: 10px;
   column-gap: 20px;
 
@@ -1287,3 +1287,5 @@
   background-color: var(--table-hover-color);
   color: #fff;
 }
+
+

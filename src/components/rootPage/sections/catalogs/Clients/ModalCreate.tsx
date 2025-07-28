@@ -7,11 +7,13 @@ import APIs from '../../../../../services/services/APIs'
 import Swal from 'sweetalert2';
 import './ModalCreate.css'
 import DynamicVariables from '../../../../../utils/DynamicVariables'
+import useUserStore from '../../../../../zustand/General'
 
 const ModalCreate = () => {
 
 
     const { addBranchClients, clientToUpdate, branchClientsRemove }: any = useStore(storeClients)
+    const userState = useUserStore(state => state.user);
 
 
     const setModal = storeModals(state => state.setModal)
@@ -94,6 +96,7 @@ const ModalCreate = () => {
         no_interior: "",
         no_exterior: "",
         codigo_postal: "",
+        comentario_desactivado: "",
         clientes_sucursal: [],
         sucursales_remove: []
     });
@@ -116,6 +119,7 @@ const ModalCreate = () => {
         no_interior: "",
         no_exterior: "",
         codigo_postal: "",
+        comentario_desactivado: "",
         clientes_sucursal: [],
         sucursales_remove: []
 
@@ -128,7 +132,7 @@ const ModalCreate = () => {
     useEffect(() => {
         console.log(clientToUpdate)
         if (modal == 'update_clients') {
-            setInputs(clientToUpdate)  
+            setInputs(clientToUpdate)
             setAddBranchClients(clientToUpdate.clientes_sucursal)
             DynamicVariables.updateAnyVar(setInputs, "persona_juridica", clientToUpdate.persona_juridica)
             DynamicVariables.updateAnyVar(setInputs, "divisa", clientToUpdate.divisa)
@@ -142,7 +146,16 @@ const ModalCreate = () => {
             DynamicVariables.updateAnyVar(setInputs, "uso_cfdi", uc[0]?.ID)
             DynamicVariables.updateAnyVar(setInputs, "regimen_fiscal", rf[0]?.ID)
             DynamicVariables.updateAnyVar(setInputs, "categoria", categorias[0]?.id)
-            setAddBranchClients([])
+            let sucursal_default = {
+                id_sucursal: userState.sucursal_id,
+                condiciones_pago: 1,
+                limite_credito: 0,
+                forma_pago: 1,
+                metodo_pago: 0,
+                sucursal: "Sucursal Default"
+            }
+            setAddBranchClients([sucursal_default])
+
         }
     }, [modal])
     const getRefs = async () => {
@@ -222,58 +235,69 @@ const ModalCreate = () => {
 
 
                 <form className='modal_clients' onSubmit={handleCreateClients}>
-                    <div className='row__one'>
-                        <small className='title'><b>INFORMACIÓN GENERAL</b></small>
-                        <div className='row__one'>
-                            <div className=''>
-                                <small >Razón Social</small>
-                                <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                                <input name="razon_social" className='inputs__general' type="text" value={inputs.razon_social} onChange={handleInputs} placeholder='Ingresa la razón social' />
-                            </div>
-                            <div className=''>
-                                <small >Nombre Comercial</small>
-                                <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                                <input name="nombre_comercial" className='inputs__general' type="text" value={inputs.nombre_comercial} onChange={handleInputs} placeholder='Ingresa el nombre comercial' />
-                            </div>
-                            <div className='' title='Activo / Inactivo'>
-                                <small >Status</small>
-                                <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                                <label className="switch">
-                                    <input
-                                        type="checkbox"
-                                        checked={inputs.status} // Asignar el valor del estado al atributo 'checked'
-                                        onChange={handleInputs}
-                                    />
-                                    <span className="slider"></span>
-                                </label>
-                            </div>
+                    <small className='title'><b>INFORMACIÓN GENERAL</b></small>
+                    <div className='row'>
+                        <div className='col-4 md-col-6 sm-col-12'>
+                            <small >Razón Social</small>
+                            <div className='warning__general'><small>Este campo es obligatorio</small></div>
+                            <input name="razon_social" className='inputs__general' type="text" value={inputs.razon_social} onChange={handleInputs} placeholder='Ingresa la razón social' />
 
                         </div>
-                        <div className='row__two '>
-                            <div className=''>
-                                <small >RFC</small>
-                                <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                                <input name="rfc" className='inputs__general' type="text" value={inputs.rfc} onChange={handleInputs} placeholder='Ingresa el RFC' />
-                            </div>
-                            <div className=''>
-                                <small >Nombre Contacto</small>
-                                <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                                <input name="nombre_contacto" className='inputs__general' type="text" value={inputs.nombre_contacto} onChange={handleInputs} placeholder='Ingresa el nombre de contacto' />
-                            </div>
-                            <div className=''>
-                                <small >Correo</small>
-                                <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                                <input name="correo" className='inputs__general' type="text" value={inputs.correo} onChange={handleInputs} placeholder='Ingresa el correo' />
-                            </div>
-                            <div className='d-flex align-items-end'>
-                                <button title='Este botón habilitará el cliente a tus diferentes sucursales' type='button' className='btn__general-orange' onClick={() => setModalSub('modal-sub_create_clients')}>Habilitar a Sucursales</button>
+                        <div className='col-4 md-col-6 sm-col-12'>
+                            <small >Nombre Contacto</small>
+                            <div className='warning__general'><small>Este campo es obligatorio</small></div>
+                            <input name="nombre_contacto" className='inputs__general' type="text" value={inputs.nombre_contacto} onChange={handleInputs} placeholder='Ingresa el nombre de contacto' />
+                        </div>
+                        <div className='col-4 md-col-6 sm-col-12'>
+                            <small >Status</small>
+                            <div className='warning__general'><small>Este campo es obligatorio</small></div>
+                            <label className="switch">
+                                <input
+                                    type="checkbox"
+                                    checked={inputs.status} // Asignar el valor del estado al atributo 'checked'
+                                    onChange={(e) => DynamicVariables.updateAnyVar(setInputs, "status", e.target.checked)}
+                                />
+                                <span className="slider"></span>
+                            </label>
 
-                            </div>
                         </div>
                     </div>
+                    <div className='row'>
+                        <div className='col-4 md-col-6 sm-col-12'>
+                            <small >Nombre Comercial</small>
+                            <div className='warning__general'><small>Este campo es obligatorio</small></div>
+                            <input name="nombre_comercial" className='inputs__general' type="text" value={inputs.nombre_comercial} onChange={handleInputs} placeholder='Ingresa el nombre comercial' />
+
+                        </div>
+                        <div className='col-4 md-col-6 sm-col-12'>
+                            <small >Correo</small>
+                            <div className='warning__general'><small>Este campo es obligatorio</small></div>
+                            <input name="correo" className='inputs__general' type="text" value={inputs.correo} onChange={handleInputs} placeholder='Ingresa el correo' />
+
+                        </div>
+                        <div className='col-4 md-col-6 sm-col-12'>
+                            <textarea name="comentario_desactivado" className='inputs__general' rows={3} value={inputs.comentario_desactivado} onChange={handleInputs} placeholder='Ingresa el motivo de inactividad' />
+
+                        </div>
+                    </div>
+                    <div className='row'>
+                        <div className='col-4 md-col-6 sm-col-12'>
+                            <small >RFC</small>
+                            <div className='warning__general'><small>Este campo es obligatorio</small></div>
+                            <input name="rfc" className='inputs__general' type="text" value={inputs.rfc} onChange={handleInputs} placeholder='Ingresa el RFC' />
+
+                        </div>
+                        <div className='col-6 md-col-6 sm-col-12'  ></div>
+                        <div className='col-2 md-col-6 sm-col-12 m-2'  >
+                                <button title='Este botón habilitará el cliente a tus diferentes sucursales' type='button' className='btn__general-orange' onClick={() => setModalSub('modal-sub_create_clients')}>Habilitar a Sucursales</button>
+
+                        </div>
+                    </div>
+                    {/* ------------------------------------------------------------------------------------------------------------ */ }
+                    
                     <div className='container__cards'>
-                        <div className='tax__information mb-4'>
-                            <div className='title'><p>INFORMACIÓN FISCAL</p></div>
+                        <div className=' '>
+                            <div style={{margin:'5px', borderRadius:'10px', background:'#7900c1', padding:'5px', width:'150px', color:'white', fontWeight:'bold'}}><p>INFORMACIÓN FISCAL</p></div>
                             <div className='row align-txt-left'>
                                 <div className='col-4 md-col-6 sm-col-12'>
                                     <small >Persona Jurídica</small>
@@ -292,12 +316,7 @@ const ModalCreate = () => {
                                     </select>
                                 </div>
                                 <div className='col-4 md-col-6 sm-col-12'>
-                                    <small >Uso CFDI</small>
-                                    <select className='inputs__general' value={inputs.uso_cfdi} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, "uso_cfdi", parseInt(e.target.value))}>
-                                        {uc.map((dat: any) => (
-                                            <option value={dat.ID}> {dat.Value} </option>
-                                        ))}
-                                    </select>
+                                   
                                 </div>
                                 <div className='col-4 md-col-6 sm-col-12'>
                                     <small >Régimen Fiscal</small>
@@ -315,6 +334,17 @@ const ModalCreate = () => {
                                         ))}
                                     </select>
                                 </div>
+                                <div className='col-4 md-col-6 sm-col-12'>
+                                   
+                                </div>
+                                 <div className='col-4 md-col-6 sm-col-12'>
+                                    <small >Uso CFDI</small>
+                                    <select className='inputs__general' value={inputs.uso_cfdi} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, "uso_cfdi", parseInt(e.target.value))}>
+                                        {uc.map((dat: any) => (
+                                            <option value={dat.ID}> {dat.Value} </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -322,15 +352,21 @@ const ModalCreate = () => {
                             <div className='title'><p>DIRECCIÓN</p></div>
 
                             <div className='row'>
-                                <div className='col-4 md-col-6 sm-col-12'>
-                                    <small >Estado</small>
+                                <div className='col-4 md-col-4 sm-col-12'>
+                                     <small >Calle</small>
                                     <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                                    <input name="estado" className='inputs__general' type="text" value={inputs.estado} onChange={handleInputs} placeholder='Estado' />
+                                    <input name="calle" className='inputs__general' type="text" value={inputs.calle} onChange={handleInputs} placeholder='Calle' />
+                                
+                                    </div>
+                                <div className='col-2 md-col-2 sm-col-12'>
+                                    <small >No. Exterior</small>
+                                    <div className='warning__general'><small>Este campo es obligatorio</small></div>
+                                    <input name="no_exterior" className='inputs__general' type="text" value={inputs.no_exterior} onChange={handleInputs} placeholder='No. Exterior' />
                                 </div>
-                                <div className='col-4 md-col-6 sm-col-12'>
-                                    <small >Municipio</small>
+                                <div className='col-2 md-col-2 sm-col-12'>
+                                    <small >No. Interior</small>
                                     <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                                    <input name="municipio" className='inputs__general' type="text" value={inputs.municipio} onChange={handleInputs} placeholder='Municipio' />
+                                    <input name="no_interior" className='inputs__general' type="text" value={inputs.no_interior} onChange={handleInputs} placeholder='No. Interior' />
                                 </div>
                                 <div className='col-4 md-col-6 sm-col-12'>
                                     <small >Colonia</small>
@@ -338,25 +374,26 @@ const ModalCreate = () => {
                                     <input name="colonia" className='inputs__general' type="text" value={inputs.colonia} onChange={handleInputs} placeholder='Colonia' />
                                 </div>
                                 <div className='col-4 md-col-6 sm-col-12'>
-                                    <small >Calle</small>
-                                    <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                                    <input name="calle" className='inputs__general' type="text" value={inputs.calle} onChange={handleInputs} placeholder='Calle' />
-                                </div>
-                                <div className='col-2 md-col-2 sm-col-12'>
-                                    <small >No. Interior</small>
-                                    <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                                    <input name="no_interior" className='inputs__general' type="text" value={inputs.no_interior} onChange={handleInputs} placeholder='No. Interior' />
-                                </div>
-                                <div className='col-2 md-col-2 sm-col-12'>
-                                    <small >No. Exterior</small>
-                                    <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                                    <input name="no_exterior" className='inputs__general' type="text" value={inputs.no_exterior} onChange={handleInputs} placeholder='No. Exterior' />
-                                </div>
-                                <div className='col-4 md-col-4 sm-col-12'>
-                                    <small >Código Postal</small>
+                                     <small >Código Postal</small>
                                     <div className='warning__general'><small>Este campo es obligatorio</small></div>
                                     <input name="codigo_postal" className='inputs__general' type="text" value={inputs.codigo_postal} onChange={handleInputs} placeholder='Código Postal' />
-                                </div>  
+                               
+                                 </div>
+                                <div className='col-4 md-col-6 sm-col-12'>
+                                       <small >Municipio</small>
+                                    <div className='warning__general'><small>Este campo es obligatorio</small></div>
+                                    <input name="municipio" className='inputs__general' type="text" value={inputs.municipio} onChange={handleInputs} placeholder='Municipio' />
+                                
+                                   </div>
+                                <div className='col-4 md-col-6 sm-col-12'>
+                                     <small >Estado</small>
+                                    <div className='warning__general'><small>Este campo es obligatorio</small></div>
+                                    <input name="estado" className='inputs__general' type="text" value={inputs.estado} onChange={handleInputs} placeholder='Estado' />
+                                
+                                   </div>
+
+
+
                             </div>
                         </div>
                     </div>

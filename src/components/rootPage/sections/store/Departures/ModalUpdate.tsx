@@ -225,6 +225,11 @@ const ModalUpdate: React.FC<Articles> = ({ conceptsUpdate }) => {
                                                                         {ent.serie}-{ent.folio}-{ent.anio} ||
                                                                     </span>
                                                                 ))}
+                                                                {order.entradas_afectadas_por_ov?.map((ent: any, i: number) => (
+                                                                    <span key={i}>
+                                                                        {ent.folio_ovs} ||
+                                                                    </span>
+                                                                ))}
                                                             </div>
                                                             <div className='td'>
                                                                 <p>{order.comentarios}</p>

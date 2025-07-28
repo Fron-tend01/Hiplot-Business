@@ -23,6 +23,7 @@ import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import Empresas_Sucursales from '../../../Dynamic_Components/Empresas_Sucursales';
 import ModalRequisition from '../requisition/ModalRequisition';
 import { storeDv } from '../../../../../zustand/Dynamic_variables';
+import ModalUpdate from '../../store/tickets/ModalUpdate';
 
 
 const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
@@ -61,6 +62,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   const [bill, setBill] = useState<string>('')
 
   const [modoUpdate, setModoUpdate] = useState<boolean>(false)
+  const [updateTickets, setUpdateTickets] = useState<any>([])
+  const [modalStateUpdate, setModalStateUpdate] = useState<boolean>(false)
 
   const setDates = async () => {
     // let resultB = await APIs.getBranchOfficesXCompanies(purchaseOrderToUpdate.id_empresa, user_id)
@@ -279,6 +282,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
       materia_prima: 0,
       get_sucursales: false,
       get_proveedores: true,
+      for_compras: true,
       get_max_mins: true,
       get_plantilla_data: false,
       get_stock: false,
@@ -317,7 +321,9 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
     // Actualizar el estado con las nuevas selecciones
     setSeleccionesTemporales(nuevasSelecciones);
   };
-
+  const modalCloseUpdate = () => {
+    setModalStateUpdate(false)
+  }
 
   const [proveedores, setProveedores] = useState<number[]>([])
 
@@ -413,54 +419,99 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   const [total, setTotal] = useState<number>(0);
 
   const [ivaTotal, setIvaTotal] = useState<any>(0)
-
   useEffect(() => {
     let subtotalValue = 0;
     let priceSubtotalTotal = 0;
     let totalDiscount = 0;
-    let ivaTotal = 0
+    let ivaTotal = 0;
+
     conceptos.forEach((article: any) => {
-      const total_cantidad = article.cantidad || 1; // Si no hay cantidad definida, se asume 1
+      const total_cantidad = article.cantidad || 1;
+      const precio_unitario = article.precio_unitario || 0;
+      const porcentaje_descuento = article.descuento || 0;
+
+      // Calculamos el descuento en monto (basado en porcentaje)
+      const descuento_monto = (precio_unitario * total_cantidad) * (porcentaje_descuento / 100);
+      totalDiscount += descuento_monto;
+
+      // Calculamos el IVA
       let iva_x_precio = 0;
-
       if (article.iva_on) {
-        const iva = article.precio_unitario * 0.16 || 0;
-        iva_x_precio = article.precio_unitario + iva;
-        ivaTotal += iva
-
+        const iva = precio_unitario * 0.16;
+        iva_x_precio = precio_unitario + iva;
+        ivaTotal += iva * total_cantidad;
       } else {
-        iva_x_precio = article.precio_unitario || 0;
+        iva_x_precio = precio_unitario;
       }
 
-      priceSubtotalTotal += total_cantidad * article.precio_unitario
+      // Acumulamos el subtotal sin descuento
+      priceSubtotalTotal += precio_unitario * total_cantidad;
 
-      subtotalValue += iva_x_precio * total_cantidad;
-
-      totalDiscount += article.descuento || 0;
+      // Acumulamos el subtotal con IVA y descuento aplicado
+      subtotalValue += (iva_x_precio * total_cantidad) - descuento_monto;
     });
 
-    const totalValue: any = subtotalValue - totalDiscount;
+    const totalValue = subtotalValue;
+
     if (freightCostActive) {
-      const totalWith = totalValue + freightCost;
-      setTotal(totalWith);
+      setTotal(totalValue + Number(freightCost));
     } else {
       setTotal(totalValue);
     }
 
     setSubtotal(priceSubtotalTotal);
     setDiscount(totalDiscount);
-    setIvaTotal(ivaTotal)
+    setIvaTotal(ivaTotal);
   }, [conceptos, freightCostActive, freightCost]);
+
+  // useEffect(() => {
+  //   let subtotalValue = 0;
+  //   let priceSubtotalTotal = 0;
+  //   let totalDiscount = 0;
+  //   let ivaTotal = 0
+  //   conceptos.forEach((article: any) => {
+  //     const total_cantidad = article.cantidad || 1; // Si no hay cantidad definida, se asume 1
+  //     let iva_x_precio = 0;
+
+  //     if (article.iva_on) {
+  //       const iva = article.precio_unitario * 0.16 || 0;
+  //       iva_x_precio = article.precio_unitario + iva;
+  //       ivaTotal += iva
+
+  //     } else {
+  //       iva_x_precio = article.precio_unitario || 0;
+  //     }
+
+  //     priceSubtotalTotal += total_cantidad * article.precio_unitario
+
+  //     subtotalValue += iva_x_precio * total_cantidad;
+
+  //     totalDiscount += article.descuento || 0;
+  //   });
+
+  //   const totalValue: any = subtotalValue - totalDiscount;
+  //   if (freightCostActive) {
+  //     const totalWith = totalValue + freightCost;
+  //     setTotal(totalWith);
+  //   } else {
+  //     setTotal(totalValue);
+  //   }
+
+  //   setSubtotal(priceSubtotalTotal);
+  //   setDiscount(totalDiscount);
+  //   setIvaTotal(ivaTotal)
+  // }, [conceptos, freightCostActive, freightCost]);
 
   const addArticles = () => {
     const id_articulo = articleResult.id
     const proveedores = articleResult.proveedores
     const unidades = articleResult.unidades
     const descripcion = articleResult.descripcion
+    const uc = articleResult.ultimas_compras
     const unidad = articleResult.unidades[0].id_unidad
     const id_proveedor = articleResult.proveedores[0].id_proveedor
 
-    setConceptos((prevArticleStates: any) => [...prevArticleStates, { id_proveedor, codigo: articleResult.codigo, proveedores, id_articulo, descripcion, cantidad: 0, descuento: 0, unidad, unidades, precio_unitario: 0, comentarios: '' }]);
+    setConceptos((prevArticleStates: any) => [...prevArticleStates, { ultimas_compras: uc, id_proveedor, codigo: articleResult.codigo, proveedores, id_articulo, descripcion, cantidad: 0, descuento: 0, unidad, unidades, precio_unitario: 0, comentarios: '' }]);
   };
 
 
@@ -522,7 +573,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   }
 
 
-  const addArticlesByRequest = (req: any) => {
+  const addArticlesByRequest = (req: any, i: number) => {
     const conceptosSinProveedores = req.conceptos.filter(
       (concepto: any) => !concepto.proveedores || concepto.proveedores.length === 0
     );
@@ -549,10 +600,12 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
         precio_unitario: 0,
         iva_on: false,
         comentarios: concepto.comentarios,
+        ultimas_compras: concepto.ultimas_compras,
         id_requisicion: concepto.id_requisicion,
         folio_req: `${req.serie}-${req.folio}-${req.anio}`
       }));
-
+      const filter = requisitions.filter((_: any, index: number) => index !== i)
+      setRequisitions(filter)
 
       // Actualizar el estado de conceptos con los datos mapeados
       setConceptos((prevArticleStates: any) => [
@@ -753,6 +806,62 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
 
     return permisosxVista.some((x: any) => x.titulo === elemento);
   };
+  const modalUpdate = async (ticket: any) => {
+    setModalLoading(true)
+    await APIs.CreateAny({ id: ticket.id }, 'entrada_almacen/get').then((result: any) => {
+      setModalLoading(false)
+      setUpdateTickets(result[0])
+      setModalStateUpdate(true)
+      // setUpdateTickets(ticket)
+      console.log(ticket)
+    }).finally(() => {
+      setModalLoading(false);
+    })
+
+  }
+  const [dataUltimasCompras, setDataUltimasCompras] = useState<any>({})
+  const terminarOC = async (id: number) => {
+    Swal.fire({
+      title: "Seguro que deseas termina la orden de compra",
+      text: "El estatus de la orden cambiará a Terminado. Esta acción no se puede deshacer.",
+      showCancelButton: true,
+      confirmButtonText: "Aceptar",
+      denyButtonText: `Cancelar`
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const data = {
+          id: id,
+          status: 2
+        }
+
+        const dataGet = {
+          folio: 0,
+          id_serie: 0,
+          id_sucursal: 0,
+          id_usuario: user_id,
+          id_area: 0,
+          // tipo: tipo,
+          desde: dates[0],
+          hasta: dates[1],
+          status: type,
+        };
+        try {
+          setModalLoading(true)
+
+          const result: any = await APIs.updateStatusPurchaseOrder(data)
+          const resultGet = await APIs.getPurchaseOrders(dataGet);
+          setPurchaseOrders(resultGet)
+          setModalLoading(false)
+
+          Swal.fire('Status actualizado', result.mensaje, 'success');
+          setModal('')
+        } catch (error) {
+          setModalLoading(false)
+
+        }
+      }
+    });
+  }
   return (
     <div className={`overlay__purchase-orders ${modal == 'modal-purchase-orders-create' || modal == 'modal-purchase-orders-update' ? 'active' : ''}`}>
       <div className={`popup__purchase-orders ${modal == 'modal-purchase-orders-create' || modal == 'modal-purchase-orders-update' ? 'active' : ''}`}>
@@ -797,6 +906,8 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                     <span>Empresa: <b>{purchaseOrderToUpdate?.empresa}</b></span>
                     <span>Sucursal: <b>{purchaseOrderToUpdate?.sucursal}</b></span>
                     <span>Tipo: <b>{purchaseOrderToUpdate?.tipo == 0 ? 'Normal' : 'Diferencial'}</b></span>
+                    <button className='btn__general-purple' title='Marca como finalizada la orden de compra completa' onClick={() => terminarOC(purchaseOrderToUpdate?.id)}>TERMINAR OC</button>
+
                   </div>
                 </div>
                 <div className='row__two'>
@@ -1031,75 +1142,54 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                   </div>
 
                   <div className='conatiner__by-request'>
-
-                    <div className='row__two'>
-                      <div>
-                        <div className='table__modal_filter_purchase-order' >
-                          <div>
+                    <div className="">
+                      <div className='row__two'>
+                        <div>
+                          <div className='table__modal_filter_purchase-order' >
                             <div>
-                              {requisitions ? (
-                                <div className='table__numbers'>
-                                  <p className='text'>Requisiciones Encontradas :)</p>
-                                  <div className='quantities_tables'>{requisitions.length}</div>
-                                </div>
-                              ) : (
-                                <p className='text'>No hay empresas</p>
-                              )}
-                            </div>
-                            {/* <div className='table__head'>
-                              <div className='thead'>
-                                <div className='thead'>
-                                  <div className='th'>
-                                    <p className=''>Artículo</p>
+                              <div>
+                                {requisitions ? (
+                                  <div className='table__numbers'>
+                                    <p className='text'>Requisiciones Encontradas :)</p>
+                                    <div className='quantities_tables'>{requisitions.length}</div>
                                   </div>
-                                  <div className='th'>
-                                    <p className=''>Cant</p>
-                                  </div>
-                                  <div className='th'>
-                                    <p className=''>Unidad</p>
-                                  </div>
-                                  <div className='th'>
-                                    <p className=''>Req</p>
-                                  </div>
-                                  <div className='th'>
-                                    <p className=''>P/U</p>
-                                  </div>
-                               
-
-                                </div>
+                                ) : (
+                                  <p className='text'>No hay requsiiciones</p>
+                                )}
                               </div>
-                            </div> */}
-                            {requisitions != undefined && requisitions.length > 0 ? (
-                              <div className='table__body'>
-                                {requisitions.map((requisition: any, index: any) => (
-                                  <div className='tbody__container' key={index}>
-                                    <div className='tbody'>
-                                      <div className='td'>
-                                        {requisition.serie}-{requisition.folio}-{requisition.anio}
-                                      </div>
-                                      <div className='td'>
-                                        {requisition.empresa}-({requisition.sucursal})
-                                      </div>
-                                      <div className='td'>
-                                        {requisition.fecha_creacion}
-                                      </div>
-                                      <div className='td'>
-                                        <div>
-                                          <button onClick={() => openModalConcepts(requisition)} type='button' className='btn__general-purple'>Ver conceptos</button>
+
+                              {requisitions != undefined && requisitions.length > 0 ? (
+                                <div className='table__body'>
+                                  {requisitions.map((requisition: any, index: any) => (
+                                    <div className='tbody__container' key={index}>
+                                      <div className='tbody'>
+                                        <div className='td'>
+                                          {requisition.serie}-{requisition.folio}-{requisition.anio}
                                         </div>
-                                      </div>
-                                      <div className='td'>
-                                        <div>
-                                          <button className='btn__general-purple' type='button' onClick={() => addArticlesByRequest(requisition)}>Agregar</button>
+                                        <div className='td'>
+                                          {requisition.empresa}-({requisition.sucursal})
+                                        </div>
+                                        <div className='td'>
+                                          {requisition.fecha_creacion}
+                                        </div>
+                                        <div className='td'>
+                                          <div>
+                                            <button onClick={() => openModalConcepts(requisition)} type='button' className='btn__general-purple'>Ver conceptos</button>
+                                          </div>
+                                        </div>
+                                        <div className='td'>
+                                          <div>
+                                            <button className='btn__general-purple' type='button' onClick={() => addArticlesByRequest(requisition, index)}>Agregar</button>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <p>Cargando datos...</p>
-                            )}
+                                  ))}
+                                </div>
+                              ) : (
+                                <p>Cargando datos...</p>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1140,7 +1230,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                           <p className=''>P/U</p>
                         </div>
                         <div className='th'>
-                          <p className=''>Desc</p>
+                          <p className=''>Desc(%)</p>
                         </div>
                         <div className='th'>
                           <p className=''>Proveed</p>
@@ -1156,13 +1246,16 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                         </div>
                       </div>
                     </div>
+
                     {conceptos.length > 0 ? (
                       <div className='table__body'>
                         {conceptos.map((article: any, index: any) => (
                           <div className='tbody__container' key={index}>
                             <div className='tbody'>
-                              <div className='td'>
-                                <p className='folio-identifier'>{article.codigo} - {article.descripcion}</p>
+                              {/* <label for="modaluniq-toggle" class="modaluniq-open-btn">Abrir Modal</label> */}
+                              <div className='td' title='Puedes hacer click para ver las ultimas compras del articulo'
+                                onClick={() => setDataUltimasCompras(article || {})}>
+                                <label htmlFor="modaluniq-toggle" className='folio-identifier modaluniq-open-btn'>{article.codigo} - {article.descripcion}</label>
                               </div>
                               <div className='td'>
                                 <div>
@@ -1228,10 +1321,10 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
                                   <input className='inputs__general' value={article.comentarios === '' ? '' : article.comentarios} onChange={(e) => handleComentariosChange(e, index)} type="text" placeholder='Comentario' />
                                 </div>
                               </div>
-                              <div className='td'>
+                              <div className='td' >
                                 <div>
                                   {article?.entradas_relacionadas?.map((entrada: any, index: number) => (
-                                    <div key={index}>{entrada.folio_completo}</div>
+                                    <div key={index} onClick={() => modalUpdate(entrada)}>{entrada.folio_completo}</div>
                                   ))}
                                 </div>
                               </div>
@@ -1298,6 +1391,43 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
           </div>
         </div>
       </div >
+      {/* --------------------------------------------------------------------------MODAL BASICO */}
+      <input type="checkbox" id="modaluniq-toggle" />
+      <div className="modaluniq-container">
+        <div className="modaluniq-content">
+          <h2>Ultimas Compras del articulo {dataUltimasCompras.codigo} - {dataUltimasCompras.descripcion}</h2>
+          <p>
+            <table className='concepts-table'>
+              <thead>
+                <tr className='table-header'>
+                  <th className='table-cell'>Folio</th>
+                  <th className='table-cell'>Fecha</th>
+                  <th className='table-cell'>Cantidad</th>
+                  <th className='table-cell'>Precio Unitario</th>
+                </tr>
+              </thead>
+              <tbody>
+                {console.log('askdjaskuhdahdashdashdhskajd', dataUltimasCompras)}
+                {dataUltimasCompras?.ultimas_compras?.map((compra: any, index: any) => {
+                  console.log(compra);
+
+                  return (
+                    <tr className='table-row' key={index}>
+                      <td className='table-cell'>{compra.folio_oc}</td>
+                      <td className='table-cell'>{compra.fecha_creacion}</td>
+                      <td className='table-cell'>{compra.cantidad} {compra.unidad_nombre}</td>
+                      <td className='table-cell'>{compra.precio_unitario}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </p>
+          <label htmlFor="modaluniq-toggle" className="modaluniq-close-btn">Cerrar</label>
+        </div>
+      </div>
+      {/* --------------------------------------------------------------------------MODAL BASICO */}
+
       <div className={`overlay__modal_concepts ${modalStateConcepts ? 'active' : ''}`}>
         <div className={`popup__modal_concepts ${modalStateConcepts ? 'active' : ''}`}>
           <a href="#" className="btn-cerrar-popup__modal_concepts" onClick={closeModalConcepts}>
@@ -1330,6 +1460,80 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
             </div>
           </div>
 
+        </div>
+      </div>
+
+      <div className={`overlay__update_tickets ${modalStateUpdate ? 'active' : ''}`}>
+        <div className={`popup__update_tickets ${modalStateUpdate ? 'active' : ''}`}>
+          <a href="#" className="btn-cerrar-popup__update_tickets" onClick={modalCloseUpdate}>
+            <svg className='svg__close' xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+          </a>
+          <p className='title__modals'>Información de Entrada</p>
+          <div className="modalEntradaInOc__container">
+            <div className="modalEntradaInOc__header">
+              <h3 className="modalEntradaInOc__title">
+                {updateTickets?.serie}-{updateTickets?.folio}-{updateTickets?.anio}
+              </h3>
+              <hr />
+            </div>
+
+            <div className="modalEntradaInOc__info">
+              <div className="modalEntradaInOc__info-block">
+                <p><strong>Creado por:</strong> {updateTickets?.usuario_crea}</p>
+                <p><strong>Fecha de creación:</strong> {updateTickets?.fecha_creacion}</p>
+                <p><strong>Comentarios:</strong> {updateTickets?.comentarios || '—'}</p>
+              </div>
+              <div className="modalEntradaInOc__info-block">
+                <p><strong>Empresa:</strong> {updateTickets?.empresa}</p>
+                <p><strong>Sucursal:</strong> {updateTickets?.sucursal}</p>
+                <p><strong>Proveedor principal:</strong> {updateTickets?.proveedor}</p>
+              </div>
+            </div>
+
+            <div className="modalEntradaInOc__table-section">
+              <h5>Conceptos</h5>
+              <div className="modalEntradaInOc__table-wrapper">
+                <table className="modalEntradaInOc__table" style={{ zoom: '80%' }}>
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Descripción</th>
+                      <th>Cantidad</th>
+                      <th>Unidad</th>
+                      <th>Proveedor</th>
+                      <th>Almacén</th>
+                      <th>Comentarios</th>
+                      <th>OC</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {updateTickets?.conceptos?.map((c) => (
+                      <tr key={c.id}>
+                        <td>{c.codigo}</td>
+                        <td>{c.descripcion}</td>
+                        <td>{c.cantidad}</td>
+                        <td>{c.unidad}</td>
+                        <td>{c.proveedor}</td>
+                        <td>{c.almacen}</td>
+                        <td>{c.comentarios || '—'}</td>
+                        <td>
+
+                          {c.data_oc.folio}
+                        </td>
+                      </tr>
+                    ))}
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <br />
+            <div className='row'>
+              <div className='col-12 justify-content-center d-flex'>
+                <button className='btn__general-danger ' onClick={modalCloseUpdate}>Cerrar</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div >

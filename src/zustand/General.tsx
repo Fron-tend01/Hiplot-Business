@@ -35,7 +35,7 @@ interface UserStore {
 }
 
 const useUserStore = create<UserStore>((set) => ({
-  url_img: 'http://hiplot.dyndns.org:84/api_dev/', // URL base de la imagen
+  url_img: 'http://hiplot.dyndns.org:84/', // URL base de la imagen
   user: localStorage.getItem(UserKey) ? JSON.parse(localStorage.getItem(UserKey)!) : EmptyUserState,
   getUser: (payload) => set(() => {
     persistLocalStorage(UserKey, payload);

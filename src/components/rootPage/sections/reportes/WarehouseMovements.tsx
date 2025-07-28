@@ -218,12 +218,12 @@ const WarehouseMovements: React.FC = () => {
     const setModalTickets = storeTickets(state => state.setModalTickets)
     const modalUpdate = async (ticket: any) => {
         let data = {
-            id:ticket.id_entrada
+            id: ticket.id_entrada
         }
-        await APIs.CreateAny(data,'entrada_almacen/get').then((resp: any) => {
-                setModalStateUpdate(true)
-                setUpdateTickets(resp[0])
-           
+        await APIs.CreateAny(data, 'entrada_almacen/get').then((resp: any) => {
+            setModalStateUpdate(true)
+            setUpdateTickets(resp[0])
+
         })
     }
     const modalCloseUpdate = () => {
@@ -346,6 +346,35 @@ const WarehouseMovements: React.FC = () => {
                     {data.map((a: any, i: number) => (
                         <>
                             <b>{a.nombre}</b>
+                            <div className='col-12 card text-center'>
+                                <table style={{ width: '100%', border: '1px ', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                        <tr>
+                                            <th>Codigo</th>
+                                            <th>Desc.</th>
+                                            <th>Max.</th>
+                                            <th>Min.</th>
+                                            <th>Unidad</th>
+                                            <th>Rest.</th>
+                                            <th>Apart.</th>
+                                            <th>DV.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style={{ padding: '8px' }}>{a.mm.codigo}</td>
+                                            <td style={{ padding: '8px' }}>{a.mm.descripcion}</td>
+                                            <td style={{ padding: '8px' }}>{a.mm.maximo}</td>
+                                            <td style={{ padding: '8px' }}>{a.mm.minimo}</td>
+                                            <td style={{ padding: '8px' }}>{a.mm.unidad_almacen}</td>
+                                            <td style={{ padding: '8px' }}>{a.mm.restante}</td>
+                                            <td style={{ padding: '8px' }}>{a.mm.apartado}</td>
+                                            <td style={{ padding: '8px' }}>{a.mm.disponible}</td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                             <div className='col-12'>
                                 <div className="datareporte__container">
                                     <table className="datareporte__table">
@@ -365,6 +394,11 @@ const WarehouseMovements: React.FC = () => {
                                         <tbody>
                                             {a.entradas.length > 0 ? (
                                                 a.entradas.map((x: any, j: number) => {
+                                                    const totalMovimientos =
+                                                        x.apartados_carrito.reduce((sum, item) => sum + parseFloat(item.cantidad || 0), 0) +
+                                                        x.apartados_ov.reduce((sum, item) => sum + parseFloat(item.cantidad || 0), 0) +
+                                                        x.apartados_paf.reduce((sum, item) => sum + parseFloat(item.cantidad || 0), 0) +
+                                                        x.salidas.reduce((sum, item) => sum + parseFloat(item.cantidad || 0), 0);
                                                     return (
                                                         <tr key={j}>
                                                             <td>{x.articulo}</td>
@@ -522,6 +556,12 @@ const WarehouseMovements: React.FC = () => {
                                                                                 <td colSpan={5}>No hay datos en Salidas</td>
                                                                             </tr>
                                                                         )}
+
+                                                                        <tr className="fila-total">
+                                                                            <td colSpan={3} style={{ textAlign: 'right', fontWeight: 'bold' }}>Total:</td>
+                                                                            <td style={{ fontWeight: 'bold' }}>{totalMovimientos}</td>
+                                                                            <td colSpan={2}></td> {/* Ajusta colSpan según columnas restantes */}
+                                                                        </tr>
                                                                     </tbody>
                                                                 </table>
                                                             </td>
@@ -567,10 +607,10 @@ const WarehouseMovements: React.FC = () => {
                                 {dataSalidas.length > 0 ? (
                                     dataSalidas.map((x: any, index: number) => (
                                         <tr key={index}>
-                                            <td style={{ border: '1px solid black', padding: '8px' }}>{x.art_ent}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px' }}>{x.codigo}</td>
                                             <td style={{ border: '1px solid black', padding: '8px' }}>{x.folio_salida || x.folio_ovs || x.folio_paf}</td>
                                             <td style={{ border: '1px solid black', padding: '8px' }}>{x.fecha_creacion}</td>
-                                            <td style={{ border: '1px solid black', padding: '8px', cursor:'pointer'}} onClick={() => modalUpdate(x)} >{x.folio_entrada}</td>
+                                            <td style={{ border: '1px solid black', padding: '8px', cursor: 'pointer' }} onClick={() => modalUpdate(x)} >{x.folio_entrada}</td>
                                             <td style={{ border: '1px solid black', padding: '8px' }}>{x.usuario_nombre}</td>
                                             <td style={{ border: '1px solid black', padding: '8px' }}>{x.cantidad}</td>
                                             <td style={{ border: '1px solid black', padding: '8px' }}>{x.unidad_nombre}</td>

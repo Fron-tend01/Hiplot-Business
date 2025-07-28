@@ -162,7 +162,7 @@ const ModalRequisition: React.FC = () => {
   const handleModalBranchOfficesChange = async (branchOffice: any) => {
     setSelectedBranchOffice(branchOffice.id)
     setSelectModalBranchOffices(false)
-      const resultAreas = await getAreas(branchOffice.id, user_id)
+    const resultAreas = await getAreas(branchOffice.id, user_id)
     setAreas(resultAreas)
     setSelectedModalArea(resultAreas[0].id)
   }
@@ -754,19 +754,17 @@ const ModalRequisition: React.FC = () => {
                             </div>
                           </div>
                           <div className='td'>
-                            {article.type == 'differential' ?
-                              <p>{article.unidad}</p>
-                              :
-                              <div>
-                                <select className='traditional__selector' onChange={(event) => handleUnits(event, index)} value={selectedUnit[index]}>
-                                  {article.unidades && article.unidades.map((item: any) => (
-                                    <option key={item.id} value={item.id_unidad}>
-                                      {item.nombre}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-                            }
+
+                            <div>
+                              <select className='traditional__selector' onChange={(event) => handleUnits(event, index)} value={selectedUnit[index]}>
+                                {article.unidades && article.unidades.map((item: any) => (
+                                  <option key={item.id} value={item.id_unidad}>
+                                    {item.nombre}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
                           </div>
                           <div className='td'>
                             {article.max_min}
@@ -812,11 +810,11 @@ const ModalRequisition: React.FC = () => {
                   :
                   <div>
                     {updateToRequisition?.status == 1 ?
-                       
-                        <button className='btn__general-success' type='button' onClick={updateStatus} disabled={!checkPermission('cancelar')}>Activar</button>
+
+                      <button className='btn__general-success' type='button' onClick={updateStatus} disabled={!checkPermission('cancelar')}>Activar</button>
                       :
-                        <button className='btn__general-danger' type='button' onClick={updateStatus} disabled={!checkPermission('cancelar')}>Cancelar</button>
-                      
+                      <button className='btn__general-danger' type='button' onClick={updateStatus} disabled={!checkPermission('cancelar')}>Cancelar</button>
+
 
                     }
                   </div>

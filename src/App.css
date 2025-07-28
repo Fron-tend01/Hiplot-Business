@@ -512,7 +512,10 @@ option {
   outline: 2px solid #D0342C;
 }
 
-
+.inputs__general::placeholder {
+  color: rgb(87, 84, 84); /* O el color que desees */
+  opacity: 1;  /* Asegura que se vea bien en todos los navegadores */
+}
 .inputs__general.warning:focus {
   outline: 2px solid #D0342C;
 }
@@ -616,7 +619,7 @@ option {
   }
 }
 
-/* -------------- DARKMODE -------------- */
+/* -------------- DARKMODE -------------- CM172925BAG1L */
 
 .darkmode .btn__indicator{
   transform: translateX(30px);

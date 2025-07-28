@@ -21,7 +21,14 @@ const ExistenciaAlmacen: React.FC = () => {
       })
   }
   console.log('data', data);
-
+  const formatNumber = (num?: number) => {
+    if (typeof num !== "number") return "";
+    const str = num.toString();
+    const [, decimals] = str.split(".");
+    if (!decimals) return str; // entero
+    if (decimals.length <= 3) return str; // 1, 2 o 3 decimales
+    return num.toFixed(4); // más de 4 decimales
+  };
   return (
     <div className='existenciaAlmacen'>
       <div className='existenciaAlmacen__container'>
@@ -116,13 +123,13 @@ const ExistenciaAlmacen: React.FC = () => {
                           {x.nombre}
                         </div>
                         <div className='td'>
-                          {x.restante}
+                          {formatNumber(x.restante)} ({x.unidad})
                         </div>
                         <div className='td'>
-                          {x.apartado}
+                          {formatNumber(x.apartado)} ({x.unidad})
                         </div>
                         <div className='td'>
-                          {x.disponible}
+                          {formatNumber(x.disponible)} ({x.unidad})
                         </div>
                       </div>
                     </div>

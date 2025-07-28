@@ -1,7 +1,7 @@
 import React from 'react';
 import { storeArticles } from '../../../../../../zustand/Articles';
 import { useStore } from 'zustand';
-import { useDropzone,Accept  } from 'react-dropzone'; // Importa React Dropzone
+import { useDropzone, Accept } from 'react-dropzone'; // Importa React Dropzone
 import './style/Images.css';
 import useUserStore from '../../../../../../zustand/General';
 
@@ -40,7 +40,7 @@ const Images: React.FC = () => {
         }
     };
     console.log(imagesArticles);
-    
+
     return (
         <div className={`overlay__modal_images_articles ${subModal == 'modal-images' ? 'active' : ''}`}>
             <div className={`popup__modal_images_articles ${subModal == 'modal-images' ? 'active' : ''}`}>
@@ -54,19 +54,33 @@ const Images: React.FC = () => {
                 </div>
                 <form className='article__modal_images_container'>
                     <div className='images-modal-articles'>
-                        {imagesArticles?.map((image: any, index: number) => (
-                            <div className='image-container' style={{
-                                backgroundImage: `url(${
-                                    image?.img_url && image.img_url.startsWith("data:image")
-                                      ? image.img_url
-                                      : `${urlImg}${(image?.img_url || "").replace(/\\/g, "/")}`
-                                  })`
-                              }} onClick={() => deleteImages(image, index)}>
-                                <div>
-                                    <p className='title__delete'>Eliminar</p>
+                        {imagesArticles?.map((image: any, index: number) => {
+                            const imageUrl = image?.img_url?.startsWith("data:image")
+                                ? image.img_url
+                                : `${urlImg}${(image?.img_url || "").replace(/\\/g, "/")}`;
+                            console.log(imageUrl); // ✅ Aquí se imprime la URL en consola
+
+                            return (
+                                <div
+                                    key={index}
+                                    className='image-container'
+                                    style={{
+                                        backgroundImage: `url(${imageUrl})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center', 
+                                        backgroundRepeat: 'no-repeat',
+                                        width: '150px', 
+                                        height: '150px' 
+                                    }}
+                                    onClick={() => deleteImages(image, index)}
+                                >
+                                    <div>
+                                        <p className='title__delete'>Eliminar</p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
+
                     </div>
                     <div className="d-flex justify-content-center" {...getRootProps()}>
                         <input {...getInputProps()} />

@@ -55,7 +55,7 @@ const Binnacle: React.FC = () => {
                                                     <p>{btc.mensaje}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>{btc.usuarios}</p>
+                                                    <p>{btc.nombre}</p>
                                                 </div>
                                                 <div className='td'>
                                                     <p>{btc.fecha_creacion}</p>

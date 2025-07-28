@@ -255,4 +255,7 @@
     background-color: #5a34a1;
   }
   
-  
+  .fila-total {
+  background-color: #e6f7ff;
+  border-top: 2px solid #007acc;
+}

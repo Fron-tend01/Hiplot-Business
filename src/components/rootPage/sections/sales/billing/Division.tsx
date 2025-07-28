@@ -5,6 +5,7 @@ import './Division.css'
 import { storeBilling } from '../../../../../zustand/Billing'
 import Personalized from '../Personalized'
 import { storePersonalized } from '../../../../../zustand/Personalized'
+import Swal from 'sweetalert2'
 
 const Division = ({ index, typeDiv }: any) => {
 
@@ -26,35 +27,202 @@ const Division = ({ index, typeDiv }: any) => {
     const [divisiones, setDivisiones] = useState<any[]>([])
     const setBilling = storeBilling((state) => state.setBilling);
 
-    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const a = Number(division.cantidad); // asegúrate de que sea número
-        const x = divisiones.length;
-        const c = Number(e.target.value); // convertir también el input a número
-        const f = a - c;
+    const [unitPrice, setUnitPrice] = useState<any>(0.00)
 
-        // Si la cantidad total es 1, se reparte en 1 y 1 para cada división
-        if (a === 1) {
-            const nuevasDivisiones = divisiones.map(() => ({
-                ...division,
-                cantidad: 1,
-            }));
-            setDivisiones(nuevasDivisiones);
-            return;
-        }
+    useEffect(() => {
+        setUnitPrice(division.cantidad / division.precio_total)
+    }, [])
+
+    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const nuevaCantidad = parseFloat(e.target.value);
+        if (isNaN(nuevaCantidad)) return;
+
+        // Actualizar cantidad primero
+        const nuevasDivisiones = [...divisiones];
+        nuevasDivisiones[index].cantidad = nuevaCantidad;
+
+        const totalGlobal = nuevasDivisiones.reduce((acc, d) => acc + d.precio_unitario * d.cantidad, 0);
+        const totalCantidades = nuevasDivisiones.reduce((acc, d) => acc + d.cantidad, 0);
+
+        const redistribuidas = nuevasDivisiones.map((d) => {
+            const nuevoTotal = totalCantidades > 0 ? (totalGlobal * d.cantidad) / totalCantidades : 0;
+            const nuevoPrecio = d.cantidad > 0 ? nuevoTotal / d.cantidad : 0;
+            return {
+                ...d,
+                precio_unitario: parseFloat(nuevoPrecio.toFixed(2)),
+                precio_total: parseFloat(nuevoTotal.toFixed(2)),
+                total: parseFloat(nuevoTotal.toFixed(2)),
+                total_restante: parseFloat(nuevoTotal.toFixed(2)),
+            };
+        });
+
+        setDivisiones(redistribuidas);
+        // Actualizar billing también
+        setBilling((prevBilling: any) => {
+            const key = typeDiv === 'normal' ? 'normal_concepts' : 'personalized_concepts';
+            const conceptosOriginales = prevBilling[key] || [];
+
+            // Reemplaza solo los conceptos que están en la misma posición que las divisiones
+            const nuevosConceptos = conceptosOriginales.map((concepto: any, i: number) => {
+                const nueva = redistribuidas[i];
+                return nueva ? { ...concepto, ...nueva } : concepto;
+            });
+
+            return {
+                ...prevBilling,
+                [key]: nuevosConceptos,
+            };
+        });
+    };
+
+
+    const handleUnitPriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const nuevoPrecioUnitario = parseFloat(e.target.value);
+        if (isNaN(nuevoPrecioUnitario)) return;
+
+        const cantidadActual = divisiones[index].cantidad;
+        const nuevoTotalActual = nuevoPrecioUnitario * cantidadActual;
+
+        const totalGlobalOriginal = divisiones.reduce(
+            (acc, item) => acc + item.precio_unitario * item.cantidad,
+            0
+        );
+
+        const totalRestante = totalGlobalOriginal - nuevoTotalActual;
+
+        const sumaCantidadesRestantes = divisiones
+            .filter((_, i) => i !== index)
+            .reduce((acc, item) => acc + item.cantidad, 0);
+
+        const nuevasDivisiones = divisiones.map((item, i) => {
+            if (i === index) {
+                return {
+                    ...item,
+                    precio_unitario: nuevoPrecioUnitario,
+                    precio_total: parseFloat(nuevoTotalActual.toFixed(2)),
+                    total: parseFloat(nuevoTotalActual.toFixed(2)),
+                    total_restante: parseFloat(nuevoTotalActual.toFixed(2)),
+                };
+            } else {
+                const nuevoTotal = sumaCantidadesRestantes > 0
+                    ? (totalRestante * item.cantidad) / sumaCantidadesRestantes
+                    : 0;
+                const nuevoUnit = item.cantidad > 0 ? nuevoTotal / item.cantidad : 0;
+                return {
+                    ...item,
+                    precio_unitario: parseFloat(nuevoUnit.toFixed(2)),
+                    precio_total: parseFloat(nuevoTotal.toFixed(2)),
+                };
+            }
+        });
+
+        setDivisiones(nuevasDivisiones);
+
+        const key = typeDiv === 'normal' ? 'normal_concepts' : 'personalized_concepts';
+        const conceptosOriginales = billing[key] || [];
+
+        let nuevosConceptos = [...conceptosOriginales];
+
+        nuevasDivisiones.forEach(div => {
+            nuevosConceptos = nuevosConceptos.map(concepto => {
+                if (concepto.index_in_billing === div.index_in_billing) {
+                    return { ...concepto, ...div };
+                }
+                return concepto;
+            });
+        });
+
+        setBilling({
+            ...billing,
+            [key]: nuevosConceptos,
+        });
+    };
+    const handleTotalChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const nuevoTotal = parseFloat(e.target.value);
+        if (isNaN(nuevoTotal)) return;
+
+        const cantidadActual = divisiones[index].cantidad;
+        const nuevoPrecioUnitario = cantidadActual > 0 ? nuevoTotal / cantidadActual : 0;
+
+        const totalGlobalOriginal = divisiones.reduce(
+            (acc, item) => acc + item.precio_unitario * item.cantidad,
+            0
+        );
+
+        const totalRestante = totalGlobalOriginal - nuevoTotal;
+
+        const sumaCantidadesRestantes = divisiones
+            .filter((_, i) => i !== index)
+            .reduce((acc, item) => acc + item.cantidad, 0);
+
+        const nuevasDivisiones = divisiones.map((item, i) => {
+            if (i === index) {
+                return {
+                    ...item,
+                    precio_total: parseFloat(nuevoTotal.toFixed(2)),
+                    precio_unitario: parseFloat(nuevoPrecioUnitario.toFixed(2)),
+                    total: parseFloat(nuevoTotal.toFixed(2)),
+                    total_restante: parseFloat(nuevoTotal.toFixed(2)),
+                };
+            } else {
+                const nuevoTotalRest = sumaCantidadesRestantes > 0
+                    ? (totalRestante * item.cantidad) / sumaCantidadesRestantes
+                    : 0;
+                const nuevoUnitRest = item.cantidad > 0 ? nuevoTotalRest / item.cantidad : 0;
+                return {
+                    ...item,
+                    precio_total: parseFloat(nuevoTotalRest.toFixed(2)),
+                    precio_unitario: parseFloat(nuevoUnitRest.toFixed(2)),
+                };
+            }
+        });
+
+        setDivisiones(nuevasDivisiones);
+
+        const key = typeDiv === 'normal' ? 'normal_concepts' : 'personalized_concepts';
+        const conceptosOriginales = billing[key] || [];
+
+        let nuevosConceptos = [...conceptosOriginales];
+
+        nuevasDivisiones.forEach(div => {
+            nuevosConceptos = nuevosConceptos.map(concepto => {
+                if (concepto.index_in_billing === div.index_in_billing) {
+                    return { ...concepto, ...div };
+                }
+                return concepto;
+            });
+        });
+
+        setBilling({
+            ...billing,
+            [key]: nuevosConceptos,
+        });
+    };
+
+
+
+
+
+    const handleTotalPriceChange = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
+        const x = divisiones.length;
+        const c = parseFloat(e.target.value);
+
+        const a = divisiones[i].total_concepto;
+        const f = a - c;
 
         if (x > 1) {
             const g = f / (x - 1);
 
-            const nuevasDivisiones = divisiones.map((division, i) => {
-                if (i === index) {
+            const nuevasDivisiones = divisiones.map((division, idx) => {
+                if (idx === i) {
                     return {
                         ...division,
-                        cantidad: c,
+                        total_concepto: c
                     };
                 } else {
                     return {
                         ...division,
-                        cantidad: g,
+                        total_concepto: division.total_concepto + g
                     };
                 }
             });
@@ -62,67 +230,6 @@ const Division = ({ index, typeDiv }: any) => {
             setDivisiones(nuevasDivisiones);
         }
     };
-
-
-    const [unitPrice, setUnitPrice] = useState<any>(0.00)
-
-    useEffect(() => {
-        setUnitPrice(division.cantidad / division.precio_total)
-    }, [])
-
-    const handleUnitPriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const a = division.precio_unitario;
-        const x = divisiones.length;
-        const c: any = e.target.value;
-        const f = a - c;
-
-        if (x > 1) {
-            const g = f / (x - 1);
-            const nuevasDivisiones = divisiones.map((division, i) => {
-                if (i == index) {
-                    return {
-                        ...division,
-                        precio_unitario: c
-                    };
-                } else {
-                    return {
-                        ...division,
-                        precio_unitario: g
-                    };
-                }
-            });
-            setDivisiones(nuevasDivisiones);
-        }
-    }
-
-const handleTotalPriceChange = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
-    const x = divisiones.length;
-    const c = parseFloat(e.target.value);
-
-    const a = divisiones[i].total_concepto;
-    const f = a - c;
-
-    if (x > 1) {
-        const g = f / (x - 1);
-
-        const nuevasDivisiones = divisiones.map((division, idx) => {
-            if (idx === i) {
-                return {
-                    ...division,
-                    total_concepto: c
-                };
-            } else {
-                return {
-                    ...division,
-                    total_concepto: division.total_concepto + g
-                };
-            }
-        });
-
-        setDivisiones(nuevasDivisiones);
-    }
-};
-
 
 
     const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -132,121 +239,81 @@ const handleTotalPriceChange = (e: React.ChangeEvent<HTMLInputElement>, i: numbe
             setNumber(value);
             const num = parseInt(value, 10);
             if (num > 0) {
+                const newDivisiones: any[] = [];
 
-                if (typeDiv == 'normal') {
-                    const filterConcept = [...billing.normal_concepts];
-                    filterConcept.splice(index, 1);
-                    // let filterConcept = billing.normal_concepts.filter((x: any, i: number) => i !== index)
+                for (let i = 0; i < num; i++) {
+                    const divisionCopy = { ...division };
+                    divisionCopy.indextmp = `${index}${i}`;
+                    divisionCopy.index_in_billing = index + i;
+                    divisionCopy.total_total = division.total_total / num;
+                    divisionCopy.precio_total = division.precio_total / num;
+                    divisionCopy.total = division.precio_total / num;
+                    divisionCopy.total_restante = division.precio_total / num;
+                    divisionCopy.concept = true;
+                    // divisionCopy.id = 0;
 
-                    const newDivisiones = [];
-                    for (let i = 0; i < num; i++) {
-                        // Crear una copia profunda del objeto para evitar mutaciones
-                        const divisionCopy = { ...division };
-
-                        // Dividir las propiedades de manera segura
-                        divisionCopy.total_total = division.total_total / num;
-                        divisionCopy.precio_total = division.precio_total / num;
-                        divisionCopy.total = division.precio_total / num;
-                        divisionCopy.total_restante = division.precio_total / num;
-                        // divisionCopy.precio_unitario = divisionCopy.total / divisionCopy.cantidad;
-                        divisionCopy.concept = true;
-                        divisionCopy.id = 0;
-
-                        // Calcular el precio unitario para cada división
-
-                        // Dividir cantidad, ajustando si no es divisible de forma exacta
-                        let cantidadDividida: number;
-
-                        if (division.cantidad % num !== 0 && i === num - 1) {
-                            // Ajustar la cantidad en la última iteración para compensar el residuo
-                            cantidadDividida = division.cantidad - (Math.floor(division.cantidad / num) * (num - 1));
-                        } else {
-                            cantidadDividida = Math.floor(division.cantidad / num);
-                        }
-
-                        // Si la cantidad resulta en 0, forzar a 1
-                        divisionCopy.cantidad = cantidadDividida > 0 ? cantidadDividida : 1;
-
-                        divisionCopy.precio_unitario = divisionCopy.total / divisionCopy.cantidad;
-                        if (divisionCopy?.conceptos?.length > 0 || divisionCopy?.conceptos_pers?.length > 0) {
-                            divisionCopy.conceptos.forEach((x: any) => {
-                                x.total = divisionCopy?.precio_real / newDivisiones?.length
-                                x.cantidad = divisionCopy?.cantidad / newDivisiones?.length
-                                x.pers_div = true;
-                            });
-
-                        }
-
-                        // Calcular el precio unitario después del ajuste de cantidad
-                        setUnitPrice(divisionCopy.precio_total / divisionCopy.cantidad);
-
-                        // Agregar la copia al arreglo
-                        newDivisiones.push(divisionCopy);
+                    // Dividir cantidad ajustando residuo
+                    if (division.cantidad % num !== 0 && i === num - 1) {
+                        divisionCopy.cantidad = division.cantidad - (Math.floor(division.cantidad / num) * (num - 1));
+                    } else {
+                        divisionCopy.cantidad = Math.floor(division.cantidad / num);
                     }
 
-                    if (division.id) {
-                        setDeleteCustomConcepts([...deleteCustomConcepts, division.id])
+                    if (divisionCopy.cantidad <= 0) {
+                        divisionCopy.cantidad = 1;
                     }
 
-                    setBilling({ normal_concepts: [...filterConcept, ...newDivisiones], personalized_concepts: billing.personalized_concepts })
-                    // debugger
-                    setDivisiones(newDivisiones);
-                } else {
-                    let filterConcept = billing.personalized_concepts.filter((x: any, i: number) => i !== index)
-                    // let filterDeleteCustomConcept = customConcepts.find((x: any) => x.id_identifier == division.id_identifier)
+                    divisionCopy.precio_unitario = divisionCopy.total / divisionCopy.cantidad;
 
-
-                    const newDivisiones = [];
-                    for (let i = 0; i < num; i++) {
-                        // Crear una copia profunda del objeto para evitar mutaciones
-                        const divisionCopy = { ...division };
-
-                        // Dividir las propiedades de manera segura
-                        divisionCopy.total_total = division.total_total / num;
-                        divisionCopy.precio_total = division.precio_total / num;
-                        divisionCopy.concept = true;
-                        divisionCopy.id = 0;
-
-                        // Calcular el precio unitario para cada división
-                        divisionCopy.precio_unitario = divisionCopy.precio_total / divisionCopy.cantidad;
-
-                        // Dividir cantidad, ajustando si no es divisible de forma exacta
-                        if (division.cantidad % num !== 0 && i === num - 1) {
-                            // Ajustar la cantidad en la última iteración para compensar el residuo
-                            divisionCopy.cantidad = division.cantidad - (Math.floor(division.cantidad / num) * (num - 1));
-                        } else {
-                            divisionCopy.cantidad = Math.floor(division.cantidad / num);
-                        }
-
-                        if (divisionCopy?.conceptos?.length > 0 || divisionCopy?.conceptos_pers?.length > 0) {
-                            divisionCopy.conceptos.forEach((x: any) => {
-                                x.total = divisionCopy?.precio_real / newDivisiones?.length
-                                x.cantidad = divisionCopy?.cantidad / newDivisiones?.length
-                                x.pers_div = true;
-                            });
-
-                        }
-
-                        // Calcular el precio unitario después del ajuste de cantidad
-                        setUnitPrice(divisionCopy.precio_total / divisionCopy.cantidad);
-
-                        // Agregar la copia al arreglo
-                        newDivisiones.push(divisionCopy);
+                    if (divisionCopy?.conceptos?.length > 0 || divisionCopy?.conceptos_pers?.length > 0) {
+                        divisionCopy.conceptos.forEach((x: any) => {
+                            x.total = divisionCopy?.precio_real / num;
+                            x.cantidad = divisionCopy?.cantidad / num;
+                            x.pers_div = true;
+                        });
                     }
 
-                    // if(division.id) {
-                    //     setDeleteCustomConcepts([...deleteCustomConcepts, division.id])
-                    // }
-
-                    setBilling({ normal_concepts: billing.normal_concepts, personalized_concepts: [...filterConcept, ...newDivisiones] })
-                    setDivisiones(newDivisiones);
+                    setUnitPrice(divisionCopy.precio_unitario);
+                    newDivisiones.push(divisionCopy);
                 }
 
+                if (division.id) {
+                    setDeleteCustomConcepts([...deleteCustomConcepts, division.id]);
+                }
+
+                if (typeDiv === 'normal') {
+                    const updatedConcepts = [
+                        ...billing.normal_concepts.slice(0, index),
+                        ...newDivisiones,
+                        ...billing.normal_concepts.slice(index + 1)
+                    ];
+
+                    setBilling({
+                        normal_concepts: updatedConcepts,
+                        personalized_concepts: billing.personalized_concepts
+                    });
+                } else {
+                    const updatedConcepts = [
+                        ...billing.personalized_concepts.slice(0, index),
+                        ...newDivisiones,
+                        ...billing.personalized_concepts.slice(index + 1)
+                    ];
+
+                    setBilling({
+                        normal_concepts: billing.normal_concepts,
+                        personalized_concepts: updatedConcepts
+                    });
+                }
+
+                setDivisiones(newDivisiones);
+                Swal.fire('Notificación', 'División realizada correctamente, puedes ajustar los montos y las cantidades', 'success');
             }
         }
     };
 
 
+    const getTotalGlobal = () =>
+        divisiones.reduce((acc, item) => acc + item.precio_unitario * item.cantidad, 0);
     useEffect(() => {
         if (modalSub == 'billing__modal-division') {
             setDivisiones([])
@@ -279,67 +346,68 @@ const handleTotalPriceChange = (e: React.ChangeEvent<HTMLInputElement>, i: numbe
                         )}
                         <div className='table__head'>
                             <div className='thead'>
-                                <div className='th'>
-                                    <p>Nombre</p>
-                                </div>
-                                <div className='th'>
-                                    <p>Codigo</p>
-                                </div>
-                                <div className='th'>
-                                    <p>Cantidad</p>
-                                </div>
-                                <div className='th'>
-                                    Precio unitario
-                                </div>
-                                <div className="th">
-                                    Precio total
-                                </div>
+                                <div className='th'><p>Nombre</p></div>
+                                <div className='th'><p>Codigo</p></div>
+                                <div className='th'><p>Cantidad</p></div>
+                                <div className='th'><p>Precio unitario</p></div>
+                                <div className='th'><p>Precio total</p></div>
                             </div>
                         </div>
-                        {divisiones ? (
+                        {divisiones && (
                             <div className='table__body'>
-                                {divisiones?.map((concept: any, index: number) => {
-                                    return (
-                                        <div className='tbody__container' key={concept.id}>
-                                            <div className='tbody'>
-                                                <div className='td'>
-                                                    <p>{concept.descripcion}</p>
-                                                </div>
-                                                <div className='td'>
-                                                    <p>{concept.codigo}</p>
-                                                </div>
-                                                <div className='td'>
-                                                    <input className='inputs__general' type="number" value={parseFloat(concept.cantidad).toFixed(2)} onChange={(e) => handleAmountChange(e, index)} placeholder='Ingresa la cantidad' />
-                                                </div>
-                                                <div className='td'>
-                                                    <input className='inputs__general' type="number" value={parseFloat(unitPrice).toFixed(2)} onChange={(e) => handleUnitPriceChange(e, index)} placeholder='Ingresa la cantidad' />
-                                                </div>
-                                                <div className='td'>
-                                                    <input className='inputs__general' type="number" value={parseFloat(concept.precio_total).toFixed(2)} onChange={(e) => handleTotalPriceChange(e, index)} placeholder='Ingresa la cantidad' />
-                                                </div>
+                                {divisiones.map((concept: any, index: number) => (
+                                    <div className='tbody__container' key={index}>
+                                        <div className='tbody'>
+                                            <div className='td'><p>{concept.descripcion}</p></div>
+                                            <div className='td'><p>{concept.codigo}</p></div>
+                                            <div className='td'>
+                                                <input
+                                                    className='inputs__general'
+                                                    type="number"
+                                                    value={concept.cantidad ?? ''}
+                                                    onChange={(e) => handleAmountChange(e, index)}
+                                                    placeholder='Ingresa la cantidad'
+                                                />
+                                            </div>
+                                            <div className='td'>
+                                                <input
+                                                    className='inputs__general'
+                                                    type="number"
+                                                    value={concept.precio_unitario ?? ''}
+                                                    onChange={(e) => handleUnitPriceChange(e, index)}
+                                                    placeholder='Ingresa el precio'
+                                                />
+                                            </div>
+                                            <div className='td'>
+                                                <input
+                                                    className='inputs__general'
+                                                    type="number"
+                                                    value={concept.precio_total ?? ''}
+                                                    onChange={(e) => handleTotalChange(e, index)} // 👈 Nuevo
+                                                    placeholder='Ingresa el total'
+                                                />
                                             </div>
                                         </div>
-                                    )
-                                })}
+                                    </div>
+                                ))}
                             </div>
-                        ) : (
-                            <p className="text">Cargando datos...</p>
                         )}
+
                     </div>
                     <div className='row'>
                         <div className='col-12 d-flex justify-content-between text'>
-                            <div className='d-flex align-items-center'>
+                            {/* <div className='d-flex align-items-center'>
                                 <p>Cantidad</p>
                                 <p className='price__billing'>{division.cantidad}</p>
-                            </div>
+                            </div> */}
                             <div className='d-flex align-items-center'>
-                                <p>Cantidad</p>
-                                <p className='price__billing'>{division.precio_unitario}</p>
+                                <p>Precio A Alcanzar</p>
+                                <p className='price__billing'>{division.precio_total}</p>
                             </div>
-                            <div className='d-flex align-items-center'>
+                            {/* <div className='d-flex align-items-center'>
                                 <p>Cantidad</p>
                                 <p className='price__billing'>{division.cantidad}</p>
-                            </div>
+                            </div> */}
 
                         </div>
                     </div>

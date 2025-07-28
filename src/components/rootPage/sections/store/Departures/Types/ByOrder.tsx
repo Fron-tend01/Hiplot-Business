@@ -10,6 +10,7 @@ import './styles/ByOrder.css'
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/l10n/es.js'
 import Empresas_Sucursales from '../../../../Dynamic_Components/Empresas_Sucursales'
+import { storeArticles } from '../../../../../../zustand/Articles';
 
 
 const ByOrder: React.FC = () => {
@@ -18,6 +19,7 @@ const ByOrder: React.FC = () => {
 
   const { concepts, setConcepts } = useStore(storeWarehouseExit);
 
+  const [page, setPage] = useState<number>(1)
 
 
   const { getCompaniesXUsers }: any = companiesRequests()
@@ -59,6 +61,7 @@ const ByOrder: React.FC = () => {
     }
   };
 
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
 
 
@@ -69,9 +72,16 @@ const ByOrder: React.FC = () => {
       desde: dates[0],
       hasta: dates[1],
       status: [0],
-      for_salida: true
+      for_salida: true,
+      page: page
     }
-    const result = await getOrdedrs(data)
+    setModalLoading(true)
+    const result = await getOrdedrs(data).finally(() => {
+      setModalLoading(false)
+
+    })
+        setModalLoading(false)
+
     setOrders(result)
   }
 
@@ -145,7 +155,9 @@ const ByOrder: React.FC = () => {
   }
 
 
-
+     useEffect(() => {
+         filterSeveral();
+     }, [page]);
 
   return (
     <div className='by-order__warehouse-exit'>
@@ -276,6 +288,21 @@ const ByOrder: React.FC = () => {
             ) : (
               <p className='text'>No hay pedidos filtrados</p>
             )}
+          </div>
+          <div className='row paginado-container'>
+            <div className='col-1'>
+              <button className="paginado-btn paginado-btn-prev" onClick={() => setPage(page - 1)} disabled={page === 1}>
+                ← Anterior
+              </button>
+            </div>
+            <div className='col-10 paginado-info'>
+              Página {page}
+            </div>
+            <div className='col-1'>
+              <button className="paginado-btn paginado-btn-next" onClick={() => setPage(page + 1)}>
+                Siguiente →
+              </button>
+            </div>
           </div>
         </div>
       </div>

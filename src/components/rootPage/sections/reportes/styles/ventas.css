@@ -1,21 +1,21 @@
-.HojasBlancas {
+.repvta {
     display: grid;
     padding: 20px;
-    overflow: auto;
+    overflow:scroll
 }
 
-.HojasBlancas__container {
+.repvta__container {
     display: grid;
 	grid-template-rows: auto auto 1fr;
 	height: 100%;
 	background-color: var(--background-sections);
 	padding: 20px ;
 	border-radius: 10px;
-    overflow: hidden;
+    overflow: scroll;
 }
 
 
-.table__HojasBlancas {
+.table__repvta {
     margin-top: 20px;
     border-radius: 10px;
     grid-column: 1 / span 2;
@@ -23,19 +23,19 @@
 }
 
 
-.table__HojasBlancas .table__head {
+.table__repvta .table__head {
     display: flex;
     width: 100%;
     background-color: var( --table-color);
     border-radius: 5px 5px 0 0;
 }
 
-.table__HojasBlancas .table__head .thead {
+.table__repvta .table__head .thead {
    display: flex;
    width: 100%;
 }
 
-.table__HojasBlancas .table__head .thead {
+.table__repvta .table__head .thead {
     display: grid;
     grid-template-columns: 2fr 1fr 100px;
     padding: 10px;
@@ -43,7 +43,7 @@
     color: var(--text-table-color);
 }
 
-.table__HojasBlancas .table__body {
+.table__repvta .table__body {
 	max-height: 150px;
     overflow: hidden;
     overflow: auto;
@@ -64,120 +64,74 @@
 }
 
 
-.table__HojasBlancas .tbody__container:nth-child(even) {
+.table__repvta .tbody__container:nth-child(even) {
     background-color: var(--table-color);
   }
   
-.table__HojasBlancas .tbody__container:nth-child(odd) {
+.table__repvta .tbody__container:nth-child(odd) {
     background-color: var(--two-table-color);
 }
 
-  .table__HojasBlancas .table__body .tbody {
+  .table__repvta .table__body .tbody {
     display: flex;
 }
 
-.table__HojasBlancas .table__body .tbody {
+.table__repvta .table__body .tbody {
     display: grid;
     grid-template-columns: 2fr 1fr 100px;
     padding: 10px;
 }
 
-.table__HojasBlancas .table__body .tbody .td {
+.table__repvta .table__body .tbody .td {
     color: var(--text-color);
 }
 
-.table__HojasBlancas .table__body .tbody:hover {
+.table__repvta .table__body .tbody:hover {
     background-color: var(--secundary-color);
     color: #fff;
 }
 /* -------------------------------------------------- */
-.HojasBlancasData__container {
+.repvtaData__container {
     width: 100%;
-    overflow-x: auto;
+    /* overflow-x: auto; */
   }
   
-  .HojasBlancasData__table {
+  .repvtaData__table {
     width: 100%;
     border-collapse: collapse;
     font-size: 12px;
     min-width: 900px;
   }
   
-  .HojasBlancasData__table th,
-  .HojasBlancasData__table td {
+  .repvtaData__table th,
+  .repvtaData__table td {
     border: 1px solid #ddd;
     padding: 6px 10px;
     text-align: left;
   }
   
-  .HojasBlancasData__table thead {
+  .repvtaData__table thead {
     background-color: #343a40;
     color: #fff;
   }
   
-  .HojasBlancasData__table tbody tr:nth-child(even) {
+  .repvtaData__table tbody tr:nth-child(even) {
     background-color: #f2f2f2;
   }
   
-  .HojasBlancasData__table tbody tr:hover {
+  .repvtaData__table tbody tr:hover {
     background-color: #e9ecef;
   }
   
-  .HojasBlancasData__table th {
+  .repvtaData__table th {
     font-weight: bold;
     text-transform: uppercase;
   }
   
-  .HojasBlancasData__no-data {
+  .repvtaData__no-data {
     text-align: center;
     font-weight: bold;
     padding: 10px;
     color: #888;
   }
   
-
-
-  .hb-table {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #000;
-  width: 100%;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  margin-bottom: 30px;
-}
-
-.hb-row {
-  display: flex;
-  border-bottom: 1px solid #000;
-}
-
-.hb-row:last-child {
-  border-bottom: none;
-}
-
-.hb-cell {
-  border-right: 1px solid #000;
-  padding: 6px;
-  flex: 1;
-  word-wrap: break-word;
-}
-
-.hb-cell:last-child {
-  border-right: none;
-}
-
-.hb-header,
-.hb-subheader {
-  background-color: #f0f0f0;
-  font-weight: bold;
-}
-
-.hb-col-folio {
-  flex: 2;
-}
-
-.hb-col-fecha,
-.hb-col-cliente {
-  flex: 1;
-}

@@ -10,6 +10,7 @@ import Flatpickr from "react-flatpickr";
 import { usersRequests } from '../../../../fuctions/Users';
 import APIs from '../../../../services/services/APIs';
 import Swal from 'sweetalert2';
+import { storeArticles } from '../../../../zustand/Articles';
 
 
 const Vales: React.FC = () => {
@@ -52,7 +53,7 @@ const Vales: React.FC = () => {
 
   const hoy = new Date();
   const haceUnaSemana = new Date();
-  haceUnaSemana.setDate(hoy.getDate() - 7);
+  haceUnaSemana.setDate(hoy.getDate() - 30);
 
   // Inicializa el estado con las fechas formateadas
   const [dates, setDates] = useState([
@@ -111,6 +112,7 @@ const Vales: React.FC = () => {
     }
 
     const resultUsers = await getUsers(data)
+    resultUsers.unshift({ nombre: 'Todos', id: 0 });
     setUsers({
       selectName: 'Vendedores',
       options: 'nombre',
@@ -125,10 +127,14 @@ const Vales: React.FC = () => {
       options: 'nombre',
       dataSelect: resultSeries
     })
+
+    const resultSeries2 = await getSeriesXUser({ tipo_ducumento: 8, id: user_id })
+    resultSeries2.unshift({ nombre: 'Todos', id: 0 });
+
     setSeriesC({
       selectName: 'Series',
       options: 'nombre',
-      dataSelect: resultSeries
+      dataSelect: resultSeries2
     })
     searchVale()
   }
@@ -137,8 +143,10 @@ const Vales: React.FC = () => {
     fetch()
   }, [])
 
-  const [type, setType] = useState<any>(0)
+  const [type, setType] = useState<any>(4)
   const handleClick = (value: any) => {
+    console.log(value);
+
     setType(value)
   };
   const [typeC, setTypeC] = useState<any>(0)
@@ -158,23 +166,31 @@ const Vales: React.FC = () => {
       setSelectedIds('areasC', resp[0])
     })
   }, [branchOfficesC])
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
+
   const searchOP = async () => {
     const dataProductionOrders = {
       folio: parseInt(folC) || 0,
       id_sucursal: branchOfficesC.id,
-      id_serie: selectedIds?.seriesC?.id,
+      id_serie: selectedIds?.serieC?.id,
       id_area: selectedIds?.areasC?.id,
       // id_cliente: client,
       desde: datesC[0],
       hasta: datesC[1],
       id_usuario: user_id,
       status: typeC,
+      light: true
     }
 
     try {
-      const result = await APIs.getProoductionOrders(dataProductionOrders)
+      setModalLoading(true)
+      const result = await APIs.getProoductionOrders(dataProductionOrders).catch(() => {
+        setModalLoading(false)
+      })
+      setModalLoading(false)
       setProductionC(result)
     } catch (error) {
+      setModalLoading(false)
       console.log(error)
     }
   }
@@ -248,7 +264,8 @@ const Vales: React.FC = () => {
       id_usuario_vendedor: selectedIds?.users?.id,
       status: type,
       desde: dates[0],
-      hasta: dates[1]
+      hasta: dates[1],
+      folio: parseInt(fol) || 0
     }
     APIs.CreateAny(data, 'get_vales').then((resp: any) => {
       setDataVales(resp)
@@ -328,7 +345,7 @@ const Vales: React.FC = () => {
       denyButtonText: `Cancelar`
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await APIs.GetAny("cancelar_vale/" + dataUpdate.id)
+        await APIs.GetAny("cancelar_vale/" + dataUpdate.id + '/' + user_id)
           .then(async (response: any) => {
             if (response.error) {
               Swal.fire('Notificación', response.mensaje, 'info');
@@ -364,29 +381,80 @@ const Vales: React.FC = () => {
     });
   }
   const descargarCSV = (dataVales: any[]) => {
-    const encabezados = ["Status", "Folio", "Total", "Sucursal", "Para", "Creado por", "Creación"];
-    
-    const filas = dataVales.map(dat => [
-        dat.status === 0 ? "ACTIVO" : dat.status === 1 ? "CANCELADO" : "TERMINADO",
-        `${dat.serie}-${dat.folio}-${dat.anio}`,
-        dat.total,
-        dat.sucursal,
-        dat.usuario,
-        dat.usuario_crea,
-        dat.fecha_creacion
-    ].join(","));
+    const encabezados = [
+      "ID",
+      "SERIE",
+      "FOLIO",
+      "ANIO",
+      "FECHA_CREADO",
+      "SUCURSAL",
+      "PARA",
+      "TOTAL",
+      "FECHA_CANCELADO",
+      "USUARIO_CANCELA",
+      "STATUS",
+      "OBSERVACIONES",
+      "COBROS"
+    ];
 
-    const csvContenido = [encabezados.join(","), ...filas].join("\n");
-    const blob = new Blob([csvContenido], { type: "text/csv" });
+    // Limpia texto pero preserva comas y caracteres especiales, solo reemplaza saltos de línea por espacio
+    const clean = (text: any) =>
+      String(text)
+        .replace(/\r?\n|\r/g, ' ') // reemplaza saltos de línea por espacio
+        .trim();
+
+    // Escapa campos que pueden contener comas o comillas, encerrándolos en comillas dobles y escapando comillas internas
+    const escapeCSV = (text: string) => {
+      const cleanText = clean(text);
+      if (cleanText.includes('"') || cleanText.includes(',') || cleanText.includes('\n')) {
+        return `"${cleanText.replace(/"/g, '""')}"`; // dobla comillas internas
+      }
+      return cleanText;
+    };
+
+    const filas = dataVales.map(dat => {
+      const statusTexto =
+        dat.status === 0 ? "ACTIVO" : dat.status === 1 ? "CANCELADO" : "TERMINADO";
+
+      const folioCompleto = `${dat.serie}-${dat.folio}-${dat.anio}`;
+
+      const cobrosConcat = (dat.cobros || []).map((c: any) =>
+        `$${clean(c.monto)} ${clean(c.fecha_cobro)}`
+      ).join(' | ');
+
+      return [
+        dat.id,
+        dat.serie,
+        dat.folio,
+        dat.anio,
+        dat.fecha_creacion,
+        escapeCSV(dat.sucursal),
+        escapeCSV(dat.usuario),
+        dat.total,
+        dat.fecha_cancelacion,
+        escapeCSV(dat.usuario_cancela),
+        statusTexto,
+        escapeCSV(dat.observaciones),
+        escapeCSV(cobrosConcat)
+      ].join(",");
+    });
+
+    // BOM para UTF-8 para evitar problemas con Excel y otros
+    const BOM = "\uFEFF";
+
+    const csvContenido = BOM + [encabezados.join(","), ...filas].join("\n");
+    const blob = new Blob([csvContenido], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
 
     link.href = url;
-    link.download = "vales.csv";
+    link.download = "vales_con_cobros.csv";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-};
+  };
+
+
 
   return (
     <div className='vales'>
@@ -406,7 +474,7 @@ const Vales: React.FC = () => {
       <div className='vales__container'>
         <div className='row'>
           <div className='col-8'>
-            <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
+            <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} all={true} />
           </div>
           <div className='col-4'>
             <label className='label__general'>Fechas</label>
@@ -433,7 +501,7 @@ const Vales: React.FC = () => {
                 <button type='button' className='btn__general-purple' onClick={searchVale}>Buscar</button>
               </div>
               <div className=''>
-                <button type='button' className='btn__general-orange' onClick={()=>descargarCSV(dataVales)}>Excel</button>
+                <button type='button' className='btn__general-orange' onClick={() => descargarCSV(dataVales)}>Excel</button>
               </div>
               <div>
                 <button className='btn__general-purple' onClick={() => modalCreate(false, null)}>Crear Vale</button>
@@ -444,6 +512,13 @@ const Vales: React.FC = () => {
         <div>
           <div className='d-flex justify-content-around my-4'>
             <div className='container__checkbox_orders'>
+              <div className='checkbox__orders'>
+                <label className="checkbox__container_general">
+                  <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 4} value={type} onChange={() => handleClick(4)} />
+                  <span className="checkmark__general"></span>
+                </label>
+                <p className='title__checkbox text'>Todos</p>
+              </div>
               <div className='checkbox__orders'>
                 <label className="checkbox__container_general">
                   <input className='checkbox' type="radio" name="requisitionStatus" checked={type == 0} value={type} onChange={() => handleClick(0)} />
@@ -553,14 +628,14 @@ const Vales: React.FC = () => {
                       </div>
                       <div className='checkbox__orders'>
                         <label className="checkbox__container_general">
-                          <input className='checkbox' type="radio" name="requisitionStatus" checked={typeC == 1} value={typeC} onChange={() => handleClickC(1)} />
+                          <input className='checkbox' type="radio" name="requisitionStatus" checked={typeC == 2} value={typeC} onChange={() => handleClickC(2)} />
                           <span className="checkmark__general"></span>
                         </label>
                         <p className='title__checkbox text'>Terminado</p>
                       </div>
                       <div className='checkbox__orders'>
                         <label className="checkbox__container_general">
-                          <input className='checkbox' type="radio" name="requisitionStatus" checked={typeC == 2} value={typeC} onChange={() => handleClickC(2)} />
+                          <input className='checkbox' type="radio" name="requisitionStatus" checked={typeC == 3} value={typeC} onChange={() => handleClickC(3)} />
                           <span className="checkmark__general"></span>
                         </label>
                         <p className='title__checkbox text'>Enviado a Suc.</p>
@@ -615,7 +690,7 @@ const Vales: React.FC = () => {
                                   <div className={`tbody`}>
                                     <div className='td' >
                                       <p>{order.status == 0 ? <b style={{ color: 'green' }}>ACTIVO</b> :
-                                        order.status == 1 ? <b style={{ color: 'red' }}>CANCELADO</b> : <b style={{ color: 'blue' }}>TERMINADO</b>}</p>
+                                        order.status == 2 ? <b style={{ color: 'blue' }}>TERMINADO</b> : <b style={{ color: 'orange' }}>ENVIADO A SUC</b>}</p>
                                     </div>
                                     <div className='td' >
                                       <p>{order.serie}-{order.folio}-{order.anio}</p>
@@ -810,78 +885,43 @@ const Vales: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className='table__vales'>
-          <div>
-            {dataVales ? (
-              <div>
-                <p className='text'>Tus Vales {dataVales.length}</p>
-              </div>
-            ) : (
-              <p></p>
-            )}
-          </div>
-          <div className='table__head'>
-            <div className='thead'>
-              <div className='th'>
-                <p >Status</p>
-              </div>
-              <div className='th'>
-                <p>Folio</p>
-              </div>
-              <div className='th'>
-                <p>Total</p>
-              </div>
-              <div className='th'>
-                <p>Sucursal</p>
-              </div>
-              <div className='th'>
-                <p>Para</p>
-              </div>
-              <div className='th'>
-                <p>Creado por</p>
-              </div>
-              <div className='th'>
-                <p>Creacion</p>
-              </div>
-            </div>
-          </div>
-          {dataVales ? (
-            <div className='table__body'>
-              {dataVales.map((dat: any, i: number) => {
-                return (
-                  <div className='tbody__container' key={i} onClick={() => modalCreate(true, dat)}>
-                    <div className='tbody'>
-                      <div className='td'>
-                        <p>{dat.status == 0 ? <b style={{ color: 'green' }}>ACTIVO</b> :
-                          dat.status == 1 ? <b style={{ color: 'red' }}>CANCELADO</b> : <b style={{ color: 'blue' }}>TERMINADO</b>}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{dat.serie}-{dat.folio}-{dat.anio}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{dat.total}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{dat.sucursal}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{dat.usuario}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{dat.usuario_crea}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{dat.fecha_creacion}</p>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          ) : (
-            <p>Cargando datos...</p>
-          )}
-        </div>
+        <table className="vales_tab">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Folio</th>
+              <th>Total</th>
+              <th>Sucursal</th>
+              <th>Para</th>
+              <th>Creado por</th>
+              <th>Creación</th>
+              <th>Fecha cancelación</th>
+              <th>Usuario cancela</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dataVales.map((dat: any, i: number) => (
+              <tr key={i} onClick={() => modalCreate(true, dat)} style={{ cursor: 'pointer' }}>
+                <td style={{ color: dat.status === 0 ? 'green' : dat.status === 1 ? 'red' : 'blue' }}>
+                  {dat.status === 0
+                    ? "ACTIVO"
+                    : dat.status === 1
+                      ? "CANCELADO"
+                      : "TERMINADO"}
+                </td>
+                <td>{`${dat.serie}-${dat.folio}-${dat.anio}`}</td>
+                <td>$ {dat.total}</td>
+                <td>{dat.sucursal}</td>
+                <td>{dat.usuario}</td>
+                <td>{dat.usuario_crea}</td>
+                <td>{dat.fecha_creacion}</td>
+                <td>{dat.fecha_cancelacion || "-"}</td>
+                <td>{dat.usuario_cancela || "-"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
       </div>
     </div>
   );

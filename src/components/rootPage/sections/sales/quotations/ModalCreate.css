@@ -1,7 +1,12 @@
 .quotations__modal {
     display: grid;
-    grid-template-rows: auto auto 1fr auto;
+    grid-template-rows: auto auto auto;
     height: 100%;
+    overflow:auto;
+}
+
+.row__one_main {
+    overflow: auto;
 }
 
 /*///////////////////////////////////////////////////////////////////////////////////////////
@@ -316,8 +321,8 @@
 
 .table__quotations_modal .table__body {
     height: 100%;
-    overflow-y: auto;
-    max-height: 500px;
+    /* overflow-y: auto;
+    max-height: 500px; */
     transition-delay: 0.0s;
     &::-webkit-scrollbar {
         width: 5px;
@@ -536,9 +541,9 @@
 
 
 
-.table__quotations_modal .table__body .tbody:hover {
-    background-color: var(--table-hover-color);
-    color: #fff;
+.table__quotations_modal .table__body .tbody__container:hover {
+    background-color: #E2E2E2 !important;
+    color: #000000;
 }
 
 

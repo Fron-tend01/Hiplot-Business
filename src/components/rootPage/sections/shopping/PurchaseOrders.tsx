@@ -347,7 +347,7 @@ const PurchaseOrders: React.FC = () => {
             <div className='table__body'>
               {purchaseOrders.map((requisition: any) => {
                 return (
-                  <div className='tbody__container' key={requisition.id} onClick={() => modalUpdate(requisition)}>
+                  <div className='tbody__container' key={requisition.id} onClick={() => modalUpdate(requisition)}> 
                     <div className='tbody'>
                       <div className='td'>
                         <p className='folio-identifier'>{requisition.serie}-{requisition.folio}-{requisition.anio}</p>
@@ -355,7 +355,7 @@ const PurchaseOrders: React.FC = () => {
                       <div className='td'>
                         <p>{requisition.status == 0 ? <div className='active-identifier'><p>Activa</p></div> : ''}</p>
                         <p>{requisition.status == 1 ? <div className='cancel-identifier'><p>Cancelada</p></div> : ''}</p>
-                        <p>{requisition.status == 2 ? <div className='active-status'><p>Terminada</p></div> : ''}</p>
+                        <p>{requisition.status == 2 ? <div className='end-status'><p>Terminada</p></div> : ''}</p>
                       </div>
                       <div className='td'>
                         <p >{requisition.proveedor_gral}</p>

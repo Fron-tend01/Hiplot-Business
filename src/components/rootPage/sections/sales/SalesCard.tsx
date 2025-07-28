@@ -37,7 +37,7 @@ import axios from 'axios';
 const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const userState = useUserStore(state => state.user);
   const user_id = userState.id;
-  const base_img = 'http://hiplot.dyndns.org:84/api_dev/'
+  const base_img = 'http://hiplot.dyndns.org:84/'
   const { modal }: any = useStore(storeModals)
 
 
@@ -120,7 +120,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       proveedor: 0,
       materia_prima: 0,
       get_sucursales: false,
-      get_imagenes: false,
+      get_imagenes: true,
       // get_adicional: true,
       get_proveedores: false,
       get_max_mins: false,
@@ -158,6 +158,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           console.log(art);
 
 
+          setImgs(art.imagenes)
 
 
           let plantillaData = art.plantilla_data || [];
@@ -167,7 +168,14 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
           }));
 
           if (modalSalesCard === 'sale-card-quotation') {
-            plantillaData = dataArticle.campos_plantilla;
+            console.log('dataArticledataArticledataArticledataArticledataArticle', dataArticle);
+            plantillaData.forEach(x => {
+              let exist_in_art = dataArticle?.campos_plantilla.filter(c => c.nombre_campo_plantilla == x.nombre)
+              // debugger
+              x.valor = exist_in_art[0].valor
+            });
+            // plantillaData = dataArticle.campos_plantilla;
+            // debugger
           }
 
           setArticle({ ...art, plantilla_data: plantillaData });
@@ -189,14 +197,6 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
           // VUELVE A TIRAR LA PETICIÓN PERO YA SIN EL CARGANDO 
 
-          let imgs = []
-          setStatusImages(true)
-          await APIs.GetAny('articulo_imagenes_get/' + art.id).then((resp: any) => {
-            imgs = resp
-            setImgs(imgs)
-            setStatusImages(false)
-
-          })
         })
         .catch((error) => {
           console.error('Error fetching data:', error);
@@ -227,13 +227,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
 
 
+  console.log('-------------------------------------', permisosxvistaFicha);
 
-  // useEffect(() => {
-  //   if(modalSalesCard === 'sale-card-quotation') {
-  //     setModalLoading(true)
-  //     fetch()
-  //   }
-  // },[modalSalesCard])
+
 
 
   const fetchUser = async () => {
@@ -276,24 +272,25 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
     if (modalSalesCard === 'sale-card-quotation') {
       fetch1();
-      setPrices(dataArticle?.precio_total)
+      setPrices(dataArticle?.precio_total || dataArticle?.total || 0)
       setAdicional(null)
       setDescuento(0)
       setLeyenda('')
-
       setSelectedUnit({ id: dataArticle?.id_unidad, id_unidad: dataArticle?.id_unidad })
-      setPricesFranquicia(0)
+      setPricesFranquicia(dataArticle.total_franquicia)
       setPricesFranquiciaAdicional(0)
       setAmount(dataArticle?.cantidad)
       setData({
         obs_produccion: dataArticle.obs_produccion,
         obs_factura: dataArticle.obs_factura,
       });
-      setBillingComment('')
-      setproductionComments('')
+      setBillingComment(dataArticle.obs_factura)
+      setproductionComments(dataArticle.obs_produccion)
       setCombinacionesSeleccionadas([])
       setSelectedUnit(article?.unidades[0])
       setfyv(false)
+
+      // debugger
 
 
     }
@@ -306,23 +303,26 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   }, [idA])
 
   useEffect(() => {
-    setData({
-      obs_produccion: '',
-      obs_factura: '',
-    })
-    setPrices(0)
-    setAdicional(null)
-    setLeyenda('')
+    if (modalSalesCard !== 'sale-card-quotation') {
 
-    setDescuento(0)
-    setPricesFranquicia(0)
-    setPricesFranquiciaAdicional(0)
-    setAmount(0)
-    setBillingComment('')
-    setproductionComments('')
-    setfyv(false)
+      setData({
+        obs_produccion: '',
+        obs_factura: '',
+      })
+      setPrices(0)
+      setAdicional(null)
+      setLeyenda('')
 
-    setCombinacionesSeleccionadas([])
+      setDescuento(0)
+      setPricesFranquicia(0)
+      setPricesFranquiciaAdicional(0)
+      setAmount(0)
+      setBillingComment('')
+      setproductionComments('')
+      setfyv(false)
+
+      setCombinacionesSeleccionadas([])
+    }
   }, [modalSalesCard])
 
 
@@ -405,11 +405,11 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const [loadingPrice, setLoadingPrice] = useState<boolean>(false)
 
   const get = async () => {
-    setLoadingPrice(true)
 
     if (controllerRef.current) {
       controllerRef.current.abort();
     }
+    setLoadingPrice(true)
 
 
     controllerRef.current = new AbortController();
@@ -617,31 +617,36 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
 
 
-    } catch (error) {
+    } catch (error: any) {
+      if (error.name === 'AbortError') {
+        console.warn("Petición abortada, no se cambia loading");
+        return; // No llegues al finally
+      }
       console.error("Error al obtener el precio total:", error);
     }
-    finally {
-      setLoadingPrice(false)
-    }
   };
-
 
   const getPrices = async () => {
     if (amount > 0) {
-      let numbrs = article.plantilla_data.filter((x: any) => x.tipo == 'numero')
-      if (numbrs.length > 0) {
-        article.plantilla_data.forEach(async (x: any) => {
-          if (x.valor > 0 && x.tipo == 'numero') {
-            await get();
-          }
-        });
-      } else {
-        await get()
+      const numbrs = article.plantilla_data.filter((x: any) => x.tipo === 'numero');
+
+      try {
+        setLoadingPrice(true);
+        if (numbrs.length > 0) {
+          const calls = article.plantilla_data
+            .filter((x: any) => x.tipo === 'numero' && x.valor > 0)
+            .map(() => get());
+
+          await Promise.all(calls);
+        } else {
+          await get();
+        }
+      } finally {
+        setLoadingPrice(false);
       }
-
     }
-
   };
+
 
   useEffect(() => {
     getPrices()
@@ -678,7 +683,14 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
   const addQua = () => {
     console.log(Adicional);
-
+    if (amount < 0) {
+      Swal.fire('Notificacion', 'La cantidad no puede ser igual a 0 o vacio', 'warning')
+      return
+    }
+    if (data.campos_plantilla == null) {
+      Swal.fire('Notificacion', 'Llena todos los campos obligatorios para continuar', 'warning')
+      return
+    }
     if (Adicional) { //SI ADICIONAL TIENE ALGO SE DEBE CREAR EL PERSONALIZADO PARA ENVIARLO A COT/OV
       //-------------------------------SIMULAR EL INGRESO DIRECTO A NORMALCONCEPTS
       Swal.fire({
@@ -751,7 +763,14 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   };
 
   const addSaleOrder = () => {
-
+    if (amount < 0) {
+      Swal.fire('Notificacion', 'La cantidad no puede ser igual a 0 o vacio', 'warning')
+      return
+    }
+    if (data.campos_plantilla == null) {
+      Swal.fire('Notificacion', 'Llena todos los campos obligatorios para continuar', 'warning')
+      return
+    }
     if (Adicional) { //SI ADICIONAL TIENE ALGO SE DEBE CREAR EL PERSONALIZADO PARA ENVIARLO A COT/OV
       //-------------------------------SIMULAR EL INGRESO DIRECTO A NORMALCONCEPTS
       Swal.fire({
@@ -949,6 +968,12 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   useEffect(() => {
     if (opciones != undefined && opciones.length > 0) {
       setCombinacionesSeleccionadas([...opciones])
+      let all_sel = opciones.length > 0 && opciones.every(x => x.OpcionSelected?.trim());
+      // debugger
+      if (all_sel) {
+        BuscarArticuloPorCombinacion()
+
+      }
     }
 
   }, [opciones])
@@ -1094,13 +1119,24 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
 
 
-  const updateConcept = () => {
-    let deleteConcept = normalConcepts.filter((_: any, index: number) => index !== indexUpdate)
-    setNormalConcepts([...deleteConcept, data])
-    localStorage.setItem('sale-order', JSON.stringify([...deleteConcept, data]));
+  const updateConcept = async () => {
+    const currentQuotes = storeQuotation.getState().quotes;
+    data.id = dataArticle.id
+    // Generar arreglo actualizado
+    const updatedConcepts = currentQuotes.normal_concepts.map((item, index) =>
+      index === indexUpdate ? data : item
+    );
 
+    // Usar setQuotes para actualizar solo normal_concepts
+    storeQuotation.getState().setQuotes({
+      normal_concepts: updatedConcepts,
+    });
+
+    // Guardar en localStorage
+    if (modalSalesCard !== 'sale-card-quotation') {
+      localStorage.setItem('cotizacion', JSON.stringify(updatedConcepts));
+    }
     setModalSalesCard('')
-
   }
   // const checkPermission = (elemento: string) => {
   //   return permisosxVistaheader.some((x: any) => x.titulo == elemento)
@@ -1192,7 +1228,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
       componentes: article.componentes
 
     };
-
+    if (article?.opciones_de_variacion2?.length > 0) {
+      data.id = article.id
+    }
 
     // const data = {
     //   id_articulo: IdArticle,
@@ -1289,6 +1327,11 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
 
     }
   };
+
+  const puedeEditarPrecio =
+    article?.precio_libre === true ||
+    (Array.isArray(permisosxvistaFicha) &&
+      permisosxvistaFicha.some((x: any) => x.titulo === 'modificar_precio'));
   return (
     <div className={`overlay__sale-card ${modalSalesCard === 'sale-card' || modalSalesCard === 'sale-card-quotation' ? 'active' : ''}`}>
       {/* <Toaster expand={true} position="top-right" richColors /> */}
@@ -1533,7 +1576,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                 <div className='row__two'>
                   <div className='tab__fields'>
                     <div className='inputs__branch-office'>
-                      <label className='label__general'>Cantidad</label>
+                      <label className='label__general'>Cantidad(*)</label>
                       <div className='warning__general' style={styleWarningContact}><small >La cantidad  no es multiplo de {article?.multiplos_de}</small></div>
                       <input className={`inputs__general ${warningContact ? 'warning' : ''}`} type="number" value={amount} onChange={handleAmountChange} placeholder='Ingresa la cantidad' />
                     </div>
@@ -1627,7 +1670,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                             <div>
                               {x.tipo == 'texto' ?
                                 <div>
-                                  <label className='label__general'>{x.nombre}</label>
+                                  <label className='label__general'>{x.nombre}(*)</label>
                                   <input
                                     className={`inputs__general`}
                                     type="text"
@@ -1639,7 +1682,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                                 :
                                 x.tipo == 'numero' ?
                                   <div>
-                                    <label className='label__general'>{x.nombre}</label>
+                                    <label className='label__general'>{x.nombre}(*)</label>
                                     <input
                                       className={`inputs__general`}
                                       type="number"
@@ -1828,24 +1871,28 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                 <div className='total__price'>
 
                   <p className='title__total-price'>Precio total</p>
-                  {loadingPrice ?
-                    <div className='container__loader_simple'>
-                      <span className="loader_simple"></span>
-                    </div>
-                    :
-                    <p className="result__total-price">
-                      $
 
-                      {(article?.precio_libre || (Array.isArray(permisosxvistaFicha) && permisosxvistaFicha.length > 0 && permisosxvistaFicha.some((x: any) => x.titulo == 'modificar_precio'))) ?
-                        <input
-                          type="number"
-                          value={prices}
-                          onChange={(e) => setterPrices(e.target.value)}
-                        />
-                        :
-                        prices}
-                    </p>
-                  }
+                  <p className="result__total-price">
+                    {loadingPrice ?? (
+                      <div className='container__loader_simple'>
+                        <span className="loader_simple"></span>
+                      </div>
+                    )}
+                    $
+
+                    <input
+                      disabled={loadingPrice}
+                      type="number"
+                      value={prices == 0 ? '' : prices}
+                      onChange={(e) => setterPrices(e.target.value)}
+                    />
+                    {/* {puedeEditarPrecio ? (
+                    ) : (
+                      prices
+                    )} */}
+
+                  </p>
+
 
                 </div>
 

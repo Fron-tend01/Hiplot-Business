@@ -7,11 +7,11 @@
 	background-color: var(--main-card-color);
 	padding: 20px ;
 	border-radius: 10px;
-    overflow: hidden;
+    overflow: scroll;
 }
 
 .billing__container .row__one {
-	padding: 20px;
+	/* padding: 20px; */
 	background-color: var(--cards-background);
 	border-radius: var(--general-card-border);
 }

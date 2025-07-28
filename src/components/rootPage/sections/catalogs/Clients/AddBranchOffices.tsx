@@ -182,7 +182,7 @@ const AddBranchOffices: React.FC = () => {
                         <div className='col-2 md-col-5 sm-col-11'>
                             <label className='label__general'>Lim. Crédito</label>
                             <div className='warning__general'><small>Este campo es obligatorio</small></div>
-                            <input name="limite_credito" className='inputs__general' type="text" value={inputs.limite_credito} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, "limite_credito", parseInt(e.target.value))} placeholder='Límite de Crédito' />
+                            <input name="limite_credito" className='inputs__general' type="float" value={inputs.limite_credito} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, "limite_credito", parseInt(e.target.value) || 0)} placeholder='Límite de Crédito' />
                         </div>
                         <div className='col-3 md-col-6 sm-col-12'>
                             <label className='label__general'>Form. Pago</label>

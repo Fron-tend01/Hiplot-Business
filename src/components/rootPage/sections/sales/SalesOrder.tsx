@@ -92,12 +92,15 @@ const SalesOrder: React.FC = () => {
         hoy.toISOString().split('T')[0]
     ]);
 
+    const permisosxVista = storeDv((state) => state.permisosxvista);
 
 
     const fetch = async () => {
-
-        APIs.GetAny('get_permisos_x_vista/' + user_id + '/ORDEN_VENTA').then((resp: any) => {
-            setPermisosxVista(resp)
+        await APIs.GetAny('get_permisos_x_vista/' + user_id + '/ORDEN_VENTA').then((resp: any) => {
+            setPermisosxVista((prev: any) => [...prev, ...resp]);
+        })
+        await APIs.GetAny('get_permisos_x_vista/' + user_id + '/PRODUCCION').then((resp: any) => {
+            setPermisosxVista((prev: any) => [...prev, ...resp]);
         })
 
         const data = {
@@ -148,7 +151,7 @@ const SalesOrder: React.FC = () => {
             folio: fol,
             id_sucursal: branchOffices.id,
             id_serie: buscarPor == '0' ? selectedIds?.serie?.id : selectedIds?.serie2?.id,
-            id_cliente: client,
+            cliente: client,
             desde: dates[0],
             hasta: dates[1],
             id_usuario: user_id,
@@ -178,6 +181,34 @@ const SalesOrder: React.FC = () => {
         const result = await getSaleOrders(dataSaleOrders)
         setModalLoading(false)
         let order_search = result[0]
+        order_search?.conceptos?.forEach(x => {
+            if (!x || !Array.isArray(x.areas_produccion)) return;
+
+            const exist_area_select = x.areas_produccion.filter(c => c?.id_area === x?.id_area_produccion);
+
+            if (exist_area_select.length < 1) {
+                if (x.areas_produccion.length > 0 && x.areas_produccion[0]?.id_area !== undefined) {
+                    x.id_area_produccion = x.areas_produccion[0].id_area;
+                }
+            }
+        });
+
+        order_search?.conceptos_pers?.forEach(q => {
+            if (!q || !Array.isArray(q.conceptos)) return;
+
+            q.conceptos.forEach(x => {
+                if (!x || !Array.isArray(x.areas_produccion)) return;
+
+                const exist_area_select = x.areas_produccion.filter(c => c?.id_area === x?.id_area_produccion);
+
+                if (exist_area_select.length < 1) {
+                    if (x.areas_produccion.length > 0 && x.areas_produccion[0]?.id_area !== undefined) {
+                        x.id_area_produccion = x.areas_produccion[0].id_area;
+                    }
+                }
+            });
+        });
+
         setModalSalesOrder('sale-order__modal-update')
         setSaleOrdersConcepts({ sale_order: order_search, normal_concepts: order_search.conceptos, personalized_concepts: order_search.conceptos_pers });
         setSaleOrdersToUpdate(order_search)
@@ -303,7 +334,7 @@ const SalesOrder: React.FC = () => {
                         {buscarPor == '2' && (
                             <div className='md-col-6 col-5'>
                                 <label className='label__general'>Titulo</label>
-                                <input className='inputs__general' type="text" value={searcherTitulo} onChange={(e) => setSearcherTitulo(e.target.value)} placeholder='Ingresa el titulo de la orden' onKeyUp={(e) => e.key === 'Enter' && search()}/>
+                                <input className='inputs__general' type="text" value={searcherTitulo} onChange={(e) => setSearcherTitulo(e.target.value)} placeholder='Ingresa el titulo de la orden' onKeyUp={(e) => e.key === 'Enter' && search()} />
                             </div>
                         )}
                         {buscarPor != '2' && (
@@ -370,10 +401,10 @@ const SalesOrder: React.FC = () => {
                         <div className='ovtab__th'>Total</div>
                         <div className='ovtab__th'>Total Franquicia</div>
                         <div className='ovtab__th'>Total Facturados</div>
-                        <div className='ovtab__th'>Status</div>
                         <div className='ovtab__th'>Razón social</div>
                         <div className='ovtab__th'>Entreg. Cliente</div>
                         <div className='ovtab__th'>Recib. Suc.</div>
+                        <div className='ovtab__th'>Status</div>
                         <div className='ovtab__th'>Ordenes de produc.</div>
                     </div>
 
@@ -384,17 +415,17 @@ const SalesOrder: React.FC = () => {
                             <div className='ovtab__td'><b>{order.usuario_crea}</b></div>
                             <div className='ovtab__td'>{order.fecha_creacion}</div>
                             <div className='ovtab__td'>{order.sucursal}</div>
-                            <div className='ovtab__td'><b>$ {order.total_orden}</b></div>
+                            <div className='ovtab__td'><b>$ {order?.total_orden?.toFixed(2)}</b></div>
                             <div className='ovtab__td'>$ N/A</div>
-                            <div className='ovtab__td'>$ {order.total_facturado}</div>
+                            <div className='ovtab__td'>$ {order?.total_facturado?.toFixed(2)}</div>
+                            <div className='ovtab__td'>{order.razon_social}</div>
+                            <div className='ovtab__td'>{order.total_entregados_cliente} de {order?.conceptos?.length}</div>
+                            <div className='ovtab__td'>{order.total_recibidos_sucursal} de {order?.conceptos?.length}</div>
                             <div className='ovtab__td'>
                                 {order.status === 0 && <span className='active-identifier'>Activa</span>}
                                 {order.status === 1 && <span className='cancel-identifier'>Cancelada</span>}
                                 {order.status === 2 && <span className='finished-identifier'>Pendiente</span>}
                             </div>
-                            <div className='ovtab__td'>{order.razon_social}</div>
-                            <div className='ovtab__td'>{order.total_entregados_cliente} de {order?.conceptos?.length}</div>
-                            <div className='ovtab__td'>{order.total_recibidos_sucursal} de {order?.conceptos?.length}</div>
                             <div className='ovtab__td'>
                                 {order?.ordenes_produccion?.map(x => (
                                     <div key={x.folio_completo}>

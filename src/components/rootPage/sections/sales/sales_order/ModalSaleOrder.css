@@ -1,11 +1,26 @@
 .sale-order__modal_articles {
 	display: grid;
-	grid-template-rows: 1fr auto;
-	overflow: hidden;
+	grid-template-rows: auto auto auto;
+	height: 100%;
+	overflow: auto;
 }
 
+.row__one_main {
+    overflow: auto;
+	&::-webkit-scrollbar {
+		width: 5px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: var(--primary-color);
+		border-radius: 5px;
+		height: 100px;
+	}
+
+	&::-webkit-scrollbar-track {}
+}
 .sale-order__modal_articles>.row__one {
-	overflow: auto;
+	/* overflow: auto; */
 
 	&::-webkit-scrollbar {
 		width: 5px;
@@ -92,6 +107,7 @@
 	display: flex;
 	visibility: hidden;
 	z-index: 1;
+
 }
 
 .overlay__sale-order__modal_articles.active {
@@ -149,7 +165,7 @@
 
 .overlay__sale-order_production__modal_articles {
 	background: rgba(0, 0, 0, .3);
-	position: fixed;
+	position: absolute;
 	top: 0;
 	bottom: 0;
 	left: 0;
@@ -217,13 +233,13 @@
 	overflow: auto;
 }
 
-.sale-order_production__modal_articles > .table {
+.sale-order_production__modal_articles>.table {
 	overflow: auto;
 }
 
 .sale-order_production__modal_articles .listSaleOrder__container {
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 }
 
 
@@ -437,7 +453,7 @@
 	grid-template-columns: repeat(4, 1fr) 1fr 1fr 1fr repeat(4, 50px);
 	padding: 10px;
 	font-weight: 600;
-	column-gap: 20px;
+	column-gap: 40px;
 }
 
 .table__sales_modal .table__body {
@@ -461,11 +477,15 @@
 }
 
 
-
-.table__sales_modal .tbody:hover {
-	background-color: var(--table-hover-color);
-	color: #fff;
+.table__sales_modal .table__body .tbody__container:hover {
+	background-color: #E2E2E2 !important;
+    color: #000000;
 }
+
+/* .table__sales_modal .tbody:hover {
+	background-color: #E2E2E2;
+    color: #000000;
+} */
 
 .table__sales_modal .tbody__container {
 	border-top: 2px solid var(--border-table-color);
@@ -494,7 +514,7 @@
 
 .table__sales_modal .table__body .tbody {
 	display: flex;
-	
+
 }
 
 .table__sales_modal .table__body .tbody.personalized {
@@ -508,15 +528,13 @@
 	column-gap: 20px;
 }
 
-.table__sales_modal .table__body .tbody>.td {
-	
-}
+.table__sales_modal .table__body .tbody>.td {}
 
-.table__sales_modal .table__body .tbody>.td.branch input:checked + .slider {
+.table__sales_modal .table__body .tbody>.td.branch input:checked+.slider {
 	background-color: #FF8F00;
 }
 
-.table__sales_modal .table__body .tbody>.td.customer input:checked + .slider {
+.table__sales_modal .table__body .tbody>.td.customer input:checked+.slider {
 	background: #6e34e2;
 }
 
@@ -537,8 +555,8 @@
 .table__sales_modal .table__body .tbody>.td .urgency-identifier {
 	margin-left: 10px;
 }
-sale-order_production__modal_articles
-.table__sales_modal .table__body .tbody>.td .send-areas {
+
+sale-order_production__modal_articles .table__sales_modal .table__body .tbody>.td .send-areas {
 	display: flex;
 	align-items: center;
 }
@@ -565,7 +583,7 @@ sale-order_production__modal_articles
 
 .table__sales_modal .table__body .tbody:hover>.td .urgency-identifier {
 	background-color: #ff5252;
-	color: #ffffff;  
+	color: #ffffff;
 }
 
 
@@ -645,7 +663,7 @@ sale-order_production__modal_articles
                     Tabla de Entradas
  **************************************************************/
 
- .table__sales_modal-send-productions {
+.table__sales_modal-send-productions {
 	border-radius: 10px;
 	display: grid;
 	grid-template-rows: auto auto 1fr;
@@ -940,6 +958,4 @@ sale-order_production__modal_articles
 
 
 
-@media screen and (max-width: 768px) {
-	
-}
+@media screen and (max-width: 768px) {}

@@ -9,6 +9,7 @@ import { useStore } from 'zustand';
 import { storeSaleCard } from '../../../../zustand/SaleCard';
 import { FamiliesRequests } from '../../../../fuctions/Families';
 import { storeArticles } from '../../../../zustand/Articles';
+import ProductCatalog from './ProductCatalog';
 
 const ArticleViewModal = () => {
     const userState = useUserStore(state => state.user);
@@ -41,9 +42,16 @@ const ArticleViewModal = () => {
     };
 
     useEffect(() => {
+        setInputs({
+            code: '',
+            name: ''
+        })
+        setDentroColeccion(false)
+        setid_col({})
         if (modalArticleView == 'article-view__modal' || modalArticleView == 'article-view__modal_header') {
-            fetch();
+
             setPage(1)
+            fetch();
         }
 
     }, [modalArticleView]);
@@ -113,6 +121,7 @@ const ArticleViewModal = () => {
                 light: true
             };
             try {
+                setPage(1)
                 setDentroColeccionNombre(x.codigo)
                 setDentroColeccion(true)
                 setModalLoading(true)
@@ -137,7 +146,7 @@ const ArticleViewModal = () => {
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
     const [selectedFamily, setSelectedFamily] = useState<number>(0)
-    const search = async (reinicio_page: boolean, saliendo_col:boolean = false) => {
+    const search = async (reinicio_page: boolean, saliendo_col: boolean = false) => {
         let pag = page
         if (dentroColeccion && !saliendo_col) {
             const data = {
@@ -176,7 +185,7 @@ const ArticleViewModal = () => {
                 setModalLoading(false)
 
             }
-        }else {
+        } else {
             setDentroColeccion(false)
             setDentroColeccionNombre('')
             setArticles([])
@@ -212,7 +221,7 @@ const ArticleViewModal = () => {
                 const result = await getArticlesForVendedor(data)
                 setArticles(result);
                 setModalLoading(false)
-    
+
             } catch (error) {
                 setModalLoading(false)
             }
@@ -279,7 +288,8 @@ const ArticleViewModal = () => {
                     </a>
                     <p className='title__modals'>Artículos</p>
                 </div>
-                <div className='article__view_container'>
+                <ProductCatalog></ProductCatalog>
+                {/* <div className='article__view_container'>
                     <div className='row card-row'>
                         <div className='col-3 md-col-6 sm-col-12'>
                             <label className='label__general'>Código</label>
@@ -367,7 +377,7 @@ const ArticleViewModal = () => {
                                     }
                                 </div>
                                 <div className='img'>
-                                    <img src={x.activo == null ? x.imagen: urlImg+x.imagen.replace(/\\/g, "/")} />
+                                    <img src={x.activo == null ? x.imagen : urlImg + x.imagen.replace(/\\/g, "/")} />
                                 </div>
                                 <div className='content'>
                                     <p className='code'>{x.codigo}</p>
@@ -407,8 +417,7 @@ const ArticleViewModal = () => {
                             <button className='btn__general-primary' onClick={() => setPage(page + 1)}>SIGUIENTE</button>
                         </div>
                     </div>
-                </div>
-                <SalesCard idA={idA} />
+                </div> */}
             </div>
         </div>
 

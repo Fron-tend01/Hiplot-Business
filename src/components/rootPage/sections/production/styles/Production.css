@@ -82,7 +82,7 @@
 
 .table__orders_production .table__body .tbody:hover {
     background-color: var(--table-hover-color);
-    color: #fff;
+    /* color: #fff; */
 }
 
   .table__orders_production .tbody__container {

@@ -13,7 +13,7 @@ const Variations: React.FC = () => {
   const setVariations = storeArticles((state) => state.setVariations);
   const setDeleteVariations = storeArticles((state) => state.setDeleteVariations);
 
-  const { variations, articleToUpdate }: any = useStore(storeArticles);
+  const { variations, articleToUpdate, deleteVariations }: any = useStore(storeArticles);
 
   const { getArticles }: any = articleRequests()
   const [articles, setArticles] = useState<any>()
@@ -37,7 +37,7 @@ const Variations: React.FC = () => {
   ]
 
   const openSelectSearch = () => {
-    setSelectSearch(!selectSearch) 
+    setSelectSearch(!selectSearch)
   }
 
   const handleSearchChange = (search: any) => {
@@ -46,7 +46,7 @@ const Variations: React.FC = () => {
   }
 
   useEffect(() => {
-    if(articleToUpdate) {
+    if (articleToUpdate) {
       setViewVariations(articleToUpdate.variaciones)
     }
   }, [articleToUpdate])
@@ -86,7 +86,7 @@ const Variations: React.FC = () => {
     setSelectedResult(result)
     setSelectResults(false)
   }
-  
+
 
   const openSelectResults = () => {
     setSelectResults(!selectResults)
@@ -117,12 +117,22 @@ const Variations: React.FC = () => {
 
   }
 
-  const deleteVariations = (item: any) => {
-    const filter = viewVariations.filter((x: any) => x.id !== item.id)
-    setViewVariations(filter)
-    setVariations(filter)
-    setDeleteVariations(filter)
-  }
+  const deleteVariationss = (item: any) => {
+    const filtered = viewVariations.filter((x: any) => x.id !== item.id);
+
+    setViewVariations(filtered);
+
+    // Solo dejar los ids restantes en variations
+    const updatedIds = filtered.map((x: any) => x.id_articulo || x.id);
+    setVariations(updatedIds);
+
+    // Si viene del backend (tiene un id real), agregar su id a deleteVariations
+    if (item.id) {
+      debugger
+      const uniqueDeleteIds = new Set([...deleteVariations, item.id]);
+      setDeleteVariations(Array.from(uniqueDeleteIds));
+    }
+  };
 
   return (
     <div className={`overlay__create_modal_variations ${subModal == 'create_modal_variations' ? 'active' : ''}`}>
@@ -166,14 +176,14 @@ const Variations: React.FC = () => {
               <label className='label__general'>Resultado</label>
               <div className='select-btn__general'>
                 <div className={`select-btn ${selectResults ? 'active' : ''}`} onClick={openSelectResults} >
-                  <p>{selectedResult ? articles.find((s: { id: number }) => s.id === selectedResult.id)?.nombre : 'Selecciona'}</p>
+                  <p>{selectedResult ? articles.find((s: { id: number }) => s.id === selectedResult.id)?.descripcion : 'Selecciona'}</p>
                   <svg className='chevron__down' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" /></svg>
                 </div>
                 <div className={`content ${selectResults ? 'active' : ''}`} >
                   <ul className={`options ${selectResults ? 'active' : ''}`} style={{ opacity: selectResults ? '1' : '0' }}>
                     {articles?.map((result: any) => (
                       <li key={result.id} onClick={() => handleResultsChange(result)}>
-                        {result.nombre}
+                        {result.descripcion}
                       </li>
                     ))}
                   </ul>
@@ -220,7 +230,7 @@ const Variations: React.FC = () => {
                           {item.descripcion}
                         </div>
                         <div className='td'>
-                          <button className='btn__delete_users' type='button' onClick={() => deleteVariations(item)}>Eliminar</button>
+                          <button className='btn__delete_users' type='button' onClick={() => deleteVariationss(item)}>Eliminar</button>
                         </div>
                       </div>
                     </div>

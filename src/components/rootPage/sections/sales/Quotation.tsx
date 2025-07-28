@@ -364,9 +364,13 @@ const Quotation: React.FC = () => {
                       </div>
                     </div>
                     <div className='td'>
-                      {quatation.id_solicitud_cotizacion > 0 ? 'Con Cotizador'
+                      {quatation.id_solicitud_cotizacion > 0 ? 'Con Cotizador' 
 
                         : 'Sin Cotizador'}
+                        <br />
+                      {quatation.id_solicitud_cotizacion > 0 ? 'No. Solicitud: ' + quatation.id_solicitud_cotizacion
+
+                        : ''}
                     </div>
                     <div className='td'>
                       {quatation.fecha_creacion}

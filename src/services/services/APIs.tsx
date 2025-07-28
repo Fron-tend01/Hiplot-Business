@@ -17,7 +17,10 @@ const APIs = {
     const path = customPath || 'empresa_create';
     return ConfigurationAPIs.post(path, { razon_social, nombre_comercial, id_usuario});
   },
-
+  getCollectionByFamily: async (familyId: number, customPath?: string) => {
+    const path = customPath || `get_colecciones_x_familia/${familyId}`;
+    return ConfigurationAPIs.get(path)
+  },
   getCompaniesXUsers: async (id: number, customPath?: string) => {
     const path = customPath || `get_empresas_x_usuario/${id}`;
     return ConfigurationAPIs.get(path);
@@ -877,7 +880,7 @@ getTotalPrice: async (data: any, customPath?: string) => {
       method: "POST",
       body: JSON.stringify(dataArticle),
       headers: { "Content-Type": "application/json" },
-      signal: options.signal, // Pasa la señal al request
+      signal: options.signal, // Pasa la señal al request 987093036c
     });
   
     return response.json();

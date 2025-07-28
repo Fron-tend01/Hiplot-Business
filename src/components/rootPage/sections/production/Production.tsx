@@ -51,7 +51,7 @@ const Production: React.FC = () => {
 
     const hoy = new Date();
     const haceUnaSemana = new Date();
-    haceUnaSemana.setDate(hoy.getDate() - 7);
+    haceUnaSemana.setDate(hoy.getDate() - 30);
 
     // Inicializa el estado con las fechas formateadas
     const [dates, setDates] = useState([
@@ -63,7 +63,7 @@ const Production: React.FC = () => {
     const fetch = async () => {
 
 
-        // debugger
+        // debugger 
 
         const resultSeries = await getSeriesXUser({ tipo_ducumento: 8, id: user_id })
         resultSeries.unshift({ nombre: 'Todos', id: 0 });
@@ -72,6 +72,8 @@ const Production: React.FC = () => {
             options: 'nombre',
             dataSelect: resultSeries
         })
+        fechas.current = dates;
+
     }
     const intervalRef = useRef<number | null>(null);
     const selectedIdsRef = useRef(selectedIds);
@@ -111,7 +113,10 @@ const Production: React.FC = () => {
         };
 
         try {
-            const result = await APIs.getProoductionOrders(dataProductionOrders);
+            let result: any = await APIs.getProoductionOrders(dataProductionOrders);
+            result.forEach(e => {
+                e.urgencia = e.conceptos.some(x => x.codigo === 'CAURG' || x.monto_urgencia != 0)
+            });
             setProduction(result);
         } catch (error) {
             console.log(error);
@@ -161,7 +166,10 @@ const Production: React.FC = () => {
         }
 
         try {
-            const result = await APIs.getProoductionOrders(dataProductionOrders)
+            let result: any = await APIs.getProoductionOrders(dataProductionOrders)
+            result.forEach(e => {
+                e.urgencia = e.conceptos.some(x => x.codigo === 'CAURG' || x.monto_urgencia != 0)
+            });
             setProduction(result)
         } catch (error) {
             console.log(error)
@@ -219,7 +227,6 @@ const Production: React.FC = () => {
             setSelectedIds('areas', resp[0])
         })
     }, [branchOffices])
-
     const handleClick = (value: any) => {
         setType(value)
     };
@@ -239,7 +246,7 @@ const Production: React.FC = () => {
     return (
         <div className='production'>
             <div className='production__container'>
-                <div className='row__one'  style={{zoom:'75%'}}>
+                <div className='row__one' style={{ zoom: '75%' }}>
                     <div className='row'>
                         <div className='col-8'>
                             <Empresas_Sucursales update={false} empresaDyn={companies} setEmpresaDyn={setCompanies} sucursalDyn={branchOffices} setSucursalDyn={setBranchOffices} />
@@ -332,7 +339,7 @@ const Production: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <div className='table__orders_production' style={{zoom:'75%'}}>
+                <div className='table__orders_production' style={{ zoom: '75%' }}>
                     {production ? (
                         <div className='table__numbers'>
                             <p className='text'>Total de ordenes de produccion</p>
@@ -384,7 +391,22 @@ const Production: React.FC = () => {
                                                         borderRadius: '5px'
                                                     }}>URGENCIA</b>
                                                 )}
-                                                <p className='folio-identifier'>{order.serie}-{order.folio}-{order.anio}
+                                                <p style={{
+                                                    borderRadius: '12px',
+                                                    background: 'linear-gradient(135deg,rgb(168, 179, 180), #ffffff)',
+                                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                                                    padding: '5px 5px',
+                                                    marginBottom: '12px',
+                                                    cursor: 'pointer',
+                                                }}
+                                                    onMouseEnter={e => {
+                                                        e.currentTarget.style.transform = 'scale(1.01)';
+                                                        e.currentTarget.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)';
+                                                    }}
+                                                    onMouseLeave={e => {
+                                                        e.currentTarget.style.transform = 'scale(1)';
+                                                        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+                                                    }}><b>{order.serie}-{order.folio}-{order.anio}</b>
                                                     <br />
 
                                                 </p>

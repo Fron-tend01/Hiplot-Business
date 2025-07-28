@@ -22,6 +22,8 @@ import metodoPago from './json/paymentMethods.json'
 import APIs from '../../../../../services/services/APIs'
 import Swal from 'sweetalert2'
 import DynamicVariables from '../../../../../utils/DynamicVariables'
+import Binnacle from '../../production/Binnacle'
+import { storeProduction } from '../../../../../zustand/Production'
 
 
 
@@ -260,21 +262,34 @@ const ModalBilling: React.FC = () => {
     useEffect(() => {
         setConcepts([])
         setConceptView([])
-        setTotals(totalsc)
+        // setTotals(totalsc)
 
         if (modoUpdate) {
-            console.log(DataUpdate.conceptos);
+            console.log(DataUpdate);
 
             setTitle(DataUpdate.titulo)
             setType(DataUpdate.tipo)
             setSelectedIds('vendedores', DataUpdate.id_vendedor)
             setClient(DataUpdate.razon_social)
             searchClient(DataUpdate.razon_social)
+            let total = 0, subtotal = 0, urgencia = 0, descuento = 0
             DataUpdate.conceptos.forEach((el: any) => {
-                DynamicVariables.updateAnyVar(setTotals, "subtotal", totals.subtotal + parseFloat(el.total))
-                DynamicVariables.updateAnyVar(setTotals, "total", totals.subtotal + parseFloat(el.total))
+                subtotal += parseFloat(el?.total)
+                urgencia += parseFloat(el?.monto_urgencia)
+                descuento += parseFloat(el?.monto_descuento)
+                // total += parseFloat(el?.total) + parseFloat(el?.monto_urgencia) - parseFloat(el?.monto_descuento)
+            });
+            DataUpdate.conceptos_pers.forEach((el: any) => {
+                subtotal += parseFloat(el?.precio_total)
             });
             setConcepts([...concepts, ...DataUpdate.conceptos]);
+            setTotals((prev: any) => ({
+                ...prev,
+                subtotal: subtotal,
+                urgencia: urgencia || 0,
+                descuento: descuento || 0,
+                total: subtotal + urgencia - descuento,
+            }));
         }
     }, [modoUpdate, subModal])
     const search = async () => {
@@ -289,8 +304,13 @@ const ModalBilling: React.FC = () => {
                 status: 0,
                 folio: fol
             }
-
-            const result = await APIs.CreateAny(data, "pedido_franquicia/get")
+            setModalLoading(true)
+            const result = await APIs.CreateAny(data, "pedido_franquicia/get").catch(() => {
+                setModalLoading(false)
+            }).finally(() => {
+                setModalLoading(false)
+            })
+            setModalLoading(false)
             setSaleOrders(result)
         } else {
             const dataSaleOrders = {
@@ -306,8 +326,12 @@ const ModalBilling: React.FC = () => {
                 factura: true
             }
             console.log('enviando esta data', dataSaleOrders);
-
-            const result = await APIs.CreateAny(dataSaleOrders, "get_orden_venta_ori")
+            setModalLoading(true)
+            const result = await APIs.CreateAny(dataSaleOrders, "get_orden_venta_ori").catch(() => {
+                setModalLoading(false)
+            }).finally(() => {
+                setModalLoading(false)
+            })
             // const result = await getSaleOrders(dataSaleOrders)
             setSaleOrders(result)
         }
@@ -348,6 +372,7 @@ const ModalBilling: React.FC = () => {
             Swal.fire('Notificacion', 'Selecciona un uso de CFDI', 'info')
             return
         }
+        let anyinzero = false
         for (const element of billing.normal_concepts) {
             element.precio_unitario = element.order == null ? element.precio_unitario : element.total_restante / element.cantidad;
             element.orden = null
@@ -358,13 +383,21 @@ const ModalBilling: React.FC = () => {
             if (filter.length === 0) {
                 obs.push(element.id_ov);
             }
+            if (element.precio_unitario == 0) {
+                anyinzero = true
+            }
+        }
+        if (anyinzero) {
+            Swal.fire('Notificacion', 'Estás por mandar un monto en 0, verifica este monto por favor.', 'warning')
+            return
         }
         // let filter = normalConcepts
         if (modoUpdate) {
             // filter = normalConcepts.filter((x: any) => x.id_concepto_comercial == undefined)
         }
-        const data = {
+        let data = {
             id: modoUpdate ? DataUpdate.id : 0,
+            id_usuario_actualiza: modoUpdate ? user_id : 0,
             id_sucursal: modoUpdate ? DataUpdate.id_sucursal : branchOffices.id,
             id_cliente: selectedIds?.customers.id,
             subtotal: totals.subtotal,
@@ -385,7 +418,7 @@ const ModalBilling: React.FC = () => {
             conceptos_elim: billing.normal_concepts_eliminate,
             conceptos_pers_elim: billing.personalized_concepts_eliminate
         };
-
+        // debugger
         // return
         if (!modoUpdate) {
             Swal.fire({
@@ -398,8 +431,10 @@ const ModalBilling: React.FC = () => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     // const dataWithoutCircles = removeCircularReferences(data);
+                    setModalLoading(true)
                     APIs.CreateAny(data, "create_factura")
                         .then(async (response: any) => {
+                            setModalLoading(false)
                             if (!response.error) {
                                 Swal.fire('Notificación', response.mensaje, 'success');
                                 setSubModal('')
@@ -410,6 +445,8 @@ const ModalBilling: React.FC = () => {
                             } else {
                                 Swal.fire('Notificación', response.mensaje, 'warning');
                             }
+                        }).finally(() => {
+                            setModalLoading(false)
                         })
                 }
             });
@@ -425,9 +462,10 @@ const ModalBilling: React.FC = () => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     // const dataWithoutCircles = removeCircularReferences(data);
-
+                    setModalLoading(true)
                     APIs.CreateAny(data, "update_factura")
                         .then(async (response: any) => {
+                            setModalLoading(false)
                             if (!response.error) {
                                 Swal.fire('Notificación', response.mensaje, 'success');
                                 setSubModal('')
@@ -437,6 +475,8 @@ const ModalBilling: React.FC = () => {
                             } else {
                                 Swal.fire('Notificación', response.mensaje, 'warning');
                             }
+                        }).finally(() => {
+                            setModalLoading(false)
                         })
                 }
             });
@@ -576,40 +616,60 @@ const ModalBilling: React.FC = () => {
         if (selectedIds?.customers) {
             const id_sucursal = modoUpdate ? DataUpdate.id_sucursal : branchOffices.id
             const sucursal = selectedIds.customers.clientes_sucursal.filter((x: any) => x.id_sucursal == id_sucursal)[0]
+            console.log('---------------------------------------', DataUpdate);
 
-            if (sucursal) {
-                console.log('sucursal', sucursal)
+            if (sucursal && subModal == 'billing__modal-create') {
                 setSelectedIds('paymentConditions', { id: sucursal.condiciones_pago })
                 setSelectedIds('methodPayment', { id: sucursal.forma_pago })
                 setSelectedIds('paymentMethod', { id: sucursal.metodo_pago })
                 setSelectedIds('cfdi', { id: selectedIds?.customers.uso_cfdi })
                 setSelectedIds('foreignExchange', { id: selectedIds?.customers.divisa })
             }
+            if (sucursal && subModal == 'billing__modal-update') {
+                setSelectedIds('paymentConditions', { id: DataUpdate.condiciones_pago })
+                setSelectedIds('methodPayment', { id: parseInt(DataUpdate.forma_pago) })
+                setSelectedIds('paymentMethod', { id: parseInt(DataUpdate.metodo_pago) })
+                setSelectedIds('cfdi', { id: parseInt(DataUpdate.cfdi) })
+                setSelectedIds('foreignExchange', { id: DataUpdate.divisa })
+            }
         }
 
     }, [selectedIds?.customers])
 
     useEffect(() => {
+        console.log('...................................', totals);
+
+        // setTotals(totalsc)
         let subtotal = 0;
         let urgencia = 0;
         let descuento = 0;
 
         billing.normal_concepts.forEach(element => {
-            subtotal += type == 1 ? element.precio_total : element.total;
+            subtotal += type == 1 ? element.total_restante : element.total;
             urgencia += element.monto_urgencia;
             descuento += element.monto_descuento;
         });
+        billing.personalized_concepts.forEach(element => {
+            subtotal += parseFloat(element.precio_total);
+        });
+        // if (type == 1) {
+        //    
+        // }
+        if (conceptsBack.length > 0 && subModal != 'billing__modal-create') {
+            let conceptos = conceptsBack.filter(x => !x.personalized)
+            let conceptos_pers = conceptsBack.filter(x => x.personalized)
+            console.log('conceptos de back', conceptsBack);
 
-        if (type == 1) {
-            billing.personalized_concepts.forEach(element => {
-                element.conceptos.forEach((x: any) => {
-                    urgencia += x.monto_urgencia;
-                    descuento += x.monto_descuento;
-                });
+            conceptos.forEach(element => {
+                subtotal += type == 1 ? element.total_restante ?? element.total : element.total;
+                urgencia += element.monto_urgencia;
+                descuento += element.monto_descuento;
+            });
+            conceptos_pers.forEach(element => {
                 subtotal += parseFloat(element.precio_total);
             });
+            console.log('subtotal', subtotal);
         }
-
 
         if (type == 1) {
             setTotals((prev: any) => ({
@@ -630,10 +690,47 @@ const ModalBilling: React.FC = () => {
         }
     }, [billing]);
 
+    // useEffect(() => {
+    //     let subtotal = 0;
+    //     let urgencia = 0;
+    //     let descuento = 0;
+    //     console.log((conceptsBack));
+    //     let conceptos = conceptsBack.filter(x => !x.personalized)
+    //     let conceptos_pers = conceptsBack.filter(x => x.personalized)
+
+    //     conceptos.forEach(element => {
+    //         subtotal += type == 1 ? element.total_restante : element.total;
+    //         urgencia += element.monto_urgencia;
+    //         descuento += element.monto_descuento;
+    //     });
+    //     conceptos_pers.forEach(element => {
+    //         subtotal += parseFloat(element.precio_total);
+    //     });
+    //     // if (conceptsBack == 1) {
+    //     //    
+    //     // }
 
 
-    console.log('billing', billing)
-    console.log('data', dataBillign)
+    //     if (type == 1) {
+    //         setTotals((prev: any) => ({
+    //             ...prev,
+    //             subtotal: subtotal,
+    //             urgencia: urgencia,
+    //             descuento: descuento,
+    //             total: subtotal + urgencia - descuento,
+    //         }));
+    //     } else {
+    //         setTotals((prev: any) => ({
+    //             ...prev,
+    //             subtotal: subtotal,
+    //             urgencia: 0,
+    //             descuento: 0, 
+    //             total: subtotal,
+    //         }));
+    //     }
+    // }, [conceptsBack]);
+
+
 
     const deleteConceptos = (c: any, i: number, typeConcept: string) => {
         console.log('asdasd')
@@ -711,7 +808,7 @@ const ModalBilling: React.FC = () => {
     }
 
 
-    const undoConceptos = (concept: any, i: number) => {
+    const undoConceptos = (concept: any, i: number, from: number) => {
         if (subModal == 'billing__modal-create') {
             const deleteItemCustomC = billing?.personalized_concepts.filter((_: any, index: number) => index !== i);
             const updatedConcepts = concept.conceptos.map((element: any) => ({
@@ -719,20 +816,33 @@ const ModalBilling: React.FC = () => {
                 id_pers: 0,
                 check: false,
             }));
-
             setBilling({ normal_concepts: [...(billing?.normal_concepts ?? []), ...updatedConcepts], personalized_concepts: deleteItemCustomC });
 
 
         } else {
-            const deleteItemCustomC = conceptsBack.filter((_: any, index: number) => index !== i);
-            const updatedConcepts = concept.conceptos.map((element: any) => ({
-                ...element,
-                id_pers: 0,
-                check: false,
-            }));
-            setBilling({ normal_concepts: [...billing.normal_concepts, ...updatedConcepts], personalized_concepts: billing.personalized_concepts, personalized_concepts_eliminate: [...billing.personalized_concepts_eliminate, concept.id] });
-            setConceptsBack(deleteItemCustomC)
-        } debugger
+            if (from === 0) {
+                const deleteItemCustomC = billing?.personalized_concepts.filter((_: any, index: number) => index !== i);
+                const updatedConcepts = concept.conceptos.map((element: any) => ({
+                    ...element,
+                    id_pers: 0,
+                    check: false,
+                }));
+                setBilling({ normal_concepts: [...(billing?.normal_concepts ?? []), ...updatedConcepts], personalized_concepts: deleteItemCustomC });
+
+            } else {
+                const deleteItemCustomC = conceptsBack.filter((_: any, index: number) => index !== i);
+                const updatedConcepts = concept.conceptos.map((element: any) => ({
+                    ...element,
+                    id_pers: 0,
+                    check: false,
+                }));
+
+                setBilling({ normal_concepts: [...billing.normal_concepts, ...updatedConcepts], personalized_concepts: billing.personalized_concepts, personalized_concepts_eliminate: [...billing.personalized_concepts_eliminate, concept.id] });
+                setConceptsBack(deleteItemCustomC)
+            }
+
+            debugger
+        }
 
     }
 
@@ -788,7 +898,7 @@ const ModalBilling: React.FC = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 setModalLoading(true)
-                APIs.CreateAny({ id: DataUpdate.id }, 'cancelar_factura').then((resp: any) => {
+                APIs.CreateAny({ id: DataUpdate.id, id_usuario_actualiza:user_id }, 'cancelar_factura').then((resp: any) => {
                     setSubModal('')
                     Swal.fire('Notificacion', resp.mensaje, 'success')
                     setModalLoading(false)
@@ -798,6 +908,35 @@ const ModalBilling: React.FC = () => {
             }
         });
 
+    }
+    const desligarFactura = () => {
+        Swal.fire({
+            title: "Seguro que deseas desligar TODAS las ordenes de venta de esta factura?",
+            text: "Eso solo liberará las ordenes relacionadas para su refacturación, No afecta al documento en comercial",
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`,
+            icon: 'warning'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setModalLoading(true)
+                APIs.CreateAny({ id: DataUpdate.id }, 'desligar_factura').then((resp: any) => {
+                    setSubModal('')
+                    Swal.fire('Notificacion', resp.mensaje, 'success')
+                    setModalLoading(false)
+                }).finally(() => {
+                    setModalLoading(false)
+                })
+            }
+        });
+
+    }
+    const setModalSubSub = storeModals((state) => state.setModalSubSub);
+    const setProductionToUpdate = storeProduction(state => state.setProductionToUpdate)
+
+    const ver_bita = () => {
+        setProductionToUpdate({bitacora:DataUpdate.bitacora})
+        setModalSubSub('logbook__production-modal')
     }
     return (
         <div className={`overlay__billing-modal ${subModal == 'billing__modal-create' || subModal == 'billing__modal-update' ? 'active' : ''}`}>
@@ -852,21 +991,35 @@ const ModalBilling: React.FC = () => {
                                             <span className='text'>Fecha de Creación: <b>{DataUpdate.fecha_creacion}</b></span><br />
                                             <span className='text'>Titulo: <b>{DataUpdate.titulo}</b> </span>
                                             {DataUpdate.status === 0 ? (
-                                                <span className="active-status">Activo</span>
+                                                <span className="active-status"><p>Activo</p> </span>
                                             ) : DataUpdate.status === 1 ? (
-                                                <span className="canceled-status">Cancelada</span>
+                                                <span className="canceled-status"><p>Cancelada</p></span>
                                             ) : (
                                                 DataUpdate.status === 2 ? (
-                                                    <span className="end-status">Timbrado</span>
+                                                    <span className="end-status"> Timbrado</span>
                                                 ) : (
                                                     ""
                                                 )
                                             )}
-                                            <button className='btn__general-danger' onClick={cancelarFactura}>Cancelar</button>
+                                            {/* {(DataUpdate.status != 1) && (PermisosxVista.some((x: any) => x.titulo == 'cancelar'))? */}
+                                            {(DataUpdate.status != 1) ?
+                                                <button className='btn__general-danger' onClick={cancelarFactura}>Cancelar</button>
+
+                                                : ''}
+                                            {(DataUpdate.is_timbrado) ?
+                                                // {(DataUpdate.is_timbrado) || (PermisosxVista.some((x: any) => x.titulo == 'desligar'))?
+                                                <button className='btn__general-orange' style={{ marginLeft: '50px' }} onClick={desligarFactura}>Desligar Ordenes</button>
+                                                : ''}
+
+                                            <button type='button' className='btn__general-warning-200' onClick={() => ver_bita()}>Bitacora</button>
+
                                         </div>
                                         <div className='col-6 md-col-12'>
                                             <span className='text'>Empresa: <b>{DataUpdate.empresa}</b></span><br />
-                                            <span className='text'>Sucursal: <b>{DataUpdate.sucursal}</b></span><br />
+                                            <span className='text'>Sucursal: <b>{DataUpdate.sucursal}</b></span><br /><br />
+                                            {DataUpdate.is_timbrado ?
+                                                <h3 className=' parpadeo' style={{ color: 'green', background: '#bee0c9', padding: '10px', borderRadius: '10px' }}><b>DOCUMENTO TIMBRADO</b></h3>
+                                                : ''}
                                         </div>
                                     </div>
                                 </div>
@@ -933,23 +1086,25 @@ const ModalBilling: React.FC = () => {
                                 <Select dataSelects={cfdi} instanceId='cfdi' nameSelect={'Uso de CFDI'} />
                             </div>
                         </div>
-                        <div className='row__three searchs__orders'>
-                            <div className='row'>
-                                <div className='col-12 title'>
-                                    <p>Buscar OV/PAF</p>
-                                </div>
-                                <div className='col-8'>
-                                    <Empresas_Sucursales update={false} empresaDyn={companiesFilter} setEmpresaDyn={setCompaniesFilter} sucursalDyn={branchOfficesFilter} setSucursalDyn={setBranchOfficesFilter} />
-                                </div>
-                                <div className='col-4'>
-                                    <label className='label__general'>Fechas</label>
-                                    <div className='container_dates__requisition'>
-                                        <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                        {DataUpdate.is_timbrado ? '' :
+                            <>
+                                <div className='row__three searchs__orders'>
+                                    <div className='row'>
+                                        <div className='col-12 title'>
+                                            <p>Buscar OV/PAF</p>
+                                        </div>
+                                        <div className='col-8'>
+                                            <Empresas_Sucursales update={false} empresaDyn={companiesFilter} setEmpresaDyn={setCompaniesFilter} sucursalDyn={branchOfficesFilter} setSucursalDyn={setBranchOfficesFilter} />
+                                        </div>
+                                        <div className='col-4'>
+                                            <label className='label__general'>Fechas</label>
+                                            <div className='container_dates__requisition'>
+                                                <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className='my-4 row'>
-                                {/* {type == 2 ? '' :
+                                    <div className='my-4 row'>
+                                        {/* {type == 2 ? '' :
                                     <>
                                         <div className='col-3'>
                                             <label className='label__general'>Clientes</label>
@@ -960,97 +1115,99 @@ const ModalBilling: React.FC = () => {
                                         </div>
                                     </>
                                 } */}
-                                <div className='col-3'>
-                                    <Select dataSelects={series} instanceId='series' nameSelect={'Serie'} />
-                                </div>
-                                <div className='col-3'>
-                                    <label className='label__general'>Folio</label>
-                                    <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' />
-                                </div>
-                            </div>
-                            <div className='my-4 d-flex justify-content-around'>
-                                <div className=''>
-                                    <button type='button' className='btn__general-purple' onClick={search}>Buscar</button>
-                                </div>
-                            </div>
-                            <div>
-                                <div className='table__billing_sale-orders'>
-                                    {saleOrders ? (
-                                        <div className='table__numbers'>
-                                            <p className='text'>Total de OV's o PAF's</p>
-                                            <div className='quantities_tables'>{saleOrders.length}</div>
+                                        <div className='col-3'>
+                                            <Select dataSelects={series} instanceId='series' nameSelect={'Serie'} />
                                         </div>
-                                    ) : (
-                                        <p className="text">No hay data que mostrar</p>
-                                    )}
-                                    <div className='table__head'>
-                                        <div className='thead'>
-                                            <div className='th'>
-                                                <p>Folio</p>
-                                            </div>
-                                            <div className='th'>
-                                                <p>Sucursal</p>
-                                            </div>
-                                            <div className='th'>
-                                                <p>Cliente</p>
-                                            </div>
-                                            <div className='th'>
-                                                <p>Fecha</p>
-                                            </div>
-                                            <div className='th'>
-                                                <p>Creado Por</p>
-                                            </div>
-                                            <div className='th'>
-                                                <p>Total($)</p>
-                                            </div>
-                                            <div className="th">
-                                            </div>
+                                        <div className='col-3'>
+                                            <label className='label__general'>Folio</label>
+                                            <input className='inputs__general' type="text" value={fol} onChange={(e) => setFol(e.target.value)} placeholder='Ingresa el folio' />
                                         </div>
                                     </div>
-                                    {saleOrders ? (
-                                        <div className='table__body'>
-                                            {saleOrders.map((order: any, i: number) => {
-                                                return (
-                                                    <div className='tbody__container' key={order.id}>
-                                                        <div className='tbody'>
-                                                            <div className='td'>
-                                                                <p>{order.serie}-{order.folio}-{order.anio}</p>
-                                                            </div>
-                                                            <div className='td'>
-                                                                <p>{order.sucursal}</p>
-                                                            </div>
-                                                            <div className='td'>
-                                                                <p>{order.razon_social}</p>
-                                                            </div>
-                                                            <div className='td'>
-                                                                <p>{order.fecha || order.fecha_creacion}</p>
-                                                            </div>
-                                                            <div className='td'>
-                                                                <p>{order.usuario_crea}</p>
-                                                            </div>
-                                                            <div className='td'>
-                                                                <p>$ {order.total_orden - order.total_facturado}</p>
-                                                            </div>
-                                                            {/* <div className='td'>                HABILITAR SI ES NECESARIO PARA LA ORDEN DE VENTA 
+                                    <div className='my-4 d-flex justify-content-around'>
+                                        <div className=''>
+                                            <button type='button' className='btn__general-purple' onClick={search}>Buscar</button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className='table__billing_sale-orders'>
+                                            {saleOrders ? (
+                                                <div className='table__numbers'>
+                                                    <p className='text'>Total de OV's o PAF's</p>
+                                                    <div className='quantities_tables'>{saleOrders.length}</div>
+                                                </div>
+                                            ) : (
+                                                <p className="text">No hay data que mostrar</p>
+                                            )}
+                                            <div className='table__head'>
+                                                <div className='thead'>
+                                                    <div className='th'>
+                                                        <p>Folio</p>
+                                                    </div>
+                                                    <div className='th'>
+                                                        <p>Sucursal</p>
+                                                    </div>
+                                                    <div className='th'>
+                                                        <p>Cliente</p>
+                                                    </div>
+                                                    <div className='th'>
+                                                        <p>Fecha</p>
+                                                    </div>
+                                                    <div className='th'>
+                                                        <p>Creado Por</p>
+                                                    </div>
+                                                    <div className='th'>
+                                                        <p>Total($)</p>
+                                                    </div>
+                                                    <div className="th">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {saleOrders ? (
+                                                <div className='table__body'>
+                                                    {saleOrders.map((order: any, i: number) => {
+                                                        return (
+                                                            <div className='tbody__container' key={order.id}>
+                                                                <div className='tbody'>
+                                                                    <div className='td'>
+                                                                        <p>{order.serie}-{order.folio}-{order.anio}</p>
+                                                                    </div>
+                                                                    <div className='td'>
+                                                                        <p>{order.sucursal}</p>
+                                                                    </div>
+                                                                    <div className='td'>
+                                                                        <p>{order.razon_social}</p>
+                                                                    </div>
+                                                                    <div className='td'>
+                                                                        <p>{order.fecha || order.fecha_creacion}</p>
+                                                                    </div>
+                                                                    <div className='td'>
+                                                                        <p>{order.usuario_crea}</p>
+                                                                    </div>
+                                                                    <div className='td'>
+                                                                        <p>$ {order.total_orden}</p>
+                                                                    </div>
+                                                                    {/* <div className='td'>                HABILITAR SI ES NECESARIO PARA LA ORDEN DE VENTA 
                                                         <button type='button' className='btn__general-purple' onClick={() => handleModalSeeChange(order)}>conceptos</button>
                                                     </div> */}
-                                                            <div className="th">
-                                                                <button type='button' className='btn__general-purple' onClick={() => handleAddConceptsChange(order, i)}>Agregar</button>
+                                                                    <div className="th">
+                                                                        <button type='button' className='btn__general-purple' onClick={() => handleAddConceptsChange(order, i)}>Agregar</button>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })}
+                                                        )
+                                                    })}
+                                                </div>
+                                            ) : (
+                                                <p className="text">Cargando datos...</p>
+                                            )}
                                         </div>
-                                    ) : (
-                                        <p className="text">Cargando datos...</p>
-                                    )}
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div className='d-flex justify-content-end'>
-                            <button className='btn__general-primary' onClick={personalizedCreate}>Personalizados</button>
-                        </div>
+                                <div className='d-flex justify-content-end'>
+                                    <button className='btn__general-primary' onClick={personalizedCreate}>Personalizados</button>
+                                </div>
+                            </>
+                        }
                         <div className='table__billing_concepts'>
                             {billing.normal_concepts || billing.personalized_concepts ? (
                                 <div className='w-full my-3 d-flex justify-content-between'>
@@ -1108,10 +1265,12 @@ const ModalBilling: React.FC = () => {
                                                     <p className='amount-identifier'>{concept.cantidad} {concept.unidad}</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>${(concept.total_restante || concept.total).toFixed(2) / (concept.cantidad).toFixed(2)}</p>
-                                                </div>
+                                                    ${(
+                                                        ((concept.total_restante ?? concept.total ?? 0) as number) /
+                                                        (concept.cantidad ?? 1)
+                                                    ).toFixed(2)}                                                </div>
                                                 <div className='td'>
-                                                    <p>${(concept.total || concept.total_restante).toFixed(2)}</p>
+                                                    <p>${((concept.total ?? concept.total_restante) ?? 0).toFixed(2)}</p>
                                                 </div>
 
                                                 <div className='td'>
@@ -1145,10 +1304,10 @@ const ModalBilling: React.FC = () => {
                                     return (
                                         <div className={`tbody__container `} key={concept.id}>
 
-                                            <div className={`concept__personalized ${concept?.conceptos[0]?.pers_div ? 'div' : ''}`}>
-                                                <p>Concepto {concept.conceptos[0].pers_div ? 'personalized_div' : 'personalized'}</p>
+                                            <div className={`concept__personalized `}>
+                                                <p>Concepto personalized</p>
                                             </div>
-                                            <div className={`tbody ${concept?.conceptos[0]?.pers_div ? 'personalized_div' : 'personalized'}`}>
+                                            <div className={`tbody personalized`}>
                                                 <div className='td'>
                                                     <p>{concept.codigo}-{concept.descripcion}</p>
                                                 </div>
@@ -1168,7 +1327,7 @@ const ModalBilling: React.FC = () => {
                                                     <p>N/A</p>
                                                 </div>
                                                 <div className='td'>
-                                                    <p>N/A</p>
+                                                    <p>{concept.orden.serie ?? ''}-{concept.orden.folio ?? ''}-{concept.orden.anio ?? ''}</p>
                                                 </div>
                                                 <div className='td'>
                                                     {concept.concept ?
@@ -1191,12 +1350,12 @@ const ModalBilling: React.FC = () => {
                                                     </div>
                                                 }
                                                 <div>
-                                                    {concept.conceptos[0].pers_div ?
+                                                    {concept?.conceptos[0]?.pers_div ?
                                                         <div className='delete-icon' onClick={() => { deleteConceptos(concept, index, 'personalized') }} title='Eliminar concepto'>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
                                                         </div>
                                                         :
-                                                        <div className='undo-icon' onClick={() => { undoConceptos(concept, index) }}>
+                                                        <div className='undo-icon' onClick={() => { undoConceptos(concept, index, 0) }}>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
                                                         </div>
                                                     }
@@ -1215,14 +1374,14 @@ const ModalBilling: React.FC = () => {
                                         return (
                                             <div className={`tbody__container `} key={concept.id}>
                                                 {concept?.personalized ?
-                                                    <div className={`concept__personalized ${concept?.conceptos[0]?.pers_div ? 'div' : ''}`}>
-                                                        <p>Concepto {concept.conceptos[0].pers_div ? 'personalized_div' : 'personalized'}</p>
+                                                    <div className={`concept__personalized }`}>
+                                                        <p>Concepto personalized</p>
                                                     </div>
                                                     :
                                                     ''
                                                 }
                                                 {concept?.personalized ?
-                                                    <div className={`tbody ${concept?.conceptos[0]?.pers_div ? 'personalized_div' : 'personalized'}`}>
+                                                    <div className={`tbody personalized}`}>
                                                         <div className='td'>
                                                             <p className='article-identifier'>{concept.codigo}-{concept.descripcion}</p>
                                                         </div>
@@ -1238,12 +1397,19 @@ const ModalBilling: React.FC = () => {
                                                         <div className='td'>
                                                             <p>${concept.total || concept.total_restante || concept.precio_total}</p>
                                                         </div>
-                                                        <div className='td'>
-                                                            <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
+                                                        <div className='' style={{ whiteSpace: 'normal' }}>
+                                                            {concept?.orden?.map((x: any, i: number) => (
+                                                                <span key={i}>
+                                                                    {x?.serie}-{x?.folio}-{x?.anio}
+                                                                    <br />
+                                                                </span>
+                                                            ))}
                                                         </div>
-                                                        <div className='undo-icon' onClick={() => { undoConceptos(concept, index) }}>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
-                                                        </div>
+                                                        {!DataUpdate.is_timbrado ?
+                                                            <div className='undo-icon' onClick={() => { undoConceptos(concept, index, 1) }}>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-undo-2"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></svg>
+                                                            </div>
+                                                            : ''}
                                                         <div onClick={() => personalizedUpdate(concept, index, true)} className='conept-icon'>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-boxes"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" /><path d="m7 16.5-4.74-2.85" /><path d="m7 16.5 5-3" /><path d="M7 16.5v5.17" /><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" /><path d="m17 16.5-5-3" /><path d="m17 16.5 4.74-2.85" /><path d="M17 16.5v5.17" /><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" /><path d="M12 8 7.26 5.15" /><path d="m12 8 4.74-2.85" /><path d="M12 13.5V8" /></svg>
                                                         </div>
@@ -1270,7 +1436,7 @@ const ModalBilling: React.FC = () => {
                                                             <p>{type == 1 ? concept?.monto_urgencia : 'N/A'}</p>
                                                         </div>
                                                         <div className='td'>
-                                                            <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p>
+                                                            {/* <p>{concept?.orden?.serie}-{concept?.orden?.folio}-{concept?.orden?.anio}</p> */}
                                                         </div>
                                                         <div className='td'>
                                                             <p className='total-identifier'>${(concept.total + concept?.monto_urgencia || concept.total_restante + concept?.monto_urgencia).toFixed(2)}</p>
@@ -1282,9 +1448,12 @@ const ModalBilling: React.FC = () => {
 
                                                         </div>
                                                         <div className='td'>
-                                                            <div className='delete-icon' onClick={() => { deleteConceptos(concept, index, 'normal') }} title='Eliminar concepto'>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-                                                            </div>
+                                                            {!DataUpdate.is_timbrado ?
+                                                                <div className='delete-icon' onClick={() => { deleteConceptos(concept, index, 'normal') }} title='Eliminar concepto'>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+                                                                </div>
+
+                                                                : ''}
 
                                                         </div>
                                                     </div>
@@ -1331,18 +1500,20 @@ const ModalBilling: React.FC = () => {
                         </div>
                     </div>
                     <div className='d-flex justify-content-center'>
-                        {checkPermission('enviar') && (
-                            modoUpdate ?
+                        {modoUpdate ?
+                            DataUpdate.is_timbrado ? '' :
                                 <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Actualizar factura</button>
-                                :
-                                <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Crear factura</button>
+
+                            :
+                            <button className='btn__general-purple' onClick={(e) => handleCreateInvoice(e)}>Crear factura</button>
 
 
-                        )}
+                        }
                     </div>
                 </div>
                 <Division index={index} typeDiv={typeDiv} />
                 <Personalized idItem={idItem} indexItem={indexItem} identifierBilling={identifierBilling} />
+                <Binnacle />
 
             </div>
         </div >

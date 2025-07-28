@@ -95,30 +95,29 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
   const [modalStatus, setModalStatus] = useState<boolean>(false)
 
 
-
   const addPersonalized = (_: any, i: number) => {
-    setSelectedIds('units', { id: parseInt(customConceptView[0].id_unidad) })
-    setselectedKey(customConceptView[0].clave_sat)
+    setSelectedIds('units', { id: parseInt(customConceptView[0].id_unidad) });
+    setselectedKey(customConceptView[0].clave_sat);
     DynamicVariables.updateAnyVar(setInputs, 'cantidad', 1);
-    
 
-    setCustomConceptView(
-      customConceptView.map((item: any, index: number) =>
-        index === i ? { ...item, check: !item.check } : item
-      )
+    const updatedConcepts = customConceptView.map((item: any, index: number) =>
+      index === i ? { ...item, check: !item.check } : item
     );
-    let total = parseFloat(customConceptView[i].precio_total) - parseFloat(customConceptView[i].monto_descuento || 0) + parseFloat(customConceptView[i].monto_urgencia);
-    let precio_total = (isNaN(parseFloat(inpust.precio_total)) ? 0 : parseFloat(inpust.precio_total))
-    debugger
-    if (!customConceptView[i].check) {
-      DynamicVariables.updateAnyVar(setInputs, 'precio_total', precio_total + total);
-    }
-    if (customConceptView[i].check && inpust.precio_total > 0) {
-      DynamicVariables.updateAnyVar(setInputs, 'precio_total', precio_total - total);
 
-    }
-    // DynamicVariables.updateAnyVar(setInputs, 'cantidad', 1)
-    // debugger
+    setCustomConceptView(updatedConcepts);
+
+    const totalPrice = updatedConcepts.reduce((acc: number, element: any) => {
+      if (element.check) {
+        const precio = parseFloat(element.precio_total) || 0;
+        const urgencia = typeof element.urgencia === 'number'
+          ? element.urgencia
+          : parseFloat(element.urgencia) || parseFloat(element.monto_urgencia) || 0;
+        return acc + precio + urgencia;
+      }
+      return acc;
+    }, 0);
+
+    DynamicVariables.updateAnyVar(setInputs, 'precio_total', totalPrice);
   };
   const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
@@ -127,14 +126,15 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
       let filter: any = []
       filter = customConceptView.filter((x: any) => x.check == true)
 
-
+      // debugger
+      // return
       if (filter.length > 0) {
         const data = {
           descripcion: inpust.descripcion,
-          order: personalizedModal == 'personalized_modal-billing' ? {
-            serie: customConceptView[0].serie,
-            folio: customConceptView[0].folio,
-            anio: customConceptView[0].anio
+          orden: personalizedModal == 'personalized_modal-billing' ? {
+            serie: customConceptView[0].orden.serie,
+            folio: customConceptView[0].orden.folio,
+            anio: customConceptView[0].orden.anio
           } : 0,
           personalized: true,
           codigo: inpust.codigo,
@@ -144,8 +144,8 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
           clave_sat: selectedKey ? selectedKey : selectedSatKey?.Clave ? parseInt(selectedSatKey.Clave) : idItem.clave_sat,
           codigo_unidad_sat: 0,
           precio_total: inpust.precio_total,
-          comentarios_produccion: inpust.comentarios_produccion,
-          comentarios_factura: inpust.comentarios_factura,
+          comentarios_produccion: inpust.comentarios_produccion ?? inpust.obs_produccion,
+          comentarios_factura: inpust.comentarios_factura ?? inpust.obs_factura,
           conceptos: filter,
         }
         if (data.descripcion === '') { Swal.fire('Advertencia', 'El campo descripcion del concepto es obligatorio', 'warning'); return }
@@ -336,7 +336,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
         }
 
         const dataSaleOrders = {
-          id: saleOrdersConcepts.id,
+          id: saleOrdersConcepts?.sale_order?.id,
           folio: 0,
           id_sucursal: 0,
           id_serie: 0,
@@ -348,14 +348,22 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
           status: 0,
           page: 1,
         }
-
+        debugger
         try {
+          setModalLoading(true)
           let response: any = await APIs.updateConceptPersonalized(data)
           const result = await getSaleOrders(dataSaleOrders)
-          setQuotes({ personalized_concepts: result[0].conceptos_pers });
+          setModalLoading(false)
+          setSaleOrdersConcepts({
+            personalized_concepts: result[0].conceptos_pers,
+            normal_concepts: result[0].conceptos,
+            sale_order: result[0]
+          });
           setPersonalizedModal('')
           return Swal.fire('Éxito', response.mensaje, 'success');
         } catch (error: any) {
+          setModalLoading(false)
+
           return Swal.fire('Error', error.mensaje, 'error');
         }
         return
@@ -460,17 +468,16 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
 
 
   const closeModal = () => {
-    if (personalizedModal === 'personalized_modal-quotation-update') {
-      setInputs((prev: any) => ({
-        ...prev,
-        descripcion: '',
-        codigo: '',
-        cantidad: 0,
-        precio_total: 0,
-        comentarios_produccion: '',
-        comentarios_factura: '',
-      }));
-    }
+
+    setInputs((prev: any) => ({
+      ...prev,
+      descripcion: '',
+      codigo: '',
+      cantidad: 0,
+      precio_total: 0,
+      comentarios_produccion: '',
+      comentarios_factura: '',
+    }));
     setPersonalizedModal('')
     setCustomConceptView([])
 
@@ -492,6 +499,8 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
   const setDataCampos = storeDv(state => state.setDataCampos)
 
   const seeVerMas = (index: number) => {
+    console.log('--------------------------------------', customConceptView[index]);
+
     setIndexVM(index)
     setIdInPers(IdInPers)
     setDataCampos({ tipo: 'articulo_en_pers', idInPers: indexItem })
@@ -686,6 +695,8 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
       produccion_interna: article.produccion_interna,
       id_area_produccion: article.id_area_produccion,
       enviar_a_produccion: article.enviar_a_produccion,
+      check_recibido_sucursal: article.check_recibido_sucursal,
+      check_entregado_cliente: article.check_entregado_cliente,
       cantidad: article.cantidad,
       urgencia: article.urgencia,
       monto_urgencia: article.monto_urgencia,
@@ -737,9 +748,15 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
 
   useEffect(() => {
     const totalPrice = customConceptView.reduce((acc: number, element: any) => {
-      const precio = parseFloat(element.precio_total) || 0;
-      const urgencia = parseFloat(element.urgencia) || parseFloat(element.monto_urgencia);
-      return acc + precio + urgencia;
+      if (element.check) {
+        if (personalizedModal == 'personalized_modal-billing') {
+          element.precio_total = element.total
+        }
+        const precio = parseFloat(element.precio_total) || 0;
+        const urgencia = parseFloat(element.urgencia) || parseFloat(element.monto_urgencia) || 0;
+        return acc + precio + urgencia;
+      }
+      return acc;
     }, 0);
 
     setRealPrice(totalPrice);
@@ -811,6 +828,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
               <div className='col-2 md-col-6 sm-col-12'>
                 <label className='label__general parpadeo' >Total personalizado</label>
                 <input type='number' className={`inputs__general`} value={inpust?.precio_total} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, 'precio_total', e.target.value)} placeholder='Precio real' />
+                <small style={{ color: 'red' }}>TOTAL REAL: ${realPrice}</small>
               </div>
             </div>
             <div className='w-full gap-4 my-4 row'>
@@ -881,7 +899,13 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                     <p>Unidad</p>
                   </div>
                   <div className='th'>
-                    <p>Precio total</p>
+                    <p>Importe</p>
+                  </div>
+                  <div className='th'>
+                    <p>Urg.</p>
+                  </div>
+                  <div className='th'>
+                    <p>Total</p>
                   </div>
                 </div>
               </div>
@@ -924,7 +948,32 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                             </div>
                           </div>
                           <div className='td'>
-                            <p>{quotation.precio_total}</p>
+                            <p>${!isNaN(Number(quotation.precio_total))
+                              ? Number(quotation.precio_total).toFixed(2)
+                              : '0.00'}</p>
+                          </div>
+                          <div className='td'>
+                            <div>
+                              <p style={{ color: 'red' }}>
+                                ${!isNaN(Number(quotation.urgencia))
+                                  ? Number(quotation.urgencia).toFixed(2)
+                                  : '0.00'}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className='td'>
+                            <div>
+                              <p>
+                                ${
+                                  !isNaN(Number(quotation.precio_total)) && !isNaN(Number(quotation.urgencia))
+                                    ? (Number(quotation.precio_total) + Number(quotation.urgencia)).toFixed(2)
+                                    : (!isNaN(Number(quotation.precio_total))
+                                      ? Number(quotation.precio_total).toFixed(2)
+                                      : '0.00')
+                                }
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1266,6 +1315,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                   </div>
                                   <select
                                     className="traditional__selector"
+                                    value={concept.id_area_produccion || ''}
                                     onChange={(event) => handleAreasChange(event, index)}
                                   >
                                     {concept?.areas_produccion?.map((item: any) => (
@@ -1813,7 +1863,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                       <input
                                         type="checkbox"
                                         checked={concept.check_recibido_sucursal}
-                                        onChange={() => handleBranchChange(concept.check_recibido_sucursal, index)} disabled={concept.status == !0} />
+                                        onChange={(e) => handleBranchChange(e.target.checked, index)} disabled={concept.status == !0} />
                                       <span className="slider"></span>
                                     </label>
                                   </div>
@@ -1832,7 +1882,7 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                       <input
                                         type="checkbox"
                                         checked={concept.check_entregado_cliente}
-                                        onChange={() => handleCustomerChange(concept.check_entregado_cliente, index)} disabled={concept.status == !0} />
+                                        onChange={(e) => handleCustomerChange(e.target.checked, index)} disabled={concept.status == !0} />
                                       <span className="slider"></span>
                                     </label>
                                   </div>
@@ -1868,6 +1918,13 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
                                 {concept.status == 1 ?
                                   <div className="td">
                                     <p className='cancel-identifier'>Cancelado</p>
+                                  </div>
+                                  :
+                                  ""
+                                }
+                                {concept.status_produccion == 3 ?
+                                  <div className="td" title='El concepto ya fue enviado a sucursal por producción'>
+                                    <b className='parpadeo' style={{ color: '#2674bb', fontSize: '14px' }}>Enviado A Sucursal</b>
                                   </div>
                                   :
                                   ""

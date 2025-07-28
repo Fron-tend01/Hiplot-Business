@@ -57,7 +57,7 @@ const ModalCreate: React.FC = () => {
                 options: 'nombre',
                 dataSelect: resp
             })
-            setSelectData('store',resp[0])
+            setSelectData('store', resp[0])
         })
     }, [branchOffices])
 
@@ -95,7 +95,12 @@ const ModalCreate: React.FC = () => {
 
         const stocks = concepts[index].stock;
         const almacen_predeterminado = selectedIds?.store;
-
+        if (stocks == null) {
+            const newArticleStates = [...concepts];
+            newArticleStates[index].cantidad = value;
+            setConcepts(newArticleStates);
+            return
+        }
         const filter = stocks.filter((x: any) => x.id === almacen_predeterminado.id);
 
         if (filter) {
@@ -148,14 +153,14 @@ const ModalCreate: React.FC = () => {
             comentarios: comments,
             conceptos: concepts
         };
-     
+
 
         const dataGet = {
             id_almacen: null,
             id_usuario: user_id,
             id_sucursal: selectedBranchOffice,
             desde: dates[0],
-            hasta: dates[1],  
+            hasta: dates[1],
             id_serie: 0,
             folio: null,
             light: true,

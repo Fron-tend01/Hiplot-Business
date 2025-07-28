@@ -392,6 +392,18 @@ const ModalProduction: React.FC = () => {
             prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
         );
     };
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                setModalSub('')
+                // Aquí puedes cerrar un modal, limpiar un formulario, etc.
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+    }, []);
     return (
         <div className={`overlay__production-modal__article-modal ${modalSub == 'production__modal' ? 'active' : ''}`}>
             <div className={`popup__production-modal__article-modal ${modalSub == 'production__modal' ? 'active' : ''}`}>
@@ -401,118 +413,118 @@ const ModalProduction: React.FC = () => {
                     </a>
                     <p className='title__modals'>Modal de produccion</p>
                 </div>
-                <div className='production-modal__article-modal' style={{overflow:'auto'}}>
-                        <div className="card " style={{zoom:'80%'}} >
-                            <div className="card-body bg-standar">
-                                <div className='d-flex justify-content-between'>
-                                    <h3 className="text">{productionToUpdate.serie}-{productionToUpdate.folio}-{productionToUpdate.anio}</h3>
-                                    <div>
-                                        <button type='button' className='btn__general-warning-200' onClick={() => setModalSubSub('logbook__production-modal')}>Bitacora</button>
-                                    </div>
+                <div className='production-modal__article-modal' style={{ overflow: 'auto' }}>
+                    <div className="card " style={{ zoom: '80%' }} >
+                        <div className="card-body bg-standar">
+                            <div className='d-flex justify-content-between'>
+                                <h3 className="text">{productionToUpdate.serie}-{productionToUpdate.folio}-{productionToUpdate.anio}</h3>
+                                <div>
+                                    <button type='button' className='btn__general-warning-200' onClick={() => setModalSubSub('logbook__production-modal')}>Bitacora</button>
                                 </div>
-                                <hr />
-                                <div className='row'>
-                                    <div className='col-4 md-col-4'>
-                                        <span className='text'>Creado por2: <b>{productionToUpdate.usuario_crea}</b></span><br />
-                                        <span className='text'>Fecha envio producción: <b>{productionToUpdate.fecha_creacion}</b></span><br />
-                                        <span className='text'>Fecha Entrega: <b>{productionToUpdate.fecha_entrega} {productionToUpdate.hora_entrega}</b></span><br />
-                                        {productionToUpdate.motivo_modify_te != 0 ?
-                                            <b className='text' style={{ color: 'red' }} title='Esta leyenda aparece cuando las fechas son ingresadas de forma manual'>
-                                                Esta orden tiene Fechas de Entrega Modificadas</b>
-                                            : ''}
-                                        <p>{productionToUpdate.status == 0 ? <b style={{ color: 'green' }}>ACTIVO</b> :
-                                            productionToUpdate.status == 1 ? <b style={{ color: 'red' }}>CANCELADO</b> :
-                                                productionToUpdate.status == 2 ? <b style={{ color: 'blue' }}>TERMINADO</b> : <b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
-                                        <span className='text'><b>Subtotal: ${productionToUpdate?.st?.toFixed(2)}</b></span><br />
-                                        {productionToUpdate.urg > 0 && (<><span className='text' style={{ color: 'red' }}><b>Urgencia: {productionToUpdate?.urg?.toFixed(2)}</b></span><br /></>)}
-                                        <span className='text'><b>Total: ${productionToUpdate?.total?.toFixed(2)}</b></span><br />
+                            </div>
+                            <hr />
+                            <div className='row'>
+                                <div className='col-4 md-col-4'>
+                                    <span className='text'>Creado por2: <b>{productionToUpdate.usuario_crea}</b></span><br />
+                                    <span className='text'>Fecha envio producción: <b>{productionToUpdate.fecha_creacion}</b></span><br />
+                                    <span className='text'>Fecha Entrega: <b>{productionToUpdate.fecha_entrega} {productionToUpdate.hora_entrega}</b></span><br />
+                                    {productionToUpdate.motivo_modify_te != 0 ?
+                                        <b className='text' style={{ color: 'red' }} title='Esta leyenda aparece cuando las fechas son ingresadas de forma manual'>
+                                            Esta orden tiene Fechas de Entrega Modificadas</b>
+                                        : ''}
+                                    <p>{productionToUpdate.status == 0 ? <b style={{ color: 'green' }}>ACTIVO</b> :
+                                        productionToUpdate.status == 1 ? <b style={{ color: 'red' }}>CANCELADO</b> :
+                                            productionToUpdate.status == 2 ? <b style={{ color: 'blue' }}>TERMINADO</b> : <b style={{ color: 'orange' }}>TERMINADO/ENVIADO A SUC.</b>}</p>
+                                    <span className='text'><b>Subtotal: ${productionToUpdate?.st?.toFixed(2)}</b></span><br />
+                                    {productionToUpdate.urg > 0 && (<><span className='text' style={{ color: 'red' }}><b>Urgencia: {productionToUpdate?.urg?.toFixed(2)}</b></span><br /></>)}
+                                    <span className='text'><b>Total: ${productionToUpdate?.total?.toFixed(2)}</b></span><br />
 
-                                    </div>
-                                    <div className='col-4 md-col-4'>
-                                        <span className='text'>Empresa: <b>{productionToUpdate.empresa}</b></span><br />
-                                        <span className='text'>Sucursal de origen: <b>{productionToUpdate.sucursal}</b></span><br />
-                                        <span className='text'>Orden de Venta: <b>{productionToUpdate.folio_ov}</b></span><br />
+                                </div>
+                                <div className='col-4 md-col-4'>
+                                    <span className='text'>Empresa: <b>{productionToUpdate.empresa}</b></span><br />
+                                    <span className='text'>Sucursal de origen: <b>{productionToUpdate.sucursal}</b></span><br />
+                                    <span className='text'>Orden de Venta: <b>{productionToUpdate.folio_ov}</b></span><br />
 
-                                    </div>
-                                    <div className='col-4 md-col-4'>
-                                        Ordenes relacionadas:
-                                        {productionToUpdate.relacionados?.map((dat: any, index: number) => {
-                                            const collapseId = `search_manual_xOp_${index}`;
+                                </div>
+                                <div className='col-4 md-col-4'>
+                                    Ordenes relacionadas:
+                                    {productionToUpdate.relacionados?.map((dat: any, index: number) => {
+                                        const collapseId = `search_manual_xOp_${index}`;
 
-                                            return (
-                                                <div className="collapse-container" key={collapseId}>
-                                                    <input type="checkbox" id={collapseId} className="collapse-toggle" />
-                                                    <label htmlFor={collapseId} className="collapse-label">
-                                                        {dat.serie}-{dat.folio}-{dat.anio}
-                                                    </label>
-                                                    <div className="collapse-content">
-                                                        {dat.conceptos?.map((c: any, i: number) => (
-                                                            <div key={i}>
-                                                                <strong>{c.codigo}</strong> - {c.descripcion} ({c.area_actual})
-                                                            </div>
-                                                        ))}
-                                                    </div>
+                                        return (
+                                            <div className="collapse-container" key={collapseId}>
+                                                <input type="checkbox" id={collapseId} className="collapse-toggle" />
+                                                <label htmlFor={collapseId} className="collapse-label">
+                                                    {dat.serie}-{dat.folio}-{dat.anio}
+                                                </label>
+                                                <div className="collapse-content">
+                                                    {dat.conceptos?.map((c: any, i: number) => (
+                                                        <div key={i}>
+                                                            <strong>{c.codigo}</strong> - {c.descripcion} ({c.area_actual})
+                                                        </div>
+                                                    ))}
                                                 </div>
-                                            )
-                                        })}
-                                    </div>
+                                            </div>
+                                        )
+                                    })}
                                 </div>
-                                <div className='row'>
-                                    <div className='col-12'>
-                                        <span className='text'>Comentarios: {productionToUpdate.comentarios}</span>
-                                    </div>
+                            </div>
+                            <div className='row'>
+                                <div className='col-12'>
+                                    <span className='text'>Comentarios: {productionToUpdate.comentarios}</span>
                                 </div>
-                                <div className='d-flex justify-content-between'>
-                                    <div className='d-flex align-items-end'>
-                                        <div className='mr-4'>
-                                            <button className='btn__general-orange' type='button' onClick={getPDF}>Imprimir ticket</button>
+                            </div>
+                            <div className='d-flex justify-content-between'>
+                                <div className='d-flex align-items-end'>
+                                    <div className='mr-4'>
+                                        <button className='btn__general-orange' type='button' onClick={getPDF}>Imprimir ticket</button>
+                                    </div>
+                                    <div className='mr-4 d-flex'>
+                                        <div className='mr-3'>
+                                            <Select dataSelects={areasGral} instanceId='areasGral' nameSelect='Enviar todo a Otra Area:' />
                                         </div>
-                                        <div className='mr-4 d-flex'>
+                                        <div className='d-flex align-items-end'>
+                                            <button className='btn__general-purple' onClick={() => sendAreas()}>Enviar</button>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div className='d-flex align-items-end'>
+                                    {checkPermission('enviar_a_sucursal') && (
+                                        productionToUpdate.status == 0 || productionToUpdate.status == 2 ?
                                             <div className='mr-3'>
-                                                <Select dataSelects={areasGral} instanceId='areasGral' nameSelect='Enviar todo a Otra Area:' />
+                                                <button className='btn__general-primary' onClick={() => enviarASucursal()}>Enviar a sucursal</button>
                                             </div>
-                                            <div className='d-flex align-items-end'>
-                                                <button className='btn__general-purple' onClick={() => sendAreas()}>Enviar</button>
+                                            :
+                                            ''
+
+                                    )}
+                                    {checkPermission('terminar') && (
+                                        productionToUpdate.status == 0 ?
+                                            <div className='mr-3'>
+                                                <button className='mr-3 btn__general-success' onClick={() => finishConcept()}>Terminar orden</button>
                                             </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div className='d-flex align-items-end'>
-                                        {checkPermission('enviar_a_sucursal') && (
-                                            productionToUpdate.status == 0 ?
-                                                <div className='mr-3'>
-                                                    <button className='btn__general-primary' onClick={() => enviarASucursal()}>Enviar a sucursal</button>
-                                                </div>
-                                                :
-                                                ''
-
-                                        )}
-                                        {checkPermission('terminar') && (
-                                            productionToUpdate.status == 0 ?
-                                                <div className='mr-3'>
-                                                    <button className='mr-3 btn__general-success' onClick={() => finishConcept()}>Terminar orden</button>
-                                                </div>
-                                                :
-                                                ''
+                                            :
+                                            ''
 
 
-                                        )}
-                                        {checkPermission('cancelar') && (
-                                            productionToUpdate.status == 0 ?
-                                                <div className='mr-3'>
-                                                    <button className='btn__general-danger' onClick={() => cancelarOp()}>Cancelar</button>
-                                                </div>
-                                                :
-                                                ''
+                                    )}
+                                    {checkPermission('cancelar') && (
+                                        productionToUpdate.status == 0 ?
+                                            <div className='mr-3'>
+                                                <button className='btn__general-danger' onClick={() => cancelarOp()}>Cancelar</button>
+                                            </div>
+                                            :
+                                            ''
 
-                                        )}
-                                    </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
-                    <div className='table__production_modal'  style={{overflow:'auto', zoom:'80%'}}>
+                    </div>
+                    <div className='table__production_modal' style={{ overflow: 'auto', zoom: '80%' }}>
                         {productionToUpdate.conceptos ? (
                             <div className='table__numbers'>
                                 <p className='text'>Total de articulos</p>

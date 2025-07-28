@@ -135,14 +135,17 @@ const ModalCreate = () => {
         });
 
         if (parseFloat(value) > total_stocks) {
-            Swal.fire('Notificacion', 'El valor ingresado supera el stock', 'warning')
             const newArticleStates = [...concepts];
             newArticleStates[index].cantidad = 0;
+            newArticleStates[index].total_de_unidad = 0;
+            // newArticleStates[index].total_unidad = 0;
             setConcepts(newArticleStates);
+            Swal.fire('Notificacion', 'El valor ingresado supera el stock', 'warning')
             return
         }
         const newArticleStates = [...concepts];
         newArticleStates[index].cantidad = value;
+        // newArticleStates[index].total_unidad = value;
         setConcepts(newArticleStates);
         // Obtener los valores relevantes de `concepts`
         // const stocks = concepts[index].stock;
@@ -221,6 +224,9 @@ const ModalCreate = () => {
                 el.id_unidad = el.unidad
             }
         });
+        concepts.forEach(x => {
+            x.cantidad = x.total_de_unidad == null || x.total_de_unidad == 0 ? x.cantidad : x.total_de_unidad
+        });
 
         let filter0 = concepts.filter((x: any) => x.cantidad == '0' || x.cantidad == 0 || x.cantidad == '' || x.cantidad == undefined)
 
@@ -228,10 +234,11 @@ const ModalCreate = () => {
             Swal.fire('Notificacion', 'No puedes enviar conceptos sin cantidad', 'warning')
             return
         }
-
+        // debugger
+        // return
         try {
             setModalLoading(true)
-
+            
             await createOrders({ id_area, id_sucursal, id_usuario_crea, status: 0, comentarios, conceptos: concepts })
             setModalLoading(false)
             setOPcomments('')
@@ -471,7 +478,9 @@ const ModalCreate = () => {
                                                 </div>
                                                 <div className='td'>
                                                     <div>
-                                                        <input className='inputs__general' value={concept?.cantidad === null ? '' : concept?.cantidad} disabled={concept?.orden_produccion}
+                                                        {concept?.total_de_unidad}
+                                                        <input className='inputs__general' value={concept?.total_de_unidad === 0 || concept?.total_de_unidad === null  ||
+                                                        concept?.total_de_unidad === undefined ? concept?.cantidad : concept?.total_de_unidad} disabled={concept?.orden_produccion}
                                                             onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()} />
                                                     </div>
                                                 </div>

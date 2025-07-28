@@ -122,10 +122,7 @@ const Requisition: React.FC = () => {
     // setRequisitions(resultRequisition.data)
     // setTotalPages(resultRequisition.total_pages)
     await searchByFolio()
-    const resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 0 })
-    resultSeries.unshift({ nombre: 'Todos', id: 0 });
-    setSeries(resultSeries)
-    setSelectedSerie(resultSeries[0].id)
+
 
   }
 
@@ -159,6 +156,7 @@ const Requisition: React.FC = () => {
           options: 'nombre',
           dataSelect: [...data]
         })
+
         setSelectedId('sucursal', 0)
       });
 
@@ -167,20 +165,25 @@ const Requisition: React.FC = () => {
 
   useEffect(() => {
     if (selectedIds != null) {
-      getAreas(typeof selectedIds.sucursal === 'object' ? selectedIds.sucursal.id : selectedIds.sucursal, user_id).then((data: any) => {
-        data.unshift({ id: 0, nombre: 'Todos' })
-        setAreasXBranchOfficesXUsers({
-          selectName: 'Area',
-          options: 'nombre',
-          dataSelect: [...data]
-        })
-        setSelectedId('area', 0)
-      });
-
+      get_area()
     }
   }, [selectedIds?.sucursal]);
 
-
+  const get_area = async () => {
+    getAreas(typeof selectedIds.sucursal === 'object' ? selectedIds.sucursal.id : selectedIds.sucursal, user_id).then((data: any) => {
+      data.unshift({ id: 0, nombre: 'Todos' })
+      setAreasXBranchOfficesXUsers({
+        selectName: 'Area',
+        options: 'nombre',
+        dataSelect: [...data]
+      })
+      setSelectedId('area', 0)
+    });
+    const resultSeries = await getSeriesXUser({ id: user_id, tipo_ducumento: 0 })
+    resultSeries.unshift({ nombre: 'Todos', id: 0 });
+    setSeries(resultSeries)
+    setSelectedSerie(resultSeries[0].id)
+  }
   ////////////////////////
   /// Select de tipos
   ////////////////////////
@@ -267,6 +270,8 @@ const Requisition: React.FC = () => {
 
       id_sucursal: selectedIds.sucursal.id || selectedIds.sucursal,
       id_usuario: user_id,
+      id_serie: selectedSerie || 0,
+      folio: parseInt(invoice) ?? 0,
       id_area: selectedIds.area.id || 0,
       tipo: selectedType,
       desde: dates[0],
@@ -285,9 +290,9 @@ const Requisition: React.FC = () => {
     setTotalPages(resultRequisition.total_pages)
 
   }
-const searchOne = async (id:number) => {
+  const searchOne = async (id: number) => {
     const data = {
-      id:id,
+      id: id,
       id_sucursal: selectedIds.sucursal.id || selectedIds.sucursal,
       id_usuario: user_id,
       id_area: selectedIds.area.id,
@@ -341,10 +346,10 @@ const searchOne = async (id:number) => {
       setPermisosxVista(resp)
     })
   }
-   const [page2, setPage2] = useState<number>(1)
-   useEffect(() => {
-          searchByFolio();
-      }, [page2]);
+  const [page2, setPage2] = useState<number>(1)
+  useEffect(() => {
+    searchByFolio();
+  }, [page2]);
   return (
     <div className='requisition'>
       <div className='breadcrumbs'>
@@ -362,7 +367,7 @@ const searchOne = async (id:number) => {
       </div>
       <div className='container__requisition'>
 
-        <div className='row__one' style={{zoom:'80%'}}>
+        <div className='row__one' style={{ zoom: '80%' }}>
           <div className='row'>
             <div className='col-3 md-col-6 sm-col-12'>
               <Select dataSelects={companiesXUsers} instanceId='empresa' nameSelect={'Empresa'} />
@@ -504,7 +509,7 @@ const searchOne = async (id:number) => {
           </div>
         </div>
         <ModalRequisition />
-        <div className='table__requisiciones' style={{zoom:'80%'}}>
+        <div className='table__requisiciones' style={{ zoom: '80%' }}>
           <div>
             {requisitions ? (
               <div className='table__numbers'>
@@ -592,20 +597,20 @@ const searchOne = async (id:number) => {
 
       </div>
       <div className='row paginado-container'>
-          <div className='col-1'>
-            <button className="paginado-btn paginado-btn-prev" onClick={() => setPage2(page2 - 1)} disabled={page2 === 1}>
-              ← Anterior
-            </button>
-          </div>
-          <div className='col-10 paginado-info'>
-            Página {page2}
-          </div>
-          <div className='col-1'>
-            <button className="paginado-btn paginado-btn-next" onClick={() => setPage2(page2 + 1)}>
-              Siguiente →
-            </button>
-          </div>
+        <div className='col-1'>
+          <button className="paginado-btn paginado-btn-prev" onClick={() => setPage2(page2 - 1)} disabled={page2 === 1}>
+            ← Anterior
+          </button>
         </div>
+        <div className='col-10 paginado-info'>
+          Página {page2}
+        </div>
+        <div className='col-1'>
+          <button className="paginado-btn paginado-btn-next" onClick={() => setPage2(page2 + 1)}>
+            Siguiente →
+          </button>
+        </div>
+      </div>
       {/* <Pagination /> */}
     </div>
   );

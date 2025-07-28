@@ -10,6 +10,10 @@ import { storeSeries } from '../../../../zustand/Series'
 import Select from '../../Dynamic_Components/Select'
 import Swal from 'sweetalert2'
 import { useSelectStore } from '../../../../zustand/Select'
+import ModalProduction from '../production/ModalProduction'
+import { storeProduction } from '../../../../zustand/Production'
+import { storeArticles } from '../../../../zustand/Articles'
+import { storeModals } from '../../../../zustand/Modals'
 const CobrosFranquicia: React.FC = () => {
     const [data, setData] = useState<any[]>([])
     const userState = useUserStore(state => state.user);
@@ -158,7 +162,7 @@ const CobrosFranquicia: React.FC = () => {
             denyButtonText: `Cancelar`
         }).then(async (result) => {
             if (result.isConfirmed) {
-                await APIs.CreateAny(data, "produccion_cobrada")
+                await APIs.CreateAnyPut(data, "produccion_cobrada/" + dataOps[i].conceptos[iaux].id)
                     .then(async (resp: any) => {
                         if (resp.error) {
                             Swal.fire('Notificación', resp.mensaje, 'warning');
@@ -199,10 +203,10 @@ const CobrosFranquicia: React.FC = () => {
                         return newConcept; // Retornamos el nuevo objeto sin el campo id
                     })
             );
-        if (filtered.length == 0) {
-            Swal.fire('Notificacion', 'Es necesario marcar minimo un concepto para crear el cobro', 'info')
-            return
-        }
+        // if (filtered.length == 0) {
+        //     Swal.fire('Notificacion', 'Es necesario marcar minimo un concepto para crear el cobro', 'info')
+        //     return
+        // }
         console.log(filtered)
         Swal.fire({
             title: "Seguro que crear este cobro de franquicia?",
@@ -218,7 +222,7 @@ const CobrosFranquicia: React.FC = () => {
                     id_empresa: empresaSelected?.id,
                     id_franquicia: franquiciaSelected?.id,
                     id_usuario_crea: user_id,
-                    conceptos: filtered
+                    conceptos: filtered || []
                 }
                 await APIs.CreateAny(dat, "create_cobro_documento")
                     .then(async (resp: any) => {
@@ -233,7 +237,7 @@ const CobrosFranquicia: React.FC = () => {
             }
         });
     }
-    const eliminarConcept = (id:number, index:number) => {
+    const eliminarConcept = (id: number, index: number) => {
         Swal.fire({
             title: "Seguro que desea eliminar el concepto seleccionado?",
             text: "Esto liberará la orden de producción y se desmarcara de cobrado",
@@ -243,16 +247,16 @@ const CobrosFranquicia: React.FC = () => {
             denyButtonText: `Cancelar`
         }).then(async (result) => {
             if (result.isConfirmed) {
-        
-                await APIs.CreateAnyPut(null,"eliminar_concepto_cobro/"+ id)
+
+                await APIs.CreateAnyPut(null, "eliminar_concepto_cobro/" + id)
                     .then(async (resp: any) => {
                         if (resp.error) {
                             Swal.fire('Notificación', resp.mensaje, 'warning');
                         } else {
                             Swal.fire('Notificación', resp.mensaje, 'success');
-                            setRegistroSelected((prevState:any) => ({
+                            setRegistroSelected((prevState: any) => ({
                                 ...prevState,
-                                conceptos: prevState.conceptos.filter((_:any, idx:number) => idx !== index)
+                                conceptos: prevState.conceptos.filter((_: any, idx: number) => idx !== index)
                             }));
                             getData()
                         }
@@ -293,7 +297,7 @@ const CobrosFranquicia: React.FC = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 let dat = {
-                    id:registroSelected.id,
+                    id: registroSelected.id,
                     conceptos: filtered
                 }
                 await APIs.CreateAny(dat, "update_cobro_documento")
@@ -308,6 +312,37 @@ const CobrosFranquicia: React.FC = () => {
                     })
             }
         });
+    }
+
+    const setProductionToUpdate = storeProduction(state => state.setProductionToUpdate)
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
+    const setModalSub = storeModals((state) => state.setModalSub);
+
+    const verProduccion = async (id: number) => {
+        const dataProductionOrders = {
+            id: id,
+            folio: 0,
+            id_sucursal: 0,
+            id_serie: 0,
+            id_area: 0,
+            desde: date[0],
+            hasta: date[1],
+            id_usuario: user_id,
+            status: 0,
+        }
+        setModalLoading(true)
+        try {
+            APIs.getProoductionOrders(dataProductionOrders).then((resp: any) => {
+                setModalLoading(false)
+                setProductionToUpdate(resp[0])
+                setModalSub('production__modal')
+            }).finally(() => {
+                setModalLoading(false)
+            })
+
+        } catch (error) {
+            console.log(error)
+        }
     }
     return (
         <div className='cfadmin'>
@@ -611,7 +646,7 @@ const CobrosFranquicia: React.FC = () => {
                                                 return (
                                                     <div className="card ">
                                                         <div className="card-body bg-standar">
-                                                            <h3 className="text">{g.concat_1} // {g.empresa} - {g.sucursal} // {g.fecha_entrega} {g.hora_entrega} </h3>
+                                                            <h3 className="text" style={{ cursor: 'pointer' }} onClick={(e) => verProduccion(g.id)}>{g.concat_1} // {g.empresa} - {g.sucursal} // {g.fecha_entrega} {g.hora_entrega} </h3>
                                                             <hr />
                                                             <div className='row'>
                                                                 <div className='col-12 md-col-12'>
@@ -699,6 +734,7 @@ const CobrosFranquicia: React.FC = () => {
                 {/* -------------------------------------------------------------FIN MODALES----------------------------------------------------------------------------- */}
 
             </div>
+            <ModalProduction />
         </div>
     )
 }

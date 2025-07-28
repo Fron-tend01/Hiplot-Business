@@ -230,7 +230,7 @@ const modalArticle: React.FC = () => {
             setComponents(articleToUpdate.componentes);
             setAreas(articleToUpdate.areas_produccion);
             setMinimalCharges(articleToUpdate.cargos_minimos);
-            
+
             setCobrosFranquicia(articleToUpdate.cobros_franquicia);
             setAdditionalArticles(articleToUpdate.adicionales)
             setImagesArticles(articleToUpdate.imagenes)
@@ -347,8 +347,8 @@ const modalArticle: React.FC = () => {
             componentes: components,
             componentes_elim: deleteComponents,
 
-            variaciones: variations,
-            variaciones_elim: deleteVariations.filter(item => item !== null && item !== undefined),
+            variaciones: variations.filter(v => v != null),
+            variaciones_elim: deleteVariations.filter(v => v != null),
 
             combinaciones: combinations,
             combinaciones_elim: deleteCombinations.filter(item => item !== null && item !== undefined),
@@ -537,12 +537,12 @@ const modalArticle: React.FC = () => {
                     const result = await APIs.getArticles(data2)
                     precios = result[0].precios
                     te = result[0].tiempos_entrega
-                } catch (error) {} 
+                } catch (error) { }
                 try {
                     const ids = te.map(obj => obj.id_te_data);
                     const uniqueIds_te = Array.from(new Set(ids));
                     const data = {
-                        id:  0,
+                        id: 0,
                         tipo: type,
                         codigo: code,
                         descripcion: description,
@@ -588,7 +588,7 @@ const modalArticle: React.FC = () => {
                         componentes: components,
                         componentes_elim: deleteComponents,
 
-                        variaciones: variations,
+                        variaciones: variations.map(v => v.id) || [],
                         variaciones_elim: deleteVariations.filter(item => item !== null && item !== undefined),
 
                         combinaciones: combinations,

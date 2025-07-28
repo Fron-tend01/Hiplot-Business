@@ -370,6 +370,12 @@ const RootHome: React.FC = () => {
                                                 <span>Hojas Blancas</span>
                                             </AnchorTag>
                                         );
+                                    }else if (permiso.titulo == "VENTAS") {
+                                        return (
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')} to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.VENTAS}`}>
+                                                <span>VENTAS</span>
+                                            </AnchorTag>
+                                        );
                                     } else {
                                         return null;
                                     }

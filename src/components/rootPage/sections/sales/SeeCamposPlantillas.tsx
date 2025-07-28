@@ -21,7 +21,7 @@ const SeeCamposPlantillas: React.FC<any> = ({ typeConcept, index_en_pers = 0 }) 
     const DataCampos = storeDv(state => state.DataCampos)
 
     useEffect(() => {
-        if (modalSub=='see_cp' || modalSub === 'see_cp-personalized') {
+        if (modalSub == 'see_cp' || modalSub === 'see_cp-personalized') {
 
             if (modal === 'create-modal__qoutation' || modal === 'update-modal__qoutation') {
 
@@ -31,12 +31,21 @@ const SeeCamposPlantillas: React.FC<any> = ({ typeConcept, index_en_pers = 0 }) 
                     setData(quotes.normal_concepts)
                 } else {
                     if (DataCampos.tipo == 'articulo_en_pers') {
+                        if (!quotes.personalized_concepts[DataCampos.idInPers].conceptos[index].obs_factura) {
+                            quotes.personalized_concepts[DataCampos.idInPers].conceptos[index].obs_factura = quotes.personalized_concepts[DataCampos.idInPers].conceptos[index].comentarios || ''
+
+                        }
+                        if (!quotes.personalized_concepts[DataCampos.idInPers].conceptos[index].obs_produccion) {
+                            quotes.personalized_concepts[DataCampos.idInPers].conceptos[index].obs_produccion = quotes.personalized_concepts[DataCampos.idInPers].conceptos[index].comentarios_prod || ''
+                        }
+                        // debugger
                         setData(quotes.personalized_concepts[DataCampos.idInPers].conceptos)
                         // setIndex(index_en_pers)
 
                     } else {
                         quotes.personalized_concepts[index].obs_factura = quotes.personalized_concepts[index].comentarios_factura || ''
                         quotes.personalized_concepts[index].obs_produccion = quotes.personalized_concepts[index].comentarios_produccion || ''
+
                         setData(quotes.personalized_concepts)
                     }
                 }
@@ -47,7 +56,7 @@ const SeeCamposPlantillas: React.FC<any> = ({ typeConcept, index_en_pers = 0 }) 
                     setData(saleOrdersConcepts.normal_concepts)
                 } else {
                     if (DataCampos.tipo == 'articulo_en_pers') {
-                        // console.log('aqui', saleOrdersConcepts.personalized_concepts[DataCampos.idInPers]);
+                        console.log('aqui', saleOrdersConcepts.personalized_concepts[DataCampos.idInPers]);
 
                         setData(saleOrdersConcepts.personalized_concepts[DataCampos.idInPers].conceptos)
                         // setIndex(index_en_pers)
@@ -77,18 +86,24 @@ const SeeCamposPlantillas: React.FC<any> = ({ typeConcept, index_en_pers = 0 }) 
                 setQuotes({ ...quotes, normal_concepts: updatedConcepts });
                 return;
             }
-            // if (DataCampos.tipo == 'articulo_en_pers') {
-            //     const updatedConcepts = data.map((concept, i) =>
-            //         i === index ? { ...concept, [key]: valor } : concept
-            //     );
-            //     setData(updatedConcepts);
-            //     setQuotes({ ...quotes, personalized_concepts: updatedConcepts });
-            //     return;
-            // }
+            if (DataCampos.tipo == 'articulo_en_pers') {
+                const updatedConcepts = data.map((concept, i) =>
+                    i === index ? { ...concept, [key]: valor } : concept
+                );
+               
+                if (key === 'obs_factura') {
+                    quotes.personalized_concepts[DataCampos.idInPers].conceptos[index].obs_factura = valor
+                } else {
+                    quotes.personalized_concepts[DataCampos.idInPers].conceptos[index].obs_produccion = valor
+                }
+                setQuotes({ ...quotes, personalized_concepts: quotes.personalized_concepts });
+                setData(updatedConcepts);
+                return;
+            }
             if (DataCampos.tipo == 'pers') {
                 let key_tmp = key == 'obs_factura' ? 'comentarios_factura' : key == 'obs_produccion' ? 'comentarios_produccion' : key
                 const updatedConcepts = data.map((concept, i) =>
-                    i === index ? { ...concept, [key]: valor, [key_tmp]: valor } : concept
+                    i === index ? { ...concept, [key_tmp]: valor, [key_tmp]: valor } : concept
                 );
                 setData(updatedConcepts);
                 setQuotes({ ...quotes, personalized_concepts: updatedConcepts });
@@ -107,8 +122,19 @@ const SeeCamposPlantillas: React.FC<any> = ({ typeConcept, index_en_pers = 0 }) 
             const updatedConcepts = data.map((concept, i) =>
                 i === index ? { ...concept, [key]: valor } : concept
             );
-            setSaleOrdersConcepts({ ...saleOrdersConcepts, normal_concepts: updatedConcepts });
-            setData(updatedConcepts);
+            if (DataCampos.tipo == 'articulo_en_pers') {
+                if (key === 'obs_factura') {
+                    saleOrdersConcepts.personalized_concepts[DataCampos.idInPers].conceptos[index].obs_factura = valor
+                } else {
+                    saleOrdersConcepts.personalized_concepts[DataCampos.idInPers].conceptos[index].obs_produccion = valor
+                }
+                setSaleOrdersConcepts({ ...saleOrdersConcepts, personalized_concepts: saleOrdersConcepts.personalized_concepts });
+                setData(updatedConcepts);
+            } else {
+
+                setSaleOrdersConcepts({ ...saleOrdersConcepts, normal_concepts: updatedConcepts });
+                setData(updatedConcepts);
+            }
 
             return;
         }
