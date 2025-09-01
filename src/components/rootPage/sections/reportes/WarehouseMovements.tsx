@@ -197,6 +197,7 @@ const WarehouseMovements: React.FC = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
+                    data.id_usuario = user_id
                     await APIs.CreateAny(data, "modificarRyA")
                         .then(async (resp: any) => {
                             if (!resp.error) {

@@ -26,7 +26,7 @@
     background-color: var(--background-modal);
     border-radius: 5px;
     padding: 20px;
-    width: 80%;
+    width: 70%;
     height: 80%;
     transition: .3s ease all;
     transform: scale(0.7);
@@ -91,13 +91,13 @@
 
 .table__prices-sale-card .table__head .thead {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 3fr repeat(3, 1fr);
     padding: 10px;
     font-weight: 600;
 }
 
 .table__prices-sale-card .table__body {
-    height: 200px;
+    height: 300px;
     overflow: hidden;
     overflow: auto;
     transition-delay: 0.0s;
@@ -150,7 +150,7 @@
 
 .table__prices-sale-card .table__body .tbody {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 3fr repeat(3, 1fr);
     padding: 10px;
     column-gap: 20px;
 }
@@ -161,17 +161,16 @@
 }
 
 .table__prices-sale-card .table__body .tbody .td > .ranges {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block; /* en lugar de flex */
     padding: 5px 10px;
     background-color: #ff91001f;
     border-radius: 5px;
     font-weight: 600;
     color: #FF8F00;
+    white-space: pre-line; /* respeta saltos de línea y \n */
 }
 
-.table__prices-sale-card .table__body .tbody .td > .price {
+.table__prices-sale-card .table__body .tbody .td>.price {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -183,13 +182,13 @@
 }
 
 
-.table__prices-sale-card .table__body .tbody:hover .td > .ranges {
+.table__prices-sale-card .table__body .tbody:hover .td>.ranges {
     background-color: #FF8F00;
     color: #ffffff;
 }
 
-.table__prices-sale-card .table__body .tbody:hover .td > .price {
-    background-color:#6e34e2;
+.table__prices-sale-card .table__body .tbody:hover .td>.price {
+    background-color: #6e34e2;
     color: #ffffff;
 }
 

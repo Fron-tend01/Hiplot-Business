@@ -21,6 +21,7 @@ const Families: React.FC = () => {
 
   const [warningSelectCompany] = useState<boolean>(false)
   const [warningNombre] = useState<boolean>(false)
+  const [activoWeb, setActivoWeb] = useState<boolean>(false)
 
   const [selectCompanies, setSelectCompanies] = useState<boolean>(false)
   const [selectBranchOffices, setSelectBranchOffices] = useState<boolean>(false)
@@ -54,11 +55,12 @@ const Families: React.FC = () => {
       id_sucursal: selectedBranchOffice,
       sucursal: sucursal[0].nombre,
       empresa: empresa[0].razon_social,
+      activo_web: activoWeb
     }
     DynamicVariables.addObjectInArrayNoRepeat(data, setArr1_nuevas)
   };
 
- 
+
 
 
   const handleCreateFamilies = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -235,8 +237,16 @@ const Families: React.FC = () => {
                       </div>
                     </div>
                   </div>
+
                 </div>
-                <div className='d-flex align-items-end'>
+                <div className='d-flex align-items-center justify-content-center'>
+                  <label className='text'>Activo en Web</label><br />
+                  <label className="switch">
+                    <input style={{ width: '100px' }} className={`inputs__general`} type="checkbox" checked={activoWeb}
+                      onChange={(e) => { setActivoWeb(e.target.checked) }}
+                    />
+                    <span className="slider"></span>
+                  </label>
                   <button className='btn__general-purple' onClick={addCompany} type='button'>Agregar</button>
                 </div>
               </div>
@@ -246,10 +256,10 @@ const Families: React.FC = () => {
                 <div>
                   {arr1_nuevas ? (
                     <div className='table__numbers'>
-                    <p className='text'>Familias agregadas</p>
-                    <div className='quantities_tables'>{arr1_nuevas.length}</div>
-                  </div>
-                
+                      <p className='text'>Familias agregadas</p>
+                      <div className='quantities_tables'>{arr1_nuevas.length}</div>
+                    </div>
+
                   ) : (
                     <b className='text'>No hay empresas</b>
                   )}
@@ -261,6 +271,9 @@ const Families: React.FC = () => {
                     </div>
                     <div className='th'>
                       <p className=''>Sucursal</p>
+                    </div>
+                    <div className='th'>
+                      <p className=''>Activo en Web</p>
                     </div>
                   </div>
                 </div>
@@ -274,6 +287,14 @@ const Families: React.FC = () => {
                           </div>
                           <div className='td'>
                             {dat.sucursal}
+                          </div>
+                          <div className='td'>
+                            <label className="switch">
+                              <input style={{ width: '100px' }} className={`inputs__general`} type="checkbox" checked={dat.activo_web}
+                                onChange={(e) => { DynamicVariables.updateAnyVarByIndex(setArr1_nuevas,index,'activo_web', e.target.checked) }}
+                              />
+                              <span className="slider"></span>
+                            </label>
                           </div>
                           <div className='td'>
                             <button className='btn__delete_users' type="button" onClick={() => {

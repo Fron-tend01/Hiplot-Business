@@ -469,37 +469,37 @@
     transform: scale(1);
     opacity: 1;
 }
-
 .collapse-container {
-    width: 100%;
-    /* margin: 20px auto; */
-    font-family: Arial, sans-serif;
-  }
+  width: 100%;
+  font-family: Arial, sans-serif;
+}
 
-  .collapse-toggle {
-    display: none;
-  }
+.collapse-toggle {
+  display: none;
+}
 
-  .collapse-label {
-    display: block;
-    background: #6e6e6e;
-    color: white;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
+.collapse-label {
+  display: block;
+  background: #6e6e6e;
+  color: white;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+}
 
-  .collapse-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-    background: #f8f9fa;
-    padding: 0 15px;
-    border: 1px solid #ddd;
-    border-top: none;
-  }
+.collapse-content {
+  max-height: 0;
+  overflow: hidden; /* mientras está cerrado */
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  background: #f8f9fa;
+  padding: 0 15px;
+  border: 1px solid #ddd;
+  border-top: none;
+}
 
-  .collapse-toggle:checked + .collapse-label + .collapse-content {
-    max-height: 500px; /* ajusta según el contenido */
-    padding: 15px;
-  }
+/* Cuando se abre el collapse */
+.collapse-toggle:checked + .collapse-label + .collapse-content {
+  max-height: 1000px; /* suficientemente grande según tu contenido */
+  overflow: visible;   /* importante: permite que los selects y dropdowns se vean */
+  padding: 15px;
+}

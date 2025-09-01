@@ -444,6 +444,8 @@ const ModalProduction: React.FC = () => {
                                     <span className='text'>Empresa: <b>{productionToUpdate.empresa}</b></span><br />
                                     <span className='text'>Sucursal de origen: <b>{productionToUpdate.sucursal}</b></span><br />
                                     <span className='text'>Orden de Venta: <b>{productionToUpdate.folio_ov}</b></span><br />
+                                    <span className='text'>Cliente: <b>{productionToUpdate.cliente}</b></span><br />
+                                    <span className='text'>Titulo: <b>{productionToUpdate.titulo_ov}</b></span><br />
 
                                 </div>
                                 <div className='col-4 md-col-4'>

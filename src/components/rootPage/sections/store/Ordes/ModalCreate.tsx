@@ -478,7 +478,7 @@ const ModalCreate = () => {
                                                 </div>
                                                 <div className='td'>
                                                     <div>
-                                                        {concept?.total_de_unidad}
+                                                        {/* {concept?.total_de_unidad} */}
                                                         <input className='inputs__general' value={concept?.total_de_unidad === 0 || concept?.total_de_unidad === null  ||
                                                         concept?.total_de_unidad === undefined ? concept?.cantidad : concept?.total_de_unidad} disabled={concept?.orden_produccion}
                                                             onChange={(e) => handleAmountChange(e, index)} type="number" placeholder='Cantidad' onWheel={(e) => e.currentTarget.blur()} />

@@ -10,11 +10,18 @@ import { Spanish } from 'flatpickr/dist/l10n/es.js'; // Importa la localización
 import Select from '../../Dynamic_Components/Select'
 import { usersRequests } from '../../../../fuctions/Users'
 import { useSelectStore } from '../../../../zustand/Select'
+import { storeArticles } from '../../../../zustand/Articles'
+
 const Ventas: React.FC = () => {
   const [articulos, setArticulos] = useState<any[]>([])
   const [data, setData] = useState<any[]>([])
+  const [areas, setAreas] = useState<any[]>([])
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
+  const [empresa, setEmpresa] = useState<any>({})
+  const [sucursal, setSucursal] = useState<any>({})
+  const [users, setUsers] = useState<any>()
+  const { getUsers }: any = usersRequests()
 
   const hoy = new Date();
   const haceUnaSemana = new Date();
@@ -35,6 +42,7 @@ const Ventas: React.FC = () => {
     id_vendedor: 0,
     id_empresa: 0,
     id_sucursal: 0,
+    id_area: 0,
     desde: date[0],
     hasta: date[1],
     articulos: []
@@ -61,9 +69,25 @@ const Ventas: React.FC = () => {
       dataSelect: resultUsers
     })
     setSelectData('vendedor', resultUsers[0])
+
+
+  }
+  useEffect(() => {
+    getAreas();
+  }, [sucursal]);
+  const getAreas = async () => {
+    await APIs.GetAny("get_area_x_sucursal/" + sucursal.id + "/" + user_id)
+      .then(async (response: any) => {
+        response.unshift({ 'id': 0, 'nombre': 'Todos' })
+
+        setAreas(response)
+      })
   }
   const [t, setT] = useState<any>({})
   const [tArt, setTArt] = useState<any>([])
+  const [sucs, setSucs] = useState<any>([])
+  const [Glob, setGlob] = useState<any>([])
+  const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
   const getData = async () => {
     let filter_art = articulos.map(articulo => articulo.id);
@@ -71,11 +95,15 @@ const Ventas: React.FC = () => {
     searcher.id_vendedor = selectedIds.vendedor.id ?? 0
     searcher.id_sucursal = sucursal.id
     searcher.id_empresa = empresa.id
+    searcher.id_area = parseInt(searcher.id_area)
     searcher.articulos = filter_art
     searcher.desde = date[0]
     searcher.hasta = date[1]
+    setModalLoading(true)
     await APIs.CreateAny(searcher, "reporte_ventas")
       .then(async (response: any) => {
+        setModalLoading(false)
+
         setData(response)
         const totalesPorArticulo = response.reduce((acc: any, x: any) => {
           const id = x.id_articulo ?? x.codigo; // Usa el identificador que tengas
@@ -116,12 +144,14 @@ const Ventas: React.FC = () => {
           { cantidad: 0, total: 0, descuento: 0, urgencia: 0, total_final: 0 }
         );
         setT(totales)
+        const { sucursales, globales } = procesarDatos(response);
+        setSucs(sucursales)
+        setGlob(globales)
+
+      }).finally(() => {
+        setModalLoading(false)
       })
   }
-  const [empresa, setEmpresa] = useState<any>({})
-  const [sucursal, setSucursal] = useState<any>({})
-  const [users, setUsers] = useState<any>()
-  const { getUsers }: any = usersRequests()
 
 
   const exportToCSV = () => {
@@ -189,6 +219,85 @@ const Ventas: React.FC = () => {
     link.click();
     document.body.removeChild(link);
   };
+  const procesarDatos = (data: any[]) => {
+    const getMonthName = (fecha: string) => {
+      const date = new Date(fecha);
+      return date.toLocaleString("es-MX", { month: "short" }).toUpperCase();
+    };
+
+    const sucursales: Record<string, Record<string, number>> = {};
+    const globales: Record<string, number> = {};
+
+    data.forEach((item) => {
+      const mes = getMonthName(item.fecha_creacion);
+      const suc = item.sucursal;
+      const total = item.total - item.monto_descuento + item.monto_urgencia;
+
+      if (!sucursales[suc]) sucursales[suc] = {};
+      if (!sucursales[suc][mes]) sucursales[suc][mes] = 0;
+      sucursales[suc][mes] += total;
+
+      if (!globales[mes]) globales[mes] = 0;
+      globales[mes] += total;
+    });
+
+    return { sucursales, globales };
+  }
+
+  const GenerarTotalesSucursal = (sucursales: any, globales: any) => {
+    let csv = "";
+
+    // 🔹 Obtener todos los meses presentes en los datos
+    const meses = new Set<string>();
+    Object.values(sucursales).forEach((data: any) => {
+      Object.keys(data).forEach((mes) => meses.add(mes));
+    });
+    Object.keys(globales).forEach((mes) => meses.add(mes));
+    const mesesArray = Array.from(meses);
+
+    // 🔹 Encabezado horizontal
+    csv += `SUCURSAL,${mesesArray.join(",")},TOTAL\n`;
+
+    // 🔹 Filas de cada sucursal
+    Object.keys(sucursales).forEach((suc) => {
+      let fila = `${suc}`;
+      let totalSucursal = 0;
+
+      mesesArray.forEach((mes) => {
+        const monto = sucursales[suc][mes] ?? 0;
+        fila += `,$${monto.toFixed(2)}`;
+        totalSucursal += monto;
+      });
+
+      fila += `,$${totalSucursal.toFixed(2)}\n`;
+      csv += fila;
+    });
+
+    csv += "\nRESUMEN GLOBAL\n";
+
+    // 🔹 Fila global (horizontal)
+    let filaGlobal = `GLOBAL`;
+    let granTotal = 0;
+    mesesArray.forEach((mes) => {
+      const monto = globales[mes] ?? 0;
+      filaGlobal += `,$${monto.toFixed(2)}`;
+      granTotal += monto;
+    });
+    filaGlobal += `,$${granTotal.toFixed(2)}\n`;
+
+    csv += `SUCURSAL,${mesesArray.join(",")},TOTAL\n`;
+    csv += filaGlobal;
+
+    // Descargar sin librerías
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "reporte_ventas.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
 
   return (
     <div className='repvta'>
@@ -198,13 +307,22 @@ const Ventas: React.FC = () => {
             <Empresas_Sucursales modeUpdate={false} empresaDyn={empresa} sucursalDyn={sucursal} all={true}
               setEmpresaDyn={setEmpresa} setSucursalDyn={setSucursal}></Empresas_Sucursales>
           </div>
-          <div className='col-4'>
+          <div className='col-2'>
+            <label className='label__general'>Area</label>
+            <select className='inputs__general' value={searcher.id_area} onChange={(e) => DynamicVariables.updateAnyVar(setSearcher, 'id_area', e.target.value)}  >
+              {Array.isArray(areas) && areas.length > 0
+                && areas.map((sol: any) => (
+                  <option key={sol.id} value={sol.id}>{sol.nombre}</option>
+                ))}
+            </select>
+          </div>
+          <div className='col-3'>
             <label className='label__general'>Fechas Desde-Hasta</label>
             <div className='container_dates__requisition'>
               <Flatpickr className='date' options={{ locale: Spanish, mode: "range", dateFormat: "Y-m-d" }} value={date} onChange={handleDateChange} placeholder='seleciona las fechas' />
             </div>
           </div>
-          <div className='col-4'>
+          <div className='col-3'>
             <Select dataSelects={users} nameSelect={'Vendedor'} instanceId='vendedor' />
 
           </div>
@@ -268,10 +386,17 @@ const Ventas: React.FC = () => {
           <div className='col-12'>
             <div className='d-flex justify-content-center align-items-end'>
               <button className='btn__general-purple' onClick={getData}>GENERAR REPORTE</button>
-              <button onClick={exportToCSV} className="btn__general-orange" title='Descargar en CSV'>
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-sheet-icon lucide-sheet"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><line x1="3" x2="21" y1="9" y2="9" /><line x1="3" x2="21" y1="15" y2="15" /><line x1="9" x2="9" y1="9" y2="21" /><line x1="15" x2="15" y1="9" y2="21" /></svg>
+              {data.length > 0 && (
+                <>
+                  <button onClick={exportToCSV} className="btn__general-orange" title='Descargar en CSV'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-sheet-icon lucide-sheet"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><line x1="3" x2="21" y1="9" y2="9" /><line x1="3" x2="21" y1="15" y2="15" /><line x1="9" x2="9" y1="9" y2="21" /><line x1="15" x2="15" y1="9" y2="21" /></svg>
 
-              </button>
+                  </button>
+                  <button style={{ marginLeft: '5px' }} onClick={() => GenerarTotalesSucursal(sucs, Glob)} className="btn__general-orange" title='Descargar en CSV'>
+                    Reporte Gral.
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

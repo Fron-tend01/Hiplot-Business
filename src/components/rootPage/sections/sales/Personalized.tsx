@@ -157,8 +157,10 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
         let filterDelete = customConceptView.filter((x: any) => x.check !== true)
         if (personalizedModal == 'personalized_modal-quotation') {
           setQuotes({ normal_concepts: filterDelete, personalized_concepts: [...quotes?.personalized_concepts ?? [], data] });
-          localStorage.setItem('cotizacion-pers', JSON.stringify([...(quotes?.personalized_concepts ?? []), data]));
-          localStorage.setItem('cotizacion', JSON.stringify(filterDelete))
+          if (modal === 'create-modal__qoutation') {
+            localStorage.setItem('cotizacion-pers', JSON.stringify([...(quotes?.personalized_concepts ?? []), data]));
+            localStorage.setItem('cotizacion', JSON.stringify(filterDelete))
+          }
         }
         if (personalizedModal == 'personalized_modal-sale') {
           let data_enviar = {
@@ -321,7 +323,6 @@ const Personalized: React.FC<any> = ({ branch, idItem, indexItem, identifierBill
         return
       } else {
 
-        console.log('customConceptView', customConceptView)
         let data = {
           id: idItem.id,
           codigo: inpust.codigo,

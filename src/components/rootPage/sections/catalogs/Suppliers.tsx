@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { storeCompanies } from '../../../../zustand/Companies';
 import { storeBranchOffcies } from '../../../../zustand/BranchOffices';
 import { suppliersRequests } from '../../../../fuctions/Suppliers';
@@ -7,6 +7,7 @@ import { Toaster, toast } from 'sonner'
 import './styles/Suppliers.css'
 import { v4 as uuidv4 } from 'uuid'; // Importa la función v4 de uuid
 import DynamicVariables from '../../../../utils/DynamicVariables';
+import APIs from '../../../../services/services/APIs';
 
 
 
@@ -17,6 +18,7 @@ const Suppliers: React.FC = () => {
   const [contactName, setContactName] = useState<string>('')
   const [phoneNumber, setPhoneNumber] = useState<string>('')
   const [email, setEmail] = useState<string>('')
+  const [referencias, setReferencias] = useState<string>('')
 
   const userState = useUserStore(state => state.user);
   const user_id = userState.id
@@ -45,10 +47,14 @@ const Suppliers: React.FC = () => {
   const { getBranchOfficeXCompanies }: any = storeBranchOffcies();
   const { createSuppliers, getSuppliers, updateSuppliers }: any = suppliersRequests();
   const [suppliers, setSuppliers] = useState<any>()
+  const [permisos, setPermisos] = useState<any[]>([])
 
 
 
   const fetch = async () => {
+    await APIs.GetAny('get_permisos_x_vista/' + user_id + '/PROVEEDORES').then((resp: any) => {
+      setPermisos(resp);
+    })
     getCompaniesXUsers(user_id)
     getBranchOfficeXCompanies(0, user_id)
     const result = await getSuppliers(searcher)
@@ -126,11 +132,12 @@ const Suppliers: React.FC = () => {
     const data = {
       razon_social: businessName,
       nombre_comercial: tradename,
-      ubicacion: location,
-      nombre_contacto: contactName, // corregido a "nombre_contacto"
-      telefono: phoneNumber,
-      correo: email,
-      is_flete: availability,
+      ubicacion: location ?? '',
+      nombre_contacto: contactName ?? '', // corregido a "nombre_contacto"
+      telefono: phoneNumber ?? '',
+      correo: email ?? '', 
+      is_flete: availability ,
+      referencias: referencias ?? '',
       empresasData_nuevos: filter,
       empresasData_elim: []
     }
@@ -154,6 +161,7 @@ const Suppliers: React.FC = () => {
     setPhoneNumber('')
     setEmail('')
     setSelectedSupplier('')
+    setReferencias('')
     setNewSuppliers([])
     setAvailability(false)
   }
@@ -200,6 +208,7 @@ const Suppliers: React.FC = () => {
     setSelectedSupplier(supplier)
     setNewSuppliers(supplier.empresas)
     setAvailability(supplier.is_flete)
+    setReferencias(supplier.referencias)
     console.log(supplier)
   }
 
@@ -236,11 +245,12 @@ const Suppliers: React.FC = () => {
       id: idSupplier,
       razon_social: businessName,
       nombre_comercial: tradename,
-      ubicacion: location,
-      nombre_contacto: contactName, // corregido a "nombre_contacto"
-      telefono: phoneNumber,
-      correo: email,
+      ubicacion: location ?? '',
+      nombre_contacto: contactName ?? '', // corregido a "nombre_contacto"
+      telefono: phoneNumber ?? '',
+      correo: email ?? '',
       is_flete: availability,
+      referencias: referencias ?? '',
       empresasData_nuevos: ids_supl,
       empresasData_elim: deleteSuppliers
     }
@@ -314,15 +324,20 @@ const Suppliers: React.FC = () => {
               <div className='th'>
                 <p>Nombre de contacto</p>
               </div>
-              <div className='th'>
-                <p>Correo</p>
-              </div>
-              <div className='th'>
-                <p>Telefono</p>
-              </div>
-              <div className='th'>
+              {permisos.some((x: any) => x.titulo === 'campos_extra') ? (
+                <>
+                  <div className='th'>
+                    <p>Correo</p>
+                  </div>
+                  <div className='th'>
+                    <p>Telefono</p>
+                  </div>
+                </>
 
-              </div>
+              ) : ''}
+                  <div className='th'>
+                    Acciones
+                  </div>
             </div>
           </div>
           {suppliers ? (
@@ -338,15 +353,21 @@ const Suppliers: React.FC = () => {
                       <div className='td'>
                         <p>{supplier.nombre_contacto}</p>
                       </div>
-                      <div className='td'>
-                        <p>{supplier.correo}</p>
-                      </div>
-                      <div className='td'>
-                        <p>{supplier.telefono}</p>
-                      </div>
-                      <div className='td'>
-                        <button className='branchoffice__edit_btn' onClick={() => modalUpdate(supplier)}>Editar</button>
-                      </div>
+                      {permisos.some((x: any) => x.titulo === 'campos_extra') ? (
+                        <>
+                          <div className='td'>
+                            <p>{supplier.correo}</p>
+                          </div>
+                          <div className='td'>
+                            <p>{supplier.telefono}</p>
+                          </div>
+                        </>
+
+                      ) : ''}
+                          <div className='td'>
+                            <button className='branchoffice__edit_btn' onClick={() => modalUpdate(supplier)}>Editar</button>
+                          </div>
+
                     </div>
                   </div>
                 );
@@ -366,7 +387,7 @@ const Suppliers: React.FC = () => {
             </a>
             <p className='title__modals'>Crear nuevo proveedor</p>
             <form className='conatiner__create_suppliers' onSubmit={handleCreateSuppliers}>
-              <div className='row'>
+              <div className='row shadow-custom bg-gray'>
                 <div className='col-4 md-col-6 sm-col-12'>
                   <label className='label__general'>Razon Social</label>
                   <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
@@ -377,26 +398,36 @@ const Suppliers: React.FC = () => {
                   <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
                   <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={tradename} onChange={(e) => setTradename(e.target.value)} placeholder='Ingresa el nombre' />
                 </div>
-                <div className='col-4 md-col-6 sm-col-12'>
-                  <label className='label__general'>Ubicación</label>
-                  <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder='Ingresa el nombre' />
-                </div>
-                <div className='col-4 md-col-6 sm-col-12'>
-                  <label className='label__general'>Nombre de Contacto</label>
-                  <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder='Ingresa el nombre' />
-                </div>
-                <div className='col-4 md-col-6 sm-col-12'>
-                  <label className='label__general'>Telefono</label>
-                  <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} placeholder='Ingresa el nombre' />
-                </div>
-                <div className='col-4 md-col-6 sm-col-12'>
-                  <label className='label__general'>Correo</label>
-                  <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Ingresa el nombre' />
-                </div>
+                {permisos.some((x: any) => x.titulo === 'campos_extra') ? (
+                  <>
+
+                    <div className='col-4 md-col-6 sm-col-12'>
+                      <label className='label__general'>Ubicación</label>
+                      <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
+                      <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder='Ingresa el nombre' />
+                    </div>
+                    <div className='col-4 md-col-6 sm-col-12'>
+                      <label className='label__general'>Nombre de Contacto</label>
+                      <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
+                      <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder='Ingresa el nombre' />
+                    </div>
+                    <div className='col-4 md-col-6 sm-col-12'>
+                      <label className='label__general'>Telefono</label>
+                      <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
+                      <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} placeholder='Ingresa el nombre' />
+                    </div>
+                    <div className='col-4 md-col-6 sm-col-12'>
+                      <label className='label__general'>Correo</label>
+                      <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
+                      <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Ingresa el nombre' />
+                    </div>
+                    <div className='col-12 md-col-12 sm-col-12'>
+                      <label className='label__general'>Referencias</label>
+                      <textarea className={`inputs__general`} rows={3} value={referencias} onChange={(e) => setReferencias(e.target.value)} placeholder='Informativo para referenciar al proveedor' />
+                    </div>
+                  </>
+
+                ) : ''}
               </div>
               <div className='row'>
                 <div className='col-8 md-col-12'>
@@ -495,7 +526,7 @@ const Suppliers: React.FC = () => {
             </a>
             <p className='title__modals'>Actualizar proveedor</p>
             <form className='conatiner__create_suppliers' onSubmit={handleUpdateSuppliers}>
-              <div className='row'>
+              <div className='row shadow-custom bg-gray'>
                 <div className='col-4 md-col-6 sm-col-12'>
                   <label className='label__general'>Razon Social</label>
                   <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
@@ -506,26 +537,35 @@ const Suppliers: React.FC = () => {
                   <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
                   <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={tradename} onChange={(e) => setTradename(e.target.value)} placeholder='Ingresa el nombre' />
                 </div>
-                <div className='col-4 md-col-6 sm-col-12'>
-                  <label className='label__general'>Ubicacón</label>
-                  <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder='Ingresa el nombre' />
-                </div>
-                <div className='col-4 md-col-6 sm-col-12'>
-                  <label className='label__general'>Nombre de Contacto</label>
-                  <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder='Ingresa el nombre' />
-                </div>
-                <div className='col-4 md-col-6 sm-col-12'>
-                  <label className='label__general'>Telefono</label>
-                  <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} placeholder='Ingresa el nombre' />
-                </div>
-                <div className='col-4 md-col-6 sm-col-12'>
-                  <label className='label__general'>Correo</label>
-                  <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
-                  <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Ingresa el nombre' />
-                </div>
+                {permisos.some((x: any) => x.titulo === 'campos_extra') ? (
+                  <>
+                    <div className='col-4 md-col-6 sm-col-12'>
+                      <label className='label__general'>Ubicación</label>
+                      <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
+                      <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder='Ingresa el nombre' />
+                    </div>
+                    <div className='col-4 md-col-6 sm-col-12'>
+                      <label className='label__general'>Nombre de Contacto</label>
+                      <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
+                      <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder='Ingresa el nombre' />
+                    </div>
+                    <div className='col-4 md-col-6 sm-col-12'>
+                      <label className='label__general'>Telefono</label>
+                      <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
+                      <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} placeholder='Ingresa el nombre' />
+                    </div>
+                    <div className='col-4 md-col-6 sm-col-12'>
+                      <label className='label__general'>Correo</label>
+                      <div className='warning__general' style={styleWarningNombre}><small >Este campo es obligatorio</small></div>
+                      <input className={`inputs__general ${warningNombre ? 'warning' : ''}`} type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Ingresa el nombre' />
+                    </div>
+                    <div className='col-12 md-col-12 sm-col-12'>
+                      <label className='label__general'>Referencias</label>
+                      <textarea className={`inputs__general`} rows={3} value={referencias} onChange={(e) => setReferencias(e.target.value)} placeholder='Informativo para referenciar al proveedor' />
+                    </div>
+                  </>
+
+                ) : ''}
               </div>
               <div className='row'>
                 <div className='col-8 md-col-12'>

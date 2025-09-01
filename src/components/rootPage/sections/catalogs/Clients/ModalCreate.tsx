@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import './ModalCreate.css'
 import DynamicVariables from '../../../../../utils/DynamicVariables'
 import useUserStore from '../../../../../zustand/General'
+import { storeArticles } from '../../../../../zustand/Articles'
 
 const ModalCreate = () => {
 
@@ -188,30 +189,34 @@ const ModalCreate = () => {
     useEffect(() => {
         DynamicVariables.updateAnyVar(setInputs, "sucursales_remove", branchClientsRemove)
     }, [branchClientsRemove])
+    const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
     const handleCreateClients = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+        setModalLoading(true)
         try {
             if (modal == 'update_clients') {
                 try {
                     await APIs.updateClients(inputs)
                     setInputs(inputsClear)
                     setModal(false)
+                    setModalLoading(false)
                     Swal.fire('Cliente actualizado exitosamente', '', 'success');
                     return
                 } catch (error) {
+                    setModalLoading(false)
                     Swal.fire('Error', 'Hubo un error al actualizar el cliente', 'error');
                     return
                 }
-
             }
             await APIs.createClients(inputs)
+            setModalLoading(false)
             Swal.fire('Cliente creado exitosamente', '', 'success');
             setInputs(inputsClear)
             setModal(false)
 
         } catch (error) {
+            setModalLoading(false)
             Swal.fire('Error', 'Hubo un error al crear el cliente', 'error');
             console.error('Error creating Clients', error);
         }
@@ -289,15 +294,15 @@ const ModalCreate = () => {
                         </div>
                         <div className='col-6 md-col-6 sm-col-12'  ></div>
                         <div className='col-2 md-col-6 sm-col-12 m-2'  >
-                                <button title='Este botón habilitará el cliente a tus diferentes sucursales' type='button' className='btn__general-orange' onClick={() => setModalSub('modal-sub_create_clients')}>Habilitar a Sucursales</button>
+                            <button title='Este botón habilitará el cliente a tus diferentes sucursales' type='button' className='btn__general-orange' onClick={() => setModalSub('modal-sub_create_clients')}>Habilitar a Sucursales</button>
 
                         </div>
                     </div>
-                    {/* ------------------------------------------------------------------------------------------------------------ */ }
-                    
+                    {/* ------------------------------------------------------------------------------------------------------------ */}
+
                     <div className='container__cards'>
                         <div className=' '>
-                            <div style={{margin:'5px', borderRadius:'10px', background:'#7900c1', padding:'5px', width:'150px', color:'white', fontWeight:'bold'}}><p>INFORMACIÓN FISCAL</p></div>
+                            <div style={{ margin: '5px', borderRadius: '10px', background: '#7900c1', padding: '5px', width: '150px', color: 'white', fontWeight: 'bold' }}><p>INFORMACIÓN FISCAL</p></div>
                             <div className='row align-txt-left'>
                                 <div className='col-4 md-col-6 sm-col-12'>
                                     <small >Persona Jurídica</small>
@@ -316,7 +321,7 @@ const ModalCreate = () => {
                                     </select>
                                 </div>
                                 <div className='col-4 md-col-6 sm-col-12'>
-                                   
+
                                 </div>
                                 <div className='col-4 md-col-6 sm-col-12'>
                                     <small >Régimen Fiscal</small>
@@ -335,9 +340,9 @@ const ModalCreate = () => {
                                     </select>
                                 </div>
                                 <div className='col-4 md-col-6 sm-col-12'>
-                                   
+
                                 </div>
-                                 <div className='col-4 md-col-6 sm-col-12'>
+                                <div className='col-4 md-col-6 sm-col-12'>
                                     <small >Uso CFDI</small>
                                     <select className='inputs__general' value={inputs.uso_cfdi} onChange={(e) => DynamicVariables.updateAnyVar(setInputs, "uso_cfdi", parseInt(e.target.value))}>
                                         {uc.map((dat: any) => (
@@ -353,11 +358,11 @@ const ModalCreate = () => {
 
                             <div className='row'>
                                 <div className='col-4 md-col-4 sm-col-12'>
-                                     <small >Calle</small>
+                                    <small >Calle</small>
                                     <div className='warning__general'><small>Este campo es obligatorio</small></div>
                                     <input name="calle" className='inputs__general' type="text" value={inputs.calle} onChange={handleInputs} placeholder='Calle' />
-                                
-                                    </div>
+
+                                </div>
                                 <div className='col-2 md-col-2 sm-col-12'>
                                     <small >No. Exterior</small>
                                     <div className='warning__general'><small>Este campo es obligatorio</small></div>
@@ -374,23 +379,23 @@ const ModalCreate = () => {
                                     <input name="colonia" className='inputs__general' type="text" value={inputs.colonia} onChange={handleInputs} placeholder='Colonia' />
                                 </div>
                                 <div className='col-4 md-col-6 sm-col-12'>
-                                     <small >Código Postal</small>
+                                    <small >Código Postal</small>
                                     <div className='warning__general'><small>Este campo es obligatorio</small></div>
                                     <input name="codigo_postal" className='inputs__general' type="text" value={inputs.codigo_postal} onChange={handleInputs} placeholder='Código Postal' />
-                               
-                                 </div>
+
+                                </div>
                                 <div className='col-4 md-col-6 sm-col-12'>
-                                       <small >Municipio</small>
+                                    <small >Municipio</small>
                                     <div className='warning__general'><small>Este campo es obligatorio</small></div>
                                     <input name="municipio" className='inputs__general' type="text" value={inputs.municipio} onChange={handleInputs} placeholder='Municipio' />
-                                
-                                   </div>
+
+                                </div>
                                 <div className='col-4 md-col-6 sm-col-12'>
-                                     <small >Estado</small>
+                                    <small >Estado</small>
                                     <div className='warning__general'><small>Este campo es obligatorio</small></div>
                                     <input name="estado" className='inputs__general' type="text" value={inputs.estado} onChange={handleInputs} placeholder='Estado' />
-                                
-                                   </div>
+
+                                </div>
 
 
 

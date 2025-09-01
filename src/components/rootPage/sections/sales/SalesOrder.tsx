@@ -18,6 +18,7 @@ import LoadingInfo from '../../../loading/LoadingInfo'
 import { storeDv } from '../../../../zustand/Dynamic_variables'
 import APIs from '../../../../services/services/APIs'
 import SeeCamposPlantillas from './SeeCamposPlantillas'
+import ModalCreate from './quotations/ModalCreate'
 
 const SalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -391,6 +392,7 @@ const SalesOrder: React.FC = () => {
                     </div>
                 </div>
                 <Modal />
+
                 <div className='ovtab__container'>
                     <div className='ovtab__thead'>
                         <div className='ovtab__th'>Folio</div>

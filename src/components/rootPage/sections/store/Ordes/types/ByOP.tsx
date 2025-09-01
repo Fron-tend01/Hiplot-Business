@@ -39,7 +39,7 @@ const ByOP: React.FC = () => {
 
     const hoy = new Date();
     const haceUnaSemana = new Date();
-    haceUnaSemana.setDate(hoy.getDate() - 30);
+    haceUnaSemana.setDate(hoy.getDate() - 7);
 
     // Inicializa el estado con las fechas formateadas
     const [date, setDate] = useState([

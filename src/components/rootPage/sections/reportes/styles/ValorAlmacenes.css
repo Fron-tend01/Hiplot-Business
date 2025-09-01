@@ -1,0 +1,217 @@
+.ValorAlmacenes {
+    display: grid;
+    padding: 20px;
+    overflow: scroll;
+}
+
+.ValorAlmacenes__container {
+    display: grid;
+	grid-template-rows: auto auto 1fr;
+	height: 100%;
+	background-color: var(--background-sections);
+	padding: 20px ;
+	border-radius: 10px;
+}
+
+
+.table__ValorAlmacenes {
+    margin-top: 20px;
+    border-radius: 10px;
+    grid-column: 1 / span 2;
+
+}
+
+
+.table__ValorAlmacenes .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__ValorAlmacenes .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__ValorAlmacenes .table__head .thead {
+    display: grid;
+    grid-template-columns: 2fr 1fr 100px;
+    padding: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+}
+
+.table__ValorAlmacenes .table__body {
+	max-height: 150px;
+    overflow: hidden;
+    overflow: auto;
+    transition-delay: 0.0s;
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #1F319D; 
+        border-radius: 5px;
+        height: 100px;
+    }
+
+    &::-webkit-scrollbar-track {
+    /* Para modificar el background */
+    }
+}
+
+
+.table__ValorAlmacenes .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+  }
+  
+.table__ValorAlmacenes .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+  .table__ValorAlmacenes .table__body .tbody {
+    display: flex;
+}
+
+.table__ValorAlmacenes .table__body .tbody {
+    display: grid;
+    grid-template-columns: 2fr 1fr 100px;
+    padding: 10px;
+}
+
+.table__ValorAlmacenes .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+.table__ValorAlmacenes .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+}
+/* -------------------------------------------------- */
+/* .table__ValorAlmacenesData {
+    margin-top: 20px;
+    border-radius: 10px;
+    grid-column: 1 / span 1;
+
+}
+
+
+.table__ValorAlmacenesData .table__head {
+    display: flex;
+    width: 100%;
+    background-color: var( --table-color);
+    border-radius: 5px 5px 0 0;
+}
+
+.table__ValorAlmacenesData .table__head .thead {
+   display: flex;
+   width: 100%;
+}
+
+.table__ValorAlmacenesData .table__head .thead {
+    display: grid;
+    grid-template-columns: 2fr repeat(6,1fr);
+    padding: 10px;
+    font-weight: 600;
+    color: var(--text-table-color);
+}
+
+.table__ValorAlmacenesData .table__body {
+	max-height: 150px;
+}
+
+
+.table__ValorAlmacenesData .tbody__container:nth-child(even) {
+    background-color: var(--table-color);
+  }
+  
+.table__ValorAlmacenesData .tbody__container:nth-child(odd) {
+    background-color: var(--two-table-color);
+}
+
+  .table__ValorAlmacenesData .table__body .tbody {
+    display: flex;
+}
+
+.table__ValorAlmacenesData .table__body .tbody {
+    display: grid;
+    grid-template-columns: 2fr repeat(6,1fr);
+    padding: 10px;
+}
+
+.table__ValorAlmacenesData .table__body .tbody .td {
+    color: var(--text-color);
+}
+
+.table__ValorAlmacenesData .table__body .tbody:hover {
+    background-color: var(--secundary-color);
+    color: #fff;
+} */
+
+/*  */
+
+.table__ValorAlmacenesData {
+  width: 100%;
+  border-collapse: collapse;
+  /* font-size: 0.95rem; */
+  background: #fff;
+  overflow: hidden;
+  position: relative;
+}
+
+.table__ValorAlmacenesData thead {
+  background: #2f3e65; /* tono oscuro para contraste */
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.table__ValorAlmacenesData th,
+.table__ValorAlmacenesData td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e3e8f1;
+  vertical-align: middle;
+}
+
+.table__ValorAlmacenesData tbody tr:nth-child(odd) {
+  background: #f9fbfd;
+}
+
+.table__ValorAlmacenesData tbody tr:hover {
+  background: #f9fbfd;
+}
+
+.table__ValorAlmacenesData .truncate {
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table__ValorAlmacenesData .code {
+  font-size: 0.8em;
+  color: #555;
+}
+
+.table__ValorAlmacenesData .no-data {
+  text-align: center;
+  padding: 1rem;
+  color: #666;
+}
+
+/* Responsive: scroll horizontal en pantallas pequeñas */
+@media (max-width: 900px) {
+  .table__ValorAlmacenesData {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .table__ValorAlmacenesData th,
+  .table__ValorAlmacenesData td {
+    min-width: 120px;
+  }
+}

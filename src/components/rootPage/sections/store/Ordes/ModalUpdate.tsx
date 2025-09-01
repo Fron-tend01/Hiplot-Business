@@ -47,7 +47,7 @@ const ModalUpdate = ({ oderUpdate }: any,) => {
 
     try {
       setModalLoading(true)
-      await updateModeOrders({ id, status })
+      await updateModeOrders({ id, status, id_usuario: user_id })
       setModalLoading(false)
       await getOrdedrs(data)
       setModal('')

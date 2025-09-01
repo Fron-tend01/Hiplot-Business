@@ -18,6 +18,7 @@ import { useStore } from 'zustand'
 import { storeDv } from '../../../../zustand/Dynamic_variables'
 import { storeArticles } from '../../../../zustand/Articles'
 import SeeCamposPlantillas from './SeeCamposPlantillas'
+import { useSearchParams } from 'react-router-dom'
 
 
 const Quotation: React.FC = () => {
@@ -66,7 +67,23 @@ const Quotation: React.FC = () => {
     }
   }
 
+ const [params] = useSearchParams();
+  const id = params.get("id");
 
+  useEffect(() => {
+    if (id) {
+      APIs.getQuotation({ id }).then(result => {
+        const order_search = result[0];
+        setModal("update-modal__qoutation");
+        setQuotes({
+          quotes: order_search,
+          normal_concepts: order_search.conceptos,
+          personalized_concepts: order_search.conceptos_pers
+        });
+        setQuatation(order_search);
+      });
+    }
+  }, [id]);
 
   const hoy = new Date();
   const haceUnaSemana = new Date();

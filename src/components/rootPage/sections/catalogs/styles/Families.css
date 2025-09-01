@@ -121,7 +121,7 @@
 .table__families {
     display: grid;
     height: 100%;
-    grid-template-rows: repeat(2, auto) 1fr;
+    grid-template-rows: repeat(3, auto) 1fr;
 }
 
 
@@ -139,7 +139,7 @@
 
 .table__families .table__head .thead {
     display: grid;
-    grid-template-columns: 1fr 1fr 100px;
+    grid-template-columns: 1fr 1fr 1fr 100px;
     padding: 10px;
     font-weight: 600;
     color: var(--text-table-color);
@@ -179,7 +179,7 @@
 
 .table__families .table__body .tbody {
     display: grid;
-    grid-template-columns: 1fr 1fr 100px;
+    grid-template-columns: 1fr 1fr 1fr 100px;
     padding: 10px;
 }
 

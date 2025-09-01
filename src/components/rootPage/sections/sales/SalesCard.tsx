@@ -384,7 +384,19 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
   const handleTemplatesChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     let value: any = e.target.value
     if (article.plantilla_data[index].tipo == 'numero') {
-      value = e.target.value;
+      let max = article.plantilla_data[index].max
+      // value = e.target.value;
+      // Convertimos a número
+      const numericValue = Number(value);
+
+      if (value === '' || value === null || isNaN(numericValue)) {
+
+      } else if (max !== undefined && max !== null && numericValue > Number(max) && max > 0) {
+        value = '';
+        Swal.fire('Notificación', 'No puedes exceder el maximo permitido de este campo. Intenta con un valor más pequeño', 'warning')
+      } else {
+        value = numericValue;
+      }
     }
     const updatedArticle = { ...article };
     updatedArticle.plantilla_data[index].valor = value;
@@ -604,6 +616,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
               nombre_campo_plantilla: x.nombre,
               tipo_campo_plantilla: x.tipo,
               considerado_total: x.considerado_total,
+              max: x.max,
               valor: x.tipo == 'texto' ? x.valor.toString() : x.valor
               // valor: x.valor.toString()
             }))
@@ -1682,7 +1695,7 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                                 :
                                 x.tipo == 'numero' ?
                                   <div>
-                                    <label className='label__general'>{x.nombre}(*)</label>
+                                    <label className='label__general'>{x.nombre}(*)  </label>
                                     <input
                                       className={`inputs__general`}
                                       type="number"
@@ -1690,6 +1703,9 @@ const SalesCard: React.FC<any> = ({ idA, dataArticle, indexUpdate }: any) => {
                                       onChange={(e) => handleTemplatesChange(e, index)}
                                       placeholder={x.nombre}
                                     />
+                                    {x.max > 0 && x.max != undefined && x.max != null ?
+                                      <small style={{ color: 'red' }}>{x.max && ` Max. (${x.max})`}</small>
+                                      : ''}
                                   </div>
                                   :
                                   ''

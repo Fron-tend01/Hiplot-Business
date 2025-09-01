@@ -25,6 +25,9 @@ import { saleOrdersRequests } from '../../../../../fuctions/SaleOrders'
 import { storeArticles } from '../../../../../zustand/Articles'
 import { storeProduction } from '../../../../../zustand/Production'
 import ModalProduction from '../../production/ModalProduction'
+import { storeQuotation } from '../../../../../zustand/Quotation'
+import { Link } from 'react-router-dom'
+import { PrivateRoutes } from '../../../../../models/routes'
 
 const ModalSalesOrder: React.FC = () => {
     const userState = useUserStore(state => state.user);
@@ -154,7 +157,6 @@ const ModalSalesOrder: React.FC = () => {
             } else {
                 let off = !result.status ? true : false
                 setClienteOff(off)
-                console.log('entrando aquiiiiiiiiii222', result);
 
             }
 
@@ -185,7 +187,7 @@ const ModalSalesOrder: React.FC = () => {
             setClienteOff(false)
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setNormalConcepts(saleOrdersToUpdate?.conceptos)
-            // debugger
+            debugger
             setDates([`${saleOrdersToUpdate.fecha_entrega_produccion}T${saleOrdersToUpdate.hora_entrega_produccion}`, `${saleOrdersToUpdate.fecha_entrega_cliente}T${saleOrdersToUpdate.hora_entrega_cliente}`]);
             setDataProduction({
                 "fecha_produccion": saleOrdersToUpdate.fecha_entrega_produccion,
@@ -342,7 +344,7 @@ const ModalSalesOrder: React.FC = () => {
                 setCustomConcepts([])
                 setConceptView([])
                 setCustomConceptView([])
-                setSaleOrdersConcepts({ normal_concepts: [], personalized_concepts: [] });
+                // setSaleOrdersConcepts({ normal_concepts: [], personalized_concepts: [] });
                 setUrgenciaG(false)
                 setov_repo(null)
                 setAmount(0)
@@ -481,7 +483,51 @@ const ModalSalesOrder: React.FC = () => {
 
         }
     }
+    const SaleOrderActivate = async () => {
 
+
+        const dataSaleOrders = {
+            id: saleOrdersToUpdate.id,
+            folio: 0,
+            id_sucursal: 0,
+            id_serie: 0,
+            id_cliente: 0,
+            desde: haceUnaSemana.toISOString().split('T')[0],
+            hasta: hoy.toISOString().split('T')[0],
+            id_usuario: user_id,
+            id_vendedor: selectedIds?.users?.id,
+            status: 0,
+            page: 1,
+        }
+        Swal.fire({
+            title: "Esta acción activará la orden de venta?",
+            text: "Esta acción no reaparta ni aparta automaticamente, solo cambia el status de la OV para su seguimiento, desea continuar?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: "Aceptar",
+            denyButtonText: `Cancelar`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    setModalLoading(true)
+                    let response: any = await APIs.CreateAnyPut({}, 'activar_orden_venta/' + saleOrdersToUpdate.id + '/' + user_id)
+                    const result = await getSaleOrders(dataSaleOrders)
+                    setModalLoading(false)
+                    // setNormalConcepts(result[0].conceptos);
+                    setSaleOrdersConcepts({ sale_order: result[0], normal_concepts: result[0].conceptos, personalized_concepts: result[0].conceptos_pers });
+
+                    setSaleOrdersToUpdate(result[0])
+
+                    Swal.fire('Exito', response.mensaje, 'success');
+                } catch (error) {
+                    setModalLoading(false)
+                    Swal.fire('Error', error, 'error')
+                    console.log(error)
+                }
+            }
+        });
+
+    }
 
     const setModalLoading = storeArticles((state: any) => state.setModalLoading);
 
@@ -605,7 +651,6 @@ const ModalSalesOrder: React.FC = () => {
             id_pers: article.id_pers,
             id_usuario_actualiza: user_id
         }
-        debugger
         // return
         try {
             setModalLoading(true)
@@ -620,15 +665,15 @@ const ModalSalesOrder: React.FC = () => {
                 await APIs.CreateAny(d, "get_orden_venta")
                     .then(async (response: any) => {
                         let order = response[0]
-                        // setSaleOrdersToUpdate(order)
-                        setSaleOrdersConcepts({ normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                        setSaleOrdersConcepts({ sale_order: order, normal_concepts: order.conceptos, personalized_concepts: order.conceptos_pers });
+                        setSaleOrdersToUpdate(order)
 
                         setModalLoading(false)
 
                     })
             }
 
-            search()
+            // search()
         } catch (error: any) {
             Swal.fire('Error al actualizar el concepto', error, 'success');
         }
@@ -688,7 +733,7 @@ const ModalSalesOrder: React.FC = () => {
 
         if (modalSalesOrder === 'sale-order__modal' && modalSalesOrder == 'sale-order__modal_bycot') {
             calcular_tiempos_entrega();
-            console.log('entrando en update');
+            console.log('CALCULANDO TIEMPOS DE ENTREGA LINEA 733');
 
         }
     }, [modalSalesOrder, changeLength])
@@ -696,7 +741,8 @@ const ModalSalesOrder: React.FC = () => {
     useEffect(() => {
         if (modalSalesOrder === 'sale-order__modal' && modalSalesOrder == 'sale-order__modal_bycot') {
             calcular_tiempos_entrega();
-            console.log('entrando en update');
+            console.log('CALCULANDO TIEMPOS DE ENTREGA LINEA 741');
+
 
         }
     }, [branchOffices])
@@ -721,20 +767,29 @@ const ModalSalesOrder: React.FC = () => {
     //     }
     // }, [modalSalesOrder, branchOffices])
 
-
+    const normalLen = saleOrdersConcepts?.normal_concepts?.length ?? 0;
+    const personalizedLen = saleOrdersConcepts?.personalized_concepts?.length ?? 0;
     useEffect(() => {
 
         calcular_totales()
 
-        if (modalSalesOrder === 'sale-order__modal') {
-            calcular_tiempos_entrega();
-        }
+        // if (modalSalesOrder === 'sale-order__modal') {
+        //     calcular_tiempos_entrega();
+        // }
         if (saleOrdersConcepts?.normal_concepts?.length == 0 && saleOrdersConcepts?.personalized_concepts?.length == 0) {
             setModifyTe(0) //CM01INHDLGRECL11S
         }
 
     }, [saleOrdersConcepts])
+    useEffect(() => {
+        if (modalSalesOrder === "sale-order__modal") {
+            calcular_tiempos_entrega();
+            console.log('CALCULANDO TIEMPOS DE ENTREGA LINEA 784');
+            console.log('MODOUPDATE', modeUpdate);
+            console.log('modalSalesOrder', modalSalesOrder);
 
+        }
+    }, [modalSalesOrder, normalLen, personalizedLen]);
 
 
 
@@ -801,7 +856,7 @@ const ModalSalesOrder: React.FC = () => {
 
     useEffect(() => {
         if (modalSalesOrder === 'sale-order__modal_bycot' || modalSalesOrder == 'sale-order__modal') {
-            setIdCotizacion(saleOrdersToUpdate.id)
+            setIdCotizacion(saleOrdersToUpdate.id_cotizacion_relacionada)
             setDataSaleOrder(saleOrdersToUpdate?.conceptos)
             setCompanies({ id: saleOrdersToUpdate.id_empresa })
             setBranchOffices({ id: saleOrdersToUpdate.id_sucursal })
@@ -830,6 +885,8 @@ const ModalSalesOrder: React.FC = () => {
                 setClienteOff(off)
             })
             calcular_tiempos_entrega()
+            console.log('CALCULANDO TIEMPOS DE ENTREGA LINEA 883');
+
             // setClienteOff(false)
 
         } else {
@@ -847,7 +904,7 @@ const ModalSalesOrder: React.FC = () => {
 
     const hora = hoy.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
-
+    const [loadingTimes, setLoadingTimes] = useState<boolean>(false)
     const calcular_tiempos_entrega = async () => {
         let conceptos_a_enviar: any[] = []
 
@@ -868,24 +925,25 @@ const ModalSalesOrder: React.FC = () => {
 
 
         let data = {
-            id_sucursal: saleOrdersToUpdate.id_sucursal || branchOffices.id || saleOrdersConcepts.sale_order.id_sucursal,
+            id_sucursal: userState.sucursal_id,
             articulos: conceptos_a_enviar
         }
         // debugger
+        setLoadingTimes(true)
         await APIs.CreateAny(data, "calcular_tiempo_entrega")
             .then(async (response: any) => {
-                console.log('response', response)
                 setModifyTe(0)
+                setLoadingTimes(false)
+
                 if (response.hora_cliente && response.hora_produccion) {
                     setDataProduction(response)
-                    console.log('holaaaaaaaa')
                     setDates([`${response.fecha_produccion}T${response.hora_produccion}`, `${response.fecha_cliente}T${response.hora_cliente}`])
                 } else {
                     setDataProduction(response)
                     setDates([`${response.fecha_produccion}T${hora}`, `${response.fecha_cliente}T${hora}`])
                 }
             }).catch(() => {
-
+                setLoadingTimes(false)
             })
     }
     const setModalSub = storeModals((state) => state.setModalSub);
@@ -1063,8 +1121,8 @@ const ModalSalesOrder: React.FC = () => {
         setUrgenciaG(urg)
         setModalLoading(true)
         console.log(saleOrdersConcepts);
-        // return
-        await APIs.GetAny('calcular_urgencia_global_ov/' + saleOrdersToUpdate.id + '/' + urg).then(async (resp: any) => {
+        let id_orden = saleOrdersToUpdate.id ?? saleOrdersConcepts.sale_order.id
+        await APIs.GetAny('calcular_urgencia_global_ov/' + id_orden + '/' + urg).then(async (resp: any) => {
 
             await APIs.GetAny('get_carrito/' + user_id).then((r: any) => {
                 let orden = r[0]
@@ -1383,6 +1441,8 @@ const ModalSalesOrder: React.FC = () => {
         } else {
             // debugger
             calcular_tiempos_entrega();
+            console.log('CALCULANDO TIEMPOS DE ENTREGA LINEA 1439');
+
         }
 
     }, [statusUrgency])
@@ -1473,24 +1533,26 @@ const ModalSalesOrder: React.FC = () => {
             i === index ? { ...concept, [key]: valor } : concept
         );
         setSaleOrdersConcepts({ ...saleOrdersConcepts, normal_concepts: updatedConcepts });
+        if (!modeUpdate) {
 
-        // Limpiar timeout anterior si existe
-        if (typingTimeoutRef.current) {
-            clearTimeout(typingTimeoutRef.current);
-        }
-        updatedConcepts[index].id_usuario_actualiza = user_id
-
-        // Crear nuevo timeout para enviar los datos tras 500 ms sin escribir
-        typingTimeoutRef.current = setTimeout(async () => {
-            try {
-                let response: any = await APIs.CreateAny(updatedConcepts[index], "update_carrito_concepto");
-                if (response?.error) {
-                    Swal.fire('Notificación', response.mensaje, 'warning');
-                }
-            } catch (error) {
-                console.error('Error al actualizar concepto:', error);
+            // Limpiar timeout anterior si existe
+            if (typingTimeoutRef.current) {
+                clearTimeout(typingTimeoutRef.current);
             }
-        }, 1000);
+            updatedConcepts[index].id_usuario_actualiza = user_id
+
+            // Crear nuevo timeout para enviar los datos tras 500 ms sin escribir
+            typingTimeoutRef.current = setTimeout(async () => {
+                try {
+                    let response: any = await APIs.CreateAny(updatedConcepts[index], "update_carrito_concepto");
+                    if (response?.error) {
+                        Swal.fire('Notificación', response.mensaje, 'warning');
+                    }
+                } catch (error) {
+                    console.error('Error al actualizar concepto:', error);
+                }
+            }, 1000);
+        }
     };
 
     const ChangeInputsPers = (key: any, valor: any, index: number) => {
@@ -1790,6 +1852,9 @@ const ModalSalesOrder: React.FC = () => {
         });
         setSaleOrdersConcepts({ normal_concepts: saleOrdersConcepts.normal_concepts, personalized_concepts: updatedConcepts });
     }
+    const handleOpenQuotation = async () => {
+        window.open(`${PrivateRoutes.QUOTATION}?id=${saleOrdersToUpdate?.id_cotizacion_relacionada}`, '_blank', 'noopener,noreferrer');
+    };
     return (
         <div className={`overlay__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
             <div className={`popup__sale-order__modal_articles ${modalSalesOrder == 'sale-order__modal' || modalSalesOrder == 'sale-order__modal-update' || modalSalesOrder == 'sale-order__modal_bycot' ? 'active' : ''}`}>
@@ -1922,10 +1987,18 @@ const ModalSalesOrder: React.FC = () => {
                                     <div className='d-flex align-items-center justify-content-between'>
                                         <h3 className="text" title={saleOrdersToUpdate?.id}>{saleOrdersToUpdate.serie}-{saleOrdersToUpdate.folio}-{saleOrdersToUpdate.anio}</h3>
                                         {modalSalesOrder == 'sale-order__modal_bycot' || saleOrdersToUpdate?.id_cotizacion_relacionada > 0 && saleOrdersToUpdate?.id_cotizacion_relacionada != undefined ?
-                                            <div className='d-flex align-items-center related_quote_order'>
+                                            <div className='d-flex align-items-center related_quote_order' title='Ir a cotización relacionada'>
                                                 <p>Cotización relacionada</p>
                                                 {saleOrdersToUpdate?.id_cotizacion_relacionada > 0 ?
-                                                    <h3 className="text">{saleOrdersToUpdate.serie_cotizacion}-{saleOrdersToUpdate.folio_cotizacion}-{saleOrdersToUpdate.anio_cotizacion}</h3>
+                                                    <>
+                                                        <a
+                                                            style={{ cursor: 'pointer' }}
+                                                            className="sale-btn"
+                                                            onClick={handleOpenQuotation}
+                                                        >
+                                                            <h3 className="text" >{saleOrdersToUpdate.serie_cotizacion}-{saleOrdersToUpdate.folio_cotizacion}-{saleOrdersToUpdate.anio_cotizacion}</h3>
+                                                        </a>
+                                                    </>
                                                     :
                                                     <h3 className="text" >{saleOrdersToUpdate.serie}-{saleOrdersToUpdate.folio}-{saleOrdersToUpdate.anio}</h3>
                                                 }
@@ -2007,7 +2080,7 @@ const ModalSalesOrder: React.FC = () => {
                                                                                 margin: 0,
                                                                             }}
                                                                         >
-                                                                            {facts.folio_completo}
+                                                                            {facts.folio_completo} - {facts.area_produccion}
                                                                         </p>
                                                                     </div>
                                                                 </div>
@@ -2035,7 +2108,20 @@ const ModalSalesOrder: React.FC = () => {
                                                     </div>
                                                     : ''
                                             }
+                                            {saleOrdersToUpdate.ordenes_produccion.length > 0 && permisosxVista.some((x: any) => x.titulo === 'reenviar_a_produccion') ?
 
+                                                <div className='mr-4'>
+                                                    <button className='btn__general-purple' onClick={SaleOrderProduction}>Mandar a producción</button>
+                                                </div>
+                                                : ''}
+                                            {permisosxVista.some((x: any) => x.titulo === 'activar') ?
+                                                (saleOrdersToUpdate.status === 2 ?
+                                                    <div className='mr-4'>
+                                                        <button className='btn__general-purple' onClick={SaleOrderActivate}>Activar Orden</button>
+                                                    </div>
+                                                    : ''
+                                                )
+                                                : ''}
                                             <div>
                                                 <button className='btn__general-orange' onClick={binnacleModal}>Bitácora</button>
                                             </div>
@@ -2106,59 +2192,77 @@ const ModalSalesOrder: React.FC = () => {
                                 </div>
 
                                 <div className="my-4 row">
-                                    {modify_te !== 0 && (
-                                        <div className="col-12">
-                                            <b style={{ color: "red" }} title="Esta leyenda aparece cuando las fechas son ingresadas de forma manual">
-                                                Esta orden tiene Fechas de Entrega Modificadas
-                                            </b>
-                                        </div>
-                                    )}
-                                    {dataProduction?.sin_tiempos && (
-                                        <div className="col-12 parpadeo">
-                                            <b style={{ color: "red" }} title="Esta leyenda aparece cuando las fechas son ingresadas de forma manual">
-                                                CONSULTAR TIEMPOS CON PRODUCCIÓN
-                                            </b>
-                                        </div>
-                                    )}
-                                    <div className="col-4 sale-order__input_container d-flex align-items-center">
-                                        <p className="label__general">Fecha de entrega a producción</p>
-                                        <div className="container_dates__requisition">
-                                            <input
-                                                disabled={
-                                                    permisosxVista?.some((x: any) => x?.titulo !== 'modificar_tiempos')
-                                                        ? false
-                                                        : dataProduction?.sin_tiempos === true
-                                                            ? false
-                                                            : statusUrgency === true
+                                    {!loadingTimes ? (
+                                        <>
+                                            {modify_te !== 0 && (
+                                                <div className="col-12">
+                                                    <b style={{ color: "red" }} title="Esta leyenda aparece cuando las fechas son ingresadas de forma manual">
+                                                        Esta orden tiene Fechas de Entrega Modificadas
+                                                    </b>
+                                                </div>
+                                            )}
+                                            {dataProduction?.sin_tiempos && (
+                                                <div className="col-12 parpadeo">
+                                                    <b style={{ color: "red" }} title="Esta leyenda aparece cuando las fechas son ingresadas de forma manual">
+                                                        CONSULTAR TIEMPOS CON PRODUCCIÓN
+                                                    </b>
+                                                </div>
+                                            )}
+                                            <div className="col-4 sale-order__input_container d-flex align-items-center">
+                                                <p className="label__general">Fecha de entrega a producción</p>
+                                                <div className="container_dates__requisition">
+                                                    <input
+                                                        disabled={
+                                                            permisosxVista?.some((x: any) => x?.titulo !== 'modificar_tiempos')
                                                                 ? false
-                                                                : true
-                                                }
-                                                // disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction.sin_tiempos ? true : statusUrgency ? false : true : dataProduction.sin_tiempos ? true : statusUrgency ? false : true}
+                                                                : dataProduction?.sin_tiempos === true
+                                                                    ? false
+                                                                    : statusUrgency === true
+                                                                        ? false
+                                                                        : true
+                                                        }
+                                                        // disabled={permisosxVista.some((x: any) => x.titulo === 'modificar_tiempos') ? dataProduction.sin_tiempos ? true : statusUrgency ? false : true : dataProduction.sin_tiempos ? true : statusUrgency ? false : true}
 
-                                                type="datetime-local"
-                                                value={dates[0]}
-                                                className="date"
-                                                onChange={(event) => handleDateChange(event, 0)}
-                                                placeholder="Selecciona la fecha de inicio"
-                                            />
+                                                        type="datetime-local"
+                                                        value={dates[0]}
+                                                        className="date"
+                                                        onChange={(event) => handleDateChange(event, 0)}
+                                                        placeholder="Selecciona la fecha de inicio"
+                                                    />
 
+                                                </div>
+                                            </div>
+
+                                            {/* Fecha de entrega cliente */}
+                                            <div className="col-4 sale-order__input_container d-flex align-items-center">
+                                                <p className="label__general">Fecha de entrega cliente</p>
+                                                <div className="container_dates__requisition">
+                                                    <input
+                                                        disabled={permisosxVista.some((x: any) => x.titulo !== 'modificar_tiempos') ? false : dataProduction?.sin_tiempos ? false : statusUrgency ? false : true}
+                                                        type="datetime-local"
+                                                        value={dates[1]}
+                                                        className="date"
+                                                        onChange={(event) => handleDateChange(event, 1)}
+                                                        placeholder="Selecciona la fecha de fin"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                        </>
+                                    ) :
+                                        <div className="col-4 flex items-center justify-center parpadeo">
+                                            <div className="text-center p-2">
+                                                <div className="clock">
+                                                    <div className="clock-face">
+                                                        <div className="dots"></div>
+                                                        <div className="hour-hand"></div>
+                                                        <div className="minute-hand"></div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-sm text-gray-800 loading-text">Cargando tiempos de entrega</div>
+                                            </div>
                                         </div>
-                                    </div>
-
-                                    {/* Fecha de entrega cliente */}
-                                    <div className="col-4 sale-order__input_container d-flex align-items-center">
-                                        <p className="label__general">Fecha de entrega cliente</p>
-                                        <div className="container_dates__requisition">
-                                            <input
-                                                disabled={permisosxVista.some((x: any) => x.titulo !== 'modificar_tiempos') ? false : dataProduction?.sin_tiempos ? false : statusUrgency ? false : true}
-                                                type="datetime-local"
-                                                value={dates[1]}
-                                                className="date"
-                                                onChange={(event) => handleDateChange(event, 1)}
-                                                placeholder="Selecciona la fecha de fin"
-                                            />
-                                        </div>
-                                    </div>
+                                    }
                                     {modalSalesOrder === 'sale-order__modal-update' ?
                                         <>
                                             <div className="col-4 sale-order__input_container d-flex align-items-center">
@@ -2181,6 +2285,7 @@ const ModalSalesOrder: React.FC = () => {
                                         :
                                         ''
                                     }
+
                                     {/* {permisosxVista.some((x: any) => x.titulo === 'entregado_cliente_enviado_sucursal') ?
                                     <div className='col-4 row'>
                                     <div className='col-6'>

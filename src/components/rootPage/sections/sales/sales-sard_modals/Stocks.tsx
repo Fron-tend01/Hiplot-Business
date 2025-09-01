@@ -10,7 +10,6 @@ const Stocks: React.FC = () => {
   const setModalSub = storeModals(state => state.setModalSub)
   const { modalSub }: any = useStore(storeModals)
 
-  const unidad = article?.unidades?.find((unidad: any) => unidad.unidad_almacen === true);
   const default_store = article?.stock?.find((x: any) => x.id === article?.almacen_predeterminado?.id);
  
   return (
@@ -70,7 +69,7 @@ const Stocks: React.FC = () => {
                                 <p className='name__store'>{item?.nombre}</p>
                               </div>
                               <div className='td'>
-                                <p className='stock'>{item?.stock}</p>
+                                <p className='stock'  style={item.stock > 0 ? { background: '#0c243cec', color:'white' } : {}}>{item?.stock} - {item?.unidad_alm}</p>
                               </div>
                             </div>
                           </div>
@@ -113,7 +112,7 @@ const Stocks: React.FC = () => {
                           <p className='name__store'>{item?.nombre}</p>
                         </div>
                         <div className='td'>
-                          <p className='stock'>{item?.stock}-{unidad?.nombre}</p>
+                          <p   style={item.stock > 0 ? { background: '#0c243cec', color:'white' } : {}} className='stock'  >{item?.stock} - {item?.unidad_alm}</p>
                         </div>
                       </div>
                     </div>

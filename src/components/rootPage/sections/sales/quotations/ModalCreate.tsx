@@ -161,8 +161,8 @@ const ModalCreate: React.FC = () => {
       id_sucursal: modal === 'create-modal__qoutation' ? branch.id : quatation.id_sucursal,
       id_cliente: selectedResult?.id ?? quatation.id_cliente,
       id_usuario_crea: user_id,
-      titulo: quotes.quotes.titulo,
-      comentarios: quotes.quotes.comentarios,
+      titulo: quotes.quotes.titulo ?? quoteFields.titulo,
+      comentarios: quotes.quotes.comentarios ?? quoteFields.comentarios,
       conceptos: quotes?.normal_concepts,
       conceptos_pers: quotes?.personalized_concepts,
       conceptos_elim: quotes?.normal_concepts_eliminate,
@@ -226,6 +226,8 @@ const ModalCreate: React.FC = () => {
     quotes.id_cliente = quatation.id_cliente
     quotes.id_usuario_crea = user_id
     quotes.id_usuario = user_id
+    quotes.titulo = quotes.quotes.titulo
+    quotes.id_cotizacion_relacionada = quotes.quotes.id
 
     quotes.conceptos = quotes.conceptos.filter((x: any) => x.check == true)
     quotes.conceptos_pers = quotes.conceptos_pers.filter((x: any) => x.check == true)
@@ -241,7 +243,7 @@ const ModalCreate: React.FC = () => {
           setSaleOrdersConcepts({ sale_order: orden, normal_concepts: orden?.conceptos ?? [], personalized_concepts: orden?.conceptos_pers ?? [] });
           setModalLoading(false)
           setModalSalesOrder('sale-order__modal')
-          // setSaleOrdersToUpdate(orden)
+          setSaleOrdersToUpdate(orden)
         })
         Swal.fire('Notificacion', resp.mensaje, 'success')
       } else {
@@ -284,6 +286,7 @@ const ModalCreate: React.FC = () => {
       setQuoteFields((prev: any) => ({
         ...prev,
         comentarios: quotes.quotes.comentarios,
+        comentarios_internos: quotes.quotes.comentarios_internos,
       }));
       DynamicVariables.updateAnyVar(setInfo_sc, 'vendedor', quotes.quotes.id_usuario_crea)
     }
@@ -384,7 +387,7 @@ const ModalCreate: React.FC = () => {
         }
         copy_data.id_sucursal = branch?.id
         copy_data.id_solicitud_cotizacion = info_sc?.folio_sc || 0
-        // debugger
+        debugger
         // return
         if (copy_data?.conceptos != undefined && copy_data?.conceptos?.length > 0) {
           copy_data?.conceptos?.forEach(element => {
@@ -435,7 +438,7 @@ const ModalCreate: React.FC = () => {
           return
         }
         copy_data.id_cliente = selectedResult?.id ?? copy_data.id_cliente
-        debugger
+        // debugger
         if (!info_sc.cot_propia) {
           copy_data.id_usuario_crea = info_sc.vendedor
         } else {
@@ -463,6 +466,12 @@ const ModalCreate: React.FC = () => {
               //   element.obs_factura = element.comentarios
               //   element.obs_produccion = element.comentarios_prod
               // }
+              if (el.obs_factura == null) {
+                el.obs_factura = el.comentarios
+              }
+              if (el.obs_produccion == null) {
+                el.obs_produccion = el.comentarios_prod
+              }
               el.unidad = el.id_unidad
               el.descuento = 0
               el?.campos_plantilla.forEach(e => {
@@ -519,11 +528,14 @@ const ModalCreate: React.FC = () => {
         ? [...quotes.personalized_concepts_eliminate, concept.id]
         : [...quotes.personalized_concepts_eliminate],
     });
-    localStorage.setItem(
-      'cotizacion',
-      JSON.stringify([...(quotes?.normal_concepts ?? []), ...updatedConcepts])
-    );
-    localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
+    if (modal === 'create-modal__qoutation') {
+
+      localStorage.setItem(
+        'cotizacion',
+        JSON.stringify([...(quotes?.normal_concepts ?? []), ...updatedConcepts])
+      );
+      localStorage.setItem('cotizacion-pers', JSON.stringify(deleteItemCustomC));
+    }
   };
   const clearCotizacion = () => {
     Swal.fire({
@@ -540,9 +552,11 @@ const ModalCreate: React.FC = () => {
           personalized_concepts: [],
           personalized_concepts_eliminate: [],
         });
+        if (modal === 'create-modal__qoutation') {
 
-        localStorage.removeItem('cotizacion');
-        localStorage.removeItem('cotizacion-pers');
+          localStorage.removeItem('cotizacion');
+          localStorage.removeItem('cotizacion-pers');
+        }
       }
     });
 
@@ -563,7 +577,10 @@ const ModalCreate: React.FC = () => {
   const deleteNormalConcept = (item: any, i: number) => {
     const filter = quotes?.normal_concepts.filter((_: any, index: number) => index !== i)
     setQuotes({ normal_concepts: filter, normal_concepts_eliminate: item.id ? [...quotes.normal_concepts_eliminate, item.id] : [...quotes.normal_concepts_eliminate] });
-    localStorage.setItem('cotizacion', JSON.stringify(filter));
+    if (modal === 'create-modal__qoutation') {
+      localStorage.setItem('cotizacion', JSON.stringify(filter));
+    }
+
     toast.success('Concepto eliminado')
   }
 
@@ -680,7 +697,10 @@ const ModalCreate: React.FC = () => {
 
     // Guardamos cambios
     setQuotes({ ...quotes, personalized_concepts: updatedPers });
-    localStorage.setItem("cotizacion-pers", JSON.stringify(updatedPers));
+    if (modal === 'create-modal__qoutation') {
+      localStorage.setItem("cotizacion-pers", JSON.stringify(updatedPers));
+    }
+
   };
   //EFFECT PARA CALCULAR LOS TOTALES CUANDO CAMBIE NORMALCONCEPTS-----------------------------------------------------------------------------
   useEffect(() => {
@@ -733,9 +753,9 @@ const ModalCreate: React.FC = () => {
   const abrirFichaModifyConcept = async (x: any, index: number) => {
     setI((prevI) => {
       const newI = prevI + 1;
-      setIdA(newI); // Ahora usará el valor actualizado
       return newI;
     });
+    setIdA(x.id_articulo); // Ahora usará el valor actualizado
     setIdArticle(x.id_articulo)
 
     setIndexUpdate(index)
@@ -843,18 +863,24 @@ const ModalCreate: React.FC = () => {
         urgencia: 0,
         total: prev.subtotal + prev.descuento
       }));
-
-      localStorage.setItem('urgency', JSON.stringify(false));
+      if (modal === 'create-modal__qoutation') {
+        localStorage.setItem('urgency', JSON.stringify(false));
+      }
       setQuotes({
         ...quotes,
         normal_concepts: quotes.normal_concepts,
         personalized_concepts: quotes.personalized_concepts
       });
-      localStorage.setItem('cotizacion', JSON.stringify(quotes.normal_concepts));
-      localStorage.setItem('cotizacion-pers', JSON.stringify(quotes.personalized_concepts));
+      if (modal === 'create-modal__qoutation') {
+
+        localStorage.setItem('cotizacion', JSON.stringify(quotes.normal_concepts));
+        localStorage.setItem('cotizacion-pers', JSON.stringify(quotes.personalized_concepts));
+      }
     } else {
       setUrgenciaG(urg);
-      localStorage.setItem('urgency', JSON.stringify(true));
+      if (modal === 'create-modal__qoutation') {
+        localStorage.setItem('urgency', JSON.stringify(true));
+      }
 
       let lenghtp = 0;
       quotes.personalized_concepts.forEach(s => {
@@ -897,9 +923,10 @@ const ModalCreate: React.FC = () => {
         normal_concepts: quotes.normal_concepts,
         personalized_concepts: quotes.personalized_concepts
       });
-
-      localStorage.setItem('cotizacion', JSON.stringify(quotes.normal_concepts));
-      localStorage.setItem('cotizacion-pers', JSON.stringify(quotes.personalized_concepts));
+      if (modal === 'create-modal__qoutation') {
+        localStorage.setItem('cotizacion', JSON.stringify(quotes.normal_concepts));
+        localStorage.setItem('cotizacion-pers', JSON.stringify(quotes.personalized_concepts));
+      }
     }
   };
 
@@ -978,22 +1005,29 @@ const ModalCreate: React.FC = () => {
 
   //   cont setDataDynamic = storeDv(state  => state.setDataDynamic)
   const ChangeInputs = (key: any, valor: any, index: number) => {
-    localStorage.setItem('cotizacion', '[]');
+    if (modal === 'create-modal__qoutation') {
+      localStorage.setItem('cotizacion', '[]');
+    }
 
     const updatedConcepts = quotes.normal_concepts.map((concept, i) =>
       i === index ? { ...concept, [key]: valor } : concept
     );
     setQuotes({ ...quotes, normal_concepts: updatedConcepts });
-    localStorage.setItem('cotizacion', JSON.stringify(updatedConcepts));
+    if (modal === 'create-modal__qoutation') {
+      localStorage.setItem('cotizacion', JSON.stringify(updatedConcepts));
+    }
   }
   const ChangeInputsPers = (key: any, valor: any, index: number) => {
-    localStorage.setItem('cotizacion-pers', '[]');
-
+    if (modal === 'create-modal__qoutation') {
+      localStorage.setItem('cotizacion-pers', '[]');
+    }
     const updatedConcepts = quotes.personalized_concepts.map((concept, i) =>
       i === index ? { ...concept, [key]: valor } : concept
     );
     setQuotes({ ...quotes, personalized_concepts: updatedConcepts });
-    localStorage.setItem('cotizacion-pers', JSON.stringify(updatedConcepts));
+    if (modal === 'create-modal__qoutation') {
+      localStorage.setItem('cotizacion-pers', JSON.stringify(updatedConcepts));
+    }
   }
   const ChangeInputsDentrodePers = (key: any, valor: any, index: number, indexConcept: number) => {
     const updatedConcepts = quotes.personalized_concepts.map((concept, i) => {
@@ -1011,7 +1045,9 @@ const ModalCreate: React.FC = () => {
 
     const updatedQuotes = { ...quotes, personalized_concepts: updatedConcepts };
     setQuotes(updatedQuotes);
-    localStorage.setItem('cotizacion-pers', JSON.stringify(updatedConcepts));
+    if (modal === 'create-modal__qoutation') {
+      localStorage.setItem('cotizacion-pers', JSON.stringify(updatedConcepts));
+    }
   };
 
   return (
@@ -1209,11 +1245,18 @@ const ModalCreate: React.FC = () => {
                 <label className='label__general'>Título</label>
                 <div className='warning__general'><small >Este campo es obligatorio</small></div>
                 <input className={`inputs__general`} type="text" value={quoteFields.titulo} onChange={(e) => setQuoteFields({ ...quoteFields, titulo: e.target.value })} placeholder='Ingresa el título' />
+
+
               </div>
-              <div className='col-8 md-col-12'>
+              <div className='col-5 md-col-12'>
                 <label className='label__general'>Comentarios</label>
                 <div className='warning__general'><small >Este campo es obligatorio</small></div>
                 <textarea className={`textarea__general`} value={quoteFields.comentarios} onChange={(e) => setQuoteFields({ ...quoteFields, comentarios: e.target.value })} placeholder='Comentarios'></textarea>
+
+              </div>
+              <div className='col-3 md-col-12' title='Estos comentarios no se muestran en el PDF de la cotización'>
+                <label className='label__general'>Comentarios Internos</label>
+                <textarea className={`textarea__general`} value={quoteFields.comentarios_internos} onChange={(e) => setQuoteFields({ ...quoteFields, comentarios_internos: e.target.value })} placeholder='Estos comentarios no se muestran dentro del PDF de la Cotizacion'></textarea>
 
               </div>
               <div className='col-12 text-center m-3 md-col-12'>
@@ -1584,7 +1627,7 @@ const ModalCreate: React.FC = () => {
                                     <div className='tbody__container card' key={indexConcept} style={{ zoom: '80%', backgroundColor: '#d4d4d4ff' }}>
                                       <div className='tbody'>
 
-                                        <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => abrirFichaModifyConcept(x, index)}>
+                                        <div className='td ' style={{ cursor: 'pointer' }} title='Haz clic aquí para modificar tu concepto' onClick={() => Swal.fire('Notificacion', 'Para modificar este concepto, debes sacarlo del personalizado.', 'info')}>
                                           <p className='article'>{x.codigo}-{x.descripcion}</p>
                                         </div>
                                         <div className='td'>
@@ -1601,7 +1644,7 @@ const ModalCreate: React.FC = () => {
                                         </div>
                                         <div className='td '>
                                           <div>
-                                            <p className='total'>$ {parseFloat(x.precio_total).toFixed(2)}</p>
+                                            <p className='total'>$ {parseFloat(x.total).toFixed(2)}</p>
                                             <p className='total__franch'>{x.total_franquicia != null && !Number.isNaN(x.total_franquicia) && permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') ?
                                               <small>PF:${parseFloat(x.total_franquicia).toFixed(2)}</small> : ''}</p>
                                           </div>
@@ -1614,7 +1657,7 @@ const ModalCreate: React.FC = () => {
                                         </div>
                                         <div className='td '>
                                           <div>
-                                            <p className='total'>$ {(parseFloat(x.precio_total) + parseFloat(x.urgencia)).toFixed(2)}</p>
+                                            <p className='total'>$ {(parseFloat(x.total) + parseFloat(x.urgencia)).toFixed(2)}</p>
                                             <p className='total__franch'>{x.total_franquicia != null && !Number.isNaN(x.total_franquicia)
                                               && permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') ?
                                               <small>PF:${parseFloat(x.total_franquicia).toFixed(2)}</small> : ''}</p>

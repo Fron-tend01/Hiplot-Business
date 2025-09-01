@@ -31,6 +31,7 @@
     transition: .3s ease all;
     transform: scale(0.7);
     opacity: 0;
+    overflow: scroll;
 }
 
 .popup__stock_modal .btn-cerrar-popup__stock_modal {
@@ -56,7 +57,7 @@
 }
 
 .conatiner__create_sale-card-stock {
-
+    
 }
 
 .conatiner__create_sale-card-stock .row__one {

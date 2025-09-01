@@ -45,6 +45,8 @@ const HojasBlancas: React.FC = () => {
     searcher.id_sucursal = sucursal.id
     searcher.id_vendedor = selectsData.vendedor.id
     searcher.con_pago = conPago
+    searcher.desde = date[0]
+    searcher.hasta = date[1]
     setModalLoading(true)
     await APIs.CreateAny(searcher, "reporte_hojas_blancas")
       .then(async (response: any) => {

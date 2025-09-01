@@ -6,7 +6,8 @@
 }
 
 .row__one_main {
-    overflow: auto;
+	overflow: auto;
+
 	&::-webkit-scrollbar {
 		width: 5px;
 	}
@@ -19,6 +20,7 @@
 
 	&::-webkit-scrollbar-track {}
 }
+
 .sale-order__modal_articles>.row__one {
 	/* overflow: auto; */
 
@@ -479,7 +481,7 @@
 
 .table__sales_modal .table__body .tbody__container:hover {
 	background-color: #E2E2E2 !important;
-    color: #000000;
+	color: #000000;
 }
 
 /* .table__sales_modal .tbody:hover {
@@ -947,7 +949,112 @@ sale-order_production__modal_articles .table__sales_modal .table__body .tbody>.t
 	/* Un color gris más sutil */
 }
 
+.clock {
+	width: 24px;
+	height: 24px;
+	border: 2px solid #3b82f6;
+	border-radius: 50%;
+	position: relative;
+	margin: 0 auto 4px;
+}
 
+.clock-face {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.clock:after {
+	content: '';
+	position: absolute;
+	background-color: #3b82f6;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 2px;
+	height: 2px;
+	border-radius: 50%;
+}
+
+.hour-hand,
+.minute-hand {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	background-color: #3b82f6;
+	transform-origin: 50% 100%;
+	border-radius: 4px;
+}
+
+
+.hour-hand {
+	width: 2px;
+	height: 8px;
+	margin-top: -8px;
+	animation: rotate 8s infinite linear;
+}
+
+.minute-hand {
+	width: 1px;
+	height: 10px;
+	margin-top: -10px;
+	animation: rotate 2s infinite linear;
+}
+
+@keyframes rotate {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.dots {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+        .dots:before, .dots:after {
+            content: '';
+            position: absolute;
+            background-color: #3b82f6;
+            border-radius: 50%;
+            width: 2px;
+            height: 2px;
+        }
+        
+        .dots:before {
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .dots:after {
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .loading-text {
+            position: relative;
+            overflow: hidden;
+            font-size: 12px;
+        }
+        
+        .loading-text:after {
+            content: '...';
+            position: absolute;
+            animation: dots 1.5s steps(3, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
 
 
 

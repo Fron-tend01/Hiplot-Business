@@ -742,6 +742,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   const updateStatus = async () => {
     const data = {
       id: purchaseOrderToUpdate.id,
+      id_usuario_crea: user_id,
       status: purchaseOrderToUpdate.status == 0 ? 1 : 0
     }
 

@@ -47,9 +47,11 @@ const Prices: React.FC<any> = ({ id_grupo_us }) => {
                   <div className='th'>
                     <p className=''>Precio Frente y Vuelta</p>
                   </div>
-                  <div className='th'>
-                    <p className=''>Ultima Actualización</p>
-                  </div>
+                  {permisosxVistaheader.length > 0 && checkPermission('ficha-ultima-fecha-act') ? (
+                    <div className='th'>
+                      <p className=''>Ultima Actualización</p>
+                    </div>
+                  ) : ''}
                 </div>
               </div>
               <div className='table__body'>
@@ -59,23 +61,33 @@ const Prices: React.FC<any> = ({ id_grupo_us }) => {
                     <div className="tbody__container" key={index}>
                       <div className="tbody">
                         <div className="td">
-                          <p className='ranges'>{item?.precios_ext[0]?.rango}</p>
+                          {item?.precios_ext.length === 0 ? (
+                            <p className='ranges'>--</p>) : (
+                              item?.precios_ext.map((ext: any, extIndex: number) => (
+                                <>
+                                <label className='ranges'>{ext.rango}</label>  
+                                </>
+                              ))
+                              )}
+                          {/* <p className='ranges'>{item?.precios_ext[0]?.rango}</p> */}
                         </div>
                         <div className="td">
-                          <p className='price'>{item?.precios}</p>
+                          <p className='price'>$ {item?.precios}</p>
                         </div>
                         <div className="td">
-                          <p className='price'>{item?.precios_fyv}</p>
+                          <p className='price'>$ {item?.precios_fyv}</p>
                         </div>
-                        <div className="td">
-                          <p>{item?.fecha}</p>
-                        </div>
+                        {permisosxVistaheader.length > 0 && checkPermission('ficha-ultima-fecha-act') ? (
+                          <div className="td">
+                            <p>{item?.fecha}</p>
+                          </div>
+                        ) : ''}
                       </div>
                     </div>
                   ))}
               </div>
             </div>
-            {article?.precios_franquicia != null && permisosxVistaheader.length>0 && checkPermission('totales_franquicia')?
+            {article?.precios_franquicia != null && permisosxVistaheader.length > 0 && checkPermission('totales_franquicia') ?
               <>
                 <b>PRECIOS DE FRANQUICIA</b>
                 <div className='table__head'>

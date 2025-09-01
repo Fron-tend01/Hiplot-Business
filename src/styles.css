@@ -453,7 +453,16 @@
 	/* background-color: var(--bg-300); */
 	border-radius: 5px;
 }
-
+.bg-gray {
+  width: 100%;
+  background-color: #c7c7c7 !important;
+  margin-top: 10px;
+  border: none;
+  outline: none;
+  padding: 10px 0;
+  border-radius: 3px;
+  /* text-indent: 15px; */
+}
 
 .breadcrumbs>div {
 	display: flex;
@@ -511,6 +520,12 @@
 
 .help-card:hover {
   background: #eee;
+}
+.shadow-custom {
+  padding:10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 8px; /* Opcional: bordes redondeados */
+  background-color: #fff; /* Opcional: para contrastar con la sombra */
 }
 
 

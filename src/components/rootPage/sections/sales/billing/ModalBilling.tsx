@@ -920,7 +920,7 @@ const ModalBilling: React.FC = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 setModalLoading(true)
-                APIs.CreateAny({ id: DataUpdate.id }, 'desligar_factura').then((resp: any) => {
+                APIs.CreateAny({ id: DataUpdate.id, id_usuario_actualiza:user_id }, 'desligar_factura').then((resp: any) => {
                     setSubModal('')
                     Swal.fire('Notificacion', resp.mensaje, 'success')
                     setModalLoading(false)

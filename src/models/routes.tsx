@@ -68,6 +68,9 @@ export const PrivateRoutes = {
   ULTIMOSCOSTOS: 'UltimosCostos',
   HOJASBLANCAS: 'HojasBlancas',
   VENTAS: 'Ventas',
+  PRECIOSDEVENTA: 'PreciosDeVenta',
+  VALORDEALMACEN: 'ValorAlmacenes',
+  ACTIVIDADES: 'Actividades',
   WAREHOUSEMOVEMENTS: 'warehouse-movements',
   // Web //
   WEB: 'web',

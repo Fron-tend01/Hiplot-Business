@@ -81,7 +81,7 @@ const ByOrder: React.FC = () => {
 
     })
         setModalLoading(false)
-
+    setConcepts([])
     setOrders(result)
   }
 

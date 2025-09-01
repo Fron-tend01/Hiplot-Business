@@ -373,10 +373,28 @@ const RootHome: React.FC = () => {
                                     }else if (permiso.titulo == "VENTAS") {
                                         return (
                                             <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')} to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.VENTAS}`}>
-                                                <span>VENTAS</span>
+                                                <span>Ventas</span>
                                             </AnchorTag>
                                         );
-                                    } else {
+                                    } else if (permiso.titulo == "PRECIOS DE VENTA") {
+                                        return (
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')} to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.PRECIOSDEVENTA}`}>
+                                                <span>Precios de Venta</span>
+                                            </AnchorTag>
+                                        );
+                                    }else if (permiso.titulo == "VALOR ALMACENES") {
+                                        return (
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')} to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.VALORDEALMACEN}`}>
+                                                <span>Valor de Almacen</span>
+                                            </AnchorTag>
+                                        );
+                                    }else if (permiso.titulo == "ACTIVIDADES") {
+                                        return (
+                                            <AnchorTag className='sub__menu-link' onClick={() => toggleSubMenu(7, 'reportes')} to={`${PrivateRoutes.REPORTES}/${PrivateRoutes.ACTIVIDADES}`}>
+                                                <span>Actividades</span>
+                                            </AnchorTag>
+                                        );
+                                    }else {
                                         return null;
                                     }
                                 })}

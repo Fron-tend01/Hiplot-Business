@@ -7,6 +7,9 @@ import WarehouseMovements from "../../../components/rootPage/sections/reportes/W
 import ExistenciaPorAlmacen from "../../../components/rootPage/sections/reportes/ExistenciaPorAlmacen";
 import HojasBlancas from "../../../components/rootPage/sections/reportes/HojasBlancas";
 import Ventas from "../../../components/rootPage/sections/reportes/Ventas";
+import PreciosDeVenta from "../../../components/rootPage/sections/reportes/PreciosDeVenta";
+import ValorAlmacenes from "../../../components/rootPage/sections/reportes/ValorAlmacenes";
+import Actividades from "../../../components/rootPage/sections/reportes/Actividades";
 
 
 const RouteReportes: React.FC = () => {
@@ -20,6 +23,9 @@ const RouteReportes: React.FC = () => {
       <Route path={`/${PrivateRoutes.HOJASBLANCAS}`} element={<HojasBlancas />} />
       {/* <Route path={`/${PrivateRoutes.HOJASBLANCAS}`} element={<HojasBlancas />} /> */}
       <Route path={`/${PrivateRoutes.VENTAS}`} element={<Ventas />} />
+      <Route path={`/${PrivateRoutes.PRECIOSDEVENTA}`} element={<PreciosDeVenta />} />
+      <Route path={`/${PrivateRoutes.VALORDEALMACEN}`} element={<ValorAlmacenes />} />
+      <Route path={`/${PrivateRoutes.ACTIVIDADES}`} element={<Actividades />} />
     </Routes>
   );
 };

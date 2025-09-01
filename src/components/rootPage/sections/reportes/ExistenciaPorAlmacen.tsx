@@ -608,13 +608,14 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                                 </th>
                                                 {mu ?
                                                     <>
-                                                        <th>ACT</th>
-                                                        <th>CC</th>
-                                                        <th>CT</th>
-                                                        <th>DES</th>
-                                                        <th>IE</th>
-                                                        <th>PL</th>
-                                                        <th>VSS</th>
+                                                        <th title='ACTIVO'>ACT</th>
+                                                        <th title='CONSULTAR COTIZADOR'>CC</th>
+                                                        <th title='CONSULTAR TIEMPOS DE ENTREGA'>CT</th>
+                                                        <th title='DESABASTO'>DES</th>
+                                                        <th title='IVA EXCENTO'>IE</th>
+                                                        <th title='PRECIO LIBRE'>PL</th>
+                                                        <th title='VENDER SIN STOCK'>VSS</th>
+                                                        <th title='VISUALIZACION WEB'>VW</th>
                                                         <th></th>
                                                     </>
                                                     : ''}
@@ -835,6 +836,16 @@ const ExistenciaPorAlmacen: React.FC = () => {
                                                                     setEditableArticulos(prev => {
                                                                         const copy = { ...prev };
                                                                         copy[almacen.id][i] = { ...copy[almacen.id][i], vender_sin_stock: value };
+                                                                        return copy;
+                                                                    });
+                                                                }} />
+                                                            </td>
+                                                            <td>
+                                                                <input type="checkbox" checked={articulo.visualizacion_web} onChange={(e) => {
+                                                                    const value = e.target.checked;
+                                                                    setEditableArticulos(prev => {
+                                                                        const copy = { ...prev };
+                                                                        copy[almacen.id][i] = { ...copy[almacen.id][i], visualizacion_web: value };
                                                                         return copy;
                                                                     });
                                                                 }} />
