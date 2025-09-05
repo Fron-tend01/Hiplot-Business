@@ -419,50 +419,57 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
   const [total, setTotal] = useState<number>(0);
 
   const [ivaTotal, setIvaTotal] = useState<any>(0)
-  useEffect(() => {
-    let subtotalValue = 0;
-    let priceSubtotalTotal = 0;
-    let totalDiscount = 0;
-    let ivaTotal = 0;
+useEffect(() => {
+  let subtotalValue = 0;
+  let priceSubtotalTotal = 0;
+  let totalDiscount = 0;
+  let ivaTotal = 0;
 
-    conceptos.forEach((article: any) => {
-      const total_cantidad = article.cantidad || 1;
-      const precio_unitario = article.precio_unitario || 0;
-      const porcentaje_descuento = article.descuento || 0;
+  conceptos.forEach((article: any) => {
+    const total_cantidad = article.cantidad || 1;
+    const precio_unitario = article.precio_unitario || 0;
+    const porcentaje_descuento = article.descuento || 0;
 
-      // Calculamos el descuento en monto (basado en porcentaje)
-      const descuento_monto = (precio_unitario * total_cantidad) * (porcentaje_descuento / 100);
-      totalDiscount += descuento_monto;
+    // 1. Subtotal sin descuento
+    const subtotal = precio_unitario * total_cantidad;
 
-      // Calculamos el IVA
-      let iva_x_precio = 0;
-      if (article.iva_on) {
-        const iva = precio_unitario * 0.16;
-        iva_x_precio = precio_unitario + iva;
-        ivaTotal += iva * total_cantidad;
-      } else {
-        iva_x_precio = precio_unitario;
-      }
+    // 2. Descuento
+    const descuento_monto = subtotal * (porcentaje_descuento / 100);
+    totalDiscount += descuento_monto;
 
-      // Acumulamos el subtotal sin descuento
-      priceSubtotalTotal += precio_unitario * total_cantidad;
+    // 3. Subtotal después del descuento
+    const subtotalConDescuento = subtotal - descuento_monto;
 
-      // Acumulamos el subtotal con IVA y descuento aplicado
-      subtotalValue += (iva_x_precio * total_cantidad) - descuento_monto;
-    });
-
-    const totalValue = subtotalValue;
-
-    if (freightCostActive) {
-      setTotal(totalValue + Number(freightCost));
+    // 4. IVA sobre el subtotal con descuento
+    let iva_x_precio = 0;
+    if (article.iva_on) {
+      const iva = subtotalConDescuento * 0.16;
+      iva_x_precio = subtotalConDescuento + iva;
+      ivaTotal += iva;
     } else {
-      setTotal(totalValue);
+      iva_x_precio = subtotalConDescuento;
     }
 
-    setSubtotal(priceSubtotalTotal);
-    setDiscount(totalDiscount);
-    setIvaTotal(ivaTotal);
-  }, [conceptos, freightCostActive, freightCost]);
+    // Acumulamos el subtotal sin descuento
+    priceSubtotalTotal += subtotal;
+
+    // Acumulamos el subtotal con IVA y descuento
+    subtotalValue += iva_x_precio;
+  });
+
+  const totalValue = subtotalValue;
+
+  if (freightCostActive) {
+    setTotal(totalValue + Number(freightCost));
+  } else {
+    setTotal(totalValue);
+  }
+
+  setSubtotal(priceSubtotalTotal);
+  setDiscount(totalDiscount);
+  setIvaTotal(ivaTotal);
+}, [conceptos, freightCostActive, freightCost]);
+
 
   // useEffect(() => {
   //   let subtotalValue = 0;
@@ -1363,7 +1370,7 @@ const ModalPurchaseOrders = ({ purchaseOrderToUpdate }: any) => {
               </div>
               <div className='urgency'>
                 <div>
-                  <p className='name'>Urgencia</p>
+                  <p className='name'>IVA</p>
                   <p className='value'>$ {ivaTotal.toFixed(2)}</p>
                 </div>
               </div>
