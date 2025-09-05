@@ -16,7 +16,6 @@ const Store: React.FC = () => {
   const fetch = async () => {
     const result = await getStore(user_id)
     setStore(result)
-    
   }
 
   useEffect(() => {

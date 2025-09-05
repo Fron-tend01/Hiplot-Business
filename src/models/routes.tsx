@@ -72,6 +72,10 @@ export const PrivateRoutes = {
   VALORDEALMACEN: 'ValorAlmacenes',
   ACTIVIDADES: 'Actividades',
   WAREHOUSEMOVEMENTS: 'warehouse-movements',
+
+  // ACTIVOS //
+  ACTIVOS: 'activos',
+
   // Web //
   WEB: 'web',
 

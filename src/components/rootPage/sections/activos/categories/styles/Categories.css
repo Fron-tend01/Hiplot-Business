@@ -1,0 +1,330 @@
+/* Activos Component Styles */
+.activos .categories__container {
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.activos .categories__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--line-general);
+}
+
+.activos .categories__header h2 {
+    color: var(--text-color);
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.activos .categories__header .btn__general-purple {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+
+
+.activos .categories__header .btn__general-purple svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Table Styles */
+.activos .categories__table {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.activos .categories__table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.activos .categories__table thead {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.activos .categories__table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.activos .categories__table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line-general);
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.activos .categories__table tbody tr:hover {
+    background-color: var(--sidebar-hover-color);
+    transition: background-color 0.2s ease;
+}
+
+.activos .categories__table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Actions Container */
+.activos .actions__container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.activos .btn__edit,
+.activos .btn__delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.activos .btn__edit {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.activos .btn__edit:hover {
+    background-color: #2563eb;
+    transform: scale(1.05);
+}
+
+.activos .btn__delete {
+    background-color: #ef4444;
+    color: white;
+}
+
+.activos .btn__delete:hover {
+    background-color: #dc2626;
+    transform: scale(1.05);
+}
+
+.activos .btn__edit svg,
+.activos .btn__delete svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Subcategoria Badge */
+.activos .subcategoria-badge {
+    display: inline-block;
+    background-color: #e3f2fd;
+    color: #1976d2;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 2px 4px 2px 0;
+    border: 1px solid #bbdefb;
+}
+
+/* Modal Styles */
+.activos .overlay__categories_modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.activos .overlay__categories_modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.activos .popup__categories_modal {
+    background-color: white;
+    border-radius: 12px;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.7);
+    transition: transform 0.3s ease;
+}
+
+.activos .overlay__categories_modal.active .popup__categories_modal {
+    transform: scale(1);
+}
+
+.activos .btn-cerrar-popup__categories_modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f4f6;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.activos .btn-cerrar-popup__categories_modal:hover {
+    background-color: #e5e7eb;
+    transform: scale(1.1);
+}
+
+.activos .svg__close {
+    width: 16px;
+    height: 16px;
+    fill: #6b7280;
+}
+
+.activos .title__modals {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 20px 0;
+    text-align: center;
+}
+
+.activos .container__categories_modal {
+    margin-top: 20px;
+}
+
+.activos .container__categories_modal .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.activos .container__categories_modal .col-12 {
+    flex: 0 0 100%;
+    padding: 0 10px;
+}
+
+.activos .label__general {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+
+.activos .warning__general {
+    margin-bottom: 8px;
+}
+
+.activos .warning__general small {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+
+
+.activos .inputs__general::placeholder {
+    color: #9ca3af;
+}
+
+.activos .create__categories_btn_modal {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.activos .create__categories_btn_modal .btn__general-purple {
+    padding: 12px 30px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.activos .create__categories_btn_modal .btn__general-purple:hover {
+    background-color: var(--primary-color-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .activos .categories__container {
+        padding: 15px;
+    }
+    
+    .activos .categories__header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .activos .categories__header h2 {
+        font-size: 20px;
+        text-align: center;
+    }
+    
+    .activos .categories__table {
+        overflow-x: auto;
+    }
+    
+    .activos .categories__table table {
+        min-width: 600px;
+    }
+    
+    .activos .popup__categories_modal {
+        width: 95%;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .activos .categories__table th,
+    .activos .categories__table td {
+        padding: 12px 15px;
+        font-size: 13px;
+    }
+    
+    .activos .actions__container {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .activos .btn__edit,
+    .activos .btn__delete {
+        width: 28px;
+        height: 28px;
+    }
+}

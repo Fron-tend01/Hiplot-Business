@@ -99,6 +99,10 @@ const Series: React.FC = () => {
     {
       id: 12,
       name: 'Cobros a Franquicia'
+    },
+    {
+      id: 13,
+      name: 'Activos Entrada'
     }
   ]
 

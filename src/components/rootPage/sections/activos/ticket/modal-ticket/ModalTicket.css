@@ -1,0 +1,451 @@
+/* Modal Overlay */
+.overlay__tickets_modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.overlay__tickets_modal.active {
+  opacity: 1;
+  visibility: visible; 
+}
+
+/* Modal Popup */
+.popup__tickets_modal {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  position: relative;
+  transform: translateY(-20px);
+  transition: transform 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.overlay__tickets_modal.active .popup__tickets_modal {
+  transform: translateY(0);
+}
+
+/* Close Button */
+.btn-cerrar-popup__tickets_modal {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-color-light);
+  transition: color 0.2s ease;
+  padding: 5px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-cerrar-popup__tickets_modal:hover {
+  color: var(--danger-color);
+  background-color: var(--hover-light-color);
+}
+
+.btn-cerrar-popup__tickets_modal svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Modal Title */
+.popup__tickets_modal .title__modals {
+  font-size: 28px;
+  color: var(--text-color);
+  margin-bottom: 25px;
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 1px solid var(--line-general);
+  padding-bottom: 15px;
+}
+
+/* Form styles */
+.popup__tickets_modal .tickets__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.popup__tickets_modal .activos__section {
+  border: 1px solid var(--line-general);
+  border-radius: 8px;
+  padding: 20px;
+  background-color: var(--background-color-light);
+}
+
+.popup__tickets_modal .section__title {
+  font-size: 18px;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  font-weight: 600;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-general);
+}
+
+.popup__tickets_modal .form__row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.popup__tickets_modal .form__row_three {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.popup__tickets_modal .form__col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.popup__tickets_modal .form__col_full {
+  flex: 1 1 100%;
+}
+
+/* Input Groups */
+.popup__tickets_modal .container__inputs_general {
+  position: relative;
+  text-align: justify;
+}
+
+.popup__tickets_modal .container__textarea_general {
+  position: relative;
+  text-align: justify;
+  height: 100%;
+}
+
+.popup__tickets_modal .label__general {
+  font-weight: 500;
+  display: block;
+  border-radius: var(--border-radius-general);
+  color: var(--text-color);
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.popup__tickets_modal .inputs__general {
+  width: 100%;
+  background-color: var(--input-color);
+  color: var(--text-color);
+  margin-top: 8px;
+  border: none;
+  outline: none;
+  padding: 10px 12px;
+  border-radius: 3px;
+  outline: 2px solid #f2f2f2;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.popup__tickets_modal .inputs__general:hover {
+  outline: 2px solid var(--primary-color);
+}
+
+.popup__tickets_modal .inputs__general:focus {
+  outline: 2px solid var(--primary-color);
+}
+
+.popup__tickets_modal .inputs__general.warning {
+  outline: 2px solid #D0342C;
+}
+
+.popup__tickets_modal .inputs__general.warning:focus {
+  outline: 2px solid #D0342C;
+}
+
+.popup__tickets_modal .inputs__general::placeholder {
+  color: var(--placeholder-color);
+}
+
+/* Textarea */
+.popup__tickets_modal .textarea__general {
+  width: 100%;
+  background-color: var(--input-color);
+  margin-top: 8px;
+  border: none;
+  outline: none;
+  padding: 12px;
+  border-radius: 3px;
+  display: block;
+  color: var(--text-color);
+  outline: 2px solid #f2f2f2;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 80px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.popup__tickets_modal .textarea__general:hover {
+  outline: 2px solid var(--primary-color);
+}
+
+.popup__tickets_modal .textarea__general:focus {
+  outline: 2px solid var(--primary-color);
+}
+
+.popup__tickets_modal .textarea__general.warning {
+  outline: 2px solid #D0342C;
+}
+
+.popup__tickets_modal .textarea__general.warning:focus {
+  outline: 2px solid #D0342C;
+}
+
+.popup__tickets_modal .textarea__general::placeholder {
+  color: var(--placeholder-color);
+}
+
+/* Warning Messages */
+.popup__tickets_modal .warning__general {
+  color: #D0342C;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Form Actions */
+.popup__tickets_modal .form__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid var(--line-general);
+  gap: 15px;
+}
+
+.popup__tickets_modal .btn__general-gray {
+  background-color: #6c757d;
+  padding: 15px 30px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-general);
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 400ms;
+  min-width: 200px;
+}
+
+.popup__tickets_modal .btn__general-gray:hover {
+  transform: scale(1.05);
+  background-color: #5a6268;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.popup__tickets_modal .btn__general-gray:active {
+  transform: scale(.95);
+}
+
+.popup__tickets_modal .btn__general-purple:active {
+  transform: scale(.95);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .popup__tickets_modal .form__row_three {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .popup__tickets_modal {
+    padding: 20px;
+    max-width: 95%;
+  }
+
+  .popup__tickets_modal .title__modals {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .popup__tickets_modal .form__row,
+  .popup__tickets_modal .form__row_three {
+    flex-direction: column;
+    gap: 15px;
+    grid-template-columns: 1fr;
+  }
+
+  .popup__tickets_modal .form__actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .popup__tickets_modal .btn__general-gray,
+  .popup__tickets_modal .btn__general-purple {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .popup__tickets_modal {
+    padding: 15px;
+  }
+
+  .popup__tickets_modal .title__modals {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .popup__tickets_modal .activos__section {
+    padding: 15px;
+  }
+
+  .popup__tickets_modal .section__title {
+    font-size: 16px;
+  }
+
+  .popup__tickets_modal .inputs__general,
+  .popup__tickets_modal .textarea__general {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .popup__tickets_modal .label__general {
+    font-size: 12px;
+  }
+}
+
+/* Estilos para activos encontrados y seleccionados */
+.popup__tickets_modal .activos-resultados {
+  margin-top: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--line-general);
+  border-radius: 6px;
+  background-color: var(--input-color);
+}
+
+.popup__tickets_modal .activo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid var(--line-general);
+  transition: background-color 0.2s ease;
+}
+
+.popup__tickets_modal .activo-item:last-child {
+  border-bottom: none;
+}
+
+.popup__tickets_modal .activo-item:hover {
+  background-color: var(--background-hover-select);
+}
+
+.popup__tickets_modal .activo-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.popup__tickets_modal .activo-info strong {
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.popup__tickets_modal .activo-descripcion {
+  color: var(--text-color-light);
+  font-size: 12px;
+}
+
+.popup__tickets_modal .btn-agregar-activo {
+  padding: 6px 12px;
+  font-size: 12px;
+  min-width: auto;
+}
+
+.popup__tickets_modal .activos-seleccionados {
+  margin-top: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--line-general);
+  border-radius: 6px;
+  background-color: var(--input-color);
+}
+
+.popup__tickets_modal .activo-seleccionado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid var(--line-general);
+  transition: background-color 0.2s ease;
+}
+
+.popup__tickets_modal .activo-seleccionado:last-child {
+  border-bottom: none;
+}
+
+.popup__tickets_modal .activo-seleccionado:hover {
+  background-color: var(--background-hover-select);
+}
+
+.popup__tickets_modal .activo-numero {
+  background-color: var(--primary-color);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 12px;
+}
+
+.popup__tickets_modal .activo-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.popup__tickets_modal .btn-eliminar-activo {
+  background: none;
+  border: none;
+  color: var(--danger-color);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup__tickets_modal .btn-eliminar-activo:hover {
+  background-color: var(--danger-light-color);
+}
+
+.popup__tickets_modal .btn-eliminar-activo svg {
+  width: 14px;
+  height: 14px;
+}

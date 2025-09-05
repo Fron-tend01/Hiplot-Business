@@ -1,0 +1,275 @@
+/* Assignments Component Styles */
+.assignments {
+  padding: 20px;
+  min-height: 100vh;
+  background-color: var(--white-color);
+}
+
+.assignments__container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.assignments__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--line-general);
+}
+
+.assignments__header h2 {
+  color: var(--text-color);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.assignments__header .btn__general-purple {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+
+
+.assignments__header .btn__general-purple svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Table Styles */
+.assignments__table {
+  background-color: var(--input-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 2px solid var(--line-general);
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.assignments__table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.assignments__table thead {
+  background-color: var(--primary-color);
+  color: var(--text-100);
+}
+
+.assignments__table th {
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.assignments__table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line-general);
+  color: var(--text-color);
+  font-size: 14px;
+  background-color: var(--input-color);
+}
+
+.assignments__table tbody tr:nth-child(even) {
+  background-color: var(--cards-background);
+}
+
+.assignments__table tbody tr:hover {
+  background-color: var(--background-hover-select);
+  color: var(--text-100);
+  transition: all 0.2s ease;
+}
+
+.assignments__table tbody tr:hover td {
+  color: var(--text-100);
+}
+
+.assignments__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Scrollbar Styles */
+.assignments__table::-webkit-scrollbar {
+  width: 8px;
+}
+
+.assignments__table::-webkit-scrollbar-track {
+  background: var(--cards-background);
+  border-radius: 4px;
+}
+
+.assignments__table::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+.assignments__table::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color-hover);
+}
+
+/* Actions Container */
+.assignments .actions__container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.assignments .btn__edit,
+.assignments .btn__delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.assignments .btn__edit {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.assignments .btn__edit:hover {
+  background-color: #2563eb;
+  transform: scale(1.05);
+}
+
+.assignments .btn__delete {
+  background-color: #ef4444;
+  color: white;
+}
+
+.assignments .btn__delete:hover {
+  background-color: #dc2626;
+  transform: scale(1.05);
+}
+
+.assignments .btn__edit svg,
+.assignments .btn__delete svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Status Badge */
+.assignments .status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: white;
+  text-align: center;
+  min-width: 80px;
+}
+
+.assignments .status-badge.activo {
+  background-color: var(--success-100);
+}
+
+.assignments .status-badge.inactivo {
+  background-color: var(--danger-100);
+}
+
+.assignments .status-badge.pendiente {
+  background-color: var(--warning-100);
+}
+
+.assignments .status-badge.asignado {
+  background-color: var(--primary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .assignments__table {
+    overflow-x: auto;
+  }
+  
+  .assignments__table table {
+    min-width: 1000px;
+  }
+}
+
+@media (max-width: 768px) {
+  .assignments {
+    padding: 15px;
+  }
+  
+  .assignments__header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+  
+  .assignments__header h2 {
+    font-size: 20px;
+    text-align: center;
+  }
+  
+  .assignments__table {
+    overflow-x: auto;
+  }
+  
+  .assignments__table table {
+    min-width: 800px;
+  }
+  
+  .assignments__table th,
+  .assignments__table td {
+    padding: 12px 15px;
+    font-size: 13px;
+  }
+  
+  .actions__container {
+    gap: 6px;
+  }
+  
+  .btn__edit,
+  .btn__delete {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .btn__edit svg,
+  .btn__delete svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .assignments__header h2 {
+    font-size: 18px;
+  }
+  
+  .assignments__header .btn__general-purple {
+    padding: 10px 15px;
+    font-size: 13px;
+  }
+  
+  .status-badge {
+    padding: 4px 8px;
+    font-size: 11px;
+    min-width: 60px;
+  }
+}

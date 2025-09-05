@@ -1,0 +1,333 @@
+/* Templates Component Styles */
+.templates {
+  height: 90vh;
+  padding: 20px;
+}
+
+.templates__container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  padding: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.templates__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--line-general);
+}
+
+.templates__header h2 {
+  color: var(--text-color);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+.templates__header .btn__general-purple {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: var(--primary-color);
+  color: var(--text-100);
+  border: none;
+  border-radius: var(--border-radius-general);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.templates__header .btn__general-purple:hover {
+  background-color: var(--primary-200);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.templates__header .btn__general-purple svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Table Styles */
+.templates__table {
+  display: grid;
+  height: 100%;
+  grid-template-rows: repeat(2, auto) 1fr;
+  overflow: hidden;
+}
+
+.templates__table .table__numbers {
+  display: flex;
+  margin: 10px 0;
+}
+
+.templates__table .table__numbers .text {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.templates__table .table__numbers .quantities_tables {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25px;
+  height: 25px;
+  background-color: var(--accent-100);
+  border-radius: 20px;
+  margin-left: 10px;
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.templates__table .table__head {
+  display: flex;
+  width: 100%;
+  background-color: var(--table-color);
+  border-radius: 10px 10px 0 0;
+  border: 2px solid var(--border-table-color);
+}
+
+.templates__table .table__head .thead {
+  display: grid;
+  grid-template-columns: 80px 1fr 2fr 120px;
+  padding: 10px;
+  font-weight: 600;
+  color: var(--text-table-color);
+  width: 100%;
+}
+
+.templates__table .table__body {
+  height: 100%;
+  overflow: auto;
+  transition-delay: 0.0s;
+  border: 2px solid var(--border-table-color);
+  border-radius: 0 0 10px 10px;
+  border-top: none;
+}
+
+.templates__table .table__body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.templates__table .table__body::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 5px;
+  height: 100px;
+}
+
+.templates__table .tbody__container {
+  border-top: 2px solid var(--border-table-color);
+}
+
+.templates__table .tbody__container:nth-child(even) {
+  background-color: var(--table-color);
+}
+
+.templates__table .tbody__container:nth-child(odd) {
+  background-color: var(--two-table-color);
+}
+
+.templates__table .tbody__container:first-child {
+  border-top: none;
+}
+
+.templates__table .tbody__container:last-child {
+  border-bottom: none;
+  border-radius: 0 0 20px 20px;
+}
+
+.templates__table .table__body .tbody {
+  display: grid;
+  grid-template-columns: 80px 1fr 2fr 120px;
+  padding: 10px;
+}
+
+.templates__table .table__body .tbody:hover {
+  background-color: var(--table-hover-color);
+  color: #fff;
+}
+
+.templates__table .table__body .tbody .td {
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+}
+
+.templates__table .table__body .tbody .td p {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Actions Container */
+.templates .actions__container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.templates .btn__edit,
+.templates .btn__delete,
+.templates .btn__view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.templates .btn__edit {
+  width: 32px;
+  height: 32px;
+  background-color: var(--primary-color);
+  color: var(--text-100);
+}
+
+.templates .btn__edit:hover {
+  background-color: var(--primary-200);
+  transform: scale(1.05);
+}
+
+.templates .btn__delete {
+  width: 32px;
+  height: 32px;
+  background-color: var(--danger-100);
+  color: var(--text-100);
+}
+
+.templates .btn__delete:hover {
+  background-color: var(--danger-200);
+  transform: scale(1.05);
+}
+
+.templates .btn__view {
+  padding: 6px 12px;
+  background-color: var(--primary-color);
+  color: var(--text-100);
+  border: none;
+  border-radius: var(--border-radius-general);
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.templates .btn__view:hover {
+  background-color: var(--primary-200);
+  transform: translateY(-1px);
+}
+
+.templates .btn__edit svg,
+.templates .btn__delete svg,
+.templates .btn__view svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Campo Badge */
+.templates .campo-badge {
+  display: inline-block;
+  background-color: var(--accent-100);
+  color: var(--text-color);
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 2px 4px 2px 0;
+  border: 1px solid var(--line-general);
+}
+
+.templates .no-campos {
+  color: var(--text-color-light);
+  font-style: italic;
+  font-size: 12px;
+}
+
+.templates .campos-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .templates .templates__table {
+    overflow-x: auto;
+  }
+  
+  .templates .templates__table table {
+    min-width: 1000px;
+  }
+}
+
+@media (max-width: 768px) {
+  .templates {
+    padding: 15px;
+  }
+  
+  .templates .templates__header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+  
+  .templates .templates__header h2 {
+    font-size: 20px;
+    text-align: center;
+  }
+  
+  .templates .templates__table {
+    overflow-x: auto;
+  }
+  
+  .templates .templates__table table {
+    min-width: 800px;
+  }
+  
+  .templates .templates__table th,
+  .templates .templates__table td {
+    padding: 12px 15px;
+    font-size: 13px;
+  }
+  
+  .templates .actions__container {
+    gap: 6px;
+  }
+  
+  .templates .btn__edit,
+  .templates .btn__delete {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .templates .btn__edit svg,
+  .templates .btn__delete svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .templates .templates__header h2 {
+    font-size: 18px;
+  }
+  
+  .templates .templates__header .btn__general-purple {
+    padding: 10px 15px;
+    font-size: 13px;
+  }
+} 

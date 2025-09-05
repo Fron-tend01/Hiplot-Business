@@ -1,0 +1,397 @@
+/* Modal Asset Returns Styles */
+.overlay__devoluciones_modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.overlay__devoluciones_modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.popup__devoluciones_modal {
+  background-color: white;
+  border-radius: 12px;
+  padding: 30px;
+  width: 95%;
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  transform: scale(0.7);
+  transition: transform 0.3s ease;
+}
+
+.overlay__devoluciones_modal.active .popup__devoluciones_modal {
+  transform: scale(1);
+}
+
+.btn-cerrar-popup__devoluciones_modal {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-cerrar-popup__devoluciones_modal:hover {
+  background-color: #e5e7eb;
+  transform: scale(1.1);
+}
+
+.svg__close {
+  width: 16px;
+  height: 16px;
+  fill: #6b7280;
+}
+
+.title__modals {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+/* Form Styles */
+.devoluciones__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.devoluciones__section {
+  background-color: var(--main-card-color);
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section__title {
+  color: var(--text-color);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line-general);
+}
+
+/* Form Layout */
+.form__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.form__row_three {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.form__col {
+  flex: 1;
+  min-width: 180px;
+}
+
+.form__col_full {
+  flex: 1 1 100%;
+}
+
+/* Input Groups */
+.container__inputs_general {
+  position: relative;
+  text-align: justify;
+}
+
+.label__general {
+  font-weight: 500;
+  display: block;
+  border-radius: var(--border-radius-general);
+  color: var(--text-color);
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.inputs__general {
+  width: 100%;
+  background-color: var(--input-color);
+  color: var(--text-color);
+  margin-top: 6px;
+  border: none;
+  outline: none;
+  padding: 8px 10px;
+  border-radius: 3px;
+  outline: 2px solid #f2f2f2;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  height: 36px;
+  box-sizing: border-box;
+}
+
+.inputs__general:hover {
+  outline: 2px solid var(--primary-color);
+}
+
+.inputs__general:focus {
+  outline: 2px solid var(--primary-color);
+}
+
+.inputs__general::placeholder {
+  color: var(--placeholder-color);
+}
+
+.inputs__general:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.inputs__general:disabled:hover {
+  outline: 2px solid #f2f2f2;
+}
+
+.inputs__general:disabled:focus {
+  outline: 2px solid #f2f2f2;
+}
+
+/* Textarea */
+.container__textarea_general {
+  position: relative;
+  text-align: justify;
+  height: 100%;
+}
+
+.textarea__general {
+  width: 100%;
+  background-color: var(--input-color);
+  margin-top: 6px;
+  border: none;
+  outline: none;
+  padding: 10px;
+  border-radius: 3px;
+  display: block;
+  color: var(--text-color);
+  outline: 2px solid #f2f2f2;
+  font-size: 13px;
+  resize: vertical;
+  min-height: 70px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.textarea__general:hover {
+  outline: 2px solid var(--primary-color);
+}
+
+.textarea__general:focus {
+  outline: 2px solid var(--primary-color);
+}
+
+.textarea__general::placeholder {
+  color: var(--placeholder-color);
+}
+
+/* Select with Button */
+.select__with_button {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.select__with_button .inputs__general {
+  flex: 1;
+  margin-top: 0;
+}
+
+.btn__add_category {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  min-width: 32px;
+  height: 36px;
+}
+
+.btn__add_category:hover {
+  background-color: var(--primary-color-hover);
+  transform: scale(1.05);
+}
+
+.btn__add_category svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Form Actions */
+.form__actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 2px solid var(--line-general);
+}
+
+.btn__general-purple {
+  background-color: var(--primary-color);
+  padding: 12px 25px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-general);
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 400ms;
+  min-width: 150px;
+}
+
+.btn__general-purple:hover {
+  transform: scale(1.05);
+  background-color: var(--primary-color-hover);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn__general-purple:active {
+  transform: scale(.95);
+}
+
+.btn__general-gray {
+  background-color: #d6d6d6;
+  padding: 12px 25px;
+  color: #333;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-general);
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 400ms;
+  min-width: 150px;
+}
+
+.btn__general-gray:hover {
+  background-color: #c0c0c0;
+  transform: scale(1.05);
+}
+
+/* Warning styles */
+.warning__general {
+  margin-top: 4px;
+}
+
+.warning__general small {
+  color: #D0342C;
+  font-size: 11px;
+}
+
+.inputs__general.warning {
+  outline: 2px solid #D0342C;
+}
+
+.inputs__general.warning:hover {
+  outline: 2px solid #D0342C;
+}
+
+.inputs__general.warning:focus {
+  outline: 2px solid #D0342C;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .form__row_three {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .popup__devoluciones_modal {
+    width: 98%;
+    padding: 20px;
+    max-height: 95vh;
+  }
+  
+  .form__row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .form__row_three {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .form__col {
+    min-width: 100%;
+  }
+  
+  .select__with_button {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .select__with_button .btn__add_category {
+    width: 100%;
+    margin-top: 6px;
+  }
+  
+  .form__actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .btn__general-purple,
+  .btn__general-gray {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .title__modals {
+    font-size: 18px;
+  }
+  
+  .section__title {
+    font-size: 14px;
+  }
+  
+  .inputs__general,
+  .textarea__general {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  
+  .btn__general-purple,
+  .btn__general-gray {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+}

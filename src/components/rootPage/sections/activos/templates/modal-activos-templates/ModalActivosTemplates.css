@@ -1,0 +1,327 @@
+/* Modal Overlay */
+.templates .overlay__modal_activos_templates {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.templates .overlay__modal_activos_templates.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal Popup */
+.templates .popup__modal_activos_templates {
+    background: var(--background-modal);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.7);
+    transition: transform 0.3s ease;
+}
+
+.templates .popup__modal_activos_templates.active {
+    transform: scale(1);
+}
+
+/* Close Button */
+.templates .btn-cerrar-popup__modal_activos_templates {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cards-background);
+    border-radius: 50%;
+    text-decoration: none;
+    transition: background 0.3s ease;
+    z-index: 10;
+}
+
+.templates .btn-cerrar-popup__modal_activos_templates:hover {
+    background: var(--line-general);
+}
+
+.templates .svg__close {
+    fill: var(--text-color);
+    transition: fill 0.3s ease;
+}
+
+.templates .btn-cerrar-popup__modal_activos_templates:hover .svg__close {
+    fill: var(--primary-color);
+}
+
+/* Modal Title */
+.templates .title__modals {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-color);
+    text-align: center;
+    margin: 30px 20px 20px 20px;
+    padding: 0;
+}
+
+/* Modal Container */
+.templates .container__modal_activos_templates {
+    padding: 0 30px 30px 30px;
+}
+
+/* Row */
+.templates .row {
+    margin-bottom: 20px;
+}
+
+.templates .col-12 {
+    width: 100%;
+}
+
+/* Labels */
+.templates .label__general {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 5px;
+}
+
+/* Warning */
+.templates .warning__general {
+    margin-bottom: 8px;
+}
+
+.templates .warning__general small {
+    color: var(--text-color-light);
+    font-size: 12px;
+    font-style: italic;
+}
+
+.templates .inputs__general::placeholder {
+    color: var(--placeholder-color);
+}
+
+/* Select specific styles */
+.templates .inputs__general[type="select"],
+.templates .inputs__general[type="select-one"] {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+    appearance: none;
+}
+
+/* Button Container */
+.templates .create__modal_activos_templates_btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* General Button */
+.templates .btn__general-purple {
+    background: var(--primary-color);
+    color: var(--text-100);
+    border: none;
+    padding: 12px 30px;
+    border-radius: var(--border-radius-general);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.templates .btn__general-purple:hover {
+    background: var(--primary-200);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(61, 133, 198, 0.3);
+}
+
+.templates .btn__general-purple:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(61, 133, 198, 0.3);
+}
+
+/* Campos Container */
+.templates .campos__container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Input estático para agregar campos */
+.templates .campo__add_container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.templates .campo__add_input {
+    flex: 2;
+    margin: 0;
+}
+
+.templates .campo__tipo_select {
+    flex: 1;
+    margin: 0;
+    min-width: 100px;
+}
+
+.templates .btn__add_campo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: var(--success-100);
+    color: var(--text-100);
+    border: none;
+    border-radius: var(--border-radius-general);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.templates .btn__add_campo:hover {
+    background-color: var(--success-200);
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+/* Lista de campos agregados */
+.templates .campos__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.templates .campos__label {
+    color: var(--text-color-light);
+    font-size: 12px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.templates .campos__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.templates .campo__badge_item {
+    display: flex;
+    align-items: center;
+    background-color: var(--accent-100);
+    border: 1px solid var(--line-general);
+    border-radius: 16px;
+    padding: 4px 8px 4px 12px;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.templates .campo__badge_item:hover {
+    background-color: var(--accent-200);
+    transform: translateY(-1px);
+}
+
+.templates .campo__badge_text {
+    color: var(--text-color);
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.templates .campo__badge_remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background-color: var(--danger-100);
+    color: var(--text-100);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.templates .campo__badge_remove:hover {
+    background-color: var(--danger-200);
+    transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .templates .popup__modal_activos_templates {
+        width: 95%;
+        margin: 20px;
+        max-height: 85vh;
+    }
+    
+    .templates .container__modal_activos_templates {
+        padding: 0 20px 20px 20px;
+    }
+    
+    .templates .title__modals {
+        font-size: 18px;
+        margin: 25px 15px 15px 15px;
+    }
+    
+    .templates .inputs__general {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    .templates .btn__general-purple {
+        padding: 10px 25px;
+        font-size: 13px;
+    }
+    
+    .templates .campo__add_container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .templates .campo__add_input,
+    .templates .campo__tipo_select {
+        flex: none;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .templates .popup__modal_activos_templates {
+        width: 98%;
+        margin: 10px;
+        max-height: 90vh;
+    }
+    
+    .templates .container__modal_activos_templates {
+        padding: 0 15px 15px 15px;
+    }
+    
+    .templates .title__modals {
+        font-size: 16px;
+        margin: 20px 10px 10px 10px;
+    }
+}

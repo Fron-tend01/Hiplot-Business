@@ -78,7 +78,7 @@ const Suppliers: React.FC = () => {
             nombre_alterno: selectedCommercialName,
             prioridad: suppliers.length + 1,
             proveedor: selectedSupplier.nombre_comercial
-        }
+        }  
         setSuppliers([...suppliers, dataSuppliers])
     }
 
@@ -97,10 +97,6 @@ const Suppliers: React.FC = () => {
 
 
     /////////////////////////////////////FALTA VALIDAR QUE SI NO SE SELECIONA UNA PRIORIDAD QUE SE META SOLITO LA NORMAL/////////////////////////////////////////
-
-
-
-
     const handleSuppliersChange = (supplier: any) => {
         setSelectedSupplier(supplier)
         setSlectSuppliers(false)

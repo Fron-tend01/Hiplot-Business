@@ -1,0 +1,265 @@
+/* Modal Activos Categories Styles */
+.activos .overlay__modal_activos_categories {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.activos .overlay__modal_activos_categories.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.activos .popup__modal_activos_categories {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.7);
+    transition: transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.activos .overlay__modal_activos_categories.active .popup__modal_activos_categories {
+    transform: scale(1);
+}
+
+.activos .btn-cerrar-popup__modal_activos_categories {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f3f4f6;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.activos .btn-cerrar-popup__modal_activos_categories:hover {
+    background-color: #e5e7eb;
+    transform: scale(1.1);
+}
+
+.activos .svg__close {
+    width: 16px;
+    height: 16px;
+    fill: #6b7280;
+}
+
+.activos .title__modals {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 20px 0;
+    text-align: center;
+}
+
+.activos .container__modal_activos_categories {
+    margin-top: 20px;
+}
+
+.activos .container__modal_activos_categories .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.activos .container__modal_activos_categories .col-12 {
+    flex: 0 0 100%;
+    padding: 0 10px;
+}
+
+.activos .label__general {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+
+.activos .warning__general {
+    margin-bottom: 8px;
+}
+
+.activos .warning__general small {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+
+.activos .inputs__general::placeholder {
+    color: #9ca3af;
+}
+
+/* Textarea specific styles */
+.activos .textarea__general {
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+/* Subcategorias Container */
+.activos .subcategorias__container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Input estático para agregar */
+.activos .subcategoria__add_container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.activos .subcategoria__add_input {
+    flex: 1;
+    margin: 0;
+}
+
+.activos .btn__add_subcategoria {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.activos .btn__add_subcategoria:hover {
+    background-color: #059669;
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Lista de subcategorías agregadas */
+.activos .subcategorias__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.activos .subcategorias__label {
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.activos .subcategorias__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.activos .subcategoria__badge_item {
+    display: flex;
+    align-items: center;
+    background-color: #e3f2fd;
+    border: 1px solid #bbdefb;
+    border-radius: 16px;
+    padding: 4px 8px 4px 12px;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.activos .subcategoria__badge_item:hover {
+    background-color: #bbdefb;
+    transform: translateY(-1px);
+}
+
+.activos .subcategoria__badge_text {
+    color: #1976d2;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.activos .subcategoria__badge_remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.activos .subcategoria__badge_remove:hover {
+    background-color: #dc2626;
+    transform: scale(1.1);
+}
+
+.activos .create__modal_activos_categories_btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.activos .create__modal_activos_categories_btn .btn__general-purple {
+    padding: 12px 30px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+
+/* Responsive Design for Modal */
+@media (max-width: 768px) {
+    .activos .popup__modal_activos_categories {
+        width: 95%;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .activos .popup__modal_activos_categories {
+        width: 98%;
+        padding: 15px;
+    }
+    
+    .activos .title__modals {
+        font-size: 18px;
+    }
+    
+    .activos .create__modal_activos_categories_btn .btn__general-purple {
+        padding: 10px 25px;
+        font-size: 13px;
+    }
+}

@@ -38,7 +38,7 @@
 
   /* Base colors */
   --primary-color: #3D85C6;
-  --secundary-color: #53539f;
+  --secundary-color: rgb(12,36,60);
 
   /* sidebar */
   --sidebar-color: rgb(12,36,60);
@@ -97,6 +97,21 @@
 
   --light-purple-color: #652dd433;
 
+  /* Table colors */
+  --table-color: #ffffff;
+  --two-table-color: #f8f9fa;
+  --border-table-color: #e9ecef;
+  --text-table-color: #495057;
+  --table-hover-color: #e3f2fd;
+
+  /* Border radius */
+  --border-radius-general: 8px;
+
+  /* White color */
+  --white-color: #ffffff;
+
+  /* Text colors */
+  --text-color-light: #6c757d;
   
   --tertiary-color: #fff;
   --danger-color: #df4941c5;
